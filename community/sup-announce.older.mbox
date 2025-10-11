@@ -1,0 +1,129 @@
+From wmorgan-sup@masanjin.net  Fri Jun  5 15:02:37 2009
+From: wmorgan-sup@masanjin.net (William Morgan)
+Date: Fri, 05 Jun 2009 12:02:37 -0700
+Subject: [Sup-announce] [ANN] Sup 0.8 released
+Message-ID: <1244228405-sup-4363@entry>
+
+I'm pleased to announce the release of Sup 0.8.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Excitement in 0.8:
+* Undo support on many operations. Yay!
+* Mbox splitting fixes. No more "From "-line problems.
+* Mail parsing speedups.
+* Many utf8 and widechar fixes. Display of crazy characters should be pretty
+  close.
+* Outgoing email with non-ASCII headers is now properly encoded.
+* Email addresses are no longer permanently attached to names. This was
+  causing problems with automated email systems that used different names
+  with the same address.
+* Curses background now retains the terminal default color. This also makes
+  Sup work better on transparent terminals.
+* Improve dynamic loading of setlocale for Cygwin and BSD systems.
+* Labels can now be removed from multiple tagged threads.
+* Applying operations to tagged threads is now invoked with '='.
+* Buffer list is betterified and is now invoked with ';'.
+* Zsh autocompletion support.
+* As always, many bugfixes and tweaks.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup@masanjin.net  Wed Jun 17 12:13:02 2009
+From: wmorgan-sup@masanjin.net (William Morgan)
+Date: Wed, 17 Jun 2009 09:13:02 -0700
+Subject: [Sup-announce] [ANN] Sup 0.8.1 released
+Message-ID: <1245255144-sup-1099@entry>
+
+A bugfix release with fixes for quote parsing (bad behavior in certain
+long emails), multibyte display for non-utf8 locales, and reply-mode
+mode selection.
+
+== 0.8.1 / 2009-06-15
+* make multibyte display "work" for non-utf8 locales
+* fix reply-mode always selecting "Customized"
+* reduce email quote parsing worst-case behavior
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup@masanjin.net  Thu Oct  1 14:43:49 2009
+From: wmorgan-sup@masanjin.net (William Morgan)
+Date: Thu, 01 Oct 2009 11:43:49 -0700
+Subject: [Sup-announce] [ANN] Sup 0.9 released
+Message-ID: <1254422532-sup-9948@masanjin.net>
+
+I'm pleased to announce the release of Sup 0.9.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Excitement in 0.9:
+* Experimental Xapian backend to replace Ferret. Not everything works with it,
+  but it's fast and less likely to barf. See release notes.
+* New keybinding: "G" for reply-all.
+* New hook: custom-search, for adding your own query expansions.
+* Better preemptive thread loading.
+* Random UI tweaks: display labels before subjects, change thread-view-mode's
+  'n' and 'p' commands slightly
+* Better killing of other Sup processes.
+* Die gracefully upon SIGKILL.
+* Finally figure out the curses+ruby magic to make SIGWINCH (i.e. xterm
+  resizing) work correctly.
+* Add a console mode (press ~) for interactively playing with the index.
+* Finally figure out the curses magic to stop the weird keyboard behavior after
+  leaving the editor.
+* Improved logging. Logging now supports SUP_LOG_LEVEL environment variable.
+  Set this to "debug" for verbiage.
+* As always, many bugfixes and tweaks.
+
+Release notes:
+
+There's a new Xapian backend as an alternative to the Ferret one. It's still in
+a beta stage. It's much faster and much less prone to the random crashes than
+Ferret, but certain things don't work yet, most noticeably the unread message
+counts in label-list-mode.
+
+You can switch back and forth between both indexes without harm, *except* any
+new messages added to the one index won't be picked up by the other. Follow
+these instructions:
+
+To TRY the Xapian index, without screwing Ferret up:
+
+1. sup-dump > dump                              # takes a while
+2. export SUP_INDEX=xapian                      # or however you do it in your shell
+3. sup-sync --all --all-sources --restore dump  # takes a long time
+4. sup -n                # -n ensures that no polling is done. don't hit 'P' either
+
+Step 1 will take a long time, and step 3 will take a very long time.
+
+At this point, whenever you run Sup, the SUP_INDEX environment variable will
+determine which index you use. If it's unset, or "ferret", you will use the
+ferret index. If it's "xapian", the Xapian index. Make sure when you run sup
+with the Xapian index, you use -n and don't hit 'P', to avoid loading new
+messages into it.
+
+If you want to switch to Xapian permanently, you can then:
+
+1. rm -rf ~/.sup/ferret
+2. permanently set SUP_INDEX=xapian according to your shell
+3. Run sup as normal, i.e. without -n.
+
+If you want to go back to Ferret, you can just rm -rf ~/.sup/xapian and make
+sure your SUP_INDEX environment variable is unset.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
