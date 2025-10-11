@@ -1,5 +1,5 @@
-From ezyang at MIT.EDU  Tue Aug 21 14:35:45 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Aug 21 14:35:45 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 21 Aug 2012 10:35:45 -0400
 Subject: [sup-devel] Maildir synchronizing other labels
 Message-ID: <1345559230-sup-5105@javelin>
@@ -32,8 +32,8 @@ Proposed implementation strategy:
 
 Edward
 
-From ezyang at MIT.EDU  Tue Aug 21 15:17:32 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Aug 21 15:17:32 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 21 Aug 2012 11:17:32 -0400
 Subject: [sup-devel] inotify support for Maildir mailboxes
 Message-ID: <1345562202-sup-2266@javelin>
@@ -46,8 +46,8 @@ to help test.
 Cheers,
 Edward
 
-From alvherre at alvh.no-ip.org  Tue Aug 21 16:00:31 2012
-From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+From alvherre@alvh.no-ip.org  Tue Aug 21 16:00:31 2012
+From: alvherre@alvh.no-ip.org (Alvaro Herrera)
 Date: Tue, 21 Aug 2012 12:00:31 -0400
 Subject: [sup-devel] inotify support for Maildir mailboxes
 In-Reply-To: <1345562202-sup-2266@javelin>
@@ -65,8 +65,8 @@ I definitely am interested and willing to test.
 -- 
 ?lvaro Herrera <alvherre at alvh.no-ip.org>
 
-From ezyang at MIT.EDU  Tue Aug 21 19:19:56 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Aug 21 19:19:56 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 21 Aug 2012 15:19:56 -0400
 Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
 	sync-back changes location.
@@ -114,8 +114,8 @@ index 0616f75..cd9226e 100644
 1.7.11.3
 
 
-From ezyang at MIT.EDU  Tue Aug 21 19:25:41 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Aug 21 19:25:41 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 21 Aug 2012 15:25:41 -0400
 Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
 	sync-back changes location.
@@ -213,8 +213,8 @@ Excerpts from Edward Z. Yang's message of Tue Aug 21 15:19:56 -0400 2012:
 >      end
 >    end
 
-From ezyang at MIT.EDU  Tue Aug 21 19:43:47 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Aug 21 19:43:47 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 21 Aug 2012 15:43:47 -0400
 Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
 	sync-back changes location.
@@ -267,8 +267,8 @@ index 0616f75..3eeea66 100644
    end
  
 
-From ezyang at MIT.EDU  Wed Aug 22 05:45:31 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 22 05:45:31 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Wed, 22 Aug 2012 01:45:31 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -368,8 +368,8 @@ index 3eeea66..d6016df 100644
 1.7.11.3
 
 
-From ezyang at MIT.EDU  Wed Aug 22 05:54:15 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 22 05:54:15 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Wed, 22 Aug 2012 01:54:15 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -500,8 +500,8 @@ Excerpts from Edward Z. Yang's message of Wed Aug 22 01:45:31 -0400 2012:
 >  
 >    ## much faster than raw_message
 
-From ezyang at MIT.EDU  Wed Aug 22 20:09:40 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 22 20:09:40 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Wed, 22 Aug 2012 16:09:40 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -638,8 +638,8 @@ index b08bae2..c1e4b40 100644
    def direct_participants
      map { |m, *o| [m.from] + m.to if m }.flatten.compact.uniq
 
-From ezyang at MIT.EDU  Thu Aug 23 14:40:22 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Thu Aug 23 14:40:22 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Thu, 23 Aug 2012 10:40:22 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -783,8 +783,8 @@ Excerpts from Edward Z. Yang's message of Wed Aug 22 16:09:40 -0400 2012:
 >    def direct_participants
 >      map { |m, *o| [m.from] + m.to if m }.flatten.compact.uniq
 
-From alvherre at alvh.no-ip.org  Thu Aug 23 14:52:21 2012
-From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+From alvherre@alvh.no-ip.org  Thu Aug 23 14:52:21 2012
+From: alvherre@alvh.no-ip.org (Alvaro Herrera)
 Date: Thu, 23 Aug 2012 10:52:21 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -808,8 +808,8 @@ planning on submitting a fixed version?
 -- 
 ?lvaro Herrera <alvherre at alvh.no-ip.org>
 
-From ezyang at MIT.EDU  Thu Aug 23 15:28:22 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Thu Aug 23 15:28:22 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Thu, 23 Aug 2012 11:28:22 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -843,8 +843,8 @@ Excerpts from Alvaro Herrera's message of Thu Aug 23 10:52:21 -0400 2012:
 > planning on submitting a fixed version?
 > 
 
-From ezyang at MIT.EDU  Thu Aug 23 18:20:18 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Thu Aug 23 18:20:18 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Thu, 23 Aug 2012 14:20:18 -0400
 Subject: [sup-devel] [PATCH] Implement moving message between Maildir
 	sources based on label.
@@ -893,8 +893,8 @@ Excerpts from Alvaro Herrera's message of Thu Aug 23 10:52:21 -0400 2012:
 > planning on submitting a fixed version?
 > 
 
-From ezyang at MIT.EDU  Wed Aug 29 00:35:01 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 29 00:35:01 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 28 Aug 2012 20:35:01 -0400
 Subject: [sup-devel] [PATCH] Handle drafts with high ID numbers.
 Message-ID: <1346200502-27650-1-git-send-email-ezyang@mit.edu>
@@ -944,8 +944,8 @@ index 58c45db..1f33dc1 100644
 1.7.11.3
 
 
-From ezyang at MIT.EDU  Wed Aug 29 00:41:15 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 29 00:41:15 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 28 Aug 2012 20:41:15 -0400
 Subject: [sup-devel] [PATCH] Handle drafts with high ID numbers.
 In-Reply-To: <1346200502-27650-1-git-send-email-ezyang@mit.edu>
@@ -1001,8 +1001,8 @@ Excerpts from Edward Z. Yang's message of Tue Aug 28 20:35:01 -0400 2012:
 >    end
 >  
 
-From ezyang at MIT.EDU  Wed Aug 29 01:42:10 2012
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Wed Aug 29 01:42:10 2012
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 28 Aug 2012 21:42:10 -0400
 Subject: [sup-devel] [PATCH] Add sent-save-to hook.
 Message-ID: <1346204530-30793-1-git-send-email-ezyang@mit.edu>

@@ -1,5 +1,5 @@
-From tero at tilus.net  Fri Jan  1 08:19:45 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Fri Jan  1 08:19:45 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 01 Jan 2010 15:19:45 +0200
 Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
 	yields messages in cronological order
@@ -61,8 +61,8 @@ which is exactly what the example headers I posted seem to produce
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From wmorgan-sup at masanjin.net  Fri Jan  1 10:13:08 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Fri Jan  1 10:13:08 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Fri, 01 Jan 2010 07:13:08 -0800
 Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
 In-Reply-To: <1262297415-sup-6997@changeling.local>
@@ -84,8 +84,8 @@ comment.) That should work everywhere, lame as it may be.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From sup-bugs at masanjin.net  Fri Jan  1 14:05:26 2010
-From: sup-bugs at masanjin.net (William Morgan)
+From sup-bugs@masanjin.net  Fri Jan  1 14:05:26 2010
+From: sup-bugs@masanjin.net (William Morgan)
 Date: Fri, 01 Jan 2010 19:05:26 +0000
 Subject: [sup-devel] [issue40] ruby 1.9: lockfile gem failure
 In-Reply-To: <1262372726.5.0.155183041676.issue40@masanjin.net>
@@ -115,8 +115,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue40>
 _________________________________________
 
-From wmorgan-sup at masanjin.net  Fri Jan  1 14:09:09 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Fri Jan  1 14:09:09 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Fri, 01 Jan 2010 11:09:09 -0800
 Subject: [sup-devel] Ruby 1.9 encoding fixes
 In-Reply-To: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -133,8 +133,8 @@ Anyways, getting close!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 15:47:07 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 15:47:07 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri,  1 Jan 2010 12:47:07 -0800
 Subject: [sup-devel] [PATCH] ruby 1.9: use String#ord in ask_getch and
 	ask_yes_or_no
@@ -174,8 +174,8 @@ index 4498b08..c826ab9 100644
 1.6.3.3
 
 
-From pi+sup at pihost.us  Fri Jan  1 15:59:02 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Fri Jan  1 15:59:02 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Fri, 01 Jan 2010 13:59:02 -0700
 Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
 In-Reply-To: <1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
@@ -205,8 +205,8 @@ makes Sup a bit difficult to use.
 I've gone and reverted this diff locally for now. I suppose I could also stop
 running sup with the -w flag...
 
-From sup-bugs at masanjin.net  Fri Jan  1 16:38:15 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Fri Jan  1 16:38:15 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Fri, 01 Jan 2010 21:38:15 +0000
 Subject: [sup-devel] [issue41] killed threads don't show up in search
 In-Reply-To: <1262381895.96.0.844866246353.issue41@masanjin.net>
@@ -235,8 +235,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue41>
 _________________________________________
 
-From wmorgan-sup at masanjin.net  Fri Jan  1 16:43:13 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Fri Jan  1 16:43:13 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Fri, 01 Jan 2010 13:43:13 -0800
 Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
 In-Reply-To: <1262378704-sup-5011@home.mrtheplague.net>
@@ -257,8 +257,8 @@ or mandating that thou shalt not run sup with -w. Votes?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 16:44:34 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 16:44:34 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri,  1 Jan 2010 13:44:34 -0800
 Subject: [sup-devel] [PATCH] xapian: respect :skip_killed in
 	each_message_in_thread_for
@@ -285,8 +285,8 @@ index cebb148..955ec8f 100644
 1.6.3.3
 
 
-From sup-bugs at masanjin.net  Fri Jan  1 16:46:33 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Fri Jan  1 16:46:33 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Fri, 01 Jan 2010 21:46:33 +0000
 Subject: [sup-devel] [issue42] --all-sources needs specifying of at least
 	one source to	work
@@ -326,8 +326,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue42>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 16:48:29 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 16:48:29 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri, 01 Jan 2010 16:48:29 -0500
 Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
 In-Reply-To: <1262382164-sup-4751@masanjin.net>
@@ -355,8 +355,8 @@ possible to do this from inside Sup?
 That warning's existence annoys me. I thought it was a feature that Ruby
 1.8 ignored the encoding in the mode string.
 
-From wmorgan-sup at masanjin.net  Fri Jan  1 16:57:33 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Fri Jan  1 16:57:33 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Fri, 01 Jan 2010 13:57:33 -0800
 Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
 In-Reply-To: <1262382312-sup-2326@zyrg.net>
@@ -383,8 +383,8 @@ Yeah, lame.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 17:14:00 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 17:14:00 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri,  1 Jan 2010 14:14:00 -0800
 Subject: [sup-devel] [PATCH] ruby 1.9: expect nil start_offset when an
 	MBox::Loader is first created
@@ -423,8 +423,8 @@ index 520e2ec..54d227d 100644
 1.6.3.3
 
 
-From pi+sup at pihost.us  Fri Jan  1 20:16:20 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Fri Jan  1 20:16:20 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Fri, 01 Jan 2010 18:16:20 -0700
 Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
 In-Reply-To: <1262382164-sup-4751@masanjin.net>
@@ -452,8 +452,8 @@ HACKING:6:  ruby -I lib -w bin/sup
 
 I think redirecting stderr to .sup/warnings is the way to go.
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 22:30:40 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 22:30:40 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri,  1 Jan 2010 19:30:40 -0800
 Subject: [sup-devel] [PATCH] switch default index to Xapian
 Message-ID: <1262403040-24105-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -535,8 +535,8 @@ index 87d8d52..cc78292 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Fri Jan  1 23:37:26 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan  1 23:37:26 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri,  1 Jan 2010 20:37:26 -0800
 Subject: [sup-devel] [PATCH] xapian: translate from/to query term prefixes
 	to search over both name and email fields
@@ -595,8 +595,8 @@ index cebb148..c192b26 100644
 1.6.3.3
 
 
-From hyperbolist at gmail.com  Sat Jan  2 00:14:05 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Sat Jan  2 00:14:05 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Sat, 02 Jan 2010 00:14:05 -0500
 Subject: [sup-devel] [PATCH] fixed am/pm display for ruby 1.8 darwin (v2)
 Message-ID: <1262409241-sup-3697@changeling.local>
@@ -624,8 +624,8 @@ index c27e527..206c18a 100644
 -- 
 1.6.5.7
 
-From bburky at bburky.com  Sat Jan  2 00:59:08 2010
-From: bburky at bburky.com (Blake Burkhart)
+From bburky@bburky.com  Sat Jan  2 00:59:08 2010
+From: bburky@bburky.com (Blake Burkhart)
 Date: Fri, 01 Jan 2010 23:59:08 -0600
 Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
 In-Reply-To: <1262358668-sup-7399@masanjin.net>
@@ -679,8 +679,8 @@ complete it is.
 -- 
 Blake Burkhart
 
-From hyperbolist at gmail.com  Sat Jan  2 01:13:50 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Sat Jan  2 01:13:50 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Sat, 02 Jan 2010 01:13:50 -0500
 Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
 In-Reply-To: <1262410432-sup-3347@Backspace.local>
@@ -719,8 +719,8 @@ display for ruby 1.8 darwin (v2)", but like William says it should work
 everywhere including MacRuby because it just emulate's %P by downcase()ing 
 %p.
 
-From rlane at club.cc.cmu.edu  Sat Jan  2 11:42:15 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan  2 11:42:15 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat,  2 Jan 2010 08:42:15 -0800
 Subject: [sup-devel] [PATCH] force binary encoding before parsing decrypted
 	messages
@@ -754,8 +754,8 @@ index fb2661a..91652c7 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sat Jan  2 18:50:00 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan  2 18:50:00 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat,  2 Jan 2010 15:50:00 -0800
 Subject: [sup-devel] [PATCH] support high colors in colors.yaml
 Message-ID: <1262476200-25885-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -855,8 +855,8 @@ index c4a4024..dcae2d5 100644
 1.6.3.3
 
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 09:48:22 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 09:48:22 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 06:48:22 -0800
 Subject: [sup-devel] Ruby 1.9 encoding fixes
 In-Reply-To: <1262442839-sup-7738@peray>
@@ -872,8 +872,8 @@ Anything interested in that file?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 09:59:09 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 09:59:09 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 06:59:09 -0800
 Subject: [sup-devel] [PATCH] ruby 1.9: use String#ord in ask_getch and
 	ask_yes_or_no
@@ -885,8 +885,8 @@ Applied to ruby-1.9.encodings and remerged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:00:03 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:00:03 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:00:03 -0800
 Subject: [sup-devel] [PATCH] xapian: respect :skip_killed in
 	each_message_in_thread_for
@@ -899,8 +899,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:00:21 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:00:21 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:00:21 -0800
 Subject: [sup-devel] [PATCH] ruby 1.9: expect nil start_offset when an
 	MBox::Loader is first created
@@ -912,8 +912,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 10:10:31 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 10:10:31 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 03 Jan 2010 10:10:31 -0500
 Subject: [sup-devel] [PATCH] support high colors in colors.yaml
 In-Reply-To: <1262476200-25885-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -929,8 +929,8 @@ Excerpts from Rich Lane's message of 2010-01-02 18:50:00 -0500:
 Disregard this patch, grayscale should be one dimensional. I'll send out
 a fixed version.
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:14:57 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:14:57 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:14:57 -0800
 Subject: [sup-devel] [PATCH] switch default index to Xapian
 In-Reply-To: <1262403040-24105-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -1001,8 +1001,8 @@ amount of pain, so, who cares, and, as always, thank you.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:15:17 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:15:17 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:15:17 -0800
 Subject: [sup-devel] [PATCH] fixed am/pm display for ruby 1.8 darwin (v2)
 In-Reply-To: <1262409241-sup-3697@changeling.local>
@@ -1013,8 +1013,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:16:03 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:16:03 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:16:03 -0800
 Subject: [sup-devel] [PATCH] force binary encoding before parsing
 	decrypted messages
@@ -1026,8 +1026,8 @@ Applied to the ruby-1.9-encoding branch, remerged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 10:24:18 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 10:24:18 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun,  3 Jan 2010 07:24:18 -0800
 Subject: [sup-devel] [PATCHv2 1/3] support high colors in colors.yaml
 Message-ID: <1262532260-18353-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -1123,8 +1123,8 @@ index c4a4024..71c715f 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 10:24:19 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 10:24:19 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun,  3 Jan 2010 07:24:19 -0800
 Subject: [sup-devel] [PATCH 2/3] send color errors to the log instead of
 	flashing
@@ -1155,8 +1155,8 @@ index 71c715f..d28c550 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 10:24:20 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 10:24:20 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun,  3 Jan 2010 07:24:20 -0800
 Subject: [sup-devel] [PATCH 3/3] add keybinding 'Oc' to reload colors
 In-Reply-To: <1262532260-18353-2-git-send-email-rlane@club.cc.cmu.edu>
@@ -1222,8 +1222,8 @@ index d28c550..6f21f9a 100644
 1.6.3.3
 
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 10:27:24 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 10:27:24 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 07:27:24 -0800
 Subject: [sup-devel] [PATCH] Move the mark-as-spam hook so it runs on
 	all tagged threads.
@@ -1235,8 +1235,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 10:33:28 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 10:33:28 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun,  3 Jan 2010 07:33:28 -0800
 Subject: [sup-devel] [PATCH] add a mouse-enabled colorpicker to contrib
 Message-ID: <1262532808-19401-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -1361,8 +1361,8 @@ index 0000000..c981a23
 1.6.3.3
 
 
-From nicolas.pouillard at gmail.com  Sun Jan  3 10:48:36 2010
-From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+From nicolas.pouillard@gmail.com  Sun Jan  3 10:48:36 2010
+From: nicolas.pouillard@gmail.com (Nicolas Pouillard)
 Date: Sun, 03 Jan 2010 16:48:36 +0100
 Subject: [sup-devel] Ruby 1.9 encoding fixes
 In-Reply-To: <1262530083-sup-8232@masanjin.net>
@@ -1391,8 +1391,8 @@ Size: 25765 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100103/60c22ca8/attachment-0001.gz>
 
-From eg at gaute.vetsj.com  Sun Jan  3 10:51:55 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Sun Jan  3 10:51:55 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Sun, 03 Jan 2010 16:51:55 +0100
 Subject: [sup-devel] [issue36] label tab completion with utf-8 chars fail
 In-Reply-To: <1261749755.37.0.845609324711.issue36@masanjin.net>
@@ -1469,8 +1469,8 @@ Size: 198 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100103/3b5c07ca/attachment.bin>
 
-From eg at gaute.vetsj.com  Sun Jan  3 10:56:17 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Sun Jan  3 10:56:17 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Sun, 03 Jan 2010 16:56:17 +0100
 Subject: [sup-devel] [issue36] label tab completion with utf-8 chars fail
 In-Reply-To: <1262533823-sup-5348@dolk>
@@ -1572,8 +1572,8 @@ Size: 198 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100103/2ad5ec58/attachment.bin>
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 11:07:16 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 11:07:16 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun,  3 Jan 2010 08:07:16 -0800
 Subject: [sup-devel] [PATCH] utf-8 script encoding
 In-Reply-To: <1262533823-sup-5348@dolk>
@@ -2267,8 +2267,8 @@ index 955ec8f..2919ce6 100644
 1.6.3.3
 
 
-From eg at gaute.vetsj.com  Sun Jan  3 11:18:29 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Sun Jan  3 11:18:29 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Sun, 03 Jan 2010 17:18:29 +0100
 Subject: [sup-devel] [PATCH] utf-8 script encoding
 In-Reply-To: <1262534836-29113-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -2292,8 +2292,8 @@ Size: 198 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100103/be6dac99/attachment.bin>
 
-From hyperbolist at gmail.com  Sun Jan  3 12:09:50 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Sun Jan  3 12:09:50 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Sun, 03 Jan 2010 12:09:50 -0500
 Subject: [sup-devel] [PATCH] [issue4] kill buffers in buffer-list-mode with
 	"X"
@@ -2329,8 +2329,8 @@ index 1554cae..40f2e76 100644
 -- 
 1.6.5.7
 
-From pi+sup at pihost.us  Sun Jan  3 14:38:52 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Sun Jan  3 14:38:52 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sun, 03 Jan 2010 12:38:52 -0700
 Subject: [sup-devel] [sup-talk] Ferret to Xapian conversion
 In-Reply-To: <1262531773-sup-5192@masanjin.net>
@@ -2375,8 +2375,8 @@ index 96a97aa..e78ac4b 100755
  index = Redwood::Index.init
  Trollop::die "you appear to already have a Xapian index--delete #{File.join(Redwood::BASE_DIR, "xapian")} if you really want to do this" unless Redwood::Index.is_a_deprecated_ferret_index?
 
-From rlane at club.cc.cmu.edu  Sun Jan  3 15:18:35 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan  3 15:18:35 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 03 Jan 2010 15:18:35 -0500
 Subject: [sup-devel] [sup-talk] Ferret to Xapian conversion
 In-Reply-To: <1262546960-sup-6875@home.mrtheplague.net>
@@ -2401,8 +2401,8 @@ pushed the ncursesw source to my github so please tinker and send me a
 patch. I'm traveling for the next day so I won't be able to fix it soon
 myself.
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 17:00:28 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 17:00:28 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 14:00:28 -0800
 Subject: [sup-devel] [issue39] Exception running Sup while following the
 	Instructions to fix UTF-8
@@ -2428,8 +2428,8 @@ you uninstall the Sup gem?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 17:07:16 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 17:07:16 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 14:07:16 -0800
 Subject: [sup-devel] [sup-talk] Ferret to Xapian conversion
 In-Reply-To: <1262546960-sup-6875@home.mrtheplague.net>
@@ -2450,8 +2450,8 @@ Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sun Jan  3 17:11:49 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan  3 17:11:49 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 03 Jan 2010 14:11:49 -0800
 Subject: [sup-devel] [PATCH] [issue4] kill buffers in buffer-list-mode
 	with "X"
@@ -2463,8 +2463,8 @@ Applied directly to master. It's still Christmas! Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From pi+sup at pihost.us  Sun Jan  3 17:47:39 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Sun Jan  3 17:47:39 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sun, 03 Jan 2010 15:47:39 -0700
 Subject: [sup-devel] [sup-talk] Ferret to Xapian conversion
 In-Reply-To: <1262549410-sup-7918@zyrg.net>
@@ -2493,8 +2493,8 @@ RUBY_INVOCATION environment). Life is ridiculous. :)
 It appears to have worked, though, as I'm now writing this from a
 Xapian-indexed sup!
 
-From pi+sup at pihost.us  Mon Jan  4 01:06:36 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Mon Jan  4 01:06:36 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sun,  3 Jan 2010 23:06:36 -0700
 Subject: [sup-devel] [PATCH 3/3] make the undo hooks also save the threads
 In-Reply-To: <1262585196-25964-2-git-send-email-pi+sup@pihost.us>
@@ -2672,8 +2672,8 @@ index 7c0b869..b08c819 100644
 1.6.5
 
 
-From pi+sup at pihost.us  Mon Jan  4 01:06:34 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Mon Jan  4 01:06:34 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sun,  3 Jan 2010 23:06:34 -0700
 Subject: [sup-devel] [PATCH 1/3] punctuate "No new messages." consistently
 	between poll, jump_to_next_new
@@ -2700,8 +2700,8 @@ index eaed0cb..a5bd344 100644
 1.6.5
 
 
-From pi+sup at pihost.us  Mon Jan  4 01:06:35 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Mon Jan  4 01:06:35 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sun,  3 Jan 2010 23:06:35 -0700
 Subject: [sup-devel] [PATCH 2/3] undoing read_and_archive should preserve
 	unread state
@@ -2733,8 +2733,8 @@ index ad3a864..852ddb7 100644
 1.6.5
 
 
-From hyperbolist at gmail.com  Mon Jan  4 01:20:34 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Mon Jan  4 01:20:34 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Mon, 04 Jan 2010 01:20:34 -0500
 Subject: [sup-devel] [PATCH] [issue14] poll updates accumulate while idle
 Message-ID: <1262585888-sup-7490@changeling.local>
@@ -2852,8 +2852,8 @@ index 4f30505..fb684df 100644
 -- 
 1.6.5.7
 
-From hyperbolist at gmail.com  Mon Jan  4 06:47:46 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Mon Jan  4 06:47:46 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Mon, 04 Jan 2010 06:47:46 -0500
 Subject: [sup-devel] [PATCH] [issue14] poll updates accumulate while idle
 In-Reply-To: <1262585888-sup-7490@changeling.local>
@@ -2976,8 +2976,8 @@ Oops, please disregard this patch.  If one never goes idle, one can never
 go unidle, and so the PollTally will never clear.  I will resubmit a 
 revised patch which clears the PollTally on polling unless idle.
 
-From hyperbolist at gmail.com  Mon Jan  4 07:14:33 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Mon Jan  4 07:14:33 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Mon, 04 Jan 2010 07:14:33 -0500
 Subject: [sup-devel] [PATCHv2] [issue14] poll updates accumulate while idle
 Message-ID: <1262607214-sup-4535@changeling.local>
@@ -3098,8 +3098,8 @@ index 4f30505..48228ca 100644
 -- 
 1.6.5.7
 
-From hyperbolist at gmail.com  Mon Jan  4 10:23:55 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Mon Jan  4 10:23:55 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Mon, 04 Jan 2010 10:23:55 -0500
 Subject: [sup-devel] [PATCH] [issue7] configurable poll interval
 Message-ID: <1262618580-sup-7433@changeling.local>
@@ -3143,8 +3143,8 @@ index 4f30505..f3e1224 100644
 1.6.5.7
 
 
-From sup-bugs at masanjin.net  Mon Jan  4 13:11:23 2010
-From: sup-bugs at masanjin.net (Ben Walton)
+From sup-bugs@masanjin.net  Mon Jan  4 13:11:23 2010
+From: sup-bugs@masanjin.net (Ben Walton)
 Date: Mon, 04 Jan 2010 18:11:23 +0000
 Subject: [sup-devel] [issue43] fails to start after running current next
 In-Reply-To: <1262628683.67.0.115853254107.issue43@masanjin.net>
@@ -3175,8 +3175,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue43>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Mon Jan  4 14:19:40 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan  4 14:19:40 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon,  4 Jan 2010 11:19:40 -0800
 Subject: [sup-devel] [PATCH] add console commands to get/set loglevel
 Message-ID: <1262632780-3661-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3225,8 +3225,8 @@ index e9bf47c..8ea8f38 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Mon Jan  4 14:34:31 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan  4 14:34:31 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon,  4 Jan 2010 11:34:31 -0800
 Subject: [sup-devel] [PATCH] implement String#each on Ruby 1.9 for lockfile
 Message-ID: <1262633671-5690-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3256,8 +3256,8 @@ index 206c18a..2d3a2ad 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Mon Jan  4 14:35:17 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan  4 14:35:17 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon,  4 Jan 2010 11:35:17 -0800
 Subject: [sup-devel] [PATCH] implement const_missing for Index
 Message-ID: <1262633717-5803-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3285,8 +3285,8 @@ index f02c96b..8a4b8f2 100644
 1.6.3.3
 
 
-From wmorgan-sup at masanjin.net  Mon Jan  4 14:43:58 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan  4 14:43:58 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 04 Jan 2010 11:43:58 -0800
 Subject: [sup-devel] [PATCH] implement const_missing for Index
 In-Reply-To: <1262633717-5803-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3300,8 +3300,8 @@ Not to ferret-deprecation?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Mon Jan  4 14:45:42 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan  4 14:45:42 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon,  4 Jan 2010 11:45:42 -0800
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby 1.9
 Message-ID: <1262634342-7029-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3375,8 +3375,8 @@ index c27e527..e8f3289 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Mon Jan  4 14:48:13 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan  4 14:48:13 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 04 Jan 2010 14:48:13 -0500
 Subject: [sup-devel] [PATCH] implement const_missing for Index
 In-Reply-To: <1262634229-sup-3258@masanjin.net>
@@ -3392,8 +3392,8 @@ Excerpts from William Morgan's message of 2010-01-04 14:43:58 -0500:
 
 Oh, right, sorry. Airports are messing with my brain.
 
-From pi+sup at pihost.us  Tue Jan  5 12:20:24 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Tue Jan  5 12:20:24 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Tue,  5 Jan 2010 10:20:24 -0700
 Subject: [sup-devel] [PATCH] fix up options for sup-sync-back, tweak-labels
 Message-ID: <1262712024-25264-1-git-send-email-pi+sup@pihost.us>
@@ -3435,8 +3435,8 @@ index f603502..bf36a32 100755
 1.6.5
 
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:01:30 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:01:30 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:01:30 -0800
 Subject: [sup-devel] [PATCH] xapian: translate from/to query term
 	prefixes to search over both name and email fields
@@ -3448,8 +3448,8 @@ Branch xapain-name-email, merged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:02:56 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:02:56 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:02:56 -0800
 Subject: [sup-devel] [PATCH 3/3] add keybinding 'Oc' to reload colors
 In-Reply-To: <1262532260-18353-3-git-send-email-rlane@club.cc.cmu.edu>
@@ -3462,8 +3462,8 @@ Branch colors, merged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:04:24 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:04:24 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:04:24 -0800
 Subject: [sup-devel] [PATCH] add a mouse-enabled colorpicker to contrib
 In-Reply-To: <1262532808-19401-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3474,8 +3474,8 @@ I've also thrown this on the colors branch. Looks fun!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From ezyang at MIT.EDU  Tue Jan  5 16:06:10 2010
-From: ezyang at MIT.EDU (Edward Z. Yang)
+From ezyang@MIT.EDU  Tue Jan  5 16:06:10 2010
+From: ezyang@MIT.EDU (Edward Z. Yang)
 Date: Tue, 05 Jan 2010 16:06:10 -0500
 Subject: [sup-devel] [PATCH] xapian: translate from/to query term
 	prefixes to search over both name and email fields
@@ -3488,8 +3488,8 @@ At last! Good patch.
 Cheers,
 Edward
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:25:18 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:25:18 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:25:18 -0800
 Subject: [sup-devel] [PATCH 1/3] punctuate "No new messages."
 	consistently between poll, jump_to_next_new
@@ -3501,8 +3501,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:25:29 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:25:29 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:25:29 -0800
 Subject: [sup-devel] [PATCH 2/3] undoing read_and_archive should
 	preserve unread state
@@ -3515,8 +3515,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:26:42 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:26:42 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:26:42 -0800
 Subject: [sup-devel] [PATCH 3/3] make the undo hooks also save the
 	threads
@@ -3532,8 +3532,8 @@ merge, so I suspect you generated this against an unpublished commit?)
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:30:58 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:30:58 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:30:58 -0800
 Subject: [sup-devel] [PATCH] [issue7] configurable poll interval
 In-Reply-To: <1262618580-sup-7433@changeling.local>
@@ -3544,8 +3544,8 @@ Applied to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:33:44 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:33:44 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:33:44 -0800
 Subject: [sup-devel] [PATCH] add console commands to get/set loglevel
 In-Reply-To: <1262632780-3661-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3556,8 +3556,8 @@ Applied to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:34:10 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:34:10 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:34:10 -0800
 Subject: [sup-devel] [PATCH] implement String#each on Ruby 1.9 for
 	lockfile
@@ -3569,8 +3569,8 @@ So lame. Applied to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:50:18 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:50:18 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:50:18 -0800
 Subject: [sup-devel] [PATCH] implement const_missing for Index
 In-Reply-To: <1262633717-5803-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3584,8 +3584,8 @@ Applied to ferret-deprecation and remerged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 16:58:35 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 16:58:35 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 13:58:35 -0800
 Subject: [sup-devel] [PATCH] fix up options for sup-sync-back,
 	tweak-labels
@@ -3604,8 +3604,8 @@ Branch ferret-deprecation, remerged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 17:05:21 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 17:05:21 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 14:05:21 -0800
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby
 	1.9
@@ -3619,8 +3619,8 @@ Hope it still works for 1.9. :) Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From pi+sup at pihost.us  Tue Jan  5 17:45:38 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Tue Jan  5 17:45:38 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Tue,  5 Jan 2010 15:45:38 -0700
 Subject: [sup-devel] [PATCH-insta-save] make the undo hooks also save the
 	threads
@@ -3635,8 +3635,8 @@ a local insta-save and cherry-picked next. There shouldn't be any dependences
 on unpublished commits, though, git says my next is only head by this one
 patch.
 
-From pi+sup at pihost.us  Tue Jan  5 17:45:39 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Tue Jan  5 17:45:39 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Tue,  5 Jan 2010 15:45:39 -0700
 Subject: [sup-devel] [PATCH] make the undo hooks also save the threads
 In-Reply-To: <1262731539-29227-1-git-send-email-pi+sup@pihost.us>
@@ -3814,8 +3814,8 @@ index 99abb04..ddac113 100644
 1.6.5
 
 
-From wmorgan-sup at masanjin.net  Tue Jan  5 18:47:08 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan  5 18:47:08 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 05 Jan 2010 15:47:08 -0800
 Subject: [sup-devel] [PATCH-insta-save] make the undo hooks also save
 	the threads
@@ -3840,8 +3840,8 @@ Thanks for all your recent patches, btw. Top notch stuff.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Wed Jan  6 11:35:55 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Wed Jan  6 11:35:55 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Wed, 06 Jan 2010 08:35:55 -0800
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby
 	1.9
@@ -3860,8 +3860,8 @@ The internet claims that using "rb" and "wb" works for both 1.8.5 and
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Wed Jan  6 22:34:18 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Wed Jan  6 22:34:18 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Wed,  6 Jan 2010 19:34:18 -0800
 Subject: [sup-devel] [PATCH] call index.load in sup-add
 Message-ID: <1262835258-6130-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -3887,8 +3887,8 @@ index c53378d..a7a3752 100755
 1.6.5.2
 
 
-From sup-bugs at masanjin.net  Thu Jan  7 06:19:50 2010
-From: sup-bugs at masanjin.net (Gregor Hoffleit)
+From sup-bugs@masanjin.net  Thu Jan  7 06:19:50 2010
+From: sup-bugs@masanjin.net (Gregor Hoffleit)
 Date: Thu, 07 Jan 2010 11:19:50 +0000
 Subject: [sup-devel] [issue44] Inbox mode: Cursor should stick to current
 	message when new	messages are polled in
@@ -3922,8 +3922,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue44>
 _________________________________________
 
-From hyperbolist at gmail.com  Tue Jan 12 09:51:02 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 12 09:51:02 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 12 Jan 2010 09:51:02 -0500
 Subject: [sup-devel] [PATCHv2] [issue14] poll updates accumulate while
 	idle
@@ -4058,8 +4058,8 @@ while idle.
 An alternative implementation with the above changes follows in reply, but 
 it's probably still too ugly for inclusion.
 
-From hyperbolist at gmail.com  Tue Jan 12 09:56:21 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 12 09:56:21 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 12 Jan 2010 09:56:21 -0500
 Subject: [sup-devel] [PATCHv3] [issue14] poll updates accumulate while idle
 In-Reply-To: <1263307713-sup-7005@changeling.local>
@@ -4172,8 +4172,8 @@ index f3e1224..ad51647 100644
 -- 
 1.6.6
 
-From hyperbolist at gmail.com  Tue Jan 12 15:12:04 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 12 15:12:04 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 12 Jan 2010 15:12:04 -0500
 Subject: [sup-devel] [PATCH] [issue44] cursor sticks to thread
 Message-ID: <1263327054-sup-3431@changeling.local>
@@ -4215,8 +4215,8 @@ index a5bd344..9e70ec8 100644
 1.6.6
 
 
-From hyperbolist at gmail.com  Tue Jan 12 15:36:13 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 12 15:36:13 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 12 Jan 2010 15:36:13 -0500
 Subject: [sup-devel] [PATCHv2] [issue44] cursor sticks to thread
 Message-ID: <1263328554-sup-8440@changeling.local>
@@ -4252,8 +4252,8 @@ index a5bd344..40f622b 100644
 -- 
 1.6.6
 
-From hyperbolist at gmail.com  Wed Jan 13 08:56:44 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Wed Jan 13 08:56:44 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Wed, 13 Jan 2010 08:56:44 -0500
 Subject: [sup-devel] [PATCH] idle and unidle updates
 Message-ID: <1263390213-sup-2608@changeling.local>
@@ -4328,8 +4328,8 @@ index b83bbe7..e228772 100644
 -- 
 1.6.6
 
-From rlane at club.cc.cmu.edu  Wed Jan 13 13:13:40 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Wed Jan 13 13:13:40 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Wed, 13 Jan 2010 10:13:40 -0800
 Subject: [sup-devel] [PATCH] fix ask_for_contacts on Ruby 1.9
 Message-ID: <1263406420-27036-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -4359,8 +4359,8 @@ index c826ab9..990dd4a 100644
 1.6.3.3
 
 
-From wmorgan-sup at masanjin.net  Thu Jan 14 08:55:00 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Thu Jan 14 08:55:00 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Thu, 14 Jan 2010 08:55:00 -0500
 Subject: [sup-devel] [PATCH] call index.load in sup-add
 In-Reply-To: <1262835258-6130-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -4374,8 +4374,8 @@ Applied to master, thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Thu Jan 14 09:15:57 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Thu Jan 14 09:15:57 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Thu, 14 Jan 2010 09:15:57 -0500
 Subject: [sup-devel] [PATCHv3] [issue14] poll updates accumulate while
 	idle
@@ -4396,8 +4396,8 @@ constant in buffer.rb, since I'm trying to avoid config-bloat.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Thu Jan 14 09:22:45 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Thu Jan 14 09:22:45 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Thu, 14 Jan 2010 09:22:45 -0500
 Subject: [sup-devel] [PATCH] idle and unidle updates
 In-Reply-To: <1263390213-sup-2608@changeling.local>
@@ -4426,8 +4426,8 @@ do the accumulation?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From hyperbolist at gmail.com  Thu Jan 14 09:21:45 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 14 09:21:45 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 14 Jan 2010 09:21:45 -0500
 Subject: [sup-devel] [PATCHv3] [issue14] poll updates accumulate while
 	idle
@@ -4451,8 +4451,8 @@ Excerpts from William Morgan's message of Thu Jan 14 09:15:57 -0500 2010:
 Ok.  I've since separated the idleness out into its own patch submitted 
 yesterday.  Is 60 seconds a sensible threshold?
 
-From hyperbolist at gmail.com  Thu Jan 14 09:31:22 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 14 09:31:22 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 14 Jan 2010 09:31:22 -0500
 Subject: [sup-devel] [PATCH] idle and unidle updates
 In-Reply-To: <1263478703-sup-3527@masanjin.net>
@@ -4467,8 +4467,8 @@ Excerpts from William Morgan's message of Thu Jan 14 09:22:45 -0500 2010:
 Yes.  I wanted to wait till this was accepted though since I wasn't sure 
 about submitting a patch that depends on another patch.
 
-From eg at gaute.vetsj.com  Thu Jan 14 09:39:34 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Thu Jan 14 09:39:34 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Thu, 14 Jan 2010 15:39:34 +0100
 Subject: [sup-devel] feature request: mute thread
 Message-ID: <1263479817-sup-6114@dolk>
@@ -4490,8 +4490,8 @@ Size: 198 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100114/6f26d04f/attachment.bin>
 
-From bwalton at artsci.utoronto.ca  Thu Jan 14 09:55:43 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Thu Jan 14 09:55:43 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Thu, 14 Jan 2010 09:55:43 -0500
 Subject: [sup-devel] feature request: mute thread
 In-Reply-To: <1263479817-sup-6114@dolk>
@@ -4524,8 +4524,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100114/ef444262/attachment.bin>
 
-From hyperbolist at gmail.com  Thu Jan 14 10:45:54 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 14 10:45:54 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 14 Jan 2010 10:45:54 -0500
 Subject: [sup-devel] [PATCHv2] idle and unidle updates
 Message-ID: <1263483819-sup-9886@changeling.local>
@@ -4576,8 +4576,8 @@ index 19b2a87..0d90d00 100755
 1.6.6
 
 
-From hyperbolist at gmail.com  Thu Jan 14 10:51:48 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 14 10:51:48 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 14 Jan 2010 10:51:48 -0500
 Subject: [sup-devel] [PATCHv4] [issue14] poll updates accumulate while idle
 Message-ID: <1263484192-sup-1782@changeling.local>
@@ -4635,8 +4635,8 @@ index f3e1224..e9fba46 100644
 -- 
 1.6.6
 
-From eg at gaute.vetsj.com  Thu Jan 14 12:40:49 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Thu Jan 14 12:40:49 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Thu, 14 Jan 2010 18:40:49 +0100
 Subject: [sup-devel] feature request: mute thread
 In-Reply-To: <1263480927-sup-7353@ntdws12.chass.utoronto.ca>
@@ -4655,8 +4655,8 @@ Excerpts from Ben Walton's message of 2010-01-14 15:55:43 +0100:
  
  ah great! didn't know that..
 
-From rlane at club.cc.cmu.edu  Fri Jan 15 00:14:29 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan 15 00:14:29 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 14 Jan 2010 21:14:29 -0800
 Subject: [sup-devel] [PATCH] xapian: add boolean terms with zero wdf
 Message-ID: <1263532469-30760-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -4690,8 +4690,8 @@ index c81dca4..99d7c0e 100644
 1.6.3.3
 
 
-From eg at gaute.vetsj.com  Fri Jan 15 05:23:03 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Fri Jan 15 05:23:03 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Fri, 15 Jan 2010 11:23:03 +0100
 Subject: [sup-devel] [issue36] label tab completion with utf-8 chars fail
 In-Reply-To: <1262534029-sup-1213@dolk>
@@ -4708,8 +4708,8 @@ reply to one containing it - but sup fails when trying to send.
 
 - gaute
 
-From hyperbolist at gmail.com  Fri Jan 15 07:59:41 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Fri Jan 15 07:59:41 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Fri, 15 Jan 2010 07:59:41 -0500
 Subject: [sup-devel] [PATCHv5] [issue14] poll updates accumulate while idle
 Message-ID: <1263560293-sup-9529@changeling.local>
@@ -4770,8 +4770,8 @@ index f3e1224..6b43b00 100644
 1.6.6
 
 
-From rlane at club.cc.cmu.edu  Sat Jan 16 15:03:04 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 16 15:03:04 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 16 Jan 2010 12:03:04 -0800
 Subject: [sup-devel] [PATCH 1/4] dont index redundant data
 Message-ID: <1263672187-5174-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -4855,8 +4855,8 @@ index c81dca4..c0b2f9f 100644
 1.6.5.2
 
 
-From rlane at club.cc.cmu.edu  Sat Jan 16 15:03:05 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 16 15:03:05 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 16 Jan 2010 12:03:05 -0800
 Subject: [sup-devel] [PATCH 2/4] index email addresses as text
 In-Reply-To: <1263672187-5174-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -4895,8 +4895,8 @@ index c0b2f9f..6fa6c55 100644
 1.6.5.2
 
 
-From rlane at club.cc.cmu.edu  Sat Jan 16 15:03:06 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 16 15:03:06 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 16 Jan 2010 12:03:06 -0800
 Subject: [sup-devel] [PATCH 3/4] id query prefix synonym for msgid
 In-Reply-To: <1263672187-5174-2-git-send-email-rlane@club.cc.cmu.edu>
@@ -4926,8 +4926,8 @@ index 6fa6c55..eefd492 100644
 1.6.5.2
 
 
-From rlane at club.cc.cmu.edu  Sat Jan 16 15:03:07 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 16 15:03:07 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 16 Jan 2010 12:03:07 -0800
 Subject: [sup-devel] [PATCH 4/4] trivial index format upgrade
 In-Reply-To: <1263672187-5174-3-git-send-email-rlane@club.cc.cmu.edu>
@@ -4972,8 +4972,8 @@ index eefd492..464cee1 100644
 1.6.5.2
 
 
-From tero at tilus.net  Sat Jan 16 17:41:09 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Sat Jan 16 17:41:09 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Sun, 17 Jan 2010 00:41:09 +0200
 Subject: [sup-devel] [PATCH] Message#edit_labels [was: [sup-talk] Ruby
 	question: before-add-message.rb and adding multiple labels at once]
@@ -5046,8 +5046,8 @@ index 3e55de5..e047927 100644
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From wmorgan-sup at masanjin.net  Sun Jan 17 10:35:01 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan 17 10:35:01 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 17 Jan 2010 10:35:01 -0500
 Subject: [sup-devel] merged into master: ferret-deprecation
 Message-ID: <1263742220-sup-2852@masanjin.net>
@@ -5067,8 +5067,8 @@ door, probably with the patch that makes '$' flush Xapian. Thoughts?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From bwalton at artsci.utoronto.ca  Sun Jan 17 11:11:36 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Sun Jan 17 11:11:36 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Sun, 17 Jan 2010 11:11:36 -0500
 Subject: [sup-devel] merged into master: ferret-deprecation
 In-Reply-To: <1263742220-sup-2852@masanjin.net>
@@ -5104,8 +5104,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100117/a8cbc256/attachment.bin>
 
-From rlane at club.cc.cmu.edu  Sun Jan 17 13:50:44 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 17 13:50:44 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 17 Jan 2010 10:50:44 -0800
 Subject: [sup-devel] RFC: Nuke remote sources
 Message-ID: <1263754247-20979-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -5129,8 +5129,8 @@ If people agree that this change is a good idea, I assume William will
 add a deprecation notice to master for 0.10 and merge this patchset to
 next.
 
-From rlane at club.cc.cmu.edu  Sun Jan 17 13:50:45 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 17 13:50:45 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 17 Jan 2010 10:50:45 -0800
 Subject: [sup-devel] [PATCH 1/3] remove mbox+ssh source
 In-Reply-To: <1263754247-20979-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -5598,8 +5598,8 @@ index e422a48..0000000
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan 17 13:50:46 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 17 13:50:46 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 17 Jan 2010 10:50:46 -0800
 Subject: [sup-devel] [PATCH 2/3] remove imap source
 In-Reply-To: <1263754247-20979-2-git-send-email-rlane@club.cc.cmu.edu>
@@ -6216,8 +6216,8 @@ index c81dca4..e0c6ecf 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan 17 13:50:47 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 17 13:50:47 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 17 Jan 2010 10:50:47 -0800
 Subject: [sup-devel] [PATCH 3/3] simplify sup-add
 In-Reply-To: <1263754247-20979-3-git-send-email-rlane@club.cc.cmu.edu>
@@ -6289,8 +6289,8 @@ index 059a4e2..e354ea8 100755
 1.6.3.3
 
 
-From wmorgan-sup at masanjin.net  Sun Jan 17 15:39:58 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan 17 15:39:58 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 17 Jan 2010 15:39:58 -0500
 Subject: [sup-devel] RFC: Nuke remote sources
 In-Reply-To: <1263754247-20979-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -6315,8 +6315,8 @@ Yeah, another thing to add to 0.10... sigh.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From sup-bugs at masanjin.net  Sun Jan 17 17:02:54 2010
-From: sup-bugs at masanjin.net (Eric Sherman)
+From sup-bugs@masanjin.net  Sun Jan 17 17:02:54 2010
+From: sup-bugs@masanjin.net (Eric Sherman)
 Date: Sun, 17 Jan 2010 22:02:54 +0000
 Subject: [sup-devel] [issue45] BufferManager.ask truncates responses to
 	(terminal width -	question length)
@@ -6357,8 +6357,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue45>
 _________________________________________
 
-From wmorgan-sup at masanjin.net  Sun Jan 17 18:12:50 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan 17 18:12:50 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 17 Jan 2010 18:12:50 -0500
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby
 	1.9
@@ -6381,8 +6381,8 @@ experience any weird encoding errors.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From eg at gaute.vetsj.com  Mon Jan 18 03:38:03 2010
-From: eg at gaute.vetsj.com (Gaute Hope)
+From eg@gaute.vetsj.com  Mon Jan 18 03:38:03 2010
+From: eg@gaute.vetsj.com (Gaute Hope)
 Date: Mon, 18 Jan 2010 09:38:03 +0100
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby
 	1.9
@@ -6410,8 +6410,8 @@ recipients.
 
 - gaute
 
-From wmorgan-sup at masanjin.net  Mon Jan 18 08:05:45 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 18 08:05:45 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 18 Jan 2010 08:05:45 -0500
 Subject: [sup-devel] [PATCH] only open mail files in binary mode on Ruby
 	1.9
@@ -6435,8 +6435,8 @@ at the end of every Regexp in the source. :(
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Mon Jan 18 08:07:40 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 18 08:07:40 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 18 Jan 2010 08:07:40 -0500
 Subject: [sup-devel] merged into master: ferret-deprecation
 In-Reply-To: <1263744321-sup-5501@ntdws12.chass.utoronto.ca>
@@ -6451,8 +6451,8 @@ It's in.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From tero at tilus.net  Mon Jan 18 08:39:39 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Mon Jan 18 08:39:39 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Mon, 18 Jan 2010 15:39:39 +0200
 Subject: [sup-devel] merged into master: ferret-deprecation
 In-Reply-To: <1263742220-sup-2852@masanjin.net>
@@ -6469,8 +6469,8 @@ If you do it, please include '$'-patch.
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From wmorgan-sup at masanjin.net  Mon Jan 18 12:06:28 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 18 12:06:28 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 18 Jan 2010 12:06:28 -0500
 Subject: [sup-devel] RFC: Nuke remote sources
 In-Reply-To: <1263760710-sup-5382@masanjin.net>
@@ -6489,8 +6489,8 @@ I'm also going to try and spend less time between releases...
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From hyperbolist at gmail.com  Mon Jan 18 18:44:37 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Mon Jan 18 18:44:37 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Mon, 18 Jan 2010 18:44:37 -0500
 Subject: [sup-devel] [PATCH] Saved Search Support
 Message-ID: <1263858172-sup-547@changeling.local>
@@ -6954,8 +6954,8 @@ index 0db5010..1bbde5d 100644
 1.6.6
 
 
-From rlane at club.cc.cmu.edu  Tue Jan 19 13:00:32 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Tue Jan 19 13:00:32 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Tue, 19 Jan 2010 13:00:32 -0500
 Subject: [sup-devel] [PATCH] Saved Search Support
 In-Reply-To: <1263858172-sup-547@changeling.local>
@@ -6995,8 +6995,8 @@ I'd replace the duplicated name checking regexes with a method.
 SearchManager#rename:
 I think the strip should be done by the caller.
 
-From sup-bugs at masanjin.net  Tue Jan 19 13:35:36 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Tue Jan 19 13:35:36 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Tue, 19 Jan 2010 18:35:36 +0000
 Subject: [sup-devel] [issue46] "stack level too deep" within xapian code
 In-Reply-To: <1263926136.68.0.119961985085.issue46@masanjin.net>
@@ -7058,8 +7058,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue46>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Tue Jan 19 16:48:25 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Tue Jan 19 16:48:25 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Tue, 19 Jan 2010 16:48:25 -0500
 Subject: [sup-devel] [PATCH] asciify untrusted strings before displaying in
 	TextMode
@@ -7123,8 +7123,8 @@ index b08c819..0e935a4 100644
 1.5.6.5
 
 
-From hyperbolist at gmail.com  Tue Jan 19 22:46:35 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 19 22:46:35 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 19 Jan 2010 22:46:35 -0500
 Subject: [sup-devel] [PATCH] Saved Search Support
 In-Reply-To: <1263920054-sup-9400@zyrg.net>
@@ -7173,8 +7173,8 @@ Replaced.
 
 Done.
 
-From hyperbolist at gmail.com  Tue Jan 19 22:48:50 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Tue Jan 19 22:48:50 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Tue, 19 Jan 2010 22:48:50 -0500
 Subject: [sup-devel] [PATCHv2] Saved Search Support
 In-Reply-To: <1263920054-sup-9400@zyrg.net>
@@ -7622,8 +7622,8 @@ index 0000000..799ca89
 -- 
 1.6.6
 
-From rlane at club.cc.cmu.edu  Wed Jan 20 01:14:46 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Wed Jan 20 01:14:46 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Wed, 20 Jan 2010 01:14:46 -0500
 Subject: [sup-devel] [PATCHv2] Saved Search Support
 In-Reply-To: <1263959248-sup-4163@changeling.local>
@@ -7640,8 +7640,8 @@ What do you think about doing the expansion in Index.parse_query, right
 after the custom-search hook? That would save you from keeping track of
 the unexpanded text. Otherwise this patch looks good to me.
 
-From aluink at gmail.com  Tue Jan 19 15:04:02 2010
-From: aluink at gmail.com (Eric Polino)
+From aluink@gmail.com  Tue Jan 19 15:04:02 2010
+From: aluink@gmail.com (Eric Polino)
 Date: Tue, 19 Jan 2010 15:04:02 -0500
 Subject: [sup-devel] Problems Syncing
 Message-ID: <1263931111-sup-1739@europa>
@@ -7744,8 +7744,8 @@ $ cat ~/.sup/config.yaml
 
 
 
-From hyperbolist at gmail.com  Wed Jan 20 09:25:57 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Wed Jan 20 09:25:57 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Wed, 20 Jan 2010 09:25:57 -0500
 Subject: [sup-devel] [PATCHv2] Saved Search Support
 In-Reply-To: <1263960767-sup-4706@zyrg.net>
@@ -7771,8 +7771,8 @@ Instead of returning false and flashing like in the previous patch,
 SearchManager#expand raises an ExpansionError, which parse_query re-raises 
 as a ParseError.
 
-From hyperbolist at gmail.com  Wed Jan 20 09:28:39 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Wed Jan 20 09:28:39 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Wed, 20 Jan 2010 09:28:39 -0500
 Subject: [sup-devel] [PATCHv3] Saved Search Support
 In-Reply-To: <1263960767-sup-4706@zyrg.net>
@@ -8224,8 +8224,8 @@ index 8f29faf..37f9b4a 100644
 -- 
 1.6.6
 
-From wmorgan-sup at masanjin.net  Wed Jan 20 11:28:23 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Wed Jan 20 11:28:23 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Wed, 20 Jan 2010 11:28:23 -0500
 Subject: [sup-devel] [PATCHv2] [issue44] cursor sticks to thread
 In-Reply-To: <1263328554-sup-8440@changeling.local>
@@ -8240,8 +8240,8 @@ Applied directly to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Wed Jan 20 11:30:37 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Wed Jan 20 11:30:37 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Wed, 20 Jan 2010 11:30:37 -0500
 Subject: [sup-devel] merged into master: ruby-1.9-encoding, insta-save,
 	xapian-name-email
@@ -8251,8 +8251,8 @@ All merged in, to go out in 0.10.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From michael+sup at stapelberg.de  Wed Jan 20 17:30:11 2010
-From: michael+sup at stapelberg.de (Michael Stapelberg)
+From michael+sup@stapelberg.de  Wed Jan 20 17:30:11 2010
+From: michael+sup@stapelberg.de (Michael Stapelberg)
 Date: Wed, 20 Jan 2010 23:30:11 +0100
 Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
 	before-edit for each reply type
@@ -8287,8 +8287,8 @@ Size: 1777 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100120/27f07579/attachment.obj>
 
-From hyperbolist at gmail.com  Wed Jan 20 23:15:16 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Wed Jan 20 23:15:16 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Wed, 20 Jan 2010 23:15:16 -0500
 Subject: [sup-devel] [PATCH] flush index on idle
 Message-ID: <1264047274-sup-6830@changeling.local>
@@ -8317,8 +8317,8 @@ index 1b8eaed..9e37909 100644
 1.6.6
 
 
-From hyperbolist at gmail.com  Thu Jan 21 10:36:28 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 21 10:36:28 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 21 Jan 2010 10:36:28 -0500
 Subject: [sup-devel] [PATCH] show (recipients) instead of lone "me"
 Message-ID: <1264087996-sup-5125@changeling.local>
@@ -8366,8 +8366,8 @@ index a6bb2b9..0774aa8 100644
 1.6.6
 
 
-From tero at tilus.net  Thu Jan 21 16:34:57 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Jan 21 16:34:57 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Thu, 21 Jan 2010 23:34:57 +0200
 Subject: [sup-devel] [PATCH] show (recipients) instead of lone "me"
 In-Reply-To: <1264087996-sup-5125@changeling.local>
@@ -8386,8 +8386,8 @@ Patched my daily-sup right away.  I'd like to see this in mainline.
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From tero at tilus.net  Thu Jan 21 18:51:05 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Jan 21 18:51:05 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 22 Jan 2010 01:51:05 +0200
 Subject: [sup-devel] [PATCH] Message#edit_labels [was: Ruby question:
 	before-add-message.rb and adding multiple labels at once]
@@ -8407,8 +8407,8 @@ Did this get merged?  I got no feedback.
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From bwalton at artsci.utoronto.ca  Thu Jan 21 18:56:18 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Thu Jan 21 18:56:18 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Thu, 21 Jan 2010 18:56:18 -0500
 Subject: [sup-devel] [PATCH] show (recipients) instead of lone "me"
 In-Reply-To: <1264109598-sup-3164@tilus.net>
@@ -8441,8 +8441,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100121/6903f056/attachment.bin>
 
-From tero at tilus.net  Thu Jan 21 20:32:00 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Jan 21 20:32:00 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 22 Jan 2010 03:32:00 +0200
 Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
 	index-mode-date-widget
@@ -8480,8 +8480,8 @@ Size: 1269 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100122/92580ae4/attachment-0003.obj>
 
-From rlane at club.cc.cmu.edu  Thu Jan 21 23:25:16 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Thu Jan 21 23:25:16 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 21 Jan 2010 20:25:16 -0800
 Subject: [sup-devel] [PATCH] copy thread when spawning ThreadViewMode
 Message-ID: <1264134316-17210-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8534,8 +8534,8 @@ index a6bb2b9..ca5e1f3 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Fri Jan 22 02:46:40 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan 22 02:46:40 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 21 Jan 2010 23:46:40 -0800
 Subject: [sup-devel] [PATCH] fix textfield truncation
 Message-ID: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8568,8 +8568,8 @@ index 9afeb34..1c19751 100644
 1.6.3.3
 
 
-From hyperbolist at gmail.com  Fri Jan 22 07:02:55 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Fri Jan 22 07:02:55 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Fri, 22 Jan 2010 07:02:55 -0500
 Subject: [sup-devel] [PATCH] fix textfield truncation
 In-Reply-To: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8604,8 +8604,8 @@ Excerpts from Rich Lane's message of Fri Jan 22 02:46:40 -0500 2010:
 >      @value = default || ''
 >      Ncurses::Form.post_form @form
 
-From hyperbolist at gmail.com  Fri Jan 22 15:13:01 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Fri Jan 22 15:13:01 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Fri, 22 Jan 2010 15:13:01 -0500
 Subject: [sup-devel] [PATCHv2] idle and unidle updates
 In-Reply-To: <1263483819-sup-9886@changeling.local>
@@ -8668,8 +8668,8 @@ Excerpts from Eric Sherman's message of Thu Jan 14 10:45:54 -0500 2010:
 >        ## this is ncurses's way of telling us it's detected a refresh.
 >        ## since we have our own sigwinch handler, we don't do anything.
 
-From rlane at club.cc.cmu.edu  Fri Jan 22 18:47:14 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Fri Jan 22 18:47:14 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Fri, 22 Jan 2010 18:47:14 -0500
 Subject: [sup-devel] [PATCH] configurable color highlights
 Message-ID: <1264204034-7088-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8739,8 +8739,8 @@ index 6f21f9a..aeb3818 100644
 1.5.6.5
 
 
-From hyperbolist at gmail.com  Sat Jan 23 00:42:56 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Sat Jan 23 00:42:56 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Sat, 23 Jan 2010 00:42:56 -0500
 Subject: [sup-devel] [PATCHv3] idle and unidle updates
 Message-ID: <1264225074-sup-7366@changeling.local>
@@ -8859,8 +8859,8 @@ index 0000000..a3a272f
 -- 
 1.6.6
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 07:41:53 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 07:41:53 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 07:41:53 -0500
 Subject: [sup-devel] [PATCH] fix ask_for_contacts on Ruby 1.9
 In-Reply-To: <1263406420-27036-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8871,8 +8871,8 @@ Applied to master and will go out in 0.10. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 07:43:18 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 07:43:18 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 07:43:18 -0500
 Subject: [sup-devel] [PATCH] xapian: add boolean terms with zero wdf
 In-Reply-To: <1263532469-30760-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8883,8 +8883,8 @@ Applied to master and will go out in 0.10. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 07:44:39 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 07:44:39 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 07:44:39 -0500
 Subject: [sup-devel] [PATCH] utf-8 script encoding
 In-Reply-To: <1262535218-sup-9718@dolk>
@@ -8903,8 +8903,8 @@ adding "u" to the end of every regexp?
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 07:49:45 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 07:49:45 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 07:49:45 -0500
 Subject: [sup-devel] [PATCH 1/4] dont index redundant data
 In-Reply-To: <1263672187-5174-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -8916,8 +8916,8 @@ Branch xapian-updates, merged into next.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 07:55:58 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 07:55:58 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 07:55:58 -0500
 Subject: [sup-devel] [PATCH] asciify untrusted strings before displaying
 	in TextMode
@@ -8929,8 +8929,8 @@ Applied to master and will go out in 0.10. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 08:01:33 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 08:01:33 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 08:01:33 -0500
 Subject: [sup-devel] [PATCHv3] Saved Search Support
 In-Reply-To: <1263997604-sup-9969@changeling.local>
@@ -8946,8 +8946,8 @@ merged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Sat Jan 23 08:11:33 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sat Jan 23 08:11:33 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sat, 23 Jan 2010 08:11:33 -0500
 Subject: [sup-devel] [PATCH] Message#edit_labels [was: Ruby question:
 	before-add-message.rb and adding multiple labels at once]
@@ -8966,8 +8966,8 @@ label, to make sure they appear in label-list-mode.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Sat Jan 23 22:16:00 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 23 22:16:00 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 23 Jan 2010 19:16:00 -0800
 Subject: [sup-devel] [PATCH] enable ruby-prof with SUP_PROFILE environment
 	variable
@@ -9011,8 +9011,8 @@ index 7824aca..f7c4af7 100755
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sat Jan 23 22:17:17 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sat Jan 23 22:17:17 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sat, 23 Jan 2010 19:17:17 -0800
 Subject: [sup-devel] [PATCH] dont check thread-index-mode dirtiness on every
 	keypress
@@ -9043,8 +9043,8 @@ index a6bb2b9..71c8f44 100644
 1.6.3.3
 
 
-From pi+sup at pihost.us  Sat Jan 23 22:22:37 2010
-From: pi+sup at pihost.us (Anthony Martinez)
+From pi+sup@pihost.us  Sat Jan 23 22:22:37 2010
+From: pi+sup@pihost.us (Anthony Martinez)
 Date: Sat, 23 Jan 2010 20:22:37 -0700
 Subject: [sup-devel] [PATCH] enable ruby-prof with SUP_PROFILE
 	environment variable
@@ -9063,8 +9063,8 @@ Excellent. I could use this to track down why it's taking forever to load a
 If Java had true garbage collection, most programs would delete themselves upon execution.
 -- Robert Sewell
 
-From wmorgan-sup at masanjin.net  Sun Jan 24 09:44:50 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Sun Jan 24 09:44:50 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Sun, 24 Jan 2010 09:44:50 -0500
 Subject: [sup-devel] [ANN] Sup 0.10 released
 Message-ID: <1264344055-sup-3295@masanjin.net>
@@ -9108,8 +9108,8 @@ Excitement in 0.10:
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From sup-bugs at masanjin.net  Sun Jan 24 12:07:08 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Sun Jan 24 12:07:08 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Sun, 24 Jan 2010 17:07:08 +0000
 Subject: [sup-devel] [issue47] utf-8 regression: search&inbox views has
 	garbled utf-8
@@ -9147,8 +9147,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue47>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Sun Jan 24 14:37:00 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 24 14:37:00 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 24 Jan 2010 11:37:00 -0800
 Subject: [sup-devel] [PATCH] dont restrict colors to those in
 	Colormap::DEFAULT_COLORS
@@ -9245,8 +9245,8 @@ index aeb3818..7de48db 100644
 1.6.3.3
 
 
-From sup-bugs at masanjin.net  Sun Jan 24 17:30:40 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Sun Jan 24 17:30:40 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Sun, 24 Jan 2010 22:30:40 +0000
 Subject: [sup-devel] [issue48] Exception: calling id on nil during startup
 In-Reply-To: <1264372240.82.0.635804068553.issue48@masanjin.net>
@@ -9294,8 +9294,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue48>
 _________________________________________
 
-From tero at tilus.net  Sun Jan 24 21:05:30 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Sun Jan 24 21:05:30 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Mon, 25 Jan 2010 04:05:30 +0200
 Subject: [sup-devel] [PATCH] Message#edit_labels [was: Ruby question:
 	before-add-message.rb and adding multiple labels at once]
@@ -9332,8 +9332,8 @@ Size: 7279 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100125/b3a12b54/attachment-0001.obj>
 
-From rlane at club.cc.cmu.edu  Sun Jan 24 22:09:31 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 24 22:09:31 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 24 Jan 2010 19:09:31 -0800
 Subject: [sup-devel] [PATCH 1/3] make mode keymap easily accessible to hooks
 Message-ID: <1264388973-5804-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -9361,8 +9361,8 @@ index c8ad0cc..b9e0698 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan 24 22:09:32 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 24 22:09:32 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 24 Jan 2010 19:09:32 -0800
 Subject: [sup-devel] [PATCH 2/3] add keymap rebinding support
 In-Reply-To: <1264388973-5804-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -9419,8 +9419,8 @@ index cb039e4..4cdeeed 100644
 1.6.3.3
 
 
-From rlane at club.cc.cmu.edu  Sun Jan 24 22:09:33 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 24 22:09:33 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 24 Jan 2010 19:09:33 -0800
 Subject: [sup-devel] [PATCH 3/3] keybindings hook
 In-Reply-To: <1264388973-5804-2-git-send-email-rlane@club.cc.cmu.edu>
@@ -9534,8 +9534,8 @@ index b9e0698..f5aee1c 100644
 1.6.3.3
 
 
-From sup-bugs at masanjin.net  Mon Jan 25 08:41:29 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Mon Jan 25 08:41:29 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Mon, 25 Jan 2010 13:41:29 +0000
 Subject: [sup-devel] [issue49] crash when pressing 'c' to compose
 In-Reply-To: <1264426888.82.0.129719799236.issue49@masanjin.net>
@@ -9575,8 +9575,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue49>
 _________________________________________
 
-From isra at herraiz.org  Mon Jan 25 08:53:12 2010
-From: isra at herraiz.org (Israel Herraiz)
+From isra@herraiz.org  Mon Jan 25 08:53:12 2010
+From: isra@herraiz.org (Israel Herraiz)
 Date: Mon, 25 Jan 2010 14:53:12 +0100
 Subject: [sup-devel] Exception when composing messages
 Message-ID: <1264427161-sup-6711@duck>
@@ -9630,8 +9630,8 @@ without success. But in any case I think this is a bug :-).
 Cheers,
 Israel
 
-From isra at herraiz.org  Mon Jan 25 08:57:07 2010
-From: isra at herraiz.org (Israel Herraiz)
+From isra@herraiz.org  Mon Jan 25 08:57:07 2010
+From: isra@herraiz.org (Israel Herraiz)
 Date: Mon, 25 Jan 2010 14:57:07 +0100
 Subject: [sup-devel] Exception when composing messages
 In-Reply-To: <1264427161-sup-6711@duck>
@@ -9646,8 +9646,8 @@ minutes before my message:
 Cheers,
 Israel
 
-From bwalton at artsci.utoronto.ca  Mon Jan 25 09:22:49 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Mon Jan 25 09:22:49 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Mon, 25 Jan 2010 09:22:49 -0500
 Subject: [sup-devel] [issue49] crash when pressing 'c' to compose
 In-Reply-To: <1264426888.82.0.129719799236.issue49@masanjin.net>
@@ -9702,8 +9702,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100125/bfb63c96/attachment.bin>
 
-From bwalton at artsci.utoronto.ca  Mon Jan 25 09:29:05 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Mon Jan 25 09:29:05 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Mon, 25 Jan 2010 09:29:05 -0500
 Subject: [sup-devel] [issue49] crash when pressing 'c' to compose
 In-Reply-To: <1264429332-sup-9299@ntdws12.chass.utoronto.ca>
@@ -9736,8 +9736,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100125/18d2bd52/attachment.bin>
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 11:03:35 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 11:03:35 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 08:03:35 -0800
 Subject: [sup-devel] [PATCH] fix participants queries
 In-Reply-To: <1264429332-sup-9299@ntdws12.chass.utoronto.ca>
@@ -9765,8 +9765,8 @@ index 5efd47b..443b88d 100644
 1.6.3.3
 
 
-From sup-bugs at masanjin.net  Mon Jan 25 11:18:41 2010
-From: sup-bugs at masanjin.net (Scott Henson)
+From sup-bugs@masanjin.net  Mon Jan 25 11:18:41 2010
+From: sup-bugs@masanjin.net (Scott Henson)
 Date: Mon, 25 Jan 2010 16:18:41 +0000
 Subject: [sup-devel] [issue50] 0.10 error in ask_yes_or_no
 In-Reply-To: <1264436321.23.0.59454690461.issue50@masanjin.net>
@@ -9822,8 +9822,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue50>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 11:21:41 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 11:21:41 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 11:21:41 -0500
 Subject: [sup-devel] [PATCH] copy thread when spawning ThreadViewMode
 In-Reply-To: <1264134316-17210-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -9833,8 +9833,8 @@ Message-ID: <1264436284-sup-7250@zyrg.net>
 This breaks ThreadIndexMode#launch_another_thread. I'll send a
 new patch.
 
-From bwalton at artsci.utoronto.ca  Mon Jan 25 11:35:54 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Mon Jan 25 11:35:54 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Mon, 25 Jan 2010 11:35:54 -0500
 Subject: [sup-devel] [PATCH] fix participants queries
 In-Reply-To: <1264435415-11782-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -9867,8 +9867,8 @@ Size: 189 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100125/b0656f86/attachment.bin>
 
-From bwalton at artsci.utoronto.ca  Mon Jan 25 11:56:40 2010
-From: bwalton at artsci.utoronto.ca (Ben Walton)
+From bwalton@artsci.utoronto.ca  Mon Jan 25 11:56:40 2010
+From: bwalton@artsci.utoronto.ca (Ben Walton)
 Date: Mon, 25 Jan 2010 11:56:40 -0500
 Subject: [sup-devel] [PATCH] Conditionally define Fixnum#ord
 In-Reply-To: <1264436321.23.0.59454690461.issue50@masanjin.net>
@@ -9905,8 +9905,8 @@ index 5dadba1..861db7f 100644
 1.6.6
 
 
-From wmorgan-sup at masanjin.net  Mon Jan 25 16:19:13 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 25 16:19:13 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 25 Jan 2010 16:19:13 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 Message-ID: <1264454003-sup-9657@masanjin.net>
@@ -9955,8 +9955,8 @@ Andrea
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Mon Jan 25 16:20:00 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 25 16:20:00 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 25 Jan 2010 16:20:00 -0500
 Subject: [sup-devel] [PATCH] fix participants queries
 In-Reply-To: <1264435415-11782-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -9971,8 +9971,8 @@ Applied to branch xapian-updates and remerged into next. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Mon Jan 25 16:28:25 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Mon Jan 25 16:28:25 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Mon, 25 Jan 2010 16:28:25 -0500
 Subject: [sup-devel] Exception when composing messages
 In-Reply-To: <1264427161-sup-6711@duck>
@@ -9988,8 +9988,8 @@ This should be fixed!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 16:52:23 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 16:52:23 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 16:52:23 -0500
 Subject: [sup-devel] [PATCH] fix missing parentheses warning
 In-Reply-To: <8b854d6b1001250307o42e85f44id88d3eea7f18beb4@mail.gmail.com>
@@ -10021,8 +10021,8 @@ index 3e55de5..a85cc0d 100644
 1.5.6.5
 
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 17:05:49 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 17:05:49 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 17:05:49 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <1264454003-sup-9657@masanjin.net>
@@ -10042,8 +10042,8 @@ This has been reported before but I haven't figured out what's going on.
 I pushed the source of the xapian-full gem to git://github.com/rlane/xapian-full
 in case anyone else wants to take a crack at this.
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 18:37:24 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 18:37:24 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 18:37:24 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <1264456949-sup-3@zyrg.net>
@@ -10066,8 +10066,8 @@ Excerpts from Rich Lane's message of 2010-01-25 17:05:49 -0500:
 
 I think I fixed it. Please try xapian-full 1.1.3.1 from gemcutter.
 
-From marka at pobox.com  Mon Jan 25 19:21:14 2010
-From: marka at pobox.com (Mark Alexander)
+From marka@pobox.com  Mon Jan 25 19:21:14 2010
+From: marka@pobox.com (Mark Alexander)
 Date: Mon, 25 Jan 2010 19:21:14 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <1264462577-sup-3137@zyrg.net>
@@ -10081,8 +10081,8 @@ On Mon, Jan 25, 2010 at 6:37 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
 Can you describe what you did to fix it?  I spent several hours
 trying to fix this a while back and gave up.
 
-From rlane at club.cc.cmu.edu  Mon Jan 25 19:35:44 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Mon Jan 25 19:35:44 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Mon, 25 Jan 2010 19:35:44 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <a412e2a71001251621o631cffb2gc4f65ef94c3290e8@mail.gmail.com>
@@ -10103,8 +10103,8 @@ just doing the compile itself. Gem also accepts Rakefiles for building
 extensions, so I moved the code into a minimal Rakefile. I also added
 the gemspec to the manifest.
 
-From wmorgan-sup at masanjin.net  Tue Jan 26 08:22:09 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan 26 08:22:09 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 26 Jan 2010 08:22:09 -0500
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <1264462577-sup-3137@zyrg.net>
@@ -10121,8 +10121,8 @@ I'm going to release an 0.10.2 that has deps on that and ncursesw.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan 26 08:20:58 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan 26 08:20:58 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 26 Jan 2010 08:20:58 -0500
 Subject: [sup-devel] [PATCH] fix missing parentheses warning
 In-Reply-To: <1264456343-32418-1-git-send-email-rlane@club.cc.cmu.edu>
@@ -10138,8 +10138,8 @@ after all.
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From wmorgan-sup at masanjin.net  Tue Jan 26 09:05:40 2010
-From: wmorgan-sup at masanjin.net (William Morgan)
+From wmorgan-sup@masanjin.net  Tue Jan 26 09:05:40 2010
+From: wmorgan-sup@masanjin.net (William Morgan)
 Date: Tue, 26 Jan 2010 09:05:40 -0500
 Subject: [sup-devel] [PATCH] Conditionally define Fixnum#ord
 In-Reply-To: <1264438600-30566-1-git-send-email-bwalton@artsci.utoronto.ca>
@@ -10156,8 +10156,8 @@ Applied to master. Thanks!
 -- 
 William <wmorgan-sup at masanjin.net>
 
-From nicolas.pouillard at gmail.com  Tue Jan 26 10:50:30 2010
-From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+From nicolas.pouillard@gmail.com  Tue Jan 26 10:50:30 2010
+From: nicolas.pouillard@gmail.com (Nicolas Pouillard)
 Date: Tue, 26 Jan 2010 07:50:30 -0800 (PST)
 Subject: [sup-devel] Fwd: Re: Sup 0.10 released
 In-Reply-To: <1264512093-sup-8869@masanjin.net>
@@ -10179,8 +10179,8 @@ Yes worked great for me too.
 Nicolas Pouillard
 http://nicolaspouillard.fr
 
-From sup-bugs at masanjin.net  Wed Jan 27 03:03:58 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Wed Jan 27 03:03:58 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Wed, 27 Jan 2010 08:03:58 +0000
 Subject: [sup-devel] [issue51] Crash on sup start
 In-Reply-To: <1264579438.47.0.202537444992.issue51@masanjin.net>
@@ -10228,8 +10228,8 @@ wrong id called on nil
 (eval):12:in `load_threads'
 bin/sup:231
 
-From sup-bugs at masanjin.net  Wed Jan 27 07:46:54 2010
-From: sup-bugs at masanjin.net (Shreyank Gupta)
+From sup-bugs@masanjin.net  Wed Jan 27 07:46:54 2010
+From: sup-bugs@masanjin.net (Shreyank Gupta)
 Date: Wed, 27 Jan 2010 12:46:54 +0000
 Subject: [sup-devel] [issue52] Crash on sup start
 In-Reply-To: <1264596414.87.0.250405531257.issue52@masanjin.net>
@@ -10265,8 +10265,8 @@ This Sup version expects a v1 index, but you have an existing v2 index. Please d
 /usr/bin/sup:19:in `load'
 /usr/bin/sup:19
 
-From sup-bugs at masanjin.net  Wed Jan 27 16:11:48 2010
-From: sup-bugs at masanjin.net (Anirudh Sanjeev)
+From sup-bugs@masanjin.net  Wed Jan 27 16:11:48 2010
+From: sup-bugs@masanjin.net (Anirudh Sanjeev)
 Date: Wed, 27 Jan 2010 21:11:48 +0000
 Subject: [sup-devel] [issue53] Error if the composed text has tabs in the
 	first character
@@ -10301,8 +10301,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue53>
 _________________________________________
 
-From marka at pobox.com  Wed Jan 27 16:57:33 2010
-From: marka at pobox.com (Mark Alexander)
+From marka@pobox.com  Wed Jan 27 16:57:33 2010
+From: marka@pobox.com (Mark Alexander)
 Date: Wed, 27 Jan 2010 16:57:33 -0500
 Subject: [sup-devel] [issue53] Error if the composed text has tabs in
 	the first character
@@ -10316,8 +10316,8 @@ I think it happens with tabs anywhere in the
 message, or perhaps at the beginning of lines,
 but I haven't played with it enough to know for sure.
 
-From tero at tilus.net  Wed Jan 27 17:15:19 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Wed Jan 27 17:15:19 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Thu, 28 Jan 2010 00:15:19 +0200
 Subject: [sup-devel] [issue53] Error if the composed text has tabs in
 	the first character
@@ -10344,8 +10344,8 @@ Size: 620 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100128/9a82a235/attachment.obj>
 
-From rlane at club.cc.cmu.edu  Wed Jan 27 17:29:09 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Wed Jan 27 17:29:09 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Wed, 27 Jan 2010 17:29:09 -0500
 Subject: [sup-devel] [issue53] Error if the composed text has tabs in
 	the first character
@@ -10369,8 +10369,8 @@ troublesome part was getting a wchar_t from the bytes in a Ruby string.
 Tabs are funny because their width depends on their position. I say
 replace all tabs with 2 spaces before calling ncurses.
 
-From sup-bugs at masanjin.net  Wed Jan 27 17:47:53 2010
-From: sup-bugs at masanjin.net (Tero Tilus)
+From sup-bugs@masanjin.net  Wed Jan 27 17:47:53 2010
+From: sup-bugs@masanjin.net (Tero Tilus)
 Date: Wed, 27 Jan 2010 22:47:53 +0000
 Subject: [sup-devel] [issue54] Log-mode and poll-mode buffers should not be
 	killable
@@ -10400,8 +10400,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue54>
 _________________________________________
 
-From hyperbolist at gmail.com  Wed Jan 27 21:48:43 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Wed Jan 27 21:48:43 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Wed, 27 Jan 2010 21:48:43 -0500
 Subject: [sup-devel] [PATCH] [issue54] log-mode and poll-mode buffers are
 	not killable
@@ -10443,8 +10443,8 @@ index cf61343..deb22d6 100644
 -- 
 1.6.6
 
-From sup-bugs at masanjin.net  Thu Jan 28 03:02:43 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Thu Jan 28 03:02:43 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Thu, 28 Jan 2010 08:02:43 +0000
 Subject: [sup-devel] [issue55] undefined method `>=' for true:TrueClass
 In-Reply-To: <1264665763.28.0.0069731812863.issue55@masanjin.net>
@@ -10499,8 +10499,8 @@ undefined method `>=' for true:TrueClass
 /usr/local/lib/ruby-1.9/gems/1.9.1/gems/sup-0.10.2/bin/sup:226:in `block (2 levels) in <module:Redwood>'
 /usr/local/lib/ruby-1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup.rb:77:in `block in reporting_thread'
 
-From sup-bugs at masanjin.net  Thu Jan 28 07:21:48 2010
-From: sup-bugs at masanjin.net (ideesnoires)
+From sup-bugs@masanjin.net  Thu Jan 28 07:21:48 2010
+From: sup-bugs@masanjin.net (ideesnoires)
 Date: Thu, 28 Jan 2010 12:21:48 +0000
 Subject: [sup-devel] [issue56] Sup crashes while saving changes
 In-Reply-To: <1264681308.87.0.11225407467.issue56@masanjin.net>
@@ -10578,8 +10578,8 @@ undefined method `save_state' for #<Redwood::Thread:0x7f684ef5f998>
 ./lib/sup/buffer.rb:272:in `handle_input'
 bin/sup:276
 
-From hyperbolist at gmail.com  Thu Jan 28 08:46:25 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 28 08:46:25 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 28 Jan 2010 08:46:25 -0500
 Subject: [sup-devel] [PATCH] [issue54] log-mode and poll-mode buffers
 	are not killable
@@ -10590,8 +10590,8 @@ Message-ID: <1264686346-sup-9488@changeling.local>
 
 That doesn't quite work, as sup won't quit.  Another patch on its way.
 
-From hyperbolist at gmail.com  Thu Jan 28 09:07:28 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 28 09:07:28 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 28 Jan 2010 09:07:28 -0500
 Subject: [sup-devel] [PATCHv2] [issue54] log-mode and poll-mode buffers are
 	not killable
@@ -10651,8 +10651,8 @@ index cf61343..deb22d6 100644
 -- 
 1.6.6
 
-From sup-bugs at masanjin.net  Thu Jan 28 15:06:04 2010
-From: sup-bugs at masanjin.net (Anirudh Sanjeev)
+From sup-bugs@masanjin.net  Thu Jan 28 15:06:04 2010
+From: sup-bugs@masanjin.net (Anirudh Sanjeev)
 Date: Thu, 28 Jan 2010 20:06:04 +0000
 Subject: [sup-devel] [issue57] Request: Flush changes periodically
 In-Reply-To: <1264709164.82.0.12859120302.issue57@masanjin.net>
@@ -10688,8 +10688,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue57>
 _________________________________________
 
-From hyperbolist at gmail.com  Thu Jan 28 15:21:54 2010
-From: hyperbolist at gmail.com (Eric Sherman)
+From hyperbolist@gmail.com  Thu Jan 28 15:21:54 2010
+From: hyperbolist@gmail.com (Eric Sherman)
 Date: Thu, 28 Jan 2010 15:21:54 -0500
 Subject: [sup-devel] [issue57] Request: Flush changes periodically
 In-Reply-To: <1264709164.82.0.12859120302.issue57@masanjin.net>
@@ -10717,8 +10717,8 @@ I use these and they meet my needs.
 [2]: http://rubyforge.org/pipermail/sup-devel/2010-January/000274.html
 [3]: http://rubyforge.org/pipermail/sup-devel/2010-January/000241.html
 
-From sup-bugs at masanjin.net  Fri Jan 29 05:14:40 2010
-From: sup-bugs at masanjin.net (Gregor Hoffleit)
+From sup-bugs@masanjin.net  Fri Jan 29 05:14:40 2010
+From: sup-bugs@masanjin.net (Gregor Hoffleit)
 Date: Fri, 29 Jan 2010 10:14:40 +0000
 Subject: [sup-devel] [issue58] Set background for starred column
 In-Reply-To: <1264760080.41.0.139357784083.issue58@masanjin.net>
@@ -10756,8 +10756,8 @@ Size: 483 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100129/8e697dac/attachment.obj>
 
-From sup-bugs at masanjin.net  Sun Jan 31 16:38:24 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Sun Jan 31 16:38:24 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Sun, 31 Jan 2010 21:38:24 +0000
 Subject: [sup-devel] [issue59] gem install sup on osx 10.6 fails due to
 	.bundle instead of	.so being built in xapian-full
@@ -10829,8 +10829,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue59>
 _________________________________________
 
-From rlane at club.cc.cmu.edu  Sun Jan 31 17:53:45 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Sun Jan 31 17:53:45 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Sun, 31 Jan 2010 17:53:45 -0500
 Subject: [sup-devel] [issue59] gem install sup on osx 10.6 fails due to
 	.bundle instead of .so being built in xapian-full

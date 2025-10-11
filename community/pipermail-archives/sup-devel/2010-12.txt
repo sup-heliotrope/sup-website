@@ -1,5 +1,5 @@
-From gaudenz at soziologie.ch  Wed Dec  1 03:37:58 2010
-From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+From gaudenz@soziologie.ch  Wed Dec  1 03:37:58 2010
+From: gaudenz@soziologie.ch (Gaudenz Steinlin)
 Date: Wed, 01 Dec 2010 09:37:58 +0100
 Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
 In-Reply-To: <1291097850-sup-6043@tilus.net>
@@ -43,8 +43,8 @@ Ever tried. Ever failed. No matter.
 Try again. Fail again. Fail better.
 ~ Samuel Beckett ~
 
-From sup-bugs at masanjin.net  Wed Dec  1 09:42:34 2010
-From: sup-bugs at masanjin.net (plutek)
+From sup-bugs@masanjin.net  Wed Dec  1 09:42:34 2010
+From: sup-bugs@masanjin.net (plutek)
 Date: Wed, 01 Dec 2010 14:42:34 +0000
 Subject: [sup-devel] [issue135] crash on attempting to start sup
 In-Reply-To: <1291214554.07.0.588958545349.issue135@masanjin.net>
@@ -108,8 +108,8 @@ wrong id called on nil
 /usr/bin/sup:19:in `load'
 /usr/bin/sup:19
 
-From dmishd at gmail.com  Mon Dec  6 18:31:43 2010
-From: dmishd at gmail.com (Hamish D)
+From dmishd@gmail.com  Mon Dec  6 18:31:43 2010
+From: dmishd@gmail.com (Hamish D)
 Date: Mon, 6 Dec 2010 23:31:43 +0000
 Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
 In-Reply-To: <1291023322-sup-8457@meteor.durcheinandertal.local>
@@ -171,8 +171,8 @@ Size: 4170 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101206/35adb245/attachment-0001.bin>
 
-From sup-bugs at masanjin.net  Wed Dec  8 13:59:56 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Wed Dec  8 13:59:56 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Wed, 08 Dec 2010 18:59:56 +0000
 Subject: [sup-devel] [issue136] Crash when searching for during:december
 In-Reply-To: <1291834796.86.0.985380843914.issue136@masanjin.net>
@@ -217,8 +217,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue136>
 _________________________________________
 
-From sup-bugs at masanjin.net  Thu Dec  9 23:27:33 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Thu Dec  9 23:27:33 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Fri, 10 Dec 2010 04:27:33 +0000
 Subject: [sup-devel] [issue137] "wrong id called on nil" when searching
 In-Reply-To: <1291955252.92.0.499188876837.issue137@masanjin.net>
@@ -245,8 +245,8 @@ Sup issue tracker <sup-bugs at masanjin.net>
 <http://masanjin.net/sup-bugs/issue137>
 _________________________________________
 
-From sup-bugs at masanjin.net  Tue Dec 14 03:05:01 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Tue Dec 14 03:05:01 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Tue, 14 Dec 2010 08:05:01 +0000
 Subject: [sup-devel] [issue138] Sup crash at startup
 In-Reply-To: <1292313900.88.0.725708300725.issue138@masanjin.net>
@@ -329,8 +329,8 @@ _________________________________________
 /usr/bin/sup-sync:141:in `each'
 /usr/bin/sup-sync:141
 
-From sup-bugs at masanjin.net  Thu Dec 16 03:39:34 2010
-From: sup-bugs at masanjin.net (anonymous)
+From sup-bugs@masanjin.net  Thu Dec 16 03:39:34 2010
+From: sup-bugs@masanjin.net (anonymous)
 Date: Thu, 16 Dec 2010 08:39:34 +0000
 Subject: [sup-devel] [issue139] bug while deleting a message
 In-Reply-To: <1292488774.0.0.532674457502.issue139@masanjin.net>
@@ -380,8 +380,8 @@ No space left on device - /tmp/redwood.payload20101216-29861-1v6uapo-0
 /usr/lib/ruby/gems/1.9.1/gems/sup-999/lib/sup/modes/thread-index-mode.rb:112:in `block in select'
 /usr/lib/ruby/gems/1.9.1/gems/sup-999/lib/sup.rb:78:in `block in reporting_thread'
 
-From tero at tilus.net  Tue Dec 21 16:45:14 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Tue Dec 21 16:45:14 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Tue, 21 Dec 2010 23:45:14 +0200
 Subject: [sup-devel] Message#text_to_chunks performance
 In-Reply-To: <1288264300-sup-7747@tilus.net>
@@ -400,8 +400,8 @@ Size: 1266 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101221/da87abd5/attachment.obj>
 
-From rlane at club.cc.cmu.edu  Thu Dec 23 13:38:24 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Thu Dec 23 13:38:24 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 23 Dec 2010 13:38:24 -0500
 Subject: [sup-devel] Message#text_to_chunks performance
 In-Reply-To: <1292967783-sup-4582@tilus.net>
@@ -411,8 +411,8 @@ Message-ID: <1293129445-sup-8097@zyrg.net>
 Branch blank-lines-perf, merged to next. I'll merge it to master after
 0.12 is released.
 
-From rlane at club.cc.cmu.edu  Thu Dec 23 13:43:45 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Thu Dec 23 13:43:45 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 23 Dec 2010 13:43:45 -0500
 Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
 In-Reply-To: <AANLkTi=AJZGLAra20fQvEvU0EasQ_1yWpsr6+4TV3iEn@mail.gmail.com>
@@ -432,8 +432,8 @@ Message-ID: <1293129774-sup-3146@zyrg.net>
 
 All 5 patches applied to branch gpgme and merged to next.
 
-From sup-bugs at masanjin.net  Sat Dec 25 11:50:56 2010
-From: sup-bugs at masanjin.net (Matthias Vallentin)
+From sup-bugs@masanjin.net  Sat Dec 25 11:50:56 2010
+From: sup-bugs@masanjin.net (Matthias Vallentin)
 Date: Sat, 25 Dec 2010 16:50:56 +0000
 Subject: [sup-devel] [issue140] Execute startup hook before adding draft and
 	sent sources
@@ -518,8 +518,8 @@ diff --git a/bin/sup-tweak-labels b/bin/sup-tweak-labels
 old mode 100755
 new mode 100644
 
-From tero at tilus.net  Thu Dec 30 18:35:56 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Dec 30 18:35:56 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 31 Dec 2010 01:35:56 +0200
 Subject: [sup-devel] Scrolling (with patches)
 Message-ID: <1293750761-sup-3852@tilus.net>
@@ -589,8 +589,8 @@ Size: 2673 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101231/bc945134/attachment-0001.obj>
 
-From rlane at club.cc.cmu.edu  Thu Dec 30 19:10:06 2010
-From: rlane at club.cc.cmu.edu (Rich Lane)
+From rlane@club.cc.cmu.edu  Thu Dec 30 19:10:06 2010
+From: rlane@club.cc.cmu.edu (Rich Lane)
 Date: Thu, 30 Dec 2010 19:10:06 -0500
 Subject: [sup-devel] Scrolling (with patches)
 In-Reply-To: <1293750761-sup-3852@tilus.net>
@@ -601,8 +601,8 @@ Yeah, I've noticed how slow method_missing is and that's also a problem
 with our use of Singleton in the codebase. Here we might as well hoist
 the conditional out of the method definition.
 
-From tero at tilus.net  Thu Dec 30 19:34:09 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Dec 30 19:34:09 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 31 Dec 2010 02:34:09 +0200
 Subject: [sup-devel] Scrolling (with patches)
 In-Reply-To: <1293753763-sup-6661@zyrg.net>
@@ -619,8 +619,8 @@ methods as they are called.
 -- 
 Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
 
-From tero at tilus.net  Thu Dec 30 20:44:36 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Dec 30 20:44:36 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 31 Dec 2010 03:44:36 +0200
 Subject: [sup-devel] Scrolling (with patches)
 In-Reply-To: <1293755445-sup-9811@tilus.net>
@@ -644,8 +644,8 @@ Size: 972 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101231/7ce5578e/attachment.obj>
 
-From tero at tilus.net  Thu Dec 30 22:18:29 2010
-From: tero at tilus.net (Tero Tilus)
+From tero@tilus.net  Thu Dec 30 22:18:29 2010
+From: tero@tilus.net (Tero Tilus)
 Date: Fri, 31 Dec 2010 05:18:29 +0200
 Subject: [sup-devel] Scrolling (with patches)
 In-Reply-To: <1293759788-sup-1949@tilus.net>
@@ -669,8 +669,8 @@ Size: 984 bytes
 Desc: not available
 URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101231/da0a3712/attachment.obj>
 
-From sup-bugs at masanjin.net  Fri Dec 31 05:03:36 2010
-From: sup-bugs at masanjin.net (Jonas H)
+From sup-bugs@masanjin.net  Fri Dec 31 05:03:36 2010
+From: sup-bugs@masanjin.net (Jonas H)
 Date: Fri, 31 Dec 2010 10:03:36 +0000
 Subject: [sup-devel] [issue141] Can't see my own messages from Thunderbird
 	mbox sources
