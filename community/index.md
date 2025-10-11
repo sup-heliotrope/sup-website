@@ -6,10 +6,6 @@ The main development is happening on our GitHub page. Users are encouragd to con
 
 The color schemes are also all user contributed, new ones can be submitted to the GitHub repository.
 
-## IRC
-
-  - \#sup at irc.freenode.net
-
 ## Mailing lists 
 
 You can follow discussions and development on sup as well as ask for help on our mailinglist [supmua@googlegroups.com](mailto:supmua@googlegroups.com). To subscribe send an email to [supmua+subscribe@googlegroups.com](mailto:supmua+subscribe@googlegroups.com). You can also subscribe through [https://groups.google.com/d/forum/supmua](https://groups.google.com/d/forum/supmua).
