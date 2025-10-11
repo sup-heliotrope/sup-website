@@ -1,0 +1,426 @@
+From manish at gslab.com  Wed Sep  3 08:03:03 2008
+From: manish at gslab.com (Manish Sapariya)
+Date: Wed, 03 Sep 2008 17:33:03 +0530
+Subject: [sup-talk] CCing to self mail id when composing mail
+Message-ID: <48BE7CF7.1090103@gslab.com>
+
+Hi All,
+
+Two queries:
+
+First:
+======
+I have configured the ask for CC and I want to CC to
+myself. I am using sendmail for sending mail. However
+I am not receiving mail copy to myself. I tried bcc, and
+specifying my mail id in to field as well.
+
+Is it sup or sendmail which is removing the self id?
+any ideas?
+
+Second:
+=======
+Can I configure sup to always include self mail id in CC
+when composing new mail or replying to any other mail.
+
+
+Thanks for any help.
+Regards,
+Manish
+
+From wmorgan-sup at masanjin.net  Wed Sep  3 23:29:38 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 03 Sep 2008 20:29:38 -0700
+Subject: [sup-talk] CCing to self mail id when composing mail
+In-Reply-To: <48BE7CF7.1090103@gslab.com>
+References: <48BE7CF7.1090103@gslab.com>
+Message-ID: <1220498835-sup-9828@entry>
+
+Reformatted excerpts from Manish Sapariya's message of 2008-09-03:
+> I have configured the ask for CC and I want to CC to myself. I am
+> using sendmail for sending mail. However I am not receiving mail copy
+> to myself. I tried bcc, and specifying my mail id in to field as well.
+> 
+> Is it sup or sendmail which is removing the self id?  any ideas?
+
+It's probably your sendmail setup. Sup is just passing that stuff
+through unchanged. You can try enabling logging on sendmail's end
+somehow...
+
+> Can I configure sup to always include self mail id in CC when
+> composing new mail or replying to any other mail.
+
+I believe the before-edit hook can be used for this. Place something
+like the following in ~/.sup/hooks/before-edit.rb:
+
+  header["Cc"] = my at email.address
+
+(untested!)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel.wagner at gmail.com  Thu Sep  4 01:53:27 2008
+From: daniel.wagner at gmail.com (Daniel Wagner)
+Date: Thu, 04 Sep 2008 01:53:27 -0400
+Subject: [sup-talk] CCing to self mail id when composing mail
+In-Reply-To: <48BE7CF7.1090103@gslab.com>
+References: <48BE7CF7.1090103@gslab.com>
+Message-ID: <1220507464-sup-1482@buckwheat>
+
+Excerpts from Manish Sapariya's message of Wed Sep 03 08:03:03 -0400 2008:
+> Is it sup or sendmail which is removing the self id?
+> any ideas?
+
+I don't know if this is related, but I have noticed that sup is a little
+bit too smart for itself.  I sometimes also CC myself.  Though these
+messages appear in my procmail.log, sup seems to recognize that they are
+a duplicate of a message already in the index, and silently hides them.
+
+So: check your procmail (or whatever) log to really see whether you are
+getting a copy.
+~d
+
+From gzjjgod at gmail.com  Thu Sep  4 20:20:12 2008
+From: gzjjgod at gmail.com (Jjgod Jiang)
+Date: Fri, 5 Sep 2008 08:20:12 +0800
+Subject: [sup-talk] Error trying to sup-sync a maildir
+Message-ID: <ddd65cda0809041720x44047f6fmad865841fe0cbefb@mail.gmail.com>
+
+Hi,
+When I was trying to sync my maildir (which was synced from gmail with
+isync)
+using sup-sync, after it loaded 1328 messages, it crashed with the
+following
+backtrace:
+
+/Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:376:in
+`message_to_chunks': undefined method `multipart?' for
+#<Redwood::Chunk::CryptoNotice:0x26b2fe0> (NoMethodError)
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:371:in
+`multipart_encrypted_to_chunks'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:382:in
+`message_to_chunks'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:214:in
+`load_from_source!'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:194:in `chunks'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/message.rb:144:in `snippet'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/index.rb:182:in
+`sync_message'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in
+`method_missing'
+ ... 11 levels...
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/bin/sup-sync:131:in `each'
+from /Library/Ruby/Gems/1.8/gems/sup-0.6/bin/sup-sync:131
+from /usr/bin/sup-sync:19:in `load'
+from /usr/bin/sup-sync:19
+Rats, that failed. You may have to do it manually.
+
+Is there anything I can do to solve this issue?
+
+- Jiang
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080905/808fb64c/attachment.html>
+
+From wmorgan-sup at masanjin.net  Mon Sep  8 14:47:43 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 08 Sep 2008 11:47:43 -0700
+Subject: [sup-talk] CCing to self mail id when composing mail
+In-Reply-To: <1220507464-sup-1482@buckwheat>
+References: <48BE7CF7.1090103@gslab.com> <1220507464-sup-1482@buckwheat>
+Message-ID: <1220899449-sup-112@entry>
+
+Reformatted excerpts from Daniel Wagner's message of 2008-09-03:
+> I don't know if this is related, but I have noticed that sup is a
+> little bit too smart for itself.  I sometimes also CC myself.  Though
+> these messages appear in my procmail.log, sup seems to recognize that
+> they are a duplicate of a message already in the index, and silently
+> hides them.
+
+Oh yeah. Sup collapses dupes. That would do it.
+
+That's another interesting lesson I've learned about email in the
+process of writing Sup. Two messages with the same message id are more
+likely than not to NOT be exactly the same message. For example, any
+time you get a message both cc'ed and through a mailing list, they'll
+have the same message id, but the mailing list one will probably have
+extra content (ML signatures and taglines) and different headers.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Sep  8 15:29:20 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 08 Sep 2008 21:29:20 +0200
+Subject: [sup-talk] CCing to self mail id when composing mail
+In-Reply-To: <1220899449-sup-112@entry>
+References: <48BE7CF7.1090103@gslab.com> <1220507464-sup-1482@buckwheat>
+	<1220899449-sup-112@entry>
+Message-ID: <1220902090-sup-3097@ausone.local>
+
+Excerpts from William Morgan's message of Mon Sep 08 20:47:43 +0200 2008:
+> Reformatted excerpts from Daniel Wagner's message of 2008-09-03:
+> > I don't know if this is related, but I have noticed that sup is a
+> > little bit too smart for itself.  I sometimes also CC myself.  Though
+> > these messages appear in my procmail.log, sup seems to recognize that
+> > they are a duplicate of a message already in the index, and silently
+> > hides them.
+> 
+> Oh yeah. Sup collapses dupes. That would do it.
+> 
+> That's another interesting lesson I've learned about email in the
+> process of writing Sup. Two messages with the same message id are more
+> likely than not to NOT be exactly the same message. For example, any
+> time you get a message both cc'ed and through a mailing list, they'll
+> have the same message id, but the mailing list one will probably have
+> extra content (ML signatures and taglines) and different headers.
+
+Do you get a conclusion, concerning email-tools design?
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080908/266c08d5/attachment.bin>
+
+From israel.herraiz at gmail.com  Tue Sep  9 06:45:27 2008
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Tue, 09 Sep 2008 12:45:27 +0200
+Subject: [sup-talk] Inbox mode loads all the messages
+Message-ID: <1220956744-sup-911@elly>
+
+Hi all,
+
+my inbox view is loading all the messages. It is quite strange,
+because those messages do not have the "inbox" label. If I archive
+them, save the changes, quit sup, and start sup, it will load all
+the messages again.
+
+If I search "label:inbox", it finds all the messages, even those that
+do not have the "inbox" label.
+
+I am using the Git version of sup, and I have not made any changes
+neither a pull since the last time sup worked correctly. I have
+updated ruby however (1.8.7 2008-06-20 patchlevel 22). But I updated
+it some days ago, and it has been working correctly during some days.
+
+I am probably have too many labels (108). I don't know if I have
+reached some kind of limit :-).
+
+Any hint about what is going on with my sup?
+
+Cheers,
+Israel
+
+From wmorgan-sup at masanjin.net  Wed Sep 10 16:29:44 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 10 Sep 2008 13:29:44 -0700
+Subject: [sup-talk] Inbox mode loads all the messages
+In-Reply-To: <1220956744-sup-911@elly>
+References: <1220956744-sup-911@elly>
+Message-ID: <1221078119-sup-1715@entry>
+
+Reformatted excerpts from israel.herraiz's message of 2008-09-09:
+> my inbox view is loading all the messages. It is quite strange,
+> because those messages do not have the "inbox" label. If I archive
+> them, save the changes, quit sup, and start sup, it will load all
+> the messages again.
+
+Very weird. Do searches for other labels work correctly? What about
+searches for regular words?
+
+> I am probably have too many labels (108). I don't know if I have
+> reached some kind of limit :-).
+
+There's no label limit. Ferret treats them as regular words so it should
+be able to scale to, like, trillions.
+
+You could try creating a small set of emails and starting a fresh Sup on
+it (set the environment variable SUP_BASE to a new directory and Sup
+will use that as its configuration dir instead of ~/.sup),and seeing if
+Sup exhibits the same behavior on that. That would at least narrow it
+down to something having happened to your system (new Ruby, new and
+incompatible Ferret, etc.). 
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From israel.herraiz at gmail.com  Wed Sep 10 17:40:46 2008
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Wed, 10 Sep 2008 23:40:46 +0200
+Subject: [sup-talk] Inbox mode loads all the messages
+In-Reply-To: <1221078119-sup-1715@entry>
+References: <1220956744-sup-911@elly> <1221078119-sup-1715@entry>
+Message-ID: <1221082291-sup-9750@elly>
+
+Excerpts from William's message on Sep 10, 2008 about 10 PM:
+> Very weird. Do searches for other labels work correctly? What about
+> searches for regular words?
+
+Some searches work well, some others not. Those that do not work show
+all the same messages incorrectly shown in the inbox. It seems like
+those messages would be "persistent", and they are shown everywhere.
+
+> There's no label limit. Ferret treats them as regular words so it should
+> be able to scale to, like, trillions.
+
+Ok. Good to know.
+
+> You could try creating a small set of emails and starting a fresh Sup on
+> it (set the environment variable SUP_BASE to a new directory and Sup
+> will use that as its configuration dir instead of ~/.sup),and seeing if
+> Sup exhibits the same behavior on that. That would at least narrow it
+> down to something having happened to your system (new Ruby, new and
+> incompatible Ferret, etc.). 
+
+I killed all those messages. That removed them from the inbox,
+although they persisted in the searches.
+
+I had all the messages in two mboxes file. One of about 500 MB (inbox), and
+another one of 1 GB (mbox). I moved all the messages to one file (~1.5
+GB), and after that I ran sup-sync with --all-sources and -as-is and
+some other options I don't remember. However, the same behavior
+persisted.
+
+So I decided to access the index directly from ruby. I recovered all
+the killed messages, added them the inbox label, saved the index,
+removed the killed and inbox labels, saved again, and now it is
+working.
+
+Probably it is an issue with Ferret. Or maybe it is because my email
+volume. Unfortunately, I did not keep the non-working index. If I find
+the same issue again, I will try to make a copy of the index just in
+case you want to try to reproduce the bug.
+
+Thanks anyway for your comments.
+
+Cheers,
+Israel
+
+From kapil.foss at gmail.com  Thu Sep 11 13:43:20 2008
+From: kapil.foss at gmail.com (Kapil Thangavelu)
+Date: Thu, 11 Sep 2008 13:43:20 -0400
+Subject: [sup-talk] problems downloading 0.6
+Message-ID: <9c97bd2b0809111043k6d9f364tea895c80640b8b3a@mail.gmail.com>
+
+hi folks,
+
+i was trying to give sup, but ran into some installation issues. attempting
+to download sup via gem
+turns in an error where ruby forge has tagged the sup distribution file as a
+virus.
+
+ie. picking a random mirror for example link
+
+http://rubyforge.rubyuser.de/sup/sup-0.6.tgz
+leads to
+"""
+File has been dropped.
+
+ProxyAV Administrator: unknown
+
+2008-09-11 13:40:56-04:00EDT
+Hardware serial number: 1908081029
+ProxyAV (Version 3.1.2.1(34850)) - http://www.BlueCoat.com/
+Antivirus Vendor: Kaspersky Labs
+Scan Engine Version: 5.0.0.38
+Pattern File Version: 080911.160218.1213098 (Timestamp: 2008.09.11 16:02:18)
+
+Machine name: ProxyAV2
+Machine IP address: 140.147.236.197
+Server: 80.237.222.133
+Client: 140.147.174.68
+Protocol: ICAP
+
+Virus: "Exploit.HTML.Iframe.FileDownload" found!
+URL: http://rubyforge.rubyuser.de/sup/sup-0.6.tgz
+"""
+
+any ideas on a work around?
+
+thanks,
+
+kapil
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080911/52f7a989/attachment.html>
+
+From sup at davekap.com  Thu Sep 18 11:21:55 2008
+From: sup at davekap.com (Gladwright)
+Date: Thu, 18 Sep 2008 08:21:55 -0700 (PDT)
+Subject: [sup-talk]  thunderbird import success
+Message-ID: <19555367.post@talk.nabble.com>
+
+
+'Sup?
+
+I had large Thunderbird files to import.  Similar to other reports here,
+importing the files as mboxes didn't work for me.  
+
+I converted the mboxes to maildirs using mb2md, and then imported, and all
+was well.
+
+I'm pretty new to Linux and Ruby with aspirations to be proficient in both. 
+I was thrilled to find Sup.  I had so been longing for a different email
+experience, and so far Sup is giving me what I needed, plus it's written in
+Ruby.  Yahoo!
+
+Cheers,
+Dave
+-- 
+View this message in context: http://www.nabble.com/thunderbird-import-success-tp19555367p19555367.html
+Sent from the SUP Talk mailing list archive at Nabble.com.
+
+
+From wmorgan-sup at masanjin.net  Thu Sep 18 15:41:17 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 18 Sep 2008 12:41:17 -0700
+Subject: [sup-talk] thunderbird import success
+In-Reply-To: <19555367.post@talk.nabble.com>
+References: <19555367.post@talk.nabble.com>
+Message-ID: <1221766839-sup-286@entry>
+
+Reformatted excerpts from Gladwright's message of 2008-09-18:
+> I had large Thunderbird files to import.  Similar to other reports here,
+> importing the files as mboxes didn't work for me.  
+> 
+> I converted the mboxes to maildirs using mb2md, and then imported, and all
+> was well.
+
+Great, very good to know.
+
+> I'm pretty new to Linux and Ruby with aspirations to be proficient in
+> both.  I was thrilled to find Sup.  I had so been longing for a
+> different email experience, and so far Sup is giving me what I needed,
+> plus it's written in Ruby.
+
+Glad you like it!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup at davekap.com  Fri Sep 19 23:21:15 2008
+From: sup at davekap.com (Gladwright)
+Date: Fri, 19 Sep 2008 20:21:15 -0700 (PDT)
+Subject: [sup-talk] thunderbird import success
+In-Reply-To: <1221766839-sup-286@entry>
+References: <19555367.post@talk.nabble.com> <1221766839-sup-286@entry>
+Message-ID: <19582301.post@talk.nabble.com>
+
+
+
+I added a guide for ThunderbirdImport to the wiki.  As I'm just a newb, I
+hope everyone will feel free to improve on its format, language, and
+details.  I included some ruby commands I used in irb to automate some of
+the steps.  I'm relatively a ruby newb too, so I would enjoy seeing
+improvements there as well.
+
+Cheers,
+Dave
+-- 
+View this message in context: http://www.nabble.com/thunderbird-import-success-tp19555367p19582301.html
+Sent from the SUP Talk mailing list archive at Nabble.com.
+
+

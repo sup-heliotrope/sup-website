@@ -1,0 +1,1070 @@
+From ezyang at MIT.EDU  Tue Aug 21 14:35:45 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 21 Aug 2012 10:35:45 -0400
+Subject: [sup-devel] Maildir synchronizing other labels
+Message-ID: <1345559230-sup-5105@javelin>
+
+I think it would be nice if we at least support the :inbox label,
+so that we can keep our inboxes tidy and our OfflineIMAP sync
+times down.
+
+Proposed implementation strategy:
+
+    - Define a label/source mapping, as well as a default source for
+      unrecognized labels and an ordering on labels if there is
+      a conflict.  (Each Maildir folder is its own source.)
+
+    - Implement moving messages between Maildir sources in Sup.
+      Probably the easiest way is to do this:
+
+        1. Copy message form old Maildir to new Maildir
+        2. Add new Maildir copy to index (with all other tags
+           and metadata added on)
+        3. Delete old Maildir copy from index
+
+      OfflineIMAP will then DTRT as long as SEARCH is supported,
+      I think.
+
+    - Hook in this behavior on the right places (label change,
+      after message add)
+
+    - Implement a script to go through old mail and move it.
+
+Edward
+
+From ezyang at MIT.EDU  Tue Aug 21 15:17:32 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 21 Aug 2012 11:17:32 -0400
+Subject: [sup-devel] inotify support for Maildir mailboxes
+Message-ID: <1345562202-sup-2266@javelin>
+
+I'm planning on adding inotify support for Maildir mailboxes.
+This would mean we no longer need to 'poll' to find new messages;
+they show up instantly.  Let me know if you're interested and willing
+to help test.
+
+Cheers,
+Edward
+
+From alvherre at alvh.no-ip.org  Tue Aug 21 16:00:31 2012
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 21 Aug 2012 12:00:31 -0400
+Subject: [sup-devel] inotify support for Maildir mailboxes
+In-Reply-To: <1345562202-sup-2266@javelin>
+References: <1345562202-sup-2266@javelin>
+Message-ID: <1345564795-sup-3898@alvh.no-ip.org>
+
+Excerpts from Edward Z. Yang's message of mar ago 21 11:17:32 -0400 2012:
+> I'm planning on adding inotify support for Maildir mailboxes.
+> This would mean we no longer need to 'poll' to find new messages;
+> they show up instantly.  Let me know if you're interested and willing
+> to help test.
+
+I definitely am interested and willing to test.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From ezyang at MIT.EDU  Tue Aug 21 19:19:56 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 21 Aug 2012 15:19:56 -0400
+Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
+	sync-back changes location.
+Message-ID: <1345576796-31445-1-git-send-email-ezyang@mit.edu>
+
+From: "Edward Z. Yang" <ezyang at mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/maildir.rb | 2 +-
+ lib/sup/message.rb | 6 +++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 0c8c563..050cfaf 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -226,7 +226,7 @@ private
+       new_base = (flags.include?("S")) ? "cur" : "new"
+       md_base, md_ver, md_flags = maildir_data orig_path
+ 
+-      return orig_path if md_flags == flags
++      return if md_flags == flags
+ 
+       new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+       orig_path = File.join @dir, orig_path
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 0616f75..cd9226e 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -288,7 +288,11 @@ EOS
+   def sync_back
+     @locations.each do |l|
+       if l.valid?
+-        l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
++        r = l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
++        if r
++          Index.sync_message self, true
++          UpdateManager.relay self, :updated, self
++        end
+       end
+     end
+   end
+-- 
+1.7.11.3
+
+
+From ezyang at MIT.EDU  Tue Aug 21 19:25:41 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 21 Aug 2012 15:25:41 -0400
+Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
+	sync-back changes location.
+In-Reply-To: <1345576796-31445-1-git-send-email-ezyang@mit.edu>
+References: <1345576796-31445-1-git-send-email-ezyang@mit.edu>
+Message-ID: <1345577064-sup-4877@javelin>
+
+This fixes the "I changed a message from unread to read in one list (e.g. 'U')
+and now when I open the message from inbox it can't find it" bug.
+
+Here is a version that is theoretically more efficient, though God
+help you if you have more than one location per message.
+
+commit ca5b02b8ff88412f92984d6b9176ff1876886cc6
+Author: Edward Z. Yang <ezyang at mit.edu>
+Date:   Tue Aug 21 15:19:11 2012 -0400
+
+    Sync and update other threads when Maildir sync-back changes location.
+    
+    Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 0c8c563..050cfaf 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -226,7 +226,7 @@ private
+       new_base = (flags.include?("S")) ? "cur" : "new"
+       md_base, md_ver, md_flags = maildir_data orig_path
+ 
+-      return orig_path if md_flags == flags
++      return if md_flags == flags
+ 
+       new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+       orig_path = File.join @dir, orig_path
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 0616f75..9af847d 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -286,11 +286,16 @@ EOS
+   end
+ 
+   def sync_back
++    r = nil
+     @locations.each do |l|
+       if l.valid?
+-        l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
++        r ||= l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+       end
+     end
++    if r
++      Index.sync_message self, true
++      UpdateManager.relay self, :updated, self
++    end
+   end
+ 
+   def merge_labels_from_locations merge_labels
+
+Excerpts from Edward Z. Yang's message of Tue Aug 21 15:19:56 -0400 2012:
+> From: "Edward Z. Yang" <ezyang at mit.edu>
+> 
+> Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+> ---
+>  lib/sup/maildir.rb | 2 +-
+>  lib/sup/message.rb | 6 +++++-
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+> index 0c8c563..050cfaf 100644
+> --- a/lib/sup/maildir.rb
+> +++ b/lib/sup/maildir.rb
+> @@ -226,7 +226,7 @@ private
+>        new_base = (flags.include?("S")) ? "cur" : "new"
+>        md_base, md_ver, md_flags = maildir_data orig_path
+>  
+> -      return orig_path if md_flags == flags
+> +      return if md_flags == flags
+>  
+>        new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+>        orig_path = File.join @dir, orig_path
+> diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+> index 0616f75..cd9226e 100644
+> --- a/lib/sup/message.rb
+> +++ b/lib/sup/message.rb
+> @@ -288,7 +288,11 @@ EOS
+>    def sync_back
+>      @locations.each do |l|
+>        if l.valid?
+> -        l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+> +        r = l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+> +        if r
+> +          Index.sync_message self, true
+> +          UpdateManager.relay self, :updated, self
+> +        end
+>        end
+>      end
+>    end
+
+From ezyang at MIT.EDU  Tue Aug 21 19:43:47 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 21 Aug 2012 15:43:47 -0400
+Subject: [sup-devel] [PATCH] Sync and update other threads when Maildir
+	sync-back changes location.
+In-Reply-To: <1345577064-sup-4877@javelin>
+References: <1345576796-31445-1-git-send-email-ezyang@mit.edu>
+	<1345577064-sup-4877@javelin>
+Message-ID: <1345578187-sup-5921@javelin>
+
+Aaand here's an even prettier version.
+
+commit f7d30410d946418a885929f20a498c10e4058243
+Author: Edward Z. Yang <ezyang at mit.edu>
+Date:   Tue Aug 21 15:19:11 2012 -0400
+
+    Sync and update other threads when Maildir sync-back changes location.
+    
+    Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 0c8c563..050cfaf 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -226,7 +226,7 @@ private
+       new_base = (flags.include?("S")) ? "cur" : "new"
+       md_base, md_ver, md_flags = maildir_data orig_path
+ 
+-      return orig_path if md_flags == flags
++      return if md_flags == flags
+ 
+       new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+       orig_path = File.join @dir, orig_path
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 0616f75..3eeea66 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -286,10 +286,11 @@ EOS
+   end
+ 
+   def sync_back
+-    @locations.each do |l|
+-      if l.valid?
+-        l.sync_back @labels if $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+-      end
++    if @locations.map { |l|
++      l.sync_back @labels if l.valid? and $config[:sync_back_to_maildir] and l.source.is_a? Maildir
++    }.any?
++      Index.sync_message self, true
++      UpdateManager.relay self, :updated, self
+     end
+   end
+ 
+
+From ezyang at MIT.EDU  Wed Aug 22 05:45:31 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Aug 2012 01:45:31 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345559230-sup-5105@javelin>
+References: <1345559230-sup-5105@javelin>
+Message-ID: <1345614331-17294-1-git-send-email-ezyang@mit.edu>
+
+From: "Edward Z. Yang" <ezyang at mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/maildir.rb | 28 ++++++++++++++++++++++------
+ lib/sup/message.rb |  9 +++++++--
+ 2 files changed, 29 insertions(+), 8 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 95305c2..ff8da23 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -77,8 +77,17 @@ class Maildir < Source
+   end
+ 
+   def sync_back id, labels
++    new_source = @id
++    $config[:maildir_labels].each do |k,v|
++      v.each do |lbl,i|
++        if lbl.nil? or labels.member? lbl
++          new_source = i
++          break
++        end
++      end if v.any? { |lbl,i| i == @id }
++    end if $config[:maildir_labels]
+     flags = maildir_reconcile_flags id, labels
+-    maildir_mark_file id, flags
++    maildir_move_file id, new_source, flags
+   end
+ 
+   def raw_header id
+@@ -221,24 +230,31 @@ private
+       new_flags.to_a.sort.join
+   end
+ 
+-  def maildir_mark_file orig_path, flags
++  def maildir_move_file orig_path, new_source_id, flags
+     @mutex.synchronize do
+       new_base = (flags.include?("S")) ? "cur" : "new"
+       md_base, md_ver, md_flags = maildir_data orig_path
+ 
+-      return if md_flags == flags
++      return if md_flags == flags and new_source_id == @id
++
++      new_source = SourceManager[new_source_id]
+ 
+       new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+       orig_path = File.join @dir, orig_path
+-      new_path  = File.join @dir, new_loc
++      new_path  = File.join new_source.file_path, new_loc
+       tmp_path  = File.join @dir, "tmp", "#{md_base}:#{md_ver},#{flags}"
+ 
+       File.link orig_path, tmp_path
+       File.unlink orig_path
+-      File.link tmp_path, new_path
++      begin
++        File.link tmp_path, new_path
++      rescue SystemCallError
++        File.unlink new_path # XXX kinda unsafe eh
++        File.link tmp_path, new_path
++      end
+       File.unlink tmp_path
+ 
+-      new_loc
++      [new_source, new_loc]
+     end
+   end
+ end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 3eeea66..d6016df 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -726,8 +726,13 @@ class Location
+   end
+ 
+   def sync_back labels
+-    new_info = source.sync_back(@info, labels) if source.respond_to? :sync_back
+-    @info = new_info if new_info
++    pair = source.sync_back(@info, labels) if source.respond_to? :sync_back
++    if pair
++      new_source, new_info = pair
++      @source = new_source if new_source
++      @info = new_info if new_info
++    end
++    pair
+   end
+ 
+   ## much faster than raw_message
+-- 
+1.7.11.3
+
+
+From ezyang at MIT.EDU  Wed Aug 22 05:54:15 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Aug 2012 01:54:15 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345614331-17294-1-git-send-email-ezyang@mit.edu>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+Message-ID: <1345614564-sup-5523@javelin>
+
+Usage instructions:
+
+In config.yaml, you need to add a new option :maildir_labels:
+
+    :maildir_labels:
+      :stanford: [[:inbox, 4], [null, 6]]
+
+Maildir labels is a dictionary of "accounts" to lists of precedences.
+Read it as follows:
+
+    For messages in source 4 or source 6 (consult sources.yaml),
+    if the message has the :inbox tag, move it to source 4, otherwise
+    move it to source 6.
+
+So in this case, 6 would be some sort of Archive folder, and 4 would be INBOX.
+If you want "export-only" folders, just tack them on after the null entry;
+the labels are checked *in order*.  Multiple accounts are supported, but
+these should be disjoint sets of sources.
+
+This will automatically start working for any new mail you change the labels of.
+In order to apply this to old mail, you need to run sup-sync-back-maildir.
+OfflineIMAP will shit its pants [1] if you move too much mail, so I recommend
+holding on until I implement the companion patch for OfflineIMAP if you have
+a lot of mail.
+
+Edward
+
+[1] Namely, it will reupload every single article of mail, and if you get
+unlucky and "Archive" is sorted before "INBOX", it will probably run you out
+of quota too.  If you arrange to delete everything from INBOX first, and then
+sync Archive, it will probably just spend a lot of time uploading.
+
+Excerpts from Edward Z. Yang's message of Wed Aug 22 01:45:31 -0400 2012:
+> From: "Edward Z. Yang" <ezyang at mit.edu>
+> 
+> Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+> ---
+>  lib/sup/maildir.rb | 28 ++++++++++++++++++++++------
+>  lib/sup/message.rb |  9 +++++++--
+>  2 files changed, 29 insertions(+), 8 deletions(-)
+> 
+> diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+> index 95305c2..ff8da23 100644
+> --- a/lib/sup/maildir.rb
+> +++ b/lib/sup/maildir.rb
+> @@ -77,8 +77,17 @@ class Maildir < Source
+>    end
+>  
+>    def sync_back id, labels
+> +    new_source = @id
+> +    $config[:maildir_labels].each do |k,v|
+> +      v.each do |lbl,i|
+> +        if lbl.nil? or labels.member? lbl
+> +          new_source = i
+> +          break
+> +        end
+> +      end if v.any? { |lbl,i| i == @id }
+> +    end if $config[:maildir_labels]
+>      flags = maildir_reconcile_flags id, labels
+> -    maildir_mark_file id, flags
+> +    maildir_move_file id, new_source, flags
+>    end
+>  
+>    def raw_header id
+> @@ -221,24 +230,31 @@ private
+>        new_flags.to_a.sort.join
+>    end
+>  
+> -  def maildir_mark_file orig_path, flags
+> +  def maildir_move_file orig_path, new_source_id, flags
+>      @mutex.synchronize do
+>        new_base = (flags.include?("S")) ? "cur" : "new"
+>        md_base, md_ver, md_flags = maildir_data orig_path
+>  
+> -      return if md_flags == flags
+> +      return if md_flags == flags and new_source_id == @id
+> +
+> +      new_source = SourceManager[new_source_id]
+>  
+>        new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+>        orig_path = File.join @dir, orig_path
+> -      new_path  = File.join @dir, new_loc
+> +      new_path  = File.join new_source.file_path, new_loc
+>        tmp_path  = File.join @dir, "tmp", "#{md_base}:#{md_ver},#{flags}"
+>  
+>        File.link orig_path, tmp_path
+>        File.unlink orig_path
+> -      File.link tmp_path, new_path
+> +      begin
+> +        File.link tmp_path, new_path
+> +      rescue SystemCallError
+> +        File.unlink new_path # XXX kinda unsafe eh
+> +        File.link tmp_path, new_path
+> +      end
+>        File.unlink tmp_path
+>  
+> -      new_loc
+> +      [new_source, new_loc]
+>      end
+>    end
+>  end
+> diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+> index 3eeea66..d6016df 100644
+> --- a/lib/sup/message.rb
+> +++ b/lib/sup/message.rb
+> @@ -726,8 +726,13 @@ class Location
+>    end
+>  
+>    def sync_back labels
+> -    new_info = source.sync_back(@info, labels) if source.respond_to? :sync_back
+> -    @info = new_info if new_info
+> +    pair = source.sync_back(@info, labels) if source.respond_to? :sync_back
+> +    if pair
+> +      new_source, new_info = pair
+> +      @source = new_source if new_source
+> +      @info = new_info if new_info
+> +    end
+> +    pair
+>    end
+>  
+>    ## much faster than raw_message
+
+From ezyang at MIT.EDU  Wed Aug 22 20:09:40 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Aug 2012 16:09:40 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345614564-sup-5523@javelin>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+	<1345614564-sup-5523@javelin>
+Message-ID: <1345665956-sup-4988@javelin>
+
+Here is an improved version that handles the thread/message distinction
+better; previously, if you archived something, it's possible only some of
+the messages got moved if you hadn't run sup-sync-back-maildir.
+
+commit a25c345c15c8859a041cc9dc13090d7b8feb3d58
+Author: Edward Z. Yang <ezyang at mit.edu>
+Date:   Tue Aug 21 23:40:03 2012 -0400
+
+    Implement moving message between Maildir sources based on label.
+    
+    Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 95305c2..a7bf567 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -76,9 +76,23 @@ class Maildir < Source
+     with_file_for(id) { |f| RMail::Parser.read f }
+   end
+ 
++  def wrong_source? labels
++    new_source = nil
++    $config[:maildir_labels].each do |k,v|
++      v.each do |lbl,i|
++        if lbl.nil? or labels.member? lbl
++          new_source = i
++          break
++        end
++      end if v.any? { |lbl,i| i == @id }
++    end if $config[:maildir_labels]
++    new_source
++  end
++
+   def sync_back id, labels
++    new_source = wrong_source? labels || @id
+     flags = maildir_reconcile_flags id, labels
+-    maildir_mark_file id, flags
++    maildir_move_file id, new_source, flags
+   end
+ 
+   def raw_header id
+@@ -221,24 +235,31 @@ private
+       new_flags.to_a.sort.join
+   end
+ 
+-  def maildir_mark_file orig_path, flags
++  def maildir_move_file orig_path, new_source_id, flags
+     @mutex.synchronize do
+       new_base = (flags.include?("S")) ? "cur" : "new"
+       md_base, md_ver, md_flags = maildir_data orig_path
+ 
+-      return if md_flags == flags
++      return if md_flags == flags and new_source_id == @id
++
++      new_source = SourceManager[new_source_id]
+ 
+       new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+       orig_path = File.join @dir, orig_path
+-      new_path  = File.join @dir, new_loc
++      new_path  = File.join new_source.file_path, new_loc
+       tmp_path  = File.join @dir, "tmp", "#{md_base}:#{md_ver},#{flags}"
+ 
+       File.link orig_path, tmp_path
+       File.unlink orig_path
+-      File.link tmp_path, new_path
++      begin
++        File.link tmp_path, new_path
++      rescue SystemCallError
++        File.unlink new_path # XXX kinda unsafe eh
++        File.link tmp_path, new_path
++      end
+       File.unlink tmp_path
+ 
+-      new_loc
++      [new_source, new_loc]
+     end
+   end
+ end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 3eeea66..4139f3e 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -285,6 +285,10 @@ EOS
+     location.each_raw_message_line &b
+   end
+ 
++  def wrong_source?
++    $config[:sync_back_to_maildir] and @locations.any? { |l| l.valid? and l.source.is_a? Maildir and l.wrong_source? @labels}
++  end
++
+   def sync_back
+     if @locations.map { |l|
+       l.sync_back @labels if l.valid? and $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+@@ -726,8 +730,17 @@ class Location
+   end
+ 
+   def sync_back labels
+-    new_info = source.sync_back(@info, labels) if source.respond_to? :sync_back
+-    @info = new_info if new_info
++    pair = source.sync_back(@info, labels) if source.respond_to? :sync_back
++    if pair
++      new_source, new_info = pair
++      @source = new_source if new_source
++      @info = new_info if new_info
++    end
++    pair
++  end
++
++  def wrong_source? labels
++    source.wrong_source? labels if source.respond_to? :wrong_source
+   end
+ 
+   ## much faster than raw_message
+diff --git a/lib/sup/thread.rb b/lib/sup/thread.rb
+index b08bae2..c1e4b40 100644
+--- a/lib/sup/thread.rb
++++ b/lib/sup/thread.rb
+@@ -113,7 +113,7 @@ class Thread
+ 
+   def set_labels l; each { |m, *o| m && m.labels = l }; end
+   def has_label? t; any? { |m, *o| m && m.has_label?(t) }; end
+-  def each_dirty_message; each { |m, *o| m && m.dirty? && yield(m) }; end
++  def each_dirty_message; each { |m, *o| m && (m.dirty? || m.wrong_source?) && yield(m) }; end
+ 
+   def direct_participants
+     map { |m, *o| [m.from] + m.to if m }.flatten.compact.uniq
+
+From ezyang at MIT.EDU  Thu Aug 23 14:40:22 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 23 Aug 2012 10:40:22 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345665956-sup-4988@javelin>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+	<1345614564-sup-5523@javelin> <1345665956-sup-4988@javelin>
+Message-ID: <1345732781-sup-2983@javelin>
+
+It looks like the current patchset will *destroy* all labels you have
+on messages, so be careful! (This was masked for me since most of my
+labels are from before-add-message.rb, and that hook gets reapplied)
+
+Edward
+
+Excerpts from Edward Z. Yang's message of Wed Aug 22 16:09:40 -0400 2012:
+> Here is an improved version that handles the thread/message distinction
+> better; previously, if you archived something, it's possible only some of
+> the messages got moved if you hadn't run sup-sync-back-maildir.
+> 
+> commit a25c345c15c8859a041cc9dc13090d7b8feb3d58
+> Author: Edward Z. Yang <ezyang at mit.edu>
+> Date:   Tue Aug 21 23:40:03 2012 -0400
+> 
+>     Implement moving message between Maildir sources based on label.
+>     
+>     Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+> 
+> diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+> index 95305c2..a7bf567 100644
+> --- a/lib/sup/maildir.rb
+> +++ b/lib/sup/maildir.rb
+> @@ -76,9 +76,23 @@ class Maildir < Source
+>      with_file_for(id) { |f| RMail::Parser.read f }
+>    end
+>  
+> +  def wrong_source? labels
+> +    new_source = nil
+> +    $config[:maildir_labels].each do |k,v|
+> +      v.each do |lbl,i|
+> +        if lbl.nil? or labels.member? lbl
+> +          new_source = i
+> +          break
+> +        end
+> +      end if v.any? { |lbl,i| i == @id }
+> +    end if $config[:maildir_labels]
+> +    new_source
+> +  end
+> +
+>    def sync_back id, labels
+> +    new_source = wrong_source? labels || @id
+>      flags = maildir_reconcile_flags id, labels
+> -    maildir_mark_file id, flags
+> +    maildir_move_file id, new_source, flags
+>    end
+>  
+>    def raw_header id
+> @@ -221,24 +235,31 @@ private
+>        new_flags.to_a.sort.join
+>    end
+>  
+> -  def maildir_mark_file orig_path, flags
+> +  def maildir_move_file orig_path, new_source_id, flags
+>      @mutex.synchronize do
+>        new_base = (flags.include?("S")) ? "cur" : "new"
+>        md_base, md_ver, md_flags = maildir_data orig_path
+>  
+> -      return if md_flags == flags
+> +      return if md_flags == flags and new_source_id == @id
+> +
+> +      new_source = SourceManager[new_source_id]
+>  
+>        new_loc = File.join new_base, "#{md_base}:#{md_ver},#{flags}"
+>        orig_path = File.join @dir, orig_path
+> -      new_path  = File.join @dir, new_loc
+> +      new_path  = File.join new_source.file_path, new_loc
+>        tmp_path  = File.join @dir, "tmp", "#{md_base}:#{md_ver},#{flags}"
+>  
+>        File.link orig_path, tmp_path
+>        File.unlink orig_path
+> -      File.link tmp_path, new_path
+> +      begin
+> +        File.link tmp_path, new_path
+> +      rescue SystemCallError
+> +        File.unlink new_path # XXX kinda unsafe eh
+> +        File.link tmp_path, new_path
+> +      end
+>        File.unlink tmp_path
+>  
+> -      new_loc
+> +      [new_source, new_loc]
+>      end
+>    end
+>  end
+> diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+> index 3eeea66..4139f3e 100644
+> --- a/lib/sup/message.rb
+> +++ b/lib/sup/message.rb
+> @@ -285,6 +285,10 @@ EOS
+>      location.each_raw_message_line &b
+>    end
+>  
+> +  def wrong_source?
+> +    $config[:sync_back_to_maildir] and @locations.any? { |l| l.valid? and l.source.is_a? Maildir and l.wrong_source? @labels}
+> +  end
+> +
+>    def sync_back
+>      if @locations.map { |l|
+>        l.sync_back @labels if l.valid? and $config[:sync_back_to_maildir] and l.source.is_a? Maildir
+> @@ -726,8 +730,17 @@ class Location
+>    end
+>  
+>    def sync_back labels
+> -    new_info = source.sync_back(@info, labels) if source.respond_to? :sync_back
+> -    @info = new_info if new_info
+> +    pair = source.sync_back(@info, labels) if source.respond_to? :sync_back
+> +    if pair
+> +      new_source, new_info = pair
+> +      @source = new_source if new_source
+> +      @info = new_info if new_info
+> +    end
+> +    pair
+> +  end
+> +
+> +  def wrong_source? labels
+> +    source.wrong_source? labels if source.respond_to? :wrong_source
+>    end
+>  
+>    ## much faster than raw_message
+> diff --git a/lib/sup/thread.rb b/lib/sup/thread.rb
+> index b08bae2..c1e4b40 100644
+> --- a/lib/sup/thread.rb
+> +++ b/lib/sup/thread.rb
+> @@ -113,7 +113,7 @@ class Thread
+>  
+>    def set_labels l; each { |m, *o| m && m.labels = l }; end
+>    def has_label? t; any? { |m, *o| m && m.has_label?(t) }; end
+> -  def each_dirty_message; each { |m, *o| m && m.dirty? && yield(m) }; end
+> +  def each_dirty_message; each { |m, *o| m && (m.dirty? || m.wrong_source?) && yield(m) }; end
+>  
+>    def direct_participants
+>      map { |m, *o| [m.from] + m.to if m }.flatten.compact.uniq
+
+From alvherre at alvh.no-ip.org  Thu Aug 23 14:52:21 2012
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Thu, 23 Aug 2012 10:52:21 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345732781-sup-2983@javelin>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+	<1345614564-sup-5523@javelin> <1345665956-sup-4988@javelin>
+	<1345732781-sup-2983@javelin>
+Message-ID: <1345733453-sup-9957@alvh.no-ip.org>
+
+Excerpts from Edward Z. Yang's message of jue ago 23 10:40:22 -0400 2012:
+> It looks like the current patchset will *destroy* all labels you have
+> on messages, so be careful! (This was masked for me since most of my
+> labels are from before-add-message.rb, and that hook gets reapplied)
+
+Thanks for the notice.  Most of my labels come from that hook too, but a
+few do not, so I could easily lose some!  I was planning on trying out
+your patch, but with this caveat I'm likely to refrain.  Are you
+planning on submitting a fixed version?
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From ezyang at MIT.EDU  Thu Aug 23 15:28:22 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 23 Aug 2012 11:28:22 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345733453-sup-9957@alvh.no-ip.org>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+	<1345614564-sup-5523@javelin> <1345665956-sup-4988@javelin>
+	<1345732781-sup-2983@javelin> <1345733453-sup-9957@alvh.no-ip.org>
+Message-ID: <1345735597-sup-2272@javelin>
+
+Yes. The current plan is to snoop the message ID of newly added messages
+in maildirs, and do moved message detection based on that.  If you have a
+better idea I'm all ears. (Another possibility is to add sha1sum to the
+index and compare that.)
+
+Also note that it won't destroy the labels *unless you run OfflineIMAP*.
+The trouble is OfflineIMAP reuploads your message and then reassigns
+the UID based on the IMAP server, but doesn't communicate this back to Sup.
+
+Edward
+
+Excerpts from Alvaro Herrera's message of Thu Aug 23 10:52:21 -0400 2012:
+> Excerpts from Edward Z. Yang's message of jue ago 23 10:40:22 -0400 2012:
+> > It looks like the current patchset will *destroy* all labels you have
+> > on messages, so be careful! (This was masked for me since most of my
+> > labels are from before-add-message.rb, and that hook gets reapplied)
+> 
+> Thanks for the notice.  Most of my labels come from that hook too, but a
+> few do not, so I could easily lose some!  I was planning on trying out
+> your patch, but with this caveat I'm likely to refrain.  Are you
+> planning on submitting a fixed version?
+> 
+
+From ezyang at MIT.EDU  Thu Aug 23 18:20:18 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 23 Aug 2012 14:20:18 -0400
+Subject: [sup-devel] [PATCH] Implement moving message between Maildir
+	sources based on label.
+In-Reply-To: <1345733453-sup-9957@alvh.no-ip.org>
+References: <1345559230-sup-5105@javelin>
+	<1345614331-17294-1-git-send-email-ezyang@mit.edu>
+	<1345614564-sup-5523@javelin> <1345665956-sup-4988@javelin>
+	<1345732781-sup-2983@javelin> <1345733453-sup-9957@alvh.no-ip.org>
+Message-ID: <1345745979-sup-7676@javelin>
+
+With pleasure, I report that Sup is actually doing this!  So solving
+the "hooks run too many times" is as easy as this:
+
+commit ec3afe7ac01741bc67f68009193d2d2e73f05529
+Author: Edward Z. Yang <ezyang at mit.edu>
+Date:   Thu Aug 23 14:19:24 2012 -0400
+
+    Don't run before-add-message hook for messages already in index.
+    
+    Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 1b64098..7d5aaa2 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -184,7 +184,7 @@ EOS
+           m.labels.each { |l| LabelManager << l }
+           m.labels = old_m.labels + (m.labels - [:unread, :inbox]) if old_m
+           m.locations = old_m.locations + m.locations if old_m
+-          HookManager.run "before-add-message", :message => m
++          HookManager.run "before-add-message", :message => m if not old_m
+           yield :add, m, old_m, args[:progress] if block_given?
+           Index.sync_message m, true
+ 
+
+
+Excerpts from Alvaro Herrera's message of Thu Aug 23 10:52:21 -0400 2012:
+> Excerpts from Edward Z. Yang's message of jue ago 23 10:40:22 -0400 2012:
+> > It looks like the current patchset will *destroy* all labels you have
+> > on messages, so be careful! (This was masked for me since most of my
+> > labels are from before-add-message.rb, and that hook gets reapplied)
+> 
+> Thanks for the notice.  Most of my labels come from that hook too, but a
+> few do not, so I could easily lose some!  I was planning on trying out
+> your patch, but with this caveat I'm likely to refrain.  Are you
+> planning on submitting a fixed version?
+> 
+
+From ezyang at MIT.EDU  Wed Aug 29 00:35:01 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 28 Aug 2012 20:35:01 -0400
+Subject: [sup-devel] [PATCH] Handle drafts with high ID numbers.
+Message-ID: <1346200502-27650-1-git-send-email-ezyang@mit.edu>
+
+From: "Edward Z. Yang" <ezyang at mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/draft.rb | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/lib/sup/draft.rb b/lib/sup/draft.rb
+index 58c45db..1f33dc1 100644
+--- a/lib/sup/draft.rb
++++ b/lib/sup/draft.rb
+@@ -37,7 +37,6 @@ class DraftLoader < Source
+     Dir.mkdir dir unless File.exists? dir
+     super DraftManager.source_name, true, false
+     @dir = dir
+-    @cur_offset = 0
+   end
+ 
+   def id; DraftManager.source_id; end
+@@ -46,14 +45,13 @@ class DraftLoader < Source
+ 
+   def poll
+     ids = get_ids
+-    ids.each do |id|
+-      if id >= @cur_offset
+-        @cur_offset = id + 1
+-        yield :add,
+-          :info => id,
+-          :labels => [:draft, :inbox],
+-          :progress => 0.0
+-      end
++    old_ids = Enumerator.new(Index.instance, :each_source_info, self.id).to_a
++    new_ids = ids - old_ids
++    new_ids.each do |id|
++      yield :add,
++        :info => id,
++        :labels => [:draft, :inbox],
++        :progress => 0.0
+     end
+   end
+ 
+-- 
+1.7.11.3
+
+
+From ezyang at MIT.EDU  Wed Aug 29 00:41:15 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 28 Aug 2012 20:41:15 -0400
+Subject: [sup-devel] [PATCH] Handle drafts with high ID numbers.
+In-Reply-To: <1346200502-27650-1-git-send-email-ezyang@mit.edu>
+References: <1346200502-27650-1-git-send-email-ezyang@mit.edu>
+Message-ID: <1346200850-sup-3549@javelin>
+
+If you've ever suffered from saving a draft message, and then
+suddenly asking, "Where did it go?" because it didn't show up
+in your INBOX, try this patch.
+
+Edward
+
+Excerpts from Edward Z. Yang's message of Tue Aug 28 20:35:01 -0400 2012:
+> From: "Edward Z. Yang" <ezyang at mit.edu>
+> 
+> Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+> ---
+>  lib/sup/draft.rb | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/lib/sup/draft.rb b/lib/sup/draft.rb
+> index 58c45db..1f33dc1 100644
+> --- a/lib/sup/draft.rb
+> +++ b/lib/sup/draft.rb
+> @@ -37,7 +37,6 @@ class DraftLoader < Source
+>      Dir.mkdir dir unless File.exists? dir
+>      super DraftManager.source_name, true, false
+>      @dir = dir
+> -    @cur_offset = 0
+>    end
+>  
+>    def id; DraftManager.source_id; end
+> @@ -46,14 +45,13 @@ class DraftLoader < Source
+>  
+>    def poll
+>      ids = get_ids
+> -    ids.each do |id|
+> -      if id >= @cur_offset
+> -        @cur_offset = id + 1
+> -        yield :add,
+> -          :info => id,
+> -          :labels => [:draft, :inbox],
+> -          :progress => 0.0
+> -      end
+> +    old_ids = Enumerator.new(Index.instance, :each_source_info, self.id).to_a
+> +    new_ids = ids - old_ids
+> +    new_ids.each do |id|
+> +      yield :add,
+> +        :info => id,
+> +        :labels => [:draft, :inbox],
+> +        :progress => 0.0
+>      end
+>    end
+>  
+
+From ezyang at MIT.EDU  Wed Aug 29 01:42:10 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 28 Aug 2012 21:42:10 -0400
+Subject: [sup-devel] [PATCH] Add sent-save-to hook.
+Message-ID: <1346204530-30793-1-git-send-email-ezyang@mit.edu>
+
+From: "Edward Z. Yang" <ezyang at mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/modes/edit-message-mode.rb | 13 ++++++++++++-
+ lib/sup/sent.rb                    |  7 ++++---
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 5947ffd..2daffaf 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -69,6 +69,16 @@ Return value:
+      True if mail has been sent successfully, false otherwise.
+ EOS
+ 
++  HookManager.register "sent-save-to", <<EOS
++Configures where to save sent mail to. If this hook doesn't exist,
++the global sent setting will be used (possibly defaulting to sup://sent)
++Variables:
++    message: RMail::Message instance of the mail to send.
++    account: Account instance matching the From address
++Return value:
++     Source to save mail to, nil to use default
++EOS
++
+   attr_reader :status
+   attr_accessor :body, :header
+   bool_reader :edited
+@@ -456,7 +466,8 @@ protected
+         raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}" unless $? == 0
+       end
+ 
+-      SentManager.write_sent_message(date, from_email) { |f| f.puts sanitize_body(m.to_s) }
++      SentManager.write_sent_message(HookManager.run("sent-save-to", :message => m, :account => acct),
++                                     date, from_email) { |f| f.puts sanitize_body(m.to_s) }
+       BufferManager.kill_buffer buffer
+       BufferManager.flash "Message sent!"
+       true
+diff --git a/lib/sup/sent.rb b/lib/sup/sent.rb
+index 0ca1fb1..e712dad 100644
+--- a/lib/sup/sent.rb
++++ b/lib/sup/sent.rb
+@@ -24,9 +24,10 @@ class SentManager
+     @source
+   end
+ 
+-  def write_sent_message date, from_email, &block
+-    @source.store_message date, from_email, &block
+-    PollManager.poll_from @source
++  def write_sent_message src, date, from_email, &block
++    use_src = src || @source
++    use_src.store_message date, from_email, &block
++    PollManager.poll_from use_src
+   end
+ end
+ 
+-- 
+1.7.11.3
+
+

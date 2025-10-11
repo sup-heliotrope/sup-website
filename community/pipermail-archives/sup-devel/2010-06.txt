@@ -1,0 +1,1047 @@
+From sup-bugs at masanjin.net  Tue Jun  1 15:28:53 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 01 Jun 2010 19:28:53 +0000
+Subject: [sup-devel] [issue107] all new emails go to inbox
+In-Reply-To: <1275420532.84.0.199838497104.issue107@masanjin.net>
+Message-ID: <1275420532.84.0.199838497104.issue107@masanjin.net>
+
+
+New submission from anonymous:
+
+after checking out the latest git version, all new emails go to inbox now,
+although several sources are configured to be archived immediately.
+
+----------
+messages: 242
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7 (2010-01-10 patchlevel 249)
+status: unread
+sup_version: git
+title: all new emails go to inbox
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue107>
+_________________________________________
+
+From sup-bugs at masanjin.net  Wed Jun  2 18:06:32 2010
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Wed, 02 Jun 2010 22:06:32 +0000
+Subject: [sup-devel] [issue108] Feature request: Jump to next message and
+	open in	thread-view
+In-Reply-To: <1275516359-sup-2170@dolk>
+Message-ID: <1275516359-sup-2170@dolk>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+The attached patch adds the possibility to jump to the next message and
+open in one go in thread-view-mode.
+
+I often want to just skim through a thread; I might have been missing
+something, but it previously required me to locate the next message hit
+enter, then repeat..
+
+Now I can with C-n and C-p jump to the next, have it opened, hit again -
+it is closed if it was toggled, and continue through the thread.
+
+Please beware of bad ruby knowledge.
+
+----------
+files: 0001-Jump-and-open-next-previous-message-with-C-n-and-C-p.patch
+messages: 243
+nosy: gauteh
+status: unread
+title: Feature request: Jump to next message and open in thread-view
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue108>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Jump-and-open-next-previous-message-with-C-n-and-C-p.patch
+Type: application/octet-stream
+Size: 4170 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100602/34b397b2/attachment.obj>
+
+From sup-bugs at masanjin.net  Wed Jun  2 20:18:23 2010
+From: sup-bugs at masanjin.net (Truxton Fulton)
+Date: Thu, 03 Jun 2010 00:18:23 +0000
+Subject: [sup-devel] [issue109] Crash when loading all threads (!!)
+In-Reply-To: <1275524303.69.0.689658146626.issue109@masanjin.net>
+Message-ID: <1275524303.69.0.689658146626.issue109@masanjin.net>
+
+
+New submission from Truxton Fulton <truxton at truxton.com>:
+
+I started sup
+There are 127945 messages in index
+I pressed L then chose a label that had 10122 messages
+sup displayed the first 60 threads
+I pressed !! to load all threads
+(because I want to apply 'a'rchive to all of them)
+after loading 546 threads, sup crashes (log attached).
+
+----------
+files: exception-log.txt
+keyword: maildir
+messages: 244
+nosy: trux
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: 0.11
+title: Crash when loading all threads (!!)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue109>
+_________________________________________
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:17:in `id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/hook.rb:123:in `sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in `sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:232:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:643:in `__unprotected_load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:334:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:328:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:673:in `load_all_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:279
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From rlane at club.cc.cmu.edu  Wed Jun  2 23:57:41 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 02 Jun 2010 23:57:41 -0400
+Subject: [sup-devel] [issue108] Feature request: Jump to next message
+	and open in thread-view
+In-Reply-To: <1275516359-sup-2170@dolk>
+References: <1275516359-sup-2170@dolk>
+Message-ID: <1275537191-sup-9518@zyrg.net>
+
+Excerpts from Gaute Hope's message of 2010-06-02 18:06:32 -0400:
+> 
+> New submission from Gaute Hope <eg at gaute.vetsj.com>:
+> 
+> The attached patch adds the possibility to jump to the next message and
+> open in one go in thread-view-mode.
+> 
+> I often want to just skim through a thread; I might have been missing
+> something, but it previously required me to locate the next message hit
+> enter, then repeat..
+> 
+> Now I can with C-n and C-p jump to the next, have it opened, hit again -
+> it is closed if it was toggled, and continue through the thread.
+> 
+> Please beware of bad ruby knowledge.
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Wed Jun  2 23:58:20 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 02 Jun 2010 23:58:20 -0400
+Subject: [sup-devel] [PATCH] Respect source.archived? in poll.
+In-Reply-To: <1274910492-13206-1-git-send-email-pi+sup@pihost.us>
+References: <1274910492-13206-1-git-send-email-pi+sup@pihost.us>
+Message-ID: <1275537478-sup-8837@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Wed Jun  2 23:58:49 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 02 Jun 2010 23:58:49 -0400
+Subject: [sup-devel] [PATCH] Allow toggle on Source.usual and
+	Source.archived
+In-Reply-To: <1273949121-16731-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1273949121-16731-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1275537512-sup-176@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Thu Jun  3 00:27:04 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 03 Jun 2010 00:27:04 -0400
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100525185026.GA11947@thialfi.home.net>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100525185026.GA11947@thialfi.home.net>
+Message-ID: <1275538158-sup-1305@zyrg.net>
+
+Excerpts from W. Trevor King's message of 2010-05-25 14:50:27 -0400:
+> I got some good feedback from Nicolas Pouillard on the Python tidbit I
+> posted, but after waiting optimisticly for some enterprising Rubist to
+> port it to Ruby and merge it into Sup, I've finally taught myself
+> enough Ruby to do it myself ;).  Here's DAG-supporting Sup (+ a few
+> glaring documentation updates)
+
+Thanks for the doc updates, I've applied them to master.
+
+I'm not yet convinced that supporting multiple parents is worth
+the complexity. How often do you get mails like this? What mail clients
+have UI for replying to multiple messages? I'd have to fake up some
+messages to actually see the full DAG support in action, so could you
+post a screenshot of your code viewing a thread where the new display
+helps?
+
+> We could also resurect the old indentation-style display in the thread
+> viewer, if people dislike my tig-style ascii graph.
+
+Actually, I think the tig-style display is very interesting and could be
+useful even without the generic graph support.
+
+From truxton at truxton.com  Thu Jun  3 04:27:34 2010
+From: truxton at truxton.com (Truxton Fulton)
+Date: Thu, 03 Jun 2010 01:27:34 -0700
+Subject: [sup-devel] [issue109] Crash when loading all threads (!!)
+In-Reply-To: <1275524303.69.0.689658146626.issue109@masanjin.net>
+References: <1275524303.69.0.689658146626.issue109@masanjin.net>
+Message-ID: <1275553467-sup-5430@terrapin.truxton.com>
+
+Hi sup developers!
+
+I've narrowed down the crash to the presence of 2 particular mails.
+I can reproduce the crash by creating a brand new sup config
+for a maildir containing only these 2 messages.  When sup starts
+up it gets the "wrong id called on nil" crash.  It seems that
+either message by itself is fine, but the combination of the
+two messages causes the problem.
+
+You can download these mails from my web server :
+
+  http://www.truxton.com/bad2.tar.gz
+
+Thanks,
+
+-Truxton
+-- 
+
+From wking at drexel.edu  Thu Jun  3 06:21:10 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Thu, 3 Jun 2010 06:21:10 -0400
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <1275538158-sup-1305@zyrg.net>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100525185026.GA11947@thialfi.home.net>
+	<1275538158-sup-1305@zyrg.net>
+Message-ID: <20100603102109.GA1499@thialfi>
+
+On Thu, Jun 03, 2010 at 12:27:04AM -0400, Rich Lane wrote:
+> I'm not yet convinced that supporting multiple parents is worth
+> the complexity. How often do you get mails like this?
+
+I don't get mails with multiple in-reply-tos, but I send them ;).  I
+*do* get mails with in-text references to multiple messages.  For some
+mailing lists that I care about (be-devel), I go through and adjust
+in-reply-to so that it matches the in-text references.
+
+I think such graphs would be a nice interface to mailing lists, which
+gain members not familiar with the lists history.  Browsing a curated
+list, finding the critical background for a particular message would
+be trivial.
+
+> What mail clients have UI for replying to multiple messages?
+
+In Mutt, you can tag a bunch of messages, and then ;g to reply-to-all
+the tagged messages at once.  I started doing this to get the previous
+text from all the messages included in my reply, so I expect this sort
+of thing does occur occasionally in the wild.
+
+> I'd have to fake up some messages to actually see the full DAG
+> support in action, so could you post a screenshot of your code
+> viewing a thread where the new display helps?
+
+Attached is a small graph showing two related threads about
+bzr+windows.  The multiparent replies allow responses like Matt's,
+  "we discussed this last year" message.
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: graph-threading.png
+Type: image/png
+Size: 13150 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100603/595e2c32/attachment-0001.png>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100603/595e2c32/attachment-0001.bin>
+
+From michael+sup at stapelberg.de  Fri Jun  4 05:59:53 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 04 Jun 2010 11:59:53 +0200
+Subject: [sup-devel] [PATCH] Bugfix: Charset conversion needs to take place
+	*after* verifying inline GPG signatures
+Message-ID: <1275645515-sup-4706@midna.zekjur.net>
+
+Hi,
+
+still fixing some inline GPG problems ;-). This one is a little subtle: If the
+message arrives in a different encoding than UTF-8 (shame on the sender), the
+verification will fail because sup modifies the message by converting it to
+UTF-8. The attached patch fixes this.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Charset-conversion-needs-to-take-place-after-.patch
+Type: application/octet-stream
+Size: 2799 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100604/3c41f615/attachment.obj>
+
+From sean at silentflame.com  Fri Jun  4 09:44:04 2010
+From: sean at silentflame.com (Sean Whitton)
+Date: Fri, 4 Jun 2010 14:44:04 +0100
+Subject: [sup-devel] Storing message tags and other Sup info as headers in
+	Maildir
+Message-ID: <20100604134404.GA28767@artemis.silentflame.com>
+
+Dear all,
+
+I've been checking back to the Sup website every few months for the past 
+year or so, waiting until Sup starts to look more stable and suitable 
+for regular use.  Like many people on this list, a great stumbling block 
+to adoption is the fact that Sup doesn't really let you access your 
+e-mail with anything other than Sup.  At the moment I use offlineimap 
+and read my mail with Mutt, but my phone and SquirrelMail can access the 
+Maildir just as well (by IMAP in the former case), and so everything 
+stays in sync and I can get to my e-mail from many places.
+
+Now, I am no real coder, and I've never written a line of ruby, but a 
+thought has occurred to me that I feel I should at least share, even if 
+it turns out to be completely impractical.  Why not store the 
+information associated with e-mails that is not rebuildable (that is, 
+tags, unread/read status, starred status, archived/killed/spam status) 
+as header lines (X-Sup-Tags: X-Sup-Status, and I guess read/unread could 
+be standard Maildir flags) in the e-mails themselves in the Maildir?
+
+This way, the Sup index could be rebuilt on multiple client machines 
+without any data actually going out of sync.  You'll still have a 
+punishing index rebuild every time you view your mail on a new machine, 
+but they'll never be the problem of things actually being wrong - tags 
+and stars and the like can all be propagated by offlineimap/IMAP.  The 
+indexer can rip out these flags into its index to maintain Sup's 
+professed speed, and then if they change, write them back into the 
+Maildir along with read/unread status and other flags.
+
+Does this exposition make sense?  Is this a practical way to 
+improve/create Sup's multi-client support?
+
+S
+
+-- 
+Sean Whitton / <sean at silentflame.com>
+OpenPGP KeyID: 0x3B6D411B
+http://seanwhitton.com/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100604/d85f5e9b/attachment.bin>
+
+From michael+sup at stapelberg.de  Fri Jun  4 18:17:54 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 05 Jun 2010 00:17:54 +0200
+Subject: [sup-devel] [PATCH] Decode messages according to their
+	Content-Transfer-Encoding
+Message-ID: <1275689764-sup-3384@midna.zekjur.net>
+
+Hi,
+
+quote of the commit message:
+    Decode messages according to their Content-Transfer-Encoding
+        
+    This is necessary for MIME-messages (for example as part of multipart/signed)
+    which are encoded in base64.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Decode-messages-according-to-their-Content-Transfer-.patch
+Type: application/octet-stream
+Size: 1433 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100605/b307d5aa/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Fri Jun  4 22:54:24 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 04 Jun 2010 22:54:24 -0400
+Subject: [sup-devel] [PATCH] Decode messages according to their
+	Content-Transfer-Encoding
+In-Reply-To: <1275689764-sup-3384@midna.zekjur.net>
+References: <1275689764-sup-3384@midna.zekjur.net>
+Message-ID: <1275706048-sup-6981@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-06-04 18:17:54 -0400:
+>     Decode messages according to their Content-Transfer-Encoding
+>         
+>     This is necessary for MIME-messages (for example as part of multipart/signed)
+>     which are encoded in base64.
+
+Do we need to do this in other places too?
+
+From rlane at club.cc.cmu.edu  Fri Jun  4 22:55:08 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 04 Jun 2010 22:55:08 -0400
+Subject: [sup-devel] [PATCH] Bugfix: Charset conversion needs to take
+	place *after* verifying inline GPG signatures
+In-Reply-To: <1275645515-sup-4706@midna.zekjur.net>
+References: <1275645515-sup-4706@midna.zekjur.net>
+Message-ID: <1275706494-sup-497@zyrg.net>
+
+Applied to master.
+
+From michael+sup at stapelberg.de  Sat Jun  5 06:55:39 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 05 Jun 2010 12:55:39 +0200
+Subject: [sup-devel] [PATCH] Decode messages according to their
+	Content-Transfer-Encoding
+In-Reply-To: <1275706048-sup-6981@zyrg.net>
+References: <1275689764-sup-3384@midna.zekjur.net>
+	<1275706048-sup-6981@zyrg.net>
+Message-ID: <1275735302-sup-799@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of 2010-06-05 04:54:24 +0200:
+> Do we need to do this in other places too?
+Not sure, unfortunately. I?d guess only for MIME messages, for other
+messages the Transfer-Encoding seems to work already.
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Mon Jun  7 11:55:59 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 07 Jun 2010 11:55:59 -0400
+Subject: [sup-devel] [PATCH] Decode messages according to their
+	Content-Transfer-Encoding
+In-Reply-To: <1275735302-sup-799@midna.zekjur.net>
+References: <1275689764-sup-3384@midna.zekjur.net>
+	<1275706048-sup-6981@zyrg.net>
+	<1275735302-sup-799@midna.zekjur.net>
+Message-ID: <1275926137-sup-8653@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-06-05 06:55:39 -0400:
+> Excerpts from Rich Lane's message of 2010-06-05 04:54:24 +0200:
+> > Do we need to do this in other places too?
+> Not sure, unfortunately. I?d guess only for MIME messages, for other
+> messages the Transfer-Encoding seems to work already.
+
+Ok, applied to master.
+
+From snaipperi at gmail.com  Mon Jun  7 23:14:08 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Tue, 8 Jun 2010 06:14:08 +0300
+Subject: [sup-devel] Storing message tags and other Sup info as headers
+	in Maildir
+In-Reply-To: <20100604134404.GA28767@artemis.silentflame.com>
+References: <20100604134404.GA28767@artemis.silentflame.com>
+Message-ID: <AANLkTikI63bB_jx3EJsJ15iObHWLZJf_x0d8iw-gDrXP@mail.gmail.com>
+
+Hi Sean,
+
+I was expecting somebody else to reply in this but since I'm not
+seeing anyone doing so, I'll give it a shot. I only recently
+discovered sup, and I'm not a Ruby programmer, however I got quite a
+bunch of experience with Python (now the rest of the mailing list can
+proceed flaming me). The following post is purely speculative.
+
+Shortly put, I don't expect to see any change on this matter, at least
+in the near future. There is and has been a tool, sup-sync-back which
+should reflect the changes back to mbox/maildir but the way it works
+is far from ideal, I guess. Anyway..
+
+Let's get one thing straight first, sup doesn't really use specific
+status flags/tags or such for mails. Instead, every piece of
+information is in the labels. A couple of labels are predefined:
+Attachment, Deleted, Draft, Inbox, Killed, Sent, Spam, Starred and
+Unread. Technically, a message that is archived is simply lacking the
+label "Inbox". Rest of the labels are user-defined.
+
+Standard maildir format already provides following flags by default:
+(S)een, (T)rashed, (D)raft. In addition flags that sup doesn't need;
+Passed, Replied and Flagged.
+
+Dovecot (an IMAP server) provides user defined flags for maildirs. The
+flags are lowercase letters ranging a-z (up to 26 different), and
+seems like it works OK with the maildir. (
+http://wiki.dovecot.org/MailboxFormat/Maildir ). This could be one
+nice option if a limit of some 20 user tags aren't too few.
+
+Example maildir mail flags:
+:2,Sacd
+
+S - standard maildir flag: Seen, MUA would label as "Read"
+a - custom flag - MUA would label as "Archived"
+b - custom flag - MUA would label as "Starred"
+d - custom flag - User would label as "Work"
+
+This is of course kinda opposite to sup's current situation where
+messages are defined as Unread or Inbox, but anyway..
+
+
+Personally I don't like the idea of MUA messing up with the email
+headers as you suggested. Plus, this would result in a lot of
+fragmentation on a hard disk with tens of thousands of emails, if on
+initial sync sup would need to write label information in the middle
+of every email. And as always when writing, there's a risk of data
+loss, which would require additional measures.
+
+This area interests me, however, and I guess I'm gonna make some
+experiments how the flagging thing works in action, and if it makes
+other mail clients break. (I doubt it does, otherwise Dovecot wouldn't
+be using it, huh?).
+
+Regards,
+Matti
+
+From damien.leone at fensalir.fr  Wed Jun  9 08:53:16 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 09 Jun 2010 14:53:16 +0200
+Subject: [sup-devel] [PATCHES] reply-mode, signatures and account selector
+Message-ID: <1276087951-sup-7816@mailer>
+
+Sup guys,
+
+Three patches are attached to this email, the commit messages should
+be self explanatory but here are some more details:
+
+As the first patch changes the way headers are handled in reply-mode
+there is a regression in the before-edit hook possibilities.
+Before, we could write something like:
+
+if header["Cc"] == "foo"
+   header["Bcc"] = "bar"
+end
+
+Hence, switching the reply-to type using the selector would have
+changed the Bcc field if a type using Cc was selected.
+
+This would be no longer possible since there is now only one "set" of
+headers running the hook, however if you properly wrote your reply-to
+hook you can select the reply type you want and the previous code
+will be working as expected.
+
+On the other hand (in my opinion), the reply-mode now handles better
+its job, that is to say changing To and Cc without interfering with
+other fields that might have been edited manually by the user.
+
+I asked rlane about this on IRC:
+> <dleone> what is the reason for the before-edit hook being runned on @bodies and @header for each Reply-To types?
+> <rlane> that's so that when you switch reply-to type the right signature/etc is displayed
+
+I see no regression regarding this in the patch, so it should be okay.
+
+Other patches add an account selector in edit-mode (it is useful to me
+and I saw requests for such a feature) and a better signature handling
+regarding the edit_signature option.
+
+Regards,
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-reply-mode-improve-the-way-headers-are-handled.patch
+Type: application/octet-stream
+Size: 5335 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100609/e3f92192/attachment-0003.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Add-account_selector-config-option.patch
+Type: application/octet-stream
+Size: 3643 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100609/e3f92192/attachment-0004.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-edit-mode-change-the-way-signatures-are-handled.patch
+Type: application/octet-stream
+Size: 2855 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100609/e3f92192/attachment-0005.obj>
+
+From damien.leone at fensalir.fr  Wed Jun  9 09:15:11 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 09 Jun 2010 15:15:11 +0200
+Subject: [sup-devel] [PATCHES] reply-mode,
+	signatures and account selector
+In-Reply-To: <1276087951-sup-7816@mailer>
+References: <1276087951-sup-7816@mailer>
+Message-ID: <1276089233-sup-510@mailer>
+
+I noticed an error in the third patch.
+Please consider the one attached to *this* email.
+
+Regards,
+
+Excerpts from Damien Leone's message of mer. juin 09 14:53:16 +0200 2010:
+> Sup guys,
+> 
+> Three patches are attached to this email, the commit messages should
+> be self explanatory but here are some more details:
+> 
+> As the first patch changes the way headers are handled in reply-mode
+> there is a regression in the before-edit hook possibilities.
+> Before, we could write something like:
+> 
+> if header["Cc"] == "foo"
+>    header["Bcc"] = "bar"
+> end
+> 
+> Hence, switching the reply-to type using the selector would have
+> changed the Bcc field if a type using Cc was selected.
+> 
+> This would be no longer possible since there is now only one "set" of
+> headers running the hook, however if you properly wrote your reply-to
+> hook you can select the reply type you want and the previous code
+> will be working as expected.
+> 
+> On the other hand (in my opinion), the reply-mode now handles better
+> its job, that is to say changing To and Cc without interfering with
+> other fields that might have been edited manually by the user.
+> 
+> I asked rlane about this on IRC:
+> > <dleone> what is the reason for the before-edit hook being runned on @bodies and @header for each Reply-To types?
+> > <rlane> that's so that when you switch reply-to type the right signature/etc is displayed
+> 
+> I see no regression regarding this in the patch, so it should be okay.
+> 
+> Other patches add an account selector in edit-mode (it is useful to me
+> and I saw requests for such a feature) and a better signature handling
+> regarding the edit_signature option.
+> 
+> Regards,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-edit-mode-change-the-way-signatures-are-handled.patch
+Type: application/octet-stream
+Size: 3257 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100609/aca1d795/attachment.obj>
+
+From sean at silentflame.com  Wed Jun  9 13:42:08 2010
+From: sean at silentflame.com (Sean Whitton)
+Date: Wed, 9 Jun 2010 18:42:08 +0100
+Subject: [sup-devel] Storing message tags and other Sup info as headers
+ in Maildir
+In-Reply-To: <AANLkTikI63bB_jx3EJsJ15iObHWLZJf_x0d8iw-gDrXP@mail.gmail.com>
+References: <20100604134404.GA28767@artemis.silentflame.com>
+	<AANLkTikI63bB_jx3EJsJ15iObHWLZJf_x0d8iw-gDrXP@mail.gmail.com>
+Message-ID: <20100609174207.GA22445@artemis.silentflame.com>
+
+Hi Matti,
+
+Thanks for the informative reply.  IMAP user-defined flags sound like an 
+excellent way to go about this, but of course, not everyone uses dovecot 
+(dunno why!).  Let me know how you get on.
+
+On Tue, Jun 08, 2010 at 06:14:08AM +0300, Matti Eiden wrote:
+> I was expecting somebody else to reply in this but since I'm not
+> seeing anyone doing so, I'll give it a shot. I only recently
+> discovered sup, and I'm not a Ruby programmer, however I got quite a
+> bunch of experience with Python (now the rest of the mailing list can
+> proceed flaming me). The following post is purely speculative.
+> 
+> Shortly put, I don't expect to see any change on this matter, at least
+> in the near future. There is and has been a tool, sup-sync-back which
+> should reflect the changes back to mbox/maildir but the way it works
+> is far from ideal, I guess. Anyway..
+
+I keep hearing about sup-sync-back but I'm not sure really what it does.  
+Where can I find information about it?
+
+S
+
+-- 
+Sean Whitton / <sean at silentflame.com>
+OpenPGP KeyID: 0x3B6D411B
+http://seanwhitton.com/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100609/8fdaecac/attachment.bin>
+
+From gregor at hoffleit.de  Thu Jun 10 09:05:07 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 10 Jun 2010 15:05:07 +0200
+Subject: [sup-devel] Bug with searching for multiple labels at once
+In-Reply-To: <1276171687-sup-6993@sam.mediasupervision.de>
+References: <1276098490-sup-8738@sam.mediasupervision.de>
+	<1276170636-sup-6551@r61>
+	<1276171687-sup-6993@sam.mediasupervision.de>
+Message-ID: <1276175002-sup-9199@sam.mediasupervision.de>
+
+Indeed, I just noticed that the NewUserGuide.txt is much more up-to-date
+than the Wiki (http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail).
+
+As a start, I copied the information from the NewUserGuide to that Wiki
+page. Still, somebody who knows better should update that page.
+Furthermore, I marked the information in "Testing Xapian" as obsolete in
+the Wiki.
+
+
+Still, it is not clear to me what happens without explicit AND or OR
+operator.
+
+"label:somelabel label:anotherlabel" seems to be equivalent to
+"label:somelabel OR label:anotherlabel".
+
+"label:ruby-talk subject:\[ANN\]" seem to be equivalent to
+"label:ruby-talk AND subject:\[ANN\]".
+
+The Xapian QueryParser documentation (http://xapian.org/docs/queryparser.html)
+is not clear about this either.
+
+
+Regards,
+    Gregor Hoffleit
+
+From sup-bugs at masanjin.net  Sun Jun 13 03:11:19 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sun, 13 Jun 2010 07:11:19 +0000
+Subject: [sup-devel] [issue110] RuntimeError from thread: load threads
+	for	thread-index-mode
+In-Reply-To: <1276413079.42.0.0334970771348.issue110@masanjin.net>
+Message-ID: <1276413079.42.0.0334970771348.issue110@masanjin.net>
+
+
+New submission from anonymous:
+
+The first time I tried sup, with no mail in maildir, it opened without any problem.
+When I tried to open sup after fetchmail and procmail, with a few hundred
+messages, it crashed while it was opening, as shown in the attachment.
+
+----------
+files: exception-log.txt
+messages: 252
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+status: unread
+sup_version: v0.11
+title: RuntimeError from thread: load threads for thread-index-mode
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue110>
+_________________________________________
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+invalid source 2
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:197:in `build_message'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:332:in `call'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:332:in `load_n_threads'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:328:in `load_n_threads'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.11/bin/sup:231
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From michael+sup at stapelberg.de  Wed Jun 16 14:11:47 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 16 Jun 2010 20:11:47 +0200
+Subject: [sup-devel] =?utf-8?b?W1BBVENIXSBEb27igJl0IGRpc3BsYXkgIi4uLiIg?=
+	=?utf-8?q?after_snippets_which_are_displayed_completely?=
+Message-ID: <1276711781-sup-4102@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+    Don?t display "..." after snippets which are displayed completely
+    
+    Short mails (for example: "Yes, the date works for me.") often can
+    be displayed completely in the snippet. However, before this patch,
+    sup abbreviated the snippet even though it was not abbreviated.
+
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Don-t-display-.-after-snippets-which-are-displayed-c.patch
+Type: application/octet-stream
+Size: 2085 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100616/1123bd1c/attachment.obj>
+
+From michael+sup at stapelberg.de  Tue Jun 22 11:40:45 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 22 Jun 2010 17:40:45 +0200
+Subject: [sup-devel] [PATCH] inline-gpg: call text_to_chunks on the text
+	before/after the GPG part
+Message-ID: <1277221190-sup-946@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+
+    inline-gpg: call text_to_chunks on the text before/after the GPG part
+        
+    This is necessary for stupid mailers which produce TOFU mails
+    containing unquoted inline gpg mails *argh*.
+
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-inline-gpg-call-text_to_chunks-on-the-text-before-af.patch
+Type: application/octet-stream
+Size: 2719 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100622/2456115a/attachment-0001.obj>
+
+From sascha-pgp at silbe.org  Tue Jun 29 03:50:25 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 29 Jun 2010 09:50:25 +0200
+Subject: [sup-devel] [PATCH] fix reference to EncodingUnsupportedError
+Message-ID: <1277797825-8181-1-git-send-email-sascha-pgp@silbe.org>
+
+This fixes the following error:
+
+./lib/sup/message.rb:473:in `message_to_chunks': uninitialized constant Redwood::Message::EncodingUnsupportedError (NameError)
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/message.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 4e6bbeb..1385585 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -470,7 +470,7 @@ private
+         when "7bit", "8bit", nil
+           m.body
+         else
+-          raise EncodingUnsupportedError, encoding.inspect
++          raise RMail::EncodingUnsupportedError, encoding.inspect
+         end
+         body = body.normalize_whitespace
+         payload = RMail::Parser.read(body)
+-- 
+1.6.5
+
+
+From sascha-pgp at silbe.org  Tue Jun 29 04:04:54 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 29 Jun 2010 10:04:54 +0200
+Subject: [sup-devel] [PATCH] Don't choke when scanning message with unknown
+	encoding
+Message-ID: <1277798694-8642-1-git-send-email-sascha-pgp@silbe.org>
+
+This fixes the following error:
+
+./lib/sup/message.rb:473:in `message_to_chunks': "7BIT" (RMail::EncodingUnsupportedError)
+
+when running sup-sync on a folder that contains a mail with these headers:
+
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 0.60
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/message.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 1385585..a13fc0c 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -259,7 +259,7 @@ class Message
+           rmsg = source.load_message(source_info)
+           parse_header rmsg.header
+           message_to_chunks rmsg
+-        rescue SourceError, SocketError => e
++        rescue SourceError, SocketError, RMail::EncodingUnsupportedError => e
+           warn "problem getting messages from #{source}: #{e.message}"
+           ## we need force_to_top here otherwise this window will cover
+           ## up the error message one
+-- 
+1.6.5
+
+
+From sascha-pgp at silbe.org  Tue Jun 29 04:12:05 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 29 Jun 2010 10:12:05 +0200
+Subject: [sup-devel] [PATCH] fix crash in sup-dump if the default sent
+	source is used
+Message-ID: <1277799125-8696-1-git-send-email-sascha-pgp@silbe.org>
+
+This fixes a crash in sup-dump if the index contains a "sent" message and
+no "sent" folder has been explicitly configured in the config file
+(so it hasn't been added to sources.yaml).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ bin/sup-dump |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup-dump b/bin/sup-dump
+index d6a06e4..953b6e5 100755
+--- a/bin/sup-dump
++++ b/bin/sup-dump
+@@ -19,9 +19,16 @@ Usage:
+ EOS
+ end
+ 
++$config = Redwood::load_config Redwood::CONFIG_FN
+ index = Redwood::Index.init
+ Redwood::SourceManager.init
+ index.load
++Redwood::SentManager.init $config[:sent_source] || 'sup://sent'
++if(s = Redwood::SourceManager.source_for Redwood::SentManager.source_uri)
++  Redwood::SentManager.source = s
++else
++  Redwood::SourceManager.add_source Redwood::SentManager.default_source
++end
+ 
+ index.each_message :load_spam => true, :load_deleted => true, :load_killed => true do |m|
+   puts "#{m.id} (#{m.labels.to_a.sort_by { |l| l.to_s } * ' '})"
+-- 
+1.6.5
+
+
+From sascha-ml-email-sup-devel at silbe.org  Tue Jun 29 04:54:22 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Tue, 29 Jun 2010 08:54:22 +0000
+Subject: [sup-devel] Will sup blow up after adding 10k sources?
+Message-ID: <1277801600-sup-3476@twin.sascha.silbe.org>
+
+Hi!
+
+While fixing the sup-dump vs. default sent source bug (see posted patch) I stumbled over the following pieces of code:
+1. SentManager uses source_id of 9998 for the default sent source
+   (lib/sup/sent.rb:52)
+2. DraftManager uses a fixed source_id of 9999
+   (lib/sup/draft.rb:13,49)
+3. SourceManager skips the source_id of SentManager and DraftManager
+   while computing the id for a new source (lib/sup/source.rb:203)
+
+Does that mean sup will blow up once I have more than ~10k sources? I'm already at > 5k sources (containing > 680k messages, took > 2 days to import), so this isn't just an academic exercise...
+
+Wouldn't it be better to (*) use small fixed source ids for SentManager/DraftManager and let SourceManager start above a number of reserved ids (say: 50)? Is there something in sup that depends on the non-special source ids not to have "holes" (or will waste resources in that case)?
+
+Another approach would be to make the SentManager/DraftManager source ids dynamic and add them to sources.yaml.
+
+Sascha
+
+(*) Read: Would you accept a patch that implements that new logic?
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100629/a6666680/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Tue Jun 29 09:15:56 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 29 Jun 2010 09:15:56 -0400
+Subject: [sup-devel] Will sup blow up after adding 10k sources?
+In-Reply-To: <1277801600-sup-3476@twin.sascha.silbe.org>
+References: <1277801600-sup-3476@twin.sascha.silbe.org>
+Message-ID: <1277817081-sup-1172@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Tue Jun 29 04:54:22 -0400 2010:
+
+Hi Sascha,
+
+> Wouldn't it be better to (*) use small fixed source ids for
+> SentManager/DraftManager and let SourceManager start above a number
+> of reserved ids (say: 50)? Is there something in sup that depends on
+> the non-special source ids not to have "holes" (or will waste
+> resources in that case)?
+
+I agree that this would have been a better choice early on.  Assign
+the lowest possible id's to the Sent/Draft sources and then hand out
+id's dynmaically from there.
+
+> Another approach would be to make the SentManager/DraftManager
+> source ids dynamic and add them to sources.yaml.
+
+I'd have to look, but changing these id's after they've been used will
+cause problems requiring a resync, I believe.
+
+I'm sure others that have been more active in this part of the source
+lately can provide more info too.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+

@@ -1,0 +1,1063 @@
+From sascha-pgp at silbe.org  Sat Jul  2 11:06:54 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Sat,  2 Jul 2011 17:06:54 +0200
+Subject: [sup-devel] [PATCH] Catch errors while saving a message to disk for
+	editing
+Message-ID: <1309619214-2446-1-git-send-email-sascha-pgp@silbe.org>
+
+Running out of disk space in /tmp caused sup to crash with the following
+exception:
+
+--- Errno::ENOSPC from thread: main
+No space left on device - /tmp/sascha_silbe/sup.reply-mode20110702-31427-rtg4kl-0
+/usr/lib/ruby/1.8/tempfile.rb:97:in `close'
+/usr/lib/ruby/1.8/tempfile.rb:97:in `_close'
+/usr/lib/ruby/1.8/tempfile.rb:112:in `close'
+./lib/sup/modes/edit-message-mode.rb:180:in `edit_message'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:278:in `handle_input'
+bin/sup:271
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/modes/edit-message-mode.rb |   24 +++++++++++++++++-------
+ 1 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 5ed7833..256e314 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -172,12 +172,21 @@ def edit_to; edit_field "To" end
+   def edit_cc; edit_field "Cc" end
+   def edit_subject; edit_field "Subject" end
+ 
+-  def edit_message
+-    @file = Tempfile.new "sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}"
++  def save_message_to_file
++    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
+     @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+     @file.puts
+     @file.puts @body.join("\n")
+     @file.close
++  end
++
++  def edit_message
++    begin
++      write_message_to_file
++    rescue SystemCallError => e
++      BufferManager.flash "Can't save message to file: #{e.message}"
++      return
++    end
+ 
+     editor = $config[:editor] || ENV['EDITOR'] || "/usr/bin/vi"
+ 
+@@ -197,11 +206,12 @@ def edit_message
+   end
+ 
+   def edit_message_async
+-    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
+-    @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+-    @file.puts
+-    @file.puts @body.join("\n")
+-    @file.close
++    begin
++      write_message_to_file
++    rescue SystemCallError => e
++      BufferManager.flash "Can't save message to file: #{e.message}"
++      return
++    end
+ 
+     @mtime = File.mtime @file.path
+ 
+-- 
+1.7.4.1
+
+
+From alex.shulgin at gmail.com  Sat Jul  2 16:28:27 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Sat, 2 Jul 2011 23:28:27 +0300
+Subject: [sup-devel] [PATCH] Catch errors while saving a message to disk
+ for editing
+In-Reply-To: <1309619214-2446-1-git-send-email-sascha-pgp@silbe.org>
+References: <1309619214-2446-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <BANLkTikhM6fvZoSJu=Uo_qPfTsPy3uW5tA@mail.gmail.com>
+
+On Sat, Jul 2, 2011 at 18:06, Sascha Silbe <sascha-pgp at silbe.org> wrote:
+
+> ?lib/sup/modes/edit-message-mode.rb | ? 24 +++++++++++++++++-------
+> ?1 files changed, 17 insertions(+), 7 deletions(-)
+>
+> diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+> index 5ed7833..256e314 100644
+> --- a/lib/sup/modes/edit-message-mode.rb
+> +++ b/lib/sup/modes/edit-message-mode.rb
+> @@ -172,12 +172,21 @@ def edit_to; edit_field "To" end
+> ? def edit_cc; edit_field "Cc" end
+> ? def edit_subject; edit_field "Subject" end
+>
+> - ?def edit_message
+> - ? ?@file = Tempfile.new "sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}"
+> + ?def save_message_to_file
+
+Didn't you mean 'write_message_to_file' here instead?
+
+> + ? ?@file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
+> ? ? @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+> ? ? @file.puts
+> ? ? @file.puts @body.join("\n")
+> ? ? @file.close
+> + ?end
+> +
+> + ?def edit_message
+> + ? ?begin
+> + ? ? ?write_message_to_file
+> + ? ?rescue SystemCallError => e
+> + ? ? ?BufferManager.flash "Can't save message to file: #{e.message}"
+> + ? ? ?return
+> + ? ?end
+>
+> ? ? editor = $config[:editor] || ENV['EDITOR'] || "/usr/bin/vi"
+>
+[snip]
+
+From sascha-ml-reply-to-2011-3 at silbe.org  Sat Jul  2 17:54:04 2011
+From: sascha-ml-reply-to-2011-3 at silbe.org (Sascha Silbe)
+Date: Sat, 02 Jul 2011 23:54:04 +0200
+Subject: [sup-devel] [PATCH] Catch errors while saving a message to disk
+	for editing
+In-Reply-To: <BANLkTikhM6fvZoSJu=Uo_qPfTsPy3uW5tA@mail.gmail.com>
+References: <1309619214-2446-1-git-send-email-sascha-pgp@silbe.org>
+	<BANLkTikhM6fvZoSJu=Uo_qPfTsPy3uW5tA@mail.gmail.com>
+Message-ID: <1309643493-sup-6539@twin.sascha.silbe.org>
+
+Excerpts from Alexander Shulgin's message of Sat Jul 02 22:28:27 +0200 2011:
+
+> > - ?def edit_message
+> > - ? ?@file = Tempfile.new "sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}"
+> > + ?def save_message_to_file
+> 
+> Didn't you mean 'write_message_to_file' here instead?
+
+Oops, yes. I forgot to update the index after fixing this (there are
+other, unrelated changes in the working directory that I didn't want to
+commit, so I didn't use "git commit -a" as usual). Will post a new
+version. Thanks for spotting this!
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 500 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110702/f2b87823/attachment.bin>
+
+From sascha-pgp at silbe.org  Sat Jul  2 17:56:16 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Sat,  2 Jul 2011 23:56:16 +0200
+Subject: [sup-devel] [PATCH v2] Catch errors while saving a message to disk
+	for editing
+In-Reply-To: <BANLkTikhM6fvZoSJu=Uo_qPfTsPy3uW5tA@mail.gmail.com>
+References: <BANLkTikhM6fvZoSJu=Uo_qPfTsPy3uW5tA@mail.gmail.com>
+Message-ID: <1309643776-8936-1-git-send-email-sascha-pgp@silbe.org>
+
+Running out of disk space in /tmp caused sup to crash with the following
+exception:
+
+--- Errno::ENOSPC from thread: main
+No space left on device - /tmp/sascha_silbe/sup.reply-mode20110702-31427-rtg4kl-0
+/usr/lib/ruby/1.8/tempfile.rb:97:in `close'
+/usr/lib/ruby/1.8/tempfile.rb:97:in `_close'
+/usr/lib/ruby/1.8/tempfile.rb:112:in `close'
+./lib/sup/modes/edit-message-mode.rb:180:in `edit_message'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:278:in `handle_input'
+bin/sup:271
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ v1->v2: fix typo (save_message_to_file vs. write_message_to_file)
+
+ lib/sup/modes/edit-message-mode.rb |   24 +++++++++++++++++-------
+ 1 files changed, 17 insertions(+), 7 deletions(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 5ed7833..4387f7b 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -172,12 +172,21 @@ def edit_to; edit_field "To" end
+   def edit_cc; edit_field "Cc" end
+   def edit_subject; edit_field "Subject" end
+
+-  def edit_message
+-    @file = Tempfile.new "sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}"
++  def save_message_to_file
++    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
+     @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+     @file.puts
+     @file.puts @body.join("\n")
+     @file.close
++  end
++
++  def edit_message
++    begin
++      save_message_to_file
++    rescue SystemCallError => e
++      BufferManager.flash "Can't save message to file: #{e.message}"
++      return
++    end
+
+     editor = $config[:editor] || ENV['EDITOR'] || "/usr/bin/vi"
+
+@@ -197,11 +206,12 @@ def edit_message
+   end
+
+   def edit_message_async
+-    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
+-    @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+-    @file.puts
+-    @file.puts @body.join("\n")
+-    @file.close
++    begin
++      save_message_to_file
++    rescue SystemCallError => e
++      BufferManager.flash "Can't save message to file: #{e.message}"
++      return
++    end
+
+     @mtime = File.mtime @file.path
+
+--
+1.7.4.1
+
+
+From hsanson at gmail.com  Mon Jul  4 21:52:53 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 5 Jul 2011 10:52:53 +0900
+Subject: [sup-devel] Heliotrope improving but still found some issues
+Message-ID: <201107051052.53166.hsanson@gmail.com>
+
+
+So I tried the latest heliotrope with the leveldb-ruby 0.6 gem, whistlepig 0.7 
+and MeCab hooks for Japanese text support and it works better than before. 
+Unfortunately got two issues:
+
+First any attempt to search using japanese text fails with the dreaded 
+incompatible character encodings error:
+
+#####################################################
+[2011-07-05 10:22:17] INFO  WEBrick 1.3.1
+[2011-07-05 10:22:17] INFO  ruby 1.9.2 (2010-08-18) [x86_64-linux]
+[2011-07-05 10:22:17] INFO  WEBrick::HTTPServer#start: pid=13523 port=8042
+search(body:"??", 0, 20) took 2.1ms
+Encoding::CompatibilityError - incompatible character encodings: ASCII-8BIT 
+and UTF-8:
+ bin/heliotrope-server:223:in `block in <class:HeliotropeServer>'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `block in 
+compile!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in 
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in 
+`route_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:708:in `block (2 
+levels) in route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:758:in `block in 
+process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in 
+`process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:707:in `block in 
+route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `each'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:843:in `dispatch!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `block in 
+call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in 
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `block in 
+invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:629:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/head.rb:9:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/showexceptions.rb:21:in 
+`call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in 
+`service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+ /usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+127.0.0.1 - - [05/Jul/2011 10:22:20] "GET /search?q=%E6%89%8B%E7%B4%99 
+HTTP/1.1" 500 89118 0.0331
+localhost - - [05/Jul/2011:10:22:20 JST] "GET /search?q=%E6%89%8B%E7%B4%99 
+HTTP/1.0" 500 89118
+- -> /search?q=%E6%89%8B%E7%B4%99
+[2011-07-05 10:22:20] ERROR Errno::ECONNRESET: Connection reset by peer
+        /usr/lib/ruby/1.9.1/webrick/httpserver.rb:56:in `eof?'
+        /usr/lib/ruby/1.9.1/webrick/httpserver.rb:56:in `run'
+#######################################################
+
+The problem seems to be the header method in the heliotrope-server that uses 
+multiline strings (e.g. <<- EOS). By forcing the resulting text to UTF-8 
+encoding the search works as expected with japanese and non japanese text (see 
+attached patch).
+
+
+The second problem is actually not heliotrope problem. Is the artificial 
+limitations imposed by Gmail. After running heliotrope-add for some time it 
+would fail when the IMAP fetch returns nil. Just after it failed I tried to 
+use my current email reader (kmail) and got an interesting error saying: 
+"exceeded IMAP bandwidth limits". These indicates the nil is due to Gmail 
+limiting the maximum bandwidth I can consume downloading emails.
+
+The latest heliotrope now catches this error and ignores it but after a while 
+ignoring it I started getting sys-write errors on the socket. I believe this 
+is also GMail abruptly breaking the socket connection to enforce it's 
+bandwidth limits. 
+
+Maybe limiting the rate of gmail-dumper so it reads mails at a lower pace 
+would eliminate these problems or simply stop reading emails for some time 
+when we get the first nil response.
+
+Overall heliotrope is now usable for Japanese language users (at least for me 
+). Now I will start playing with turnsole to see if it can handle japanese.
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-encoding-exception.patch
+Type: text/x-patch
+Size: 653 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110705/b685de98/attachment.bin>
+
+From dmishd at gmail.com  Tue Jul  5 05:32:59 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 5 Jul 2011 10:32:59 +0100
+Subject: [sup-devel] gmail limits [was: Heliotrope improving but still
+ found some issues]
+Message-ID: <CAOxvSbd7N9Zj+tMh=rXimPCtUBJmyy+k-UeeK8DG3mqUqcfgPg@mail.gmail.com>
+
+On 5 Jul 2011 02:53, "Horacio Sanson" <hsanson at gmail.com> wrote:
+> The second problem is actually not heliotrope problem. Is the artificial
+> limitations imposed by Gmail. After running heliotrope-add for some time
+it
+> would fail when the IMAP fetch returns nil. Just after it failed I tried
+to
+> use my current email reader (kmail) and got an interesting error saying:
+> "exceeded IMAP bandwidth limits". These indicates the nil is due to Gmail
+> limiting the maximum bandwidth I can consume downloading emails.
+>
+> Maybe limiting the rate of gmail-dumper so it reads mails at a lower pace
+> would eliminate these problems or simply stop reading emails for some time
+> when we get the first nil response.
+
+I would prefer if heliotrope could recognise the IMAP limit exceeded
+situation and give a sensible error message - 'gmail won't give any more
+messages now, please try again after an hour' or something along those
+lines. I got through over 12000 messages before hitting trouble, so people
+with smaller accounts may never hit the problem and would like the speed to
+be as high as possible.
+
+Hamish Downer
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110705/58dafb8d/attachment.html>
+
+From hsanson at gmail.com  Tue Jul  5 10:01:19 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 5 Jul 2011 23:01:19 +0900
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <201107051052.53166.hsanson@gmail.com>
+References: <201107051052.53166.hsanson@gmail.com>
+Message-ID: <CAHWBo_ZuLKhx-MW4O=1Nwi3A3KkSfyDQUpmnbmvHL62d9P1XuQ@mail.gmail.com>
+
+Speaked too fast...  got a few more issues.
+
+First the patch I sent was incomplete, please ignore and use the one
+attached here if you would. The previous patch completely removed the
+header section of the web page.
+
+Second the GMail labels work great as long as they are in english.
+This is because the labels are UTF-7 encoded and look like this in
+japanese: "+&mlkwrtdrmkiwwzdxmlgw4zdrmpm-" and clicking on any of
+these labels in the web interface result in systax error. Fixing this
+is as simple as replacing line 207 of imap-dumper.rb with the
+following code:
+
+labels = (data.attr["X-GM-LABELS"] || []).map { |label|
+Net::IMAP.decode_utf7(label.to_s).downcase }
+
+I am pretty sure the utf7 decoding is language independent and can be
+applied safely to all labels in any language but I cannot bet on it
+since I only have tested Japanese. Not sure if this conversion would
+require a separate hook or something like that.
+
+
+
+regards,
+Horacio
+
+On Tue, Jul 5, 2011 at 10:52 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+>
+> So I tried the latest heliotrope with the leveldb-ruby 0.6 gem, whistlepig 0.7
+> and MeCab hooks for Japanese text support and it works better than before.
+> Unfortunately got two issues:
+>
+> First any attempt to search using japanese text fails with the dreaded
+> incompatible character encodings error:
+>
+> #####################################################
+> [2011-07-05 10:22:17] INFO ?WEBrick 1.3.1
+> [2011-07-05 10:22:17] INFO ?ruby 1.9.2 (2010-08-18) [x86_64-linux]
+> [2011-07-05 10:22:17] INFO ?WEBrick::HTTPServer#start: pid=13523 port=8042
+> search(body:"??", 0, 20) took 2.1ms
+> Encoding::CompatibilityError - incompatible character encodings: ASCII-8BIT
+> and UTF-8:
+> ?bin/heliotrope-server:223:in `block in <class:HeliotropeServer>'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `call'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `block in
+> compile!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in
+> `instance_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in
+> `route_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:708:in `block (2
+> levels) in route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:758:in `block in
+> process_route'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in `catch'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in
+> `process_route'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:707:in `block in
+> route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `each'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:843:in `dispatch!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `block in
+> call!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+> `instance_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `block in
+> invoke'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `catch'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `invoke'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `call!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:629:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/head.rb:9:in `call'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/showexceptions.rb:21:in
+> `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in
+> `service'
+> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+> ?/usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+> 127.0.0.1 - - [05/Jul/2011 10:22:20] "GET /search?q=%E6%89%8B%E7%B4%99
+> HTTP/1.1" 500 89118 0.0331
+> localhost - - [05/Jul/2011:10:22:20 JST] "GET /search?q=%E6%89%8B%E7%B4%99
+> HTTP/1.0" 500 89118
+> - -> /search?q=%E6%89%8B%E7%B4%99
+> [2011-07-05 10:22:20] ERROR Errno::ECONNRESET: Connection reset by peer
+> ? ? ? ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:56:in `eof?'
+> ? ? ? ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:56:in `run'
+> #######################################################
+>
+> The problem seems to be the header method in the heliotrope-server that uses
+> multiline strings (e.g. <<- EOS). By forcing the resulting text to UTF-8
+> encoding the search works as expected with japanese and non japanese text (see
+> attached patch).
+>
+>
+> The second problem is actually not heliotrope problem. Is the artificial
+> limitations imposed by Gmail. After running heliotrope-add for some time it
+> would fail when the IMAP fetch returns nil. Just after it failed I tried to
+> use my current email reader (kmail) and got an interesting error saying:
+> "exceeded IMAP bandwidth limits". These indicates the nil is due to Gmail
+> limiting the maximum bandwidth I can consume downloading emails.
+>
+> The latest heliotrope now catches this error and ignores it but after a while
+> ignoring it I started getting sys-write errors on the socket. I believe this
+> is also GMail abruptly breaking the socket connection to enforce it's
+> bandwidth limits.
+>
+> Maybe limiting the rate of gmail-dumper so it reads mails at a lower pace
+> would eliminate these problems or simply stop reading emails for some time
+> when we get the first nil response.
+>
+> Overall heliotrope is now usable for Japanese language users (at least for me
+> ). Now I will start playing with turnsole to see if it can handle japanese.
+>
+> --
+> regards,
+> Horacio Sanson
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-encoding-exception.patch
+Type: text/x-patch
+Size: 986 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110705/7e704fc8/attachment-0001.bin>
+
+From hsanson at gmail.com  Wed Jul  6 22:24:15 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 7 Jul 2011 11:24:15 +0900
+Subject: [sup-devel] How are the queries supposed to work?
+Message-ID: <201107071124.16433.hsanson@gmail.com>
+
+
+Finally after several attempts the gmail-dumper finished indexing my +450,000 
+emails but searching emails does not work as I expected or I am doing 
+something wrong.
+
+Here is an example I have been trying to understand:
+
+I am using the heliotrope-console with this command:
+
+bash> ruby1.9.1 -Ilib bin/heliotrope-console -d ~/.heliotrope
+
+Then in that console :
+
+# Create a query for EVERY
+index.set_query(Query.new("body", "*"))
+
+# Get first 5 matches
+r = index.get_some_results 5
+
+# Inspect the one result
+
+puts r[1][:subject] 
+=> [Rails] Test fixtures not loading
+
+puts r[1][:direct_recipients].inspect
+=> #<Set: {"Ruby on Rails: Talk <rubyonrails-talk at googlegroups.com>"}>
+
+puts r[1][:snippet].inspect
+=> PLEASE HELP. This is driving me insane. I have a simple database table
+
+puts r[1][:labels]
+=> #<Set: {"unread"}>
+
+
+# So I have a message indexed with a subject that contains "Rails" a direct 
+recipient with "rubyonrails-talk at googlegroups.com" and a body that contains 
+"PLEASE HELP".
+
+
+# Now I tried several queries that I thought would return that message but 
+they all returned zero results:
+
+index.set_query(Query.new("body", "HELP"))
+index.set_query(Query.new("body", "PLEASE"))
+index.set_query(Query.new("labels", "unread")
+index.set_query(Query.new("from", "rubyonrails-talk at googlegroups.com")
+index.set_query(Query.new("to", "rubyonrails-talk at googlegroups.com")
+index.set_query(Query.new("body", "rubyonrails-talk at googlegroups.com")
+
+# And the interesting part is that these queries do return the message I 
+expect:
+
+index.set_query(Query.new("body", "fixtures"))
+index.set_query(Query.new("subject", "fixtures"))
+
+# This made me think that only the subject is searchable since the word 
+"fixtures" only appears in the subject but then these queries with words in the 
+subject return zero results:
+
+index.set_query(Query.new("subject", "Rails"))
+index.set_query(Query.new("subject", "[Rails]"))
+index.set_query(Query.new("subject", "Test fixtures"))
+index.set_query(Query.new("subject", "test fixtures"))
+ 
+On all tests I made sure to run index.reset_query! before setting the new 
+query with index.set_query. Is this the correct way???
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Thu Jul  7 02:07:41 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Jul 2011 06:07:41 +0000
+Subject: [sup-devel] How are the queries supposed to work?
+In-Reply-To: <201107071124.16433.hsanson@gmail.com>
+References: <201107071124.16433.hsanson@gmail.com>
+Message-ID: <1310018610-sup-9096@masanjin.net>
+
+Hi Horacio,
+
+Reformatted excerpts from Horacio Sanson's message of 2011-07-07:
+> # Now I tried several queries that I thought would return that message but 
+> they all returned zero results:
+> 
+> index.set_query(Query.new("body", "HELP"))
+> index.set_query(Query.new("body", "PLEASE"))
+
+These two are due to case folding. If you try "help" and "please", it
+should work.
+
+> index.set_query(Query.new("labels", "unread")
+
+This one should be Query.new("body", "~unread"). The label syntax is
+different in heliotrope from in Sup; they aren't regular fielded terms.
+
+> index.set_query(Query.new("from", "rubyonrails-talk at googlegroups.com")
+> index.set_query(Query.new("to", "rubyonrails-talk at googlegroups.com")
+> index.set_query(Query.new("body", "rubyonrails-talk at googlegroups.com")
+
+This I don't quite understand. Similar queries work on my system. Would
+you be able to send the the message that this corresponds to?
+
+> index.set_query(Query.new("body", "fixtures"))
+> index.set_query(Query.new("subject", "fixtures"))
+
+These ones work due to the lower casing.
+
+> index.set_query(Query.new("subject", "Rails"))
+> index.set_query(Query.new("subject", "[Rails]"))
+> index.set_query(Query.new("subject", "Test fixtures"))
+> index.set_query(Query.new("subject", "test fixtures"))
+
+I would expect the last one to work. Did it?
+
+> On all tests I made sure to run index.reset_query! before setting the
+> new query with index.set_query. Is this the correct way???
+
+The reset_query! is unnecessary.
+
+Thanks for all your testing. Much of this is undocumented, so I ask you
+to bear with me.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jul  7 02:31:30 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Jul 2011 06:31:30 +0000
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <201107051052.53166.hsanson@gmail.com>
+References: <201107051052.53166.hsanson@gmail.com>
+Message-ID: <1310019783-sup-5419@masanjin.net>
+
+Hi Horacio,
+
+Thanks for all your help testing. I am committed to making Heliotrope and
+Turnsole i18n-friendly, so it's great to have some stress applied to that
+area.
+
+Reformatted excerpts from Horacio Sanson's message of 2011-07-05:
+> Encoding::CompatibilityError - incompatible character encodings: ASCII-8BIT 
+> and UTF-8:
+>  bin/heliotrope-server:223:in `block in <class:HeliotropeServer>'
+
+Ok, I will check out your patch.
+
+> The latest heliotrope now catches this error and ignores it but after
+> a while ignoring it I started getting sys-write errors on the socket.
+> I believe this is also GMail abruptly breaking the socket connection
+> to enforce it's bandwidth limits. 
+
+I suspect you're right. I wonder if there is a way to detect the rate
+limiting kicking on. If not, I can add a delay. You can also manually
+delay with judicious use of the -n flag.
+
+> Overall heliotrope is now usable for Japanese language users (at least
+> for me ). Now I will start playing with turnsole to see if it can
+> handle japanese.
+
+Great! I look forward to your bug reports. If you could please file bugs
+in the corresponding Github projects, that will help me keep track of
+things.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jul  7 02:33:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Jul 2011 06:33:05 +0000
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <CAHWBo_ZuLKhx-MW4O=1Nwi3A3KkSfyDQUpmnbmvHL62d9P1XuQ@mail.gmail.com>
+References: <201107051052.53166.hsanson@gmail.com>
+	<CAHWBo_ZuLKhx-MW4O=1Nwi3A3KkSfyDQUpmnbmvHL62d9P1XuQ@mail.gmail.com>
+Message-ID: <1310020323-sup-7703@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-07-05:
+> I am pretty sure the utf7 decoding is language independent and can be
+> applied safely to all labels in any language but I cannot bet on it
+
+I think you are right. It should be safe to utf7-decode all labels.
+Good catch.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Thu Jul  7 10:48:23 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 7 Jul 2011 23:48:23 +0900
+Subject: [sup-devel] How are the queries supposed to work?
+In-Reply-To: <1310018610-sup-9096@masanjin.net>
+References: <201107071124.16433.hsanson@gmail.com>
+	<1310018610-sup-9096@masanjin.net>
+Message-ID: <201107072348.23637.hsanson@gmail.com>
+
+On Thursday 07 July 2011 15:07:41 William Morgan wrote:
+> Hi Horacio,
+> 
+> Reformatted excerpts from Horacio Sanson's message of 2011-07-07:
+> > # Now I tried several queries that I thought would return that message
+> > but they all returned zero results:
+> > 
+> > index.set_query(Query.new("body", "HELP"))
+> > index.set_query(Query.new("body", "PLEASE"))
+> 
+> These two are due to case folding. If you try "help" and "please", it
+> should work.
+> 
+
+Indeed lowercasing all the queries make them work.
+
+> > index.set_query(Query.new("labels", "unread")
+> 
+> This one should be Query.new("body", "~unread"). The label syntax is
+> different in heliotrope from in Sup; they aren't regular fielded terms.
+> 
+> > index.set_query(Query.new("from", "rubyonrails-talk at googlegroups.com")
+> > index.set_query(Query.new("to", "rubyonrails-talk at googlegroups.com")
+> > index.set_query(Query.new("body", "rubyonrails-talk at googlegroups.com")
+> 
+> This I don't quite understand. Similar queries work on my system. Would
+> you be able to send the the message that this corresponds to?
+> 
+
+Sorry my mistake. The queries I did were with:
+  
+  "<rubyonrails-talk at googlegroups.com>"
+
+in this case the result is zero but if I remove the "<" and ">" then I get the 
+expected results. The same goes for "[rails]" that does not work unless I 
+remove the square brackets.
+
+> > index.set_query(Query.new("body", "fixtures"))
+> > index.set_query(Query.new("subject", "fixtures"))
+> 
+> These ones work due to the lower casing.
+> 
+> > index.set_query(Query.new("subject", "Rails"))
+> > index.set_query(Query.new("subject", "[Rails]"))
+> > index.set_query(Query.new("subject", "Test fixtures"))
+> > index.set_query(Query.new("subject", "test fixtures"))
+> 
+> I would expect the last one to work. Did it?
+> 
+
+You are rigth, the last query works correclty. Maybe I was already tired of so 
+much testing and forgot to actually run the query after setting it.
+
+> > On all tests I made sure to run index.reset_query! before setting the
+> > new query with index.set_query. Is this the correct way???
+> 
+> The reset_query! is unnecessary.
+> 
+> Thanks for all your testing. Much of this is undocumented, so I ask you
+> to bear with me.
+
+Once the UTF-7 encoding issue with the labels get's fixed I will test querying 
+with Japanese labels.
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Thu Jul  7 14:08:47 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Jul 2011 18:08:47 +0000
+Subject: [sup-devel] How are the queries supposed to work?
+In-Reply-To: <201107072348.23637.hsanson@gmail.com>
+References: <201107071124.16433.hsanson@gmail.com>
+	<1310018610-sup-9096@masanjin.net>
+	<201107072348.23637.hsanson@gmail.com>
+Message-ID: <1310062014-sup-3818@masanjin.net>
+
+Ok great, glad we're in sync. I've added an issue for improving this
+documentation.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Jul  9 18:22:15 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 09 Jul 2011 22:22:15 +0000
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <201107051052.53166.hsanson@gmail.com>
+References: <201107051052.53166.hsanson@gmail.com>
+Message-ID: <1310250042-sup-5348@masanjin.net>
+
+Hi Horacio,
+
+Reformatted excerpts from Horacio Sanson's message of 2011-07-05:
+> First any attempt to search using japanese text fails with the dreaded 
+> incompatible character encodings error:
+
+I'm having trouble reproducing this, or even understanding why your fix would
+help, since all string literals in the code should be UTF-8-encoded.
+
+Could you please apply this patch and tell me what the output is when
+you feed it a crashing search term? Thanks!
+
+--- cut here ---
+diff --git a/bin/heliotrope-server b/bin/heliotrope-server
+index c9754d4..ca764c0 100644
+--- a/bin/heliotrope-server
++++ b/bin/heliotrope-server
+@@ -219,6 +219,19 @@ class HeliotropeServer < Sinatra::Base
+       end
+       nav += "</div>"
+ 
++      puts "start"
++      p query.original_query_s.encoding
++      p query.parsed_query_s.encoding
++      p header("Search: #{query.original_query_s}", query.original_query_s).enc
++      p "<div>Parsed query: #{escape_html query.parsed_query_s}</div>".encoding
++      p "<div>Search took #{sprintf '%.2f', info[:elapsed]}s and #{info[:contin
++      p "#{nav}<table>".encoding
++      p results.size
++      p results.map { |r| threadinfo_to_html r }.join.encoding
++      p "</table>#{nav}".encoding
++      p footer.encoding
++      puts "end"
++
+       header("Search: #{query.original_query_s}", query.original_query_s) +
+         "<div>Parsed query: #{escape_html query.parsed_query_s}</div>" +
+         "<div>Search took #{sprintf '%.2f', info[:elapsed]}s and #{info[:contin
+--- cut here ---
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Sat Jul  9 19:50:34 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sun, 10 Jul 2011 08:50:34 +0900
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <1310250042-sup-5348@masanjin.net>
+References: <201107051052.53166.hsanson@gmail.com>
+	<1310250042-sup-5348@masanjin.net>
+Message-ID: <201107100850.34478.hsanson@gmail.com>
+
+Hello,
+
+On Sunday 10 July 2011 07:22:15 William Morgan wrote:
+> Hi Horacio,
+> 
+> Reformatted excerpts from Horacio Sanson's message of 2011-07-05:
+> > First any attempt to search using japanese text fails with the dreaded
+> 
+> > incompatible character encodings error:
+> I'm having trouble reproducing this, or even understanding why your fix
+> would help, since all string literals in the code should be UTF-8-encoded.
+> 
+> Could you please apply this patch and tell me what the output is when
+> you feed it a crashing search term? Thanks!
+> 
+> --- cut here ---
+> diff --git a/bin/heliotrope-server b/bin/heliotrope-server
+> index c9754d4..ca764c0 100644
+> --- a/bin/heliotrope-server
+> +++ b/bin/heliotrope-server
+> @@ -219,6 +219,19 @@ class HeliotropeServer < Sinatra::Base
+>        end
+>        nav += "</div>"
+> 
+> +      puts "start"
+> +      p query.original_query_s.encoding
+> +      p query.parsed_query_s.encoding
+> +      p header("Search: #{query.original_query_s}",
+> query.original_query_s).enc +      p "<div>Parsed query: #{escape_html
+> query.parsed_query_s}</div>".encoding +      p "<div>Search took #{sprintf
+> '%.2f', info[:elapsed]}s and #{info[:contin +      p
+> "#{nav}<table>".encoding
+> +      p results.size
+> +      p results.map { |r| threadinfo_to_html r }.join.encoding
+> +      p "</table>#{nav}".encoding
+> +      p footer.encoding
+> +      puts "end"
+> +
+>        header("Search: #{query.original_query_s}", query.original_query_s)
+> + "<div>Parsed query: #{escape_html query.parsed_query_s}</div>" +
+> "<div>Search took #{sprintf '%.2f', info[:elapsed]}s and #{info[:contin
+> --- cut here ---
+
+Seems the problem is not heliotrope. The problem are my hooks that use MeCab 
+to split Japanese words.
+
+If I run a search for japanese using my query hook this is the output:
+
+search(body:"???", 0, 20) took 0.1ms
+start
+#<Encoding:ASCII-8BIT>
+#<Encoding:UTF-8>
+#<Encoding:ASCII-8BIT>
+#<Encoding:UTF-8>
+"<div>Search took 0.00s and was NOT continued</div>"
+#<Encoding:UTF-8>
+0
+#<Encoding:ASCII-8BIT>
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+end
+
+
+If I put a force_encoding at the end of the hook I get:
+
+start
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+"<div>Search took 0.00s and was NOT continued</div>"
+#<Encoding:UTF-8>
+20
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+#<Encoding:UTF-8>
+end
+
+I need to re-index my emails with the new UTF-8 hooks and test the search 
+again.
+
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Fri Jul 15 00:07:28 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 15 Jul 2011 04:07:28 +0000
+Subject: [sup-devel] Heliotrope improving but still found some issues
+In-Reply-To: <201107100850.34478.hsanson@gmail.com>
+References: <201107051052.53166.hsanson@gmail.com>
+	<1310250042-sup-5348@masanjin.net>
+	<201107100850.34478.hsanson@gmail.com>
+Message-ID: <1310702820-sup-727@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-07-09:
+> I need to re-index my emails with the new UTF-8 hooks and test the
+> search again.
+
+Can you try with the latest master? You may not need to reindex.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Sun Jul 17 13:42:11 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 17 Jul 2011 18:42:11 +0100
+Subject: [sup-devel] error after leveldb-ruby upgrade
+Message-ID: <CAOxvSbddWV33kzmS0OPCg-jvcKjzwu1JyGFjqL4Puaxiv-a=tQ@mail.gmail.com>
+
+Hello
+
+I've just done a git pull, and noticed there was a bump in version of
+leveldb-ruby, so did a gem update to 0.7.
+
+Then when trying to run heliotrope-add or heliotrope-server, it
+immediately dies with:
+
+
+$ heliotrope-server -d ~/.heliotrope
+/var/lib/gems/1.9.1/gems/leveldb-ruby-0.7/lib/leveldb.rb:11:in `make':
+Corruption: checksum mismatch (LevelDB::Error)
+	from /var/lib/gems/1.9.1/gems/leveldb-ruby-0.7/lib/leveldb.rb:11:in `new'
+	from /home/mish/dev/sup/heliotrope/lib/heliotrope/index.rb:45:in `initialize'
+	from /home/mish/dev/sup/heliotrope/bin/heliotrope-server:583:in `new'
+	from /home/mish/dev/sup/heliotrope/bin/heliotrope-server:583:in `<main>'
+
+
+Any ideas?
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Jul 17 16:05:27 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 17 Jul 2011 20:05:27 +0000
+Subject: [sup-devel] error after leveldb-ruby upgrade
+In-Reply-To: <CAOxvSbddWV33kzmS0OPCg-jvcKjzwu1JyGFjqL4Puaxiv-a=tQ@mail.gmail.com>
+References: <CAOxvSbddWV33kzmS0OPCg-jvcKjzwu1JyGFjqL4Puaxiv-a=tQ@mail.gmail.com>
+Message-ID: <1310933008-sup-9080@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-07-17:
+> $ heliotrope-server -d ~/.heliotrope
+> /var/lib/gems/1.9.1/gems/leveldb-ruby-0.7/lib/leveldb.rb:11:in `make':
+> Corruption: checksum mismatch (LevelDB::Error)
+
+That error gets thrown when LevelDB detects things are corrupted, but
+I'd be surprised if the upgrade to 0.7 caused this--the only change was
+one in how memory in the Ruby world is free'd. None of the actual
+LevelDB code changed.
+
+If you downgrade to 0.6, do you still get that error? Are you running
+out of disk space, or anything like that?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Sun Jul 17 18:51:55 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 17 Jul 2011 23:51:55 +0100
+Subject: [sup-devel] error after leveldb-ruby upgrade
+In-Reply-To: <1310933008-sup-9080@masanjin.net>
+References: <CAOxvSbddWV33kzmS0OPCg-jvcKjzwu1JyGFjqL4Puaxiv-a=tQ@mail.gmail.com>
+	<1310933008-sup-9080@masanjin.net>
+Message-ID: <CAOxvSbd+BmyYST+fvNiY9CHPc8_sYEkb_6ugDRWv875imhCfgw@mail.gmail.com>
+
+On 17 July 2011 21:05, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Hamish D's message of 2011-07-17:
+>> $ heliotrope-server -d ~/.heliotrope
+>> /var/lib/gems/1.9.1/gems/leveldb-ruby-0.7/lib/leveldb.rb:11:in `make':
+>> Corruption: checksum mismatch (LevelDB::Error)
+>
+> If you downgrade to 0.6, do you still get that error? Are you running
+> out of disk space, or anything like that?
+
+I still get that error with 0.6 (and 0.5) so I guess there must be
+corruption :/ I did upgrade straight from 0.5 to 0.7 o the off chance
+that made any difference, but I imagine not. On disk space I have
+multiple GB to spare, so I don't think that would be it.
+
+Is there any way to recover from the error? Or do I just have to
+delete it all and start again?
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Mon Jul 18 00:21:18 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 Jul 2011 04:21:18 +0000
+Subject: [sup-devel] error after leveldb-ruby upgrade
+In-Reply-To: <CAOxvSbd+BmyYST+fvNiY9CHPc8_sYEkb_6ugDRWv875imhCfgw@mail.gmail.com>
+References: <CAOxvSbddWV33kzmS0OPCg-jvcKjzwu1JyGFjqL4Puaxiv-a=tQ@mail.gmail.com>
+	<1310933008-sup-9080@masanjin.net>
+	<CAOxvSbd+BmyYST+fvNiY9CHPc8_sYEkb_6ugDRWv875imhCfgw@mail.gmail.com>
+Message-ID: <1310962828-sup-2572@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-07-17:
+> Is there any way to recover from the error? Or do I just have to
+> delete it all and start again?
+
+LevelDB provides a recovery function. I'm not sure how well it works.
+Give me a day or two to export it with the ruby bindings, and you can
+give it a try.
+-- 
+William <wmorgan-sup at masanjin.net>
+

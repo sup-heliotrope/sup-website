@@ -1,0 +1,513 @@
+From eg at gaute.vetsj.com  Tue May  7 11:54:22 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 07 May 2013 13:54:22 +0200
+Subject: [sup-talk] [sup-devel] sup 0.13 - please test
+In-Reply-To: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+Message-ID: <5188EB6E.8070504@gaute.vetsj.com>
+
+On 28. april 2013 22:32, Hamish D wrote:
+> We'd like to get version 0.13 of sup out soon.  There's a fair bit of
+> work gone into sup since 0.12 was released (in January 2011) that it
+> would be good to get out there. Once that is done we can then work on
+> the bigger goals we have for 0.14 - see
+> https://github.com/sup-heliotrope/sup/wiki/Development#roadmap for
+> those plans.
+> 
+> So the question is, are there any serious bugs that we should fix
+> before releasing 0.13?
+
+Greetings sup-devel and sup-talk,
+
+
+Thanks to several contributors I think we should be getting ready for
+0.13 now soon, we've removed a lot of old and deprecated stuff and
+generally cleaned a bit up.
+
+There is a new web page: http://supmua.org which is getting in shape and
+a wiki which is quickly growing: https://github.com/sup-heliotrope/sup/wiki
+
+We have forked our own version of ncursesw (ncursesw-sup) which now is a
+dependency for sup [1].
+
+To be able to do the next release we need some testing of the current
+state of 'develop' and the new ncursesw-sup gem. For instructions on how
+to help out with testing the latest git version (develop) check out:
+https://github.com/sup-heliotrope/sup/wiki/Running-from-git
+
+If you have any problems or questions please ask.
+
+Report issues to: https://github.com/sup-heliotrope/sup/issues
+
+
+[1] https://rubygems.org/gems/ncursesw-sup
+
+
+Regards,
+Gaute
+
+From eg at gaute.vetsj.com  Wed May 15 08:30:27 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 15 May 2013 10:30:27 +0200
+Subject: [sup-talk] Release 0.13.0
+Message-ID: <519347A3.4070500@gaute.vetsj.com>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Greetings fellow Suppers,
+
+We have just released version 0.13.0 at Rubygems:
+
+  https://rubygems.org/gems/sup
+
+to install:
+
+  gem install sup
+
+for more information check out the wiki:
+
+  https://github.com/sup-heliotrope/sup/wiki
+
+or the new web site:
+
+  http://supmua.org
+
+
+Thanks a lot to all who have contributed over the last years since the
+previous release, and in particular all those who have been part of
+effort to get Sup going again and getting this release out as well as
+William Morgan who has let us keep working on Sup. I hope it will last!
+
+
+Please report bugs too:
+
+  https://github.com/sup-heliotrope/sup/issues
+
+
+- - The Sup maintainers
+
+
+Note: The gem has been signed with my key (included below), note
+however that Rubygems signing is still only in its infancy.
+
+- -----BEGIN CERTIFICATE-----
+MIIDVDCCAjygAwIBAgIBADANBgkqhkiG9w0BAQUFADBQMQswCQYDVQQDDAJlZzEV
+MBMGCgmSJomT8ixkARkWBWdhdXRlMRUwEwYKCZImiZPyLGQBGRYFdmV0c2oxEzAR
+BgoJkiaJk/IsZAEZFgNjb20wHhcNMTMwNTA4MTAzODQ3WhcNMTQwNTA4MTAzODQ3
+WjBQMQswCQYDVQQDDAJlZzEVMBMGCgmSJomT8ixkARkWBWdhdXRlMRUwEwYKCZIm
+iZPyLGQBGRYFdmV0c2oxEzARBgoJkiaJk/IsZAEZFgNjb20wggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQC7sNc5zY4MrYB7eywE/aK2IoDqpM9lq4ZFlHzt
+Pmq1LG6ah2lu/HfjqxiPoqwY7QkdSOGDLSk7G8YBqDA/tODhkPPSTqxBDzYyCO46
+haWTtoN5tJkxIDJKp1nVXHi0Mlb4GJVKd9P0q95BeBYBfs8vyPN+y4b4Gebgx9U3
+KqMDbe5h9MAPZGmtiRFMb3ugmiujDm7v8fACa5EtSvK/lxMkRDglecT/knE99NYI
+l35SO/Bune1bxYmkwW64mQ4wRlGVeAnX+19msALfS9rdJL26dfW2LgqWi5QoVTBH
+KNKTl/i3fxK0mzgtnoRCWdMJQFNNonFTnPUUawi1c9Kh4AdPAgMBAAGjOTA3MAkG
+A1UdEwQCMAAwHQYDVR0OBBYEFJNCOxL0SWcbW2M+DIEUzAMz1bZsMAsGA1UdDwQE
+AwIEsDANBgkqhkiG9w0BAQUFAAOCAQEAr3QUayd0geBDExO+WwzaEPAuUZ3zWQYG
+G9vrplCkmJtjS/X/wVAef7Jn/V5MNkXKXsiOgXJXki+n7HulNZUf1rzr7Un96gVJ
+1hq/ZTuapnPpstBqqdv60RB8HNGydHQeEz6us5z3nj+KchPqJ657Dz8oX/Nm6/24
+7QSQpCh8xBYdSWEpoIE0zUSY77LtVTRVwIr9uDpWTTr9kCVBINBsOQNjWKruEWjV
++JMuDs+iWefpF4R3BySoOc1Q4WoES3+oc0qo37MsAZyfnQIPTZkyLZCMxeL6Mha4
+hFc2yANBj8voaY5C74Cg2VqExtcnSaxUtW9wC4w5hOlg0AVfb1JWzg==
+- -----END CERTIFICATE-----
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQIcBAEBAgAGBQJRk0eiAAoJEJgnp+igdJAj58oP/2APxYsJ3RWtlhFGDk5IVSeW
+XNxw449fyRB1pnsyUvFvtkf0IU6SzVF/lV+Iq2mNIgGlsN1wKU5zk92Ic3cm0KAh
+dO8YmvQP46NV0UqZWSg6cu91cMbBOUD1KIpww633fEjN7N9fHuAO1BWZlQqpTt/S
+Y7bkpCCQWzwcY9yDtiZDp1qXQoLvxTg8epsIV1XwgGi9G/h0IAXZIG2VqmQl/80T
+0VteWfGHZ/PWa+34/101Q5uN8SXo+HLW2o4UD0lPSL0RRoQE0AkilbctzOQT6TE4
+lYmhPmgFDBoW5XWv73JxkS8y95BcYCUl2Q3w0KuyeYJeAIYWaU8WTCebYEBMnuud
+Lob97x/o+YA8SQylSnJxOyT8kTqvH4ZG7X2yEeJztJQaNagUlKIuvujF/s1lCaRi
+2O5kcI6UaAC6yu3XUwXESsXOQ0cUQnbG6P/CZtBXDFaeYqMHq5KSbjm99h+s8l6/
+97VQCxa2JYaaQb5wHtk0jrPAmpbA+EXJ4LzlMZeDMRf7+J1Ag8Y6XDRP2BN2p6Q8
+QKNoHrrPpCPZyXDxoMYHVoGl4UYXCS0n8jTdUG62b5fJjs9A5YayT4PiXtmxs/B3
+HYsDc9jGsoZyduJWI36pPQgc9wb65rpRLm1NMySokzp1zIydEmYZY8+Y+zXa2xba
+31ciZlyNkN0TO/JmU34G
+=Trft
+-----END PGP SIGNATURE-----
+
+From daniel at wagner-home.com  Wed May 15 13:28:52 2013
+From: daniel at wagner-home.com (Daniel Wagner)
+Date: Wed, 15 May 2013 09:28:52 -0400
+Subject: [sup-talk] Release 0.13.0
+In-Reply-To: <519347A3.4070500@gaute.vetsj.com>
+References: <519347A3.4070500@gaute.vetsj.com>
+Message-ID: <bc80e24ca3b4a03743c11cbf854bd64f@seas.upenn.edu>
+
+On 2013-05-15 04:30, Gaute Hope wrote:
+> or the new web site:
+> 
+>   http://supmua.org
+
+The new website seems to be down!
+~d
+
+From eg at gaute.vetsj.com  Wed May 15 14:38:21 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 15 May 2013 16:38:21 +0200
+Subject: [sup-talk] Release 0.13.0
+In-Reply-To: <bc80e24ca3b4a03743c11cbf854bd64f@seas.upenn.edu>
+References: <519347A3.4070500@gaute.vetsj.com>
+	<bc80e24ca3b4a03743c11cbf854bd64f@seas.upenn.edu>
+Message-ID: <51939DDD.4090507@gaute.vetsj.com>
+
+On 15. mai 2013 15:28, Daniel Wagner wrote:
+> On 2013-05-15 04:30, Gaute Hope wrote:
+>> or the new web site:
+>>
+>>   http://supmua.org
+> 
+> The new website seems to be down!
+> ~d
+
+Seems to have been a glitch, is back up now.
+
+https://status.github.com/messages
+
+- gaute
+
+From marka at pobox.com  Fri May 17 16:51:57 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 17 May 2013 12:51:57 -0400
+Subject: [sup-talk] [PATCH] Fix search-for-next function when using Ruby 1.9
+Message-ID: <1368809417-sup-3442@x200s>
+
+[Note: I've submitted a pull request for this fix.]
+
+The use of the 'n' key to search for the next occurrence
+of a string stopped working when running sup in Ruby 1.9.
+This simple patch fixes that problem.
+---
+ lib/sup/buffer.rb |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 444589a..859e0c7 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -271,7 +271,7 @@ EOS
+ 
+   def handle_input c
+     if @focus_buf
+-      if @focus_buf.mode.in_search? && c != CONTINUE_IN_BUFFER_SEARCH_KEY[0]
++      if @focus_buf.mode.in_search? && c != CONTINUE_IN_BUFFER_SEARCH_KEY.ord
+         @focus_buf.mode.cancel_search!
+         @focus_buf.mark_dirty
+       end
+
+
+From eg at gaute.vetsj.com  Fri May 17 16:58:55 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 17 May 2013 18:58:55 +0200
+Subject: [sup-talk] [PATCH] Fix search-for-next function when using Ruby
+ 1.9
+In-Reply-To: <1368809417-sup-3442@x200s>
+References: <1368809417-sup-3442@x200s>
+Message-ID: <519661CF.7040909@gaute.vetsj.com>
+
+Thanks, is merged into develop and line-0.13-develop.
+
+Regards, Gaute
+
+On fr. 17. mai 2013 kl. 18.51 +0200, Mark Alexander wrote:
+> [Note: I've submitted a pull request for this fix.]
+>
+> The use of the 'n' key to search for the next occurrence
+> of a string stopped working when running sup in Ruby 1.9.
+> This simple patch fixes that problem.
+> ---
+>  lib/sup/buffer.rb |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+> index 444589a..859e0c7 100644
+> --- a/lib/sup/buffer.rb
+> +++ b/lib/sup/buffer.rb
+> @@ -271,7 +271,7 @@ EOS
+>
+>    def handle_input c
+>      if @focus_buf
+> -      if @focus_buf.mode.in_search? && c != CONTINUE_IN_BUFFER_SEARCH_KEY[0]
+> +      if @focus_buf.mode.in_search? && c != CONTINUE_IN_BUFFER_SEARCH_KEY.ord
+>          @focus_buf.mode.cancel_search!
+>          @focus_buf.mark_dirty
+>        end
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From matthieu.rakotojaona at gmail.com  Fri May 17 20:34:38 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 17 May 2013 22:34:38 +0200
+Subject: [sup-talk] Release 0.13.0
+In-Reply-To: <519347A3.4070500@gaute.vetsj.com>
+References: <519347A3.4070500@gaute.vetsj.com>
+Message-ID: <1368822577-sup-3589@kpad>
+
+Hey everyone,
+
+Excerpts from Gaute Hope's message of mer. mai 15 10:30:27 +0200 2013:
+> We have just released version 0.13.0 at Rubygems:
+
+I'd like to thank every one of you for reviving sup. After having left
+heliotrope on the side, I was longing for an alternative but couldn't
+find anything as pleasant to hack on as heliotrope. I can now use all
+the power of a search-driven MUA, and I can do it because you pushed it
+to this release. You are awesome, thank you!
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130517/c730a38e/attachment.bin>
+
+From bacuh at riseup.net  Fri May 24 11:59:14 2013
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Fri, 24 May 2013 13:59:14 +0200
+Subject: [sup-talk] Umlauts broken
+Message-ID: <20130524115914.GA3518@eee.Speedport_W_504V_Typ_A>
+
+Hi.
+
+I was really happy as I heard, that sup is actively developed again. Too
+long time ago I had to leave sup because it got broken more and more...
+
+Just tried to install (via gem) and run it via rbenv under ruby
+1.9.3-p327 and 1.9.3-p392.  With both I have the problem that characters
+like Umlauts are not show correctly. For example: "?" becomes "\xe4".
+
+When setting $SUP_LOG_LEVEL to debug I get several of those lines:
+
+  couldn't transcode text from ASCII (ASCII) to UTF8 ("<20130523193529.GB30"...): got String::CheckError (unexpected encoding ASCII-8BIT)
+
+I'm not sure if this is related to my encoding problems. Any of those
+lines seem to be referencing to header lines.
+
+I was long enough without sup so I can wait for the compatibility with
+ruby 2.0.0 but I would really prefer to sup again sooner.
+
+So have you any solution, work-around or patch at hand for this problem
+or do you have any idea how I can help debug this problem?
+
+LG
+basti
+
+-- 
+react!OR               ::         Fr?hlingstr. 17 | 87439 Kempten
+selbstverwaltetes JuZe :: Infoladen | Umsonstladen | Offener Raum
+https://react.or.ke    ::                  Telefon: 0831 52623689
+ 
+Der react!OR lebt von Dingen, die anderswo ?brig sind. Aktuell gesucht:
+Mehrfachstecker, Verl?ngerungskabel, N?hmaschine, Diktierger?t, 
+Papierschneidebrett, Dosen?ffner ... mehr: <https://react.or.ke/suche>
+
+From eg at gaute.vetsj.com  Fri May 24 14:22:51 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 24 May 2013 16:22:51 +0200
+Subject: [sup-talk] Umlauts broken
+In-Reply-To: <20130524115914.GA3518@eee.Speedport_W_504V_Typ_A>
+References: <20130524115914.GA3518@eee.Speedport_W_504V_Typ_A>
+Message-ID: <519F77BB.5010605@gaute.vetsj.com>
+
+
+
+On 24. mai 2013 13:59, Sebastian Lipp wrote:
+> Hi.
+> 
+> I was really happy as I heard, that sup is actively developed again. Too
+> long time ago I had to leave sup because it got broken more and more...
+> 
+> Just tried to install (via gem) and run it via rbenv under ruby
+> 1.9.3-p327 and 1.9.3-p392.  With both I have the problem that characters
+> like Umlauts are not show correctly. For example: "?" becomes "\xe4".
+> 
+> When setting $SUP_LOG_LEVEL to debug I get several of those lines:
+> 
+>   couldn't transcode text from ASCII (ASCII) to UTF8 ("<20130523193529.GB30"...): got String::CheckError (unexpected encoding ASCII-8BIT)
+> 
+> I'm not sure if this is related to my encoding problems. Any of those
+> lines seem to be referencing to header lines.
+> 
+> I was long enough without sup so I can wait for the compatibility with
+> ruby 2.0.0 but I would really prefer to sup again sooner.
+> 
+> So have you any solution, work-around or patch at hand for this problem
+> or do you have any idea how I can help debug this problem?
+> 
+> LG
+> basti
+> 
+
+Hi Sebastian,
+
+Don't have the chance to go investigate much atm, but it could be
+related to RMail and the usual lack of correct UTF-8 handling. I would
+suggest you open an issue here though:
+
+	https://github.com/sup-heliotrope/sup/issues?state=open
+
+otherwise it can easily disappear away..
+
+If you are bold enough #61
+(https://github.com/sup-heliotrope/sup/pull/61) have initial Mail
+support for ruby 2.0, it would be interesting to see if the problem is
+present there.
+
+Note: this branch is incomplete and not usable yet for sending mail.
+
+Also, hold on to problematic emails for testing later!
+
+Regards, Gaute
+
+From bacuh at riseup.net  Sat May 25 14:32:37 2013
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Sat, 25 May 2013 16:32:37 +0200
+Subject: [sup-talk] Umlauts broken
+In-Reply-To: <519F77BB.5010605@gaute.vetsj.com>
+References: <20130524115914.GA3518@eee.Speedport_W_504V_Typ_A>
+	<519F77BB.5010605@gaute.vetsj.com>
+Message-ID: <20130525143236.GA29888@eee>
+
+On 2013-05-24 04:22, Gaute Hope wrote:
+> On 24. mai 2013 13:59, Sebastian Lipp wrote:
+> > Just tried to install (via gem) and run it via rbenv under ruby
+> > 1.9.3-p327 and 1.9.3-p392.  With both I have the problem that characters
+> > like Umlauts are not show correctly. For example: "?" becomes "\xe4".
+> 
+> Don't have the chance to go investigate much atm, but it could be
+> related to RMail and the usual lack of correct UTF-8 handling. I would
+> suggest you open an issue here though:
+> 
+> 	https://github.com/sup-heliotrope/sup/issues?state=open
+> 
+> otherwise it can easily disappear away..
+
+Do you thing my description is good enough to open a new issue?
+
+> If you are bold enough #61
+> (https://github.com/sup-heliotrope/sup/pull/61) have initial Mail
+> support for ruby 2.0, it would be interesting to see if the problem is
+> present there.
+
+After bundle install and the branch's checkout it failed to load syck. A
+`gem i syck` later it fails With
+
+  syck has been removed
+  /home/bacuh/.rbenv/versions/2.0.0-p0/lib/ruby/2.0.0/rubygems/core_ext/kernel_require.rb:45:in
+  `require':
+  /home/bacuh/.rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/rmail-1.0.0/lib/rmail/address.rb:694:
+  invalid multibyte escape: /\A[\200-\377\w!$%&\'*+\/=?^_\`{\}|~#-]+/m
+  (SyntaxError)
+
+If you have a quick resolution for that I can go on and see if the
+encoding problems still exist on this branch.
+
+LG
+basti
+
+-- 
+react!OR               ::         Fr?hlingstr. 17 | 87439 Kempten
+selbstverwaltetes JuZe :: Infoladen | Umsonstladen | Offener Raum
+https://react.or.ke    ::                  Telefon: 0831 52623689
+ 
+Der react!OR lebt von Dingen, die anderswo ?brig sind. Aktuell gesucht:
+Mehrfachstecker, Verl?ngerungskabel, N?hmaschine, Diktierger?t, 
+Papierschneidebrett, Dosen?ffner ... mehr: <https://react.or.ke/suche>
+
+From eg at gaute.vetsj.com  Sat May 25 15:07:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 25 May 2013 17:07:23 +0200
+Subject: [sup-talk] Umlauts broken
+In-Reply-To: <20130525143236.GA29888@eee>
+References: <20130524115914.GA3518@eee.Speedport_W_504V_Typ_A>
+	<519F77BB.5010605@gaute.vetsj.com> <20130525143236.GA29888@eee>
+Message-ID: <51A0D3AB.6050401@gaute.vetsj.com>
+
+
+
+On 25. mai 2013 16:32, Sebastian Lipp wrote:
+> On 2013-05-24 04:22, Gaute Hope wrote:
+>> On 24. mai 2013 13:59, Sebastian Lipp wrote:
+>>> Just tried to install (via gem) and run it via rbenv under ruby
+>>> 1.9.3-p327 and 1.9.3-p392.  With both I have the problem that characters
+>>> like Umlauts are not show correctly. For example: "?" becomes "\xe4".
+>>
+>> Don't have the chance to go investigate much atm, but it could be
+>> related to RMail and the usual lack of correct UTF-8 handling. I would
+>> suggest you open an issue here though:
+>>
+>> 	https://github.com/sup-heliotrope/sup/issues?state=open
+>>
+>> otherwise it can easily disappear away..
+> 
+> Do you thing my description is good enough to open a new issue?
+> 
+>> If you are bold enough #61
+>> (https://github.com/sup-heliotrope/sup/pull/61) have initial Mail
+>> support for ruby 2.0, it would be interesting to see if the problem is
+>> present there.
+> 
+> After bundle install and the branch's checkout it failed to load syck. A
+> `gem i syck` later it fails With
+> 
+>   syck has been removed
+>   /home/bacuh/.rbenv/versions/2.0.0-p0/lib/ruby/2.0.0/rubygems/core_ext/kernel_require.rb:45:in
+>   `require':
+>   /home/bacuh/.rbenv/versions/2.0.0-p0/lib/ruby/gems/2.0.0/gems/rmail-1.0.0/lib/rmail/address.rb:694:
+>   invalid multibyte escape: /\A[\200-\377\w!$%&\'*+\/=?^_\`{\}|~#-]+/m
+>   (SyntaxError)
+> 
+> If you have a quick resolution for that I can go on and see if the
+> encoding problems still exist on this branch.
+
+The pull request hasn't been merged into the official repo yet, so you'd
+have to grab it from my repo:
+
+	git://github.com/gauteh/sup.git
+
+(neither syck nor rmail is required)
+
+Yes, I think so, these issues are diffuse.. but they re-appear all the
+time. With a test-email to reproduce the issue things get easier.
+
+Regards, Gaute
+
+From ezyang at MIT.EDU  Thu May 30 22:06:35 2013
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 30 May 2013 15:06:35 -0700
+Subject: [sup-talk] A useful contacts list trick
+Message-ID: <1369951537-sup-9257@javelin>
+
+I had always been bothered by the fact that my contacts autocomplete
+would never seem to work half of the time.  I finally found out how
+to vastly improve my it:
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 444589a..077dc94 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -553,7 +553,7 @@ EOS
+     default = default_contacts.is_a?(String) ? default_contacts : default_contacts.map { |s| s.to_s }.join(", ")
+     default += " " unless default.empty?
+ 
+-    recent = Index.load_contacts(AccountManager.user_emails, :num => 10).map { |c| [c.full_address, c.email] }
++    recent = Index.load_contacts(AccountManager.user_emails, :num => 100).map { |c| [c.full_address, c.email] }
+     contacts = ContactManager.contacts.map { |c| [ContactManager.alias_for(c), c.full_address, c.email] }
+ 
+     completions = (recent + contacts).flatten.uniq
+
+Hope this helps someone else out :)
+
+Cheers,
+Edward
+

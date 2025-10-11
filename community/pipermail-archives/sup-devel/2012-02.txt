@@ -1,0 +1,791 @@
+From michael+sup at stapelberg.de  Mon Feb  6 15:45:56 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 06 Feb 2012 20:45:56 +0000
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1326155913-turnsole-58321@terminus-est>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+Message-ID: <1328560984-sup-7904@stapelberg.de>
+
+Hi William,
+
+Excerpts from William Morgan's message of 2012-01-10 00:40:56 +0000:
+> I need to write some code to do this. For IMAP and GMail, heliotrope-add will
+> keep a pointer to thelast message imported, by default. For mbox there is a
+> trick you can use. But there's nothing for maildir right now. Please file
+> an issue so that I don't forget this!
+It?s been four weeks, and https://github.com/wmorgan/heliotrope/issues/32 is
+still open. Just to let you know: This is what?s stopping me from using
+heliotrope+turnsole and possibly participating in its development at the moment
+:-/.
+
+If it?s a task which is too big for your current spare time, could you please
+describe how you would implement it, so that others can help?
+
+Best regards,
+Michael
+
+From matthieu.rakotojaona at gmail.com  Mon Feb  6 18:08:33 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 7 Feb 2012 00:08:33 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1328560984-sup-7904@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+	<1328560984-sup-7904@stapelberg.de>
+Message-ID: <CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+
+Hi,
+
+On Mon, Feb 6, 2012 at 9:45 PM, Michael Stapelberg
+<michael+sup at stapelberg.de> wrote:
+> It?s been four weeks, and https://github.com/wmorgan/heliotrope/issues/32 is
+> still open. Just to let you know: This is what?s stopping me from using
+> heliotrope+turnsole and possibly participating in its development at the moment
+> :-/.
+>
+> If it?s a task which is too big for your current spare time, could you please
+> describe how you would implement it, so that others can help?
+
+As far as I can tell, IMAP will not be implemented in heliotrope. I
+have started some work on a IMAP frontend which you can fork from :
+
+https://github.com/rakoo/imaptrope
+
+You use it as a separate process. It will create a RESTClient
+connected to heliotrope, and you just connect to it with classical
+IMAP clients.
+
+-- 
+Matthieu RAKOTOJAONA
+
+From michael+sup at stapelberg.de  Mon Feb  6 18:46:17 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 06 Feb 2012 23:46:17 +0000
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+	<1328560984-sup-7904@stapelberg.de>
+	<CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+Message-ID: <1328571942-sup-6289@stapelberg.de>
+
+Hi Matthieu,
+
+Excerpts from Matthieu Rakotojaona's message of 2012-02-06 23:08:33 +0000:
+> As far as I can tell, IMAP will not be implemented in heliotrope. I
+> have started some work on a IMAP frontend which you can fork from :
+Uhm, that?s not what I am talking about. I want to fetch mails from an IMAP
+server and store them in heliotrope.
+
+Best regards,
+Michael
+
+From matthieu.rakotojaona at gmail.com  Tue Feb  7 07:27:32 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 7 Feb 2012 13:27:32 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1328571942-sup-6289@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+	<1328560984-sup-7904@stapelberg.de>
+	<CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+	<1328571942-sup-6289@stapelberg.de>
+Message-ID: <CAMiZLn17XrTzJswryKM-TJqu6RabvLEXpRzWzo9jY5z68g--Ng@mail.gmail.com>
+
+On Tue, Feb 7, 2012 at 12:46 AM, Michael Stapelberg
+<michael+sup at stapelberg.de> wrote:
+> Uhm, that?s not what I am talking about. I want to fetch mails from an IMAP
+> server and store them in heliotrope.
+
+Yes, you can use offlineimap to sync 2 IMAP servers, although this is
+still a work in progress. Or you can use 1-way copy tools, such as
+imapcopy[0].
+
+Oh, and heliotrope does tell you when it already has an email, based
+on its Message-Id header.
+
+[0] imapsync.lamiral.info/
+
+
+-- 
+Matthieu RAKOTOJAONA
+
+From michael+sup at stapelberg.de  Tue Feb  7 14:11:00 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 07 Feb 2012 19:11:00 +0000
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <CAMiZLn17XrTzJswryKM-TJqu6RabvLEXpRzWzo9jY5z68g--Ng@mail.gmail.com>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+	<1328560984-sup-7904@stapelberg.de>
+	<CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+	<1328571942-sup-6289@stapelberg.de>
+	<CAMiZLn17XrTzJswryKM-TJqu6RabvLEXpRzWzo9jY5z68g--Ng@mail.gmail.com>
+Message-ID: <1328641741-sup-6676@stapelberg.de>
+
+Hi Matthieu,
+
+Excerpts from Matthieu Rakotojaona's message of 2012-02-07 12:27:32 +0000:
+> Yes, you can use offlineimap to sync 2 IMAP servers, although this is
+> still a work in progress. Or you can use 1-way copy tools, such as
+> imapcopy[0].
+I use offlineimap to sync my IMAP server at home with my notebook (maildir) and
+that works fine.
+
+> Oh, and heliotrope does tell you when it already has an email, based
+> on its Message-Id header.
+Yes, but heliotrope-add does a full scan on every run, which takes hours
+(instead of seconds).
+
+I explained this in my original email and William acknowledged that code for
+this is just missing. I?m not sure what you are trying to say.
+
+Best regards,
+Michael
+
+From matthieu.rakotojaona at gmail.com  Tue Feb  7 16:54:08 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 7 Feb 2012 22:54:08 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1328641741-sup-6676@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de>
+	<1326155913-turnsole-58321@terminus-est>
+	<1328560984-sup-7904@stapelberg.de>
+	<CAMiZLn1UjG=Mnn3WtPVZFNh59K6r=kAfR-9B_zz3H6oBwRVM4A@mail.gmail.com>
+	<1328571942-sup-6289@stapelberg.de>
+	<CAMiZLn17XrTzJswryKM-TJqu6RabvLEXpRzWzo9jY5z68g--Ng@mail.gmail.com>
+	<1328641741-sup-6676@stapelberg.de>
+Message-ID: <CAMiZLn1au8xY9XHEdnBQLnTECfTxp+cshCWwfYm43abz7jhBTA@mail.gmail.com>
+
+Hi Michael,
+
+On Tue, Feb 7, 2012 at 8:11 PM, Michael Stapelberg
+<michael+sup at stapelberg.de> wrote:
+>  I?m not sure what you are trying to say.
+
+Ok, I think I know what you mean.
+
+You currently have a main IMAP server. You regularly sync it to your
+notebook in maildir with offlineimap. You would like to use this
+maildir directly with heliotrope. Right ?
+
+So here are two options I can see for you:
+* keep the maildir-backuping in a corner and sync your main IMAP
+server directly with imaptrope ("heliotrope's" IMAP interface). This
+would need two runs of offlineIMAP.
+* use offlineimap to sync your maildir to imaptrope. This might create
+problems, because the 2 syncings might interfere with each other.
+
+
+
+
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Mon Feb 13 01:16:33 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 12 Feb 2012 22:16:33 -0800
+Subject: [sup-devel]  [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1326062741-sup-6469@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de>
+Message-ID: <1329113568-sup-8177@typhon>
+
+Excerpts from Michael Stapelberg's message of 2012-01-08 14:48:18 -0800:
+> What is the correct way to do this?
+
+Please try the latest heliotrope master. You can do a full import with this:
+
+  ruby -Ilib bin/heliotrope-import -a <maildir> -d <mailstore> -t <state file>
+
+where <state file> is just a place for it to dump its state. This import need
+only happen once. Then for subsequent additions you can do this:
+
+  ruby -Ilib bin/heliotrope-add -a <maildir> -d <mailstore> -t <state file>
+
+which will read to and write from that state file, and only add what it
+hasn't yet seen.
+-- 
+William <wmorgan at masanjin.net>
+
+From michael+sup at stapelberg.de  Wed Feb 22 21:41:42 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 22 Feb 2012 22:41:42 +0100
+Subject: [sup-devel] [Turnsole] Automatically displaying new mails?
+Message-ID: <1329946808-sup-8894@stapelberg.de>
+
+Hi,
+
+I am trying to use Turnsole for my mails, but I noticed that it never seems to
+pick up new mails until I hit refresh (@) manually. Is that intended or am I
+doing it wrong?
+
+It seems to me that leaving an HTTP connection open and having the server send
+chunks on it when it receives new messages is a good way of doing this.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Wed Feb 22 21:39:42 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 22 Feb 2012 22:39:42 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1329113568-sup-8177@typhon>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+Message-ID: <1329946381-sup-2255@stapelberg.de>
+
+Hi William,
+
+Thanks for adding code for this. I got the chance to test this today, and I?m
+afraid this doesn?t seem to be working as I would expect.
+
+As far as I can tell from glancing at the source and the state file, this code
+examines the date stored in every mail, sorts that, then checks where it
+stopped before, and continues from there. I think this is a horrible way of
+doing things for two reasons:
+
+1) It involves opening every single email on disk.
+2) Date specifications in emails are not to be trusted (think spam).
+
+For the time being, I let procmail save my messages in my IMAP server and in
+heliotrope with a little script, which I include here for others to see:
+
+#!/bin/bash
+# Delivers mail via dovecot and heliotrope
+
+# load RVM
+. /home/michael/.rvm/scripts/rvm
+
+TMPFILE=$(mktemp)
+
+cat > $TMPFILE
+
+cat $TMPFILE | sudo -u mail -- /usr/lib/dovecot/deliver -d michael
+cat $TMPFILE | ruby -I/home/michael/heliotrope/lib /home/michael/heliotrope/bin/heliotrope-add >>/tmp/last-mail.stdout 2>>/tmp/last-mail.stderr
+rm $TMPFILE
+
+After ensuring that it works, you should get rid of the stdout/stderr redirects
+or redirect them properly to a place with logfile rotation, of course.
+
+Note that adding mails via stdin doesn?t work until you change the code like this:
+https://github.com/wmorgan/heliotrope/pull/34
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Wed Feb 22 21:57:35 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 22 Feb 2012 22:57:35 +0100
+Subject: [sup-devel] [Heliotrope] Equivalent of archived sources
+Message-ID: <1329947811-sup-7920@stapelberg.de>
+
+Hi,
+
+how would I get the same behavior as in sup when configuring a source to be
+archived by default (a mailing list which I receive for reference, not for
+actually reading it all the time)?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Wed Feb 22 22:00:27 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 22 Feb 2012 23:00:27 +0100
+Subject: [sup-devel] [Heliotrope] What exactly does reordering do? Is it
+	still necessary?
+Message-ID: <1329947900-sup-5773@stapelberg.de>
+
+Hi,
+
+I just realized that I forgot to import the maildir in which I store my sent
+messages. After adding them to heliotrope, do I have to reorder the index? What
+exactly does it do and why is that necessary?
+
+I?m a bit confused because commit
+https://github.com/wmorgan/heliotrope/commit/f7bfda9dd83db1b9cd2a51ba2599da81fc1b87c1
+talks about "reindex without --reorder".
+
+Best regards,
+Michael
+
+PS: The real time it takes to reorder my index is about 1 hour and 30 minutes :(
+
+From triumhiz at yandex.ru  Thu Feb 23 05:19:36 2012
+From: triumhiz at yandex.ru (Serge Z)
+Date: Thu, 23 Feb 2012 09:19:36 +0400
+Subject: [sup-devel] [Heliotrope] [Turnsole] ebuilds
+Message-ID: <20120223051936.2123.72633@localhost>
+
+
+Hi!
+
+Does anyone has ebuilds for heliotrope, turnsole or any related libraries?
+Tried to compose my own, but didn't manage to.
+
+From wmorgan-sup at masanjin.net  Thu Feb 23 06:34:29 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Feb 2012 22:34:29 -0800
+Subject: [sup-devel]  [Heliotrope] Equivalent of archived sources
+In-Reply-To: <1329947811-sup-7920@stapelberg.de>
+References: <1329947811-sup-7920@stapelberg.de>
+Message-ID: <1329978718-turnsole-71233@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-22 13:57:35 -0800:
+> how would I get the same behavior as in sup when configuring a source to be
+> archived by default (a mailing list which I receive for reference, not for
+> actually reading it all the time)?
+
+I think the best way to do this would be to add some code to
+heliotrope-import that would allow overridding of labels on the
+commandline. Maybe something like --add-labels and --remove-labels
+options, that would modify whatever labels the source provides.
+Feel free to make an issue to track this.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Feb 23 06:39:47 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Feb 2012 22:39:47 -0800
+Subject: [sup-devel] [Heliotrope] What exactly does reordering do? Is it
+	still necessary?
+In-Reply-To: <1329947900-sup-5773@stapelberg.de>
+References: <1329947900-sup-5773@stapelberg.de>
+Message-ID: <1329978886-turnsole-20550@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-22 14:00:27 -0800:
+> I just realized that I forgot to import the maildir in which I store
+> my sent messages. After adding them to heliotrope, do I have to
+> reorder the index?
+
+Probably yes.
+
+> What exactly does it do and why is that necessary?
+
+Heliotrope only ever returns messages in the order in which they were
+indexed. So if you import mail from different sources, one after the
+other, unless those sources happen to be in chronological order, you
+will have to reorder.
+
+It's a little hard to see that this is happening because Turnsole
+reorders the items it displays (for complicated reasons), but you'll
+probably start to notice it as you paginate.
+
+> I?m a bit confused because commit
+> https://github.com/wmorgan/heliotrope/commit/f7bfda9dd83db1b9cd2a51ba2599da81fc1b87c1
+> talks about "reindex without --reorder".
+
+If the index ever becomes corrupted, it's nice to be able to rebuild it.
+That's the only real reason to do that. (Or maybe the index format
+changes in later releases, etc.)
+
+> PS: The real time it takes to reorder my index is about 1 hour and 30
+> minutes :(
+
+Sorry. But the point of indexing is to frontload all the work, so that
+import time (which has to only happen once) is slow, but search time is
+fast.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Feb 23 06:26:44 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Feb 2012 22:26:44 -0800
+Subject: [sup-devel]  [Turnsole] Automatically displaying new mails?
+In-Reply-To: <1329946808-sup-8894@stapelberg.de>
+References: <1329946808-sup-8894@stapelberg.de>
+Message-ID: <1329978326-turnsole-76268@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-22 13:41:42 -0800:
+> I am trying to use Turnsole for my mails, but I noticed that it never
+> seems to pick up new mails until I hit refresh (@) manually. Is that
+> intended or am I doing it wrong?
+
+You are correct. I haven't added this yet. Manual refresh is your only
+option. It shouldn't be too hard to add a simple polling mechanism.
+Feel free to make an issue for this.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Feb 23 06:25:11 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Feb 2012 22:25:11 -0800
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1329946381-sup-2255@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+	<1329946381-sup-2255@stapelberg.de>
+Message-ID: <1329977859-turnsole-79917@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-22 13:39:42 -0800:
+> Thanks for adding code for this. I got the chance to test this today,
+> and I?m afraid this doesn?t seem to be working as I would expect.
+> 
+> As far as I can tell from glancing at the source and the state file, this code
+> examines the date stored in every mail, sorts that, then checks where it
+> stopped before, and continues from there. I think this is a horrible way of
+> doing things for two reasons:
+> 
+> 1) It involves opening every single email on disk.
+> 2) Date specifications in emails are not to be trusted (think spam).
+
+My understanding of the Maildir specification is that there is no way to
+determine the order of messages besides reading the date headers.
+Ordering messages correctly at import time is important because
+Heliotrope only serves messages in the reverse order to which they were
+imported. If there is a better solution, please feel free to educate me.
+
+Is there any problem with the current code besides the fact that you
+don't like the big scan?
+
+> Note that adding mails via stdin doesn?t work until you change the code like this:
+> https://github.com/wmorgan/heliotrope/pull/34
+
+Merged, thank you.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wirtwolff at gmail.com  Thu Feb 23 06:38:27 2012
+From: wirtwolff at gmail.com (Wirt Wolff)
+Date: Wed, 22 Feb 2012 23:38:27 -0700
+Subject: [sup-devel] [Heliotrope] [Turnsole] ebuilds
+In-Reply-To: <20120223051936.2123.72633@localhost>
+References: <20120223051936.2123.72633@localhost>
+Message-ID: <1329978847-sup-4921@chigamba>
+
+Excerpts from Serge Z's message of Wed Feb 22 22:19:36 -0700 2012:
+> 
+> Does anyone has ebuilds for heliotrope, turnsole or any related libraries?
+> Tried to compose my own, but didn't manage to.
+
+I found ruby support on gentoo to be a bit of a nightmare. I would use
+rvm [1] to install instead, as user rather than globally if possible.
+
+[1] https://rvm.beginrescueend.com/
+
+Regards,
+
+W
+
+From michael+sup at stapelberg.de  Thu Feb 23 11:24:22 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 23 Feb 2012 12:24:22 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1329977859-turnsole-79917@terminus-est>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+	<1329946381-sup-2255@stapelberg.de>
+	<1329977859-turnsole-79917@terminus-est>
+Message-ID: <1329996040-sup-2419@stapelberg.de>
+
+Hi William,
+
+Excerpts from William Morgan's message of 2012-02-23 07:25:11 +0100:
+> My understanding of the Maildir specification is that there is no way to
+> determine the order of messages besides reading the date headers.
+> Ordering messages correctly at import time is important because
+> Heliotrope only serves messages in the reverse order to which they were
+> imported. If there is a better solution, please feel free to educate me.
+Well, I guess you are correct. So, when somebody sends me a spam email or a
+malicious email with a faked date, what happens? I think that the code will
+figure out it needs to re-add a lot of messages. Also, my index will need to be
+reordered, right?
+
+Also, what happens when somebody sends me a message with a faked date and I add
+it using heliotrope-add? Do I need to reorder my index?
+
+> Is there any problem with the current code besides the fact that you
+> don't like the big scan?
+That makes it sound like it?s just a matter of opinion. My concern is what I
+stated above (huge processing load / disk IO caused by malicious messages) and
+that it thrashes my poor disks.
+
+Best regards,
+Michael
+
+From triumhiz at yandex.ru  Fri Feb 24 05:19:07 2012
+From: triumhiz at yandex.ru (Serge Z)
+Date: Fri, 24 Feb 2012 09:19:07 +0400
+Subject: [sup-devel] [Heliotrope] why whistlepig?
+Message-ID: <20120224051907.5668.78469@localhost>
+
+
+Hi,
+
+subj.
+Why not xapian?
+
+Thanks
+
+From triumhiz at yandex.ru  Fri Feb 24 05:43:18 2012
+From: triumhiz at yandex.ru (Serge Z)
+Date: Fri, 24 Feb 2012 09:43:18 +0400
+Subject: [sup-devel] [Heliotrope] search for cyrillic terms does not work
+Message-ID: <20120224054318.8144.49786@localhost>
+
+
+Hi!
+I've submitted issue #36 at github.com on this problem.
+
+> Search for cyrillic terms does not work both in web-interface and turnsole.
+> 
+> The search term is present in utf-8 and windows-1251 encodings in different mails.
+> My system encoding is utf-8.
+> 
+> Ruby 1.9
+> 
+> Please inform if this is not an issue with ruby 1.8 or any other environment
+
+Can you please suppose why that could happen or offer a simple workaround?
+This issue is the only one which stops me from migrating to Heliotrope/Turnsole.
+
+I'd not got this problem with sup.
+
+From wmorgan-sup at masanjin.net  Sat Feb 25 06:35:32 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 24 Feb 2012 22:35:32 -0800
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1329996040-sup-2419@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+	<1329946381-sup-2255@stapelberg.de>
+	<1329977859-turnsole-79917@terminus-est>
+	<1329996040-sup-2419@stapelberg.de>
+Message-ID: <1330150790-turnsole-3005@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-23 03:24:22 -0800:
+> Well, I guess you are correct. So, when somebody sends me a spam email
+> or a malicious email with a faked date, what happens? I think that the
+> code will figure out it needs to re-add a lot of messages. Also, my
+> index will need to be reordered, right?
+
+You won't need to reorder. Importing is all incremental, at least if you
+use --state-file: it will keep track of the last message imported, and
+successive imports will only pick up new messages.
+
+But you are making me realize that the current maildir implementation is
+not right. I think the way to handle Maildir is to look only at the
+ctime of the files and not the date headers. That will make incremental
+importing possible (just save the filename of the last imported file,
+and look for all files newer than that). It will speed things up
+anyways.
+
+And if you're in the funny situation where the ctime is not correlated
+with the Date: headers in your files, which is perfectly possibly by the
+Maildir spec, then you will have to reorder after that initial import.
+But in reality that's a possibility with the other source types
+too---it's just more likely with Maildir.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Feb 25 06:39:50 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 24 Feb 2012 22:39:50 -0800
+Subject: [sup-devel]  [Heliotrope] why whistlepig?
+In-Reply-To: <20120224051907.5668.78469@localhost>
+References: <20120224051907.5668.78469@localhost>
+Message-ID: <1330151741-turnsole-57719@terminus-est>
+
+Excerpts from Serge Z's message of 2012-02-23 21:19:07 -0800:
+> Why not xapian?
+
+At least as of a year ago when I looked at Xapian, the incremental
+indexing was painful (you had to keep a separate smaller corpus of
+additions, reindex it every time a new document was added, and merge
+when it got too big), doing anything outside of indexing MySQL rows was
+extremely painful (you had to use some weird XML format that I could
+never get quite right), and there was no way to have mutable arbitrary
+labels.
+
+I also prefer to keep everything in a single process, but that's
+not a hard requirement.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Feb 25 06:42:57 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 24 Feb 2012 22:42:57 -0800
+Subject: [sup-devel]  [Heliotrope] search for cyrillic terms does not work
+In-Reply-To: <20120224054318.8144.49786@localhost>
+References: <20120224054318.8144.49786@localhost>
+Message-ID: <1330152007-turnsole-69593@terminus-est>
+
+Excerpts from Serge Z's message of 2012-02-23 21:43:18 -0800:
+> Can you please suppose why that could happen or offer a simple
+> workaround?  This issue is the only one which stops me from migrating
+> to Heliotrope/Turnsole.
+
+I'll have to look into it. Super-ascii search was definitely working at
+some point, so I'm not sure why there was a regression. You can help by
+trying to see whether the problem is in whistlepig or in heliotrope,
+e.g. by adding and querying Cyrillic documents in a whistlepig index of
+your own construction.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From np at nicolaspouillard.fr  Sun Feb 26 15:37:28 2012
+From: np at nicolaspouillard.fr (Nicolas Pouillard)
+Date: Sun, 26 Feb 2012 16:37:28 +0100
+Subject: [sup-devel]  [Heliotrope] Equivalent of archived sources
+In-Reply-To: <1329978718-turnsole-71233@terminus-est>
+References: <1329947811-sup-7920@stapelberg.de>
+	<1329978718-turnsole-71233@terminus-est>
+Message-ID: <1330270255-turnsole-17000@ss>
+
+Excerpts from William Morgan's message of 2012-02-23 07:34:29 +0100:
+> Excerpts from Michael Stapelberg's message of 2012-02-22 13:57:35 -0800:
+> > how would I get the same behavior as in sup when configuring a source to be
+> > archived by default (a mailing list which I receive for reference, not for
+> > actually reading it all the time)?
+> 
+> I think the best way to do this would be to add some code to
+> heliotrope-import that would allow overridding of labels on the
+> commandline. Maybe something like --add-labels and --remove-labels
+> options, that would modify whatever labels the source provides.
+> Feel free to make an issue to track this.
+
+This would indeed be a really good idea. In particular to import folder
+by folder and set a label at the same time.
+
+(on of my first mails sent through turnsole)
+
+From michael+sup at stapelberg.de  Mon Feb 27 09:16:43 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 27 Feb 2012 10:16:43 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1330150790-turnsole-3005@terminus-est>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+	<1329946381-sup-2255@stapelberg.de>
+	<1329977859-turnsole-79917@terminus-est>
+	<1329996040-sup-2419@stapelberg.de>
+	<1330150790-turnsole-3005@terminus-est>
+Message-ID: <1330333805-sup-1287@stapelberg.de>
+
+Hi William,
+
+Sorry for clinging to that topic, but it?s important for me to properly
+understand it.
+
+Excerpts from William Morgan's message of 2012-02-25 07:35:32 +0100:
+> Excerpts from Michael Stapelberg's message of 2012-02-23 03:24:22 -0800:
+> > Well, I guess you are correct. So, when somebody sends me a spam email
+> > or a malicious email with a faked date, what happens? I think that the
+> > code will figure out it needs to re-add a lot of messages. Also, my
+> > index will need to be reordered, right?
+> 
+> You won't need to reorder. Importing is all incremental, at least if you
+> use --state-file: it will keep track of the last message imported, and
+> successive imports will only pick up new messages.
+Apparently, I didn?t properly describe the scenario I?m thinking about:
+
+state-file contains an entry "/my/maildir/2012-02-22-foo-bar", which is an
+email that contains 2012-02-22 as date.
+
+Now, a spammer sends me an email with a faked date, let?s say 2001-01-01, let?s
+call it "/my/maildir/2001-01-01-spam-mail". The next run of heliotrope-add has
+two possibilities:
+
+1) It will completely ignore it. I think this is what will happen, based on
+   your description. This is horrible! Emails are absolutely not guaranteed to
+   arrive in my system in the order they were sent. Is this the case? Do we
+   ignore email because of date problems like this currently?
+
+2) It will pick up this email because the date inside is older. Subsequent runs
+   will discover all email from the last 10 years as new, and try to re-add it
+   to the index. Lots of unnecessary overhead.
+
+> But you are making me realize that the current maildir implementation is
+> not right. I think the way to handle Maildir is to look only at the
+> ctime of the files and not the date headers. That will make incremental
+> importing possible (just save the filename of the last imported file,
+> and look for all files newer than that). It will speed things up
+> anyways.
+Right, that sounds good.
+
+> And if you're in the funny situation where the ctime is not correlated
+> with the Date: headers in your files, which is perfectly possibly by the
+> Maildir spec, then you will have to reorder after that initial import.
+> But in reality that's a possibility with the other source types
+> too---it's just more likely with Maildir.
+So, let?s stick to my above example of the spam email and let?s assume that you
+changed the code to use ctimes. The spam mail arrives, its ctime is new, it
+gets picked up into my index. To my understanding, I now need to reorder. I
+have multiple questions:
+
+1) What are the immediate consequences? Where will this email appear in my
+   inbox, when my inbox contains 5 emails. Always at the top? Bottom? You
+   mentioned I can see the effect when paging. Can you elaborate please?
+
+2) How do I know when I have to reorder?
+
+Best regards,
+Michael
+
+From wmorgan-sup at masanjin.net  Wed Feb 29 01:11:56 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Feb 2012 17:11:56 -0800
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1330333805-sup-1287@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de> <1329113568-sup-8177@typhon>
+	<1329946381-sup-2255@stapelberg.de>
+	<1329977859-turnsole-79917@terminus-est>
+	<1329996040-sup-2419@stapelberg.de>
+	<1330150790-turnsole-3005@terminus-est>
+	<1330333805-sup-1287@stapelberg.de>
+Message-ID: <1330468308-turnsole-43856@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-02-27 01:16:43 -0800:
+> 1) It will completely ignore it.
+
+Correct. This is the problem that the ctime solution is meant to address.
+
+> So, let?s stick to my above example of the spam email and let?s assume
+> that you changed the code to use ctimes. The spam mail arrives, its
+> ctime is new, it gets picked up into my index. To my understanding, I
+> now need to reorder.  I have multiple questions:
+> 
+> 1) What are the immediate consequences? Where will this email appear in my
+>    inbox, when my inbox contains 5 emails. Always at the top? Bottom? You
+>    mentioned I can see the effect when paging. Can you elaborate please?
+
+Heliotrope will return it as the first result, since it returns messages
+in LIFO order.
+
+Currently Turnsole currently re-sorts all messages returned by sort by
+date, and so it will place it at the bottom. This is also where the
+pagination issues may come from. Maybe it would be less confusing for it
+to stick to search result order.
+
+> 2) How do I know when I have to reorder?
+
+You have to reorder whenever you want Heliotrope to return messages in
+Date header order instead of in LIFO order. I think this will typically
+happen when you import a couple batches of preexisting mail, and not
+when you're adding new mail.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From triumhiz at yandex.ru  Wed Feb 29 10:44:13 2012
+From: triumhiz at yandex.ru (Serge Z)
+Date: Wed, 29 Feb 2012 14:44:13 +0400
+Subject: [sup-devel] [Heliotrope] search for cyrillic terms does not work
+In-Reply-To: <1330152007-turnsole-69593@terminus-est>
+References: <20120224054318.8144.49786@localhost>
+	<1330152007-turnsole-69593@terminus-est>
+Message-ID: <20120229104413.1197.73225@localhost>
+
+
+Quoting William Morgan (2012-02-25 10:42:57)
+>I'll have to look into it. Super-ascii search was definitely working at
+>some point, so I'm not sure why there was a regression. You can help by
+>trying to see whether the problem is in whistlepig or in heliotrope,
+>e.g. by adding and querying Cyrillic documents in a whistlepig index of
+>your own construction.
+
+Does whistlepig have any tool for manual managing its indexes?
+Or do I have to code in either ruby or C to do that?
+

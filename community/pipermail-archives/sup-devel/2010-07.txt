@@ -1,0 +1,2240 @@
+From sascha-pgp at silbe.org  Thu Jul  1 09:48:13 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Thu,  1 Jul 2010 13:48:13 +0000
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+Message-ID: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+
+If Message-ID contains only invalid characters (or none at all),
+sanitize_message_id will return an empty string. As Message.parse_header
+only checked for header existance, not validity, sup-dump could produce
+a dump file that sup-sync would choke on.
+
+We now fall back to a fake id for both missing and invalid Message-ID
+headers.
+---
+ lib/sup/message.rb |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index a13fc0c..f273988 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -77,14 +77,15 @@ class Message
+   def parse_header encoded_header
+     header = SavingHash.new { |k| decode_header_field encoded_header[k] }
+ 
+-    @id = if header["message-id"]
++    @id = ''
++    if header["message-id"]
+       mid = header["message-id"] =~ /<(.+?)>/ ? $1 : header["message-id"]
+-      sanitize_message_id mid
+-    else
+-      id = "sup-faked-" + Digest::MD5.hexdigest(raw_header)
+-      from = header["from"]
++      @id = sanitize_message_id mid
++    end
++    if (not @id.include? '@') || @id.length < 6
++      @id = "sup-faked-" + Digest::MD5.hexdigest(raw_header)
++      #from = header["from"]
+       #debug "faking non-existent message-id for message from #{from}: #{id}"
+-      id
+     end
+ 
+     @from = Person.from_address(if header["from"]
+-- 
+1.7.1
+
+
+From bwalton at artsci.utoronto.ca  Thu Jul  1 10:33:22 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 01 Jul 2010 10:33:22 -0400
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1277994760-sup-4189@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Thu Jul 01 09:48:13 -0400 2010:
+
+Hi Sascha,
+
+> +      #from = header["from"]
+
+This patch looks good, but why include the commented line?
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sascha-ml-email-sup-devel at silbe.org  Thu Jul  1 15:34:47 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Thu, 01 Jul 2010 19:34:47 +0000
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1277994760-sup-4189@pinkfloyd.chass.utoronto.ca>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+	<1277994760-sup-4189@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278012648-sup-257@twin.sascha.silbe.org>
+
+Excerpts from Ben Walton's message of Thu Jul 01 14:33:22 +0000 2010:
+
+> > +      #from = header["from"]
+> 
+> This patch looks good, but why include the commented line?
+I just commented out a line that was only useful in combination with the
+line directly below it that was already commented out. If you prefer
+I can remove both of them instead (or do the change in a separate patch).
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100701/2157f666/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Thu Jul  1 16:11:08 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 01 Jul 2010 16:11:08 -0400
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1278012648-sup-257@twin.sascha.silbe.org>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+	<1277994760-sup-4189@pinkfloyd.chass.utoronto.ca>
+	<1278012648-sup-257@twin.sascha.silbe.org>
+Message-ID: <1278015019-sup-7327@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Thu Jul 01 15:34:47 -0400 2010:
+
+> I just commented out a line that was only useful in combination with
+> the line directly below it that was already commented out. If you
+> prefer I can remove both of them instead (or do the change in a
+> separate patch).
+
+I'd resubmit with the lines removed.  It keeps the history cleaner.
+Up to you of course, it's just my own preference I'm putting forward.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From cam+sup at cammunism.org  Thu Jul  1 17:32:37 2010
+From: cam+sup at cammunism.org (Cameron Matheson)
+Date: Thu, 01 Jul 2010 15:32:37 -0600
+Subject: [sup-devel] =?utf-8?b?W1BBVENIXSBEb27igJl0IGRpc3BsYXkgIi4uLiIg?=
+	=?utf-8?q?after_snippets_which_are_displayed_completely?=
+In-Reply-To: <1276711781-sup-4102@midna.zekjur.net>
+References: <1276711781-sup-4102@midna.zekjur.net>
+Message-ID: <1278019896-sup-9354@cammunism.org>
+
+Excerpts from Michael Stapelberg's message of Wed Jun 16 12:11:47 -0600 2010:
+> quote from the commit message:
+>     Don?t display "..." after snippets which are displayed completely
+>     
+>     Short mails (for example: "Yes, the date works for me.") often can
+>     be displayed completely in the snippet. However, before this patch,
+>     sup abbreviated the snippet even though it was not abbreviated.
+
+I haven't seen any one else comment on this yet, but this is a nagging
+issue that I have meant to fix for ages.  Thanks!
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:31:32 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:31:32 -0400
+Subject: [sup-devel] [PATCH] fix reference to EncodingUnsupportedError
+In-Reply-To: <1277797825-8181-1-git-send-email-sascha-pgp@silbe.org>
+References: <1277797825-8181-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278123679-sup-5970@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:31:53 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:31:53 -0400
+Subject: [sup-devel] [PATCH] Don't choke when scanning message with
+	unknown encoding
+In-Reply-To: <1277798694-8642-1-git-send-email-sascha-pgp@silbe.org>
+References: <1277798694-8642-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278123779-sup-6393@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:31:59 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:31:59 -0400
+Subject: [sup-devel] [PATCH] fix crash in sup-dump if the default sent
+	source is used
+In-Reply-To: <1277799125-8696-1-git-send-email-sascha-pgp@silbe.org>
+References: <1277799125-8696-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278123805-sup-3778@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:32:23 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:32:23 -0400
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278124230-sup-174@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:33:21 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:33:21 -0400
+Subject: [sup-devel] =?utf-8?b?W1BBVENIXSBEb27igJl0IGRpc3BsYXkgIi4uLiIg?=
+	=?utf-8?q?after_snippets_which_are_displayed_completely?=
+In-Reply-To: <1276711781-sup-4102@midna.zekjur.net>
+References: <1276711781-sup-4102@midna.zekjur.net>
+Message-ID: <1278124387-sup-5603@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Jul  2 22:33:48 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 02 Jul 2010 22:33:48 -0400
+Subject: [sup-devel] [PATCH] inline-gpg: call text_to_chunks on the text
+	before/after the GPG part
+In-Reply-To: <1277221190-sup-946@midna.zekjur.net>
+References: <1277221190-sup-946@midna.zekjur.net>
+Message-ID: <1278124417-sup-4659@zyrg.net>
+
+Applied to master.
+
+From sascha-ml-email-sup-devel at silbe.org  Sat Jul  3 06:35:50 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Sat, 03 Jul 2010 10:35:50 +0000
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1278124230-sup-174@zyrg.net>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+	<1278124230-sup-174@zyrg.net>
+Message-ID: <1278153268-sup-6159@twin.sascha.silbe.org>
+
+[several patches from this and other threads]
+> Applied to master.
+Thanks!
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100703/14dfde2c/attachment.bin>
+
+From sascha-ml-email-sup-devel at silbe.org  Sat Jul  3 06:39:21 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Sat, 03 Jul 2010 10:39:21 +0000
+Subject: [sup-devel] [PATCH] parse_header: don't use empty or invalid
+	Message-ID header
+In-Reply-To: <1278015019-sup-7327@pinkfloyd.chass.utoronto.ca>
+References: <1277992093-10600-1-git-send-email-sascha-pgp@silbe.org>
+	<1277994760-sup-4189@pinkfloyd.chass.utoronto.ca>
+	<1278012648-sup-257@twin.sascha.silbe.org>
+	<1278015019-sup-7327@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278153353-sup-1102@twin.sascha.silbe.org>
+
+Excerpts from Ben Walton's message of Thu Jul 01 20:11:08 +0000 2010:
+
+> I'd resubmit with the lines removed.  It keeps the history cleaner.
+Since the patch has already been merged in its current form, I won't post
+a new one. It's no change in program behaviour or output and the comments
+are not incorrect. Maybe they even help someone while debugging one day. ;)
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100703/3531f528/attachment.bin>
+
+From sascha-pgp at silbe.org  Sat Jul  3 07:06:22 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Sat,  3 Jul 2010 13:06:22 +0200
+Subject: [sup-devel] [PATCH] don't leak fds for mbox sources
+Message-ID: <1278155182-8545-1-git-send-email-sascha-pgp@silbe.org>
+
+Only open the mbox when it's actually used and close it again once we're
+finished iterating over it.
+
+Adds a method go_idle to Source to inform the source we're unlikely to
+use it in the near future so it can do internal clean-up as appropriate.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/mbox.rb   |   28 ++++++++++++++++++++++++++--
+ lib/sup/poll.rb   |    7 ++++++-
+ lib/sup/source.rb |    6 ++++++
+ 3 files changed, 38 insertions(+), 3 deletions(-)
+
+
+This is my first non-trivial patch to a Ruby project. Please mention
+even minor style mistakes.
+
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+index 3f7ae3e..2bf32ea 100644
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -23,7 +23,7 @@ class MBox < Source
+       raise ArgumentError, "not an mbox uri" unless uri.scheme == "mbox"
+       raise ArgumentError, "mbox URI ('#{uri}') cannot have a host: #{uri.host}" if uri.host
+       raise ArgumentError, "mbox URI must have a path component" unless uri.path
+-      @f = File.open uri.path, 'rb'
++      @f = nil
+       @path = uri.path
+     else
+       @f = uri_or_fp
+@@ -53,12 +53,31 @@ class MBox < Source
+     end
+   end
+ 
++  def ensure_open
++    @f = File.open @path, 'rb' if @f.nil?
++  end
++  private :ensure_open
++
++  def go_idle
++    @mutex.synchronize do
++      return if @f.nil? || @path.nil?
++      @f.close
++      @f = nil
++    end
++  end
++
+   def start_offset; 0; end
+-  def end_offset; File.size @f; end
++  def end_offset
++    @mutex.synchronize do
++      ensure_open
++      File.size @f
++    end
++  end
+ 
+   def load_header offset
+     header = nil
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       l = @f.gets
+       unless MBox::is_break_line? l
+@@ -71,6 +90,7 @@ class MBox < Source
+ 
+   def load_message offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       begin
+         ## don't use RMail::Mailbox::MBoxReader because it doesn't properly ignore
+@@ -88,6 +108,7 @@ class MBox < Source
+   ## scan forward until we're at the valid start of a message
+   def correct_offset!
+     @mutex.synchronize do
++      ensure_open
+       @f.seek cur_offset
+       string = ""
+       until @f.eof? || MBox::is_break_line?(l = @f.gets)
+@@ -100,6 +121,7 @@ class MBox < Source
+   def raw_header offset
+     ret = ""
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       until @f.eof? || (l = @f.gets) =~ /^\r*$/
+         ret << l
+@@ -131,6 +153,7 @@ class MBox < Source
+   ## sup-sync-back has to do it.
+   def each_raw_message_line offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       yield @f.gets
+       until @f.eof? || MBox::is_break_line?(l = @f.gets)
+@@ -145,6 +168,7 @@ class MBox < Source
+ 
+     begin
+       @mutex.synchronize do
++        ensure_open
+         @f.seek cur_offset
+ 
+         ## cur_offset could be at one of two places here:
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 49e456b..3ce867c 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -159,7 +159,10 @@ EOS
+   ## this is the primary mechanism for iterating over messages from a source.
+   def each_message_from source, opts={}
+     begin
+-      return if source.done? || source.has_errors?
++      if source.done? || source.has_errors?
++        source.go_idle
++        return
++      end
+ 
+       source.each do |offset, source_labels|
+         if source.has_errors?
+@@ -175,6 +178,8 @@ EOS
+         HookManager.run "before-add-message", :message => m
+         yield m
+       end
++
++      source.go_idle
+     rescue SourceError => e
+       warn "problem getting messages from #{source}: #{e.message}"
+       Redwood::report_broken_sources :force_to_top => true
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 2f2e5df..13dc443 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -40,6 +40,7 @@ class Source
+   ## - raw_header offset
+   ## - raw_message offset
+   ## - check (optional)
++  ## - go_idle (optional)
+   ## - next (or each, if you prefer): should return a message and an
+   ##   array of labels.
+   ##
+@@ -94,6 +95,11 @@ class Source
+   ## to proactively notify the user of any source problems.
+   def check; end
+ 
++  ## release resources that are easy to reacquire. it is called
++  ## after processing a source (e.g. polling) to prevent resource
++  ## leaks (esp. file descriptors).
++  def go_idle; end
++
+   ## yields successive offsets and labels, starting at #cur_offset.
+   ##
+   ## when implementing a source, you can overwrite either #each or #next. the
+-- 
+1.7.1
+
+
+From damien.leone at fensalir.fr  Sat Jul  3 13:22:42 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sat, 03 Jul 2010 19:22:42 +0200
+Subject: [sup-devel] [PATCHES] reply-mode,
+	signatures and account selector
+In-Reply-To: <1276089233-sup-510@mailer>
+References: <1276087951-sup-7816@mailer> <1276089233-sup-510@mailer>
+Message-ID: <1278177699-sup-5324@mailer>
+
+Any reviewer for these patches?
+
+Thanks.
+
+Excerpts from Damien Leone's message of mer. juin 09 15:15:11 +0200 2010:
+> I noticed an error in the third patch.
+> Please consider the one attached to *this* email.
+> 
+> Regards,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From sascha-pgp at silbe.org  Thu Jul  8 08:28:07 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Thu,  8 Jul 2010 12:28:07 +0000
+Subject: [sup-devel] [PATCH] mbox: fix date format
+Message-ID: <1278592087-614-1-git-send-email-sascha-pgp@silbe.org>
+
+The date format used in all (known/common) variations is that of Unix/POSIX
+asctime(), not the RFC 822 / RFC 2822 Date: header format.
+
+Using an incorrect date format causes at least mutt, mb2md and Python
+UnixMailbox (but not PortableUnixMailbox) to either reject the mailbox or show
+it as empty.
+
+References:
+http://homepage.ntlworld.com./jonathan.deboynepollard/FGA/mail-mbox-formats.html
+http://www.qmail.org/man/man5/mbox.html
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/mbox.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+index 2bf32ea..452519d 100644
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -140,7 +140,7 @@ class MBox < Source
+     need_blank = File.exists?(@filename) && !File.zero?(@filename)
+     File.open(@filename, "ab") do |f|
+       f.puts if need_blank
+-      f.puts "From #{from_email} #{date.rfc2822}"
++      f.puts "From #{from_email} #{date.asctime}"
+       yield f
+     end
+   end
+-- 
+1.7.1
+
+
+From sascha-pgp at silbe.org  Thu Jul  8 08:28:31 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Thu,  8 Jul 2010 12:28:31 +0000
+Subject: [sup-devel] [PATCH] fix crash in sup-sync if the default sent
+	source is used
+Message-ID: <1278592111-654-1-git-send-email-sascha-pgp@silbe.org>
+
+This fixes a crash in sup-sync when syncing a folder that contains a copy of a
+"sent" message and no "sent" folder has been explicitly configured in the
+config file (so it hasn't been added to sources.yaml).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ bin/sup-sync |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup-sync b/bin/sup-sync
+index 6eb8f80..7fb2a87 100755
+--- a/bin/sup-sync
++++ b/bin/sup-sync
+@@ -116,6 +116,12 @@ index.lock_interactively or exit
+ begin
+   index.load
+ 
++  if(s = Redwood::SourceManager.source_for Redwood::SentManager.source_uri)
++    Redwood::SentManager.source = s
++  else
++    Redwood::SourceManager.add_source Redwood::SentManager.default_source
++  end
++
+   sources = if opts[:all_sources]
+     Redwood::SourceManager.sources
+   elsif ARGV.empty?
+-- 
+1.7.1
+
+
+From sascha-pgp at silbe.org  Thu Jul  8 11:26:37 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Thu,  8 Jul 2010 15:26:37 +0000
+Subject: [sup-devel] [PATCH] fix crash during poll if Maildir has been
+	emptied
+Message-ID: <1278602797-2553-1-git-send-email-sascha-pgp@silbe.org>
+
+We need to do the rescan in start_offset instead of end_offset so that
+end_offset won't be called if the Maildir is empty after the rescan.
+
+Fixes this crash:
+
+NoMethodError from thread: user-invoked poll
+undefined method `+' for nil:NilClass
+/home/sascha.silbe/src/sup/lib/sup/maildir.rb:171:in `end_offset'
+/home/sascha.silbe/src/sup/lib/sup/source.rb:90:in `done?'
+[...]
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/maildir.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index ef3b318..0b2fd5e 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -162,12 +162,12 @@ class Maildir < Source
+   end
+ 
+   def start_offset
+-    scan_mailbox
++    scan_mailbox :rescan => true
+     @ids.first
+   end
+ 
+   def end_offset
+-    scan_mailbox :rescan => true
++    scan_mailbox
+     @ids.last + 1
+   end
+ 
+-- 
+1.7.1
+
+
+From sascha-pgp at silbe.org  Thu Jul  8 13:15:22 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Thu,  8 Jul 2010 17:15:22 +0000
+Subject: [sup-devel] [PATCH] don't leak fds for mbox sources
+Message-ID: <1278609322-1401-1-git-send-email-sascha-pgp@silbe.org>
+
+Only open the mbox when it's actually used and close it again once we're
+finished iterating over it.
+
+Adds a method go_idle to Source to inform the source we're unlikely to
+use it in the near future so it can do internal clean-up as appropriate.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/mbox.rb   |   28 ++++++++++++++++++++++++++--
+ lib/sup/poll.rb   |    7 ++++++-
+ lib/sup/source.rb |    6 ++++++
+ 3 files changed, 38 insertions(+), 3 deletions(-)
+
+This patch allows configuring more than RLIMIT_NOFILE mbox sources. I have
+been testing it for several days.
+
+Please do point out even minor style mistakes.
+
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+index 3f7ae3e..2bf32ea 100644
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -23,7 +23,7 @@ class MBox < Source
+       raise ArgumentError, "not an mbox uri" unless uri.scheme == "mbox"
+       raise ArgumentError, "mbox URI ('#{uri}') cannot have a host: #{uri.host}" if uri.host
+       raise ArgumentError, "mbox URI must have a path component" unless uri.path
+-      @f = File.open uri.path, 'rb'
++      @f = nil
+       @path = uri.path
+     else
+       @f = uri_or_fp
+@@ -53,12 +53,31 @@ class MBox < Source
+     end
+   end
+ 
++  def ensure_open
++    @f = File.open @path, 'rb' if @f.nil?
++  end
++  private :ensure_open
++
++  def go_idle
++    @mutex.synchronize do
++      return if @f.nil? || @path.nil?
++      @f.close
++      @f = nil
++    end
++  end
++
+   def start_offset; 0; end
+-  def end_offset; File.size @f; end
++  def end_offset
++    @mutex.synchronize do
++      ensure_open
++      File.size @f
++    end
++  end
+ 
+   def load_header offset
+     header = nil
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       l = @f.gets
+       unless MBox::is_break_line? l
+@@ -71,6 +90,7 @@ class MBox < Source
+ 
+   def load_message offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       begin
+         ## don't use RMail::Mailbox::MBoxReader because it doesn't properly ignore
+@@ -88,6 +108,7 @@ class MBox < Source
+   ## scan forward until we're at the valid start of a message
+   def correct_offset!
+     @mutex.synchronize do
++      ensure_open
+       @f.seek cur_offset
+       string = ""
+       until @f.eof? || MBox::is_break_line?(l = @f.gets)
+@@ -100,6 +121,7 @@ class MBox < Source
+   def raw_header offset
+     ret = ""
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       until @f.eof? || (l = @f.gets) =~ /^\r*$/
+         ret << l
+@@ -131,6 +153,7 @@ class MBox < Source
+   ## sup-sync-back has to do it.
+   def each_raw_message_line offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       yield @f.gets
+       until @f.eof? || MBox::is_break_line?(l = @f.gets)
+@@ -145,6 +168,7 @@ class MBox < Source
+ 
+     begin
+       @mutex.synchronize do
++        ensure_open
+         @f.seek cur_offset
+ 
+         ## cur_offset could be at one of two places here:
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 49e456b..3ce867c 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -159,7 +159,10 @@ EOS
+   ## this is the primary mechanism for iterating over messages from a source.
+   def each_message_from source, opts={}
+     begin
+-      return if source.done? || source.has_errors?
++      if source.done? || source.has_errors?
++        source.go_idle
++        return
++      end
+ 
+       source.each do |offset, source_labels|
+         if source.has_errors?
+@@ -175,6 +178,8 @@ EOS
+         HookManager.run "before-add-message", :message => m
+         yield m
+       end
++
++      source.go_idle
+     rescue SourceError => e
+       warn "problem getting messages from #{source}: #{e.message}"
+       Redwood::report_broken_sources :force_to_top => true
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 2f2e5df..13dc443 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -40,6 +40,7 @@ class Source
+   ## - raw_header offset
+   ## - raw_message offset
+   ## - check (optional)
++  ## - go_idle (optional)
+   ## - next (or each, if you prefer): should return a message and an
+   ##   array of labels.
+   ##
+@@ -94,6 +95,11 @@ class Source
+   ## to proactively notify the user of any source problems.
+   def check; end
+ 
++  ## release resources that are easy to reacquire. it is called
++  ## after processing a source (e.g. polling) to prevent resource
++  ## leaks (esp. file descriptors).
++  def go_idle; end
++
+   ## yields successive offsets and labels, starting at #cur_offset.
+   ##
+   ## when implementing a source, you can overwrite either #each or #next. the
+-- 
+1.7.1
+
+
+From damien.leone at fensalir.fr  Fri Jul  9 12:44:01 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Fri, 09 Jul 2010 18:44:01 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+Message-ID: <1278693172-sup-6247@mailer>
+
+Sup guys,
+
+I have been working on backward synchronization for Maildir sources
+last week and I need your help to test and review the code.
+
+I pushed my commits (based on the 'next' branch) to my repo which you
+can find here [0] for the web interface and here [1] for the git
+address.
+
+The following is related to Maildir sources ONLY.
+
+So what does work and what does not (if you don't want to read this,
+scroll to the quick howto below):
+
+- Sup will now stay synchronized with your remote sources by detecting
+if a message has been remotely updated (ie: you change a flag from
+another client), these updates will be applied to your local index and
+your thread-view-mode buffers should be properly refreshed;
+
+- When a message is remotely deleted, it should now disappear from
+your index;
+
+- There is a new configuration option called "sync_back_to_maildir"
+which is false by default. When true, this option updates your actual
+Maildir files when you change a label, this is done in real time
+before being saved to xapian. So for instance if you use offlineimap
+the changes should be synched back to your IMAP server by the next
+poll in Sup (assuming that your before-poll hook runs offlineimap);
+
+- I wrote a "sup-sync-back-maildir" script that will synchronize all
+messages from your sources at once. This should be executed the first
+time BEFORE any polling, otherwise your IMAP server will be synched to
+your Sup index and if you did not used another client to mark your
+emails as read etc. (like me) and to update your IMAP server then you
+will lose all what you did in Sup (labels, etc.);
+
+- I added two new hidden labels in Sup: 'replied' and 'forwarded',
+they are automatically added when replying, forwarding or bouncing a
+message, this is to bring a better Maildir support to Sup, this should
+be invisible for users;
+
+- However you will probably lose all your remote 'replied' and
+'forwarded' flags after your first backward synchronization to Maildir
+since Sup dropped these labels when it added your messages to xapian.
+
+- Moving a message from a Maildir source to another is not (yet?)
+supported.
+
+So, you should now be able to use multiple clients to handle your
+emails, for instance I can use gmail to mark messages as starred or
+so, it will be reflected in Sup. In the same way, if I mark a message
+as read in Sup it will appear as read in the gmail web interface.
+
+I tested this code with my main account (2 GB and like 15 Maildir
+sources) it works fine so far.
+
+Be warned that it is highly experimental, but if you use offlineimap
+it has a realdelete option so you *should* not lose any email, in the
+worst case it might mess your flags/labels up.
+
+I tested it only with offlineimap working with a gmail account.
+
+Quick howto:
+
+1. Close sup
+2. Backup your emails and your xapian index or use another Sup session
+3. Clone the branch [1]
+4. IMPORTANT: run "bin/sup-sync-back-maildir" to synchronize the
+   Maildirs you wish, check the help
+5. Add ":sync_back_to_maildir: true" to your config.yaml
+6. Run and use sup
+
+Please test it and make reviews! :)
+
+NOTE: if you want this to work, get sure that you are not calling
+offlineimap with the '-q' option (as suggested in the wiki) otherwise
+it will ignore the flag updates on IMAP server, so check your
+before-poll hook.
+
+[0] http://git.fensalir.fr/?p=dleone/sup.git
+[1] $ git clone git://fensalir.fr/dleone/sup.git -b maildir-sync
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100709/775ef421/attachment.bin>
+
+From ezyang at MIT.EDU  Fri Jul  9 12:56:31 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Fri, 09 Jul 2010 12:56:31 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1278694430-sup-914@ezyang>
+
+Hey Damien,
+
+This is great!  A few quick questions for you:
+
+1. Suppose we decide to test your branch, and run into some show-stopper
+   bugs.  What?s the procedure for backing out changes?
+
+2. What precisely are the semantics for handling Sup labels?
+
+Thanks,
+Edward
+
+Excerpts from Damien Leone's message of Fri Jul 09 12:44:01 -0400 2010:
+> Sup guys,
+> 
+> I have been working on backward synchronization for Maildir sources
+> last week and I need your help to test and review the code.
+> 
+> I pushed my commits (based on the 'next' branch) to my repo which you
+> can find here [0] for the web interface and here [1] for the git
+> address.
+> 
+> The following is related to Maildir sources ONLY.
+> 
+> So what does work and what does not (if you don't want to read this,
+> scroll to the quick howto below):
+> 
+> - Sup will now stay synchronized with your remote sources by detecting
+> if a message has been remotely updated (ie: you change a flag from
+> another client), these updates will be applied to your local index and
+> your thread-view-mode buffers should be properly refreshed;
+> 
+> - When a message is remotely deleted, it should now disappear from
+> your index;
+> 
+> - There is a new configuration option called "sync_back_to_maildir"
+> which is false by default. When true, this option updates your actual
+> Maildir files when you change a label, this is done in real time
+> before being saved to xapian. So for instance if you use offlineimap
+> the changes should be synched back to your IMAP server by the next
+> poll in Sup (assuming that your before-poll hook runs offlineimap);
+> 
+> - I wrote a "sup-sync-back-maildir" script that will synchronize all
+> messages from your sources at once. This should be executed the first
+> time BEFORE any polling, otherwise your IMAP server will be synched to
+> your Sup index and if you did not used another client to mark your
+> emails as read etc. (like me) and to update your IMAP server then you
+> will lose all what you did in Sup (labels, etc.);
+> 
+> - I added two new hidden labels in Sup: 'replied' and 'forwarded',
+> they are automatically added when replying, forwarding or bouncing a
+> message, this is to bring a better Maildir support to Sup, this should
+> be invisible for users;
+> 
+> - However you will probably lose all your remote 'replied' and
+> 'forwarded' flags after your first backward synchronization to Maildir
+> since Sup dropped these labels when it added your messages to xapian.
+> 
+> - Moving a message from a Maildir source to another is not (yet?)
+> supported.
+> 
+> So, you should now be able to use multiple clients to handle your
+> emails, for instance I can use gmail to mark messages as starred or
+> so, it will be reflected in Sup. In the same way, if I mark a message
+> as read in Sup it will appear as read in the gmail web interface.
+> 
+> I tested this code with my main account (2 GB and like 15 Maildir
+> sources) it works fine so far.
+> 
+> Be warned that it is highly experimental, but if you use offlineimap
+> it has a realdelete option so you *should* not lose any email, in the
+> worst case it might mess your flags/labels up.
+> 
+> I tested it only with offlineimap working with a gmail account.
+> 
+> Quick howto:
+> 
+> 1. Close sup
+> 2. Backup your emails and your xapian index or use another Sup session
+> 3. Clone the branch [1]
+> 4. IMPORTANT: run "bin/sup-sync-back-maildir" to synchronize the
+>    Maildirs you wish, check the help
+> 5. Add ":sync_back_to_maildir: true" to your config.yaml
+> 6. Run and use sup
+> 
+> Please test it and make reviews! :)
+> 
+> NOTE: if you want this to work, get sure that you are not calling
+> offlineimap with the '-q' option (as suggested in the wiki) otherwise
+> it will ignore the flag updates on IMAP server, so check your
+> before-poll hook.
+> 
+> [0] http://git.fensalir.fr/?p=dleone/sup.git
+> [1] $ git clone git://fensalir.fr/dleone/sup.git -b maildir-sync
+> 
+
+From damien.leone at fensalir.fr  Fri Jul  9 13:14:58 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Fri, 09 Jul 2010 19:14:58 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278694430-sup-914@ezyang>
+References: <1278693172-sup-6247@mailer> <1278694430-sup-914@ezyang>
+Message-ID: <1278695023-sup-8869@mailer>
+
+Hello Edward,
+
+> 1. Suppose we decide to test your branch, and run into some show-stopper
+>    bugs.  What?s the procedure for backing out changes?
+
+You should backup your Maildir directories and your xapian index, this
+is what I did and if something goes wrong I can still restore my
+backups and run offlineimap to resynch everything as it was before on
+the IMAP server.
+
+But for my initial tests I used a test Maildir containing nothing
+important so maybe this is what you should do. ;)
+
+> 2. What precisely are the semantics for handling Sup labels?
+
+I followed the Maildir documentation [0]. When synching a message, Sup
+builds the flags string and relink the file to the disk, moving it
+from new/ to cur/ or vice versa if needed.
+
+Related labels are: unread, replied, forwarded, deleted, draft (but it
+won't work for now because draft messages in Sup are handled
+separately), flagged (aka starred).
+
+Every other labels are ignored because not supported.
+
+[0] http://cr.yp.to/proto/maildir.html
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100709/eef91e70/attachment.bin>
+
+From ezyang at MIT.EDU  Fri Jul  9 15:46:08 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Fri, 09 Jul 2010 15:46:08 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278695023-sup-8869@mailer>
+References: <1278693172-sup-6247@mailer> <1278694430-sup-914@ezyang>
+	<1278695023-sup-8869@mailer>
+Message-ID: <1278704722-sup-2256@ezyang>
+
+Excerpts from Damien Leone's message of Fri Jul 09 13:14:58 -0400 2010:
+> > 1. Suppose we decide to test your branch, and run into some show-stopper
+> >    bugs.  What?s the procedure for backing out changes?
+> 
+> You should backup your Maildir directories and your xapian index, this
+> is what I did and if something goes wrong I can still restore my
+> backups and run offlineimap to resynch everything as it was before on
+> the IMAP server.
+> 
+> But for my initial tests I used a test Maildir containing nothing
+> important so maybe this is what you should do. ;)
+
+I doubt a test Maildir will give you the sort of test pressure that you?re
+looking for. Go go real datasets.
+
+> > 2. What precisely are the semantics for handling Sup labels?
+> 
+> I followed the Maildir documentation [0]. When synching a message, Sup
+> builds the flags string and relink the file to the disk, moving it
+> from new/ to cur/ or vice versa if needed.
+> 
+> Related labels are: unread, replied, forwarded, deleted, draft (but it
+> won't work for now because draft messages in Sup are handled
+> separately), flagged (aka starred).
+
+Great, thanks!  I?ll give it a spin this weekend.
+
+Edward
+
+From rlane at club.cc.cmu.edu  Mon Jul 12 22:10:51 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 12 Jul 2010 22:10:51 -0400
+Subject: [sup-devel] [PATCH] mbox: fix date format
+In-Reply-To: <1278592087-614-1-git-send-email-sascha-pgp@silbe.org>
+References: <1278592087-614-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278987038-sup-162@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Mon Jul 12 22:13:26 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 12 Jul 2010 22:13:26 -0400
+Subject: [sup-devel] [PATCH] fix crash in sup-sync if the default sent
+	source is used
+In-Reply-To: <1278592111-654-1-git-send-email-sascha-pgp@silbe.org>
+References: <1278592111-654-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278987191-sup-868@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Mon Jul 12 22:19:28 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 12 Jul 2010 22:19:28 -0400
+Subject: [sup-devel] [PATCH] fix crash during poll if Maildir has been
+	emptied
+In-Reply-To: <1278602797-2553-1-git-send-email-sascha-pgp@silbe.org>
+References: <1278602797-2553-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278987290-sup-1833@zyrg.net>
+
+I'm going to be merging the source rewrite into master soon, so 
+this patch won't apply. I'll make sure empty maildirs work.
+
+From rlane at club.cc.cmu.edu  Mon Jul 12 22:23:46 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 12 Jul 2010 22:23:46 -0400
+Subject: [sup-devel] [PATCH] don't leak fds for mbox sources
+In-Reply-To: <1278609322-1401-1-git-send-email-sascha-pgp@silbe.org>
+References: <1278609322-1401-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1278987576-sup-9788@zyrg.net>
+
+This patch also won't apply once the source rewrite is merged. It's
+definitely a good idea though, so I'll (eventually) adapt this patch to
+the new codebase. Or feel free to rebase against next.
+
+The code itself looks good, I have no style nits with it.
+
+From sgoldman at teza.com  Fri Jul  9 16:39:37 2010
+From: sgoldman at teza.com (Steve Goldman)
+Date: Fri, 09 Jul 2010 16:39:37 -0400
+Subject: [sup-devel] Character encoding crash
+Message-ID: <1278707910-sup-3979@sodium.teza.com>
+
+
+I would send the characters from the message I was replying to, but
+then sup would crash.
+
+Running from master, latest commit June 9th.
+
+Thanks.
+
+
+--- ArgumentError from thread: main
+invalid byte sequence in US-ASCII
+/teza/home-h/sgoldman/sup-src/mainline/lib/sup/modes/edit-message-mode.rb:369:in `build_message'
+/teza/home-h/sgoldman/sup-src/mainline/lib/sup/modes/edit-message-mode.rb:343:in `send_message'
+/teza/home-h/sgoldman/sup-src/mainline/lib/sup/mode.rb:59:in `handle_input'
+/teza/home-h/sgoldman/sup-src/mainline/lib/sup/buffer.rb:277:in `handle_input'
+bin/sup:260:in `<module:Redwood>'
+bin/sup:69:in `<main>'
+
+From viroteck at viroteck.net  Sat Jul 10 14:53:20 2010
+From: viroteck at viroteck.net (Robin Burchell)
+Date: Sat, 10 Jul 2010 19:53:20 +0100
+Subject: [sup-devel] [PATCH] Fetch the account found from the to/cc info,
+	don't just use it as-is.
+Message-ID: <1278788000-23738-1-git-send-email-robin.burchell@collabora.co.uk>
+
+This prevents people's To: info screwing up my replies to them which is
+immensely irritating to me.
+---
+ lib/sup/modes/reply-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index bbac922..294bcfa 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -76,7 +76,7 @@ EOS
+     ## otherwise, try and find an account somewhere in the list of to's
+     ## and cc's.
+     elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+-      b
++      AccountManager.account_for(b.email)
+     ## if all else fails, use the default
+     else
+       AccountManager.default_account
+-- 
+1.7.0.4
+
+
+From rlane at club.cc.cmu.edu  Wed Jul 14 23:34:58 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 14 Jul 2010 23:34:58 -0400
+Subject: [sup-devel] maildir branch merged to master
+Message-ID: <1279164331-sup-2007@zyrg.net>
+
+The test suite isn't done yet, but I've been running this code for a
+while and I think it's stable enough to merge. This will also make
+merging the larger patches posted recently easier since next won't be so
+far diverged.
+
+From damien.leone at fensalir.fr  Sat Jul 17 08:55:56 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sat, 17 Jul 2010 14:55:56 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1279371142-sup-3470@mailer>
+
+So, any reviewer? I thought backward synchronization was a wanted
+feature.
+
+For information I have been testing it with my real account for more
+than a week now without noticing any serious issue, I often check my
+gmail web interface and everything is synched.
+
+I had once a location trouble after having sent an email but I could
+not reproduce and it has been resolved after a sup restart.
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100717/436ae663/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Sat Jul 17 13:05:44 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 17 Jul 2010 13:05:44 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279371142-sup-3470@mailer>
+References: <1278693172-sup-6247@mailer> <1279371142-sup-3470@mailer>
+Message-ID: <1279386307-sup-360@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Damien Leone's message of Sat Jul 17 08:55:56 -0400 2010:
+
+> So, any reviewer? I thought backward synchronization was a wanted
+> feature.
+
+I believe it is (not by me personally as I'm not affected).  How does
+it play with the recent maildir branch merge from Rich?
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From damien.leone at fensalir.fr  Sat Jul 17 13:26:16 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sat, 17 Jul 2010 19:26:16 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279386307-sup-360@pinkfloyd.chass.utoronto.ca>
+References: <1278693172-sup-6247@mailer> <1279371142-sup-3470@mailer>
+	<1279386307-sup-360@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1279387408-sup-5931@mailer>
+
+Hi Ben,
+
+Excerpts from Ben Walton's message of Sat Jul 17 19:05:44 +0200 2010:
+> I believe it is (not by me personally as I'm not affected).  How does
+> it play with the recent maildir branch merge from Rich?
+
+It should play well since I based my branch on the 'next' branch which
+already had the 'maildir' merge.
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100717/130153bb/attachment.bin>
+
+From tero at tilus.net  Sun Jul 18 07:19:55 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 18 Jul 2010 14:19:55 +0300
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279371142-sup-3470@mailer>
+References: <1278693172-sup-6247@mailer> <1279371142-sup-3470@mailer>
+Message-ID: <1279451667-sup-3500@tilus.net>
+
+Damien Leone, 2010-07-17 15:55:
+> So, any reviewer?
+
+I haven't had the time yet.  I definitely will once the temperature
+here in Finland drops below 20 degrees Celcius. ;)  For now I'm almost
+totally off the net and on the beach.
+
+> I thought backward synchronization was a wanted
+> feature.
+
+And you were _very_ much right!
+
+> I often check my gmail web interface and everything is synched.
+
+My setup (once I get there) will be mainly sup + occasional mutt (on
+maildirs) and evolution (via dovecot).
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From ezyang at MIT.EDU  Sun Jul 18 13:53:39 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 18 Jul 2010 13:53:39 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+Message-ID: <1279475566-sup-7173@ezyang>
+
+This patch fixed Nil error that occurred when I had a GPG signed
+mail with a starting marker but no ending marker.
+
+>From 22d12ffe7caa0d11c91876e2c8c7806854d0b3ab Mon Sep 17 00:00:00 2001
+From: Edward Z. Yang <ezyang at mit.edu>
+Date: Sun, 18 Jul 2010 03:38:52 -0400
+Subject: [PATCH] Return nothing between if end index is not found.
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/util.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index d19caca..dad479f 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -479,6 +479,7 @@ module Enumerable
+ 
+   ## returns all the entries which are equal to startline up to endline
+   def between startline, endline
++    return [] if not index(endline)
+     select { |l| true if l == startline .. l == endline }
+   end
+ end
+-- 
+1.7.0.4
+
+From ezyang at MIT.EDU  Sun Jul 18 18:46:33 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 18 Jul 2010 18:46:33 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1279492496-sup-3638@ezyang>
+
+Sup Damien,
+
+I cut over to your branch, plus one patch of my own making.
+
+THE GOOD NEWS
+
+It works!  Whereby, messages are marked read in my webmail client and
+deleted messages go away.
+
+THE BAD NEWS
+
+It makes Sup very crashy and there's some strange behavior.  This is probably
+the sixth time I'm composing this message (yeah, haven't learned my
+lesson.) In more detail...
+
+* You want the following OfflineImap patch, because otherwise the massive
+  changes to labels that will surely be induced by backwards syncing will
+  cause OfflineImap to CRAWL.
+
+diff --git a/offlineimap/folder/LocalStatus.py b/offlineimap/folder/LocalStatus.py
+index 157989d..7f4dc5b 100644
+--- a/offlineimap/folder/LocalStatus.py
++++ b/offlineimap/folder/LocalStatus.py
+@@ -33,7 +33,7 @@ class LocalStatusFolder(BaseFolder):
+         self.messagelist = None
+         self.repository = repository
+         self.savelock = threading.Lock()
+-        self.doautosave = 1
++        self.doautosave = 0
+         self.accountname = accountname
+         BaseFolder.__init__(self)
+
+  Though, you probably want to undo this patch when you're done.  Autosaving
+  means partial progress is saved.
+
+* Backwards syncing appears to make old deleted mail show up again; I'm not
+  sure if it's because touching the Maildir causes Sup to pick up on deleted
+  tags again or something, but I had to go back and delete lots of deleted mail.
+
+* When Sup is deleting messages, it is /extremely/ unsafe to iterate over
+  a list of all messages in the index and query them for info: the threading means
+  that any given message might not exist anymore.  I had a hook that kept triggering
+  this bug, and earlier on in the process drawing functions would also frequently
+  Nil error.  This is probably under-tested codepaths in Sup that we should track
+  down; unfortunately I didn't have the presence of mind to record traces until
+  later (and the ones I got all look like my hooks fault).
+
+* In a similar vein, while messages are going away, '@' will occasionally return
+  no messages (pressing again usually fixes it).  Messages that are labelled inbox
+  will show up in 'U', but not in the inbox view without a Sup restart.
+
+I haven't done a code review yet.
+
+Cheers,
+Edward
+
+From ezyang at MIT.EDU  Sun Jul 18 18:50:39 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 18 Jul 2010 18:50:39 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1279493200-sup-3095@ezyang>
+
+Here are some suggestions...
+
+Excerpts from Damien Leone's message of Fri Jul 09 12:44:01 -0400 2010:
+> - I wrote a "sup-sync-back-maildir" script that will synchronize all
+> messages from your sources at once. This should be executed the first
+> time BEFORE any polling, otherwise your IMAP server will be synched to
+> your Sup index and if you did not used another client to mark your
+> emails as read etc. (like me) and to update your IMAP server then you
+> will lose all what you did in Sup (labels, etc.);
+
+I would recommend having some sort of flag like 'sync-back'd' programatically
+generated by sup-sync-back-maildir so that Sup will refuse to start if
+you turned on sync-backs without running this command.
+
+> - However you will probably lose all your remote 'replied' and
+> 'forwarded' flags after your first backward synchronization to Maildir
+> since Sup dropped these labels when it added your messages to xapian.
+
+It seems to me that merging the Maildir flags and the Sup flags would
+let you preserve this, but for heavy Sup users this isn't a big deal.
+
+> - Moving a message from a Maildir source to another is not (yet?)
+> supported.
+
+I think this will be a pretty killer feature to have, because it means
+we can then assign "primary" tags and use those to have sync-backs move
+messages between Maildir folders (on the same account, I imagine), which
+would translate into a folder-sorted webmail view, which is about the
+best you can do without first-class label support in Maildir.  I know of
+at least one friend who this would be a deal-maker.
+
+Cheers,
+Edward
+
+From ezyang at MIT.EDU  Sun Jul 18 18:57:31 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 18 Jul 2010 18:57:31 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1279493829-sup-2931@ezyang>
+
+Here is one trace that I managed to scrounge up
+
+undefined method `content_width' for nil:NilClass
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:953:in `from_width'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:870:in `text_for_thread_at'
+/home/ezyang/Dev/sup/lib/sup/hook.rb:55:in `each_with_index'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:869:in `each'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:869:in `each_with_index'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:869:in `text_for_thread_at'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:811:in `regen_text'
+/home/ezyang/Dev/sup/lib/sup/util.rb:423:in `map_with_index'
+/home/ezyang/Dev/sup/lib/sup/hook.rb:55:in `each_with_index'
+/home/ezyang/Dev/sup/lib/sup/util.rb:423:in `each'
+/home/ezyang/Dev/sup/lib/sup/util.rb:423:in `each_with_index'
+/home/ezyang/Dev/sup/lib/sup/util.rb:423:in `map_with_index'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:811:in `regen_text'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:262:in `update'
+/home/ezyang/Dev/sup/lib/sup/modes/thread-index-mode.rb:217:in `handle_location_deleted_update'
+/home/ezyang/Dev/sup/lib/sup/update.rb:26:in `send'
+/home/ezyang/Dev/sup/lib/sup/update.rb:26:in `relay'
+/home/ezyang/Dev/sup/lib/sup/update.rb:26:in `each'
+/home/ezyang/Dev/sup/lib/sup/update.rb:26:in `relay'
+/home/ezyang/Dev/sup/lib/sup/util.rb:588:in `send'
+/home/ezyang/Dev/sup/lib/sup/util.rb:588:in `method_missing'
+/home/ezyang/Dev/sup/lib/sup/poll.rb:197:in `poll_from'
+/home/ezyang/Dev/sup/lib/sup/index.rb:258:in `each_message'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each_id'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each_id'
+/home/ezyang/Dev/sup/lib/sup/index.rb:257:in `each_message'
+/home/ezyang/Dev/sup/lib/sup/util.rb:588:in `send'
+/home/ezyang/Dev/sup/lib/sup/util.rb:588:in `method_missing'
+[snip]
+
+Cheers,
+Edward
+
+From michael+sup at stapelberg.de  Mon Jul 19 15:39:31 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 19 Jul 2010 21:39:31 +0200
+Subject: [sup-devel] [PATCH] Bugfix: Make sure to use UNIX line-endings for
+	GPG decrypted payloads
+Message-ID: <1279568308-sup-1044@midna.zekjur.net>
+
+Hi,
+
+please find attached a patch for the following issue (quuote from the commit
+message):
+
+	Bugfix: Make sure to use UNIX line-endings for GPG decrypted payloads
+
+	Otherwise, RMail will fail to correctly parse multipart/signed messages
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Make-sure-to-use-UNIX-line-endings-for-GPG-de.patch
+Type: application/octet-stream
+Size: 891 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100719/6cef1d48/attachment.obj>
+
+From michael+sup at stapelberg.de  Mon Jul 19 17:38:18 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 19 Jul 2010 23:38:18 +0200
+Subject: [sup-devel] (REVIEW NEEDED) [PATCH] Recode attachments to UTF-8
+	when forwarding
+Message-ID: <1279575318-sup-7427@midna.zekjur.net>
+
+Hi,
+
+can you please review the attached patch? It recodes attachments from whichever
+charset they are encoded in to UTF-8 when forwarding messages in order to
+please rmail (it crashes with attachments encoded in Windows-1252 otherwise).
+
+FYI, the crash backtrace is the following (pathes shortened):
+--- Encoding::CompatibilityError from thread: main
+incompatible character encodings: UTF-8 and ASCII-8BIT
+rmail-1.0.0/lib/rmail/serialize.rb:112:in `serialize_low'
+rmail-1.0.0/lib/rmail/serialize.rb:99:in `block in serialize_low'
+rmail-1.0.0/lib/rmail/message.rb:155:in `block in each_part'
+rmail-1.0.0/lib/rmail/message.rb:154:in `each'
+rmail-1.0.0/lib/rmail/message.rb:154:in `each_part'
+rmail-1.0.0/lib/rmail/serialize.rb:96:in `serialize_low'
+rmail-1.0.0/lib/rmail/serialize.rb:63:in `serialize'
+rmail-1.0.0/lib/rmail/message.rb:146:in `to_s'
+sup/lib/sup/modes/edit-message-mode.rb:344:in `puts'
+sup/lib/sup/modes/edit-message-mode.rb:344:in `block in send_message'
+sup/lib/sup/modes/edit-message-mode.rb:344:in `popen'
+sup/lib/sup/modes/edit-message-mode.rb:344:in `send_message'
+sup/lib/sup/mode.rb:59:in `handle_input'
+sup/lib/sup/buffer.rb:277:in `handle_input'
+
+So, if you have a better way of handling this, please let us know.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Recode-attachments-to-UTF-8-when-forwarding.patch
+Type: application/octet-stream
+Size: 3970 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100719/2712c0ee/attachment.obj>
+
+From michael+sup at stapelberg.de  Mon Jul 19 18:50:37 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 20 Jul 2010 00:50:37 +0200
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1279475566-sup-7173@ezyang>
+References: <1279475566-sup-7173@ezyang>
+Message-ID: <1279579814-sup-4745@midna.zekjur.net>
+
+Hi Edward,
+
+Excerpts from Edward Z. Yang's message of 2010-07-18 19:53:39 +0200:
+> This patch fixed Nil error that occurred when I had a GPG signed
+> mail with a starting marker but no ending marker.
+Thanks for the patch, I can confirm it working and necessary.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Mon Jul 19 18:57:18 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 20 Jul 2010 00:57:18 +0200
+Subject: [sup-devel] [PATCH] Bugfix: Make sure to use UNIX line-endings
+	for GPG decrypted payloads
+In-Reply-To: <1279568308-sup-1044@midna.zekjur.net>
+References: <1279568308-sup-1044@midna.zekjur.net>
+Message-ID: <1279580212-sup-1480@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Michael Stapelberg's message of 2010-07-19 21:39:31 +0200:
+> please find attached a patch for the following issue (quuote from the commit
+> message):
+> 
+>     Bugfix: Make sure to use UNIX line-endings for GPG decrypted payloads
+> 
+>     Otherwise, RMail will fail to correctly parse multipart/signed messages
+Attached you can find the fixed version of this patch.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Make-sure-to-use-UNIX-line-endings-for-GPG-de.patch
+Type: application/octet-stream
+Size: 957 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100720/ba0614ab/attachment.obj>
+
+From damien.leone at fensalir.fr  Tue Jul 20 05:39:41 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Tue, 20 Jul 2010 11:39:41 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279492496-sup-3638@ezyang>
+References: <1278693172-sup-6247@mailer> <1279492496-sup-3638@ezyang>
+Message-ID: <1279618205-sup-993@mailer>
+
+Sup Edward,
+
+Thank you for your feedback!
+
+Excerpts from Edward Z. Yang's message of Mon Jul 19 00:46:33 +0200 2010:
+> It makes Sup very crashy and there's some strange behavior.  This is probably
+> the sixth time I'm composing this message (yeah, haven't learned my
+> lesson.) In more detail...
+
+I'm impressed, I never experienced such crashes, it is quite stable
+here but I use only very basic hooks.
+
+> * Backwards syncing appears to make old deleted mail show up again; I'm not
+>   sure if it's because touching the Maildir causes Sup to pick up on deleted
+>   tags again or something, but I had to go back and delete lots of deleted mail.
+
+Hmm, strange, do you use the latest commits of the branch? I pushed a
+fix for deleted mails about 10 days ago.
+
+The mails that show up again don't have the deleted flag at all?
+
+> * When Sup is deleting messages, it is /extremely/ unsafe to iterate over
+>   a list of all messages in the index and query them for info: the threading means
+>   that any given message might not exist anymore.  I had a hook that kept triggering
+>   this bug, and earlier on in the process drawing functions would also frequently
+>   Nil error.  This is probably under-tested codepaths in Sup that we should track
+>   down; unfortunately I didn't have the presence of mind to record traces until
+>   later (and the ones I got all look like my hooks fault).
+
+I did not test the code with hooks, what do you suggest for this one?
+
+> * In a similar vein, while messages are going away, '@' will occasionally return
+>   no messages (pressing again usually fixes it).  Messages that are labelled inbox
+>   will show up in 'U', but not in the inbox view without a Sup restart.
+
+I never use this keybinding but indeed I noticed that pressing '@' two
+times in a row was not showing anything.
+
+I will try to track down these bugs.
+
+Thanks again!
+Cheers,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100720/5d457344/attachment.bin>
+
+From damien.leone at fensalir.fr  Tue Jul 20 05:45:41 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Tue, 20 Jul 2010 11:45:41 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279493200-sup-3095@ezyang>
+References: <1278693172-sup-6247@mailer> <1279493200-sup-3095@ezyang>
+Message-ID: <1279618822-sup-4912@mailer>
+
+Hi,
+
+Excerpts from Edward Z. Yang's message of Mon Jul 19 00:50:39 +0200 2010:
+> I would recommend having some sort of flag like 'sync-back'd' programatically
+> generated by sup-sync-back-maildir so that Sup will refuse to start if
+> you turned on sync-backs without running this command.
+
+Good idea, that might prevent some bad suprises.
+
+> It seems to me that merging the Maildir flags and the Sup flags would
+> let you preserve this, but for heavy Sup users this isn't a big deal.
+
+True, and that could be done by sup-sync-back-maildir.
+
+> I think this will be a pretty killer feature to have, because it means
+> we can then assign "primary" tags and use those to have sync-backs move
+> messages between Maildir folders (on the same account, I imagine), which
+> would translate into a folder-sorted webmail view, which is about the
+> best you can do without first-class label support in Maildir.  I know of
+> at least one friend who this would be a deal-maker.
+
+And that doesn't seem hard to implement, we should definitely consider
+this feature, maybe after the primary code has been stabilized.
+
+Cheers,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100720/3baa46e4/attachment.bin>
+
+From eric+sup-devel at gerlach.ca  Tue Jul 20 15:15:40 2010
+From: eric+sup-devel at gerlach.ca (Eric Gerlach)
+Date: Tue, 20 Jul 2010 15:15:40 -0400
+Subject: [sup-devel] Crash,
+	getting "wrong id on nil" when loading new messages
+Message-ID: <1279653097-sup-8302@gerlach.ca>
+
+I get the following crash when loading more messages (at a certain
+point).  I've created an issue for it (111), but I'd like some help
+debugging this further.  I'm pretty sure it's caused by some sort of
+problematic message in my Maildir, but I don't know which one.  I'm
+pretty good with Ruby, but not so much with the sup codebase.
+
+I've traced it down to ThreadIndexMode#update, particularly the part
+where it calls t.first.id.  I've used ruby-debug to be able to isolate
+the particular thread, and the thread has no children, but then I don't
+quite know what to do from there.  How can I trace a thread object back
+to its origins?
+
+Help?
+
+Cheers,
+
+Eric
+
+wrong id called on nil
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:19:in `id'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `update'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/hook.rb:55:in `sort_by'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `each'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `sort_by'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `update'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:224:in `synchronize'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:224:in `update'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:642:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:614:in
+`load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:613:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:684:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.11/bin/sup:279
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+From sup-bugs at masanjin.net  Tue Jul 20 14:49:03 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 20 Jul 2010 18:49:03 +0000
+Subject: [sup-devel] [issue111] wrong id called on nil
+In-Reply-To: <1279651743.08.0.100305852621.issue111@masanjin.net>
+Message-ID: <1279651743.08.0.100305852621.issue111@masanjin.net>
+
+
+New submission from anonymous:
+
+I get the following crash when loading more messages.  Will start a thread on
+sup-devel to get help with debugging.
+
+wrong id called on nil
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:19:in `id'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `update'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/hook.rb:55:in `sort_by'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `each'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `sort_by'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:226:in `update'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:224:in `synchronize'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:224:in `update'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:642:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:614:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:613:in `load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.11/bin/sup:279
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+----------
+messages: 256
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: wrong id called on nil
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue111>
+_________________________________________
+
+From bwalton at artsci.utoronto.ca  Tue Jul 20 15:37:10 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 20 Jul 2010 15:37:10 -0400
+Subject: [sup-devel] Crash,
+	getting "wrong id on nil" when loading new messages
+In-Reply-To: <1279653097-sup-8302@gerlach.ca>
+References: <1279653097-sup-8302@gerlach.ca>
+Message-ID: <1279654563-sup-816@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Eric Gerlach's message of Tue Jul 20 15:15:40 -0400 2010:
+
+Hi Eric,
+
+> I get the following crash when loading more messages (at a certain
+> point).  I've created an issue for it (111), but I'd like some help
+> debugging this further.  I'm pretty sure it's caused by some sort of
+> problematic message in my Maildir, but I don't know which one.  I'm
+> pretty good with Ruby, but not so much with the sup codebase.
+
+I'm pretty sure that issue is fixed in next.  I used to get hit by it
+but haven't for some time since Rich committed some fixes for it.
+
+Try running from the git codebase instead of the gem and see if it
+goes away.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From michael+sup at stapelberg.de  Tue Jul 20 16:09:39 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 20 Jul 2010 22:09:39 +0200
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1279579814-sup-4745@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+Message-ID: <1279656544-sup-4931@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Michael Stapelberg's message of 2010-07-20 00:50:37 +0200:
+> Thanks for the patch, I can confirm it working and necessary.
+I was wrong. I just opened an email and it was no longer verified (it is
+GPG-signed). I will post an updated patch soon.
+
+Best regards,
+Michael
+
+From eric+sup-devel at gerlach.ca  Tue Jul 20 16:11:33 2010
+From: eric+sup-devel at gerlach.ca (Eric Gerlach)
+Date: Tue, 20 Jul 2010 16:11:33 -0400
+Subject: [sup-devel] Crash,
+	getting "wrong id on nil" when loading new messages
+In-Reply-To: <1279654563-sup-816@pinkfloyd.chass.utoronto.ca>
+References: <1279653097-sup-8302@gerlach.ca>
+	<1279654563-sup-816@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1279656659-sup-5582@gerlach.ca>
+
+Excerpts from Ben Walton's message of Tue Jul 20 15:37:10 -0400 2010:
+> Excerpts from Eric Gerlach's message of Tue Jul 20 15:15:40 -0400 2010:
+> 
+> Hi Eric,
+> 
+> > I get the following crash when loading more messages (at a certain
+> > point).  I've created an issue for it (111), but I'd like some help
+> > debugging this further.  I'm pretty sure it's caused by some sort of
+> > problematic message in my Maildir, but I don't know which one.  I'm
+> > pretty good with Ruby, but not so much with the sup codebase.
+> 
+> I'm pretty sure that issue is fixed in next.  I used to get hit by it
+> but haven't for some time since Rich committed some fixes for it.
+> 
+> Try running from the git codebase instead of the gem and see if it
+> goes away.
+
+It went away.  I'll go close that bug I created now.  Thanks for the
+help!
+
+Cheers,
+
+Eric
+
+From ezyang at MIT.EDU  Tue Jul 20 20:44:38 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 20 Jul 2010 20:44:38 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279618205-sup-993@mailer>
+References: <1278693172-sup-6247@mailer> <1279492496-sup-3638@ezyang>
+	<1279618205-sup-993@mailer>
+Message-ID: <1279672865-sup-6946@ezyang>
+
+Excerpts from Damien Leone's message of Tue Jul 20 05:39:41 -0400 2010:
+> Excerpts from Edward Z. Yang's message of Mon Jul 19 00:46:33 +0200 2010:
+> > It makes Sup very crashy and there's some strange behavior.  This is probably
+> > the sixth time I'm composing this message (yeah, haven't learned my
+> > lesson.) In more detail...
+> 
+> I'm impressed, I never experienced such crashes, it is quite stable
+> here but I use only very basic hooks.
+
+In retrospect, I'm fairly certain the majority of crashes were from user hooks.
+
+> > * Backwards syncing appears to make old deleted mail show up again; I'm not
+> >   sure if it's because touching the Maildir causes Sup to pick up on deleted
+> >   tags again or something, but I had to go back and delete lots of deleted mail.
+> 
+> Hmm, strange, do you use the latest commits of the branch? I pushed a
+> fix for deleted mails about 10 days ago.
+> 
+> The mails that show up again don't have the deleted flag at all?
+
+My Sup is running off of f150276f62e263d146fa81ede645b5e90e06a8a1.  They don't
+appear to have the deleted flag, but I didn't look too closely.  It's *possible*
+that a regular synchronization would have picked them up, if they accidentally
+got dropped from my Sup index but were still inside my Maildir.  I suggest not
+worrying too much about this unless someone else reproduces.
+
+> I did not test the code with hooks, what do you suggest for this one?
+
+I mentioned this in the id and Nil message; basically, when iterating over all
+messages messages might disappear, and some hooks need to check if a message is
+Nil before doing anything to it.
+
+> > * In a similar vein, while messages are going away, '@' will occasionally return
+> >   no messages (pressing again usually fixes it).  Messages that are labelled inbox
+> >   will show up in 'U', but not in the inbox view without a Sup restart.
+> 
+> I never use this keybinding but indeed I noticed that pressing '@' two
+> times in a row was not showing anything.
+
+It is possible that this is a bug in vanilla Sup.
+
+Cheers,
+Edward
+
+From damien.leone at fensalir.fr  Wed Jul 21 04:52:00 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 21 Jul 2010 10:52:00 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279672865-sup-6946@ezyang>
+References: <1278693172-sup-6247@mailer> <1279492496-sup-3638@ezyang>
+	<1279618205-sup-993@mailer> <1279672865-sup-6946@ezyang>
+Message-ID: <1279702065-sup-7856@mailer>
+
+Sup Edward,
+
+Excerpts from Edward Z. Yang's message of Wed Jul 21 02:44:38 +0200 2010:
+> Excerpts from Damien Leone's message of Tue Jul 20 05:39:41 -0400 2010:
+> In retrospect, I'm fairly certain the majority of crashes were from user hooks.
+
+Could you paste me these hooks please?
+
+> My Sup is running off of f150276f62e263d146fa81ede645b5e90e06a8a1.  They don't
+> appear to have the deleted flag, but I didn't look too closely.  It's *possible*
+> that a regular synchronization would have picked them up, if they accidentally
+> got dropped from my Sup index but were still inside my Maildir.  I suggest not
+> worrying too much about this unless someone else reproduces.
+
+What is your setup? IMAP + offlineimap? Do deleted mails work fine
+now?
+
+Cheers,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100721/abd46324/attachment.bin>
+
+From damien.leone at fensalir.fr  Wed Jul 21 04:54:18 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 21 Jul 2010 10:54:18 +0200
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1279702065-sup-7856@mailer>
+References: <1278693172-sup-6247@mailer> <1279492496-sup-3638@ezyang>
+	<1279618205-sup-993@mailer> <1279672865-sup-6946@ezyang>
+	<1279702065-sup-7856@mailer>
+Message-ID: <1279702378-sup-2954@mailer>
+
+Excerpts from Damien Leone's message of Wed Jul 21 10:52:00 +0200 2010:
+> What is your setup? IMAP + offlineimap?
+
+My bad, you mentioned offlineimap a few mails ago.
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100721/2df79bdd/attachment.bin>
+
+From sup-bugs at masanjin.net  Thu Jul 22 13:34:51 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 22 Jul 2010 17:34:51 +0000
+Subject: [sup-devel] [issue112] wildcard in from: field do not work
+In-Reply-To: <1279820091.87.0.35266318432.issue112@masanjin.net>
+Message-ID: <1279820091.87.0.35266318432.issue112@masanjin.net>
+
+
+New submission from anonymous:
+
+A search for from:robe* does not find all the expected emails (eg ones from
+people called Robert). 
+
+The translated query (line 399 of lib/sup/index.rb) is
+(from_email:robe OR from_name:robe)*
+
+I think it should expand to (from_email:robe* OR from_name:robe*)
+
+Indeed, a search for from_name:robe* yields the expected results.
+
+----------
+messages: 257
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: git/debian
+title: wildcard in from: field do not work
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue112>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Sat Jul 24 17:30:16 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 24 Jul 2010 17:30:16 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1280006159-sup-5717@zyrg.net>
+
+I've rebased this against master and merged it to branch maildir-sync in
+the official repo. This is a big change, so help with testing and code
+review would be much appreciated.
+
+From ezyang at MIT.EDU  Sun Jul 25 18:25:26 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 25 Jul 2010 18:25:26 -0400
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1280006159-sup-5717@zyrg.net>
+References: <1278693172-sup-6247@mailer> <1280006159-sup-5717@zyrg.net>
+Message-ID: <1280096695-sup-2557@ezyang>
+
+Excerpts from Rich Lane's message of Sat Jul 24 17:30:16 -0400 2010:
+> I've rebased this against master and merged it to branch maildir-sync in
+> the official repo. This is a big change, so help with testing and code
+> review would be much appreciated.
+
+Hi Rich,
+
+I've moved my Sup checkout onto this branch. *test test test test*
+After a week of usage, I'd say the changes are pretty stable.
+
+Cheers,
+Edward
+
+From michael+sup at stapelberg.de  Tue Jul 27 08:54:57 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 27 Jul 2010 14:54:57 +0200
+Subject: [sup-devel] [PATCH] Use the configured real name combined with the
+	actual email address as Sender when replying
+Message-ID: <1280235249-sup-8730@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+	For example, mails with "To: michael+sup at stapelberg.de" don't get the
+	sender "michael+sup <michael+sup at stapelberg.de>" anymore but
+	"Michael Stapelberg <michael+sup at stapelberg.de>"
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Use-the-configured-real-name-combined-with-the-actua.patch
+Type: application/octet-stream
+Size: 1313 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100727/b372afc4/attachment-0001.obj>
+
+From viroteck at viroteck.net  Tue Jul 27 12:16:48 2010
+From: viroteck at viroteck.net (Robin Burchell)
+Date: Tue, 27 Jul 2010 17:16:48 +0100
+Subject: [sup-devel] [PATCH] Use the configured real name combined with
+	the actual email address as Sender when replying
+In-Reply-To: <1280235249-sup-8730@midna.zekjur.net>
+References: <1280235249-sup-8730@midna.zekjur.net>
+Message-ID: <1280247338-sup-5612@virgin>
+
+Hi Michael,
+
+Excerpts from Michael Stapelberg's message of Tue Jul 27 13:54:57 +0100 2010:
+> Hi,
+> 
+> quote from the commit message:
+>     For example, mails with "To: michael+sup at stapelberg.de" don't get the
+>     sender "michael+sup <michael+sup at stapelberg.de>" anymore but
+>     "Michael Stapelberg <michael+sup at stapelberg.de>"
+
+I made a similar (though not perfect) fix which, I guess from your mail, never
+got through the moderation queue to sup-devel.
+
+See:
+http://github.com/rburchell/sup/commit/efd9752fc62d14fbabecf7719c42f13643c21db
+
+> Best regards,
+> Michael
+
+--
+Robin Burchell
+http://rburchell.com
+
+From michael+sup at stapelberg.de  Tue Jul 27 12:38:51 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 27 Jul 2010 18:38:51 +0200
+Subject: [sup-devel] [PATCH] Use the configured real name combined with
+	the actual email address as Sender when replying
+In-Reply-To: <1280247338-sup-5612@virgin>
+References: <1280235249-sup-8730@midna.zekjur.net> <1280247338-sup-5612@virgin>
+Message-ID: <1280248685-sup-4691@midna.zekjur.net>
+
+Hi Robin,
+
+Excerpts from Robin Burchell's message of 2010-07-27 18:16:48 +0200:
+> I made a similar (though not perfect) fix which, I guess from your mail, never
+> got through the moderation queue to sup-devel.
+Not sure, at least it did not get merged into mainline as of today. Also, your
+patch does not consider the regexes/alternates system but always just uses the
+main email address.
+
+Best regards,
+Michael
+
+From daniel.schoepe at googlemail.com  Thu Jul 29 19:30:19 2010
+From: daniel.schoepe at googlemail.com (Daniel Schoepe)
+Date: Fri, 30 Jul 2010 01:30:19 +0200
+Subject: [sup-devel] [PATCH] Fix crash when sending signed/encrypted
+	messages with attachments
+Message-ID: <1280446020-sup-4762@gilead>
+
+Currently, when trying to send an encrypted or signed message with an
+attachment, sup crashes, since it tries to .pack('m') the body of a
+multipart message, which is an array of RMail::Messages and thus
+crashes.
+
+The attached patch should fix that.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-crash-when-sending-signed-encrypted-messages-wit.patch
+Type: application/octet-stream
+Size: 1415 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100730/98154b32/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100730/98154b32/attachment.bin>
+
+From alvherre at alvh.no-ip.org  Thu Jul 29 23:09:04 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Thu, 29 Jul 2010 23:09:04 -0400
+Subject: [sup-devel] Fix crash when opening attachment with slashes in
+	filename
+Message-ID: <1280459186-sup-8579@alvh.no-ip.org>
+
+Hi,
+
+This patch fixes a crash caused by trying to create a temp file with
+forward slashes.  The fix is simple -- replace the slashes with a
+different char.
+
+I reported this as issue 105 on masanjin.net previously, but that's
+apparently dead now.
+
+--
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msgchunks.diff
+Type: application/octet-stream
+Size: 748 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100729/3402b837/attachment.obj>
+
+From sup-bugs at masanjin.net  Fri Jul 30 14:37:16 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 30 Jul 2010 18:37:16 +0000
+Subject: [sup-devel] [issue113] Error at startup
+In-Reply-To: <1280515036.67.0.567575591319.issue113@masanjin.net>
+Message-ID: <1280515036.67.0.567575591319.issue113@masanjin.net>
+
+
+New submission from anonymous:
+
+I received a bug info when I tried to run sup in Archlinux. The contents from
+~.sup/exception-log.txt.
+
+--- RuntimeError from thread: main
+can't modify frozen string
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `force_encoding'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `block in
+add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:37:in `initialize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `new'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `init'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:126:in `start'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:153:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:68:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+----------
+messages: 260
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: 0.11.2
+title: Error at startup
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue113>
+_________________________________________
+

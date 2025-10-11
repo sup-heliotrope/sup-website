@@ -1,0 +1,1348 @@
+From byzkarl at yahoo.com  Mon Feb  1 09:24:27 2010
+From: byzkarl at yahoo.com (Karl Schudt)
+Date: Mon, 1 Feb 2010 14:24:27 +0000
+Subject: [sup-talk] Can't get sup 0.10.2 to work in slackware
+Message-ID: <14ca927c1002010624m54af983fp21f4d34ccef67338@mail.gmail.com>
+
+Hi,
+
+Just trying to get back to my favorite distro, and now I want my favorite
+email client.
+
+I tried to install sup with
+"gem install sup", and all appears to work.
+
+Then, when I run it, I get this:
+
+[2010-02-01 14:22:14 +0000] WARNING: can't find character set by using
+locale, defaulting to utf-8
+/usr/lib64/ruby/1.9.1/dl/import.rb:1:in `require':
+/usr/lib64/ruby/1.9.1/x86_64-linux/dl.so: undefined symbol: rb_dl_cb_call -
+/usr/lib64/ruby/1.9.1/x86_64-linux/dl.so (LoadError)
+    from /usr/lib64/ruby/1.9.1/dl/import.rb:1:in `<top (required)>'
+    from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:94:in
+`require'
+    from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:94:in
+`<module:Redwood>'
+    from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:64:in `<top
+(required)>'
+    from /home/carolus/.gem/ruby/1.9.1/bin/sup:19:in `load'
+    from /home/carolus/.gem/ruby/1.9.1/bin/sup:19:in `<main>'
+
+I can't figure out what's going on with the dl.so, since I don't really know
+Ruby. Please help! I can't go back to Mutt!
+
+Thanks,
+
+Karl
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100201/3235a544/attachment.html>
+
+From byzkarl at yahoo.com  Mon Feb  1 23:25:15 2010
+From: byzkarl at yahoo.com (Karl Schudt)
+Date: Tue, 02 Feb 2010 04:25:15 +0000
+Subject: [sup-talk] Can't get sup 0.10.2 to work in slackware
+In-Reply-To: <14ca927c1002010624m54af983fp21f4d34ccef67338@mail.gmail.com>
+References: <14ca927c1002010624m54af983fp21f4d34ccef67338@mail.gmail.com>
+Message-ID: <1265084588-sup-7068@darkstar>
+
+Excerpts from Karl Schudt's message of Mon Feb 01 14:24:27 +0000 2010:
+> Hi,
+> 
+> Just trying to get back to my favorite distro, and now I want my favorite
+> email client.
+> 
+> I tried to install sup with
+> "gem install sup", and all appears to work.
+> 
+> Then, when I run it, I get this:
+> 
+> [2010-02-01 14:22:14 +0000] WARNING: can't find character set by using
+> locale, defaulting to utf-8
+> /usr/lib64/ruby/1.9.1/dl/import.rb:1:in `require':
+> /usr/lib64/ruby/1.9.1/x86_64-linux/dl.so: undefined symbol: rb_dl_cb_call -
+> /usr/lib64/ruby/1.9.1/x86_64-linux/dl.so (LoadError)
+>     from /usr/lib64/ruby/1.9.1/dl/import.rb:1:in `<top (required)>'
+>     from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:94:in
+> `require'
+>     from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:94:in
+> `<module:Redwood>'
+>     from /home/carolus/.gem/ruby/1.9.1/gems/sup-0.10.2/bin/sup:64:in `<top
+> (required)>'
+>     from /home/carolus/.gem/ruby/1.9.1/bin/sup:19:in `load'
+>     from /home/carolus/.gem/ruby/1.9.1/bin/sup:19:in `<main>'
+> 
+> Karl
+
+I have a temporary fix. If you run into my problem on Slackware-current,
+you can uninstall ruby (using pkgtool, for example) and then download
+the ruby package from Slackware 13.0. Then gem install sup (I had to
+install rake first) and it works.
+
+I'm still not sure what went wrong, but am happy to be supping again.
+
+
+From olly at survex.com  Wed Feb  3 22:42:09 2010
+From: olly at survex.com (Olly Betts)
+Date: Thu, 4 Feb 2010 03:42:09 +0000 (UTC)
+Subject: [sup-talk]
+	=?utf-8?q?=5BPATCH=5D_xapian=3A_do_less_work_for_updat?=
+	=?utf-8?q?e=5Fmessage=5Fstate?=
+References: <1252867449-30734-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1254339542-sup-886@masanjin.net> <1254341186-sup-4357@zyrg.net>
+	<1254404707-sup-9253@masanjin.net> <1254416360-sup-8957@zyrg.net>
+	<slrnhcbck3.5ah.olly@msgid.survex.com>
+Message-ID: <loom.20100204T042813-620@post.gmane.org>
+
+Olly Betts writes:
+> On 2009-10-01, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> > Excerpts from William Morgan's message of Thu Oct 01 09:46:20 -0400 2009:
+> >> Reformatted excerpts from Rich Lane's message of 2009-09-30:
+> >> > They're about 3 times faster on my machine with this patch. An
+> >> > optimization the Xapian devs have been planning to make (and that this
+> >> > patch is necessary to take advantage of) should increase performance
+> >> > much more.
+> >> 
+> >> Awesome. Out of curiousity, what's the optimization?
+> >
+> > replace_document currently deletes all the old postings and inserts new
+> > ones. It can be optimized to make the minimal set of modifications.
+> 
+> This is the ticket for it:
+> 
+> http://trac.xapian.org/ticket/250
+
+This has now been fixed in Xapian SVN trunk, and I've backported the
+patches to Xapian's 1.0 branch.  You can find snapshot tarballs including
+these changes here:
+
+http://oligarchy.co.uk/xapian/branches/1.0/
+
+Xapian's testsuite passes (including the additional test coverage which I
+also backported), and I looked over each change carefully, but I would be
+interested to see some real world testing, particularly in the situation
+which these changes are intended to improve (i.e. speed of adding/removing
+tag terms from existing documents).  I'm not expecting problems, but this
+is a larger change than we usually backport, so wider testing would be a
+good thing.
+
+If you are using Xapian 1.0's default backend (flint), you'll need this
+patch (which was merged before sup 0.10) to get full benefit from the
+changes:
+
+http://article.gmane.org/gmane.mail.sup.devel/177
+
+I've uploaded a snapshot of 1.0 with this patch to Debian experimental.
+It hasn't built for all Debian architectures yet, but is available for at
+least amd64 and x86, which are probably the most popular two.
+
+If you aren't sure how to pull in packages from experimental, see:
+
+http://wiki.debian.org/DebianExperimental
+
+I've also put it in a Launchpad PPA for all currently supported Ubuntu
+releases, and it has built for all of them already:
+
+https://launchpad.net/~ojwb/+archive/experimental/
+
+Cheers,
+    Olly
+
+
+From tero at tilus.net  Thu Feb  4 03:07:41 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 04 Feb 2010 10:07:41 +0200
+Subject: [sup-talk] Fixing broken attachment mimetypes
+Message-ID: <1265270433-sup-3334@tilus.net>
+
+I occasionally receive RTF-documents marked as application/msword
+which misguides sup to (based on mailcap) launch wrong viewer.  How do
+I fix the mimetype (after the mail has been indexed)?
+
+Mutt could edit attachment mimetype.  How would I go about
+implementing the same to sup?  Or would there be a more general
+feature that would solve this problem?  Obviously this kind of edits
+would not persist over index rebuilds.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sm at khjk.org  Sun Feb  7 14:10:04 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Sun, 07 Feb 2010 20:10:04 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+Message-ID: <1265569783-sup-1789@khjk.org>
+
+Hi List,
+
+I see there have been posts about this before, the last from Oct 2009.
+Whenever gpg-agent starts pinentry-curses with sup running, the interface gets
+"messed up". Unfortunately, I'm still experiencing such a problem with sup
+version 0.10.2.
+
+Specifically, when the pinentry screen appears and I press the first key, sup
+suddenly reappears, the cursor moves to the bottom right corner and the
+passphrase stars start appearing there, wrapping over to the left. When I press
+Enter, pinentry reappears and almost always states "wrong passphrase", so I
+presume something about the input must get mangled somewhere. Now when I try
+again, everything looks as it should (in pinentry) and the passphrase is
+accepted. However, after that, sup does not behave normally. The screen does
+not update and commands only seem to be recognized if Enter is pressed
+afterwards. So I have to press "q Enter" and restart.
+
+On a related note, it asks for the passphrase periodically. Does it require gpg
+calls every time it polls for new messages? Is there a way to stop that?
+
+
+Regards,
+Sven
+
+From michael+sup at stapelberg.de  Sun Feb  7 15:25:57 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 07 Feb 2010 21:25:57 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1265569783-sup-1789@khjk.org>
+References: <1265569783-sup-1789@khjk.org>
+Message-ID: <1265574271-sup-5738@midna.zekjur.net>
+
+Hi Sven,
+
+Excerpts from Sven Moritz Hallberg's message of So Feb 07 20:10:04 +0100 2010:
+> Whenever gpg-agent starts pinentry-curses with sup running, the interface gets
+> "messed up". Unfortunately, I'm still experiencing such a problem with sup
+> version 0.10.2.
+I have a similar problem, though it only happens when sup has other output to
+my terminal while the pinentry is running. That is, when you catch a quiet
+moment (between polling intervals), you can enter your passphrase without any
+problems.
+
+I intend to fix this problem in a few weeks, if nobody does it before I do.
+
+Best regards,
+Michael
+
+From nbest at ci.uchicago.edu  Tue Feb  9 07:58:56 2010
+From: nbest at ci.uchicago.edu (Neil Best)
+Date: Tue, 9 Feb 2010 06:58:56 -0600
+Subject: [sup-talk] xapian error in startup v0.10.2 under Macports
+In-Reply-To: <8F59B6F6-523C-48FD-8EFA-7F951FB08E15@ci.uchicago.edu>
+References: <8F59B6F6-523C-48FD-8EFA-7F951FB08E15@ci.uchicago.edu>
+Message-ID: <3951FB79-4C19-4086-BE14-409458CB090F@ci.uchicago.edu>
+
+
+By saying:
+
+sup -i ferret
+
+it looks like I can at least get started.  What's the situation and  
+what should I expect?  Should I just work in this mode until a new  
+version propagates to Macports?  Thanks.
+
+
+
+
+From nbest at ci.uchicago.edu  Tue Feb  9 07:51:14 2010
+From: nbest at ci.uchicago.edu (Neil Best)
+Date: Tue, 9 Feb 2010 06:51:14 -0600
+Subject: [sup-talk] xapian error in startup v0.10.2 under Macports
+Message-ID: <8F59B6F6-523C-48FD-8EFA-7F951FB08E15@ci.uchicago.edu>
+
+Can anyone tell me what this means and what to do about it?  I don't  
+know the first thing about Ruby (yet), but would really like to try  
+Sup.  I am so sick of Apple Mail!
+
+wireless-197-142:~ nbest$ which sup
+/opt/local/bin/sup
+wireless-197-142:~ nbest$ sup --version
+sup v0.10.2
+wireless-197-142:~ nbest$ sup
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:229:in  
+`init': unknown index type "xapian": dlopen(/opt/local/lib/ruby/gems/ 
+1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle, 9): Library not  
+loaded: /usr/local/lib/libxapian-1.1.3.dylib (RuntimeError)
+   Referenced from: /opt/local/lib/ruby/gems/1.8/gems/xapian- 
+full-1.1.3.4/lib/_xapian.bundle
+   Reason: image not found - /opt/local/lib/ruby/gems/1.8/gems/xapian- 
+full-1.1.3.4/lib/_xapian.bundle
+	from /opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:137
+	from /opt/local/bin/sup:19:in `load'
+	from /opt/local/bin/sup:19
+wireless-197-142:~ nbest$
+
+
+Thanks for any tips.
+
+
+Neil
+
+
+From mariano.mara at gmail.com  Tue Feb  9 18:51:29 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Tue, 09 Feb 2010 20:51:29 -0300
+Subject: [sup-talk] Before poll hook
+Message-ID: <1265758810-sup-2203@kafka>
+
+Hi everyone,
+so sorry for this n00b question but my ruby-fu is really bad: I want to
+run offlineimap as a hook before each poll. I checked the code in the
+wiki and some code I found in a thread and built my own -very simple- version of it:
+
+$ tail -n 15 ~/.sup/hooks/before-poll.rb 
+# http://sup.rubyforge.org/wiki/wiki.pl?Hooks
+def offlineimap()
+  cmd = "offlineimap -o -l ~/.offlineimap.log"
+  `#{cmd} 2>&1`
+end
+
+say "Checking if we can run offlineimap..."
+if (@last_fetch || Time.at(0)) < Time.now - 120
+  say "Running offlineimap..."
+  log offlineimap()
+  say "Finished offlineimap."
+end
+@last_fetch = Time.now
+
+I saved it where it should be and -just in case- gave it execution rights for my user. 
+However I can't say it's running. I don't see any messages in sup's status bar and everytime
+I hit Shift+p nothing happens. Needless to say, I have to manually run offlineimap to get the messages.
+What am I missing?
+
+TIA,
+Mariano
+
+From daniel.schoepe at googlemail.com  Wed Feb 10 08:01:40 2010
+From: daniel.schoepe at googlemail.com (Daniel Schoepe)
+Date: Wed, 10 Feb 2010 14:01:40 +0100
+Subject: [sup-talk] Before poll hook
+In-Reply-To: <1265758810-sup-2203@kafka>
+References: <1265758810-sup-2203@kafka>
+Message-ID: <1265806823-sup-4799@nemesis.home>
+
+Excerpts from Mariano Mara's message of Wed Feb 10 00:51:29 +0100 2010:
+> Hi everyone,
+> [..]
+> I saved it where it should be and -just in case- gave it execution rights for my user. 
+> However I can't say it's running. I don't see any messages in sup's status bar and everytime
+> I hit Shift+p nothing happens. Needless to say, I have to manually run offlineimap to get the messages.
+> What am I missing?
+> 
+> TIA,
+> Mariano
+
+Hello,
+
+is there something in the log buffer(press ';' to get a list of
+buffers) that indicates what is going wrong?
+
+Regards,
+Daniel
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100210/9fd0fafc/attachment.bin>
+
+From mariano.mara at gmail.com  Wed Feb 10 09:05:55 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Wed, 10 Feb 2010 11:05:55 -0300
+Subject: [sup-talk] Before poll hook
+In-Reply-To: <1265806823-sup-4799@nemesis.home>
+References: <1265758810-sup-2203@kafka> <1265806823-sup-4799@nemesis.home>
+Message-ID: <1265810233-sup-637@kafka>
+
+Excerpts from Daniel Schoepe's message of Wed Feb 10 10:01:40 -0300 2010:
+> Excerpts from Mariano Mara's message of Wed Feb 10 00:51:29 +0100 2010:
+> > Hi everyone,
+> > [..]
+> > I saved it where it should be and -just in case- gave it execution rights for my user. 
+> > However I can't say it's running. I don't see any messages in sup's status bar and everytime
+> > I hit Shift+p nothing happens. Needless to say, I have to manually run offlineimap to get the messages.
+> > What am I missing?
+> > 
+> > TIA,
+> > Mariano
+> 
+> Hello,
+> 
+> is there something in the log buffer(press ';' to get a list of
+> buffers) that indicates what is going wrong?
+> 
+> Regards,
+> Daniel
+
+Hi Daniel, thanks for your answer. Turns out it's working now: a few
+hours idle did the trick it seems, although it beats me why it's working
+now (or why it didn't yesterday). 
+
+As soon as bug 47 is fixed I will be in heaven.
+
+Thanks again and sorry for posting problems that fix themselves :)
+
+From sup-talk at davekap.com  Thu Feb 11 17:10:10 2010
+From: sup-talk at davekap.com (David L.Kaplan)
+Date: Thu, 11 Feb 2010 17:10:10 -0500
+Subject: [sup-talk] problem gem installing 0.10.1
+Message-ID: <1265926186-sup-9201@enchanted>
+
+I've been a happy user of sup for about a year and a half, since 0.6!  Thanks
+to everyone for all the hard work!
+
+I'm on Ubuntu Karmic Koala.  I have not switched from Ferret yet, but intend to
+once 0.10 is installed.  I can gem uninstall and install sup 0.9 no sweat, but
+gem update sup, as well as gem install sup after uninstalling all sup gems,
+gives me the following error:
+
+gem install sup
+Updating installed gems
+Updating sup
+Building native extensions.  This could take a while...
+ERROR:  Error installing sup:
+        ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.8 extconf.rb
+checking for unistd.h... yes
+checking for locale.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncursesw... no
+checking for wmove() in -lpdcurses... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+
+Provided configuration options:
+        --with-opt-dir
+        --without-opt-dir
+        --with-opt-include
+        --without-opt-include=${opt-dir}/include
+        --with-opt-lib
+        --without-opt-lib=${opt-dir}/lib
+        --with-make-prog
+        --without-make-prog
+        --srcdir=.
+        --curdir
+        --ruby=/usr/bin/ruby1.8
+        --with-ncurseswlib
+        --without-ncurseswlib
+        --with-pdcurseslib
+        --without-pdcurseslib
+extconf.rb:46: ncurses library not found (RuntimeError)
+
+
+Gem files will remain installed in /var/lib/gems/1.8/gems/ncursesw-1.2.4.1 for
+inspection.
+Results logged to /var/lib/gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+Nothing to update
+
+I've tried installing ncurses and ncursesw gems.  I notice that there are
+ncurses and ncursesw packages installed through aptitude as well.  I'm not
+savvy enough to know what might be interfering with what.  I took one stab at
+uninstalling ncurses-base through aptitude and aptitude told me that was stupid
+and I better know what I'm doing!  All I really know is that all previous
+versions installed and this one doesn't.
+
+Thanks for any help.
+
+Cheers,
+David
+
+From pi+sup at pihost.us  Thu Feb 11 17:34:09 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Thu, 11 Feb 2010 15:34:09 -0700
+Subject: [sup-talk] problem gem installing 0.10.1
+In-Reply-To: <1265926186-sup-9201@enchanted>
+References: <1265926186-sup-9201@enchanted>
+Message-ID: <1265927637-sup-9306@home.mrtheplague.net>
+
+Excerpts from David L.Kaplan's message of Thu Feb 11 15:10:10 -0700 2010:
+> I can gem uninstall and install sup 0.9 no sweat, but gem update sup, as well
+> as gem install sup after uninstalling all sup gems, gives me the following
+> error:
+> 
+> gem install sup
+> Updating installed gems
+> Updating sup
+> Building native extensions.  This could take a while...
+> ERROR:  Error installing sup:
+>         ERROR: Failed to build gem native extension.
+> 
+> /usr/bin/ruby1.8 extconf.rb
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+
+Sounds like you're missing libncursesw5-dev and/or libncurses5-dev. Try
+installing both of those.
+
+> Thanks for any help.
+
+HTH
+> Cheers,
+> David
+
+
+-- 
+| |
+\ /  Quantum  Junction
+ I   Get in both lanes
+
+From garoth at gmail.com  Fri Feb 12 22:06:30 2010
+From: garoth at gmail.com (Andrei Thorp)
+Date: Fri, 12 Feb 2010 22:06:30 -0500
+Subject: [sup-talk] Ruby Ncurses Bindings
+Message-ID: <80055d7c1002121906t6e6cbe6cpf6188ddde6e82d3e@mail.gmail.com>
+
+Hello,
+
+For several versions now, sup has shipped with ncurses bindings for
+ruby. I don't understand why they're in there. For my Arch package, I
+delete the ncurses.rb file and allow Sup to use the system-installed
+ruby ncurses bindings instead. Funny enough, they work properly in
+Arch whereas the provided bindings don't. Is there any reason to have
+the bindings in there? Other distros?
+
+Anyway, I have no problems continuing to delete them if there is a reason.
+
+Cheers,
+
+-Andrei "Garoth" Thorp
+
+From taruti at taruti.net  Tue Feb 16 08:18:22 2010
+From: taruti at taruti.net (Taru Karttunen)
+Date: Tue, 16 Feb 2010 15:18:22 +0200
+Subject: [sup-talk] Ruby Ncurses Bindings
+In-Reply-To: <80055d7c1002121906t6e6cbe6cpf6188ddde6e82d3e@mail.gmail.com>
+References: <80055d7c1002121906t6e6cbe6cpf6188ddde6e82d3e@mail.gmail.com>
+Message-ID: <1266326246-sup-9743@oz.taruti.net>
+
+Excerpts from Andrei Thorp's message of Sat Feb 13 05:06:30 +0200 2010:
+> For several versions now, sup has shipped with ncurses bindings for
+> ruby. I don't understand why they're in there. For my Arch package, I
+> delete the ncurses.rb file and allow Sup to use the system-installed
+> ruby ncurses bindings instead. Funny enough, they work properly in
+> Arch whereas the provided bindings don't. Is there any reason to have
+> the bindings in there? Other distros?
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=477366
+
+- Taru Karttunen
+
+From olly at survex.com  Wed Feb 17 21:27:04 2010
+From: olly at survex.com (Olly Betts)
+Date: Thu, 18 Feb 2010 02:27:04 +0000 (UTC)
+Subject: [sup-talk] [PATCH] xapian: do less work for update_message_state
+References: <1252867449-30734-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1254339542-sup-886@masanjin.net> <1254341186-sup-4357@zyrg.net>
+	<1254404707-sup-9253@masanjin.net> <1254416360-sup-8957@zyrg.net>
+	<slrnhcbck3.5ah.olly@msgid.survex.com>
+	<loom.20100204T042813-620@post.gmane.org>
+Message-ID: <slrnhnp9bq.2sa.olly@msgid.survex.com>
+
+On 2010-02-04, Olly Betts <olly at survex.com> wrote:
+> Olly Betts writes:
+>> On 2009-10-01, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+>> > Excerpts from William Morgan's message of Thu Oct 01 09:46:20 -0400 2009:
+>> >> Reformatted excerpts from Rich Lane's message of 2009-09-30:
+>> >> > They're about 3 times faster on my machine with this patch. An
+>> >> > optimization the Xapian devs have been planning to make (and that this
+>> >> > patch is necessary to take advantage of) should increase performance
+>> >> > much more.
+>> >> 
+>> >> Awesome. Out of curiousity, what's the optimization?
+>> >
+>> > replace_document currently deletes all the old postings and inserts new
+>> > ones. It can be optimized to make the minimal set of modifications.
+>> 
+>> This is the ticket for it:
+>> 
+>> http://trac.xapian.org/ticket/250
+
+This fix went into the recent Xapian 1.0.18 release (and also in 1.1.4, which
+is a release candidate for 1.2.0).
+
+Cheers,
+    Olly
+
+
+From michael+sup at stapelberg.de  Thu Feb 18 13:10:07 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 18 Feb 2010 19:10:07 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1265574271-sup-5738@midna.zekjur.net>
+References: <1265569783-sup-1789@khjk.org>
+	<1265574271-sup-5738@midna.zekjur.net>
+Message-ID: <1266516237-sup-7845@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Michael Stapelberg's message of So Feb 07 21:25:57 +0100 2010:
+> Excerpts from Sven Moritz Hallberg's message of So Feb 07 20:10:04 +0100 2010:
+> > Whenever gpg-agent starts pinentry-curses with sup running, the interface gets
+> > "messed up". Unfortunately, I'm still experiencing such a problem with sup
+> > version 0.10.2.
+Further debugging told me that it is a thread related problem. You can work
+around it by disabling threads when starting sup using the -n option.
+
+The problem seems to be that other threads still run while one thread calls
+system (which in turn uses fork, which seems to be the real cause of the
+problem). Even using Thread.critical = true does not fix the problem (it is
+removed in ruby 1.9 anyways). I?ve attached a proof of concept which
+illustrates the problem.
+
+Could anyone with a little more insight into ruby threads have a look at this
+issue please?
+
+Specifically, if you comment out the call to reporting_thread in
+lib/sup/modes/thread-index-mode.rb:101, it seems to work.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: poc.rb
+Type: application/octet-stream
+Size: 410 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100218/7c93e8f9/attachment-0001.obj>
+
+From sven.schober at uni-ulm.de  Thu Feb 18 13:35:24 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Thu, 18 Feb 2010 19:35:24 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1266516237-sup-7845@midna.zekjur.net>
+References: <1265569783-sup-1789@khjk.org>
+	<1265574271-sup-5738@midna.zekjur.net>
+	<1266516237-sup-7845@midna.zekjur.net>
+Message-ID: <1266518077-sup-3488@hysbald>
+
+Excerpts from Michael Stapelberg's message of Thu Feb 18 19:10:07 +0100 2010:
+> Could anyone with a little more insight into ruby threads have a look at this
+> issue please?
+
++1
+
+> Best regards,
+> Michael
+
+Ciao,
+ Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146 [+49-179-5060182]   |SYSTEMS LAB
+
+From sgoldman at tower-research.com  Thu Feb 18 17:56:53 2010
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 18 Feb 2010 17:56:53 -0500
+Subject: [sup-talk] Switching to Exchange
+Message-ID: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+
+
+Hey guys,
+
+Thanks for the wild ride, but I need to switch to something more
+reliable.  Not sure if there are incompatibilities with my version of
+ruby or whatnot, but I'm getting ridiculous CPU usage and random seg
+faults.  It's too much stress for me.  And after a crash when I
+restart, I have a random collection of seventy or so messages in my
+inbox, even though it was zero when I crashed.
+
+This combined with not being able to convert to xapian without a seg
+fault...
+
+Maybe I'll be back some day.
+
+Good luck.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From michael+sup at stapelberg.de  Thu Feb 18 22:29:28 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Feb 2010 04:29:28 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1266518077-sup-3488@hysbald>
+References: <1265569783-sup-1789@khjk.org>
+	<1265574271-sup-5738@midna.zekjur.net>
+	<1266516237-sup-7845@midna.zekjur.net>
+	<1266518077-sup-3488@hysbald>
+Message-ID: <1266550118-sup-5231@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Sven Schober's message of Do Feb 18 19:35:24 +0100 2010:
+> Excerpts from Michael Stapelberg's message of Thu Feb 18 19:10:07 +0100 2010:
+> > Could anyone with a little more insight into ruby threads have a look at this
+> > issue please?
+In the meantime, I fixed the problem (at least it works for me). You can get my
+patch at sup-devel, see
+http://rubyforge.org/pipermail/sup-devel/2010-February/000373.html
+
+Best regards,
+Michael
+
+From sven.schober at uni-ulm.de  Fri Feb 19 05:30:49 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Fri, 19 Feb 2010 11:30:49 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1266550118-sup-5231@midna.zekjur.net>
+References: <1265569783-sup-1789@khjk.org>
+	<1265574271-sup-5738@midna.zekjur.net>
+	<1266516237-sup-7845@midna.zekjur.net>
+	<1266518077-sup-3488@hysbald>
+	<1266550118-sup-5231@midna.zekjur.net>
+Message-ID: <1266575368-sup-8036@hysbald>
+
+Excerpts from Michael Stapelberg's message of Fri Feb 19 04:29:28 +0100 2010:
+> In the meantime, I fixed the problem (at least it works for me). You can get my
+> patch at sup-devel, see
+> http://rubyforge.org/pipermail/sup-devel/2010-February/000373.html
+> 
+Thanks, i'll give it a try :)!
+
+> Best regards,
+> Michael
+
+Ciao,
+ Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146 [+49-179-5060182]   |SYSTEMS LAB
+
+From sgoldman at tower-research.com  Fri Feb 19 15:57:02 2010
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 19 Feb 2010 15:57:02 -0500
+Subject: [sup-talk] Switching to Exchange
+In-Reply-To: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+References: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+Message-ID: <1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+
+Excerpts from Steve Goldman's message of Thu Feb 18 17:56:53 -0500 2010:
+> 
+> Hey guys,
+> 
+> Thanks for the wild ride, but I need to switch to something more
+> reliable.  Not sure if there are incompatibilities with my version of
+> ruby or whatnot, but I'm getting ridiculous CPU usage and random seg
+> faults.  It's too much stress for me.  And after a crash when I
+> restart, I have a random collection of seventy or so messages in my
+> inbox, even though it was zero when I crashed.
+> 
+> This combined with not being able to convert to xapian without a seg
+> fault...
+> 
+> Maybe I'll be back some day.
+> 
+> Good luck.
+
+In case anyone was worried, I'm back.  I took matters into my own
+hand.
+
+Essentially, I was dealing with a slow IMAP server.  Since sup doesn't
+cache IMAP messages locally, this gave me huge headaches when trying
+to sync with the server during busy times.
+
+The remedy was to download all the messages off the server into a
+local mbox file and to use fetchmail/procmail to poll for new IMAP
+messages and append them to the mbox file.
+
+As a result, I was able to successfully use sup-sync to build a xapian
+index and everything is lightning fast.  Life is good... for now.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From hollunder at lavabit.com  Fri Feb 19 16:28:59 2010
+From: hollunder at lavabit.com (hollunder)
+Date: Fri, 19 Feb 2010 22:28:59 +0100
+Subject: [sup-talk] Switching to Exchange
+References: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+	<1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+Message-ID: <1266614806-sup-9832@eris>
+
+Excerpts from Steve Goldman's message of 2010-02-19 21:57:02 +0100:
+> Excerpts from Steve Goldman's message of Thu Feb 18 17:56:53 -0500 2010:
+> > 
+> > Hey guys,
+> > 
+> > Thanks for the wild ride, but I need to switch to something more
+> > reliable.  Not sure if there are incompatibilities with my version of
+> > ruby or whatnot, but I'm getting ridiculous CPU usage and random seg
+> > faults.  It's too much stress for me.  And after a crash when I
+> > restart, I have a random collection of seventy or so messages in my
+> > inbox, even though it was zero when I crashed.
+> > 
+> > This combined with not being able to convert to xapian without a seg
+> > fault...
+> > 
+> > Maybe I'll be back some day.
+> > 
+> > Good luck.
+> 
+> In case anyone was worried, I'm back.  I took matters into my own
+> hand.
+> 
+> Essentially, I was dealing with a slow IMAP server.  Since sup doesn't
+> cache IMAP messages locally, this gave me huge headaches when trying
+> to sync with the server during busy times.
+> 
+> The remedy was to download all the messages off the server into a
+> local mbox file and to use fetchmail/procmail to poll for new IMAP
+> messages and append them to the mbox file.
+> 
+> As a result, I was able to successfully use sup-sync to build a xapian
+> index and everything is lightning fast.  Life is good... for now.
+> 
+> Thanks.
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+
+I think most of us just use offlineimap.
+Tough if the imap server is acting up it doesn't help either, happened
+to me recently and offlineimap ran for minutes instead of seconds until
+they fixed it.
+
+
+From bgamari at gmail.com  Sat Feb 20 12:38:58 2010
+From: bgamari at gmail.com (Ben Gamari)
+Date: Sat, 20 Feb 2010 12:38:58 -0500
+Subject: [sup-talk] Switching to Exchange
+In-Reply-To: <1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+References: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+	<1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+Message-ID: <1266687464-sup-6371@ben-laptop>
+
+Excerpts from Steve Goldman's message of Fri Feb 19 15:57:02 -0500 2010:
+> The remedy was to download all the messages off the server into a
+> local mbox file and to use fetchmail/procmail to poll for new IMAP
+> messages and append them to the mbox file.
+> 
+I would strongly encourage you to look into offlineimap. It's designed
+exactly for this sort of application and does its job very well.
+
+- Ben
+
+From marka at pobox.com  Sat Feb 20 16:10:18 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Sat, 20 Feb 2010 16:10:18 -0500
+Subject: [sup-talk] Switching to Exchange
+In-Reply-To: <1266687464-sup-6371@ben-laptop>
+References: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+	<1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+	<1266687464-sup-6371@ben-laptop>
+Message-ID: <1266699970-sup-8044@r50p>
+
+Excerpts from Ben Gamari's message of Sat Feb 20 12:38:58 -0500 2010:
+> I would strongly encourage you to look into offlineimap. It's designed
+> exactly for this sort of application and does its job very well.
+
+For the past year or so, I've been using fetchmail + postfix +
+procmail to fetch mail to ~/Maildir.  Is there any reason why
+offlineimap would be a better solution for use with sup?  My understanding
+was that sup does not modify the mail sources, so there would be
+no changes that would need to be propagated back to the IMAP server.
+
+From sven.schober at uni-ulm.de  Sun Feb 21 06:13:35 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Sun, 21 Feb 2010 12:13:35 +0100
+Subject: [sup-talk] curses pinentry woes (still)
+In-Reply-To: <1266575368-sup-8036@hysbald>
+References: <1265569783-sup-1789@khjk.org>
+	<1265574271-sup-5738@midna.zekjur.net>
+	<1266516237-sup-7845@midna.zekjur.net>
+	<1266518077-sup-3488@hysbald>
+	<1266550118-sup-5231@midna.zekjur.net>
+	<1266575368-sup-8036@hysbald>
+Message-ID: <1266750780-sup-9088@hysbald>
+
+Excerpts from Sven Schober's message of Fri Feb 19 11:30:49 +0100 2010:
+> Excerpts from Michael Stapelberg's message of Fri Feb 19 04:29:28 +0100 2010:
+> > In the meantime, I fixed the problem (at least it works for me). You can get my
+> > patch at sup-devel, see
+> > http://rubyforge.org/pipermail/sup-devel/2010-February/000373.html
+> > 
+> Thanks, i'll give it a try :)!
+> 
+
+Works like a charm :).
+
+> > Best regards,
+> > Michael
+> 
+> Ciao,
+>  Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146 [+49-179-5060182]   |SYSTEMS LAB
+
+From nicolas.pouillard at gmail.com  Sun Feb 21 12:40:20 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 21 Feb 2010 09:40:20 -0800 (PST)
+Subject: [sup-talk] Switching to Exchange
+In-Reply-To: <1266614806-sup-9832@eris>
+References: <1266533680-sup-7580@sgoldmanlinux.tower-research.com>
+	<1266612722-sup-5668@sgoldmanlinux.tower-research.com>
+	<1266614806-sup-9832@eris>
+Message-ID: <4b817004.0f67f10a.39f6.7d86@mx.google.com>
+
+On Fri, 19 Feb 2010 22:28:59 +0100, hollunder <hollunder at lavabit.com> wrote:
+> Excerpts from Steve Goldman's message of 2010-02-19 21:57:02 +0100:
+> > Excerpts from Steve Goldman's message of Thu Feb 18 17:56:53 -0500 2010:
+> > > 
+> > > Hey guys,
+> > > 
+> > > Thanks for the wild ride, but I need to switch to something more
+> > > reliable.  Not sure if there are incompatibilities with my version of
+> > > ruby or whatnot, but I'm getting ridiculous CPU usage and random seg
+> > > faults.  It's too much stress for me.  And after a crash when I
+> > > restart, I have a random collection of seventy or so messages in my
+> > > inbox, even though it was zero when I crashed.
+> > > 
+> > > This combined with not being able to convert to xapian without a seg
+> > > fault...
+> > > 
+> > > Maybe I'll be back some day.
+> > > 
+> > > Good luck.
+> > 
+> > In case anyone was worried, I'm back.  I took matters into my own
+> > hand.
+> > 
+> > Essentially, I was dealing with a slow IMAP server.  Since sup doesn't
+> > cache IMAP messages locally, this gave me huge headaches when trying
+> > to sync with the server during busy times.
+> > 
+> > The remedy was to download all the messages off the server into a
+> > local mbox file and to use fetchmail/procmail to poll for new IMAP
+> > messages and append them to the mbox file.
+> > 
+> > As a result, I was able to successfully use sup-sync to build a xapian
+> > index and everything is lightning fast.  Life is good... for now.
+> > 
+> > Thanks.
+> > -- 
+> > 
+> > Steve Goldman
+> > sgoldman at tower-research.com
+> > 
+> > T: 212.219.6014
+> > F: 212.219.6007
+> > 
+> > Tower Research Capital, LLC
+> > 377 Broadway, 11th Fl.
+> > New York, NY 10013
+> 
+> I think most of us just use offlineimap.
+
+I don't use offlineimap, I've tried it but it was not reliable enough for my amount of
+messages. I stick to mpop and mboxes.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From danfalcone at gmail.com  Mon Feb 22 10:41:46 2010
+From: danfalcone at gmail.com (Dan Falcone)
+Date: Mon, 22 Feb 2010 10:41:46 -0500
+Subject: [sup-talk] curses exception
+In-Reply-To: <ed5557341001151149g34460038ub7a8a445409da034@mail.gmail.com>
+References: <ed5557340910061533w7854510tabe9bb2fc864db09@mail.gmail.com> 
+	<1255292940-sup-5558@masanjin.net>
+	<ed5557340910120709u62e97e67id6580f0a8ee6ec64@mail.gmail.com> 
+	<1255611057-sup-1320@masanjin.net>
+	<ed5557340910150740i4e701044l12be4fd43e2bc072@mail.gmail.com> 
+	<1255620005-sup-7616@masanjin.net>
+	<ed5557341001151149g34460038ub7a8a445409da034@mail.gmail.com>
+Message-ID: <ed5557341002220741x3e1a9556v921083093c40a3b7@mail.gmail.com>
+
+Just checking on this...
+
+On Fri, Jan 15, 2010 at 2:49 PM, Dan Falcone <danfalcone at gmail.com> wrote:
+
+> Hi William,
+>
+> Sorry I didn't get back to you sooner.  I finally got back around to
+> playing with this again.  Here are the answers to your questions:
+>
+> >gem list --local | grep curse
+> ncurses (0.9.1)
+>
+> The test script prints:
+> true
+>
+> The ncurses examples all seem to work and display color.  I did have to
+> edit them to add require 'rubygems' at the top.
+>
+> I also tried playing with the sup code a bit.  If I comment out lines 133-4
+> in lib/sup/colormap.rb:
+>
+> #      Curses.init_pair id, fg, bg or raise ArgumentError,
+> #       "couldn't initialize curses color pair #{fg}, #{bg} (key #{id})"
+>
+> sup loads, but everything is in black and white and a bit difficult to
+> read.  I also tried uncommenting that, then changing Curses to Ncurses so it
+> looks like this:
+>
+>       Nurses.init_pair id, fg, bg or raise ArgumentError,
+>        "couldn't initialize curses color pair #{fg}, #{bg} (key #{id})"
+>
+> sup loads with that as well, and displays some color, but most of the
+> screen is unreadable (I'm guessing it's displaying as white text on white
+> background).
+>
+> Any ideas?  I tried changing more things from Curses to Ncurses, but that
+> quickly started generating method undefined errors.
+>
+> Thanks!
+> Dan
+>
+>
+>
+> On Thu, Oct 15, 2009 at 11:27 AM, William Morgan <wmorgan-sup at masanjin.net
+> > wrote:
+>
+>> Reformatted excerpts from Dan Falcone's message of 2009-10-15:
+>> > Hmm... good question.  I regularly use emacs with colors enabled, but
+>> > I'm not sure if that uses curses.  I tried typespeed and that seemed
+>> > to work.  According to its man page, it uses curses.
+>>
+>> Hm. What version of the ncurses gem do you have? (gem list --local
+>> should tell you.)
+>>
+>> What does this program print?
+>>
+>>  require 'rubygems'
+>>  require 'ncurses'
+>>
+>>  x = begin
+>>    Ncurses::initscr();
+>>    Ncurses::has_colors?()
+>>  ensure
+>>    Ncurses::endwin();
+>>  end
+>>
+>>  puts x
+>>
+>> If it prints true, then, if you look in the contents of the gem
+>> (wherever that is on your system), there should be an examples/
+>> directory. If you run examples/tlock.rb or examples/rain.rb, (probably
+>> with ruby -rubygems), do you see color?
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> sup-talk mailing list
+>> sup-talk at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-talk
+>>
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100222/e73d4a9f/attachment.html>
+
+From kosmici-atakuja at wp.pl  Fri Feb 26 12:08:36 2010
+From: kosmici-atakuja at wp.pl (kosmici-atakuja at wp.pl)
+Date: Fri, 26 Feb 2010 18:08:36 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+Message-ID: <201002261808.36354.kosmici-atakuja@wp.pl>
+
+First of wall I want to say I absolutely love sup! I used all the major mail 
+clients like mutt, claws, thunderbird, kmail. All mail clients just fail (mutt 
+was the closest though...). Sup so far has the potential to be the best of 
+them. If only I can get it to read the inline gpg that enigmail makes...
+
+Example email looks like this in sup: 
+
+ -----BEGIN PGP MESSAGE-----
+  Charset: UTF-8
+  Version: GnuPG v1.4.9 (MingW32)
+  Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+  hQIOA3WKxDKSmLd7EAf/cKH72GNHWgkY46sjHuYBlV5Q9udlmjB1ucTqtVfSUysH
+[cut]
+ NYqMmmJ1HHG58B9bPqGFPNe/jEPeiiqj9Ez58kYzS32VeelJFwV+O8K9/TAvG4HN
+  fEIgtYMGj0Uc5v0eZ7yVqFfluJrEX5V7mN2InahTCD+uFEfguvld8rZagEtlyxU5
+  =nAMm
+  -----END PGP MESSAGE-----
+
+And it gets displayed like this, no error messages or anything. I have 
+configured my gpg in sup as per this wiki page:
+http://sup.rubyforge.org/wiki/wiki.pl?GPG
+(with the numeric ID and such). 
+
+And I enabled verbose debug logging, here's the log:
+(cutting leading timestamp for better reading)
+
+using character set encoding "UTF-8"
+No 'chronic' gem detected. Install it for date/time query restrictions.
+No 'ncursesw' gem detected. Install it for wide character support.
+dynamically loading setlocale() from libc.so.6
+setting locale...
+using xapian index
+locking /home/piotr/.sup/lock...
+crypto: detected gpg binary in /usr/bin/gpg
+starting curses
+initializing log buffer
+Welcome to Sup! Log level is set to debug.
+initializing inbox buffer
+ready for interaction!
+colormap: for color twiddle_color, using id 1 -> 4, -1
+colormap: for color status_color, using id 2 -> 7, 4
+colormap: for color tagged_color_highlight, using id 3 -> 3, 6
+colormap: for color date_color_highlight, using id 4 -> 0, 6
+colormap: for color to_me_color_highlight, using id 5 -> 2, 6
+colormap: for color tagged_color, using id 6 -> 3, -1
+colormap: for color date_color, using id 7 -> 7, -1
+colormap: for color to_me_color, using id 8 -> 2, -1
+colormap: for color snippet_color, using id 9 -> 6, -1
+scanning maildir /home/piotr/Mail...
+done scanning maildir
+crypto: running: /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --
+use-agent --output /tmp/32042-0-redwood.outp
+scanning maildir /home/piotr/Mail...
+done scanning maildir
+crypto: running: /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --
+use-agent --output /tmp/32042-0-redwood.outp
+crypto: running: /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --
+use-agent --output /tmp/32042-2-redwood.outp
+crypto: running: /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --
+use-agent --output /tmp/32042-0-redwood.outp
+colormap: for color alternate_patina_color, using id 10 -> 0, 4
+colormap: for color message_patina_color, using id 11 -> 0, 2
+colormap: for color system_buf_color_highlight, using id 12 -> 7, 6
+
+(no errors there as far as I can see... And looks like it's running the gpg 
+binary succesfully... I just changed the maildir path for privacy in this log)
+
+GPG is configured to use gpg-agent, the gpg-agent is running, pinentry program 
+shows up when running sup and I enter the correct password. I checked the 
+password many times already. Also, the environment variable $GPG_AGENT_INFO is 
+present and visible in sup environment (it's global and visible anywhere). 
+I already tried it without "use gpg-agent" and the effect was the same. 
+
+In mutt this worked, I mean the inline gpg messages were decrypted using this 
+same setup of gpg-agent and gpg. It also works in kmail (although not 
+perfectly, but decodes the messages).
+
+Now, this may be a clue: when normal gpg message is used (mime) it sometimes 
+geta decrypted and sometimes doesn't. If it doesn't, sup only says this in the 
+message: 
+    x This message has been decrypted for display
+    x Attachment: sup-attachment-1267203299-4513. (multipart/mixed; 71b)
+
+When I'm trying to display this attachment it says: 
+For some bizarre reason, RubyMail was unable to parse this attachment.
+and in the status line:
+Couldn't execute view command, viewing as text.
+
+(this may be because I have no run-mailcap file, but the message was in plain 
+text, no html, so it shouldn't be needed now should it? I'm planning on 
+getting some run-mailcap script from some debian system when I have some time, 
+but for now this inline GPG is my main priority)
+
+I'm still not sure why they sometimes decrypt correctly and sometimes not, but 
+I can work with this, at least it works sometimes. But even when mime gpg 
+works, the inline stuff doesn't. 
+
+Verisions:
+I'm using sup version 0.10.2 from Archlinux AUR. 
+ruby version is 1.9.1
+xapian-core is 1.0.18
+
+Is there anything I can do to get this working? This is a crucial feature for 
+me as almost all my work colleagues use thunderbird and enigmail to send their 
+email and that uses inline pgp crap as default (which I know is not conforming 
+to any standards etc.). And even if I can convince verybody to switch to mime, 
+I still have a couple hundred megs of archives in this damn format. 
+
+Moreover, I searched the list archives and it looks like some people have got 
+it working as there have been patches to make it work a couple of months ago. 
+And my version is recent (January) so those patches should be in it. It just 
+doesn't for me for some reason :(
+
+I know I should read crypto.rb and figure it out from there. I tried, I just 
+can't understand it, as I'm not experienced in ruby, or email clients code for 
+that matter. 
+
+Please help!
+Thank you
+Piotr
+
+From sven.schober at uni-ulm.de  Fri Feb 26 12:43:04 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Fri, 26 Feb 2010 18:43:04 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201002261808.36354.kosmici-atakuja@wp.pl>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+Message-ID: <1267205858-sup-7113@hysbald>
+
+Excerpts from kosmici-atakuja's message of Fri Feb 26 18:08:36 +0100 2010:
+> First of wall I want to say I absolutely love sup! I used all the major mail 
+> clients like mutt, claws, thunderbird, kmail. All mail clients just fail (mutt 
+> was the closest though...). Sup so far has the potential to be the best of 
+> them. If only I can get it to read the inline gpg that enigmail makes...
+> 
++1
+
+> Is there anything I can do to get this working? This is a crucial feature for 
+> me...
+> 
++1
+> Moreover, I searched the list archives and it looks like some people have got 
+> it working as there have been patches to make it work a couple of months ago. 
+> And my version is recent (January) so those patches should be in it. It just 
+> doesn't for me for some reason :(
+> 
+I think there was a (preliminary) patch from Michael Stapelberg
+floating around, but somehow that didn't make it into next?
+
+> I know I should read crypto.rb and figure it out from there. I tried, I just 
+> can't understand it, as I'm not experienced in ruby, or email clients code for 
+> that matter. 
+> 
++1
+
+> Please help!
++1
+
+> Thank you
+> Piotr
+
+Ciao,
+  Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146 [+49-179-5060182]   |SYSTEMS LAB
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100226/65d63480/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:17:48 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:17:48 -0500
+Subject: [sup-talk] [patch] Add crypto_selector variable to before-edit
+In-Reply-To: <1264521165-sup-9898@nemesis.home>
+References: <1263824428-sup-6466@nemesis.home>
+	<1264251144-sup-4056@masanjin.net>
+	<1264521165-sup-9898@nemesis.home>
+Message-ID: <1267294655-sup-3006@zyrg.net>
+
+Applied to master.
+
+From kevinr at free-dissociation.com  Sat Feb 27 23:33:26 2010
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Sat, 27 Feb 2010 23:33:26 -0500
+Subject: [sup-talk] ncurses opts exception on master
+Message-ID: <1267331100-sup-926@black-opal.mit.edu>
+
+I consistently get an exception on master when I do anything (search, try to 
+send mail, etc) which brings up the text entry field at the bottom of the 
+screen.  I've tracked it down to 42e7aeaa90, and reverting just that change
+fixes it for me.  I'm running the latest ncurses gem available to me (0.9.1),
+as installed by gem, with no local modifications.
+
+The text of the exception follows.
+
+(Thanks for picking up the mantle of maintainer, Rich!  I'm excited to see Sup
+moving forward.)
+
+- Kevin
+
+
+[Sat Feb 27 23:14:54 -0500 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+(snip)
+--- NoMethodError from thread: main
+undefined method `opts_off' for #<Ncurses::Form::FIELD:0x7fb1778327c0>
+./lib/sup/textfield.rb:37:in `activate'
+./lib/sup/buffer.rb:575:in `ask'
+./lib/sup/buffer.rb:31:in `synchronize'
+./lib/sup/buffer.rb:31:in `sync'
+./lib/sup/buffer.rb:574:in `ask'
+./lib/sup/buffer.rb:479:in `ask_many_emails_with_completions'
+./lib/sup/util.rb:559:in `send'
+./lib/sup/util.rb:559:in `method_missing'
+./lib/sup/buffer.rb:555:in `ask_for_contacts'
+./lib/sup/util.rb:559:in `send'
+./lib/sup/util.rb:559:in `method_missing'
+./lib/sup/modes/compose-mode.rb:24:in `spawn_nicely'
+bin/sup:332
+
+-- 
+Kevin Riggle (kevinr at free-dissociation.com) 
+MIT Class of 2010, Course VI-3 (Computer Science)
+http://free-dissociation.com
+
+From rlane at club.cc.cmu.edu  Sun Feb 28 02:11:35 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Feb 2010 02:11:35 -0500
+Subject: [sup-talk] ncurses opts exception on master
+In-Reply-To: <1267331100-sup-926@black-opal.mit.edu>
+References: <1267331100-sup-926@black-opal.mit.edu>
+Message-ID: <1267335529-sup-9079@zyrg.net>
+
+I'm guessing you have an old version of the ncurses gem. Installing
+the ncursesw gem should fix this.
+
+From kevinr at free-dissociation.com  Sun Feb 28 02:24:43 2010
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Sun, 28 Feb 2010 02:24:43 -0500
+Subject: [sup-talk] ncurses opts exception on master
+In-Reply-To: <1267335529-sup-9079@zyrg.net>
+References: <1267331100-sup-926@black-opal.mit.edu>
+	<1267335529-sup-9079@zyrg.net>
+Message-ID: <1267341711-sup-2539@black-opal.mit.edu>
+
+Excerpts from Rich Lane's message of Sun Feb 28 02:11:35 -0500 2010:
+> I'm guessing you have an old version of the ncurses gem. Installing
+> the ncursesw gem should fix this.
+
+That did the trick -- thanks!  The README should probably get updated to talk
+about ncursesw under REQUIREMENTS.  (That was where I went to look; I didn't 
+think to check the Rakefile, which is probably more likely to be current.)
+
+- Kevin
+-- 
+Kevin Riggle (kevinr at free-dissociation.com) 
+MIT Class of 2010, Course VI-3 (Computer Science)
+http://free-dissociation.com
+

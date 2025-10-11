@@ -1,0 +1,2294 @@
+From dmishd at gmail.com  Sun Nov  6 12:47:38 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 6 Nov 2011 17:47:38 +0000
+Subject: [sup-talk] A few questions
+In-Reply-To: <4eac5f25.8dcfe30a.51f0.1df8@mx.google.com>
+References: <4eac5f25.8dcfe30a.51f0.1df8@mx.google.com>
+Message-ID: <CAOxvSbeYo5ho9=pJEgFNBHCwxuSJuKftjyh0BimAO=BCvRvw-g@mail.gmail.com>
+
+> 2. How can I change the background color of the cursor line?
+> ? Its grey right now with light foreground colors, basically unreadable,
+> ? but in the screenshots on sup.rubyforge.org its cyan. *want*.
+
+Have you looked at http://sup.rubyforge.org/wiki/wiki.pl?CustomizingColors
+
+> 3. How can I run before-add-message.rb over all messages in the index?
+
+Running sup-add runs the before-add-message hook, though it's possible
+it will remove labels that have already been added.
+
+> Oh and just in case you haven't noticed: your bugtracker is down.
+
+Yes, there was too much spam so William took it down a while ago.
+
+Hope that helps.
+Hamish
+
+From hollunder at lavabit.com  Mon Nov  7 04:17:05 2011
+From: hollunder at lavabit.com (hollunder at lavabit.com)
+Date: Mon, 7 Nov 2011 04:17:05 -0500 (EST)
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+Message-ID: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+
+Hi there,
+since yesterday sup crashes after running offlineimap.
+I wonder what component is at fault.
+This happened after an upgrade of some libraries, but it's not easy to
+roll back. It would really help if I know what component is causing this.
+Here's the whole log of the update in question:
+[2009-12-07 03:59] installed filesystem (2009.07-1)
+[2009-12-07 03:59] installed dbus-core (1.2.16-1)
+[2009-12-07 03:59] installed dcron (3.2-4)
+[2009-12-07 03:59] installed dhcpcd (5.1.3-1)
+[2009-12-07 03:59] installed dialog (1.1_20080819-3)
+[2009-12-07 03:59] installed diffutils (2.8.1-6)
+[2009-12-07 03:59] installed file (5.03-2)
+[2009-12-07 03:59] installed gawk (3.1.7-1)
+[2009-12-07 03:59] installed gdbm (1.8.3-6)
+[2009-12-07 03:59] installed gen-init-cpio (2.6.17-3)
+[2009-12-07 03:59] installed gettext (0.17-3)
+[2009-12-07 03:59] installed pcre (8.00-1)
+[2009-12-07 03:59] installed grep (2.5.4-3)
+[2009-12-07 03:59] installed perl (5.10.1-5)
+[2009-12-07 03:59] installed groff (1.20.1-3)
+[2009-12-07 03:59] installed sed (4.2.1-1)
+[2009-12-07 03:59] installed grub (0.97-16)
+[2009-12-07 03:59] installed hdparm (9.27-1)
+[2009-12-07 03:59] installed libusb (0.1.12-3)
+[2009-12-07 03:59] installed glib2 (2.22.2-1)
+[2009-12-07 03:59] installed udev (146-2)
+[2009-12-07 03:59] installed net-tools (1.60-14)
+[2009-12-07 03:59] installed kbd (1.15-2)
+[2009-12-07 03:59] installed sysvinit (2.86-5)
+[2009-12-07 03:59] installed initscripts (2009.08-1)
+[2009-12-07 03:59] installed iputils (20071127-2)
+[2009-12-07 03:59] installed jfsutils (1.1.14-1)
+[2009-12-07 03:59] installed kernel26-firmware (2.6.31-1)
+[2009-12-07 03:59] installed module-init-tools (3.11.1-1)
+[2009-12-07 03:59] installed klibc (1.5.15-3)
+[2009-12-07 03:59] installed klibc-extras (2.5-4)
+[2009-12-07 03:59] installed klibc-udev (141-3)
+[2009-12-07 03:59] installed klibc-module-init-tools (3.8-1)
+[2009-12-07 03:59] installed klibc-kbd (1.15.20080312-10)
+[2009-12-07 03:59] installed mkinitcpio (0.5.26-1)
+
+Any hints appreciated,
+regards,
+Philipp
+
+
+$ sup
+[2011-11-07 10:05:25 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/murks/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: poll after loading inbox
+
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:551:in `find_docid'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:556:in `find_doc'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:566:in `get_entry'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in `block in
+build_message'
+/usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:575:in
+`synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in
+`build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:159:in `block in
+poll_from'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:106:in `block
+(2 levels) in poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in
+`each_with_index'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `block
+in poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:155:in `poll_from'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:113:in `block (2
+levels) in do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `block in
+do_poll'
+<internal:prelude>:10:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:102:in `do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in
+`poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:49:in
+`poll_with_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:212:in `block (2 levels)
+in <module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:78:in `block in
+reporting_thread'
+
+
+
+From tero at tilus.net  Mon Nov  7 16:27:11 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 07 Nov 2011 23:27:11 +0200
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+Message-ID: <1320700740-sup-9219@tilus.net>
+
+hollunder, 2011-11-07 11:17:
+> I wonder what component is at fault.
+
+Looks like it fails when adding new messages from maildir to index.
+Somehow term_docids for the id of newly received message yields more
+than one documents from index.  Could it be that one of the new
+messages in your maildir has a mangled message id?
+
+I'm not familiar with offlineimap.  You might need some extra steps or
+a completely different approach here, but: You could try to (back up
+and temporarily) move new messages out of your inbox (using mutt etc)
+and then retry with sup.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From hollunder at lavabit.com  Tue Nov  8 04:57:44 2011
+From: hollunder at lavabit.com (hollunder at lavabit.com)
+Date: Tue, 8 Nov 2011 04:57:44 -0500 (EST)
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+ loading inbox
+In-Reply-To: <1320700740-sup-9219@tilus.net>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+Message-ID: <1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+
+> hollunder, 2011-11-07 11:17:
+>> I wonder what component is at fault.
+>
+> Looks like it fails when adding new messages from maildir to index.
+> Somehow term_docids for the id of newly received message yields more
+> than one documents from index.  Could it be that one of the new
+> messages in your maildir has a mangled message id?
+>
+> I'm not familiar with offlineimap.  You might need some extra steps or
+> a completely different approach here, but: You could try to (back up
+> and temporarily) move new messages out of your inbox (using mutt etc)
+> and then retry with sup.
+>
+> --
+> Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+
+Thanks,
+I'll try that kind of stuff if I manage to, never used another mail reader
+than sup.
+Anyway, today a new ruby update came along and even after rebuilding
+everything I could think of, including sup, sup doesn't start anymore. Not
+sure it's the same issue.
+
+Also tried sup-git, but it doesn't seem to build at all.
+
+$ sup
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+be deprecated in the future, use String#encode instead.
+/usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+Use RbConfig instead of obsolete and deprecated Config.
+[2011-11-08 10:48:46 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/murks/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: main
+wrong id called on
+{"uri"=>"maildir:/home/murks/.imap/lavabit_murks_local/Inbox",
+"usual"=>true, "archived"=>false, "id"=>1, "labels"=>["murks_lavabit",
+"personal"]}
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:18:in `id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block
+(2 levels) in load_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `map'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block
+in load_sources'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:206:in
+`load_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:92:in `load'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:154:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+
+
+
+
+From marka at pobox.com  Tue Nov  8 08:39:47 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 08 Nov 2011 08:39:47 -0500
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+Message-ID: <1320759186-sup-4454@bloovis.org>
+
+Excerpts from hollunder's message of Mon Nov 07 04:17:05 -0500 2011:
+> since yesterday sup crashes after running offlineimap.
+
+I don't know if my experience is helpful at all, but I tried
+offlineimap a couple of years ago and had to abandon it, because it
+was altering the mail store (deleting messages, mainly) and sup didn't
+like that.  I was using an older version of sup at the time, and
+perhaps newer versions are suppose to handle this situation better.
+But I went back to fetchmail + maildrop, and have had very few
+problems since.  It just seems safer to not use tools that can alter
+mail directories after they've been populated.
+
+The couple of times I've had sup crash on me, I fixed the problem by
+using sup-dump followed by sup-sync --restore (which preserves
+labels).
+
+From pants at cs.hmc.edu  Tue Nov  8 13:01:02 2011
+From: pants at cs.hmc.edu (pants)
+Date: Tue, 08 Nov 2011 10:01:02 -0800
+Subject: [sup-talk] exception on start after ruby upgrade
+Message-ID: <1320775126-sup-274@WOPR>
+
+this morning I upgraded to ruby 1.9.3 on my system running archlinux.  I
+reinstalled/rebuilt all of my ruby gems.  sup proceeded to throw an
+exception on attempting to start it.  the log follows:
+
+--- RuntimeError from thread: main
+wrong id called on {"uri"=>"maildir:/home/pants/mail/inbox/", "usual"=>true, "archived"=>false, "id"=>1, "labels"=>[]}
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:18:in `id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block (2 levels) in load_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `map'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block in load_sources'
+/usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:206:in `load_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:92:in `load'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:154:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+thanks.
+-- 
+jaron `pants' kent-dobias
+pants at cs.hmc.edu
+425 999 1948
+
+
+From eg at gaute.vetsj.com  Wed Nov  9 14:25:13 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 9 Nov 2011 20:25:13 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+ loading inbox
+In-Reply-To: <1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+Message-ID: <CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+
+I am getting the same error now, after upgraded ruby and gems..
+
+bin/sup-sync:11: warning: method redefined; discarding old to_s
+/home/gaute/dev/ruby/sup.git/lib/sup.rb:18:in `id': wrong id called on
+{"uri"=>"maildir:///home/gaute/.mail/gaute.vetsj.com/Gmail.All_Mail",
+"usual"=>true, "archived"=>false, "id"=>3, "labels"=>["inbox"]}
+(RuntimeError)
+	from /home/gaute/dev/ruby/sup.git/lib/sup/source.rb:207:in `block (2
+levels) in load_sources'
+	from /home/gaute/dev/ruby/sup.git/lib/sup/source.rb:207:in `map'
+	from /home/gaute/dev/ruby/sup.git/lib/sup/source.rb:207:in `block in
+load_sources'
+	from /usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+	from /home/gaute/dev/ruby/sup.git/lib/sup/source.rb:206:in `load_sources'
+	from /home/gaute/dev/ruby/sup.git/lib/sup/util.rb:572:in `method_missing'
+	from /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:96:in `load'
+	from bin/sup-sync:100:in `<main>'
+
+(same error when trying to start sup).
+
+Also Ruby GPGME 2.0 seems to not be compatible with old API.
+
+- gaute
+
+On Tue, Nov 8, 2011 at 10:57 AM,  <hollunder at lavabit.com> wrote:
+>> hollunder, 2011-11-07 11:17:
+>>> I wonder what component is at fault.
+>>
+>> Looks like it fails when adding new messages from maildir to index.
+>> Somehow term_docids for the id of newly received message yields more
+>> than one documents from index. ?Could it be that one of the new
+>> messages in your maildir has a mangled message id?
+>>
+>> I'm not familiar with offlineimap. ?You might need some extra steps or
+>> a completely different approach here, but: You could try to (back up
+>> and temporarily) move new messages out of your inbox (using mutt etc)
+>> and then retry with sup.
+>>
+>> --
+>> Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+>> _______________________________________________
+>> sup-talk mailing list
+>> sup-talk at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-talk
+>>
+>>
+>
+> Thanks,
+> I'll try that kind of stuff if I manage to, never used another mail reader
+> than sup.
+> Anyway, today a new ruby update came along and even after rebuilding
+> everything I could think of, including sup, sup doesn't start anymore. Not
+> sure it's the same issue.
+>
+> Also tried sup-git, but it doesn't seem to build at all.
+>
+> $ sup
+> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+> be deprecated in the future, use String#encode instead.
+> /usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+> Use RbConfig instead of obsolete and deprecated Config.
+> [2011-11-08 10:48:46 +0100] ERROR: oh crap, an exception
+> ----------------------------------------------------------------
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/murks/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+>
+> Sincerely,
+> William
+> ----------------------------------------------------------------
+> --- RuntimeError from thread: main
+> wrong id called on
+> {"uri"=>"maildir:/home/murks/.imap/lavabit_murks_local/Inbox",
+> "usual"=>true, "archived"=>false, "id"=>1, "labels"=>["murks_lavabit",
+> "personal"]}
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:18:in `id'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block
+> (2 levels) in load_sources'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `map'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:207:in `block
+> in load_sources'
+> /usr/lib/ruby/1.9.1/monitor.rb:211:in `mon_synchronize'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/source.rb:206:in
+> `load_sources'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+> `method_missing'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:92:in `load'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+> `method_missing'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:154:in `<module:Redwood>'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19:in `<main>'
+>
+>
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From eg at gaute.vetsj.com  Wed Nov  9 14:52:28 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 09 Nov 2011 20:52:28 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+Message-ID: <1320868149-sup-368@qwerzila>
+
+Excerpts from Gaute Hope's message of 2011-11-09 20:25:13 +0100:
+> I am getting the same error now, after upgraded ruby and gems..
+> 
+> bin/sup-sync:11: warning: method redefined; discarding old to_s
+> /home/gaute/dev/ruby/sup.git/lib/sup.rb:18:in `id': wrong id called on
+
+This seems to be due to the new yamler 'psych', by requiring the old one
+'sych' before 'yaml' it can be loaded.
+
+The proper fix is to expect content to be represented the way 'psych'
+does it. This is not the same as the old way.
+
+Also the gem spec date was in the wrong format, see both attached
+patches.
+
+- Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Use-correct-date-format-for-gem-spec.patch
+Type: application/octet-stream
+Size: 862 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111109/b371fdda/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Use-old-syck-module-for-YAML-parsing.patch
+Type: application/octet-stream
+Size: 499 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111109/b371fdda/attachment-0001.obj>
+
+From karlh626 at gmail.com  Thu Nov 10 11:47:23 2011
+From: karlh626 at gmail.com (Karl Harris)
+Date: Thu, 10 Nov 2011 11:47:23 -0500
+Subject: [sup-talk] failure to start sup
+Message-ID: <CAJRi-a-4st1iyYgUqYeyQQ7RMrTSFPwga2idkAsftS+UvsDitQ@mail.gmail.com>
+
+Something happend on my Arch computer to cause sup to stop loading.
+
+When I run sup I get the following messages:
+--------------------------------------------------
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+be deprecated in the future, use String#encode instead.
+/usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+Use RbConfig instead of obsolete and deprecated Config.
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require':
+libxapian.so.22: cannot open shared object file: No such file or directory
+- /usr/lib/ruby/gems/1.9.1/gems/xapian-full-1.2.3/lib/_xapian.so (LoadError)
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from
+/usr/lib/ruby/gems/1.9.1/gems/xapian-full-1.2.3/lib/xapian.rb:42:in
+`<module:Xapian>'
+        from
+/usr/lib/ruby/gems/1.9.1/gems/xapian-full-1.2.3/lib/xapian.rb:40:in `<top
+(required)>'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:3:in
+`<top (required)>'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:358:in
+`<top (required)>'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:15:in `<top
+(required)>'
+        from /usr/bin/sup:19:in `load'
+        from /usr/bin/sup:19:in `<main>'
+------------------------------------------------------
+
+I removed sup and I think all of its dependancies and then reinstalled
+using yaourt -S sup.
+I noticed that ruby is not 1.9.3 which I think was 1.9.1 before.  I don't
+know if that has any impact or not.
+
+I appreciate any insight anybody might have.
+
+I am looking forward to having my favorite email client usable again.
+
+Karl
+
+-- 
+Karl Harris
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111110/874dc522/attachment.html>
+
+From wmorgan-sup at masanjin.net  Thu Nov 10 12:22:47 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 10 Nov 2011 17:22:47 +0000
+Subject: [sup-talk] failure to start sup
+In-Reply-To: <CAJRi-a-4st1iyYgUqYeyQQ7RMrTSFPwga2idkAsftS+UvsDitQ@mail.gmail.com>
+References: <CAJRi-a-4st1iyYgUqYeyQQ7RMrTSFPwga2idkAsftS+UvsDitQ@mail.gmail.com>
+Message-ID: <1320945717-sup-7314@masanjin.net>
+
+Reformatted excerpts from Karl Harris's message of 2011-11-10:
+> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require':
+> libxapian.so.22: cannot open shared object file: No such file or directory
+
+Looks like it can't find xapian. The first thing to try would be reinstalling
+the xapian-full gem.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Thu Nov 10 20:25:59 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 11 Nov 2011 02:25:59 +0100
+Subject: [sup-talk] [sup-devel] heliotrope-syncback
+In-Reply-To: <1320880426-sup-9891@masanjin.net>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net> <1320692090-sup-9935@stapelberg.de>
+	<CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+	<1320880426-sup-9891@masanjin.net>
+Message-ID: <CAMiZLn1+OFMu-Vht71iEVe6ohkC-kMHV1VE6CumEyvxpbEA2kA@mail.gmail.com>
+
+On Thu, Nov 10, 2011 at 12:18 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Now THIS is exciting. Thanks for starting on it!
+
+Yes it is. I have now finished (sort of) the FETCH operations. You can
+grab it here :
+https://github.com/rakoo/ximapd-heliotrope
+
+I've struggled a lot with the RFC, not understanding half of it. I
+don't know if the FETCH results are exact, but they seem to be. Please
+feel free to test it and tell me what are the problems.
+
+For those of you not aware  : the previous link leads you to a IMAP
+interface for Heliotrope. I've only implemented the "read-only"
+commands, so your messages won't have any problems, but you should be
+able with any IMAP client (again, read-only).
+
+Cya,
+
+-- 
+Matthieu RAKOTOJAONA
+
+From masterkorp at masterkorp.net  Fri Nov 11 11:02:38 2011
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Fri, 11 Nov 2011 17:02:38 +0100
+Subject: [sup-talk] Is the wiki down ?
+Message-ID: <1321027217-sup-1529@masterkorp.net>
+
+Hello, i am trying to check the wiki, and i get a basically empty page. Maybe its in maintenace ? Maybe its down ? 
+I am checking the link from the main page which is this http://sup.rubyforge.org/wiki/wiki.pl 
+
+--
+Regards, 
+Alfredo Palhares
+
+From alex.shulgin at gmail.com  Fri Nov 11 11:30:25 2011
+From: alex.shulgin at gmail.com (Alex Shulgin)
+Date: Fri, 11 Nov 2011 18:30:25 +0200
+Subject: [sup-talk] Is the wiki down ?
+In-Reply-To: <1321027217-sup-1529@masterkorp.net>
+References: <1321027217-sup-1529@masterkorp.net>
+Message-ID: <CAM-UEKRHAHtQC23DVJ-+F_Zdt_WRkx2SDtzozg4OP9wkaVy7ww@mail.gmail.com>
+
+On Fri, Nov 11, 2011 at 18:02, Alfredo Palhares
+<masterkorp at masterkorp.net> wrote:
+> Hello, i am trying to check the wiki, and i get a basically empty page. Maybe its in maintenace ? Maybe its down ?
+> I am checking the link from the main page which is this http://sup.rubyforge.org/wiki/wiki.pl
+
+Looks more like it was vandalized by some nasty robot.
+
+From marc.hartstein at alum.vassar.edu  Fri Nov 11 11:33:40 2011
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Fri, 11 Nov 2011 11:33:40 -0500
+Subject: [sup-talk] Is the wiki down ?
+In-Reply-To: <1321027217-sup-1529@masterkorp.net>
+References: <1321027217-sup-1529@masterkorp.net>
+Message-ID: <1321028753-sup-6430@cabinet>
+
+Excerpts from Alfredo Palhares's message of Fri Nov 11 11:02:38 -0500 2011:
+> Hello, i am trying to check the wiki, and i get a basically empty
+> page. Maybe its in maintenace ? Maybe its down ?  I am checking the
+> link from the main page which is this
+> http://sup.rubyforge.org/wiki/wiki.pl 
+
+Looks like vandalism; someone came in and replaced the major pages with
+short messages.
+
+I don't know of an easy way to do a rollback with the wiki software
+we're using. Is there a Wiki admin?
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111111/598b1100/attachment-0001.bin>
+
+From dmishd at gmail.com  Sat Nov 12 13:27:44 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 12 Nov 2011 18:27:44 +0000
+Subject: [sup-talk] Is the wiki down ?
+In-Reply-To: <CAM-UEKRHAHtQC23DVJ-+F_Zdt_WRkx2SDtzozg4OP9wkaVy7ww@mail.gmail.com>
+References: <1321027217-sup-1529@masterkorp.net>
+	<CAM-UEKRHAHtQC23DVJ-+F_Zdt_WRkx2SDtzozg4OP9wkaVy7ww@mail.gmail.com>
+Message-ID: <CAOxvSbcUy6uxrSRJ9KP0rK4bUvZ_VTOkZG042xgc_1vRs_gFnQ@mail.gmail.com>
+
+>> Hello, i am trying to check the wiki, and i get a basically empty page. Maybe its in maintenace ? Maybe its down ?
+>> I am checking the link from the main page which is this http://sup.rubyforge.org/wiki/wiki.pl
+>
+> Looks more like it was vandalized by some nasty robot.
+
+I've gone through and reverted a lot of the vandalism, but there are a
+few pages where it appears the old revisions have gone AWOL, or at
+least I don't have permissions to see them. William - can you bring
+back the older versions of the pages? I'm wondering if the vandals
+might have used ?action=maintain (which retires old revisions ...)
+
+They are:
+
+* http://sup.rubyforge.org/wiki/wiki.pl?action=history&id=Nbsmtp -
+revision 18 is the oldest I can see, and all are nonsense
+* http://sup.rubyforge.org/wiki/wiki.pl?action=history&id=RemovingASource
+- revision 5 is the oldest I can see, and they are all nonsense
+
+Hamish
+
+From vrs-sup at lambda.name  Sun Nov 13 02:07:54 2011
+From: vrs-sup at lambda.name (vrs)
+Date: Sun, 13 Nov 2011 08:07:54 +0100
+Subject: [sup-talk] Is the wiki down ?
+In-Reply-To: <CAM-UEKRHAHtQC23DVJ-+F_Zdt_WRkx2SDtzozg4OP9wkaVy7ww@mail.gmail.com>
+References: <1321027217-sup-1529@masterkorp.net>
+	<CAM-UEKRHAHtQC23DVJ-+F_Zdt_WRkx2SDtzozg4OP9wkaVy7ww@mail.gmail.com>
+Message-ID: <1321167502-sup-3791@ophthalmos>
+
+Excerpts from Alex Shulgin's message of 2011-11-11 17:30:25 +0100:
+> On Fri, Nov 11, 2011 at 18:02, Alfredo Palhares
+> Looks more like it was vandalized by some nasty robot.
+Indeed it was. To whoever admins the sup wiki: Please, for the love of
+all that is holy to you, don't use UseMod Wiki and replace the current
+installation immediately. It's about the worst possible choice you can
+currently make when choosing a wiki engine for technical documentation.
+Forgetting old revisions is one of the silliest things a wiki can and
+should not do. Retire that thing now.
+
+--vrs
+
+From masterkorp at masterkorp.net  Mon Nov 14 04:06:17 2011
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Mon, 14 Nov 2011 10:06:17 +0100
+Subject: [sup-talk] The wiki was vandalized again
+Message-ID: <1321261549-sup-7480@masterkorp.net>
+
+Hello, today i was checking the wiki to learn how to write some filter. And it is vandalized again. 
+This probably needs an update. But mean while can  you upload some archive in tar or something so i can check documentation ?
+
+Also using gollum as wiki would help on security since is git oriented https://github.com/github/gollum 
+
+Regards,
+Alfredo Palhares
+
+From tarunprabhu at gmail.com  Fri Nov 18 12:57:27 2011
+From: tarunprabhu at gmail.com (Tarun Prabhu)
+Date: Fri, 18 Nov 2011 11:57:27 -0600
+Subject: [sup-talk] Sup crashing after update
+Message-ID: <CAJcUrT3PSEzXLzs9=Dk7dCHDXpDTrTsazFDKBn_cw0i2UvqcJg@mail.gmail.com>
+
+After a recent system upgrade, sup crashes with this error:
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `each' for nil:NilClass
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:155:in `poll_from'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:113:in `block (2
+levels) in do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `block in
+do_poll'
+<internal:prelude>:10:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:102:in `do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in
+`poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:49:in
+`poll_with_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:212:in `block (2 levels)
+in <module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:78:in `block in
+reporting_thread'
+
+
+Can anyone help me fix this?
+
+Thanks,
+
+Tarun Prabhu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111118/97e9c8cb/attachment.html>
+
+From hollunder at lavabit.com  Fri Nov 18 14:34:20 2011
+From: hollunder at lavabit.com (hollunder at lavabit.com)
+Date: Fri, 18 Nov 2011 14:34:20 -0500 (EST)
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+ loading inbox
+In-Reply-To: <1320868149-sup-368@qwerzila>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+Message-ID: <55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+
+Hi Gaute,
+thanks for fixing stuff.
+I tried to build from your git repo
+(git://gitorious.org/sup/gautehs-mainline.git, branch:gauteisrunning).
+However, it doesn't build, same as sup from the main repo. Do you know
+what the problem isor how to fix it? Here's the build-ouput:
+
+
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+be deprecated in the future, use String#encode instead.
+/usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+Use RbConfig instead of obsolete and deprecated Config.
+[2011-11-18 20:22:06 +0100] WARNING: rake/gempackagetask is deprecated. 
+Use rubygems/package_task instead
+mkdir -p pkg
+mkdir -p pkg
+mkdir -p pkg/sup-999
+rm -f pkg/sup-999/CONTRIBUTORS
+ln CONTRIBUTORS pkg/sup-999/CONTRIBUTORS
+rm -f pkg/sup-999/README.txt
+ln README.txt pkg/sup-999/README.txt
+rm -f pkg/sup-999/LICENSE
+ln LICENSE pkg/sup-999/LICENSE
+rm -f pkg/sup-999/History.txt
+ln History.txt pkg/sup-999/History.txt
+rm -f pkg/sup-999/ReleaseNotes
+ln ReleaseNotes pkg/sup-999/ReleaseNotes
+mkdir -p pkg/sup-999/bin
+rm -f pkg/sup-999/bin/sup
+ln bin/sup pkg/sup-999/bin/sup
+rm -f pkg/sup-999/bin/sup-add
+ln bin/sup-add pkg/sup-999/bin/sup-add
+rm -f pkg/sup-999/bin/sup-cmd
+ln bin/sup-cmd pkg/sup-999/bin/sup-cmd
+rm -f pkg/sup-999/bin/sup-config
+ln bin/sup-config pkg/sup-999/bin/sup-config
+rm -f pkg/sup-999/bin/sup-dump
+ln bin/sup-dump pkg/sup-999/bin/sup-dump
+rm -f pkg/sup-999/bin/sup-import-dump
+ln bin/sup-import-dump pkg/sup-999/bin/sup-import-dump
+rm -f pkg/sup-999/bin/sup-recover-sources
+ln bin/sup-recover-sources pkg/sup-999/bin/sup-recover-sources
+rm -f pkg/sup-999/bin/sup-server
+ln bin/sup-server pkg/sup-999/bin/sup-server
+rm -f pkg/sup-999/bin/sup-sync
+ln bin/sup-sync pkg/sup-999/bin/sup-sync
+rm -f pkg/sup-999/bin/sup-sync-back
+ln bin/sup-sync-back pkg/sup-999/bin/sup-sync-back
+rm -f pkg/sup-999/bin/sup-tweak-labels
+ln bin/sup-tweak-labels pkg/sup-999/bin/sup-tweak-labels
+mkdir -p pkg/sup-999/lib
+rm -f pkg/sup-999/lib/sup.rb
+ln lib/sup.rb pkg/sup-999/lib/sup.rb
+mkdir -p pkg/sup-999/lib/sup
+rm -f pkg/sup-999/lib/sup/hook.rb
+ln lib/sup/hook.rb pkg/sup-999/lib/sup/hook.rb
+rm -f pkg/sup-999/lib/sup/buffer.rb
+ln lib/sup/buffer.rb pkg/sup-999/lib/sup/buffer.rb
+rm -f pkg/sup-999/lib/sup/maildir.rb
+ln lib/sup/maildir.rb pkg/sup-999/lib/sup/maildir.rb
+rm -f pkg/sup-999/lib/sup/undo.rb
+ln lib/sup/undo.rb pkg/sup-999/lib/sup/undo.rb
+rm -f pkg/sup-999/lib/sup/util.rb
+ln lib/sup/util.rb pkg/sup-999/lib/sup/util.rb
+rm -f pkg/sup-999/lib/sup/search.rb
+ln lib/sup/search.rb pkg/sup-999/lib/sup/search.rb
+rm -f pkg/sup-999/lib/sup/draft.rb
+ln lib/sup/draft.rb pkg/sup-999/lib/sup/draft.rb
+rm -f pkg/sup-999/lib/sup/keymap.rb
+ln lib/sup/keymap.rb pkg/sup-999/lib/sup/keymap.rb
+rm -f pkg/sup-999/lib/sup/message.rb
+ln lib/sup/message.rb pkg/sup-999/lib/sup/message.rb
+rm -f pkg/sup-999/lib/sup/rfc2047.rb
+ln lib/sup/rfc2047.rb pkg/sup-999/lib/sup/rfc2047.rb
+rm -f pkg/sup-999/lib/sup/client.rb
+ln lib/sup/client.rb pkg/sup-999/lib/sup/client.rb
+rm -f pkg/sup-999/lib/sup/crypto.rb
+ln lib/sup/crypto.rb pkg/sup-999/lib/sup/crypto.rb
+rm -f pkg/sup-999/lib/sup/logger.rb
+ln lib/sup/logger.rb pkg/sup-999/lib/sup/logger.rb
+rm -f pkg/sup-999/lib/sup/colormap.rb
+ln lib/sup/colormap.rb pkg/sup-999/lib/sup/colormap.rb
+rm -f pkg/sup-999/lib/sup/sent.rb
+ln lib/sup/sent.rb pkg/sup-999/lib/sup/sent.rb
+rm -f pkg/sup-999/lib/sup/message-chunks.rb
+ln lib/sup/message-chunks.rb pkg/sup-999/lib/sup/message-chunks.rb
+rm -f pkg/sup-999/lib/sup/label.rb
+ln lib/sup/label.rb pkg/sup-999/lib/sup/label.rb
+rm -f pkg/sup-999/lib/sup/idle.rb
+ln lib/sup/idle.rb pkg/sup-999/lib/sup/idle.rb
+rm -f pkg/sup-999/lib/sup/update.rb
+ln lib/sup/update.rb pkg/sup-999/lib/sup/update.rb
+rm -f pkg/sup-999/lib/sup/poll.rb
+ln lib/sup/poll.rb pkg/sup-999/lib/sup/poll.rb
+rm -f pkg/sup-999/lib/sup/horizontal-selector.rb
+ln lib/sup/horizontal-selector.rb pkg/sup-999/lib/sup/horizontal-selector.rb
+rm -f pkg/sup-999/lib/sup/textfield.rb
+ln lib/sup/textfield.rb pkg/sup-999/lib/sup/textfield.rb
+rm -f pkg/sup-999/lib/sup/mbox.rb
+ln lib/sup/mbox.rb pkg/sup-999/lib/sup/mbox.rb
+rm -f pkg/sup-999/lib/sup/thread.rb
+ln lib/sup/thread.rb pkg/sup-999/lib/sup/thread.rb
+rm -f pkg/sup-999/lib/sup/server.rb
+ln lib/sup/server.rb pkg/sup-999/lib/sup/server.rb
+rm -f pkg/sup-999/lib/sup/tagger.rb
+ln lib/sup/tagger.rb pkg/sup-999/lib/sup/tagger.rb
+rm -f pkg/sup-999/lib/sup/mode.rb
+ln lib/sup/mode.rb pkg/sup-999/lib/sup/mode.rb
+rm -f pkg/sup-999/lib/sup/contact.rb
+ln lib/sup/contact.rb pkg/sup-999/lib/sup/contact.rb
+rm -f pkg/sup-999/lib/sup/time.rb
+ln lib/sup/time.rb pkg/sup-999/lib/sup/time.rb
+rm -f pkg/sup-999/lib/sup/protocol.rb
+ln lib/sup/protocol.rb pkg/sup-999/lib/sup/protocol.rb
+rm -f pkg/sup-999/lib/sup/person.rb
+ln lib/sup/person.rb pkg/sup-999/lib/sup/person.rb
+rm -f pkg/sup-999/lib/sup/source.rb
+ln lib/sup/source.rb pkg/sup-999/lib/sup/source.rb
+rm -f pkg/sup-999/lib/sup/interactive-lock.rb
+ln lib/sup/interactive-lock.rb pkg/sup-999/lib/sup/interactive-lock.rb
+rm -f pkg/sup-999/lib/sup/account.rb
+ln lib/sup/account.rb pkg/sup-999/lib/sup/account.rb
+rm -f pkg/sup-999/lib/sup/index.rb
+ln lib/sup/index.rb pkg/sup-999/lib/sup/index.rb
+mkdir -p pkg/sup-999/lib/sup/modes
+rm -f pkg/sup-999/lib/sup/modes/thread-view-mode.rb
+ln lib/sup/modes/thread-view-mode.rb
+pkg/sup-999/lib/sup/modes/thread-view-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/person-search-results-mode.rb
+ln lib/sup/modes/person-search-results-mode.rb
+pkg/sup-999/lib/sup/modes/person-search-results-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/label-search-results-mode.rb
+ln lib/sup/modes/label-search-results-mode.rb
+pkg/sup-999/lib/sup/modes/label-search-results-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/scroll-mode.rb
+ln lib/sup/modes/scroll-mode.rb pkg/sup-999/lib/sup/modes/scroll-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/console-mode.rb
+ln lib/sup/modes/console-mode.rb pkg/sup-999/lib/sup/modes/console-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/resume-mode.rb
+ln lib/sup/modes/resume-mode.rb pkg/sup-999/lib/sup/modes/resume-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/buffer-list-mode.rb
+ln lib/sup/modes/buffer-list-mode.rb
+pkg/sup-999/lib/sup/modes/buffer-list-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/forward-mode.rb
+ln lib/sup/modes/forward-mode.rb pkg/sup-999/lib/sup/modes/forward-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/thread-index-mode.rb
+ln lib/sup/modes/thread-index-mode.rb
+pkg/sup-999/lib/sup/modes/thread-index-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/label-list-mode.rb
+ln lib/sup/modes/label-list-mode.rb
+pkg/sup-999/lib/sup/modes/label-list-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/compose-mode.rb
+ln lib/sup/modes/compose-mode.rb pkg/sup-999/lib/sup/modes/compose-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/search-list-mode.rb
+ln lib/sup/modes/search-list-mode.rb
+pkg/sup-999/lib/sup/modes/search-list-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/file-browser-mode.rb
+ln lib/sup/modes/file-browser-mode.rb
+pkg/sup-999/lib/sup/modes/file-browser-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/contact-list-mode.rb
+ln lib/sup/modes/contact-list-mode.rb
+pkg/sup-999/lib/sup/modes/contact-list-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/search-results-mode.rb
+ln lib/sup/modes/search-results-mode.rb
+pkg/sup-999/lib/sup/modes/search-results-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/help-mode.rb
+ln lib/sup/modes/help-mode.rb pkg/sup-999/lib/sup/modes/help-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/text-mode.rb
+ln lib/sup/modes/text-mode.rb pkg/sup-999/lib/sup/modes/text-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/edit-message-async-mode.rb
+ln lib/sup/modes/edit-message-async-mode.rb
+pkg/sup-999/lib/sup/modes/edit-message-async-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/reply-mode.rb
+ln lib/sup/modes/reply-mode.rb pkg/sup-999/lib/sup/modes/reply-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/poll-mode.rb
+ln lib/sup/modes/poll-mode.rb pkg/sup-999/lib/sup/modes/poll-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/completion-mode.rb
+ln lib/sup/modes/completion-mode.rb
+pkg/sup-999/lib/sup/modes/completion-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/log-mode.rb
+ln lib/sup/modes/log-mode.rb pkg/sup-999/lib/sup/modes/log-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/inbox-mode.rb
+ln lib/sup/modes/inbox-mode.rb pkg/sup-999/lib/sup/modes/inbox-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/line-cursor-mode.rb
+ln lib/sup/modes/line-cursor-mode.rb
+pkg/sup-999/lib/sup/modes/line-cursor-mode.rb
+rm -f pkg/sup-999/lib/sup/modes/edit-message-mode.rb
+ln lib/sup/modes/edit-message-mode.rb
+pkg/sup-999/lib/sup/modes/edit-message-mode.rb
+cd pkg/sup-999
+rake aborted!
+undefined method `write' for #<Syck::Emitter:0x00000001b95900>
+
+Tasks: TOP => gem => pkg/sup-999.gem
+(See full trace by running task with --trace)
+
+
+"If you're the type of person who treats email as an extension of your
+long-term memory, Sup is for you."
+Well, my long-term memory extension is broken for too long, the webmail
+clients are getting on my nerves, so I hope sup can be made to work again.
+
+Regards,
+Philipp
+
+
+
+From masterkorp at masterkorp.net  Fri Nov 18 15:32:20 2011
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Fri, 18 Nov 2011 21:32:20 +0100
+Subject: [sup-talk] Filters doesn't work
+Message-ID: <1321648096-sup-3340@masterkorp.net>
+
+Hello, i made a hook that adds labels, as referenced in the wiki[1] i created a before-add-message.rb into ~/.sip/hooks. it don't get anything in the logs, can anyone help me ?
+As attachement i send the script.
+
+	[1] http://sup.rubyforge.org/wiki/wiki.pl?AutoAddLabelsToNewMessages
+
+
+----
+Regards,
+Alfredo Palhares
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: before-add-message.rb
+Type: application/x-ruby
+Size: 529 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111118/d51685fe/attachment.bin>
+
+From michael+sup at stapelberg.de  Fri Nov 18 15:55:19 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 18 Nov 2011 20:55:19 +0000
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1320868149-sup-368@qwerzila>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+Message-ID: <1321649693-sup-3146@stapelberg.de>
+
+Hi Gaute,
+
+Excerpts from Gaute Hope's message of 2011-11-09 19:52:28 +0000:
+> This seems to be due to the new yamler 'psych', by requiring the old one
+> 'sych' before 'yaml' it can be loaded.
+FYI: I?ve pushed your commit to sup-next and sup-master. Thanks.
+
+Best regards,
+Michael
+
+From marka at pobox.com  Fri Nov 18 16:21:41 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 18 Nov 2011 16:21:41 -0500
+Subject: [sup-talk] Filters doesn't work
+In-Reply-To: <1321648096-sup-3340@masterkorp.net>
+References: <1321648096-sup-3340@masterkorp.net>
+Message-ID: <1321650946-sup-2613@bloovis.org>
+
+Excerpts from Alfredo Palhares's message of Fri Nov 18 15:32:20 -0500 2011:
+
+> Hello, i made a hook that adds labels, as referenced in the wiki[1]
+> i created a before-add-message.rb into ~/.sip/hooks. it don't get
+> anything in the logs, can anyone help me ? 
+
+Are you sure the file is in ~/.sup/hooks, not ~/.sip/hooks?
+
+> As attachement i send the script.
+
+The script looks OK to me, except for this line:
+
+  message.add_label = "texhax"
+
+Try removing the '=' character.  It might be causing a syntax
+error that prevents your script from loading.
+
+Just as a reference, here is my ~/.sup/hooks/before-add-message.rb,
+somewhat sanitized:
+
+# Label by subject.  This is useful for messages
+# generated automatically by Bugzilla or cron jobs.
+case message.subj
+when /\[FDBuilders/
+  message.add_label :fd
+when /\[P4 SUBMIT/
+  message.add_label :p4
+when /\[Bug/
+  message.add_label :bugs
+end
+
+# Label by recipients.  This is useful for mailing lists.
+to_string = message.recipients.map { |t| t.email }.join(" ")
+case to_string
+# Personal labels
+when /\bsup-(devel|talk)@rubyforge.org\b/
+  message.add_label :sup
+# WIDGET labels
+when /pi at widget/
+  message.add_label :pi
+when /tipsandtricks/
+  message.add_label :tips
+when /git-users/
+  message.add_label :git
+when /monitor-list/
+  message.add_label :mon
+when /acpi-dudes/
+  message.add_label :acpi
+end
+
+# Label from from.  This is useful for personal emails.
+case message.from.email
+when /@amazon/
+  message.add_label :amazon
+when /@facebook/
+  message.add_label :facebook
+when /@netflix/
+  message.add_label :netflix
+end
+
+From hollunder at lavabit.com  Fri Nov 18 19:33:08 2011
+From: hollunder at lavabit.com (hollunder at lavabit.com)
+Date: Fri, 18 Nov 2011 19:33:08 -0500 (EST)
+Subject: [sup-talk] small patch and build error
+In-Reply-To: <1321649693-sup-3146@stapelberg.de>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila> <1321649693-sup-3146@stapelberg.de>
+Message-ID: <29426.143.205.216.123.1321662788.squirrel@lavabit.com>
+
+Hi there again,
+I have a small patch as well. This one is against sup-next and fixes a
+path issue in the rakefile ("cannot load such file -- sup-files") and a
+deprecation warning ("WARNING: rake/gempackagetask is deprecated.  Use
+rubygems/package_task instead")
+
+However, I don't manage to build sup-next, this time with:
+/usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+be deprecated in the future, use String#encode instead.
+/usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+Use RbConfig instead of obsolete and deprecated Config.
+rake aborted!
+invalid date format in specification: "2011-11-19 01:30:45 +0100"
+
+I don't quite know how to fix this one.
+
+Regards,
+Philipp
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: rakefile.patch
+Type: text/x-patch
+Size: 386 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111118/30009d28/attachment.bin>
+
+From masterkorp at masterkorp.net  Sat Nov 19 16:48:13 2011
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Sat, 19 Nov 2011 22:48:13 +0100
+Subject: [sup-talk] Add messages to a thread manually
+Message-ID: <1321738838-sup-4532@masterkorp.net>
+
+Hello, if you use mailing lists you probably have the same problemas as me. 
+The problem is that some people use some rather "clunky" emails that don't use the
+"In-reply-to:" tag and they add things like "Re:" (or the even more annoying 
+"Re: Re: ----" ) and the the measse doesn't go to the correct thread in the inbox,
+and as you know this makes thing very hard to read or follow a complex subject.
+
+Is there a way for me to manually add a message to a thread ? So it gets more 
+readable later ? I am sorry if i miss somthing here, but i gave a good read a
+t the doc and the wiki and i found nothing.
+
+Also a way of threating this in the before-add-message hook would be very cool.
+
+Thanks already i am realling loving sup.
+
+--
+Regards,
+Alfredo Palhares
+
+From masterkorp at masterkorp.net  Sat Nov 19 16:50:39 2011
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Sat, 19 Nov 2011 22:50:39 +0100
+Subject: [sup-talk] Change label colors
+Message-ID: <1321739359-sup-1517@masterkorp.net>
+
+Hello again, is there any way to change a specific label colour ?
+It would make a busy inbox hella more readable.
+
+--
+Regards,
+Alfredo Palhares
+
+From tero at tilus.net  Sat Nov 19 17:26:04 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 20 Nov 2011 00:26:04 +0200
+Subject: [sup-talk] Add messages to a thread manually
+In-Reply-To: <1321738838-sup-4532@masterkorp.net>
+References: <1321738838-sup-4532@masterkorp.net>
+Message-ID: <1321740372-sup-1779@tilus.net>
+
+Alfredo Palhares, 2011-11-19 23:48:
+> Is there a way for me to manually add a message to a thread?
+
+Tag messages in thread index mode and hit # (Force tagged threads to
+be joined into the same thread).  Back when I needed that
+functionality more I had a bit flaky feeling about it.  It randomly
+just wouldn't work.  Dunno how it is now.  Haven't really used it.
+
+> Also a way of threating this in the before-add-message hook would be
+> very cool.
+
+At some point I played with the idea a bit.  Most of the time if you
+get a reply without refs from a particular address, all the other
+mails from that address will be refs-free too.  Also the refs-free
+repliers tend to be top-posters.  And replies usually are received
+within relatively short time after the original.  Ideally you should
+be able to take advantage of those and be able to rebuild refs
+relatively accurately.
+
+Once you manually build an in-reply-to ref, automatic detector would
+know to regard that sender as a usual suspect.  In addition to the
+subject, you could also use the body of the top-post reply to
+automatically find out the source of the quote.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From triumhiz at yandex.ru  Sun Nov 20 23:12:53 2011
+From: triumhiz at yandex.ru (=?utf-8?q?=D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B9_Z?=)
+Date: Mon, 21 Nov 2011 08:12:53 +0400
+Subject: [sup-talk] newbie
+Message-ID: <1321848744-sup-3421@ss-comp>
+
+Hi there,
+just subscribed to this list and want to know is there an easy way to import
+its archive to my mbox/maildir?
+
+On bug tracker. masanjin.net/sup-bugs/ is still inaccessible, but is it possible
+to open it for viewing its content only? Or move it to rubyforge's tracker?
+
+And is there a way to delete a separate message in the thread?
+
+
+-- 
+?????? (Serge)
+
+From john.wyzer at gmx.de  Mon Nov 21 06:42:46 2011
+From: john.wyzer at gmx.de (john.wyzer)
+Date: Mon, 21 Nov 2011 12:42:46 +0100
+Subject: [sup-talk] newbie
+In-Reply-To: <1321848744-sup-3421@ss-comp>
+References: <1321848744-sup-3421@ss-comp>
+Message-ID: <1321875707-sup-6165@localhost>
+
+Excerpts from ?????? Z's message of Mon Nov 21 05:12:53 +0100 2011:
+> Hi there,
+> just subscribed to this list and want to know is there an easy way to import
+> its archive to my mbox/maildir?
+ 
+You can fetch the archive from gmane.org via imap and store it in mbox/maildir.
+
+From triumhiz at yandex.ru  Mon Nov 21 09:38:56 2011
+From: triumhiz at yandex.ru (=?utf-8?q?=D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B9_Z?=)
+Date: Mon, 21 Nov 2011 18:38:56 +0400
+Subject: [sup-talk] Add messages to a thread manually
+In-Reply-To: <1321740372-sup-1779@tilus.net>
+References: <1321738838-sup-4532@masterkorp.net>
+	<1321740372-sup-1779@tilus.net>
+Message-ID: <1321886162-sup-6032@ss-comp>
+
+Excerpts from Tero Tilus's message of ??? ??? 20 02:26:04 +0400 2011:
+> Tag messages in thread index mode and hit #
+
+It worked for me, but turned not to be undoable.
+And is there a way to extract message(s) from the thread to a new one/split thread?
+
+-- 
+?????? (Serge)
+
+From tero at tilus.net  Mon Nov 21 12:07:44 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 21 Nov 2011 19:07:44 +0200
+Subject: [sup-talk] Add messages to a thread manually
+In-Reply-To: <1321886162-sup-6032@ss-comp>
+References: <1321738838-sup-4532@masterkorp.net>
+	<1321740372-sup-1779@tilus.net> <1321886162-sup-6032@ss-comp>
+Message-ID: <1321895127-sup-1230@tilus.net>
+
+?????? Z, 2011-11-21 16:38:
+> And is there a way to extract message(s) from the thread to a new
+> one/split thread?
+
+Not that I know of.  I remember trying (and failing) to do it in sup
+console.  I bet you can do it if you just know your way around how the
+message is indexed.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Nov 21 12:22:27 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 21 Nov 2011 19:22:27 +0200
+Subject: [sup-talk] newbie
+In-Reply-To: <1321848744-sup-3421@ss-comp>
+References: <1321848744-sup-3421@ss-comp>
+Message-ID: <1321895815-sup-5289@tilus.net>
+
+?????? Z, 2011-11-21 06:12:
+> just subscribed to this list and want to know is there an easy way
+> to import its archive to my mbox/maildir?
+
+I downloaded mbox files directly from list archive
+http://rubyforge.org/pipermail/sup-talk/
+
+> And is there a way to delete a separate message in the thread?
+
+No.
+
+If you really need to (say you have a humongous attachment you want to
+get rid of) just edit the message/mailbox with a client of your choise
+(and possibly reindex).  I use mutt for that purpose and don't delete
+the messages, just drop the unnecessary parts.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From eg at gaute.vetsj.com  Mon Nov 21 15:29:10 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 21 Nov 2011 21:29:10 +0100
+Subject: [sup-talk] small patch and build error
+In-Reply-To: <29426.143.205.216.123.1321662788.squirrel@lavabit.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila> <1321649693-sup-3146@stapelberg.de>
+	<29426.143.205.216.123.1321662788.squirrel@lavabit.com>
+Message-ID: <1321907256-sup-379@qwerzila>
+
+Excerpts from hollunder's message of 2011-11-19 01:33:08 +0100:
+> Hi there again,
+> I have a small patch as well. This one is against sup-next and fixes a
+> path issue in the rakefile ("cannot load such file -- sup-files") and a
+> deprecation warning ("WARNING: rake/gempackagetask is deprecated.  Use
+> rubygems/package_task instead")
+> 
+> However, I don't manage to build sup-next, this time with:
+> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will
+> be deprecated in the future, use String#encode instead.
+> /usr/lib/ruby/gems/1.9.1/gems/gettext-2.1.0/lib/gettext/runtime/locale_path.rb:20:
+> Use RbConfig instead of obsolete and deprecated Config.
+> rake aborted!
+> invalid date format in specification: "2011-11-19 01:30:45 +0100"
+
+Check out the previously attached patch 'Use correct date format for gem
+spec' or commit b0611fd from 'gauteisrunning'.
+
+- Gaute
+
+From eg at gaute.vetsj.com  Mon Nov 21 15:36:42 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 21 Nov 2011 21:36:42 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+Message-ID: <1321907728-sup-2094@qwerzila>
+
+Excerpts from hollunder's message of 2011-11-18 20:34:20 +0100:
+> Hi Gaute,
+> thanks for fixing stuff.
+> I tried to build from your git repo
+> (git://gitorious.org/sup/gautehs-mainline.git, branch:gauteisrunning).
+> However, it doesn't build, same as sup from the main repo. Do you know
+> what the problem isor how to fix it? Here's the build-ouput:
+
+Hi, I didn't figure this out. Maybe there is a clue in the RVM stuff
+Michael mentioned?
+
+I cheated and just manually installed the new .rb files in my gem
+installation directory.
+
+- Gaute
+
+From hollunder at lavabit.com  Mon Nov 21 15:16:28 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Mon, 21 Nov 2011 21:16:28 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321907728-sup-2094@qwerzila>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila>
+Message-ID: <1321906110-sup-9788@eris>
+
+Excerpts from Gaute Hope's message of 2011-11-21 21:36:42 +0100:
+> Excerpts from hollunder's message of 2011-11-18 20:34:20 +0100:
+> > Hi Gaute,
+> > thanks for fixing stuff.
+> > I tried to build from your git repo
+> > (git://gitorious.org/sup/gautehs-mainline.git, branch:gauteisrunning).
+> > However, it doesn't build, same as sup from the main repo. Do you know
+> > what the problem isor how to fix it? Here's the build-ouput:
+> 
+> Hi, I didn't figure this out. Maybe there is a clue in the RVM stuff
+> Michael mentioned?
+> 
+> I cheated and just manually installed the new .rb files in my gem
+> installation directory.
+> 
+> - Gaute
+
+I rebuilt the old ruby release (1.9.2_p290) and will stick to it for 
+the time being, sup is the only ruby app I use anyway. I simply don't
+know enough about all this ruby build stuff to fix the git build issue.
+The last sup release definitely doesn't work with ruby 1.9.3.
+My issue with 1.9.2_p290 turned out to be a problem with a message, but
+I didn't take the time to find the specific message by deleting them one
+by one. I just delete all messages from 2 days, and sup could poll
+again. It was not related to the update as I initially suspected and the
+update I posted was accidentally an ancient one anyway (2009).
+
+Anyway, thanks for all of your attempts to help. I hope sup will keep up
+with the changes in its environment.
+
+Regards,
+Philipp
+
+
+From michael+sup at stapelberg.de  Mon Nov 21 16:18:36 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 21 Nov 2011 21:18:36 +0000
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321906110-sup-9788@eris>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+Message-ID: <1321910246-sup-8495@stapelberg.de>
+
+Hi Philipp,
+
+Excerpts from Philipp ?berbacher's message of 2011-11-21 20:16:28 +0000:
+> The last sup release definitely doesn't work with ruby 1.9.3.
+Use the git version, that works with 1.9.3, see my post at
+http://rubyforge.org/pipermail/sup-devel/2011-November/001256.html
+(and replace the mangled " at " with @)
+
+Best regards,
+Michael
+
+From hollunder at lavabit.com  Mon Nov 21 17:15:21 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Mon, 21 Nov 2011 23:15:21 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321910246-sup-8495@stapelberg.de>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+	<1321910246-sup-8495@stapelberg.de>
+Message-ID: <1321913598-sup-6512@eris>
+
+Excerpts from Michael Stapelberg's message of 2011-11-21 22:18:36 +0100:
+> Hi Philipp,
+> 
+> Excerpts from Philipp ?berbacher's message of 2011-11-21 20:16:28 +0000:
+> > The last sup release definitely doesn't work with ruby 1.9.3.
+> Use the git version, that works with 1.9.3, see my post at
+> http://rubyforge.org/pipermail/sup-devel/2011-November/001256.html
+> (and replace the mangled " at " with @)
+> 
+> Best regards,
+> Michael
+
+Thanks Michael.
+Since you're on 1.9.3 I assume you're an arch user as well? If so, did
+you manage to create a PKGBUILD that uses those instructions? It's just
+that I rather have a package that I can uninstall again if necessary.
+
+Regards,
+Philipp
+
+
+From michael+sup at stapelberg.de  Mon Nov 21 17:24:52 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 21 Nov 2011 22:24:52 +0000
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321913598-sup-6512@eris>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+	<1321910246-sup-8495@stapelberg.de> <1321913598-sup-6512@eris>
+Message-ID: <1321914253-sup-9820@stapelberg.de>
+
+Hi Philipp,
+
+Excerpts from Philipp ?berbacher's message of 2011-11-21 22:15:21 +0000:
+> Since you're on 1.9.3 I assume you're an arch user as well? If so, did
+I?m not. Read the post. I?m doing this using RVM, which does not touch your
+system ruby and does everything in $HOME.
+
+> you manage to create a PKGBUILD that uses those instructions? It's just
+> that I rather have a package that I can uninstall again if necessary.
+That?s not necessary. It does not touch your system.
+
+Best regards,
+Michael
+
+From eg at gaute.vetsj.com  Mon Nov 21 18:48:09 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 22 Nov 2011 00:48:09 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321913598-sup-6512@eris>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+	<1321910246-sup-8495@stapelberg.de> <1321913598-sup-6512@eris>
+Message-ID: <1321919182-sup-3332@qwerzila>
+
+Excerpts from Philipp ?berbacher's message of 2011-11-21 23:15:21 +0100:
+> Excerpts from Michael Stapelberg's message of 2011-11-21 22:18:36 +0100:
+> > Hi Philipp,
+> > 
+> > Excerpts from Philipp ?berbacher's message of 2011-11-21 20:16:28 +0000:
+> > > The last sup release definitely doesn't work with ruby 1.9.3.
+> > Use the git version, that works with 1.9.3, see my post at
+> > http://rubyforge.org/pipermail/sup-devel/2011-November/001256.html
+> > (and replace the mangled " at " with @)
+> > 
+> > Best regards,
+> > Michael
+> 
+> Thanks Michael.
+> Since you're on 1.9.3 I assume you're an arch user as well? If so, did
+> you manage to create a PKGBUILD that uses those instructions? It's just
+> that I rather have a package that I can uninstall again if necessary.
+> 
+> Regards,
+> Philipp
+
+I used this work-around (patch attached):
+http://stackoverflow.com/questions/4932881/gemcutter-rake-build-now-throws-undefined-method-write-for-syckemitter
+
+which enables me to install it as normal with 'gem'.
+
+- Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Require-psych-in-Rakefile-to-avoid-syck-error-when-c.patch
+Type: application/octet-stream
+Size: 577 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111122/f8a2ce3f/attachment.obj>
+
+From hollunder at lavabit.com  Tue Nov 22 03:39:11 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 22 Nov 2011 09:39:11 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321914253-sup-9820@stapelberg.de>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+	<1321910246-sup-8495@stapelberg.de> <1321913598-sup-6512@eris>
+	<1321914253-sup-9820@stapelberg.de>
+Message-ID: <1321951082-sup-7938@eris>
+
+Excerpts from Michael Stapelberg's message of 2011-11-21 23:24:52 +0100:
+> Hi Philipp,
+> 
+> Excerpts from Philipp ?berbacher's message of 2011-11-21 22:15:21 +0000:
+> > Since you're on 1.9.3 I assume you're an arch user as well? If so, did
+> I?m not. Read the post. I?m doing this using RVM, which does not touch your
+> system ruby and does everything in $HOME.
+> 
+> > you manage to create a PKGBUILD that uses those instructions? It's just
+> > that I rather have a package that I can uninstall again if necessary.
+> That?s not necessary. It does not touch your system.
+> 
+> Best regards,
+> Michael
+
+Thanks,
+I had assumed it builds in a clean environment and installs to the
+system. Great if it keeps everything separated.
+
+Regards,
+Philipp
+
+
+From eg at gaute.vetsj.com  Tue Nov 22 10:10:23 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 22 Nov 2011 16:10:23 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <1321953145-sup-1447@eris>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+	<55171.143.205.216.123.1321644860.squirrel@lavabit.com>
+	<1321907728-sup-2094@qwerzila> <1321906110-sup-9788@eris>
+	<1321910246-sup-8495@stapelberg.de> <1321913598-sup-6512@eris>
+	<1321919182-sup-3332@qwerzila> <1321953145-sup-1447@eris>
+Message-ID: <1321974251-sup-7271@qwerzila>
+
+Excerpts from Philipp ?berbacher's message of 2011-11-22 10:18:18 +0100:
+> Excerpts from Gaute Hope's message of 2011-11-22 00:48:09 +0100:
+> > Excerpts from Philipp ?berbacher's message of 2011-11-21 23:15:21 +0100:
+> > > Excerpts from Michael Stapelberg's message of 2011-11-21 22:18:36 +0100:
+> > > > Hi Philipp,
+> > > > 
+> > > > Excerpts from Philipp ?berbacher's message of 2011-11-21 20:16:28 +0000:
+> > > > > The last sup release definitely doesn't work with ruby 1.9.3.
+> > > > Use the git version, that works with 1.9.3, see my post at
+> > > > http://rubyforge.org/pipermail/sup-devel/2011-November/001256.html
+> > > > (and replace the mangled " at " with @)
+> > > > 
+> > > > Best regards,
+> > > > Michael
+> > > 
+> > > Thanks Michael.
+> > > Since you're on 1.9.3 I assume you're an arch user as well? If so, did
+> > > you manage to create a PKGBUILD that uses those instructions? It's just
+> > > that I rather have a package that I can uninstall again if necessary.
+> > > 
+> > > Regards,
+> > > Philipp
+> > 
+> > I used this work-around (patch attached):
+> > http://stackoverflow.com/questions/4932881/gemcutter-rake-build-now-throws-undefined-method-write-for-syckemitter
+> > 
+> > which enables me to install it as normal with 'gem'.
+> > 
+> > - Gaute
+> 
+> Doesn't work for me (with ruby 1.9.2 atm):
+> 
+> patching file Rakefile
+> Hunk #1 succeeded at 30 with fuzz 2.
+> ==> Building the gem
+> (in /home/murks/build/other/sup-git/src/gauteisrunning-build)
+> rake aborted!
+> uninitialized constant Rake::GemPackageTask
+> /usr/lib/ruby/1.9.1/rake.rb:2482:in `const_missing'
+> /home/murks/build/other/sup-git/src/gauteisrunning-build/Rakefile:61:in `<top (required)>'
+> /usr/lib/ruby/1.9.1/rake.rb:2373:in `load'
+> /usr/lib/ruby/1.9.1/rake.rb:2373:in `raw_load_rakefile'
+> /usr/lib/ruby/1.9.1/rake.rb:2007:in `block in load_rakefile'
+> /usr/lib/ruby/1.9.1/rake.rb:2058:in `standard_exception_handling'
+> /usr/lib/ruby/1.9.1/rake.rb:2006:in `load_rakefile'
+> /usr/lib/ruby/1.9.1/rake.rb:1991:in `run'
+> /usr/bin/rake:31:in `<main>'
+> 
+> No big deal for me atm. since I can keep ruby at 1.9.2 and stick to the
+> last sup release for the time being. However, if it helps I will attempt
+> to build from git with 1.9.3.
+
+Ok. I have not tried it against 1.9.2, but it should not be required for
+that anyway (?).
+
+The best is probably to check out/pull fresh from Gitorious.
+
+I consider this a work-around, the best option should be to get
+going with 'psych' as yamler for Sup overall, and get rid of the
+syck/psych mess (I don't have time to look at that at the moment thou).
+
+- Gaute
+
+From alex.shulgin at gmail.com  Tue Nov 22 10:03:16 2011
+From: alex.shulgin at gmail.com (Alex Shulgin)
+Date: Tue, 22 Nov 2011 17:03:16 +0200
+Subject: [sup-talk] Crash when sending email
+Message-ID: <CAM-UEKTqw+NPqd=UK9LHg-kkZBK76KEbE9SO5zq1Q9bP=56yag@mail.gmail.com>
+
+Hello,
+
+I was just sending another mail when sup crashed with the following stack trace:
+
+--- TypeError from thread: periodic poll
+can't convert nil into String
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/mbox.rb:141:in
+`size'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/mbox.rb:141:in
+`poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:155:in
+`poll_from'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:113:in
+`do_poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:103:in
+`each'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:103:in
+`do_poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:102:in
+`synchronize'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:102:in
+`do_poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`send'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in
+`poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:49:in
+`poll_with_sources'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:86:in
+`start'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup.rb:78:in
+`reporting_thread'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup.rb:76:in
+`initialize'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup.rb:76:in
+`reporting_thread'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/poll.rb:83:in
+`start'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`send'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/gems/sup-0.12.1/bin/sup:222
+/home/ash/.rvm/gems/ruby-1.8.7-p352/bin/sup:19:in `load'
+/home/ash/.rvm/gems/ruby-1.8.7-p352/bin/sup:19
+
+Sup is installed from rubygems, v0.12.
+
+Update: it seems that the message was sent, and the crash happened
+just after that.
+
+--
+Regards,
+Alex
+
+From hollunder at lavabit.com  Thu Nov 24 18:13:05 2011
+From: hollunder at lavabit.com (Philipp)
+Date: Fri, 25 Nov 2011 00:13:05 +0100
+Subject: [sup-talk] crash when searching
+Message-ID: <1322176122-sup-4869@eris>
+
+Hi there again.  I do get a crash when searching for particular terms.
+At the moment I have one search term that crashes sup reliably. The
+console output is attached, I believe the notable part is "invalid
+source 3".  I removed one or two email accounts relatively recently
+because they are defunct now, could it be that messages from those
+accounts are still indexed, match the search term and sup crashes when
+trying to retrieve those messages? If that or something else is the
+problem, how can I fix it?
+
+Regards,
+Philipp
+
+$ sup
+[2011-11-25 00:06:09 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/murks/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+invalid source 3
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:201:in `block in build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:199:in `map'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:199:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `block (2 levels) in each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/thread.rb:338:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/thread.rb:338:in `block in load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `block in each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `block in each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/thread.rb:334:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:640:in `load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:624:in `block in load_n_threads_background'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:78:in `block in reporting_thread'
+
+
+From hollunder at lavabit.com  Fri Nov 25 07:22:52 2011
+From: hollunder at lavabit.com (Philipp)
+Date: Fri, 25 Nov 2011 13:22:52 +0100
+Subject: [sup-talk] crash in contact list
+Message-ID: <1322223388-sup-2482@eris>
+
+Hi there,
+I get another crash when hitting m in my contact list. To me it looks
+related to that crash I got rid of by deleting a lot of messages. Guess
+I could delete another whole load of messages, but I'd rather have this
+bug fixed. So, the exception seem to origin in the three-line method
+
+find_docid:
+
+  def find_docid id
+    docids = term_docids(mkterm(:msgid,id))
+    fail unless docids.size <= 1
+    docids.first
+  end
+
+Does it happen due to docids.size being larger than 1 or could this
+exception be raised by something else in there?
+
+Alternatively, how can I find the message that causes this problem?
+
+Regards,
+Philipp
+
+
+
+$ sup
+[2011-11-25 13:15:19 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/murks/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: main
+
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:551:in `find_docid'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:556:in `find_doc'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:566:in `get_entry'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in `block in build_message'
+/usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:575:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `block (2 levels) in each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:231:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:231:in `block in load_contacts'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `block in each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `block in each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:246:in `each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:151:in `each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:229:in `load_contacts'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/contact-list-mode.rb:113:in `block in load'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:741:in `say'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/contact-list-mode.rb:112:in `load'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/contact-list-mode.rb:64:in `load_more'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+
+From johannes at walnutempire.de  Tue Nov 29 15:39:55 2011
+From: johannes at walnutempire.de (Johannes Janosovits)
+Date: Tue, 29 Nov 2011 21:39:55 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+ loading inbox
+In-Reply-To: <1320868149-sup-368@qwerzila>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila>
+Message-ID: <4ED5431B.2000407@walnutempire.de>
+
+On 11/09/2011 08:52 PM, Gaute Hope wrote:
+> Excerpts from Gaute Hope's message of 2011-11-09 20:25:13 +0100:
+>> I am getting the same error now, after upgraded ruby and gems..
+>>
+>> bin/sup-sync:11: warning: method redefined; discarding old to_s
+>> /home/gaute/dev/ruby/sup.git/lib/sup.rb:18:in `id': wrong id called on
+> This seems to be due to the new yamler 'psych', by requiring the old one
+> 'sych' before 'yaml' it can be loaded.
+>
+> The proper fix is to expect content to be represented the way 'psych'
+> does it. This is not the same as the old way.
+>
+> Also the gem spec date was in the wrong format, see both attached
+> patches.
+>
+> - Gaute
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+This doesn't fix it for me, see  http://pastebin.com/mZjR1Hap
+
+Sup was built from git and installed by "gem install sup". Anybody else 
+running into these Problems?
+
+regards,
+Johannes
+
+From johannes at walnutempire.de  Tue Nov 29 17:19:21 2011
+From: johannes at walnutempire.de (Johannes Janosovits)
+Date: Tue, 29 Nov 2011 23:19:21 +0100
+Subject: [sup-talk] exception --- RuntimeError from thread: poll after
+	loading inbox
+In-Reply-To: <4ED5431B.2000407@walnutempire.de>
+References: <56777.143.205.193.62.1320657425.squirrel@lavabit.com>
+	<1320700740-sup-9219@tilus.net>
+	<1929.143.205.216.123.1320746264.squirrel@lavabit.com>
+	<CABKe4Mut=UnKFBt91UxgJu5NxOJ57iQPv464K=e5mS_jQUn1tA@mail.gmail.com>
+	<1320868149-sup-368@qwerzila> <4ED5431B.2000407@walnutempire.de>
+Message-ID: <1322604971-sup-3350@myhost>
+
+Excerpts from Johannes Janosovits's message of 2011-11-29 21:39:55 +0100:
+> On 11/09/2011 08:52 PM, Gaute Hope wrote:
+> > Excerpts from Gaute Hope's message of 2011-11-09 20:25:13 +0100:
+> >> I am getting the same error now, after upgraded ruby and gems..
+> >>
+> >> bin/sup-sync:11: warning: method redefined; discarding old to_s
+> >> /home/gaute/dev/ruby/sup.git/lib/sup.rb:18:in `id': wrong id called on
+> > This seems to be due to the new yamler 'psych', by requiring the old one
+> > 'sych' before 'yaml' it can be loaded.
+> >
+> > The proper fix is to expect content to be represented the way 'psych'
+> > does it. This is not the same as the old way.
+> >
+> > Also the gem spec date was in the wrong format, see both attached
+> > patches.
+> >
+> > - Gaute
+> >
+> >
+> > _______________________________________________
+> > sup-talk mailing list
+> > sup-talk at rubyforge.org
+> > http://rubyforge.org/mailman/listinfo/sup-talk
+> This doesn't fix it for me, see  http://pastebin.com/mZjR1Hap
+> 
+> Sup was built from git and installed by "gem install sup". Anybody else 
+> running into these Problems?
+> 
+> regards,
+> Johannes
+
+Sorry for the inconvenience, for some reason the installed files (in
+/usr/lib/ruby/..... ) were still old and contained the bug. Perhaps sup
+wasn't uninstalled properly and gem didn't update the files. Anyway, I
+fixed the bug as proposed and sup runs again (Thanks for the patch)
+
+regards,
+Johannes
+
+From treed at ultraviolet.org  Wed Nov 30 19:48:56 2011
+From: treed at ultraviolet.org (Tracy Reed)
+Date: Wed, 30 Nov 2011 16:48:56 -0800
+Subject: [sup-talk] maildir with spaces
+In-Reply-To: <20111130221624.GM899@tracyreed.org>
+References: <20111130221624.GM899@tracyreed.org>
+Message-ID: <20111201004855.GQ899@tracyreed.org>
+
+I have an IMAP folder and therefore a Maildir (thanks to offlineimap) with a
+space in the name. sup-add chokes on this as does sup-sync when it tries to
+read the sources.yaml file.
+
+$ sup-sync maildir:///home/treed/Maildir/mydomain/sent-mail/
+/usr/lib/ruby/1.8/uri/common.rb:436:in `split': bad URI(is not URI?): maildir:///home/treed/Maildir/mydomain/Sent Mail (URI::InvalidURIError)
+from /usr/lib/ruby/1.8/uri/common.rb:485:in `parse'
+from /usr/lib/ruby/1.8/uri/common.rb:608:in `URI'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:14:in `initialize'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:35:in `new'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:35:in `yaml_properties'
+from /usr/lib/ruby/1.8/yaml.rb:133:in `call'
+from /usr/lib/ruby/1.8/yaml.rb:133:in `transfer'
+from /usr/lib/ruby/1.8/yaml.rb:133:in `node_import'
+from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+from /usr/lib/ruby/1.8/yaml.rb:144:in `load_file'
+from /usr/lib/ruby/1.8/yaml.rb:143:in `open'
+from /usr/lib/ruby/1.8/yaml.rb:143:in `load_file'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:136:in `load_yaml_obj'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/source.rb:205:in `load_sources'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:92:in `load'
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup-sync:100
+from /usr/bin/sup-sync:19:in `load'
+from /usr/bin/sup-sync:19
+
+I found this thread:
+
+http://rubyforge.org/pipermail/sup-talk/2011-October/004770.html
+
+but I also get parse errors when I try to escape with a \
+
+Any hints?
+
+Thanks
+
+-- 
+Tracy Reed
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111130/69e7c196/attachment.bin>
+
+From treed at ultraviolet.org  Wed Nov 30 17:16:25 2011
+From: treed at ultraviolet.org (Tracy Reed)
+Date: Wed, 30 Nov 2011 14:16:25 -0800
+Subject: [sup-talk] before-pull hook etc.
+Message-ID: <20111130221624.GM899@tracyreed.org>
+
+As a sup newbie who has been trying to give sup a go for a month I actually
+have several questions about sup but I'll start with the one in the subject:
+
+I am running sup v0.12.1. I have a ~/.sup/hooks/before-pull.rb hook which
+invokes offlineimap just as described in the wiki:
+
+def offlineimap(*folders)
+  cmd = "offlineimap -q -u Noninteractive.Basic"
+    cmd << " -f #{folders * ','}" unless folders.compact.empty?
+      `#{cmd} 2>&1`
+      end
+
+      def folder_names(sources)
+        sources.map { |s| s.uri.split('/').last }
+        end
+
+        def inbox_sources(sources = Index.usual_sources)
+          sources.find_all { |s| !s.archived? }.sort_by {|s| s.id }
+          end
+
+if (@last_fetch || Time.at(0)) < Time.now - 120
+  say "Running offlineimap..."
+    # only check non-auto-archived sources on the first run
+      log offlineimap(@last_fetch ? nil : folder_names(inbox_sources))
+        say "Finished offlineimap run."
+end
+@last_fetch = Time.now
+
+I put this in place, restarted sup, hit P and nothing different seems to
+happen. It returns immediately and never says "finished offlineimap run". I'm
+not sure what else to say or do. What could I be missing?
+
+Other questions:
+
+Is there any way to have a message on the IMAP server deleted when it is
+deleted in sup?
+
+Sup seems to be a rather unknown mail client and the IRC channel is very quiet.
+I hear a lot of people have moved on to other efforts such as Notmuch. Does sup
+have a future? I have been using mutt since the mid 90's and it has done well.
+But lately it has left me wanting better multi-email account support, more
+scriptability/customization (.muttrc allows for customization but nothing like
+having a built-in programming language), and ability to filter mail built-into
+the client.
+
+It has been solid today but in the previous week I would run into frequent
+crashes. Crash dumps included below.
+
+Thanks for any insight you can provide!
+
+[Tue Nov 22 10:10:35 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: main
+unknown drawable object: nil in #<Redwood::LabelListMode:0x7f232bd3c8b8> for line 2
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:200:in `draw_line'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:52:in `draw_line'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:121:in `cursor_up'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:260
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+[Tue Nov 22 10:17:01 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: load messages for thread-view-mode
+buffer not on stack: #<Redwood::Buffer:0x7fb04c156928>: "backup.mydomain.com LOLLERSKATES results"
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:440:in `kill_buffer'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:431:in `kill_buffer_safely'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:647:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:109:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:159:in `launch_another_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:141:in `launch_next_thread_after'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:652:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:617:in `delete_and_then'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:580:in `delete_and_next'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:260
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+[Tue Nov 22 10:34:09 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: load messages for thread-view-mode
+buffer not on stack: #<Redwood::Buffer:0x7f09b3d7ddb8>: "new-fw1.mydomain.com LOLLERSKATES results"
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:440:in `kill_buffer'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:431:in `kill_buffer_safely'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:647:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:109:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:159:in `launch_another_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:141:in `launch_next_thread_after'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:652:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:617:in `delete_and_then'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:580:in `delete_and_next'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:260
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+[Tue Nov 22 10:50:19 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: load messages for thread-view-mode
+buffer not on stack: #<Redwood::Buffer:0x7fc47f1be4a0>: "** PROBLEM Service Alert: newsdb2/Disk Space is WARNING **"
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:440:in `kill_buffer'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:431:in `kill_buffer_safely'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:647:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:129:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:109:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:159:in `launch_another_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:141:in `launch_next_thread_after'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:652:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:617:in `delete_and_then'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-view-mode.rb:580:in `delete_and_next'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:260
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+[Tue Nov 22 11:16:19 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: checking for idleness
+undefined method `write' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:245:in `draw_line_from_string'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:182:in `draw_line'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `draw'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `draw'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:119:in `draw'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:103:in `redraw'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:339:in `draw_screen'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:769:in `clear'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:471:in `flush_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/inbox-mode.rb:119:in `handle_idle_update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/idle.rb:29:in `start'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/idle.rb:25:in `start'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:223
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+[Tue Nov 22 11:18:29 -0800 2011] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/treed/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: load threads for thread-index-mode
+undefined method `has_label?' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:833:in `text_for_thread_at'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/hook.rb:55:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:242:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:643:in `__unprotected_load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/thread.rb:340:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:151:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:246:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:246:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:246:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:151:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/thread.rb:334:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:89:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:22:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:22:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:22:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:22:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:19:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:19:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:60:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/lib/sup/modes/inbox-mode.rb:14:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:194:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12.1/bin/sup:194
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+-- 
+Tracy Reed
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111130/5538d3c7/attachment.bin>
+

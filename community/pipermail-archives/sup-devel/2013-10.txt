@@ -1,0 +1,105 @@
+From eg at gaute.vetsj.com  Tue Oct 29 10:54:58 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 29 Oct 2013 11:54:58 +0100
+Subject: [sup-devel] Security advisory, releases 0.13.2.1 and 0.14.1.1
+Message-ID: <1383043976-sup-2451@qwerzila>
+
+Greetings,
+
+Security advisory (#SBU1) for Sup
+
+We have been notified of an potential exploit in the somewhat careless
+way Sup treats attachment metadata in received e-mails. The issues
+should now be fixed and I have released Sup 0.13.2.1 and 0.14.1.1 which
+incorporates these fixes. Please upgrade immediately and also ensure
+that your mime-decode or mime-view hooks are secure [0], [1].
+
+This is specifically related to using quotes (',") around filename or
+content_type which is already escaped using Ruby Shellwords.escape -
+this means that the string (content_type, filename) is intended to be
+used _without_ any further quotes. Please make sure that if you use
+.mailcap (non OSX systems), you do not quote the string.
+
+Credit goes to: joernchen of Phenoelit (http://phenoelit.de) who
+discovered and suggested fixes for these issues.
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+[1] https://github.com/sup-heliotrope/sup/wiki/Secure-usage-of-Sup
+
+You can use 'gem' to upgrade or install sup. Please report any issues
+to: https://github.com/sup-heliotrope/sup/issues
+
+Regards, Gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20131029/fb6f449a/attachment.bin>
+
+From eg at gaute.vetsj.com  Wed Oct 30 08:38:04 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 30 Oct 2013 09:38:04 +0100
+Subject: [sup-devel] Security advisory, releases 0.13.2.1 and 0.14.1.1
+In-Reply-To: <1383043976-sup-2451@qwerzila>
+References: <1383043976-sup-2451@qwerzila>
+Message-ID: <1383122092-sup-2694@qwerzila>
+
+Excerpts from Gaute Hope's message of 2013-10-29 11:54:58 +0100:
+> Greetings,
+> 
+> Security advisory (#SBU1) for Sup
+> 
+> We have been notified of an potential exploit in the somewhat careless
+> way Sup treats attachment metadata in received e-mails. The issues
+> should now be fixed and I have released Sup 0.13.2.1 and 0.14.1.1 which
+> incorporates these fixes. Please upgrade immediately and also ensure
+> that your mime-decode or mime-view hooks are secure [0], [1].
+> 
+> This is specifically related to using quotes (',") around filename or
+> content_type which is already escaped using Ruby Shellwords.escape -
+> this means that the string (content_type, filename) is intended to be
+> used _without_ any further quotes. Please make sure that if you use
+> .mailcap (non OSX systems), you do not quote the string.
+> 
+> Credit goes to: joernchen of Phenoelit (http://phenoelit.de) who
+> discovered and suggested fixes for these issues.
+> 
+> [0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+> [1] https://github.com/sup-heliotrope/sup/wiki/Secure-usage-of-Sup
+> 
+> You can use 'gem' to upgrade or install sup. Please report any issues
+> to: https://github.com/sup-heliotrope/sup/issues
+> 
+> Regards, Gaute
+
+For those interested; joernchens report at full-disclosure:
+
+* http://seclists.org/fulldisclosure/2013/Oct/272
+* http://seclists.org/fulldisclosure/2013/Oct/att-272/whatsup.txt (attached)
+
+- gaute
+
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: whatsup.txt
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20131030/358efacd/attachment.txt>
+
+From matthieu.rakotojaona at gmail.com  Wed Oct 30 13:51:03 2013
+From: matthieu.rakotojaona at gmail.com (rara7020 .)
+Date: Wed, 30 Oct 2013 14:51:03 +0100
+Subject: [sup-devel] Security advisory, releases 0.13.2.1 and 0.14.1.1
+In-Reply-To: <1383122092-sup-2694@qwerzila>
+References: <1383043976-sup-2451@qwerzila> <1383122092-sup-2694@qwerzila>
+Message-ID: <CAMiZLn32Eg9G4Mt=_qZ4m_r0hctx-+HxdJvhKFuatytZ7iqWGg@mail.gmail.com>
+
+Hello,
+
+Nice catch. Thank you for your management of this issue.
+
+
+-- 
+Matthieu RAKOTOJAONA
+

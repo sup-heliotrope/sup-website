@@ -1,0 +1,1799 @@
+From felix.glaser at rwth-aachen.de  Sun May  1 12:09:28 2011
+From: felix.glaser at rwth-aachen.de (Felix Glaser)
+Date: Sun, 01 May 2011 18:09:28 +0200
+Subject: [sup-talk] sup crashes while opening a big email thread
+Message-ID: <1304265892-sup-7165@alpha>
+
+Hi *,
+
+I am running sup v0.12.1 with ruby 1.8.7 (2011-02-18 patchlevel 334)
+[x86_64-linux] on gentoo. Sup was installed via rubygems, gem 1.3.7.
+
+Haven't had any trouble with sup until one of my email threads grew up to
+almost 200 emails, right now the thread holds 202 mails. Whenever I try to
+open the thread sup crashes, error log is attached as tar.gz.
+
+Aside from this bug I have a question/feature request, is there a way to open
+just the last 5 emails of a thread, because it takes rather long to open a
+huge mail thread.
+
+cheers and thanks for developing sup
+leex
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: error.tar.gz
+Type: application/x-gzip
+Size: 1240 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110501/8011ee0a/attachment.gz>
+
+From dmishd at gmail.com  Sun May  1 13:25:28 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 1 May 2011 18:25:28 +0100
+Subject: [sup-talk] sup crashes while opening a big email thread
+In-Reply-To: <1304265892-sup-7165@alpha>
+References: <1304265892-sup-7165@alpha>
+Message-ID: <BANLkTim+04UHcQtzeNg-HtAyEU7q=2Cudw@mail.gmail.com>
+
+> Haven't had any trouble with sup until one of my email threads grew up to
+> almost 200 emails, right now the thread holds 202 mails. Whenever I try to
+> open the thread sup crashes, error log is attached as tar.gz.
+
+The simplest way to solve this would be to increase your stack limit a little:
+
+http://dalibornasevic.com/posts/5-ruby-stack-level-too-deep-systemstackerror
+
+Hamish
+
+From felix.glaser at rwth-aachen.de  Sun May  1 14:07:41 2011
+From: felix.glaser at rwth-aachen.de (Felix Glaser)
+Date: Sun, 01 May 2011 20:07:41 +0200
+Subject: [sup-talk] sup crashes while opening a big email thread
+In-Reply-To: <BANLkTim+04UHcQtzeNg-HtAyEU7q=2Cudw@mail.gmail.com>
+References: <1304265892-sup-7165@alpha>
+	<BANLkTim+04UHcQtzeNg-HtAyEU7q=2Cudw@mail.gmail.com>
+Message-ID: <1304272885-sup-665@alpha>
+
+Hi Hamish,
+
+thanks, i just created an alias that takes care of resizing the stack before
+starting sup.
+
+cheers leex
+
+From dmishd at gmail.com  Sun May  1 14:51:20 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 01 May 2011 19:51:20 +0100
+Subject: [sup-talk] Sending Encrypted and Signed emails with gpg
+In-Reply-To: <1304115809-sup-4326@localhost>
+References: <1304115809-sup-4326@localhost>
+Message-ID: <1304272466-sup-6692@whisper>
+
+Excerpts from Paul Grove's message of Fri Apr 29 23:29:42 +0100 2011:
+> Hi, I'm using git://gitorious.org/sup/mainline.git and am uptodate as of
+> 29/04/2011
+
+Are you using the master branch? Or next? I've done a lot of work on
+sup's gpg support recently. The next branch uses the gpgme library
+rather than the gpg binary. If you're using master, then try switching
+to next (git checkout next) and see if that fixes your issues.
+
+> I'm not entirely sure how long it has been like this for me, but I know
+> it used to work.  I use a mailing list that only accepts encrypted and
+> signed emails which used to work fine but it is currently rejecting my
+> emails.
+
+I also use a list like that, and sup works fine for me, so I'd like it
+to work for you aswell.
+
+Hamish
+
+From support at plecavalier.com  Fri May  6 12:39:06 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 06 May 2011 11:39:06 -0500
+Subject: [sup-talk] nvalid number of options error msg
+Message-ID: <20110506113906.t0it7o860csckgk8@webmail.plecavalier.com>
+
+Anyone know what that means? I get that error randomly throughout the  
+day when polling for new messages.
+
+Thanks,
+Phil
+
+From andrew at pimlott.net  Fri May  6 18:06:50 2011
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Fri, 6 May 2011 15:06:50 -0700
+Subject: [sup-talk] DatabaseCorruptError
+Message-ID: <20110506220650.GA23223@pimlott.net>
+
+Sup had been running for a while, and I just came back to my terminal to
+find it dead:
+
+--- IOError from thread: periodic poll
+DatabaseError: Error reading block 4279173482: got end of file
+./lib/sup/index.rb:271:in `_dangerous_allterms_begin'
+./lib/sup/index.rb:271:in `each_prefixed_term'
+./lib/sup/index.rb:284:in `each_source_info'
+./lib/sup/mbox.rb:147:in `each'
+./lib/sup/mbox.rb:147:in `map'
+./lib/sup/mbox.rb:147:in `last_indexed_message'
+./lib/sup/util.rb:204:in `call'
+./lib/sup/util.rb:204:in `benchmark'
+/usr/lib/ruby/1.8/benchmark.rb:293:in `measure'
+./lib/sup/util.rb:204:in `benchmark'
+./lib/sup/mbox.rb:147:in `last_indexed_message'
+./lib/sup/mbox.rb:152:in `first_new_message'
+./lib/sup/mbox.rb:124:in `poll'
+./lib/sup/poll.rb:154:in `poll_from'
+./lib/sup/poll.rb:113:in `do_poll'
+./lib/sup/poll.rb:103:in `each'
+./lib/sup/poll.rb:103:in `do_poll'
+./lib/sup/poll.rb:102:in `synchronize'
+./lib/sup/poll.rb:102:in `do_poll'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+./lib/sup/modes/poll-mode.rb:15:in `poll'
+./lib/sup/poll.rb:49:in `poll_with_sources'
+./lib/sup/poll.rb:68:in `poll'
+./lib/sup/poll.rb:86:in `start'
+./lib/sup.rb:78:in `reporting_thread'
+./lib/sup.rb:76:in `initialize'
+./lib/sup.rb:76:in `new'
+./lib/sup.rb:76:in `reporting_thread'
+./lib/sup/poll.rb:83:in `start'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+bin/sup:222
+
+I tried to start it again, and got
+
+--- IOError from thread: poll after loading inbox
+DatabaseCorruptError: Db block overwritten - are there multiple writers?
+/usr/lib/ruby/1.8/xapian.rb:259:in `_dangerous_postlist_begin'
+/usr/lib/ruby/1.8/xapian.rb:259:in `postlist'
+./lib/sup/index.rb:530:in `term_docids'
+./lib/sup/index.rb:717:in `index_message_threading'
+./lib/sup/index.rb:633:in `sync_message'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+./lib/sup/poll.rb:168:in `poll_from'
+./lib/sup/mbox.rb:127:in `poll'
+./lib/sup/poll.rb:154:in `poll_from'
+./lib/sup/poll.rb:113:in `do_poll'
+./lib/sup/poll.rb:103:in `each'
+./lib/sup/poll.rb:103:in `do_poll'
+./lib/sup/poll.rb:102:in `synchronize'
+./lib/sup/poll.rb:102:in `do_poll'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+./lib/sup/modes/poll-mode.rb:15:in `poll'
+./lib/sup/poll.rb:49:in `poll_with_sources'
+./lib/sup/poll.rb:68:in `poll'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+bin/sup:212
+./lib/sup.rb:78:in `reporting_thread'
+./lib/sup.rb:76:in `initialize'
+./lib/sup.rb:76:in `new'
+./lib/sup.rb:76:in `reporting_thread'
+bin/sup:212
+./lib/sup/modes/thread-index-mode.rb:684:in `call'
+./lib/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+./lib/sup/modes/thread-index-mode.rb:625:in `call'
+./lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+./lib/sup.rb:78:in `reporting_thread'
+./lib/sup.rb:76:in `initialize'
+./lib/sup.rb:76:in `new'
+./lib/sup.rb:76:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+bin/sup:212
+
+My xapian dir looks like:
+
+total 334396
+-rw------- 1 andrew andrew         0 May  6 14:43 flintlock
+-rw-rw-r-- 1 andrew andrew        12 May 31  2010 iamflint
+-rw-rw-r-- 1 andrew andrew 103014400 May  6 13:09 position.DB
+-rw-rw-r-- 1 andrew andrew      1594 May  6 11:22 position.baseA
+-rw-rw-r-- 1 andrew andrew 161333248 May  6 13:29 postlist.DB
+-rw-rw-r-- 1 andrew andrew      2475 May  6 11:22 postlist.baseA
+-rw-rw-r-- 1 andrew andrew  20807680 May  6 13:04 record.DB
+-rw-rw-r-- 1 andrew andrew       339 May  6 11:22 record.baseA
+-rw-rw-r-- 1 andrew andrew  50692096 May  6 13:29 termlist.DB
+-rw-rw-r-- 1 andrew andrew       795 May  6 11:22 termlist.baseA
+-rw-rw-r-- 1 andrew andrew   6184960 May  6 13:04 value.DB
+-rw-rw-r-- 1 andrew andrew       115 May  6 11:22 value.baseA
+
+I'm running an old git pull from next, commit 1bafcf6 dated 2010-10-12.
+Anything I should do to try to diagnose and recover this?  Or just load
+from sup-dump?
+
+Andrew
+
+From akaihola at gmail.com  Tue May 10 03:07:13 2011
+From: akaihola at gmail.com (Antti Kaihola)
+Date: Tue, 10 May 2011 10:07:13 +0300
+Subject: [sup-talk] Word wrap for quoted lines
+Message-ID: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+
+Hi,
+
+
+When reading messages in Sup and expanding quoted lines, long quoted
+lines are not word wrapped and thus I can't read all the content.
+Non-quoted content wraps as expected.
+
+Is this a known issue or could it be a misconfiguration or problem in
+my build? I'm currently using commit 7e2bb88 from Sun Jan 23 21:05:39
+2011 -0800 on Ubuntu 10.10.
+
+
+-Antti
+
+
+
+Here is a "screenshot" of the issue:
+------------
+-    John Smith to Antti May?  6 (4 days ago)
+Begin forwarded message:
+
+- (3 quoted lines)
+> Thanks for your message. Nice to hear from you again. Hope to m
+>
+> Cheers,
+
+John
+
++ (4-line signature)
+x Attachment: sup-attachment-1305010003-1158.html (text/html; 2k)
+
+From d.t.k at gmx.de  Tue May 10 16:17:00 2011
+From: d.t.k at gmx.de (dtk)
+Date: Tue, 10 May 2011 22:17:00 +0200
+Subject: [sup-talk] multiple accounts
+Message-ID: <1305058093-sup-1016@minibox>
+
+Hey folks,
+
+I've been test driving sup with my main mail account for some weeks now, and
+have to admit that my other accounts didn't get too much love during that time,
+due to the clunky handling of thunderbird. So I'd like to manage my other
+accounts in sup now as well.
+
+I do have a problem, though, since I can't seem to find a way to define seperate
+:sent_sources per account. And I really don't want to get private/work mails to
+get mixed up :|
+
+Is there a way to define :sent_source: entries per account?
+
+tia
+dtk
+
+From wirtwolff at gmail.com  Tue May 10 17:36:25 2011
+From: wirtwolff at gmail.com (Wirt Wolff)
+Date: Tue, 10 May 2011 15:36:25 -0600
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305058093-sup-1016@minibox>
+References: <1305058093-sup-1016@minibox>
+Message-ID: <1305063169-sup-9131@chigamba>
+
+Excerpts from dtk's message of Tue May 10 14:17:00 -0600 2011:
+> I've been test driving sup with my main mail account for some weeks now, and
+> have to admit that my other accounts didn't get too much love during that time,
+> due to the clunky handling of thunderbird. So I'd like to manage my other
+> accounts in sup now as well.
+> 
+> I do have a problem, though, since I can't seem to find a way to define seperate
+> :sent_sources per account. And I really don't want to get private/work mails to
+> get mixed up :|
+> 
+> Is there a way to define :sent_source: entries per account?
+
+Is this what you mean?
+
+http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply
+
+i.e. get a mail to dtk at private.net replies from a private acct and mails
+to my_boss_is_watching at foozle.com replies are from you at foozle.com?
+
+--
+wmw
+
+From d.t.k at gmx.de  Tue May 10 18:52:19 2011
+From: d.t.k at gmx.de (dtk)
+Date: Wed, 11 May 2011 00:52:19 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305063169-sup-9131@chigamba>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+Message-ID: <1305067227-sup-4227@minibox>
+
+Excerpts from Wirt Wolff's message of Di Mai 10 23:36:25 +0200 2011:
+> Excerpts from dtk's message of Tue May 10 14:17:00 -0600 2011:
+> > I've been test driving sup with my main mail account for some weeks now, and
+> > have to admit that my other accounts didn't get too much love during that time,
+> > due to the clunky handling of thunderbird. So I'd like to manage my other
+> > accounts in sup now as well.
+> >
+> > I do have a problem, though, since I can't seem to find a way to define seperate
+> > :sent_sources per account. And I really don't want to get private/work mails to
+> > get mixed up :|
+> >
+> > Is there a way to define :sent_source: entries per account?
+>
+> Is this what you mean?
+>
+> http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply
+>
+> i.e. get a mail to dtk at private.net replies from a private acct and mails
+> to my_boss_is_watching at foozle.com replies are from you at foozle.com?
+not exactly. My local maildir sources are synced back to two different imap
+servers (hosting my two different mail addresses) via offlineimap.
+
+What I want is mails sent via dtk at foozle.com to end up in the
+'Sent' folder on foozle.com while mails sent via dtk at private.net end up in the
+'Sent' folder on private.net.
+
+But so far (at least as far as I can tell) I can specify only /one/ maildir as
+/the/ :sent_source, which means copies of sent mails (independent of the account
+they were sent over) will end up on /one/ imap server.
+
+hope that made it any clearer? :/
+
+thanks anyway
+dtk
+
+From matthieu.rakotojaona at gmail.com  Tue May 10 19:23:02 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 11 May 2011 01:23:02 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305067227-sup-4227@minibox>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+	<1305067227-sup-4227@minibox>
+Message-ID: <BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+
+On Wed, May 11, 2011 at 12:52 AM, dtk <d.t.k at gmx.de> wrote:
+
+> Excerpts from Wirt Wolff's message of Di Mai 10 23:36:25 +0200 2011:
+> > Excerpts from dtk's message of Tue May 10 14:17:00 -0600 2011:
+> > > I've been test driving sup with my main mail account for some weeks
+> now, and
+> > > have to admit that my other accounts didn't get too much love during
+> that time,
+> > > due to the clunky handling of thunderbird. So I'd like to manage my
+> other
+> > > accounts in sup now as well.
+> > >
+> > > I do have a problem, though, since I can't seem to find a way to define
+> seperate
+> > > :sent_sources per account. And I really don't want to get private/work
+> mails to
+> > > get mixed up :|
+> > >
+> > > Is there a way to define :sent_source: entries per account?
+> >
+> > Is this what you mean?
+> >
+> > http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply
+> >
+> > i.e. get a mail to dtk at private.net replies from a private acct and mails
+> > to my_boss_is_watching at foozle.com replies are from you at foozle.com?
+> not exactly. My local maildir sources are synced back to two different imap
+> servers (hosting my two different mail addresses) via offlineimap.
+>
+> What I want is mails sent via dtk at foozle.com to end up in the
+> 'Sent' folder on foozle.com while mails sent via dtk at private.net end up in
+> the
+> 'Sent' folder on private.net.
+>
+> But so far (at least as far as I can tell) I can specify only /one/ maildir
+> as
+> /the/ :sent_source, which means copies of sent mails (independent of the
+> account
+> they were sent over) will end up on /one/ imap server.
+>
+> hope that made it any clearer? :/
+>
+> thanks anyway
+> dtk
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+My 2 cents :
+
+I know that when you send an email from Google smtp, you don't have to save
+it anywhere. It will automagically be saved with a GMail/Send tag (most of
+the time 'Send' only'). You don't configure your GMail account to save
+anything in msmtp; it happens on Google side.
+Isn't there a way to do so with msmtp ? I know you can choose an account to
+send from, but after a quick looking you can't choose a folder where to save
+the sent email. Maybe you'd have to choose another MTA to save the sending
+mail ? Simple relays like msmtp or nbsmtp (in the example) can't save in a
+specific folder. sup is just like mutt, an MUA, and HAPPENS to be able to
+save your sent mail to a specific folder. But I think it's not the main
+purpose of it, or am I wrong ?
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110511/c96a5b03/attachment.html>
+
+From d.t.k at gmx.de  Tue May 10 20:16:03 2011
+From: d.t.k at gmx.de (dtk)
+Date: Wed, 11 May 2011 02:16:03 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+	<1305067227-sup-4227@minibox>
+	<BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+Message-ID: <1305072191-sup-3288@minibox>
+
+Excerpts from Matthieu Rakotojaona's message of Mi Mai 11 01:23:02 +0200 2011:
+> I know that when you send an email from Google smtp, you don't have to save
+> it anywhere. It will automagically be saved with a GMail/Send tag (most of
+> the time 'Send' only'). You don't configure your GMail account to save
+> anything in msmtp; it happens on Google side.
+> Isn't there a way to do so with msmtp ? I know you can choose an account to
+> send from, but after a quick looking you can't choose a folder where to save
+> the sent email. Maybe you'd have to choose another MTA to save the sending
+> mail ? Simple relays like msmtp or nbsmtp (in the example) can't save in a
+> specific folder.
+hmm, actually I don't think it's usually an smtp feature but rather an IMAP one?
+
+> sup is just like mutt, an MUA, and HAPPENS to be able to
+> save your sent mail to a specific folder. But I think it's not the main
+> purpose of it, or am I wrong ?
+well, as an MUA I feel it is its task to manage mails, and that certainly
+includes accessing my mailbox. Admittedly stressing the comparison, speaking
+proper maildir e.g. means moving mails from new/ to cur/, so I feel like copying
+sent mails into a destined directory sounds rather appropriate, as does deleting
+mails, etc...
+
+Besides, sup /does/ it, so why not do it properly? Making the sent source
+account dependent feels natural to me. And I don't see why I would need a more
+complex MTA for that (which according to my understanding is responsible for
+transferring mails between systems rather than shuffling around mails locally).
+
+ready to be educated
+dtk ;)
+
+From wmorgan-sup at masanjin.net  Tue May 10 20:36:54 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 11 May 2011 00:36:54 +0000
+Subject: [sup-talk] DatabaseCorruptError
+In-Reply-To: <20110506220650.GA23223@pimlott.net>
+References: <20110506220650.GA23223@pimlott.net>
+Message-ID: <1305074074-sup-8794@masanjin.net>
+
+Reformatted excerpts from Andrew Pimlott's message of 2011-05-06:
+> Sup had been running for a while, and I just came back to my terminal to
+> find it dead:
+> 
+> --- IOError from thread: periodic poll
+> DatabaseError: Error reading block 4279173482: got end of file
+> I'm running an old git pull from next, commit 1bafcf6 dated 2010-10-12.
+
+Yipes. Are you out of disk space, or anything like that?
+
+> Anything I should do to try to diagnose and recover this?  Or just
+> load from sup-dump?
+
+Not knowing very much about Xapian, I suggest sup-dump. Not a great
+solution, I know. Wait for heliotrope to solve your problems (or at
+least be something I understand and can fix).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From andrew at pimlott.net  Wed May 11 02:14:01 2011
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Tue, 10 May 2011 23:14:01 -0700
+Subject: [sup-talk] DatabaseCorruptError
+In-Reply-To: <1305074074-sup-8794@masanjin.net>
+References: <20110506220650.GA23223@pimlott.net>
+	<1305074074-sup-8794@masanjin.net>
+Message-ID: <1305093702-sup-3221@pimlott.net>
+
+Excerpts from William Morgan's message of Tue May 10 17:36:54 -0700 2011:
+> Reformatted excerpts from Andrew Pimlott's message of 2011-05-06:
+> > Sup had been running for a while, and I just came back to my terminal to
+> > find it dead:
+> > 
+> > --- IOError from thread: periodic poll
+> > DatabaseError: Error reading block 4279173482: got end of file
+> > I'm running an old git pull from next, commit 1bafcf6 dated 2010-10-12.
+> 
+> Yipes. Are you out of disk space, or anything like that?
+
+I wasn't out of space--unless possibly Xapian caused some transient
+spike in disk use that was freed when it died.  The system does run
+without a ton of free space though, maybe 100 MB for a Xapian database
+that is ~300 MB total.
+
+I didn't get any disk errors either.  This is on a VPS that could
+conceivably be hiding some errors.
+
+> > Anything I should do to try to diagnose and recover this?  Or just
+> > load from sup-dump?
+> 
+> Not knowing very much about Xapian, I suggest sup-dump. Not a great
+> solution, I know.
+
+It turned out that sup-dump still worked.  Probably some index was
+corrupt but the data could still be walked.  So I was able to restore
+without losing any data.  (Well, it did use most of the 160 MB of memory
+on the VPS.)
+
+> Wait for heliotrope to solve your problems (or at
+> least be something I understand and can fix).
+
+Dum de dum dum...
+
+Andrew
+
+From patricktotzke at googlemail.com  Wed May 11 05:41:44 2011
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Wed, 11 May 2011 10:41:44 +0100
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305072191-sup-3288@minibox>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+	<1305067227-sup-4227@minibox>
+	<BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+	<1305072191-sup-3288@minibox>
+Message-ID: <1305105912-sup-2960@brick>
+
+Hiya!
+I agree: a single send-sink seems totally unnatural.
+In fact, we have the same problem with drafts. Has anyone of you managed
+to store drafts anywhere else than in ~/.sup/drafts ? let alone
+in different locations for different accounts?
+I recently mentioned both shortcomings on sup-devel
+(http://rubyforge.org/pipermail/sup-devel/2011-May/001095.html).
+As you say: a quick glance at the code confirms that one can only
+specify one send-sink, as well as draft-sink.
+However, there is some sort of "DraftManager" object. I guess one can
+play with that..
+
+Anyhow, my current solution is to use a local mbox as send-sink 
+and use a bcc to myself. Then I use server-side filters to
+mark incoming mails from myself as read and move it to sent.
+offlineimap then syncs the sent folder, which is then included in
+sources.yaml with archived:true and autoadd label:sent.
+
+The problem with this is, that despite different sup's on different
+hosts both can read the send mails wich are stored on the correct
+servers, the sup-instance that was used to compose the mail actually
+displays its local version and somehow skips the one from the server.
+BUT: I cannot prevent my mailhost from adding another signature to the
+mail and therefore, the mail sup stores is different from the one I
+sent! To conclude: different send-sinks for different accounts are
+the sensible solution in my view.
+cheers'
+/p
+
+Excerpts from dtk's message of Wed May 11 01:16:03 +0100 2011:
+> Excerpts from Matthieu Rakotojaona's message of Mi Mai 11 01:23:02 +0200 2011:
+> > I know that when you send an email from Google smtp, you don't have to save
+> > it anywhere. It will automagically be saved with a GMail/Send tag (most of
+> > the time 'Send' only'). You don't configure your GMail account to save
+> > anything in msmtp; it happens on Google side.
+> > Isn't there a way to do so with msmtp ? I know you can choose an account to
+> > send from, but after a quick looking you can't choose a folder where to save
+> > the sent email. Maybe you'd have to choose another MTA to save the sending
+> > mail ? Simple relays like msmtp or nbsmtp (in the example) can't save in a
+> > specific folder.
+> hmm, actually I don't think it's usually an smtp feature but rather an IMAP one?
+> 
+> > sup is just like mutt, an MUA, and HAPPENS to be able to
+> > save your sent mail to a specific folder. But I think it's not the main
+> > purpose of it, or am I wrong ?
+> well, as an MUA I feel it is its task to manage mails, and that certainly
+> includes accessing my mailbox. Admittedly stressing the comparison, speaking
+> proper maildir e.g. means moving mails from new/ to cur/, so I feel like copying
+> sent mails into a destined directory sounds rather appropriate, as does deleting
+> mails, etc...
+> 
+> Besides, sup /does/ it, so why not do it properly? Making the sent source
+> account dependent feels natural to me. And I don't see why I would need a more
+> complex MTA for that (which according to my understanding is responsible for
+> transferring mails between systems rather than shuffling around mails locally).
+> 
+> ready to be educated
+> dtk ;)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110511/bff0886c/attachment.bin>
+
+From d.t.k at gmx.de  Wed May 11 06:41:14 2011
+From: d.t.k at gmx.de (d.t.k)
+Date: Wed, 11 May 2011 12:41:14 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305105912-sup-2960@brick>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+	<1305067227-sup-4227@minibox>
+	<BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+	<1305072191-sup-3288@minibox> <1305105912-sup-2960@brick>
+Message-ID: <1305109172-sup-2288@minibox>
+
+Hi,
+
+Excerpts from Patrick Totzke's message of Mi Mai 11 11:41:44 +0200 2011:
+> I agree: a single send-sink seems totally unnatural.
+> In fact, we have the same problem with drafts.
+yeah, actually I can think of some more situations in which I would wish for
+account specific sources: I'd love to add a :spam_source (e.g. 'Junk') and a :ham_source (e.g. INBOX) where mails
+are moved when the 'spam' label is set/removed, so that operation is mapped onto
+folders (I use a server side spamassassin to automagically learn from specified
+folders)
+
+> I recently mentioned both shortcomings on sup-devel
+> (http://rubyforge.org/pipermail/sup-devel/2011-May/001095.html).
+> As you say: a quick glance at the code confirms that one can only
+> specify one send-sink, as well as draft-sink.
+> However, there is some sort of "DraftManager" object. I guess one can
+> play with that..
+actually, as a dirty hack it shouldn't be too hard to do: message objects know
+about their sources. Now we could reference the account a source belongs to in
+every source in addition to fields like labels, usual, archived, etc. Et voila.
+>From the related account we could then get any required sink: draft, sent, spam,
+ham, ...
+
+I don't think it's too beautiful if sources know what account they belong to. I
+feel like it should rather be the other way around (an acct knows its srcs).
+Specifying the sources of an account in the config.yaml might seriously clutter
+that file up, though, especially for users with many imap folder. So we could
+either reference a file containing the sources for an account in config.yaml
+(per account) or name the file by some convention (sources_<account-name>.yaml)
+and have it parsed automagically (convention over configuration?).
+
+Thinking about it, if we could correlate mails and accounts (via the source) we
+might just store the belonging account in a message field.
+
+> Anyhow, my current solution is to use a local mbox as send-sink
+> and use a bcc to myself. Then I use server-side filters to
+> mark incoming mails from myself as read and move it to sent.
+> offlineimap then syncs the sent folder, which is then included in
+> sources.yaml with archived:true and autoadd label:sent.
+>
+> The problem with this is, that despite different sup's on different
+> hosts both can read the send mails wich are stored on the correct
+> servers, the sup-instance that was used to compose the mail actually
+> displays its local version and somehow skips the one from the server.
+> BUT: I cannot prevent my mailhost from adding another signature to the
+> mail and therefore, the mail sup stores is different from the one I
+> sent! To conclude: different send-sinks for different accounts are
+> the sensible solution in my view.
+I agree. Your solution may provide a work around for now, but it feels rather
+hacky. I'd prefer having account specific sources handled properly (as I have
+other applications in mind, see above) as much as I imagine you would.
+
+dtk
+
+From rthrd at web.de  Wed May 11 08:10:25 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Wed, 11 May 2011 14:10:25 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305058093-sup-1016@minibox>
+References: <1305058093-sup-1016@minibox>
+Message-ID: <1305115211-sup-2468@PrxServer3>
+
+> === dtk schrieb am 2011-05-10 22:17: === <
+> Hey folks,
+> 
+> I've been test driving sup with my main mail account for some weeks now, and
+> have to admit that my other accounts didn't get too much love during that time,
+> due to the clunky handling of thunderbird. So I'd like to manage my other
+> accounts in sup now as well.
+> 
+> I do have a problem, though, since I can't seem to find a way to define seperate
+> :sent_sources per account. And I really don't want to get private/work mails to
+> get mixed up :|
+> 
+> Is there a way to define :sent_source: entries per account?
+
+This sounds sort of "unsupish". The main idea of sup is to separate
+the physical storage of emails (maildirs, imap folders, mbox and so on)
+from the logical structure needed to archive (and access) the emails.
+
+Sup organizes emails by indexing them and searching the index, so it's
+completely unimportant where the emails are stored. An email labeled
+"inbox" will be shown in the inbox regardless where it is stored, and
+the same is true for emails labeled "draft" or "sent".
+
+This means, that, according to sup's philosophy, if you want to
+differentiate between private and business mail, you would tag the
+threads the mail belongs to with the label "private" resp. "business"
+(or even both).
+
+Actually, the mere existence of an :sent_source: is astonishing, as sup
+could store sent messages anywhere, it would not matter to the sup user.
+
+This separation of physical storage and logical structure is ingenial,
+and the reason why sup is so good organizing emails.
+
+The downside is, that it's almost impossible to use other email clients
+beside of sup.
+
+OK, this is not really helpfull, but might help to understand, why sup
+does not do things which seem to be natural for a MUA - like deleting
+or copying emails or storing sent emails in different sources.
+It's just not necessary.
+
+One idea, that might help: there is an "sendmail" hook and an
+"before-edit" hook. "before-edit" might be used to automize the creation
+of a bcc to oneself, and the sendmail hook could probably be used
+intercept the message and store it in an additional sent-source before
+calling the actual sendmail command. But I'm affraid my Ruby is not
+good enough to do that.
+
+Ruthard Baudach
+
+From patricktotzke at googlemail.com  Wed May 11 09:20:04 2011
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Wed, 11 May 2011 14:20:04 +0100
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305115211-sup-2468@PrxServer3>
+References: <1305058093-sup-1016@minibox> <1305115211-sup-2468@PrxServer3>
+Message-ID: <1305118404-sup-8314@optimusprime>
+
+Excerpts from Ruthard Baudach's message of Wed May 11 13:10:25 +0100 2011:
+> > === dtk schrieb am 2011-05-10 22:17: === <
+> > Hey folks,
+> > 
+> > I've been test driving sup with my main mail account for some weeks now, and
+> > have to admit that my other accounts didn't get too much love during that time,
+> > due to the clunky handling of thunderbird. So I'd like to manage my other
+> > accounts in sup now as well.
+> > 
+> > I do have a problem, though, since I can't seem to find a way to define seperate
+> > :sent_sources per account. And I really don't want to get private/work mails to
+> > get mixed up :|
+> > 
+> > Is there a way to define :sent_source: entries per account?
+> 
+> This sounds sort of "unsupish". The main idea of sup is to separate
+> the physical storage of emails (maildirs, imap folders, mbox and so on)
+> from the logical structure needed to archive (and access) the emails.
+> 
+> Sup organizes emails by indexing them and searching the index, so it's
+> completely unimportant where the emails are stored. An email labeled
+> "inbox" will be shown in the inbox regardless where it is stored, and
+> the same is true for emails labeled "draft" or "sent".
+> 
+> This means, that, according to sup's philosophy, if you want to
+> differentiate between private and business mail, you would tag the
+> threads the mail belongs to with the label "private" resp. "business"
+> (or even both).
+
+I know thats the idea, but it only makes sense if you use sup for
+nothing else than reading your mail:
+Call me old-fashioned, but for me it is an integral part of the MUA to 
+be able to manipulate mail. I want to use it as a frontend for all my
+(local) mail-organization: it should let me read, delete and respond to
+mails and handle crypto transparently. 
+Hence, I consider it the responsibility of the mua to _physically_
+manipulate mboxes and maildirs and storing my outgoing mail should also be
+done by the mua, not my transport agent.
+
+> Actually, the mere existence of an :sent_source: is astonishing, as sup
+> could store sent messages anywhere, it would not matter to the sup user.
+I guess every user would want to store outgoing mail _somewhere_?
+The question is where? letting the user choose this in the settings is
+a good idea, almost certainly better than hardcoding this to be sup:/sent 
+(or sup:/drafts for that matter *cough* ). But of course, his choice may
+depend on the message in some way, most likely on the From: field.
+How about a hook "choose-sent-sink" that takes a msg and decides
+which source to store it in?
+
+> This separation of physical storage and logical structure is ingenial,
+> and the reason why sup is so good organizing emails.
+> The downside is, that it's almost impossible to use other email clients
+> beside of sup.
+The point is that using this "pure" approach - sup does no physical
+manipulation whatsoever - lets you no choice as to use other tools 
+to physically organize your mail, obviously cousing inconsistancies in
+the index.
+
+> OK, this is not really helpfull, but might help to understand, why sup
+> does not do things which seem to be natural for a MUA - like deleting
+> or copying emails or storing sent emails in different sources.
+> It's just not necessary.
+disagree: much discussed use-case: my personal outmails should not be
+stored on the company mailserver, nor the other way around.
+
+> One idea, that might help: there is an "sendmail" hook and an
+> "before-edit" hook. "before-edit" might be used to automize the creation
+> of a bcc to oneself,
+Bcc to oneself is discussed below, is definately a workaround for
+mua shortcomings.
+> and the sendmail hook could probably be used
+> intercept the message and store it in an additional sent-source before
+> calling the actual sendmail command. But I'm affraid my Ruby is not
+> good enough to do that.
+Unfortunately, I too feel uncomfortable with ruby, otherwise I would
+definately give more constructive feedback instead of just complaining
+here 8) 
+Cheers,
+/p
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110511/48852dc0/attachment.bin>
+
+From d.t.k at gmx.de  Wed May 11 09:50:02 2011
+From: d.t.k at gmx.de (dtk)
+Date: Wed, 11 May 2011 15:50:02 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305115211-sup-2468@PrxServer3>
+References: <1305058093-sup-1016@minibox> <1305115211-sup-2468@PrxServer3>
+Message-ID: <1305120470-sup-4951@minibox>
+
+Excerpts from Ruthard Baudach's message of Mi Mai 11 14:10:25 +0200 2011:
+> > === dtk schrieb am 2011-05-10 22:17: === <
+> > Hey folks,
+> >
+> > I've been test driving sup with my main mail account for some weeks now, and
+> > have to admit that my other accounts didn't get too much love during that time,
+> > due to the clunky handling of thunderbird. So I'd like to manage my other
+> > accounts in sup now as well.
+> >
+> > I do have a problem, though, since I can't seem to find a way to define seperate
+> > :sent_sources per account. And I really don't want to get private/work mails to
+> > get mixed up :|
+> >
+> > Is there a way to define :sent_source: entries per account?
+>
+> This sounds sort of "unsupish".
+I know what you mean. It deals with folders, and sup doesn't. And still I tend
+to regard that kind of behavior rather as an extension, an improvement than a
+contradiction. Here's why:
+
+> The main idea of sup is to separate
+> the physical storage of emails [...]
+> from the logical structure needed to archive (and access) the emails.
+>
+> This separation of physical storage and logical structure is [...] the reason
+> why sup is so good organizing emails.
+true
+
+> The downside is, that it's almost impossible to use other email clients
+> beside of sup.
+false. As you say
+
+> Sup organizes emails by indexing them and searching the index, so it's
+> completely unimportant where the emails are stored.
+So why not store it in a folder that makes it compatible with all those plain
+old MUAs (like that webmail client I need when not at my machine or that stupid
+GUI MUA my boss forces me to use so he can send me exchange invites)?
+
+> Actually, the mere existence of an :sent_source: is astonishing
+I wouldn't call it so much 'astonishing' but rather a well founded compromise,
+since first it makes sup compatible with plain old MUAs and second
+> sup could store sent messages anywhere, it would not matter to the sup user.
+
+> OK, this is not really helpfull, but might help to understand, why sup
+> does not do things which seem to be natural for a MUA - like deleting
+> or copying emails
+it doesn't!? o_O
+I've been using Damien's branch[0] for basically what is the entire time I'm
+using sup and it plays really, really nice with all my other MUAs without losing
+/any/ of the great innovative advantages of a plain sup, at least as far as I
+can tell. So I really fail to see how that would be considered a bad thing ;)
+
+> It's just not necessary.
+As you can probably see from my argumentation so far, I'd beg to differ ;P
+
+> One idea, that might help: there is an "sendmail" hook and an
+> "before-edit" hook. "before-edit" might be used to automize the creation
+> of a bcc to oneself, and the sendmail hook could probably be used
+> intercept the message and store it in an additional sent-source before
+> calling the actual sendmail command.
+yeah, thx for the hints!! Bs as I already stated, not only do I consider that a
+rather hacky work around, but I also have other applications in mind plus I would
+prefer to just do it the right way^TM ;)
+
+Thanks for your clarifications
+dtk
+
+
+----------
+[0]http://rubyforge.org/pipermail/sup-devel/2010-July/000631.html
+
+From d.t.k at gmx.de  Wed May 11 11:08:48 2011
+From: d.t.k at gmx.de (dtk)
+Date: Wed, 11 May 2011 17:08:48 +0200
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1305109172-sup-2288@minibox>
+References: <1305058093-sup-1016@minibox> <1305063169-sup-9131@chigamba>
+	<1305067227-sup-4227@minibox>
+	<BANLkTin03XSrPG-Ck1ThNd8+1uAsVARL2g@mail.gmail.com>
+	<1305072191-sup-3288@minibox> <1305105912-sup-2960@brick>
+	<1305109172-sup-2288@minibox>
+Message-ID: <1305126047-sup-8239@minibox>
+
+Excerpts from d.t.k's message of Mi Mai 11 12:41:14 +0200 2011:
+> Excerpts from Patrick Totzke's message of Mi Mai 11 11:41:44 +0200 2011:
+> > I agree: a single send-sink seems totally unnatural.
+> > In fact, we have the same problem with drafts.
+> yeah, actually I can think of some more situations in which I would wish for
+> account specific sources: I'd love to add a :spam_source (e.g. 'Junk') and a :ham_source (e.g. INBOX) where mails
+> are moved when the 'spam' label is set/removed, so that operation is mapped onto
+> folders (I use a server side spamassassin to automagically learn from specified
+> folders)
+>
+> > I recently mentioned both shortcomings on sup-devel
+> > (http://rubyforge.org/pipermail/sup-devel/2011-May/001095.html).
+> > As you say: a quick glance at the code confirms that one can only
+> > specify one send-sink, as well as draft-sink.
+> > However, there is some sort of "DraftManager" object. I guess one can
+> > play with that..
+> actually, as a dirty hack it shouldn't be too hard to do: message objects know
+> about their sources. Now we could reference the account a source belongs to in
+> every source in addition to fields like labels, usual, archived, etc. Et voila.
+> From the related account we could then get any required sink: draft, sent, spam,
+> ham, ...
+uah, what was I thinking? Actually, for the first two cases (draft, sent), it
+should be /way/ easier. There already /is/ a mechanism for correllating those
+messages to an account. I think it is acceptable to assume that sent mails as
+well as drafts have the from: header (which is most probably where the acct
+correllation hooks in) set (this may not be true for the spam/ham scenario). So
+since there is a mechanism to get the account to such a mail, all we would need
+to do is to provide account objects with a :sent_source and a :draft_source of
+type location. Case solved.
+
+Now that's gonna be easy ;)
+dtk
+
+PS depending on the direction this discussion is taking, I wonder whether I
+should subscribe to and include sup-devel :|
+
+From johnbent at lanl.gov  Wed May 11 23:28:39 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 11 May 2011 21:28:39 -0600
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303842631-sup-8740@tilus.net>
+References: <1303482546-sup-7257@guava.lanl.gov>
+	<1303488368-sup-7145@tilus.net> <1303502527-sup-8162@guava.lanl.gov>
+	<1303550452-sup-7133@tilus.net> <1303834843-sup-1995@guava.lanl.gov>
+	<1303842631-sup-8740@tilus.net>
+Message-ID: <1305170697-sup-9267@barista.lanl.gov>
+
+Excerpts from Tero Tilus's message of Tue Apr 26 12:33:14 -0600 2011:
+> John Bent, 2011-04-26 19:30:
+> > Sadly however, I still can't get sup-convert-ferret-index to run.
+> 
+> I've got no idea whats wrong with your sup-convert-ferret-index.  I'm
+> not 100% sure, but I assume you could just try to sup-dump with old
+> enough sup (preferably the one you've been using) and reindex +
+> restore using current.
+> 
+Just a follow-up.  I am finally off ferret and am all the way onto
+0.12.1!  I'm not sure why it was so difficult but I could never
+successfully convert from ferret to xapian on an OS X box.  On 10.5.8, I
+couldn't ever get xapian working and on 10.6 I couldn't get ferret
+working.  I finally just migrated to a real linux box and am happily
+sup'ing again!  Thanks to everyone who chimed in trying to help me. 
+
+From jdugan at es.net  Mon May 16 13:30:50 2011
+From: jdugan at es.net (Jon Dugan)
+Date: Mon, 16 May 2011 12:30:50 -0500
+Subject: [sup-talk] Multiple documents for a single docid in Xapian?
+Message-ID: <1305566071-sup-6625@arrakis.es.net>
+
+Recently I've gotten into a situation where sup is crashing.  The traceback is
+at the end.  The first time I did a little digging, a git pull and finallly
+gave up and rebuilt my index.  It happened again this morning and I dug in a
+bit more.  (What follows is based on a pull from master as of a few minutes
+ago.)
+
+I added a bit of debugging at the point of the crash:  (around line 555 of
+index.rb)
+
+  def find_docid id
+    docids = term_docids(mkterm(:msgid,id))
+    #fail unless docids.size <= 1
+    warn "got #{docids.size} (expected 1 or less) for #{id}" unless docids.size <= 1
+    docids.first
+  end
+
+Basically instead of failing I log a warning and move on.  For some reason I
+am seeing 2 entries in the index for that particular docid.  Any idea how this
+could happen?  Is there a recommended way to fix this?  My little warning hack
+makes me nervous.  I assume I can just delete one of them from the index but I
+haven't spent much time understanding how the index is set up and I'm
+concerned about unintended consequences...
+
+Interestingly I get the warning 4 times:
+
+[Mon May 16 12:14:26 -0500 2011] WARNING: got 2 (expected 1 or less) for 1305558622-sup-33 at arrakis.es.net
+[Mon May 16 12:14:26 -0500 2011] WARNING: got 2 (expected 1 or less) for 1305558622-sup-33 at arrakis.es.net
+[Mon May 16 12:14:29 -0500 2011] WARNING: got 2 (expected 1 or less) for 1305558622-sup-33 at arrakis.es.net
+[Mon May 16 12:14:29 -0500 2011] WARNING: got 2 (expected 1 or less) for 1305558622-sup-33 at arrakis.es.net
+
+I originally got this after an offline IMAP run when it was scanning for new
+messages to add to the index.  The message in question is actually in my
+~/.sup/sent.mbox file and so it wasn't pulled from IMAP -- I'm guessing it
+must have just checked the sent mbox file after it finished checking the
+offline IMAP directories.  I'm not really sure.
+
+Any ideas?
+
+Thanks,
+
+Jon
+
+
+--- RuntimeError from thread: poll after loading inbox
+
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:556:in `find_docid'
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:562:in `find_doc'
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:572:in `get_entry'
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:200:in `build_message'
+/opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:581:in `synchronize'
+/Users/jdugan/projects/sup/mainline/lib/sup/index.rb:200:in `build_message'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `send'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `method_missing'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:159:in `poll_from'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:106:in `poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:615:in `each_with_index'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:105:in `each'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:105:in `each_with_index'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:105:in `poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:90:in `each'
+/Users/jdugan/projects/sup/mainline/lib/sup/maildir.rb:90:in `poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:155:in `poll_from'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:113:in `do_poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:103:in `each'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:103:in `do_poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:102:in `synchronize'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:102:in `do_poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `send'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `method_missing'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/poll-mode.rb:15:in `poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:49:in `poll_with_sources'
+/Users/jdugan/projects/sup/mainline/lib/sup/poll.rb:68:in `poll'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `send'
+/Users/jdugan/projects/sup/mainline/lib/sup/util.rb:618:in `method_missing'
+/Users/jdugan/projects/sup/mainline/bin/sup:223
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:78:in `reporting_thread'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `initialize'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `new'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `reporting_thread'
+/Users/jdugan/projects/sup/mainline/bin/sup:223
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:684:in `call'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:625:in `call'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:78:in `reporting_thread'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `initialize'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `new'
+/Users/jdugan/projects/sup/mainline/lib/sup.rb:76:in `reporting_thread'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/Users/jdugan/projects/sup/mainline/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/Users/jdugan/projects/sup/mainline/bin/sup:223
+
+From f.unglaub at googlemail.com  Wed May 18 03:44:25 2011
+From: f.unglaub at googlemail.com (Florian Unglaub)
+Date: Wed, 18 May 2011 09:44:25 +0200
+Subject: [sup-talk] Sup + offlineimap + Gmail
+Message-ID: <1305704218-sup-213@btmwxn>
+
+Hey guys,
+
+I approaching an almost ideal setup for a good gmail integration into
+sup using offlineimap. My offlineimap setup pulls all Gmail folders
+(aka Gmail labels) into seperate maildirs. I found a nice startup-hook
+for sup to add sources dynamicly:
+
+Dir[ENV['HOME']+'/.maildir/gmail/*'].map do |d|
+  uri = "maildir:"+d
+  log "Processing source #{uri}"
+  unless SourceManager.source_for uri
+    source = Maildir.new uri, true, false, nil, [LabelManager.label_for(File.basename(d))]
+    SourceManager.add_source source 
+    log "Added source #{d}"
+  end
+end
+
+This snippet of code checks for any directories in
+$HOME/.maildir/gmail and adds them as a new source with the
+corresponding label. This allows me to make changes in the gmail
+web interface which will be reflected in sup.
+
+Now there's a small issue I encountered today. If I star a message in
+Sup, offlineimap claims that it adds the 'S' flag to that message, but
+this won't be synced to Gmail for some reason. The other direction
+(star it on my mobile phone or in the web interface) works fine,
+i.e. the message can be seen in the 'Starred' label in sup.
+
+Is there any way to make this work?
+
+Regards,
+Florian
+
+From damien.leone at fensalir.fr  Wed May 18 03:59:43 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 18 May 2011 09:59:43 +0200
+Subject: [sup-talk] Sup + offlineimap + Gmail
+In-Reply-To: <1305704218-sup-213@btmwxn>
+References: <1305704218-sup-213@btmwxn>
+Message-ID: <1305705194-sup-5588@mailer>
+
+Hello,
+
+Are you sure that reading a e-mail from sup marks it as read in Gmail
+after having executed offlineimap? Because this should not work,
+apparently you are using sup 0.12.1 which does not support backward
+synchronization. [0]
+
+And by the way, starring a message in sup should update the 'F'
+(flagged) flag not the 'S' (seen) flag.
+
+Cheers,
+
+[0] http://www.mail-archive.com/sup-devel at rubyforge.org/msg00983.html
+
+Excerpts from Florian Unglaub's message of mer. mai 18 09:44:25 +0200 2011:
+> Hey guys,
+> 
+> I approaching an almost ideal setup for a good gmail integration into
+> sup using offlineimap. My offlineimap setup pulls all Gmail folders
+> (aka Gmail labels) into seperate maildirs. I found a nice startup-hook
+> for sup to add sources dynamicly:
+> 
+> Dir[ENV['HOME']+'/.maildir/gmail/*'].map do |d|
+>   uri = "maildir:"+d
+>   log "Processing source #{uri}"
+>   unless SourceManager.source_for uri
+>     source = Maildir.new uri, true, false, nil, [LabelManager.label_for(File.basename(d))]
+>     SourceManager.add_source source 
+>     log "Added source #{d}"
+>   end
+> end
+> 
+> This snippet of code checks for any directories in
+> $HOME/.maildir/gmail and adds them as a new source with the
+> corresponding label. This allows me to make changes in the gmail
+> web interface which will be reflected in sup.
+> 
+> Now there's a small issue I encountered today. If I star a message in
+> Sup, offlineimap claims that it adds the 'S' flag to that message, but
+> this won't be synced to Gmail for some reason. The other direction
+> (star it on my mobile phone or in the web interface) works fine,
+> i.e. the message can be seen in the 'Starred' label in sup.
+> 
+> Is there any way to make this work?
+> 
+> Regards,
+> Florian
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+GPG: 0x82EB4DDF
+
+From john.wyzer at gmx.de  Thu May 19 11:11:31 2011
+From: john.wyzer at gmx.de (john.wyzer)
+Date: Thu, 19 May 2011 17:11:31 +0200
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+Message-ID: <1305817664-sup-572@localhost>
+
+Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+> Hi,
+> 
+> When reading messages in Sup and expanding quoted lines, long quoted
+> lines are not word wrapped and thus I can't read all the content.
+> Non-quoted content wraps as expected.
+> 
+> Is this a known issue or could it be a misconfiguration or problem in
+> my build? I'm currently using commit 7e2bb88 from Sun Jan 23 21:05:39
+> 2011 -0800 on Ubuntu 10.10.
+
+
+I do have the same problem; very annoying. 
+I'm on the mainline/next branch.
+
+From john.wyzer at gmx.de  Thu May 19 11:16:51 2011
+From: john.wyzer at gmx.de (john.wyzer)
+Date: Thu, 19 May 2011 17:16:51 +0200
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <1305817664-sup-572@localhost>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost>
+Message-ID: <1305818177-sup-9473@localhost>
+
+Excerpts from john.wyzer's message of Thu May 19 17:11:31 +0200 2011:
+> Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+> > Hi,
+> > 
+> > When reading messages in Sup and expanding quoted lines, long quoted
+> > lines are not word wrapped and thus I can't read all the content.
+> > Non-quoted content wraps as expected.
+> > 
+> > Is this a known issue or could it be a misconfiguration or problem in
+> > my build? I'm currently using commit 7e2bb88 from Sun Jan 23 21:05:39
+> > 2011 -0800 on Ubuntu 10.10.
+> 
+> 
+> I do have the same problem; very annoying. 
+> I'm on the mainline/next branch.
+
+Ah. Here's a fix:
+https://github.com/rburchell/sup/commit/a60dd01fe297bf3cd5a12c17a40849219c7f8a91
+
+From f.unglaub at googlemail.com  Thu May 19 17:17:20 2011
+From: f.unglaub at googlemail.com (Florian Unglaub)
+Date: Thu, 19 May 2011 23:17:20 +0200
+Subject: [sup-talk] Sup + offlineimap + Gmail
+In-Reply-To: <1305705194-sup-5588@mailer>
+References: <1305704218-sup-213@btmwxn> <1305705194-sup-5588@mailer>
+Message-ID: <1305839702-sup-8270@hal>
+
+Excerpts from Damien Leone's message of 2011-05-18 09:59:43 +0200:
+> Hello,
+> 
+> Are you sure that reading a e-mail from sup marks it as read in Gmail
+> after having executed offlineimap? Because this should not work,
+> apparently you are using sup 0.12.1 which does not support backward
+> synchronization. [0]
+
+You are right. It doesn't sync back at all. I will try to figure out
+how to achieve this with the git version.
+
+Regards,
+Florian.
+
+From rthd at web.de  Wed May 11 08:19:25 2011
+From: rthd at web.de (Ruthard Baudach)
+Date: Wed, 11 May 2011 14:19:25 +0200
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+Message-ID: <1305116205-sup-2345@PrxServer3>
+
+> === Antti Kaihola schrieb am 2011-05-10 09:07: === <
+> Hi,
+> 
+> 
+> When reading messages in Sup and expanding quoted lines, long quoted
+> lines are not word wrapped and thus I can't read all the content.
+> Non-quoted content wraps as expected.
+
+The left and right arrow keys give you access to text right or left of
+your screen.
+
+Of course it would be nice, if sup would wrap these lines as well.
+
+Ruthard
+
+From jonathanipser at gmail.com  Sat May 21 10:49:59 2011
+From: jonathanipser at gmail.com (Jonathan Ipser)
+Date: Sat, 21 May 2011 10:49:59 -0400
+Subject: [sup-talk] Adding hooks to sup-mail
+Message-ID: <1305988436-sup-5041@jon-laptop>
+
+Hello All,
+
+I have recently started using sup-mail, and have found the simplicity of the user-interface a refreshing change from other email-clients.
+
+One problem I am having though has to do with adding hooks to sup-mail.  When I run "sup-mail -l", I am presented with a list of 30 hooks that are registered on my system (see output below). None of these scripts are found in the location listed, however (the .sup/hooks directory is empty). Running the 'find' command does not detect the scripts elsewhere on my system, either. Also, nothing changes when I try to overwrite the listed hooks by adding scripts to the .sup/hooks directory. 
+
+Any information on how to add/modify hooks with sup-mail would be much appreciated. FYI, I installed sup-mail (v. 0.11) using the standard installation procedure for my Xubuntu OS. I am running sup-mail as the root user.   
+
+Regards,
+Jonathan
+
+
+
+
+-------output of 'sup-mail -l'
+Have 30 registered hooks:
+
+after-poll
+----------
+File: ~/.sup/hooks/after-poll.rb
+Executes immediately after a poll for new messages completes.
+Variables:
+                   num: the total number of new messages added in this poll
+             num_inbox: the number of new messages added in this poll which
+                        appear in the inbox (i.e. were not auto-archived).
+num_inbox_total_unread: the total number of unread messages in the inbox
+         from_and_subj: an array of (from email address, subject) pairs
+   from_and_subj_inbox: an array of (from email address, subject) pairs for
+                        only those messages appearing in the inbox
+
+attribution
+-----------
+File: ~/.sup/hooks/attribution.rb
+Generates an attribution ("Excerpts from Joe Bloggs's message of Fri Jan 11 09:54:32 -0500 2008:").
+Variables:
+  message: a message object representing the message being replied to
+    (useful values include message.from.name and message.date)
+Return value:
+  A string containing the text of the quote line (can be multi-line)
+
+before-add-message
+------------------
+File: ~/.sup/hooks/before-add-message.rb
+Executes immediately before a message is added to the index.
+Variables:
+  message: the new message
+
+before-edit
+-----------
+File: ~/.sup/hooks/before-edit.rb                                                                                                                              
+Modifies message body and headers before editing a new message. Variables                                                                                                           
+should be modified in place.                                                                                                                                                        
+Variables:                                                                                                                                                                          
+        header: a hash of headers. See 'signature' hook for documentation.                                                                                                          
+        body: an array of lines of body text.                                                                                                                                       
+Return value:                                                                                                                                                                       
+        none                                                                                                                                                                        
+
+before-poll
+-----------
+File: ~/.sup/hooks/before-poll.rb
+Executes immediately before a poll for new messages commences.
+No variables.
+
+bounce-command
+--------------
+File: ~/.sup/hooks/bounce-command.rb
+Determines the command used to bounce a message.
+Variables:
+      from: The From header of the message being bounced
+            (eg: likely _not_ your address).
+        to: The addresses you asked the message to be bounced to as an array.
+Return value:
+  A string representing the command to pipe the mail into.  This
+  should include the entire command except for the destination addresses,
+  which will be appended by sup.
+
+crypto-mode
+-----------
+File: ~/.sup/hooks/crypto-mode.rb
+Modifies cryptography settings based on header and message content, before
+editing a new message. This can be used to set, for example, default cryptography
+settings.
+Variables:
+    header: a hash of headers. See 'signature' hook for documentation.
+    body: an array of lines of body text.
+    crypto_selector: the UI element that controls the current cryptography setting.
+Return value:
+     none
+
+custom-search
+-------------
+File: ~/.sup/hooks/custom-search.rb
+Executes before a string search is applied to the index,
+returning a new search string.
+Variables:
+  subs: The string being searched.
+
+detailed-headers
+----------------
+File: ~/.sup/hooks/detailed-headers.rb
+Add or remove headers from the detailed header display of a message.
+Variables:
+  message: The message whose headers are to be formatted.
+  headers: A hash of header (name, value) pairs, initialized to the default
+           headers.
+Return value:
+  None. The variable 'headers' should be modified in place.
+
+extra-contact-addresses
+-----------------------
+File: ~/.sup/hooks/extra-contact-addresses.rb
+A list of extra addresses to propose for tab completion, etc. when the
+user is entering an email address. Can be plain email addresses or can
+be full "User Name <email at domain.tld>" entries.
+
+Variables: none
+Return value: an array of email address strings.
+
+gpg-args
+--------
+File: ~/.sup/hooks/gpg-args.rb
+Runs before gpg is executed, allowing you to modify the arguments (most
+likely you would want to add something to certain commands, like
+--trust-model always to signing/encrypting a message, but who knows).
+
+Variables:
+args: arguments for running GPG
+
+Return value: the arguments for running GPG
+
+index-mode-date-widget
+----------------------
+File: ~/.sup/hooks/index-mode-date-widget.rb
+Generates the per-thread date widget for each thread.
+Variables:
+  thread: The message thread to be formatted.
+
+index-mode-size-widget
+----------------------
+File: ~/.sup/hooks/index-mode-size-widget.rb
+Generates the per-thread size widget for each thread.
+Variables:
+  thread: The message thread to be formatted.
+
+keybindings
+-----------
+File: ~/.sup/hooks/keybindings.rb
+Add custom keybindings.
+Methods:
+  modes: Hash from mode names to mode classes.
+  global_keymap: The top-level keymap.
+
+label-list-filter
+-----------------
+File: ~/.sup/hooks/label-list-filter.rb
+Filter the label list, typically to sort.
+Variables:
+  counted: an array of counted labels.
+Return value:
+  An array of counted labels with sort_by output structure.
+
+label-list-format
+-----------------
+File: ~/.sup/hooks/label-list-format.rb
+Create the sprintf format string for label-list-mode.
+Variables:
+  width: the maximum label width
+  tmax: the maximum total message count
+  umax: the maximum unread message count
+Return value:
+  A format string for sprintf
+
+mark-as-spam
+------------
+File: ~/.sup/hooks/mark-as-spam.rb
+This hook is run when a thread is marked as spam
+Variables:
+  thread: The message thread being marked as spam.
+
+mentions-attachments
+--------------------
+File: ~/.sup/hooks/mentions-attachments.rb
+Detects if given message mentions attachments the way it is probable
+that there should be files attached to the message.
+Variables:
+        header: a hash of headers. See 'signature' hook for documentation.
+        body: an array of lines of body text.
+Return value:
+        True if attachments are mentioned.
+
+mime-decode
+-----------
+File: ~/.sup/hooks/mime-decode.rb
+Decodes a MIME attachment into text form. The text will be displayed
+directly in Sup. For attachments that you wish to use a separate program
+to view (e.g. images), you should use the mime-view hook instead.
+
+Variables:
+   content_type: the content-type of the attachment
+        charset: the charset of the attachment, if applicable
+       filename: the filename of the attachment as saved to disk
+  sibling_types: if this attachment is part of a multipart MIME attachment,
+                 an array of content-types for all attachments. Otherwise,
+                 the empty array.
+Return value:
+  The decoded text of the attachment, or nil if not decoded.
+
+mime-view
+---------
+File: ~/.sup/hooks/mime-view.rb
+Views a non-text MIME attachment. This hook allows you to run
+third-party programs for attachments that require such a thing (e.g.
+images). To instead display a text version of the attachment directly in
+Sup, use the mime-decode hook instead.
+
+Note that by default (at least on systems that have a run-mailcap command),
+Sup uses the default mailcap handler for the attachment's MIME type. If
+you want a particular behavior to be global, you may wish to change your
+mailcap instead.
+
+Variables:
+   content_type: the content-type of the attachment
+       filename: the filename of the attachment as saved to disk
+Return value:
+  True if the viewing was successful, false otherwise. If false, calling
+  /usr/bin/run-mailcap will be tried.
+
+publish
+-------
+File: ~/.sup/hooks/publish.rb
+Executed when a message or a chunk is requested to be published.
+Variables:
+     chunk: Redwood::Message or Redwood::Chunk::* to be published.
+Return value:
+  None.
+
+reply-from
+----------
+File: ~/.sup/hooks/reply-from.rb
+Selects a default address for the From: header of a new reply.
+Variables:
+  message: a message object representing the message being replied to
+    (useful values include message.recipient_email, message.to, and message.cc)
+Return value:
+  A Person to be used as the default for the From: header, or nil to use the
+  default behavior.
+
+reply-to
+--------
+File: ~/.sup/hooks/reply-to.rb
+Set the default reply-to mode.
+Variables:
+  modes: array of valid modes to choose from, which will be a subset of
+             [:sender, :recipient, :list, :all, :user]
+         The default behavior is equivalent to
+             ([:list, :sender, :recipent] & modes)[0]
+Return value:
+  The reply mode you desire, or nil to use the default behavior.
+
+search-list-filter
+------------------
+File: ~/.sup/hooks/search-list-filter.rb
+Filter the search list, typically to sort.
+Variables:
+  counted: an array of counted searches.
+Return value:
+  An array of counted searches with sort_by output structure.
+
+search-list-format
+------------------
+File: ~/.sup/hooks/search-list-format.rb
+Create the sprintf format string for search-list-mode.
+Variables:
+  n_width: the maximum search name width
+  tmax: the maximum total message count
+  umax: the maximum unread message count
+  s_width: the maximum search string width
+Return value:
+  A format string for sprintf
+
+shutdown
+--------
+File: ~/.sup/hooks/shutdown.rb
+Executes when sup is shutting down. May be run when sup is crashing,
+so don't do anything too important. Run before the label, contacts,
+and people are saved.
+No variables.
+No return value.
+
+signature
+---------
+File: ~/.sup/hooks/signature.rb
+Generates a message signature.
+Variables:
+      header: an object that supports string-to-string hashtable-style access
+              to the raw headers for the message. E.g., header["From"],
+              header["To"], etc.
+  from_email: the email part of the From: line, or nil if empty
+Return value:
+  A string (multi-line ok) containing the text of the signature, or nil to
+  use the default signature, or :none for no signature.
+
+startup
+-------
+File: ~/.sup/hooks/startup.rb
+Executes at startup
+No variables.
+No return value.
+
+status-bar-text
+---------------
+File: ~/.sup/hooks/status-bar-text.rb
+Sets the status bar. The default status bar contains the mode name, the buffer
+title, and the mode status. Note that this will be called at least once per
+keystroke, so excessive computation is discouraged.
+
+Variables:
+         num_inbox: number of messages in inbox
+  num_inbox_unread: total number of messages marked as unread
+         num_total: total number of messages in the index
+          num_spam: total number of messages marked as spam
+             title: title of the current buffer
+              mode: current mode name (string)
+            status: current mode status (string)
+Return value: a string to be used as the status bar.
+
+terminal-title-text
+-------------------
+File: ~/.sup/hooks/terminal-title-text.rb
+Sets the title of the current terminal, if applicable. Note that this will be
+called at least once per keystroke, so excessive computation is discouraged.
+
+Variables: the same as status-bar-text hook.
+Return value: a string to be used as the terminal title.
+
+
+ 
+
+From michael+sup at stapelberg.de  Mon May 23 05:29:15 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 23 May 2011 11:29:15 +0200
+Subject: [sup-talk] Adding hooks to sup-mail
+In-Reply-To: <1305988436-sup-5041@jon-laptop>
+References: <1305988436-sup-5041@jon-laptop>
+Message-ID: <1306142903-sup-802@midna.zekjur.net>
+
+Hi Jonathan,
+
+Excerpts from Jonathan Ipser's message of 2011-05-21 16:49:59 +0200:
+> registered on my system (see output below). None of these scripts are found
+> in the location listed, however (the .sup/hooks directory is empty). Running
+You should create these files :).
+
+> Any information on how to add/modify hooks with sup-mail would be much
+> appreciated. FYI, I installed sup-mail (v. 0.11) using the standard
+> installation procedure for my Xubuntu OS. I am running sup-mail as the root
+> user.   
+You really shouldn?t run it as root, that?s dangerous.
+
+Best regards,
+Michael
+
+From akaihola at gmail.com  Mon May 23 14:38:56 2011
+From: akaihola at gmail.com (Antti Kaihola)
+Date: Mon, 23 May 2011 21:38:56 +0300
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <1305818177-sup-9473@localhost>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+Message-ID: <BANLkTinb5qq5t67TSkPGF6mrExaHV=GYCw@mail.gmail.com>
+
+Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+>> > Hi,
+>> >
+>> > When reading messages in Sup and expanding quoted lines, long quoted
+>> > lines are not word wrapped and thus I can't read all the content.
+
+2011/5/19 john.wyzer <john.wyzer at gmx.de>:
+> Ah. Here's a fix:
+> https://github.com/rburchell/sup/commit/a60dd01fe297bf3cd5a12c17a40849219c7f8a91
+
+Thanks, it works perfectly! It also seems to live in the wrap_quoted
+branch of the sup repository.
+
+From d.t.k at gmx.de  Tue May 24 06:26:40 2011
+From: d.t.k at gmx.de (dtk)
+Date: Tue, 24 May 2011 12:26:40 +0200
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <BANLkTinb5qq5t67TSkPGF6mrExaHV=GYCw@mail.gmail.com>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+	<BANLkTinb5qq5t67TSkPGF6mrExaHV=GYCw@mail.gmail.com>
+Message-ID: <b41ea76b8df833e63d844ce1efae0ba3@jadE-Hamburg.de>
+
+
+On Mon, 23 May 2011 21:38:56 +0300, Antti Kaihola <akaihola at gmail.com>
+wrote:
+> Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+>>> > When reading messages in Sup and expanding quoted lines, long quoted
+>>> > lines are not word wrapped and thus I can't read all the content.
+> 
+> 2011/5/19 john.wyzer <john.wyzer at gmx.de>:
+>> Ah. Here's a fix:
+>>
+https://github.com/rburchell/sup/commit/a60dd01fe297bf3cd5a12c17a40849219c7f8a91
+> 
+> It also seems to live in the wrap_quoted
+> branch of the sup repository.
+cool! Does that mean there is a chance it will finally make it into
+master? Or will it like forever be necessary to apply the patch manually?
+Just asking, since that patch in the original repo is from september last
+year, what /feels/ like a rather longish time to merge a rather basic
+patch. Am I mistaken?
+
+thx for ur support!
+dtk
+
+
+From rthrd at web.de  Thu May 26 07:58:38 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Thu, 26 May 2011 13:58:38 +0200
+Subject: [sup-talk] change order in thread manually
+Message-ID: <1306410889-sup-2968@PrxServer3>
+
+Hello everybody,
+
+Sometimes I have to add messages to a thread manually (my sister's using
+a blackberry, my wife never uses the repeat-function...)
+
+If I do so by tagging messages with t and pressing # in inbox mode, the
+messages form one thread, but not in logical order.
+
+Is there any method to change the order of messages in a thread
+manually?
+
+Ruthard Baudach
+
+From dmishd at gmail.com  Sun May 29 13:34:41 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 29 May 2011 18:34:41 +0100
+Subject: [sup-talk] Word wrap for quoted lines
+In-Reply-To: <b41ea76b8df833e63d844ce1efae0ba3@jadE-Hamburg.de>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+	<BANLkTinb5qq5t67TSkPGF6mrExaHV=GYCw@mail.gmail.com>
+	<b41ea76b8df833e63d844ce1efae0ba3@jadE-Hamburg.de>
+Message-ID: <1306690367-sup-9151@whisper>
+
+Excerpts from dtk's message of Tue May 24 11:26:40 +0100 2011:
+> On Mon, 23 May 2011 21:38:56 +0300, Antti Kaihola <akaihola at gmail.com>
+> > Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+> >>> > When reading messages in Sup and expanding quoted lines, long quoted
+> >>> > lines are not word wrapped and thus I can't read all the content.
+> > 
+> > It also seems to live in the wrap_quoted branch of the sup repository.
+
+Yes, I created that branch next weekend. I've now merged it into the
+next branch, so go update from git and enjoy :)
+
+And I may get around to reviewing other patches from the same github
+fork at some point, but if you spot any you particularly want merged
+then shout out and they'll get reviewed sooner ...
+
+Hamish Downer
+
+From afarrell at MIT.EDU  Tue May 31 23:54:37 2011
+From: afarrell at MIT.EDU (Andrew Farrell)
+Date: Tue, 31 May 2011 20:54:37 -0700
+Subject: [sup-talk] before-poll.rb does not appear to be run. Where is
+	PollManager defined?
+Message-ID: <BANLkTikaFJ1B3DrsDyERJvmhU5QH-fwk1Q@mail.gmail.com>
+
+Hello all,
+
+I've just installed sup 0.8.1 from macports on OSX 10.6 with ruby version
+1.8.7
+It opens my maildir fine and I am pleased with its ability to organize mail
+quickly.
+I'm trying to add a before-poll.rb hook, but this appears not to be run.
+At least, it is not running offlineIMAP and if I insert a divide-by-zero,
+nothing explodes.
+(If you care, I've attached that file.)
+So, I went source-diving
+into /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/bin/sup,
+but failed to find where PollManager or its method .poll is defined.
+I strongly suspect it is in the gem referenced by "require 'sup' "
+However, the only files so named that are in my PATH are this file itself
+and a wrapper script that invokes it.
+Do you know where else I might look for the definition of PollManager or
+where I might look to find where it is requiring sup from?
+
+context:
+- I've never written a line of ruby.
+- I'm inferring that "require 'sup' " is the equivalent of python's "from
+sup import *"
+
+thank you,
+Andrew Farrell
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110531/ef77a0b5/attachment-0001.html>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: before-poll.rb
+Type: application/octet-stream
+Size: 758 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110531/ef77a0b5/attachment-0001.obj>
+

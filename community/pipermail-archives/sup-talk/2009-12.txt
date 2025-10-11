@@ -1,0 +1,3555 @@
+From acore at depaul.edu  Mon Dec  7 10:45:02 2009
+From: acore at depaul.edu (Susana Core)
+Date: Mon, 7 Dec 2009 09:45:02 -0600
+Subject: [sup-talk] sup finds exception and exits
+Message-ID: <20091207154502.GA7611@depaul.edu>
+
+   I have been using sup for about six months and today it started
+   having fatal problems.  I'll appreciate any suggestions. 
+
+   Below are the error messages. I should clarify that while I don't
+   delete email from my mailbox the policy for the mail account 
+   is that after three months messages are deleted.  This might be
+   relevant since sup exits while polling for new messages in a thread
+   which contains at least one message older than 3 months, i.e.
+   while tryint to load a message which has been deleted.
+
+   Thanks,
+
+   Susana.
+
+
+
+   ____________________error messages_______________________________
+
+   Polling for new messages...                                                         (eval):1: warning: instance variable @source_marked_read not initialized
+   [Mon Dec 07 09:25:33 -0600 2009] stopped cursing
+   [Mon Dec 07 09:25:33 -0600 2009] oh crap, an exception
+   [Mon Dec 07 09:25:33 -0600 2009] unlocking /home/susana/.sup/lock...
+   ----------------------------------------------------------------
+   I'm very sorry. It seems that an error occurred in Sup. Please
+   accept my sincere apologies. If you don't mind, please send the
+   contents of ~/.sup/exception-log.txt and a brief report of the
+   circumstances to sup-talk at rubyforge dot orgs so that I might
+   address this problem. Thank you!
+
+   Sincerely,
+   William
+   ----------------------------------------------------------------
+   --- NoMethodError from thread: poll after loading inbox
+   undefined method `to_indexable_s' for nil:NilClass
+   ./lib/sup/index.rb:244:in `sync_message'
+   ./lib/sup/util.rb:505:in `send'
+   ./lib/sup/util.rb:505:in `method_missing'
+   ./lib/sup/poll.rb:162:in `add_messages_from'
+   ./lib/sup/source.rb:100:in `each'
+   ./lib/sup/util.rb:544:in `send'
+   ./lib/sup/util.rb:544:in `__pass'
+   ./lib/sup/util.rb:531:in `method_missing'
+   ./lib/sup/poll.rb:141:in `add_messages_from'
+   ./lib/sup/poll.rb:98:in `do_poll'
+   ./lib/sup/poll.rb:86:in `each'
+   ./lib/sup/poll.rb:86:in `do_poll'
+   ./lib/sup/poll.rb:85:in `synchronize'
+   ./lib/sup/poll.rb:85:in `do_poll'
+   ./lib/sup/util.rb:505:in `send'
+   ./lib/sup/util.rb:505:in `method_missing'
+   ./lib/sup/modes/poll-mode.rb:17:in `poll'
+   ./lib/sup/poll.rb:53:in `poll'
+   ./lib/sup/util.rb:505:in `send'
+   ./lib/sup/util.rb:505:in `method_missing'
+   bin/sup:206
+   ./lib/sup.rb:71:in `reporting_thread'
+   ./lib/sup.rb:69:in `initialize'
+   ./lib/sup.rb:69:in `new'
+   ./lib/sup.rb:69:in `reporting_thread'
+   bin/sup:206
+   ./lib/sup/modes/thread-index-mode.rb:663:in `call'
+   ./lib/sup/modes/thread-index-mode.rb:663:in `__unprotected_load_threads'
+   ./lib/sup/modes/thread-index-mode.rb:605:in `call'
+   ./lib/sup/modes/thread-index-mode.rb:605:in `load_n_threads_background'
+   ./lib/sup.rb:71:in `reporting_thread'
+   ./lib/sup.rb:69:in `initialize'
+   ./lib/sup.rb:69:in `new'
+   ./lib/sup.rb:69:in `reporting_thread'
+   ./lib/sup/modes/thread-index-mode.rb:603:in `load_n_threads_background'
+   ./lib/sup/modes/thread-index-mode.rb:673:in `__unprotected_load_threads'
+   (eval):12:in `load_threads'
+   bin/sup:206
+
+   ____________________ end of error messages_________________________
+
+
+
+
+
+
+
+From jof at thejof.com  Mon Dec  7 13:21:45 2009
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Mon, 07 Dec 2009 10:21:45 -0800
+Subject: [sup-talk] sup finds exception and exits
+In-Reply-To: <20091207154502.GA7611@depaul.edu>
+References: <20091207154502.GA7611@depaul.edu>
+Message-ID: <1260210017-sup-8621@sfo.thejof.com>
+
+Excerpts from Susana Core's message of Mon Dec 07 07:45:02 -0800 2009:
+>    I have been using sup for about six months and today it started
+>    having fatal problems.  I'll appreciate any suggestions. 
+> 
+>    Below are the error messages. I should clarify that while I don't
+>    delete email from my mailbox the policy for the mail account 
+>    is that after three months messages are deleted.  This might be
+>    relevant since sup exits while polling for new messages in a thread
+>    which contains at least one message older than 3 months, i.e.
+>    while tryint to load a message which has been deleted.
+
+My experience is that sup has dealt with this gracefully (message is
+deleted from the actual source, but not from the index) and displays a
+message about it "not playing nice with others", but it still should be
+avoided if possible.
+
+Are you deleting the message from the index as well or just from the
+source?
+
+Cheers,
+jonathan
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091207/dea2f954/attachment.bin>
+
+From tero at tilus.net  Mon Dec  7 14:01:12 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 07 Dec 2009 21:01:12 +0200
+Subject: [sup-talk] sup finds exception and exits
+In-Reply-To: <20091207154502.GA7611@depaul.edu>
+References: <20091207154502.GA7611@depaul.edu>
+Message-ID: <1260211792-sup-376@tilus.net>
+
+Susana Core, 2009-12-07 17:45:
+> Below are the error messages.
+
+At glance it doesn't look like the error has anything to do with
+deleted mail.  But I could just be terribly wrong.  :)
+
+Are you able to sup-dump your tags and reindex?  That might help you.
+
+For instructions on how to do that, see sup FAQ
+<http://sup.rubyforge.org/FAQ.txt> questions "How do I back up my
+index?" and "How do I rebuild the index completely?".  You might want
+to backup your ~/.sup/ferret just in case you would like to go back.
+
+> I should clarify that while I don't delete email from my mailbox the
+> policy for the mail account is that after three months messages are
+> deleted.
+
+Uough!  That policy really sucks.  :(
+
+If I had to work with something like that I'd prolly mirror incoming
+mails to my own mail archive (using fetchmail, offlineimap or similar)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rlane at club.cc.cmu.edu  Tue Dec  8 13:56:10 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 08 Dec 2009 13:56:10 -0500
+Subject: [sup-talk] sup-server
+Message-ID: <1260291857-sup-4773@zyrg.net>
+
+I've pushed a branch sup-server to my github*. There's a lot to be done
+before this reaches feature parity with current Sup - for instance, the
+ncurses client doesn't work yet.
+
+*git://github.com/rlane/sup
+
+Current status:
+ - Server passes its (incomplete) test suite
+ - sup-cmd executable useful for simple interactions (each protocol
+   request exposed)
+ - ncurses client completely nonfunctional
+ - client/server/common source code split
+ - server implemented with Revactor - Ruby 1.9 only
+ - server stores messages (currently gzip'd mbox-ish)
+
+Protocol:
+ - Designed to avoid round-trip latencies
+ - BERT over tcp/unix
+  - thrift/etc could be supported in the future
+ - Requests (full docs in lib/sup/server/requests.rb):
+  - Query
+  - Count
+  - Label
+  - Add
+  - Stream
+  - Cancel
+ - Requests take query arguments instead of messages-ids (thanks to
+   Carl/notmuch for this idea)
+ - These requests should be sufficient to implement a working client. We
+   can add more in the future for optimizations (threading) or new
+   features (contacts).
+
+TODO:
+ - Expand test suite
+ - Modify sup-sync to send Add requests to the server
+ - Get the ncurses UI working
+ - Remove dead code
+ - Protocol versioning/negotiation/authentication/extensions
+ - Performance optimizations
+ - Add web/android/iphone/vim/irb/etc UIs
+ - Actorize the index/storage interfaces
+ - Shard index/storage
+ - Distribute indexing/parsing/compression/etc across worker processes
+ - Replication?
+
+The test suite is an important part of this effort. With the amount of
+code churn that's going on it just takes too much work to manually
+verify that every (affected) feature works before committing. If it's
+not covered by a test, I don't care if it's broken.
+
+For now, I'll plan on adding any new UIs to the main repo. When the
+protocol stabilizes we can think about splitting them out.
+
+I would be very interested if someone could spin up a web UI quickly.
+I'd like to start using this branch for my own mail and it will take a
+significant amount of time before I can beat the ncurses UI into shape.
+
+For some background on sup-server please read William's various blog
+posts on the subject. In its current form this project makes some
+compromises for the sake of efficiency and simplicity. I would be
+interested in making the protocol more generic while preserving those
+attributes, so if you have thoughts on this send them to the list.
+
+Some questions from the IRC channel:
+ - Do clients need threading logic?
+   Yes. There is no thread abstraction in the protocol, so clients will
+   need to understand email threading. A planned optimization is to
+   expose the index thread-id field to essentially collapse the thread
+   for client-threading purposes.
+
+ - Will a client connecting to sup-server feel snappier than sup over
+   ssh?
+   Yes (given a well-written client). The protocol is designed to
+   minimize the effects of network latency, but it will take a good
+   amount of work in the client to fully take advantage of this.
+
+ - Do clients need to know how to parse email?
+   Yes. Right now clients who want to display a message need to query for
+   the raw message text. If we can come up with a simple, comprehensive
+   model of an email message that clients would rather digest than the
+   raw text I'd be willing to add it as an optional extension to the
+   protocol.
+
+From garoth at gmail.com  Tue Dec  8 17:12:05 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Tue, 8 Dec 2009 17:12:05 -0500
+Subject: [sup-talk] sup-server
+In-Reply-To: <1260291857-sup-4773@zyrg.net>
+References: <1260291857-sup-4773@zyrg.net>
+Message-ID: <80055d7c0912081412h483bc6dt8493b08dfab1d23b@mail.gmail.com>
+
+On Tue, Dec 8, 2009 at 1:56 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> I've pushed a branch sup-server to my github*. There's a lot to be done
+> before this reaches feature parity with current Sup - for instance, the
+> ncurses client doesn't work yet.
+>
+> *git://github.com/rlane/sup
+>
+> Current status:
+> ?- Server passes its (incomplete) test suite
+> ?- sup-cmd executable useful for simple interactions (each protocol
+> ? request exposed)
+> ?- ncurses client completely nonfunctional
+> ?- client/server/common source code split
+> ?- server implemented with Revactor - Ruby 1.9 only
+> ?- server stores messages (currently gzip'd mbox-ish)
+>
+> Protocol:
+> ?- Designed to avoid round-trip latencies
+> ?- BERT over tcp/unix
+> ?- thrift/etc could be supported in the future
+> ?- Requests (full docs in lib/sup/server/requests.rb):
+> ?- Query
+> ?- Count
+> ?- Label
+> ?- Add
+> ?- Stream
+> ?- Cancel
+> ?- Requests take query arguments instead of messages-ids (thanks to
+> ? Carl/notmuch for this idea)
+> ?- These requests should be sufficient to implement a working client. We
+> ? can add more in the future for optimizations (threading) or new
+> ? features (contacts).
+>
+> TODO:
+> ?- Expand test suite
+> ?- Modify sup-sync to send Add requests to the server
+> ?- Get the ncurses UI working
+> ?- Remove dead code
+> ?- Protocol versioning/negotiation/authentication/extensions
+> ?- Performance optimizations
+> ?- Add web/android/iphone/vim/irb/etc UIs
+> ?- Actorize the index/storage interfaces
+> ?- Shard index/storage
+> ?- Distribute indexing/parsing/compression/etc across worker processes
+> ?- Replication?
+>
+> The test suite is an important part of this effort. With the amount of
+> code churn that's going on it just takes too much work to manually
+> verify that every (affected) feature works before committing. If it's
+> not covered by a test, I don't care if it's broken.
+>
+> For now, I'll plan on adding any new UIs to the main repo. When the
+> protocol stabilizes we can think about splitting them out.
+>
+> I would be very interested if someone could spin up a web UI quickly.
+> I'd like to start using this branch for my own mail and it will take a
+> significant amount of time before I can beat the ncurses UI into shape.
+>
+> For some background on sup-server please read William's various blog
+> posts on the subject. In its current form this project makes some
+> compromises for the sake of efficiency and simplicity. I would be
+> interested in making the protocol more generic while preserving those
+> attributes, so if you have thoughts on this send them to the list.
+>
+> Some questions from the IRC channel:
+> ?- Do clients need threading logic?
+> ? Yes. There is no thread abstraction in the protocol, so clients will
+> ? need to understand email threading. A planned optimization is to
+> ? expose the index thread-id field to essentially collapse the thread
+> ? for client-threading purposes.
+>
+> ?- Will a client connecting to sup-server feel snappier than sup over
+> ? ssh?
+> ? Yes (given a well-written client). The protocol is designed to
+> ? minimize the effects of network latency, but it will take a good
+> ? amount of work in the client to fully take advantage of this.
+>
+> ?- Do clients need to know how to parse email?
+> ? Yes. Right now clients who want to display a message need to query for
+> ? the raw message text. If we can come up with a simple, comprehensive
+> ? model of an email message that clients would rather digest than the
+> ? raw text I'd be willing to add it as an optional extension to the
+> ? protocol.
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+While I'm as usual very impressed that Rich has done so much work, and
+very happy with the ideas proposed in the STS posts, I can't help but
+wonder,
+
+"Why does this sound like implementing a Sup ui to Wave, but not using
+Wave?" (Actually mentioned in Rethinking Sup pt. 2)
+
+This really seems like it's in direct competition with the Wave
+system... but Wave has a lot more support. And yes, Wave doesn't have
+e-mail federation at the moment, but I think they plan to do that in
+the future. So yes, I like the idea of a Sup server, I like being able
+to access my (sup) mail from multiple computers, I like the idea of
+having multiple UIs to the Sup Service... but I think that in the long
+run, I'd feel just as good about a couple good open source UIs to
+Google's Wave instead.
+
+Honestly, I hope I'm wrong since there seems to be a lot of work done
+here. Also, I have a Wave account and some invites, so if you want to
+do some research and get a preview account, I can give some out.
+
+Cheers,
+
+-Andrei Thorp
+
+From rlane at club.cc.cmu.edu  Tue Dec  8 21:33:29 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 08 Dec 2009 21:33:29 -0500
+Subject: [sup-talk] sup-server
+In-Reply-To: <80055d7c0912081412h483bc6dt8493b08dfab1d23b@mail.gmail.com>
+References: <1260291857-sup-4773@zyrg.net>
+	<80055d7c0912081412h483bc6dt8493b08dfab1d23b@mail.gmail.com>
+Message-ID: <1260323222-sup-1616@zyrg.net>
+
+Excerpts from Andrei Thorp's message of Tue Dec 08 17:12:05 -0500 2009:
+> This really seems like it's in direct competition with the Wave
+> system... but Wave has a lot more support. And yes, Wave doesn't have
+> e-mail federation at the moment, but I think they plan to do that in
+> the future. So yes, I like the idea of a Sup server, I like being able
+> to access my (sup) mail from multiple computers, I like the idea of
+> having multiple UIs to the Sup Service... but I think that in the long
+> run, I'd feel just as good about a couple good open source UIs to
+> Google's Wave instead.
+
+I actually didn't think about this as being competition to Wave. The
+current implementation is much more narrowly scoped, but the grand
+generic document store vision does bear a resemblance. I don't know how
+far down that road the project will go. I don't want to lose mail client
+functionality for the sake of being as generic as Wave (I haven't seen
+any information on the subject, but I assume the translation to/from
+email is lossy).
+
+From garoth at gmail.com  Wed Dec  9 08:45:48 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Wed, 9 Dec 2009 08:45:48 -0500
+Subject: [sup-talk] sup-server
+In-Reply-To: <1260323222-sup-1616@zyrg.net>
+References: <1260291857-sup-4773@zyrg.net>
+	<80055d7c0912081412h483bc6dt8493b08dfab1d23b@mail.gmail.com>
+	<1260323222-sup-1616@zyrg.net>
+Message-ID: <80055d7c0912090545w2ac96a8cp23a8c5dedf32218f@mail.gmail.com>
+
+On Tue, Dec 8, 2009 at 9:33 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> Excerpts from Andrei Thorp's message of Tue Dec 08 17:12:05 -0500 2009:
+>> This really seems like it's in direct competition with the Wave
+>> system... but Wave has a lot more support. And yes, Wave doesn't have
+>> e-mail federation at the moment, but I think they plan to do that in
+>> the future. So yes, I like the idea of a Sup server, I like being able
+>> to access my (sup) mail from multiple computers, I like the idea of
+>> having multiple UIs to the Sup Service... but I think that in the long
+>> run, I'd feel just as good about a couple good open source UIs to
+>> Google's Wave instead.
+>
+> I actually didn't think about this as being competition to Wave. The
+> current implementation is much more narrowly scoped,
+
+Yeah, if you're sticking strictly to e-mail, this is a much better idea.
+
+> but the grand
+> generic document store vision does bear a resemblance. I don't know how
+> far down that road the project will go.
+
+The slight trouble that I foresee would be when Wave does do e-mail
+federation. I guess what I'm saying is that the future of this project
+would be reliant on whether or not Wave takes over, incorporates all
+of e-mail (as google seems to hope), and phases it out in the long
+run. I know, I know, there will be blood when this starts to happen
+(if it does). The reason that sup-server would have trouble if wave
+became popular would be simply that your e-mail would be fetched by
+wave servers and sup-server would not really have a place to be
+inserted, unless it actually became a mail server with some
+non-standard extensions (presumably for tagging, etc.). This might
+actually be an interesting direction to take regardless, actually.
+Upon thinking about how this might work, it seems a lot of data like
+annotations, labels, etc. could be stored in non-standard e-mail
+headers, and "sup clients" would just fetch the mail regularly and do
+stuff with the extra headers they have. The annotation system could,
+perhaps, list the line of the source + the annotation.The labels would
+be just a plain list. Then, you could even write back to the mail
+server your new headers with imap I guess?
+
+> I don't want to lose mail client
+> functionality for the sake of being as generic as Wave (I haven't seen
+> any information on the subject, but I assume the translation to/from
+> email is lossy).
+
+I guess we don't know whether or not it would be lossy yet. I suppose
+for the sake of wave internals (sending waves based on e-mails), there
+will have to be a lot of stuff cut, like most of the e-mail data
+fields (how would they know what the "to" person is when mapped to
+wave?). However, for the sake of sending back out to the e-mail
+system, they would probably store all of the relevant field data.
+
+Anyway, a lot of this is speculative, and the e-mail vs. wave battle
+of the future may not even happen because people are content enough
+with e-mail. Or it may be far off, or who knows! And I could sure use
+STS now to handle my mail in a sane way in the meanwhile.
+
+Foods for Thoughts,
+
+-Andrei Thorp
+
+P.S. I'll be excited for the future of sup regardless of what happens.
+I do honestly like this project a lot.
+
+From wmorgan-sup at masanjin.net  Fri Dec 11 12:13:50 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 11 Dec 2009 09:13:50 -0800
+Subject: [sup-talk] [ANN] Sup 0.9.1 released
+Message-ID: <1260551530-sup-6131@masanjin.net>
+
+I'm pleased to announce the release of Sup 0.9.1.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+This is mainly a bugfix release, with a couple minor new features rolled up.
+
+If you are using the Ferret backend, consider convering soon. I will probably
+add a deprecation notice in 0.10, and you support will be dropped in 0.11.
+
+Excitement in 0.9.1:
+
+* Make textfield behave more like readline, including C-w
+* Add ask_for_to config option. You can set all ask_for_* options to false, and
+  composing a message will go immediately to the editor.
+* RFC 2047 decode attachment file names
+        * default ask_for_to to true
+* add undo power to thread-view-mode
+* display labels of polled messages
+* increase numbers in contact-list-mode
+* fix --compose option, and add a --subject option
+* include hook filename in error messages
+* As always, many bugfixes and tweaks.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Dec 11 12:15:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 11 Dec 2009 09:15:23 -0800
+Subject: [sup-talk] [ANN] Sup 0.9.1 released
+In-Reply-To: <1260551530-sup-6131@masanjin.net>
+References: <1260551530-sup-6131@masanjin.net>
+Message-ID: <1260551644-sup-47@masanjin.net>
+
+Two small comments on this release.
+
+1. I just wrapped up the current master. There were some minor features
+added, but this is mostly bugfixes.
+
+2. This gem in on gemcutter, since RubyForge no longer does gem hosting.
+It is likely that you will have to "gem install gemcutter" before you
+can get this version.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From garoth at gmail.com  Fri Dec 11 13:31:16 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Fri, 11 Dec 2009 13:31:16 -0500
+Subject: [sup-talk] [ANN] Sup 0.9.1 released
+In-Reply-To: <1260551644-sup-47@masanjin.net>
+References: <1260551530-sup-6131@masanjin.net> <1260551644-sup-47@masanjin.net>
+Message-ID: <80055d7c0912111031o12bd212em1d62e67159bc7d2@mail.gmail.com>
+
+Wow, crazy. Well, good work contributors, thank you very much.
+
+-AT
+
+From mcdermott.michaelj at gmail.com  Mon Dec 14 12:01:39 2009
+From: mcdermott.michaelj at gmail.com (Michael McDermott)
+Date: Mon, 14 Dec 2009 11:01:39 -0600
+Subject: [sup-talk] Sorting
+Message-ID: <1260809732-sup-4895@zion>
+
+After running a search in Sup, is there any way to sort the result set? Or,
+perhaps, specify the ordering in the query? (ala SQL)
+-- 
+Michael McDermott
+www.mad-computer-scientist.com
+
+From marco-oweber at gmx.de  Mon Dec 14 12:13:01 2009
+From: marco-oweber at gmx.de (Marc Weber)
+Date: Mon, 14 Dec 2009 18:13:01 +0100
+Subject: [sup-talk] Sorting
+In-Reply-To: <1260809732-sup-4895@zion>
+References: <1260809732-sup-4895@zion>
+Message-ID: <1260810592-sup-4853@nixos>
+
+Excerpts from Michael McDermott's message of Mon Dec 14 18:01:39 +0100 2009:
+> After running a search in Sup, is there any way to sort the result set? Or,
+> perhaps, specify the ordering in the query? (ala SQL)
+
+Hi McDermott
+
+Sup is lazy.
+
+It only searches as much results as fit on screen unless you use !!
+I think threads are sorted by date which makes much sense.
+
+You propose that you want a ORDER BY feature.
+>From SQL you should also know that this forces the database to fetch all
+rows even if you're interested only in LIMIT 1.
+
+So try !! and wait. If it' fast enough tell so. If it's not think about
+another way to solve you real problem. Maybe just put your real problem
+here. There may be a different solution.
+
+You want to stort your threads by which field?
+
+Marc Weber
+
+From ezyang at MIT.EDU  Mon Dec 14 12:17:19 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Mon, 14 Dec 2009 12:17:19 -0500
+Subject: [sup-talk] Sorting
+In-Reply-To: <1260810592-sup-4853@nixos>
+References: <1260809732-sup-4895@zion> <1260810592-sup-4853@nixos>
+Message-ID: <1260810972-sup-8070@ezyang>
+
+Excerpts from Marc Weber's message of Mon Dec 14 12:13:01 -0500 2009:
+> It only searches as much results as fit on screen unless you use !!
+> I think threads are sorted by date which makes much sense.
+
+If we have an index on X field you want to sort on, we shouldn't
+need to grab all of the entries either.  Although, this is entirely
+index dependent...
+
+Edward
+
+From byzkarl at yahoo.com  Mon Dec 14 16:28:04 2009
+From: byzkarl at yahoo.com (Karl Schudt)
+Date: Mon, 14 Dec 2009 15:28:04 -0600
+Subject: [sup-talk] Crash of Sup 0.9.1
+Message-ID: <20091214212804.GA4198@linux-vk5u.ben.pri>
+
+I installed Sup on Opensuse, and it seems to run fine, indexing my gmail
+account. But when I type a "\" to search, it crashes.
+
+
+--- NoMethodError from thread: main
+undefined method `new_field' for Ncurses::Form:Module
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/textfield.rb:36:in `activate'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:561:in `ask'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:26:in `synchronize'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:26:in `sync'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:560:in `ask'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `send'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `method_missing'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/modes/scroll-mode.rb:84:in `search_in_buffer'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/mode.rb:51:in `send'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/mode.rb:51:in `handle_input'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:265:in `handle_input'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/bin/sup:243
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From garoth at gmail.com  Mon Dec 14 16:51:12 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Mon, 14 Dec 2009 16:51:12 -0500
+Subject: [sup-talk] Crash of Sup 0.9.1
+In-Reply-To: <20091214212804.GA4198@linux-vk5u.ben.pri>
+References: <20091214212804.GA4198@linux-vk5u.ben.pri>
+Message-ID: <80055d7c0912141351q4313a3fbp71b1974b1adeae42@mail.gmail.com>
+
+On Mon, Dec 14, 2009 at 4:28 PM, Karl Schudt <byzkarl at yahoo.com> wrote:
+> --- NoMethodError from thread: main
+> undefined method `new_field' for Ncurses::Form:Module
+
+As a somewhat obvious thing to say, I would guess that your ruby
+ncurses or ncurses is too old/new. Try upgrading your ncurses stuff --
+might help.
+
+(Just a guess.)
+
+-AT
+
+From cworth at cworth.org  Mon Dec 14 18:12:41 2009
+From: cworth at cworth.org (Carl Worth)
+Date: Mon, 14 Dec 2009 15:12:41 -0800
+Subject: [sup-talk] Sorting
+In-Reply-To: <1260809732-sup-4895@zion>
+References: <1260809732-sup-4895@zion>
+Message-ID: <87eimx2lqu.fsf@yoom.home.cworth.org>
+
+On Mon, 14 Dec 2009 11:01:39 -0600, Michael McDermott <mcdermott.michaelj at gmail.com> wrote:
+> After running a search in Sup, is there any way to sort the result set? Or,
+> perhaps, specify the ordering in the query? (ala SQL)
+
+The Xapian database (which Sup uses optionally now and perhaps
+exclusively in the future) allows results to be sorted by anything
+stored in a "value" field of the documents.
+
+If I recall correctly, Sup is currently storing three things in "value"
+fields:
+
+	1. Message ID
+
+        2. Thread ID (which is Message ID of a representative message)
+
+	3. Date
+
+So it's quite easy to have Xapian return things based on an ordering of
+any one of those values (in either direction). And this does not require
+fetching all documents.
+
+Sorting on anything else would require either fetching all documents,
+(and doing the sort in the user-interface), or else storing an
+additional value for each document in the database.
+
+What is it that you actually want to sort on?
+
+-carl
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091214/b4017175/attachment-0001.bin>
+
+From ezyang at MIT.EDU  Tue Dec 15 00:35:42 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 15 Dec 2009 00:35:42 -0500
+Subject: [sup-talk] Fwd: Automatic labels backup
+Message-ID: <1260855317-sup-863@ezyang>
+
+Ever had your index corrupted, and your last backup of your labels from
+a month ago?  Ever had to go speed through a month's worth of mail?
+
+Well, now, you can /not/ have to do that, with a handy-dandy automated
+index dump tool that I've written.  It's at the bottom of the
+hooks page here: <http://sup.rubyforge.org/wiki/wiki.pl?Hooks> and I've
+reproduced it below for completeness.
+
+This is the first substantial bit of Ruby code I've ever written, so
+style nits as well as improvements greatly welcomed; in particular
+automatic gzipping of the dumpfiles, and maybe a less braindead backup
+rotation technique.
+
+Cheers,
+Edward
+
+require 'ftools'
+
+Redwood::reporting_thread("dump") do
+    maintain = 7
+    wait = 21600
+    while true
+        say "Rotating dumps"
+        filename = File.join(BASE_DIR, "dump")
+        maintain.downto(0) do |i|
+            rotatename = filename + "." + i.to_s
+            if File.exist?(rotatename)
+                if i == maintain
+                    File.unlink(rotatename)
+                else
+                    File.move(rotatename, filename + "." + (i+1).to_s)
+                end
+            end
+        end
+        say "Dumping labels to .sup/dump.0"
+        dumpfile = File.new(filename + ".0", "w")
+        Redwood::Index.each_message :load_spam => true, :load_deleted => true, :load_killed => true do |m|
+            dumpfile.puts "#{m.id} (#{m.labels.to_a.sort_by { |l| l.to_s } * ' '})"
+        end
+        dumpfile.close
+        say "Done dumping"
+        sleep wait
+    end
+end
+
+From ezyang at MIT.EDU  Tue Dec 15 17:40:54 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 15 Dec 2009 17:40:54 -0500
+Subject: [sup-talk] Odd bug with lazy-loaded messages
+In-Reply-To: <1249807206-sup-55@javelin>
+References: <1248716007-sup-5156@javelin> <1249319474-sup-8322@masanjin.net>
+	<1249711570-sup-2277@javelin> <1249807206-sup-55@javelin>
+Message-ID: <1260916831-sup-257@ezyang>
+
+Excerpts from Edward Z. Yang's message of Sun Aug 09 04:40:33 -0400 2009:
+> It looks like it's still a problem in some sporadic cases.  Going to
+> submit a more thorough patch soon.
+
+For the record, I've switched to OfflineIMAP and am not looking back,
+so consider this patchset orphaned.
+
+Edward
+
+From jayzer at gmail.com  Tue Dec 15 19:24:01 2009
+From: jayzer at gmail.com (Jay Mendoza)
+Date: Tue, 15 Dec 2009 18:24:01 -0600
+Subject: [sup-talk] phantom unread messages & address book autocomplete
+Message-ID: <1260922380-sup-33@orion>
+
+I've been using sup for a few weeks now and just have a couple of
+questions.
+
+I seem to run into an issue of having at least one elusive unread
+message from time to time. It appears in Unread, Inbox, Attachments, and
+Killed, but no amount of $ or @ seems to remedy the situation. Searching
+for is:unread turns up nothing, and none of the labels with which the
+message is marked will display anything, either. Is there a better way
+to track this down? I'm using sup 0.9.1/xapian.
+
+Is there a trick to getting autocomplete to work for email addresses in
+the To: field? I've only ever seen it work on two addresses (and one was
+my own), and even then, not very consistently. It almost seems like I've
+had to have use the address once before during the session for it to
+work properly. Maybe this is the desired behavior, but I feel like I'm
+missing something here.
+-- 
+Jay
+
+From ezyang at MIT.EDU  Tue Dec 15 19:35:08 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 15 Dec 2009 19:35:08 -0500
+Subject: [sup-talk] phantom unread messages & address book autocomplete
+In-Reply-To: <1260922380-sup-33@orion>
+References: <1260922380-sup-33@orion>
+Message-ID: <1260923477-sup-3509@ezyang>
+
+No comment on the first issue, but...
+
+Excerpts from Jay Mendoza's message of Tue Dec 15 19:24:01 -0500 2009:
+> Is there a trick to getting autocomplete to work for email addresses in
+> the To: field? I've only ever seen it work on two addresses (and one was
+> my own), and even then, not very consistently. It almost seems like I've
+> had to have use the address once before during the session for it to
+> work properly. Maybe this is the desired behavior, but I feel like I'm
+> missing something here.
+
+My understanding of this is that you have to explicitly save the address
+in order to make it show up on autocomplete (I've forgotten the keybinding,
+since I'm /so/ terrible at doing this).
+
+I would love to see autocomplete not be braindead about two equivalent
+names; for example, sup-talk at rubyforge.org also comes up as
+sup-talk <sup-talk at rubyforge.org>, and I can't just type "sup" and
+autocomplete to something complete.
+
+Cheers,
+Edward
+
+From ezyang at MIT.EDU  Tue Dec 15 20:39:41 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 15 Dec 2009 20:39:41 -0500
+Subject: [sup-talk] Current art for sup-sync-back and maildir
+Message-ID: <1260927504-sup-4241@ezyang>
+
+What is the current art of backwards synchronization for
+maildir sources?  I'm almost out of quota on my main account
+and I'd like to make OfflineImap purge all of the messages I've
+deleted over the years (I also don't relish the prospect of
+running a sup-sync after manually deleting messages myself).
+
+Cheers,
+Edward
+
+From jayzer at gmail.com  Wed Dec 16 00:43:23 2009
+From: jayzer at gmail.com (Jay Mendoza)
+Date: Tue, 15 Dec 2009 23:43:23 -0600
+Subject: [sup-talk] phantom unread messages & address book autocomplete
+In-Reply-To: <1260923477-sup-3509@ezyang>
+References: <1260922380-sup-33@orion> <1260923477-sup-3509@ezyang>
+Message-ID: <1260942098-sup-3347@orion>
+
+Excerpts from Edward Z. Yang's message of Tue Dec 15 18:35:08 -0600 2009:
+> No comment on the first issue, but...
+> 
+> Excerpts from Jay Mendoza's message of Tue Dec 15 19:24:01 -0500 2009:
+> > Is there a trick to getting autocomplete to work for email addresses in
+> > the To: field? I've only ever seen it work on two addresses (and one was
+> > my own), and even then, not very consistently. It almost seems like I've
+> > had to have use the address once before during the session for it to
+> > work properly. Maybe this is the desired behavior, but I feel like I'm
+> > missing something here.
+> 
+> My understanding of this is that you have to explicitly save the address
+> in order to make it show up on autocomplete (I've forgotten the keybinding,
+> since I'm /so/ terrible at doing this).
+> 
+> I would love to see autocomplete not be braindead about two equivalent
+> names; for example, sup-talk at rubyforge.org also comes up as
+> sup-talk <sup-talk at rubyforge.org>, and I can't just type "sup" and
+> autocomplete to something complete.
+
+Ah, thanks for the info. I'll have a look at the code.
+-- 
+Jay
+
+From johnbent at lanl.gov  Thu Dec 17 18:46:39 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 17 Dec 2009 16:46:39 -0700
+Subject: [sup-talk] exception after polling
+Message-ID: <1261093538-sup-8147@tangerine.lanl.gov>
+
+So sup was sitting idle and it did a poll and I saw the new message
+briefly enter the inbox and then it crashed:
+
+[Thu Dec 17 16:42:45 -0700 2009] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of ~/.sup/exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: periodic poll
+undefined method `content_width' for nil:NilClass
+./lib/sup/modes/thread-index-mode.rb:876:in `from_width'
+./lib/sup/modes/thread-index-mode.rb:801:in `text_for_thread_at'
+./lib/sup/hook.rb:55:in `each_with_index'
+./lib/sup/modes/thread-index-mode.rb:800:in `each'
+./lib/sup/modes/thread-index-mode.rb:800:in `each_with_index'
+./lib/sup/modes/thread-index-mode.rb:800:in `text_for_thread_at'
+./lib/sup/modes/thread-index-mode.rb:758:in `regen_text'
+./lib/sup/util.rb:364:in `map_with_index'
+./lib/sup/hook.rb:55:in `each_with_index'
+./lib/sup/util.rb:364:in `each'
+./lib/sup/util.rb:364:in `each_with_index'
+./lib/sup/util.rb:364:in `map_with_index'
+./lib/sup/modes/thread-index-mode.rb:758:in `regen_text'
+./lib/sup/modes/thread-index-mode.rb:230:in `update'
+./lib/sup/modes/thread-index-mode.rb:702:in `add_or_unhide'
+./lib/sup/modes/thread-index-mode.rb:188:in `handle_added_update'
+./lib/sup/update.rb:26:in `send'
+./lib/sup/update.rb:26:in `relay'
+./lib/sup/update.rb:26:in `each'
+./lib/sup/update.rb:26:in `relay'
+./lib/sup/util.rb:520:in `send'
+./lib/sup/util.rb:520:in `method_missing'
+./lib/sup/poll.rb:166:in `add_new_message'
+./lib/sup/poll.rb:109:in `do_poll'
+./lib/sup/poll.rb:151:in `each_message_from'
+./lib/sup/source.rb:104:in `each'
+./lib/sup/util.rb:560:in `send'
+./lib/sup/util.rb:560:in `__pass'
+./lib/sup/util.rb:547:in `method_missing'
+./lib/sup/poll.rb:139:in `each_message_from'
+./lib/sup/poll.rb:93:in `do_poll'
+./lib/sup/poll.rb:81:in `each'
+./lib/sup/poll.rb:81:in `do_poll'
+./lib/sup/poll.rb:80:in `synchronize'
+./lib/sup/poll.rb:80:in `do_poll'
+./lib/sup/util.rb:520:in `send'
+./lib/sup/util.rb:520:in `method_missing'
+./lib/sup/modes/poll-mode.rb:15:in `poll'
+./lib/sup/poll.rb:48:in `poll'
+./lib/sup/poll.rb:65:in `start'
+./lib/sup.rb:77:in `reporting_thread'
+./lib/sup.rb:75:in `initialize'
+./lib/sup.rb:75:in `new'
+./lib/sup.rb:75:in `reporting_thread'
+./lib/sup/poll.rb:62:in `start'
+./lib/sup/util.rb:520:in `send'
+./lib/sup/util.rb:520:in `method_missing'
+bin/sup:203
+
+
+From eg at gaute.vetsj.com  Fri Dec 18 10:37:16 2009
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 18 Dec 2009 16:37:16 +0100
+Subject: [sup-talk] Ruby 1.9: encodings
+In-Reply-To: <80055d7c0911061922w64ef7cb0qf0c7bed008cc728c@mail.gmail.com>
+References: <80055d7c0911061922w64ef7cb0qf0c7bed008cc728c@mail.gmail.com>
+Message-ID: <5a5b14cf0912180737n600fc2acx30fa14028d4a7662@mail.gmail.com>
+
+I just tried.. im getting the same, afraid im not skilled enough to
+figure out what is wrong thou..
+
+--- ArgumentError from thread: load threads for thread-index-mode
+invalid byte sequence in US-ASCII
+/home/gaute/dev/ruby/sup.git/lib/sup/util.rb:181:in `scan'
+/home/gaute/dev/ruby/sup.git/lib/sup/util.rb:181:in `display_length'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:224:in
+`block in draw_line_from_array'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:222:in `each'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:222:in
+`each_with_index'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:222:in
+`draw_line_from_array'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:197:in `draw_line'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/line-cursor-mode.rb:50:in `draw_line'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:48:in `block in draw'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:48:in `each'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/scroll-mode.rb:48:in `draw'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/line-cursor-mode.rb:37:in `draw'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:108:in `draw'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:92:in `redraw'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:329:in `draw_screen'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:744:in `clear'
+/home/gaute/dev/ruby/sup.git/lib/sup/util.rb:520:in `method_missing'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:638:in
+`load_n_threads'
+(eval):12:in `load_n_threads'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:609:in
+`block in load_n_threads_background'
+/home/gaute/dev/ruby/sup.git/lib/sup.rb:78:in `block in reporting_thread'
+
+- gaute
+
+On Sat, Nov 7, 2009 at 4:22 AM, Andrei Thorp <garoth at gmail.com> wrote:
+> Eh, bad news.
+>
+> So I've been testing Sup in an 1.9 environment further, and I have
+> found that there are a great deal of problems with regards to
+> encodings. "invalid byte sequence in US-ASCII" is something you'll see
+> frequently. This seems to be when parsing messages that have non-ascii
+> chararacters.
+>
+> Ouch :(
+>
+> Has this already been taken care of in the git somewhere?
+>
+> -AT
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From jayzer at gmail.com  Fri Dec 18 15:26:12 2009
+From: jayzer at gmail.com (Jay Mendoza)
+Date: Fri, 18 Dec 2009 14:26:12 -0600
+Subject: [sup-talk] AM/PM display
+Message-ID: <1261167840-sup-592@orion>
+
+In inbox-mode, Sup seems to display all of my message as if they were
+received in the PM hours. Is this a known defect, or just a
+misconfiguration on my part?
+-- 
+Jay
+
+From pioto at pioto.org  Fri Dec 18 16:34:33 2009
+From: pioto at pioto.org (Mike Kelly)
+Date: Fri, 18 Dec 2009 16:34:33 -0500
+Subject: [sup-talk] AM/PM display
+In-Reply-To: <1261167840-sup-592@orion>
+References: <1261167840-sup-592@orion>
+Message-ID: <d682971d-dfa9-4107-824c-c879b71c0ae5@email.android.com>
+
+"Me too".
+
+I posted about similar issues a while ago, but I don't think I got far. 
+
+"Jay Mendoza" <jayzer at gmail.com> wrote:
+
+>In inbox-mode, Sup seems to display all of my message as if they were
+>received in the PM hours. Is this a known defect, or just a
+>misconfiguration on my part?
+>-- 
+>Jay
+>_______________________________________________
+>sup-talk mailing list
+>sup-talk at rubyforge.org
+>http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+-- 
+Mike Kelly
+
+From tero at tilus.net  Fri Dec 18 18:51:51 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 19 Dec 2009 01:51:51 +0200
+Subject: [sup-talk] [PATCH] Moar configurability (was: AM/PM display)
+In-Reply-To: <1261167840-sup-592@orion>
+References: <1261167840-sup-592@orion>
+Message-ID: <1261179239-sup-9258@tilus.net>
+
+Jay Mendoza, 2009-12-18 22:26:
+> In inbox-mode, Sup seems to display all of my message as if they
+> were received in the PM hours. Is this a known defect, or just a
+> misconfiguration on my part?
+
+I remember seeing AM hours (and see them now).  I also don't see how
+it possibly could be caused by configuration.
+
+...which reminds me of a couple of configurability hacks (configurable
+"missing attachment detector" and configurable thread list date
+formats) I cooked together quite a while ago and don't remenber
+sharing yet.  Shame on me.  So here they are, keep them if you like
+them (if they aren't already obsoleted by something I'm not aware of)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0006-configurable-listing-date-formats-and-attachment-det.patch
+Type: application/octet-stream
+Size: 2827 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091219/ce94f2f9/attachment.obj>
+
+From barton.schaefer at gmail.com  Fri Dec 18 23:24:40 2009
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Fri, 18 Dec 2009 20:24:40 -0800
+Subject: [sup-talk] Justin Mason reviews sup on his blog
+Message-ID: <6bb609560912182024i3f8cd55fufb1cd90bcd5eb299@mail.gmail.com>
+
+Yes, the Justin Mason who heads up the SpamAssassin project.
+
+http://taint.org/2009/12/18/005520a.html
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 12:09:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 09:09:11 -0800
+Subject: [sup-talk] Justin Mason reviews sup on his blog
+In-Reply-To: <6bb609560912182024i3f8cd55fufb1cd90bcd5eb299@mail.gmail.com>
+References: <6bb609560912182024i3f8cd55fufb1cd90bcd5eb299@mail.gmail.com>
+Message-ID: <1261242535-sup-932@masanjin.net>
+
+Reformatted excerpts from Bart Schaefer's message of 2009-12-18:
+> Yes, the Justin Mason who heads up the SpamAssassin project.
+> 
+> http://taint.org/2009/12/18/005520a.html
+
+Cool! All very valid criticisms.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:09:57 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:09:57 -0800
+Subject: [sup-talk] line-wrapping
+Message-ID: <1261246000-sup-3729@masanjin.net>
+
+I've just added a thread-view-mode feature in next where text portions
+of messages are now wrapped at the current screen width, and pressing
+'w' toggles between that and no wrapping at all.
+
+If anyone wants the old behavior of wrapping at 80 columns regardless of
+screen width, you will have to submit a patch to make this a three-way
+toggle, or keep your window at 80 chars. :)
+
+(Branch toggle-line-wrap, merged into next.)
+
+Probably a million other Sup things that are higher priority, but this
+is what I felt like working on....
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:12:12 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:12:12 -0800
+Subject: [sup-talk] AM/PM display
+In-Reply-To: <1261167840-sup-592@orion>
+References: <1261167840-sup-592@orion>
+Message-ID: <1261246208-sup-2909@masanjin.net>
+
+Reformatted excerpts from Jay Mendoza's message of 2009-12-18:
+> In inbox-mode, Sup seems to display all of my message as if they were
+> received in the PM hours. Is this a known defect, or just a
+> misconfiguration on my part?
+
+Weird. Are the times otherwise correct?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:12:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:12:54 -0800
+Subject: [sup-talk] [PATCH] Moar configurability (was: AM/PM display)
+In-Reply-To: <1261179239-sup-9258@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+Message-ID: <1261246334-sup-1438@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-18:
+> ...which reminds me of a couple of configurability hacks (configurable
+> "missing attachment detector" and configurable thread list date
+> formats) I cooked together quite a while ago and don't remenber
+> sharing yet.
+
+Both of these are good ideas, but I would like to add them in hook form
+rather than in configuration form, please.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:34:22 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:34:22 -0800
+Subject: [sup-talk] Ruby 1.9: encodings
+In-Reply-To: <5a5b14cf0912180737n600fc2acx30fa14028d4a7662@mail.gmail.com>
+References: <80055d7c0911061922w64ef7cb0qf0c7bed008cc728c@mail.gmail.com>
+	<5a5b14cf0912180737n600fc2acx30fa14028d4a7662@mail.gmail.com>
+Message-ID: <1261246544-sup-7566@masanjin.net>
+
+Reformatted excerpts from Gaute Hope's message of 2009-12-18:
+> I just tried.. im getting the same, afraid im not skilled enough to
+> figure out what is wrong thou..
+
+Do the errors still occur if you apply this patch?
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index f99e1c1..92aaff4 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -176,13 +176,7 @@ end
+ class String
+   ## nasty multibyte hack for ruby 1.8. if it's utf-8, split into chars using
+   ## the utf8 regex and count those. otherwise, use the byte length.
+-  def display_length
+-    if $encoding == "UTF-8" || $encoding == "utf8"
+-      scan(/./u).size
+-    else
+-      size
+-    end
+-  end
++  def display_length; length end
+ 
+   def camel_to_hyphy
+     self.gsub(/([a-z])([A-Z0-9])/, '\1-\2').downcase
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:38:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:38:08 -0800
+Subject: [sup-talk] exception after polling
+In-Reply-To: <1261093538-sup-8147@tangerine.lanl.gov>
+References: <1261093538-sup-8147@tangerine.lanl.gov>
+Message-ID: <1261247693-sup-9694@masanjin.net>
+
+Reformatted excerpts from John Bent's message of 2009-12-17:
+> So sup was sitting idle and it did a poll and I saw the new message
+> briefly enter the inbox and then it crashed:
+
+Please submit this to http://masanjin.net/sup-bugs/ after ensuring it
+isn't already there. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:44:25 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:44:25 -0800
+Subject: [sup-talk] phantom unread messages & address book autocomplete
+In-Reply-To: <1260923477-sup-3509@ezyang>
+References: <1260922380-sup-33@orion> <1260923477-sup-3509@ezyang>
+Message-ID: <1261248168-sup-7614@masanjin.net>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-12-15:
+> My understanding of this is that you have to explicitly save the
+> address in order to make it show up on autocomplete (I've forgotten
+> the keybinding, since I'm /so/ terrible at doing this).
+
+That's basically correct. Currently it autocompletes everyone in your
+contact list, plus the 10 most recent addresses from the index, plus the
+results of the extra-contact-addresses hook. This could definitely be
+improved. Please submit an issue to the issue tracker.
+
+> I would love to see autocomplete not be braindead about two equivalent
+> names; for example, sup-talk at rubyforge.org also comes up as sup-talk
+> <sup-talk at rubyforge.org>, and I can't just type "sup" and autocomplete
+> to something complete.
+
+I find this irritating too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 13:57:21 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 10:57:21 -0800
+Subject: [sup-talk] Current art for sup-sync-back and maildir
+In-Reply-To: <1260927504-sup-4241@ezyang>
+References: <1260927504-sup-4241@ezyang>
+Message-ID: <1261248273-sup-4768@masanjin.net>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-12-15:
+> What is the current art of backwards synchronization for
+> maildir sources?  I'm almost out of quota on my main account
+> and I'd like to make OfflineImap purge all of the messages I've
+> deleted over the years (I also don't relish the prospect of
+> running a sup-sync after manually deleting messages myself).
+
+Sadly, there is no art. No one ever got around to implementing this.
+You could do it manually via devel/console.sh (or the in-screen console)
+with a little effort.
+
+Something like:
+
+  $ sh devel/console.sh
+  > s = SourceManager.source_for "maildir:/WHATEVER"
+  > q = Index.parse_query "label:deleted source:#{s.id}"
+  > Index.each_id(q) { |id| fn = s.filename_for_id(id); puts "delete #{fn}" }
+
+(You'll have to use the most recent git because I just added the
+Maildir#filename_for_id method.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ville.kovacs at gmail.com  Sun Dec  6 09:53:31 2009
+From: ville.kovacs at gmail.com (Ville Kovacs)
+Date: Sun, 6 Dec 2009 16:53:31 +0200
+Subject: [sup-talk] Crash report
+Message-ID: <43da20c0912060653l33fca60avcea69533da3da56@mail.gmail.com>
+
+Hello
+
+I get this error when running sup with one gmail address added as a
+source. First i ran sup-config and then sup itself, this is a fresh
+install of sup on this machine.
+
+I used this PKGBUILD to install: http://aur.archlinux.org/packages.php?ID=26439
+
+Thank you!
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `>=' for true:TrueClass
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/source.rb:88:in `done?'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:84:in `block (2
+levels) in do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:81:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:81:in `block in do_poll'
+<internal:prelude>:8:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:80:in `do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/bin/sup:196:in `block (2 levels)
+in <module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup.rb:77:in `block in
+reporting_thread'
+
+From chamill at wesleyan.edu  Fri Dec 11 09:19:12 2009
+From: chamill at wesleyan.edu (C. Morgan Hamill)
+Date: Fri, 11 Dec 2009 09:19:12 -0500
+Subject: [sup-talk] Sent mail in inbox view
+Message-ID: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+
+Howdy folks,
+
+I've got a really straightforward question that I can't seem to find an
+answer for in the wiki or the New Users Guide or Google, for that matter?is
+it normal behavior for a newly composed and then sent message to appear in
+inbox view, i.e. to be labled both 'inbox' and 'sent'? Or do I have
+something misconfigured? Any help would be appreciated.
+
+Yours, Morgan
+chamill at wesleyan.edu
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091211/ac6b49d8/attachment-0001.html>
+
+From vernux at us.ibm.com  Tue Dec 15 17:10:47 2009
+From: vernux at us.ibm.com (Vernon Mauery)
+Date: Tue, 15 Dec 2009 14:10:47 -0800
+Subject: [sup-talk] sup crash after a reply
+Message-ID: <1260914644-sup-8154@bubs>
+
+
+I am running the latest git version of sup (as of yesterday) and I
+imported my 70000+ emails, archived most of them and have started
+to receive and send new mails.  I just replied to a message, was
+reading other messages in that thread, and then went back to the
+index listing with 'x' and I got this crash.  In the mean time, it
+is possible that the message I just sent had made it to the mailing
+list and back to me before going back to the message index.  I am
+not sure on that.  But here is the backtrace:
+
+[Tue Dec 15 14:01:29 -0800 2009] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of /home/vhmauery/.sup/exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: periodic poll
+:(null) isn't a valid argument for IndexReader.get_document(index)
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/1.8/ferret/index.rb:413:in `[]'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/ferret_index.rb:257:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/ferret_index.rb:256:in `build_message'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `send'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `method_missing'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:95:in `do_poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:154:in `each_message_from'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/maildir.rb:160:in `each'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/maildir.rb:157:in `upto'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/maildir.rb:157:in `each'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:560:in `send'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:560:in `__pass'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:547:in `method_missing'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:142:in `each_message_from'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:94:in `do_poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:82:in `each'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:82:in `do_poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:81:in `synchronize'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:81:in `do_poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `send'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `method_missing'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/modes/poll-mode.rb:15:in `poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:48:in `poll'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:65:in `start'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup.rb:77:in `reporting_thread'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup.rb:75:in `initialize'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup.rb:75:in `new'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup.rb:75:in `reporting_thread'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/poll.rb:62:in `start'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `send'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `method_missing'
+/home/vhmauery/.gem/ruby/1.8/gems/sup-0.9.1/bin/sup:209
+/home/vhmauery/.gem/ruby/1.8/bin/sup:19:in `load'
+/home/vhmauery/.gem/ruby/1.8/bin/sup:19
+
+From byzkarl at yahoo.com  Mon Dec 14 07:41:04 2009
+From: byzkarl at yahoo.com (Karl Schudt)
+Date: Mon, 14 Dec 2009 06:41:04 -0600
+Subject: [sup-talk] Crash when I search in buffer
+Message-ID: <20091214124104.GA8637@linux-vk5u>
+
+Hi,
+
+I'm using sup 0.9.1, and it seems to work fine until I try to search in
+the buffer. Then it crashes.
+
+
+--- NoMethodError from thread: main
+undefined method `new_field' for Ncurses::Form:Module
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/textfield.rb:36:in `activate'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:561:in `ask'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:26:in `synchronize'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:26:in `sync'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:560:in `ask'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `send'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/util.rb:520:in `method_missing'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/modes/scroll-mode.rb:84:in `search_in_buffer'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/mode.rb:51:in `send'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/mode.rb:51:in `handle_input'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/lib/sup/buffer.rb:265:in `handle_input'
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9.1/bin/sup:243
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From mmcdermott at mad-computer-scientist.com  Mon Dec 14 15:45:28 2009
+From: mmcdermott at mad-computer-scientist.com (Michael McDermott)
+Date: Mon, 14 Dec 2009 14:45:28 -0600
+Subject: [sup-talk] Sorting
+In-Reply-To: <1260810592-sup-4853@nixos>
+References: <1260809732-sup-4895@zion> <1260810592-sup-4853@nixos>
+Message-ID: <1260822912-sup-2952@zion>
+
+The thing that brought it to mind was search results. In particular, I was
+searching for messages with a particular label, then wanting to sort them by
+date. (I am running sup version 0.8.1, installed from the Jaunty repositories,
+if that is of any help).
+
+At least at my current version, the messages were not in a chronological order.
+There were messages from the last couple of days interleaved for the first few
+pages.
+
+That said, I am sure that arbitrary sorting would be useful. Heck, even 
+Thunderbird and Outlook (much less powerful though they be) allow messages to be
+sorted by fields other than date received.
+
+Excerpts from Marc Weber's message of Mon Dec 14 11:13:01 -0600 2009:
+> Excerpts from Michael McDermott's message of Mon Dec 14 18:01:39 +0100 2009:
+> > After running a search in Sup, is there any way to sort the result set? Or,
+> > perhaps, specify the ordering in the query? (ala SQL)
+> 
+> Hi McDermott
+> 
+> Sup is lazy.
+> 
+> It only searches as much results as fit on screen unless you use !!
+> I think threads are sorted by date which makes much sense.
+> 
+> You propose that you want a ORDER BY feature.
+> >From SQL you should also know that this forces the database to fetch all
+> rows even if you're interested only in LIMIT 1.
+> 
+> So try !! and wait. If it' fast enough tell so. If it's not think about
+> another way to solve you real problem. Maybe just put your real problem
+> here. There may be a different solution.
+> 
+> You want to stort your threads by which field?
+> 
+> Marc Weber
+-- 
+Michael McDermott
+www.mad-computer-scientist.com
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:02:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:02:40 -0800
+Subject: [sup-talk] Fwd: Automatic labels backup
+In-Reply-To: <1260855317-sup-863@ezyang>
+References: <1260855317-sup-863@ezyang>
+Message-ID: <1261249329-sup-5626@masanjin.net>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-12-14:
+> Ever had your index corrupted, and your last backup of your labels
+> from a month ago?  Ever had to go speed through a month's worth of
+> mail?
+> 
+> Well, now, you can /not/ have to do that, with a handy-dandy automated
+> index dump tool that I've written.
+
+Thanks, great idea and thank you for adding it to the wiki. I assume you
+put this in the startup hooks file?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:06:18 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:06:18 -0800
+Subject: [sup-talk] Crash of Sup 0.9.1
+In-Reply-To: <80055d7c0912141351q4313a3fbp71b1974b1adeae42@mail.gmail.com>
+References: <20091214212804.GA4198@linux-vk5u.ben.pri>
+	<80055d7c0912141351q4313a3fbp71b1974b1adeae42@mail.gmail.com>
+Message-ID: <1261249415-sup-7810@masanjin.net>
+
+Reformatted excerpts from Andrei Thorp's message of 2009-12-14:
+> As a somewhat obvious thing to say, I would guess that your ruby
+> ncurses or ncurses is too old/new. Try upgrading your ncurses stuff --
+> might help.
+
+I think this is probably correct---there's something screwey about your
+ncurses gem. Are you running Ruby 1.9 by any chance?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:08:13 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:08:13 -0800
+Subject: [sup-talk] sup crash after a reply
+In-Reply-To: <1260914644-sup-8154@bubs>
+References: <1260914644-sup-8154@bubs>
+Message-ID: <1261249617-sup-1685@masanjin.net>
+
+Reformatted excerpts from Vernon Mauery's message of 2009-12-15:
+> I am running the latest git version of sup (as of yesterday) and I
+> imported my 70000+ emails, archived most of them and have started to
+> receive and send new mails.
+
+I am going to throw this bug report in the big bucket of "weird Ferret
+issues that will go away once we stop using Ferret."
+
+In the mean time, you may want to switch to the Xapian backend.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:10:17 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:10:17 -0800
+Subject: [sup-talk] Sorting
+In-Reply-To: <1260822912-sup-2952@zion>
+References: <1260809732-sup-4895@zion> <1260810592-sup-4853@nixos>
+	<1260822912-sup-2952@zion>
+Message-ID: <1261249723-sup-5051@masanjin.net>
+
+Reformatted excerpts from Michael McDermott's message of 2009-12-14:
+> At least at my current version, the messages were not in a
+> chronological order.  There were messages from the last couple of days
+> interleaved for the first few pages.
+
+That's a bug, then. Messages should always be in chronological order. If
+this behavior persists with Sup 0.9.1, please submit a bug report to
+http://masanjin.net/sup-bugs/
+
+> That said, I am sure that arbitrary sorting would be useful. Heck,
+> even Thunderbird and Outlook (much less powerful though they be) allow
+> messages to be sorted by fields other than date received.
+
+Sorting by other fields is not so useful when you have a good full-text
+search. I doubt I will spend energy working on this, though as always,
+patches are welcome.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:11:32 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:11:32 -0800
+Subject: [sup-talk] Crash when I search in buffer
+In-Reply-To: <20091214124104.GA8637@linux-vk5u>
+References: <20091214124104.GA8637@linux-vk5u>
+Message-ID: <1261249855-sup-6929@masanjin.net>
+
+Reformatted excerpts from Karl Schudt's message of 2009-12-14:
+> I'm using sup 0.9.1, and it seems to work fine until I try to search in
+> the buffer. Then it crashes.
+
+Hm, another such report. Please submit this to
+http://masanjin.net/sup-bugs with the sup version, ruby version,
+ncurses gem version, and any other system information you think is
+relevant.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:14:33 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:14:33 -0800
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+Message-ID: <1261249910-sup-9552@masanjin.net>
+
+Reformatted excerpts from C. Morgan Hamill's message of 2009-12-11:
+> I've got a really straightforward question that I can't seem to find
+> an answer for in the wiki or the New Users Guide or Google, for that
+> matter?is it normal behavior for a newly composed and then sent
+> message to appear in inbox view, i.e. to be labled both 'inbox' and
+> 'sent'? Or do I have something misconfigured? Any help would be
+> appreciated.
+
+Nope, that's normal. It's easy to change that though. I wonder what
+people think--is it reassuring to see it in the inbox, or is it
+irritating?
+
+I think it might be better to auto-archive sent messages and to flash a
+message saying "Message sent!" or something instead.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:16:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:16:40 -0800
+Subject: [sup-talk] sup-server
+In-Reply-To: <1260291857-sup-4773@zyrg.net>
+References: <1260291857-sup-4773@zyrg.net>
+Message-ID: <1261250138-sup-9301@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-08:
+> I've pushed a branch sup-server to my github*.
+
+Very interesting!  The approach is quite different from my (perennially
+unfinished and unpublished) sup-server code so I'm very curious to see
+where this goes. Nice work.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Dec 19 14:19:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 19 Dec 2009 11:19:08 -0800
+Subject: [sup-talk] sup finds exception and exits
+In-Reply-To: <20091207154502.GA7611@depaul.edu>
+References: <20091207154502.GA7611@depaul.edu>
+Message-ID: <1261250290-sup-2455@masanjin.net>
+
+Reformatted excerpts from Susana Core's message of 2009-12-07:
+> I have been using sup for about six months and today it started
+> having fatal problems.  I'll appreciate any suggestions. 
+
+Based on the backtrace I think you have a fairly old version of Sup. Can
+you try it with 0.9.1 please?
+
+If the problem persists, please submit a bug report at
+http://masanjin.net/sup-bugs/. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ezyang at MIT.EDU  Sat Dec 19 14:13:44 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 19 Dec 2009 14:13:44 -0500
+Subject: [sup-talk] Fwd: Automatic labels backup
+In-Reply-To: <1261249329-sup-5626@masanjin.net>
+References: <1260855317-sup-863@ezyang> <1261249329-sup-5626@masanjin.net>
+Message-ID: <1261250002-sup-7910@ezyang>
+
+Excerpts from William Morgan's message of Sat Dec 19 14:02:40 -0500 2009:
+> Thanks, great idea and thank you for adding it to the wiki. I assume you
+> put this in the startup hooks file?
+
+Yep!
+
+Edward
+
+From byzkarl at yahoo.com  Sat Dec 19 15:00:30 2009
+From: byzkarl at yahoo.com (Karl Schudt)
+Date: Sat, 19 Dec 2009 14:00:30 -0600
+Subject: [sup-talk] Crash when I search in buffer
+In-Reply-To: <1261249855-sup-6929@masanjin.net>
+References: <20091214124104.GA8637@linux-vk5u>
+	<1261249855-sup-6929@masanjin.net>
+Message-ID: <1261252732-sup-8065@Vergil>
+
+Excerpts from William Morgan's message of Sat Dec 19 13:11:32 -0600 2009:
+> Reformatted excerpts from Karl Schudt's message of 2009-12-14:
+> > I'm using sup 0.9.1, and it seems to work fine until I try to search in
+> > the buffer. Then it crashes.
+> 
+> Hm, another such report. Please submit this to
+> http://masanjin.net/sup-bugs with the sup version, ruby version,
+> ncurses gem version, and any other system information you think is
+> relevant.
+
+I'm sorry--I re-installed linux on my computer, using Fedora instead of
+Opensuse. Sup installed and worked fine. It must be some peculiarity of
+Opensuse.
+
+
+.
+
+From web-sup at superscript.com  Sat Dec 19 18:57:24 2009
+From: web-sup at superscript.com (William Baxter)
+Date: Sat, 19 Dec 2009 18:57:24 -0500
+Subject: [sup-talk] Fwd: Automatic labels backup
+In-Reply-To: <1260855317-sup-863@ezyang>
+References: <1260855317-sup-863@ezyang>
+Message-ID: <1261265869-sup-7604@kronos>
+
+Excerpts from Edward Z. Yang's message of Tue Dec 15 00:35:42 -0500 2009:
+> Ever had your index corrupted, and your last backup of your labels from
+> a month ago?  Ever had to go speed through a month's worth of mail?
+> 
+> Well, now, you can /not/ have to do that, with a handy-dandy automated
+> index dump tool that I've written.  It's at the bottom of the
+> hooks page here: <http://sup.rubyforge.org/wiki/wiki.pl?Hooks> and I've
+> reproduced it below for completeness.
+
+For a few weeks I have used sup to read the same mail on two hosts: an office
+desktop and a laptop.  Each host fetches mail from the same IMAP server.  I use
+the desktop all day, altering labels frequently, and consequently find reading
+from the laptop less useful.  I want to sync labels across the two hosts.
+
+How much additional work does it take to turn an index dump into a sup-to-sup
+sync mechanism?  Suppose that on one host you dump the index and send a signed
+message.  This reaches the receiving host when you read mail there.  Use it to
+update the index, and the receiving host has labels matching those on the
+sending host.
+
+Cheers, W.
+
+From cam+sup at cammunism.org  Sat Dec 19 20:22:44 2009
+From: cam+sup at cammunism.org (Cameron Matheson)
+Date: Sat, 19 Dec 2009 18:22:44 -0700
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261249910-sup-9552@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+Message-ID: <1261272023-sup-2671@cammunism.org>
+
+Excerpts from William Morgan's message of Sat Dec 19 12:14:33 -0700 2009:
+> Reformatted excerpts from C. Morgan Hamill's message of 2009-12-11:
+> > I've got a really straightforward question that I can't seem to find
+> > an answer for in the wiki or the New Users Guide or Google, for that
+> > matter?is it normal behavior for a newly composed and then sent
+> > message to appear in inbox view, i.e. to be labled both 'inbox' and
+> > 'sent'? Or do I have something misconfigured? Any help would be
+> > appreciated.
+> 
+> Nope, that's normal. It's easy to change that though. I wonder what
+> people think--is it reassuring to see it in the inbox, or is it
+> irritating?
+
+I really appreciate the current behavior.
+
+From helgedt at tihlde.org  Sat Dec 19 16:27:28 2009
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Sat, 19 Dec 2009 22:27:28 +0100
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261249910-sup-9552@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+Message-ID: <1261257668-sup-8010@tihlde.org>
+
+Excerpts from William Morgan's message of Sat Dec 19 20:14:33 +0100 2009:
+> [sent messages appering in inbox]
+> I wonder what people think--is it reassuring to see it in the inbox, or is it
+> irritating?
+
+I like the way sup does it at the moment. Somebody (me) started a new thread,
+so it's something I'm interested in (seeing replies to). The way I use sup I
+will only keep emails in the inbox if they have some kind of outstanding
+action (me to reply or someone else to reply), so getting sent emails in the
+inbox is purrfect.
+
+The only mails I always archive at once are mails I've forwarded to my gmail
+account so I can see its attachments in a browser.
+-- 
+alge
+
+From tero at tilus.net  Sat Dec 19 21:17:28 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 20 Dec 2009 04:17:28 +0200
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261249910-sup-9552@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+Message-ID: <1261275173-sup-3191@tilus.net>
+
+William Morgan, 2009-12-19 21:14:
+> I think it might be better to auto-archive sent messages and to
+> flash a message saying "Message sent!" or something instead.
+
+I don't.  ;)
+
+One of the reasons I L-O-V-E sup is that it shows sent and drafts in
+inbox.  If the default behavior changes at some point, I'm fine as
+long as I can configure (so that I don't have to patch) my sup back to
+current behavior.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Sat Dec 19 21:31:26 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 20 Dec 2009 04:31:26 +0200
+Subject: [sup-talk] [PATCH] Moar configurability (was: AM/PM display)
+In-Reply-To: <1261246334-sup-1438@masanjin.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net>
+Message-ID: <1261276156-sup-5510@tilus.net>
+
+William Morgan, 2009-12-19 20:12:
+> Both of these are good ideas, but I would like to add them in hook
+> form rather than in configuration form, please.
+
+The detect-missing-attachment hook is pretty self evident but what you
+had in mind for the dates?  Formatter for the thread-index-mode date
+widget maybe?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Sat Dec 19 17:26:23 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 19 Dec 2009 17:26:23 -0500
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261249910-sup-9552@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+Message-ID: <1261261488-sup-6981@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Sat Dec 19 14:14:33 -0500 2009:
+
+> I think it might be better to auto-archive sent messages and to flash a
+> message saying "Message sent!" or something instead.
+
+I'm not opposed to a changed default (a configure knob would be nice
+though), but I've always liked the current behaviour and now find
+gmail's behaviour annoying.  To me, it fits more with the 'big stack
+of mail' approach, although it's definitely a grey area when you
+consider auto-archived sources.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091219/9c908b9f/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 08:38:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 05:38:30 -0800
+Subject: [sup-talk] [PATCH] Moar configurability (was: AM/PM display)
+In-Reply-To: <1261276156-sup-5510@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+Message-ID: <1261402666-sup-8068@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-19:
+> The detect-missing-attachment hook is pretty self evident but what you
+> had in mind for the dates?  Formatter for the thread-index-mode date
+> widget maybe?
+
+Exactly. We already have index-mode-size-widget, so
+index-mode-date-widget would be analogous.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 08:45:07 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 05:45:07 -0800
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261275173-sup-3191@tilus.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net> <1261275173-sup-3191@tilus.net>
+Message-ID: <1261402858-sup-6317@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-19:
+> One of the reasons I L-O-V-E sup is that it shows sent and drafts in
+> inbox.
+
+Ok, this seems like quite a consensus!
+
+Morgan, if you are really bugged by this behavior, I suggest you make a
+feature request on the bug tracker http://masanjin.net/sup-bugs/. It
+would not be difficult to make this configurable per-user. The easiest
+solution would be to have SentLoader act more like a regular source and
+generate labels based on its #archived? attribute instead of hardcoding
+them. 
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 09:38:33 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 06:38:33 -0800
+Subject: [sup-talk] Justin Mason reviews sup on his blog
+In-Reply-To: <6c399e450912210630x572b2131xb143fd3b28cd8404@mail.gmail.com>
+References: <6bb609560912182024i3f8cd55fufb1cd90bcd5eb299@mail.gmail.com>
+	<1261242535-sup-932@masanjin.net>
+	<6c399e450912210630x572b2131xb143fd3b28cd8404@mail.gmail.com>
+Message-ID: <1261406116-sup-6518@masanjin.net>
+
+Reformatted excerpts from Justin Mason's message of 2009-12-21:
+>  I _am_ really enjoying sup, btw ;)
+
+Excellent. The URL wrapping issue should be addressed in git next, btw.
+
+> Thanks for writing it!
+
+Thanks for SpamAssassin, which I use 10000 times a day.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jm at jmason.org  Mon Dec 21 09:30:26 2009
+From: jm at jmason.org (Justin Mason)
+Date: Mon, 21 Dec 2009 14:30:26 +0000
+Subject: [sup-talk] Justin Mason reviews sup on his blog
+In-Reply-To: <1261242535-sup-932@masanjin.net>
+References: <6bb609560912182024i3f8cd55fufb1cd90bcd5eb299@mail.gmail.com>
+	<1261242535-sup-932@masanjin.net>
+Message-ID: <6c399e450912210630x572b2131xb143fd3b28cd8404@mail.gmail.com>
+
+On Sat, Dec 19, 2009 at 17:09, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Bart Schaefer's message of 2009-12-18:
+>> Yes, the Justin Mason who heads up the SpamAssassin project.
+>>
+>> http://taint.org/2009/12/18/005520a.html
+>
+> Cool! All very valid criticisms.
+
+cheers!  I _am_ really enjoying sup, btw ;)   Thanks for writing it!
+
+-- 
+--j.
+
+From jesler at sourcefire.com  Mon Dec 21 11:28:17 2009
+From: jesler at sourcefire.com (Joel Esler)
+Date: Mon, 21 Dec 2009 11:28:17 -0500
+Subject: [sup-talk] Gmail question
+Message-ID: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+
+As I am sure you guys are inundated with "OMG sup and Gmail!" questions,
+I'll try and keep this brief.
+
+Either using Gmail via IMAP or using Gmail via offlineimap (either with
+sup), I have a bunch of labels that I let Gmail act as my "procmail" for.
+(match on "x", skip inbox, apply label)
+
+Obviously I'd like to be able to mash the "L" and see all these labels and
+their unread counts, however, I am obviously missing how to configure this,
+and I am sure it's quite easy.  Heck, I don't mind if you guys RTFM me to
+the right section of the 'manual', but please do.
+
+-- 
+Joel Esler | 302-223-5974 | gtalk: jesler at sourcefire.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091221/619c62a0/attachment.html>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 11:35:44 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 08:35:44 -0800
+Subject: [sup-talk] Fwd: Automatic labels backup
+In-Reply-To: <1261265869-sup-7604@kronos>
+References: <1260855317-sup-863@ezyang> <1261265869-sup-7604@kronos>
+Message-ID: <1261412908-sup-5527@masanjin.net>
+
+Reformatted excerpts from William Baxter's message of 2009-12-19:
+> How much additional work does it take to turn an index dump into a
+> sup-to-sup sync mechanism?  Suppose that on one host you dump the
+> index and send a signed message.  This reaches the receiving host when
+> you read mail there.  Use it to update the index, and the receiving
+> host has labels matching those on the sending host.
+
+It might not be fast or pretty, but should be easy. To sync an index
+on computer B based on a dump from computer A, you should be able to
+just:
+
+computer B> sup-sync --restore <dumpfile from A>
+
+That should both a) load any new messages from the source, and b) update
+them with the labels from the dumpfile.
+
+It's a little silly because you're transmitting the dumpfile for the
+entire index back and forth between the two. If it were ordered, you
+could just take a portion of it.
+
+I've never tried this, but based on a visual inspection of the code, I
+Guarantee It Works (tm).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 11:56:19 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 08:56:19 -0800
+Subject: [sup-talk] Gmail question
+In-Reply-To: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+References: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+Message-ID: <1261414173-sup-9168@masanjin.net>
+
+Reformatted excerpts from Joel Esler's message of 2009-12-21:
+> Obviously I'd like to be able to mash the "L" and see all these labels
+> and their unread counts, however, I am obviously missing how to
+> configure this, and I am sure it's quite easy.  Heck, I don't mind if
+> you guys RTFM me to the right section of the 'manual', but please do.
+
+I believe that Gmail exposes those types of things to IMAP clients as
+IMAP folders with funny names. (If you see these messages in Sup's
+inbox, then I am wrong about that.)
+
+So the easiest approach to duplicate them in Sup is add each source by
+hand as sup-add, and have Sup auto-apply labels when it sees new
+messages in those "folders". (And auto-archive them.)
+
+Unfortunately Sup's stupid URI syntax for sources combines very poorly
+with Gmail's names for these types of folders, so you'll have to do
+something horrible like:
+
+  sup-add imaps://imap.gmail.com/%5BGmail%5D%2FSent+Mail
+  sup-add imaps://imap.gmail.com/%5BGmail%5D%2Flabelname
+
+etc., with the appropriate arguments to sup-add for auto-archiving and
+auto-applying labels.
+
+Anyone more familiar with Gmail+Sup, please correct me if I'm wrong.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Mon Dec 21 11:56:53 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 21 Dec 2009 09:56:53 -0700
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261272023-sup-2671@cammunism.org>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+Message-ID: <1261414540-sup-87@tangerine.lanl.gov>
+
+Excerpts from Cameron Matheson's message of Sat Dec 19 18:22:44 -0700 2009:
+> Excerpts from William Morgan's message of Sat Dec 19 12:14:33 -0700 2009:
+> > Reformatted excerpts from C. Morgan Hamill's message of 2009-12-11:
+> > > I've got a really straightforward question that I can't seem to find
+> > > an answer for in the wiki or the New Users Guide or Google, for that
+> > > matter?is it normal behavior for a newly composed and then sent
+> > > message to appear in inbox view, i.e. to be labled both 'inbox' and
+> > > 'sent'? Or do I have something misconfigured? Any help would be
+> > > appreciated.
+> > 
+> > Nope, that's normal. It's easy to change that though. I wonder what
+> > people think--is it reassuring to see it in the inbox, or is it
+> > irritating?
+> 
+> I really appreciate the current behavior.
+>
++1.  But I wish forwarded emails would be part of the thread instead of
+a new one.  I often just reply and change the to: field in order to get
+this behavior.  If joining worked, that would also be fine.
+
+John
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 13:13:45 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 10:13:45 -0800
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261414540-sup-87@tangerine.lanl.gov>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+Message-ID: <1261419192-sup-3957@masanjin.net>
+
+Reformatted excerpts from John Bent's message of 2009-12-21:
+> +1.  But I wish forwarded emails would be part of the thread instead of
+> a new one.
+
+Me too!
+
+> I often just reply and change the to: field in order to get this
+> behavior.  If joining worked, that would also be fine.
+
+I thought joining worked in recent Sups.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Mon Dec 21 13:25:47 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 21 Dec 2009 11:25:47 -0700
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261419192-sup-3957@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+	<1261419192-sup-3957@masanjin.net>
+Message-ID: <1261419908-sup-2164@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Mon Dec 21 11:13:45 -0700 2009:
+> Reformatted excerpts from John Bent's message of 2009-12-21:
+> > +1.  But I wish forwarded emails would be part of the thread instead of
+> > a new one.
+> 
+> Me too!
+> 
+> > I often just reply and change the to: field in order to get this
+> > behavior.  If joining worked, that would also be fine.
+> 
+> I thought joining worked in recent Sups.
+>
+I'm on 0.9 and it's not working.  It works but is not persistent across
+quitting and restarting.
+
+John
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 13:34:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 10:34:30 -0800
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261419908-sup-2164@tangerine.lanl.gov>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+	<1261419192-sup-3957@masanjin.net>
+	<1261419908-sup-2164@tangerine.lanl.gov>
+Message-ID: <1261420436-sup-4009@masanjin.net>
+
+Reformatted excerpts from John Bent's message of 2009-12-21:
+> I'm on 0.9 and it's not working.  It works but is not persistent
+> across quitting and restarting.
+
+Rats. It works consistently for me. Ferret or Xapian?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Mon Dec 21 13:47:45 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 21 Dec 2009 11:47:45 -0700
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261420436-sup-4009@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+	<1261419192-sup-3957@masanjin.net>
+	<1261419908-sup-2164@tangerine.lanl.gov>
+	<1261420436-sup-4009@masanjin.net>
+Message-ID: <1261421239-sup-6142@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Mon Dec 21 11:34:30 -0700 2009:
+> Reformatted excerpts from John Bent's message of 2009-12-21:
+> > I'm on 0.9 and it's not working.  It works but is not persistent
+> > across quitting and restarting.
+> 
+> Rats. It works consistently for me. Ferret or Xapian?
+>
+Ferret still.  Scared to change.  One day... This adds motivation.
+
+John
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 14:31:21 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 11:31:21 -0800
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261421239-sup-6142@tangerine.lanl.gov>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+	<1261419192-sup-3957@masanjin.net>
+	<1261419908-sup-2164@tangerine.lanl.gov>
+	<1261420436-sup-4009@masanjin.net>
+	<1261421239-sup-6142@tangerine.lanl.gov>
+Message-ID: <1261423846-sup-2484@masanjin.net>
+
+Reformatted excerpts from John Bent's message of 2009-12-21:
+> Ferret still.  Scared to change.  One day... This adds motivation.
+
+I'm still using Ferret too. Weird that it would work for me and not for
+you.
+
+Poll time: is joining threads NOT persistent for anyone else?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tarko at lanparty.ee  Mon Dec 21 15:02:07 2009
+From: tarko at lanparty.ee (Tarko Tikan)
+Date: Mon, 21 Dec 2009 22:02:07 +0200
+Subject: [sup-talk] Sent mail in inbox view
+In-Reply-To: <1261423846-sup-2484@masanjin.net>
+References: <d3f3bcb00912110619h68436338uc1da581868e795ca@mail.gmail.com>
+	<1261249910-sup-9552@masanjin.net>
+	<1261272023-sup-2671@cammunism.org>
+	<1261414540-sup-87@tangerine.lanl.gov>
+	<1261419192-sup-3957@masanjin.net>
+	<1261419908-sup-2164@tangerine.lanl.gov>
+	<1261420436-sup-4009@masanjin.net>
+	<1261421239-sup-6142@tangerine.lanl.gov>
+	<1261423846-sup-2484@masanjin.net>
+Message-ID: <1261425612-sup-5555@lanparty.ee>
+
+hey,
+
+> Poll time: is joining threads NOT persistent for anyone else?
+
+0.9.1+ferret: tag 2 threads, join with # -> threads appear as one
+save index with $, reload with @ -> threads appear separate again
+
+-- 
+tarko
+
+From bwalton at artsci.utoronto.ca  Mon Dec 21 18:45:14 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 21 Dec 2009 18:45:14 -0500
+Subject: [sup-talk] Gmail question
+In-Reply-To: <1261414173-sup-9168@masanjin.net>
+References: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+	<1261414173-sup-9168@masanjin.net>
+Message-ID: <1261438895-sup-2073@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Mon Dec 21 11:56:19 -0500 2009:
+
+> I believe that Gmail exposes those types of things to IMAP clients as
+> IMAP folders with funny names. (If you see these messages in Sup's
+> inbox, then I am wrong about that.)
+
+Yes, it definitely does.  I had to migrate 300+ accounts out of gmail
+via IMAP.  If you're doing offlineimap for this task, I'd suggest
+mapping each 'folder' to a separate Maildir and, if possible, use hard
+links for messages that land in multiple 'folders.'  An md5sum of the
+headers is the heuristic I used to detect this.
+
+>   sup-add imaps://imap.gmail.com/%5BGmail%5D%2FSent+Mail
+>   sup-add imaps://imap.gmail.com/%5BGmail%5D%2Flabelname
+
+Depending on the age and 'type' of account, you may also see things
+like .../%5BGoogle%20%5B%2Flabelname.
+
+> Anyone more familiar with Gmail+Sup, please correct me if I'm wrong.
+
+I don't use sup for any of my gmail needs, this is all based on my
+export experience.
+
+HTH.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091221/0e3c9df9/attachment.bin>
+
+From garoth at gmail.com  Thu Dec 24 11:43:30 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Thu, 24 Dec 2009 11:43:30 -0500
+Subject: [sup-talk] Ruby 1.9: encodings
+In-Reply-To: <1261246544-sup-7566@masanjin.net>
+References: <80055d7c0911061922w64ef7cb0qf0c7bed008cc728c@mail.gmail.com>
+	<5a5b14cf0912180737n600fc2acx30fa14028d4a7662@mail.gmail.com>
+	<1261246544-sup-7566@masanjin.net>
+Message-ID: <80055d7c0912240843h38c0b1e9r5916829de8b510df@mail.gmail.com>
+
+On Sat, Dec 19, 2009 at 1:34 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Gaute Hope's message of 2009-12-18:
+>> I just tried.. im getting the same, afraid im not skilled enough to
+>> figure out what is wrong thou..
+>
+> Do the errors still occur if you apply this patch?
+>
+> diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+> index f99e1c1..92aaff4 100644
+> --- a/lib/sup/util.rb
+> +++ b/lib/sup/util.rb
+> @@ -176,13 +176,7 @@ end
+> ?class String
+> ? ## nasty multibyte hack for ruby 1.8. if it's utf-8, split into chars using
+> ? ## the utf8 regex and count those. otherwise, use the byte length.
+> - ?def display_length
+> - ? ?if $encoding == "UTF-8" || $encoding == "utf8"
+> - ? ? ?scan(/./u).size
+> - ? ?else
+> - ? ? ?size
+> - ? ?end
+> - ?end
+> + ?def display_length; length end
+>
+> ? def camel_to_hyphy
+> ? ? self.gsub(/([a-z])([A-Z0-9])/, '\1-\2').downcase
+>
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+Nope, sorry. After deleting that function,
+
+--- ArgumentError from thread: load threads for thread-index-mode
+invalid byte sequence in US-ASCII
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/person.rb:10:in `gsub'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/person.rb:10:in `initialize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:84:in `new'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:84:in
+`block in build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:86:in `map!'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:86:in
+`build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+`block (2 levels) in each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:343:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:343:in
+`block in load_thread_for_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+`block in each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+`each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:341:in
+`load_thread_for_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:333:in
+`block in load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:151:in
+`block in each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in
+`block in each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in `each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:151:in
+`each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:328:in
+`load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/modes/thread-index-mode.rb:625:in
+`load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/modes/thread-index-mode.rb:609:in
+`block in load_n_threads_background'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup.rb:77:in `block in
+reporting_thread'
+
+Though perhaps it would be easier for you to try out 1.9 + sup + utf8
+for yourself? I'm sure you already have some UTF8 in your messages, so
+you'd just need the new ruby. I have a feeling there are a lot of
+small bugs and it may be a hassle doing debugging by proxy (though I'm
+willing).
+
+-AT
+
+From garoth at gmail.com  Thu Dec 24 11:47:41 2009
+From: garoth at gmail.com (Andrei Thorp)
+Date: Thu, 24 Dec 2009 11:47:41 -0500
+Subject: [sup-talk] Ruby 1.9: encodings
+In-Reply-To: <80055d7c0912240843h38c0b1e9r5916829de8b510df@mail.gmail.com>
+References: <80055d7c0911061922w64ef7cb0qf0c7bed008cc728c@mail.gmail.com>
+	<5a5b14cf0912180737n600fc2acx30fa14028d4a7662@mail.gmail.com>
+	<1261246544-sup-7566@masanjin.net>
+	<80055d7c0912240843h38c0b1e9r5916829de8b510df@mail.gmail.com>
+Message-ID: <80055d7c0912240847p2b89b299hc7be9381e18b6f19@mail.gmail.com>
+
+On Thu, Dec 24, 2009 at 11:43 AM, Andrei Thorp <garoth at gmail.com> wrote:
+> On Sat, Dec 19, 2009 at 1:34 PM, William Morgan
+> <wmorgan-sup at masanjin.net> wrote:
+>> Reformatted excerpts from Gaute Hope's message of 2009-12-18:
+>>> I just tried.. im getting the same, afraid im not skilled enough to
+>>> figure out what is wrong thou..
+>>
+>> Do the errors still occur if you apply this patch?
+>>
+>> diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+>> index f99e1c1..92aaff4 100644
+>> --- a/lib/sup/util.rb
+>> +++ b/lib/sup/util.rb
+>> @@ -176,13 +176,7 @@ end
+>> ?class String
+>> ? ## nasty multibyte hack for ruby 1.8. if it's utf-8, split into chars using
+>> ? ## the utf8 regex and count those. otherwise, use the byte length.
+>> - ?def display_length
+>> - ? ?if $encoding == "UTF-8" || $encoding == "utf8"
+>> - ? ? ?scan(/./u).size
+>> - ? ?else
+>> - ? ? ?size
+>> - ? ?end
+>> - ?end
+>> + ?def display_length; length end
+>>
+>> ? def camel_to_hyphy
+>> ? ? self.gsub(/([a-z])([A-Z0-9])/, '\1-\2').downcase
+>>
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> sup-talk mailing list
+>> sup-talk at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-talk
+>>
+>
+> Nope, sorry. After deleting that function,
+>
+> --- ArgumentError from thread: load threads for thread-index-mode
+> invalid byte sequence in US-ASCII
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/person.rb:10:in `gsub'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/person.rb:10:in `initialize'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:84:in `new'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:84:in
+> `block in build_message'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:86:in `map!'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:86:in
+> `build_message'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+> `block (2 levels) in each_message_in_thread_for'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:343:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:343:in
+> `block in load_thread_for_message'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+> `block in each_message_in_thread_for'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in `each'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:176:in
+> `each_message_in_thread_for'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:341:in
+> `load_thread_for_message'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:333:in
+> `block in load_n_threads'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:151:in
+> `block in each_id_by_date'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in
+> `block in each_id'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in `each'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:144:in `each_id'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/xapian_index.rb:151:in
+> `each_id_by_date'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/thread.rb:328:in
+> `load_n_threads'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/modes/thread-index-mode.rb:625:in
+> `load_n_threads'
+> (eval):12:in `load_n_threads'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup/modes/thread-index-mode.rb:609:in
+> `block in load_n_threads_background'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.9.1/lib/sup.rb:77:in `block in
+> reporting_thread'
+>
+> Though perhaps it would be easier for you to try out 1.9 + sup + utf8
+> for yourself? I'm sure you already have some UTF8 in your messages, so
+> you'd just need the new ruby. I have a feeling there are a lot of
+> small bugs and it may be a hassle doing debugging by proxy (though I'm
+> willing).
+>
+> -AT
+
+Err, sorry. And when I say "deleting that function" I mean manually
+applying your patch carefully.
+
+From jesler at sourcefire.com  Sun Dec 27 10:45:38 2009
+From: jesler at sourcefire.com (Joel Esler)
+Date: Sun, 27 Dec 2009 10:45:38 -0500
+Subject: [sup-talk] Gmail question
+In-Reply-To: <1261438895-sup-2073@ntdws12.chass.utoronto.ca>
+References: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+	<1261414173-sup-9168@masanjin.net>
+	<1261438895-sup-2073@ntdws12.chass.utoronto.ca>
+Message-ID: <20091227154535.GA96297@new-host-2.home>
+
+On Mon, Dec 21, 2009 at 06:45:14PM -0500, Ben Walton wrote:
+> Excerpts from William Morgan's message of Mon Dec 21 11:56:19 -0500 2009:
+> 
+> > I believe that Gmail exposes those types of things to IMAP clients as
+> > IMAP folders with funny names. (If you see these messages in Sup's
+> > inbox, then I am wrong about that.)
+> 
+> Yes, it definitely does.  I had to migrate 300+ accounts out of gmail
+> via IMAP.  If you're doing offlineimap for this task, I'd suggest
+> mapping each 'folder' to a separate Maildir and, if possible, use hard
+> links for messages that land in multiple 'folders.'  An md5sum of the
+> headers is the heuristic I used to detect this.
+> 
+> >   sup-add imaps://imap.gmail.com/%5BGmail%5D%2FSent+Mail
+> >   sup-add imaps://imap.gmail.com/%5BGmail%5D%2Flabelname
+> 
+> Depending on the age and 'type' of account, you may also see things
+> like .../%5BGoogle%20%5B%2Flabelname.
+> 
+> > Anyone more familiar with Gmail+Sup, please correct me if I'm wrong.
+> 
+> I don't use sup for any of my gmail needs, this is all based on my
+> export experience.
+> 
+> HTH.
+> -Ben
+> -- 
+> Ben Walton
+> Systems Programmer - CHASS
+> University of Toronto
+> C:416.407.5610 | W:416.978.4302
+> 
+> GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+> Contact me to arrange for a CAcert assurance meeting.
+
+
+Ben -- Your key isn't verifying correctly -- btw.
+
+I tried this on a couple folders.  Sup can't load the 53000+ emails I have in one label.  I'll have to stick with Mutt for now.  But I like sup's concept of threading.
+
+
+-- 
+Joel Esler | 302-223-5974 | gtalk: jesler at sourcefire.com
+
+From wmorgan-sup at masanjin.net  Sun Dec 27 10:48:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 Dec 2009 07:48:23 -0800
+Subject: [sup-talk] Gmail question
+In-Reply-To: <20091227154535.GA96297@new-host-2.home>
+References: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+	<1261414173-sup-9168@masanjin.net>
+	<1261438895-sup-2073@ntdws12.chass.utoronto.ca>
+	<20091227154535.GA96297@new-host-2.home>
+Message-ID: <1261928861-sup-6807@masanjin.net>
+
+Reformatted excerpts from Joel Esler's message of 2009-12-27:
+> I tried this on a couple folders.  Sup can't load the 53000+ emails I
+> have in one label.
+
+What's the exact error? I've used Sup with many more emails than that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eslerj at gmail.com  Sun Dec 27 18:05:27 2009
+From: eslerj at gmail.com (Joel Esler)
+Date: Sun, 27 Dec 2009 18:05:27 -0500
+Subject: [sup-talk] Gmail question
+In-Reply-To: <1261928861-sup-6807@masanjin.net>
+References: <314cf0830912210828i278fd9efxd8d688c10a2a4b73@mail.gmail.com>
+	<1261414173-sup-9168@masanjin.net>
+	<1261438895-sup-2073@ntdws12.chass.utoronto.ca>
+	<20091227154535.GA96297@new-host-2.home>
+	<1261928861-sup-6807@masanjin.net>
+Message-ID: <20091227230525.GE97100@new-host-2.home>
+
+On Sun, Dec 27, 2009 at 07:48:23AM -0800, William Morgan wrote:
+> Reformatted excerpts from Joel Esler's message of 2009-12-27:
+> > I tried this on a couple folders.  Sup can't load the 53000+ emails I
+> > have in one label.
+> 
+> What's the exact error? I've used Sup with many more emails than that.
+
+Next time I recreate the error, I'll post
+
+-- 
+Joel Esler | 302-223-5974 | gtalk: jesler at sourcefire.com
+
+From aep at exys.org  Mon Dec 28 00:51:01 2009
+From: aep at exys.org (Arvid Picciani)
+Date: Mon, 28 Dec 2009 06:51:01 +0100
+Subject: [sup-talk] sup with 120K mail
+Message-ID: <4B384745.7080207@exys.org>
+
+hey,
+are there any plans to support large amounts of mails?
+It doesn't appear to me much changed during the last months.
+Last time i tried it was unusable slow.
+-- 
+Arvid
+Asgaard Technologies
+
+From wmorgan-sup at masanjin.net  Mon Dec 28 10:12:12 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Dec 2009 07:12:12 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <4B384745.7080207@exys.org>
+References: <4B384745.7080207@exys.org>
+Message-ID: <1262013098-sup-6005@masanjin.net>
+
+Reformatted excerpts from Arvid Picciani's message of 2009-12-27:
+> are there any plans to support large amounts of mails?
+> It doesn't appear to me much changed during the last months.
+> Last time i tried it was unusable slow.
+
+Can you be more specific about what's slow? I used Sup with a 160k
+index for a long time without trouble.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From aep at exys.org  Mon Dec 28 03:32:29 2009
+From: aep at exys.org (Arvid Picciani)
+Date: Mon, 28 Dec 2009 09:32:29 +0100
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262013098-sup-6005@masanjin.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+Message-ID: <4B386D1D.4000609@exys.org>
+
+On 12/28/2009 04:12 PM, William Morgan wrote:
+> Reformatted excerpts from Arvid Picciani's message of 2009-12-27:
+>> are there any plans to support large amounts of mails?
+>> It doesn't appear to me much changed during the last months.
+>> Last time i tried it was unusable slow.
+>
+> Can you be more specific about what's slow? I used Sup with a 160k
+> index for a long time without trouble.
+
+"everything"  sums it up.  it takes forever to start, to quit, to show 
+the index, to show a single message, etc..
+
+-- 
+Arvid
+Asgaard Technologies
+
+From hyperbolist at gmail.com  Mon Dec 28 11:45:01 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Mon, 28 Dec 2009 11:45:01 -0500
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <4B386D1D.4000609@exys.org>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org>
+Message-ID: <1262018249-sup-4764@changeling.local>
+
+Excerpts from Arvid Picciani's message of Mon Dec 28 03:32:29 -0500 2009:
+> On 12/28/2009 04:12 PM, William Morgan wrote:
+> > Reformatted excerpts from Arvid Picciani's message of 2009-12-27:
+> >> are there any plans to support large amounts of mails?
+> >> It doesn't appear to me much changed during the last months.
+> >> Last time i tried it was unusable slow.
+> >
+> > Can you be more specific about what's slow? I used Sup with a 160k
+> > index for a long time without trouble.
+> 
+> "everything"  sums it up.  it takes forever to start, to quit, to show 
+> the index, to show a single message, etc..
+
+I imagine [offlineimap][1] will make your life easier.  sup is speedy on my 
+index of 35000 emails in maildir, while it was relatively unusable with raw 
+imap.
+
+[1]:http://software.complete.org/software/projects/show/offlineimap
+
+From sgoldman at tower-research.com  Mon Dec 28 11:45:58 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Mon, 28 Dec 2009 11:45:58 -0500
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <4B386D1D.4000609@exys.org>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org>
+Message-ID: <1262018619-sup-8709@sgoldmanlinux.tower-research.com>
+
+Excerpts from Arvid Picciani's message of Mon Dec 28 03:32:29 -0500 2009:
+> On 12/28/2009 04:12 PM, William Morgan wrote:
+> > Reformatted excerpts from Arvid Picciani's message of 2009-12-27:
+> >> are there any plans to support large amounts of mails?
+> >> It doesn't appear to me much changed during the last months.
+> >> Last time i tried it was unusable slow.
+> >
+> > Can you be more specific about what's slow? I used Sup with a 160k
+> > index for a long time without trouble.
+> 
+> "everything"  sums it up.  it takes forever to start, to quit, to show 
+> the index, to show a single message, etc..
+> 
+
+I'm in the same boat.  Starting up, it takes over a minute before it
+begins to show new messages.  My workaround is to run sup in screen.
+
+There's a lot of variance in how long it takes to show a message once
+I press enter on it.  Sometimes it's upwards of thirty seconds, other
+times instant.
+
+I always assumed this is because my mail server is on a remote host
+and highly utilized.
+
+Saving messages happens at the rate of about two messages per second.
+
+Quitting happens quickly.
+
+I have almost 60k messages in my index.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Mon Dec 28 12:34:38 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Dec 2009 09:34:38 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <4B386D1D.4000609@exys.org>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org>
+Message-ID: <1262021650-sup-9496@masanjin.net>
+
+Reformatted excerpts from Arvid Picciani's message of 2009-12-28:
+> "everything"  sums it up.  it takes forever to start, to quit, to show
+> the index, to show a single message, etc..
+
+Are you using IMAP?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Mon Dec 28 14:34:07 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 28 Dec 2009 21:34:07 +0200
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <4B386D1D.4000609@exys.org>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org>
+Message-ID: <1262027723-sup-4292@tilus.net>
+
+Arvid Picciani, 2009-12-28 10:32:
+> On 12/28/2009 04:12 PM, William Morgan wrote:
+>> Can you be more specific about what's slow? I used Sup with a 160k
+>> index for a long time without trouble.
+> 
+> "everything"  sums it up.  it takes forever to start, to quit, to show 
+> the index, to show a single message, etc..
+
+I've got 103k messages from 172 sources (137 imap sources, including
+all sources receiving new mail).  I run sup on 512 MB Bytemark virtual
+machine.  Startup is instantaneous, it takes 2-3 seconds to list first
+screenfull of threads.  Practically all searches are instantaneous (I
+remember hitting "slow queries" a couple of times).  Thread is
+displayed in about messagecount/5 seconds.  Pretty much nothing feels
+slow.  But there is that "pretty much nothing".
+
+Quit is slow.  If I "just check" mail (launch, first poll adds 10-15
+messages, archive them and quit) sup exits in a couple of seconds
+(just long enough that you start to wonder if you pressed Q or not)
+but if sup has been running days quit takes easily minutes.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From eg at gaute.vetsj.com  Mon Dec 28 14:57:11 2009
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 28 Dec 2009 20:57:11 +0100
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262027723-sup-4292@tilus.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+Message-ID: <1262029984-sup-8991@dolk>
+
+Excerpts from Tero Tilus's message of 2009-12-28 20:34:07 +0100:
+> Quit is slow.  If I "just check" mail (launch, first poll adds 10-15
+> messages, archive them and quit) sup exits in a couple of seconds
+> (just long enough that you start to wonder if you pressed Q or not)
+> but if sup has been running days quit takes easily minutes.
+
+Quit is slow for me too - but seldom above one minute, but I normally
+don't quit (just suspending my machine) - so either my machine has
+crashed or sup has crashed. So I hit $ occasionally to save the index,
+otherwise I need to re-do everything I did manually since my last
+'crash'. It would help if this is done when there is a sufficient amount
+of stuff to save or on regular intervals.
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091228/bdff788b/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Dec 28 15:17:39 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Dec 2009 12:17:39 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262027723-sup-4292@tilus.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+Message-ID: <1262031447-sup-787@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-28:
+> Quit is slow.  If I "just check" mail (launch, first poll adds 10-15
+> messages, archive them and quit) sup exits in a couple of seconds
+> (just long enough that you start to wonder if you pressed Q or not)
+> but if sup has been running days quit takes easily minutes.
+
+Is this with Xapian?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Mon Dec 28 15:24:13 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 28 Dec 2009 22:24:13 +0200
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031447-sup-787@masanjin.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net>
+Message-ID: <1262031768-sup-468@tilus.net>
+
+William Morgan, 2009-12-28 22:17:
+> Is this with Xapian?
+
+Goodness!  Forgot the most important part...
+
+Yes.  Xapian and git next.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sgoldman at tower-research.com  Mon Dec 28 15:24:18 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Mon, 28 Dec 2009 15:24:18 -0500
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031447-sup-787@masanjin.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net>
+Message-ID: <1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Mon Dec 28 15:17:39 -0500 2009:
+> Reformatted excerpts from Tero Tilus's message of 2009-12-28:
+> > Quit is slow.  If I "just check" mail (launch, first poll adds 10-15
+> > messages, archive them and quit) sup exits in a couple of seconds
+> > (just long enough that you start to wonder if you pressed Q or not)
+> > but if sup has been running days quit takes easily minutes.
+> 
+> Is this with Xapian?
+
+Is Xapian sup fully functional?  Last I read, there were some critical
+functions that were supported.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From ezyang at MIT.EDU  Mon Dec 28 15:30:58 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Mon, 28 Dec 2009 15:30:58 -0500
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net>
+	<1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+Message-ID: <1262032197-sup-3586@ezyang>
+
+Excerpts from Steve Goldman's message of Mon Dec 28 15:24:18 -0500 2009:
+> Is Xapian sup fully functional?  Last I read, there were some critical
+> functions that were supported.
+
+I've been using Xapian sup for a few weeks now, and the primary difficulty
+is that you have to specify from_email/from_to instead of just from.  But
+it's very snappy, I haven't noticed any other problems and I haven't had
+any major index corruption (which is what prompted the switch in the first
+place).
+
+Cheers,
+Edward
+
+From tero at tilus.net  Mon Dec 28 15:59:19 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 28 Dec 2009 22:59:19 +0200
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net>
+	<1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+Message-ID: <1262033757-sup-2564@tilus.net>
+
+Steve Goldman, 2009-12-28 22:24:
+> Is Xapian sup fully functional?
+
+I've been on Xapian since september.  It has given me smooth and fully
+functional ride.  I'd recommed trying it out.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Mon Dec 28 16:06:39 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Dec 2009 13:06:39 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net>
+	<1262031833-sup-9424@sgoldmanlinux.tower-research.com>
+Message-ID: <1262034335-sup-9328@masanjin.net>
+
+Reformatted excerpts from Steve Goldman's message of 2009-12-28:
+> Is Xapian sup fully functional?  Last I read, there were some critical
+> functions that were supported.
+
+Functional enough that it's going to be the default in the next release
+of Sup, and you're going to get yelled at for Ferret.
+
+A few things don't work or are weird, but it could break everything and
+still provide a better user experience than Ferret.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Dec 28 16:07:24 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Dec 2009 13:07:24 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262031768-sup-468@tilus.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net> <1262031768-sup-468@tilus.net>
+Message-ID: <1262034406-sup-5724@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-28:
+> William Morgan, 2009-12-28 22:17:
+> > Is this with Xapian?
+> 
+> Goodness!  Forgot the most important part...
+> 
+> Yes.  Xapian and git next.
+
+Yeah, Xapian is the cause of that delay on quit. I think there was a
+workaround posted at some point about an environment variable or
+something...
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Mon Dec 28 18:12:54 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 28 Dec 2009 18:12:54 -0500
+Subject: [sup-talk] xapian-full and ncursesw gems
+Message-ID: <1262035134-sup-4921@zyrg.net>
+
+I've pushed two useful gems to gemcutter.
+
+xapian-full: This is based on the existing xapian gem, but compiles
+xapian-core as well as the bindings so it isn't dependent on the version
+of the system xapian. It's also a newer development version that
+includes the Chert backend.
+
+ncursesw: This is a version of the ncurses gem modified to link against
+the ncursesw library so you get wide character support. It also includes
+the ruby 1.9.1 compile fixes.
+
+When we switch the default index to Xapian, for ease of installation I
+think we should add xapian-full as a gem dependency even though it may
+be redundant with a system xapian install. The only thing I worry about
+here is users lacking the full toolchain required to build Xapian.
+
+One potential problem with the ncursesw gem is that I've kept
+source compatibility with the old ncurses gem by not renaming the
+files/module. This means they interact badly if both are installed. We
+could change the Sup source to use new ncursesw names, but that's
+annoying and breaks people doing "git pull". Thoughts?
+
+From hollunder at lavabit.com  Tue Dec 29 09:47:53 2009
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 29 Dec 2009 15:47:53 +0100
+Subject: [sup-talk] unread status
+Message-ID: <1262098048-sup-7303@tw>
+
+Hi,
+during the last couple of days I managed to get sup up and running,
+using ruby 1.8.7, xapian, msmtp and offlineimap.
+
+Now that I use it I noticed strange behavior regarding unread messages.
+It works like this:
+
+New messages in the inbox, I read through them, hitting 'a'.
+The messages vanish from the Inbox. So far so good.
+
+I hit 'L' 'Enter' and notice that all messages I just read are listed as
+unread. I navigate to unread, read the messages again and hit 'a'. Now
+they aren't marked as unread anymore.
+
+Also, when I read them in the inbox and they are still labeled unread
+and I restart sup they aren't labeled unread anymore.
+
+Well, expected behavior is to have them labeled read after I read them,
+obviously.
+
+
+
+I experienced something similar when I used the built-in imap support.
+There it wouldn't really Poll when I hit P, new messages only showed up
+after I restarted sup.
+
+
+Either these are bugs or I don't get how sup works,
+either way, help is appreciated.
+
+Regards,
+Philipp
+
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 17:53:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 14:53:54 -0800
+Subject: [sup-talk] unread status
+In-Reply-To: <1262098048-sup-7303@tw>
+References: <1262098048-sup-7303@tw>
+Message-ID: <1262127103-sup-307@masanjin.net>
+
+Reformatted excerpts from Philipp ?berbacher's message of 2009-12-29:
+> I hit 'L' 'Enter' and notice that all messages I just read are listed as
+> unread. I navigate to unread, read the messages again and hit 'a'. Now
+> they aren't marked as unread anymore.
+
+If you press "$" before hitting L, I think the counts will be correct.
+An unhappy consequence of using explicit save, combined with the fact
+that label-list-mode counts come from the index.
+
+> I experienced something similar when I used the built-in imap support.
+> There it wouldn't really Poll when I hit P, new messages only showed up
+> after I restarted sup.
+
+That sounds like a bug.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 18:00:52 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 15:00:52 -0800
+Subject: [sup-talk] xapian-full and ncursesw gems
+In-Reply-To: <1262035134-sup-4921@zyrg.net>
+References: <1262035134-sup-4921@zyrg.net>
+Message-ID: <1262127243-sup-4569@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-28:
+> xapian-full: This is based on the existing xapian gem, but compiles
+> xapian-core as well as the bindings so it isn't dependent on the version
+> of the system xapian. It's also a newer development version that
+> includes the Chert backend.
+
+Awesome!
+
+> ncursesw: This is a version of the ncurses gem modified to link
+> against the ncursesw library so you get wide character support. It
+> also includes the ruby 1.9.1 compile fixes.
+
+Awesome!
+
+Thanks for doing this. This will bring us singificantly closer to
+solving two of the most common problems (my ferret index crashed / my
+non-ASCII chars look funny) out of the box.
+
+> When we switch the default index to Xapian, for ease of installation I
+> think we should add xapian-full as a gem dependency even though it may
+> be redundant with a system xapian install. The only thing I worry
+> about here is users lacking the full toolchain required to build
+> Xapian.
+
+I'm fine with this, especially if the Chert backend is significantly
+better.
+
+> One potential problem with the ncursesw gem is that I've kept source
+> compatibility with the old ncurses gem by not renaming the
+> files/module. This means they interact badly if both are installed. We
+> could change the Sup source to use new ncursesw names, but that's
+> annoying and breaks people doing "git pull". Thoughts?
+
+I think keeping source compatibility is a good idea. The conflict only
+happens if both gems are loaded, so Sup can require 'ncursesw', and then
+fall back to 'ncurses'.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hollunder at lavabit.com  Tue Dec 29 18:12:13 2009
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Wed, 30 Dec 2009 00:12:13 +0100
+Subject: [sup-talk] unread status
+In-Reply-To: <1262127103-sup-307@masanjin.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+Message-ID: <1262128268-sup-2780@tw>
+
+Excerpts from William Morgan's message of Tue Dec 29 23:53:54 +0100 2009:
+> Reformatted excerpts from Philipp ?berbacher's message of 2009-12-29:
+> > I hit 'L' 'Enter' and notice that all messages I just read are listed as
+> > unread. I navigate to unread, read the messages again and hit 'a'. Now
+> > they aren't marked as unread anymore.
+> 
+> If you press "$" before hitting L, I think the counts will be correct.
+> An unhappy consequence of using explicit save, combined with the fact
+> that label-list-mode counts come from the index.
+
+Thanks, this seems to work. What's the reasoning behind explicit save?
+
+
+From tero at tilus.net  Tue Dec 29 18:17:59 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 01:17:59 +0200
+Subject: [sup-talk] xapian-full and ncursesw gems
+In-Reply-To: <1262035134-sup-4921@zyrg.net>
+References: <1262035134-sup-4921@zyrg.net>
+Message-ID: <1262127955-sup-7589@tilus.net>
+
+Rich Lane, 2009-12-29 01:12:
+> ncursesw: This is a version of the ncurses gem modified to link
+> against the ncursesw library so you get wide character support.
+
+Rich rocks!  \o/
+
+> The only thing I worry about here is users lacking the full
+> toolchain required to build Xapian.
+
+Doesn't sound bad to me.  How tough a requirement "full toolchain
+required to build Xapian" really is?  What platforms would be
+problematic?
+
+> I've kept source compatibility with the old ncurses gem by not
+> renaming the files/module. This means they interact badly if both
+> are installed. Thoughts?
+
+If you say "don't you dare to require both ncurses and ncursesw" in
+README and make ncursesw complain if ncurses is already required I'd
+say it's as good a gem-citizen as it gets.  Then just (as William
+already said) make sup try ncursesw first and fall back to ncurses if
+it fails.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Tue Dec 29 18:24:09 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 01:24:09 +0200
+Subject: [sup-talk] unread status
+In-Reply-To: <1262128268-sup-2780@tw>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw>
+Message-ID: <1262128724-sup-1138@tilus.net>
+
+Philipp ?berbacher, 2009-12-30 01:12:
+> Thanks, this seems to work. What's the reasoning behind explicit save?
+
+I'd assume performance, but (at least with Xapian) it feels like a
+non-issue.  I'd like implicit save, or automatic save after every n
+operations/seconds with $ to explicitly invoke save if the performance
+really is an issue.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 18:33:07 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 15:33:07 -0800
+Subject: [sup-talk] unread status
+In-Reply-To: <1262128268-sup-2780@tw>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw>
+Message-ID: <1262129551-sup-5211@masanjin.net>
+
+Reformatted excerpts from Philipp ?berbacher's message of 2009-12-29:
+> Thanks, this seems to work. What's the reasoning behind explicit save?
+
+An accident of history. Will be gone at some point soon.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 18:33:46 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 15:33:46 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262034406-sup-5724@masanjin.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net> <1262031768-sup-468@tilus.net>
+	<1262034406-sup-5724@masanjin.net>
+Message-ID: <1262129621-sup-2519@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2009-12-28:
+> Reformatted excerpts from Tero Tilus's message of 2009-12-28:
+> > William Morgan, 2009-12-28 22:17:
+> > > Is this with Xapian?
+> > 
+> > Goodness!  Forgot the most important part...
+> > 
+> > Yes.  Xapian and git next.
+> 
+> Yeah, Xapian is the cause of that delay on quit. I think there was a
+> workaround posted at some point about an environment variable or
+> something...
+
+Ah yes, try setting XAPIAN_FLUSH_THRESHOLD=10 when running sup (but not
+sup-sync!) and see if that reduces the delay on quit.
+
+Unfortunately there's no way (that I know of) to force a Xapian flush
+from within Ruby. Correction from Xapian experts welcome.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 18:42:10 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 18:42:10 -0500
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262129621-sup-2519@masanjin.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net> <1262031768-sup-468@tilus.net>
+	<1262034406-sup-5724@masanjin.net>
+	<1262129621-sup-2519@masanjin.net>
+Message-ID: <1262129967-sup-1203@zyrg.net>
+
+Excerpts from William Morgan's message of Tue Dec 29 18:33:46 -0500 2009:
+> Reformatted excerpts from William Morgan's message of 2009-12-28:
+> > Reformatted excerpts from Tero Tilus's message of 2009-12-28:
+> > > William Morgan, 2009-12-28 22:17:
+> > > > Is this with Xapian?
+> > > 
+> > > Goodness!  Forgot the most important part...
+> > > 
+> > > Yes.  Xapian and git next.
+> > 
+> > Yeah, Xapian is the cause of that delay on quit. I think there was a
+> > workaround posted at some point about an environment variable or
+> > something...
+> 
+> Ah yes, try setting XAPIAN_FLUSH_THRESHOLD=10 when running sup (but not
+> sup-sync!) and see if that reduces the delay on quit.
+> 
+> Unfortunately there's no way (that I know of) to force a Xapian flush
+> from within Ruby. Correction from Xapian experts welcome.
+
+Xapian::WritableDatabase#flush
+
+This should really be called from XapianIndex#save_index, along with a
+friendly message explaining what's going on.
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 18:49:11 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 18:49:11 -0500
+Subject: [sup-talk] unread status
+In-Reply-To: <1262128724-sup-1138@tilus.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+Message-ID: <1262130179-sup-8306@zyrg.net>
+
+Excerpts from Tero Tilus's message of Tue Dec 29 18:24:09 -0500 2009:
+> Philipp ?berbacher, 2009-12-30 01:12:
+> > Thanks, this seems to work. What's the reasoning behind explicit save?
+> 
+> I'd assume performance, but (at least with Xapian) it feels like a
+> non-issue.  I'd like implicit save, or automatic save after every n
+> operations/seconds with $ to explicitly invoke save if the performance
+> really is an issue.
+
+I have a patch that hasn't been merged yet that completely removes the
+notion of saving with '$'. It's one of the branches I keep merged in to
+the branch I actually use, so I tend to forget it's not upstream. I
+should dust it off and resubmit. It will cause a UI-responsiveness
+regression for ferret users, but if ferret is going to be deprecated in
+the next release then I don't care too much.
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 18:54:13 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 15:54:13 -0800
+Subject: [sup-talk] sup with 120K mail
+In-Reply-To: <1262129967-sup-1203@zyrg.net>
+References: <4B384745.7080207@exys.org> <1262013098-sup-6005@masanjin.net>
+	<4B386D1D.4000609@exys.org> <1262027723-sup-4292@tilus.net>
+	<1262031447-sup-787@masanjin.net> <1262031768-sup-468@tilus.net>
+	<1262034406-sup-5724@masanjin.net>
+	<1262129621-sup-2519@masanjin.net> <1262129967-sup-1203@zyrg.net>
+Message-ID: <1262130712-sup-484@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-29:
+> Xapian::WritableDatabase#flush
+> 
+> This should really be called from XapianIndex#save_index, along with a
+> friendly message explaining what's going on.
+
+Calling it from #save_index will have the advantage of us being able to
+present a message, but what about calling it when "$" is pressed, or
+periodically in the background? Does it block search?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hollunder at lavabit.com  Tue Dec 29 18:54:20 2009
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Wed, 30 Dec 2009 00:54:20 +0100
+Subject: [sup-talk] unread status
+In-Reply-To: <1262129551-sup-5211@masanjin.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262129551-sup-5211@masanjin.net>
+Message-ID: <1262130794-sup-2045@tw>
+
+Excerpts from William Morgan's message of Wed Dec 30 00:33:07 +0100 2009:
+> Reformatted excerpts from Philipp ?berbacher's message of 2009-12-29:
+> > Thanks, this seems to work. What's the reasoning behind explicit save?
+> 
+> An accident of history. Will be gone at some point soon.
+
+Ok, great if there's a good solution for this.
+
+Regards,
+Philipp
+
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 18:54:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 15:54:54 -0800
+Subject: [sup-talk] unread status
+In-Reply-To: <1262130179-sup-8306@zyrg.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+	<1262130179-sup-8306@zyrg.net>
+Message-ID: <1262130868-sup-2032@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-29:
+> I should dust it off and resubmit. It will cause a UI-responsiveness
+> regression for ferret users, but if ferret is going to be deprecated
+> in the next release then I don't care too much.
+
+Please do. Encouraging Ferret users to switch is fine. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 18:58:05 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 18:58:05 -0500
+Subject: [sup-talk] xapian-full and ncursesw gems
+In-Reply-To: <1262127243-sup-4569@masanjin.net>
+References: <1262035134-sup-4921@zyrg.net> <1262127243-sup-4569@masanjin.net>
+Message-ID: <1262127725-sup-1052@zyrg.net>
+
+Excerpts from William Morgan's message of Tue Dec 29 18:00:52 -0500 2009:
+> Reformatted excerpts from Rich Lane's message of 2009-12-28:
+> > One potential problem with the ncursesw gem is that I've kept source
+> > compatibility with the old ncurses gem by not renaming the
+> > files/module. This means they interact badly if both are installed. We
+> > could change the Sup source to use new ncursesw names, but that's
+> > annoying and breaks people doing "git pull". Thoughts?
+> 
+> I think keeping source compatibility is a good idea. The conflict only
+> happens if both gems are loaded, so Sup can require 'ncursesw', and then
+> fall back to 'ncurses'.
+
+AFAIK rubygems (at least in 1.9.1) works by adding (one version of) all
+installed gems to the load path. Since I didn't rename any of the
+ncurses gem files/directories "require 'ncursesw'" won't work - the main
+file in lib/ is still ncurses.rb. Renaming the files seems like the
+most logical thing to do so I'll push an update to the gem and send in a
+Sup patch to try ncursesw first.
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 19:06:25 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 16:06:25 -0800
+Subject: [sup-talk] xapian-full and ncursesw gems
+In-Reply-To: <1262127725-sup-1052@zyrg.net>
+References: <1262035134-sup-4921@zyrg.net> <1262127243-sup-4569@masanjin.net>
+	<1262127725-sup-1052@zyrg.net>
+Message-ID: <1262131461-sup-3945@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-29:
+> Renaming the files seems like the most logical thing to do so I'll
+> push an update to the gem and send in a Sup patch to try ncursesw
+> first.
+
+Agreed. Sounds great. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Tue Dec 29 19:32:59 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 29 Dec 2009 17:32:59 -0700
+Subject: [sup-talk] unread status
+In-Reply-To: <1262130868-sup-2032@masanjin.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+	<1262130179-sup-8306@zyrg.net> <1262130868-sup-2032@masanjin.net>
+Message-ID: <1262133096-sup-2807@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Tue Dec 29 16:54:54 -0700 2009:
+> Reformatted excerpts from Rich Lane's message of 2009-12-29:
+> > I should dust it off and resubmit. It will cause a UI-responsiveness
+> > regression for ferret users, but if ferret is going to be deprecated
+> > in the next release then I don't care too much.
+> 
+> Please do. Encouraging Ferret users to switch is fine. :)
+>
+I spent a couple of unsuccessful hours last week trying to switch.
+Anyway else on an old PPC OS X who has been able to transition?
+
+John
+
+From btricha at gmail.com  Thu Dec 31 12:44:57 2009
+From: btricha at gmail.com (Bryan T. Richardson)
+Date: Thu, 31 Dec 2009 10:44:57 -0700
+Subject: [sup-talk] Question About Sending New Emails
+Message-ID: <1262281249-sup-8341@s897313>
+
+Hello All,
+
+Well, I've been wanting to switch over to Sup for a long time now, and
+since I finally found out about OfflineIMAP I'm able to. :)
+
+Here's a question though... I have multiple email accounts, and I
+understand how Sup will automatically select the right 'From' address to
+use when replying to a previous email, which is way cool. However, is it
+possible to set the 'From' address when composing a brand new email?
+MSMTP has an option to select the SMTP account to use based on the
+'From' address, but I can't figure out of it's possible to set the
+'From' address in Sup. If so, cool. If not then oh well, I love Sup
+anyway! :)
+
+Thanks for a great piece of software... and better yet, it's in Ruby! :)
+
+--
+Bryan
+
+From bwalton at artsci.utoronto.ca  Thu Dec 31 13:12:11 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 31 Dec 2009 13:12:11 -0500
+Subject: [sup-talk] Question About Sending New Emails
+In-Reply-To: <1262281249-sup-8341@s897313>
+References: <1262281249-sup-8341@s897313>
+Message-ID: <1262283000-sup-2677@ntdws12.chass.utoronto.ca>
+
+Excerpts from Bryan T. Richardson's message of Thu Dec 31 12:44:57 -0500 2009:
+
+Hi Bryan,
+
+> 'From' address, but I can't figure out of it's possible to set the
+> 'From' address in Sup. If so, cool. If not then oh well, I love Sup
+> anyway! :)
+
+You can use one or both of the before-edit and reply-from hooks to do
+what you need.  Here is my reply-from hook
+(~/.sup/hooks/reply-from.rb):
+
+--snip--
+case [message.to, message.cc].flatten.to_s
+when /opencsw/, /bolthole/ then "bwalton at OBFUSCATED"
+else "bwalton at DEFAULT"
+end
+--snip--
+
+HTH.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20091231/53710179/attachment-0001.bin>
+
+From kll at swip.net  Fri Dec 25 12:30:41 2009
+From: kll at swip.net (Kristian Larsson)
+Date: Fri, 25 Dec 2009 18:30:41 +0100
+Subject: [sup-talk] Exception when syncing mailbox.
+Message-ID: <20091225173041.GA9253@swip.net>
+
+Hello!
+
+I'm a long time mutt user and just recently heard of sup,
+reading its homepage I got hooked just at "If you're the
+type of person who treats email as an extension of your
+long-term memory, Sup is for you." and so I thought I would
+give it a spin.
+
+After installing all the binaries and downloading 0.9, I ran
+sup-config to configure the client. A very nice way to get
+started, much more so than the config file of mutt which
+offers quite a steep entry for usage.
+
+When starting sup, I've noticed some character encoding
+problems which I have yet to identify the details of, more
+on that when I'll get the client up and running properly.
+You see after "a while", it dies by throwing an exception
+and it is due to this exception that I write to this list.
+Find the exception-log attached. All I've done is configure
+the client and try to sync my mailbox, sup will sync som 375
+threads and then throw the exception.
+
+What can I do to troubleshoot? Try some later HEAD branch or
+something?
+
+Kind regards,
+    Kristian.
+
+-- 
+Kristian Larsson                                        KLL-RIPE
+Network Engineer / Internet Core        Tele2 / SWIPnet [AS1257]
++46 704 264511                                      kll at swip.net
+-------------- next part --------------
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/1.8/ferret/index.rb:413:in `[]'
+./sup/ferret_index.rb:257:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+./sup/ferret_index.rb:256:in `build_message'
+../bin/sup-sync:149
+./sup/poll.rb:151:in `each_message_from'
+./sup/imap.rb:197:in `each'
+./sup/imap.rb:185:in `upto'
+./sup/imap.rb:185:in `each'
+./sup/util.rb:560:in `send'
+./sup/util.rb:560:in `__pass'
+./sup/util.rb:547:in `method_missing'
+./sup/poll.rb:139:in `each_message_from'
+./sup/util.rb:520:in `send'
+./sup/util.rb:520:in `method_missing'
+../bin/sup-sync:146
+../bin/sup-sync:141:in `each'
+../bin/sup-sync:141
+
+From murks at lavabit.com  Tue Dec 29 08:45:38 2009
+From: murks at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 29 Dec 2009 14:45:38 +0100
+Subject: [sup-talk] unread status
+Message-ID: <1262093816-sup-8151@tw>
+
+Hi,
+during the last couple of days I managed to get sup up and running,
+using ruby 1.8.7, xapian, msmtp and offlineimap.
+
+Now that I use it I noticed strange behavior regarding unread messages.
+It works like this:
+
+New messages in the inbox, I read through them, hitting 'a'.
+The messages vanish from the Inbox. So far so good.
+
+I hit 'L' 'Enter' and notice that all messages I just read are listed as
+unread. I navigate to unread, read the messages again and hit 'a'. Now
+they aren't marked as unread anymore.
+
+Also, when I read them in the inbox and they are still labeled unread
+and I restart sup they aren't labeled unread anymore.
+
+Well, expected behavior is to have them labeled read after I read them,
+obviously.
+
+
+
+I experienced something similar when I used the built-in imap support.
+There it wouldn't really Poll when I hit P, new messages only showed up
+after I restarted sup.
+
+
+Either these are bugs or I don't get how sup works,
+either way, help is appreciated.
+
+Regards,
+Philipp
+
+

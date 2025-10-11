@@ -1,0 +1,23 @@
+From eg at gaute.vetsj.com  Sun Sep 25 09:56:13 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 25 Sep 2011 15:56:13 +0200
+Subject: [sup-devel] Fix attachment delete off-by-one
+Message-ID: <1316958820-sup-2638@qwerzila>
+
+Hi,
+
+deleting attachments with 'd' in edit-mode is off-by-one (you needed to
+select the line above the attachment). Attached patch fixes this issue.
+
+(Perhaps introduced with the account selector ?)
+
+Regards,
+Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-attachment-off-by-one-line-selection-in-edit-mes.patch
+Type: application/octet-stream
+Size: 915 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110925/417a2032/attachment.obj>
+

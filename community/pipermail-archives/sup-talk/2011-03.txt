@@ -1,0 +1,2336 @@
+From luislupe at gmail.com  Tue Mar  1 11:16:45 2011
+From: luislupe at gmail.com (Luis P. Mendes)
+Date: Tue, 1 Mar 2011 16:16:45 +0000
+Subject: [sup-talk] Problem undefined symbol
+In-Reply-To: <1296027550-sup-4996@tilus.net>
+References: <AANLkTik+UZqxkFb3KpWR93+5b=BX4YrvwqFtwSUZTic7@mail.gmail.com>
+	<1296027550-sup-4996@tilus.net>
+Message-ID: <AANLkTi=y1G1fo09U34XnVxnJoHtGXpLzAjaKs9CowPwc@mail.gmail.com>
+
+HI,
+
+Thank you for the help, but there was no success.
+
+I unisntalled all the gems I had and reinstalled them again but the
+problem remains.
+Tryed to substitute xapian-full by xapian, but sup required xapian-full again.
+
+Any more ideas on this?
+I unistalled sup 0.11, so it is not working any more.
+
+
+Luis
+
+
+
+
+2011/1/26 Tero Tilus <tero at tilus.net>:
+> Luis P. Mendes, 2011-01-26 02:00:
+>> I installed sup version 12.1 and tried to run it.
+>> I'm using Slackware64 13.1 and had sup V 0.11 installed before.
+>
+> Does 0.11 still work?
+>
+>> $ sup
+>> [2011-01-25 23:52:33 +0000] WARNING: can't find character set by using
+>> locale, defaulting to utf-8
+>> /usr/bin/ruby: symbol lookup error:
+>> /usr/lib64/ruby/1.9.1/x86_64-linux/dl.so: undefined symbol:
+>> rb_dl_init_callbacks_5
+>
+> I'd guess you have either have your ruby or gem C extensions somehow
+> fscked up. ?Error in lib/sup/index.rb suggests the problem might be
+> xapian-related. ?Other than that I really have no idea whats going on.
+> You could try both xapian and xapian-full gems (and uninstall the
+> other one).
+>
+> --
+> Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From hollunder at lavabit.com  Tue Mar  1 17:00:13 2011
+From: hollunder at lavabit.com (Philipp)
+Date: Tue, 01 Mar 2011 23:00:13 +0100
+Subject: [sup-talk] How to recover from errors with 0.12.1?
+Message-ID: <1299016627-sup-4098@eris>
+
+Previously when the sources went out of sync sup quit and showed a line
+I could c/p to fix it, now it only says that an error has occured and I
+don't have the slightest how to recover.
+I deleted a lot of messages using my providers webmailer because of
+space restrictions and now messages for that account won't show properly
+anymore. Sup doesn't seem to recover automatically. How can I tell it to
+re-scan or whatever it needs to do?
+
+
+From support at plecavalier.com  Thu Mar  3 08:26:03 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 03 Mar 2011 08:26:03 -0500
+Subject: [sup-talk] hook with external file ref
+Message-ID: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+
+From: Philippe LeCavalier <support at plecavalier.com>
+To: sup-talk <sup-talk at rubyforge.ord>
+Cc: 
+Bcc: 
+Subject: hook with external file ref
+
+addressfile = File.open("/home/user/path/addressfile","r")
+if ! addressfile.grep(/#{message.from.email}/).empty?
+  message.add_label :somelabel
+end
+
+In the wiki it states "which contains one e-mail address per line". I'm just wondering what I would have to change in the code in order to list just the domain.
+-- 
+Thanks,
+Phil
+
+From groups at hjdivad.com  Thu Mar  3 12:35:20 2011
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Thu, 03 Mar 2011 09:35:20 -0800
+Subject: [sup-talk] hook with external file ref
+In-Reply-To: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+References: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+Message-ID: <1299173352-sup-4428@nyx.local>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 03 05:26:03 -0800 2011:
+> From: Philippe LeCavalier <support at plecavalier.com>
+> To: sup-talk <sup-talk at rubyforge.ord>
+> Cc: 
+> Bcc: 
+> Subject: hook with external file ref
+> 
+> addressfile = File.open("/home/user/path/addressfile","r")
+> if ! addressfile.grep(/#{message.from.email}/).empty?
+>   message.add_label :somelabel
+> end
+> 
+> In the wiki it states "which contains one e-mail address per line". I'm just
+> wondering what I would have to change in the code in order to list just the
+> domain.
+
+It's a bit tricky because you're trying to find the email address in the
+address file, rather than match one of many patterns in the address file to the
+email.  If you use the latter approach you should be able to put whatever
+patterns you want, including just the domain.
+
+  patterns = File.readlines "/path/to/my/addressfile"
+  patterns.each do |pattern|
+    if message.from.email =~ /#{pattern}/
+      message.add_label :somelabel
+    end
+  end
+
+If you take this approach then you should be able to have lines in your
+addressfile like ?foo.com? (sans quotes).  This will actually match a little
+more than what you probably intend (e.g. it would match emails from
+foo.com at bar.com or even joe at foodcom.net), but is likely good enough and saves
+you from having to learn regular expressions.
+
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From support at plecavalier.com  Thu Mar  3 14:12:40 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 03 Mar 2011 14:12:40 -0500
+Subject: [sup-talk] hook with external file ref
+In-Reply-To: <1299173352-sup-4428@nyx.local>
+References: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+	<1299173352-sup-4428@nyx.local>
+Message-ID: <1299179513-sup-1090@plc.intranet.plecavalier.com>
+
+Thank you David.
+Excerpts from David J. Hamilton's message of Thu Mar 03 12:35:20 -0500 2011:
+> Excerpts from Philippe LeCavalier's message of Thu Mar 03 05:26:03 -0800 2011:
+> > From: Philippe LeCavalier <support at plecavalier.com>
+> > To: sup-talk <sup-talk at rubyforge.ord>
+> > Cc: 
+> > Bcc: 
+> > Subject: hook with external file ref
+> > 
+> > addressfile = File.open("/home/user/path/addressfile","r")
+> > if ! addressfile.grep(/#{message.from.email}/).empty?
+> >   message.add_label :somelabel
+> > end
+> > 
+> > In the wiki it states "which contains one e-mail address per line". I'm just
+> > wondering what I would have to change in the code in order to list just the
+> > domain.
+> 
+> It's a bit tricky because you're trying to find the email address in the
+> address file, rather than match one of many patterns in the address file to the
+> email.  If you use the latter approach you should be able to put whatever
+> patterns you want, including just the domain.
+> 
+>   patterns = File.readlines "/path/to/my/addressfile"
+>   patterns.each do |pattern|
+>     if message.from.email =~ /#{pattern}/
+>       message.add_label :somelabel
+>     end
+>   end
+> 
+> If you take this approach then you should be able to have lines in your
+> addressfile like ?foo.com? (sans quotes).  This will actually match a little
+> more than what you probably intend (e.g. it would match emails from
+> foo.com at bar.com or even joe at foodcom.net), but is likely good enough and saves
+> you from having to learn regular expressions.
+
+I'll give this a try and see what the outcome is.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Fri Mar  4 09:06:17 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 04 Mar 2011 09:06:17 -0500
+Subject: [sup-talk] hook with external file ref
+In-Reply-To: <1299179513-sup-1090@plc.intranet.plecavalier.com>
+References: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+	<1299173352-sup-4428@nyx.local>
+	<1299179513-sup-1090@plc.intranet.plecavalier.com>
+Message-ID: <1299247526-sup-7848@plc.intranet.plecavalier.com>
+
+Hi David.
+Excerpts from Philippe LeCavalier's message of Thu Mar 03 14:12:40 -0500 2011:
+> Thank you David.
+> Excerpts from David J. Hamilton's message of Thu Mar 03 12:35:20 -0500 2011:
+> > Excerpts from Philippe LeCavalier's message of Thu Mar 03 05:26:03 -0800 2011:
+> > > From: Philippe LeCavalier <support at plecavalier.com>
+> > > To: sup-talk <sup-talk at rubyforge.ord>
+> > > Cc: 
+> > > Bcc: 
+> > > Subject: hook with external file ref
+> > > 
+> > > addressfile = File.open("/home/user/path/addressfile","r")
+> > > if ! addressfile.grep(/#{message.from.email}/).empty?
+> > >   message.add_label :somelabel
+> > > end
+> > > 
+> > > In the wiki it states "which contains one e-mail address per line". I'm just
+> > > wondering what I would have to change in the code in order to list just the
+> > > domain.
+> > 
+> > It's a bit tricky because you're trying to find the email address in the
+> > address file, rather than match one of many patterns in the address file to the
+> > email.  If you use the latter approach you should be able to put whatever
+> > patterns you want, including just the domain.
+> > 
+> >   patterns = File.readlines "/path/to/my/addressfile"
+> >   patterns.each do |pattern|
+> >     if message.from.email =~ /#{pattern}/
+> >       message.add_label :somelabel
+> >     end
+> >   end
+I'm getting "undetermined quoted string" with the above code. Any ideas?
+
+-- 
+Thanks,
+Phil
+
+From dmishd at gmail.com  Sun Mar  6 17:54:01 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 06 Mar 2011 22:54:01 +0000
+Subject: [sup-talk] threading and blackberrys
+Message-ID: <1299450523-sup-2185@whisper>
+
+Hello all
+
+Where I work some people use Blackberries, and they don't add an
+In-Reply-To header to email, so I do quite a bit of manual re-threading
+using the '#' key. I'd like to not have to do it so much, but I don't
+want to just thread all mail by subject, as the blackberry messages are
+not /so/ frequent. So I've put the below in my before-add-message.rb
+hook that others might find useful.
+
+The code:
+
+* only runs if the message is from a blackberry and the subject
+  indicates it is a reply.
+* looks for the most recent message that matches the subject, and adds a
+  ref to that message, so they should then be in the same thead.
+
+Any feedback or improvements appreciated.
+
+Hamish
+
+
+subj = message.subj.downcase
+
+# if from a blackberry and is a reply, then try to find a matching thread
+if message.id.downcase.include?('blackberry') && Message.subj_is_reply?(subj)
+  thread_subj = Message.normalize_subj subj
+  query = Index.parse_query "subject:\"#{thread_subj}\""
+  # the query returns newest match first
+  first_id = Index.each_id(query) { |id| break id }
+  message.add_ref(first_id) unless first_id.nil?
+end
+
+From support at plecavalier.com  Mon Mar  7 12:17:07 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Mon, 07 Mar 2011 12:17:07 -0500
+Subject: [sup-talk] Direct Maildir source
+Message-ID: <1299517906-sup-3628@plc.intranet.plecavalier.com>
+
+Hi.
+
+Can I tell Sup to look directly in the Maildir of the Courier spool to
+create the index? I have a VPS account with a provider and I'm just
+wondering if I could run Sup there instead of my laptop?
+
+I imagine ppl are doing this. My question is can I do it directly or
+I can to grab the mail and put it under my home folder first? When I
+give the correct path to /var.../myaccount_name/ sup claims it was
+successful however no mail was indexed.
+
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Tue Mar  8 21:13:26 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 08 Mar 2011 21:13:26 -0500
+Subject: [sup-talk] hook with external file ref
+In-Reply-To: <1299618530-sup-9754@nyx.local>
+References: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+	<1299173352-sup-4428@nyx.local>
+	<1299179513-sup-1090@plc.intranet.plecavalier.com>
+	<1299247526-sup-7848@plc.intranet.plecavalier.com>
+	<1299618530-sup-9754@nyx.local>
+Message-ID: <1299636520-sup-7694@plc.intranet.plecavalier.com>
+
+Hi David.
+Excerpts from David J. Hamilton's message of Tue Mar 08 16:16:00 -0500 2011:
+> Hi Philippe,
+> 
+> Excerpts from Philippe LeCavalier's message of Fri Mar 04 06:06:17 -0800 2011:
+> > Hi David.
+> > I'm getting "undetermined quoted string" with the above code. Any ideas?
+> 
+> Sorry for the late reply.  I don't see what in the above code would give you
+> that error.
+It's quite possible it's something unrelated to that hook.
+> Could you please post your complete before-add-message.rb file?
+Since I have yet to settle on a "style" of code for this hook I'm only
+playing around with different options. As such, I only apply them 1 at a
+time. At the moment I only have your example in there.
+> Your addressfile is just a list of domains right?  Something like:
+> 
+>   gmail.com
+>   somewhereelse.net
+>   example.org
+Yup. Exactly.
+> 
+> One more thing: the code I originally posted does contain an error: you want to
+> use /#{pattern.chomp}/ rather than /#{pattern}/.  So, for example, if your
+> addressfile was in /tmp/addressfile you would have:
+> 
+>   patterns = File.readlines "/tmp/addressfile"
+>   patterns.each do |pattern|
+>     if message.from.email =~ /#{pattern.chomp}/
+>       message.add_label :somelabel
+>     end
+>   end
+I'll try the above. Perhaps that will "settle" things. Back in a bit
+once I have a chance to test that.
+
+Thanks again David.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Mar 10 09:13:04 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Mar 2011 09:13:04 -0500
+Subject: [sup-talk] hook with external file ref
+In-Reply-To: <1299636520-sup-7694@plc.intranet.plecavalier.com>
+References: <1299158755-sup-5116@plc.intranet.plecavalier.com>
+	<1299173352-sup-4428@nyx.local>
+	<1299179513-sup-1090@plc.intranet.plecavalier.com>
+	<1299247526-sup-7848@plc.intranet.plecavalier.com>
+	<1299618530-sup-9754@nyx.local>
+	<1299636520-sup-7694@plc.intranet.plecavalier.com>
+Message-ID: <1299766157-sup-3090@plc.intranet.plecavalier.com>
+
+Excerpts from Philippe LeCavalier's message of Tue Mar 08 21:13:26 -0500 2011:
+> Hi David.
+> Excerpts from David J. Hamilton's message of Tue Mar 08 16:16:00 -0500 2011:
+> > Hi Philippe,
+> > 
+> > Excerpts from Philippe LeCavalier's message of Fri Mar 04 06:06:17 -0800 2011:
+> > > Hi David.
+> > > I'm getting "undetermined quoted string" with the above code. Any ideas?
+> > 
+> > Sorry for the late reply.  I don't see what in the above code would give you
+> > that error.
+> It's quite possible it's something unrelated to that hook.
+Not certain what was going on there. I opened sup with debug to try and
+catch the so called "undetermined string" and now I'm not even getting
+the error. Strange thing is, I was seeing that over a long period of
+time ie a week or more...anyway. Guess I'll drop that.
+> > Could you please post your complete before-add-message.rb file?
+> Since I have yet to settle on a "style" of code for this hook I'm only
+> playing around with different options. As such, I only apply them 1 at a
+> time. At the moment I only have your example in there.
+> > Your addressfile is just a list of domains right?  Something like:
+> > 
+> >   gmail.com
+> >   somewhereelse.net
+> >   example.org
+> Yup. Exactly.
+> > 
+> > One more thing: the code I originally posted does contain an error: you want to
+> > use /#{pattern.chomp}/ rather than /#{pattern}/.  So, for example, if your
+> > addressfile was in /tmp/addressfile you would have:
+> > 
+> >   patterns = File.readlines "/tmp/addressfile"
+> >   patterns.each do |pattern|
+> >     if message.from.email =~ /#{pattern.chomp}/
+> >       message.add_label :somelabel
+> >     end
+> >   end
+> I'll try the above. Perhaps that will "settle" things. Back in a bit
+> once I have a chance to test that.
+> 
+> Thanks again David.
+Now that I've got no errors I can focus on the hook above. After adding
+chomp to the code I now get nothing at all. The log shows the hook is
+being read but nothing happens. No label is added and I've confirm for
+certain there should be. So no error, but no action ;-) Any suggestions?
+
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Fri Mar 11 08:42:10 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 11 Mar 2011 08:42:10 -0500
+Subject: [sup-talk] error on new messages
+Message-ID: <1299850291-sup-6009@plc.intranet.plecavalier.com>
+
+What does this:
+h: Syntax error: Unterminated quoted string
+mean?
+
+-- 
+Thanks,
+Phil
+
+From btricha at gmail.com  Fri Mar 11 16:46:54 2011
+From: btricha at gmail.com (Bryan Richardson)
+Date: Fri, 11 Mar 2011 14:46:54 -0700
+Subject: [sup-talk] Archive Emails to Different Source
+Message-ID: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+
+Hello All,
+
+I'm using Sup to access email from my company's Microsoft Exchange
+Server via IMAP (using offlineimap). My Exchange mailbox size
+limitation is 1GB, so every once in a while I will move email from my
+Inbox to a personal Outlook archive file that is stored on my local
+machine. However, when I do this the emails that I archive get removed
+from my local IMAP cache the next time offlineimap runs.
+
+Is it possible to have Sup archive (or otherwise move) email messages
+to a different IMAP source? I'm not so much worried about being able
+to remove the messages from my Exchange account via Sup as I am
+maintaining a local copy of all my email accessible via Sup. I can
+archive them via Sup first then archive them in Outlook if that's what
+it takes.
+
+Please advise.
+
+--
+Thanks!
+Bryan
+
+From support at plecavalier.com  Thu Mar 17 10:17:46 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 10:17:46 -0400
+Subject: [sup-talk] background or queue msg sending
+Message-ID: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+
+Hi All.
+
+Does anyone know of a way to background or perhaps queue
+sending mail. Sup has me so efficient I've even lost the patience to
+wait for msgs to be sent. I really want to hit 'y' and move on.
+
+Any thoughts, experiences? My first though was manipulating the buffers
+so that the previous buffer would get called back before the mail gets
+confirmed as sent and then the confirmation itself could still be
+displayed in the notification area.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Mar 17 10:26:51 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 10:26:51 -0400
+Subject: [sup-talk] vim text wrapping
+Message-ID: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+
+Hi All.
+
+This is more of a vim question than it is a sup one but I'm not a
+member of the vim list so I thought I'd ask you guys first.
+
+Since I don't write very well I always end up making changes while
+re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+did when I first typed the text. So all the lines I've edited aren't
+wrapped like the others. It can make reading my mail challenging at
+times.
+
+Perhaps I'm misunderstanding how to properly edit text in vim?
+
+-- 
+Thanks,
+Phil
+
+From paul.a.grove at gmail.com  Thu Mar 17 11:33:32 2011
+From: paul.a.grove at gmail.com (Paul Grove)
+Date: Thu, 17 Mar 2011 15:33:32 +0000
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300375966-sup-3846@localhost>
+
+The answer to this question is in my interest also.
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 14:26:51 +0000 2011:
+> Hi All.
+> 
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+> 
+
+From bruno at arcangeli.org  Thu Mar 17 11:32:12 2011
+From: bruno at arcangeli.org (Bruno d'Arcangeli)
+Date: Thu, 17 Mar 2011 16:32:12 +0100
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+Message-ID: <1300375667-sup-4657@panda>
+
+Le 17/03/2011 ? 15:17, Philippe LeCavalier a ?crit:
+> Hi All.
+> 
+> Does anyone know of a way to background or perhaps queue
+> sending mail. Sup has me so efficient I've even lost the patience to
+> wait for msgs to be sent. I really want to hit 'y' and move on.
+> 
+> Any thoughts, experiences? My first though was manipulating the buffers
+> so that the previous buffer would get called back before the mail gets
+> confirmed as sent and then the confirmation itself could still be
+> displayed in the notification area.
+
+Try with a real mta like postfix or exim. There are simple to use/configure.
+Personnaly, i've a little preference in exim.
+
+-- 
+Bruno d'Arcangeli
+
+From sochotnicky at redhat.com  Thu Mar 17 11:14:13 2011
+From: sochotnicky at redhat.com (Stanislav Ochotnicky)
+Date: Thu, 17 Mar 2011 16:14:13 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300374660-sup-1025@sochotnicky.usersys.redhat.com>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 15:26:51 +0100 2011:
+> Hi All.
+>
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+
+Really not a sup question at all, but I have no problem trying to
+answer. Others might feel different though :-)
+
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+
+How about "gqq"? Also "set nopaste" and "set textwidth=72" should be
+of help most of the time.
+
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+
+Nah, vim might look like a simple editor but it has more features than
+most people would believe :-)
+
+--
+Stanislav Ochotnicky <sochotnicky at redhat.com>
+Software Engineer - Base Operating Systems Brno
+
+PGP: 7B087241
+Red Hat Inc.                               http://cz.redhat.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110317/da02261c/attachment.bin>
+
+From bruno at arcangeli.org  Thu Mar 17 11:52:15 2011
+From: bruno at arcangeli.org (Bruno d'Arcangeli)
+Date: Thu, 17 Mar 2011 16:52:15 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300376983-sup-5333@panda>
+
+Le 17/03/2011 ? 15:26, Philippe LeCavalier a ?crit:
+> Hi All.
+> 
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+ 
+I'm not a vim expert but simple user and i think that you can't. I've
+seen many people asking for this on different vim list/forum. It's
+apparently a vi functionality and can't be changed.
+-- 
+Bruno d'Arcangeli
+
+From bruno at arcangeli.org  Thu Mar 17 12:04:03 2011
+From: bruno at arcangeli.org (Bruno d'Arcangeli)
+Date: Thu, 17 Mar 2011 17:04:03 +0100
+Subject: [sup-talk] New user/adopter: Hello
+Message-ID: <1300377546-sup-1512@panda>
+
+Hi sup fan,
+
+I'm using this very good piece of code since one month. Apart from the
+lake of "real" maildir support (read msg not in cur dir, impossible to
+really suppress msg), it's very convenient to use it.
+After more than 8 years with mutt, i think that i'll use sup for 8 years
+;-)
+
+Sorry if my english is not very good, my parents hard-coded my brain in
+french.
+
+Bruno
+-- 
+Bruno d'Arcangeli
+
+From erin.sheldon at gmail.com  Thu Mar 17 12:04:15 2011
+From: erin.sheldon at gmail.com (Erin Sheldon)
+Date: Thu, 17 Mar 2011 12:04:15 -0400
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <AANLkTi=sSdoV+Fko5WqDFbNhzGRjo+sdYV0vA9eq6A6_@mail.gmail.com>
+
+On Thu, Mar 17, 2011 at 10:26 AM, Philippe LeCavalier
+<support at plecavalier.com> wrote:
+> Hi All.
+>
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+>
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+>
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+
+You can have vim justify all the text in a paragraph.  I have these in
+my .vimrc, which makes typing Q justify the text.
+
+" n is for normal mode
+nnoremap Q gqap
+" v is for visual mode.
+vnoremap Q gq
+
+
+
+>
+> --
+> Thanks,
+> Phil
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+Erin Scott Sheldon
+Brookhaven National Laboratory
+
+From pete at muddygoat.org  Thu Mar 17 12:05:01 2011
+From: pete at muddygoat.org (Peter Lewis)
+Date: Thu, 17 Mar 2011 16:05:01 +0000
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <20110317160501.GB14019@puddleduck>
+
+Hi,
+
+On Thu, 17 Mar 2011, Philippe LeCavalier wrote:
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+
+I've not managed to get vim to do this automatically (I haven't tried much
+though). What I usually do is, once I've re-edited a paragraph and it has some
+overflowing lines, go to that paragraph in Normal mode and do:
+
+vip  (to select the whole paragraph), then
+gq   (to rewrap the selected text).
+
+HTH,
+
+Pete.
+
+From aidecoe at aidecoe.name  Thu Mar 17 12:12:13 2011
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Thu, 17 Mar 2011 17:12:13 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300378217-sup-5399@ittemni>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 15:26:51 +0100 2011:
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+
+
+In visual mode select blocks you'd like to fix and type 'gq' command. Is
+it that you'd like to achieve?
+-- 
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110317/9e59f21d/attachment-0001.bin>
+
+From sup at zevv.nl  Thu Mar 17 12:19:29 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 17 Mar 2011 17:19:29 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300378468-sup-2125@pruts.nl>
+
+* On Thu Mar 17 15:26:51 +0100 2011, Philippe LeCavalier wrote:
+ 
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+
+I guess this can be called a 'feature' of vim, Bram probably has a good
+reason for making it behave as it does. 
+
+As far as I know, wrapping only occurs when you are in insert mode
+adding text at the end of the current line, but not when you are
+inserting text in the middle of a line.
+
+My own habit is to just add or remove the text as a go, and hit the key
+sequence 'gwap' to clean up the mess, which means so much as 'reformat
+(rewrap) the current paragraph'. The vim help for 'gw':
+
+  gw{motion}    Format the lines that {motion} moves over.  Similar to
+                |gq| but puts the cursor back at the same position in
+                the text.  However, 'formatprg' and 'formatexpr' are
+                not used.  {not in Vi}
+
+where {motion} would be 'ap', meaning 'a paragraph'.
+
+It looks kind of cumbersome in the beginning, but I'm very much used to
+it and don't even think about it anymore.
+
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From james at jamestaylor.org  Thu Mar 17 12:10:57 2011
+From: james at jamestaylor.org (James Taylor)
+Date: Thu, 17 Mar 2011 12:10:57 -0400
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300375966-sup-3846@localhost>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+	<1300375966-sup-3846@localhost>
+Message-ID: <9C855374-896D-4D31-860E-A9160595914F@jamestaylor.org>
+
+I use gqap constantly while writing email and other prose in vim.
+
+(:help gq gives you the following)
+
+"""
+gqgq                                                    gqgq gqq
+gqq                     Format the current line.  With a count format that
+                        many lines.  {not in Vi}
+
+                                                        v_gq
+{Visual}gq              Format the highlighted text.  (for {Visual} see
+                        Visual-mode).  {not in Vi}
+
+                                                        gw
+gw{motion}              Format the lines that {motion} moves over.  Similar to
+                        gq but puts the cursor back at the same position in
+                        the text.  However, 'formatprg' and 'formatexpr' are
+                        not used.  {not in Vi}
+
+gwgw                                                    gwgw gww
+gww                     Format the current line as with "gw".  {not in Vi}
+
+                                                        v_gw
+{Visual}gw              Format the highlighted text as with "gw".  (for
+                        {Visual} see Visual-mode).  {not in Vi}
+
+Example: To format the current paragraph use:                   gqap  >
+        gqap
+
+The "gq" command leaves the cursor in the line where the motion command takes
+the cursor.  This allows you to repeat formatting repeated with ".".  This
+works well with "gqj" (format current and next line) and "gq}" (format until
+end of paragraph).  Note: When 'formatprg' is set, "gq" leaves the cursor on
+the first formatted line (as with using a filter command).
+
+If you want to format the current paragraph and continue where you were, use: >
+        gwap
+If you always want to keep paragraphs formatted you may want to add the 'a'
+flag to 'formatoptions'.  See auto-format.
+"""
+
+
+
+
+
+On Mar 17, 2011, at 11:33 AM, Paul Grove wrote:
+
+> The answer to this question is in my interest also.
+> 
+> Excerpts from Philippe LeCavalier's message of Thu Mar 17 14:26:51 +0000 2011:
+>> Hi All.
+>> 
+>> This is more of a vim question than it is a sup one but I'm not a
+>> member of the vim list so I thought I'd ask you guys first.
+>> 
+>> Since I don't write very well I always end up making changes while
+>> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+>> did when I first typed the text. So all the lines I've edited aren't
+>> wrapped like the others. It can make reading my mail challenging at
+>> times.
+>> 
+>> Perhaps I'm misunderstanding how to properly edit text in vim?
+>> 
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+-- jt
+
+James Taylor, Assistant Professor, Biology / Computer Science, Emory University
+
+
+
+
+
+From pancho at pancho.name  Thu Mar 17 12:23:58 2011
+From: pancho at pancho.name (pancho horrillo)
+Date: Thu, 17 Mar 2011 17:23:58 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <20110317162358.GA15534@pancho.name>
+
+On Thu, Mar 17, 2011 at 10:26:51AM -0400, Philippe LeCavalier wrote:
+> Hi All.
+> 
+Hi there.
+
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+For the sake of others:
+If you want Vim to fold lines as you newly write them, just run
+:set textwidth=72  # set tw=72 for short
+
+If you want Vim to reformat the text when you edit it, just run
+:set formatoptions+=a
+or add it to your vimrc, etc.
+
+This is explained in Vim help,
+:help textwidth
+:help ins-textwidth
+:help formatoptions
+:help fo-table
+
+If you don't want this to happen all the time (as I don't),
+you can use the gq operator discretionally.
+gq <movement>, e.g.:
+gq}     reflow till the end of the paragraph
+gqap    reflow the whole paragraph
+
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+> 
+A minor tweak and you are done.
+
+Hope that it helps.
+
+Happy hacking,
+
+-- 
+pancho horrillo
+
+To be conscious that
+you are ignorant is a great step
+to knowledge.
+
+		Benjamin Disraeli
+
+From matthieu.rakotojaona at gmail.com  Thu Mar 17 12:47:38 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Mar 2011 17:47:38 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300378217-sup-5399@ittemni>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+	<1300378217-sup-5399@ittemni>
+Message-ID: <AANLkTimfjB0hDNWNmjsqG_p32SxCTz86pCqgR5QsWySX@mail.gmail.com>
+
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+
+Just like everyone said, I use
+
+gqap
+
+in the middle of a paragraph i'd like to reformat. Also of note, I set
+my formatoptions like this :
+
+:set formatoptions = tcq
+
+which brings me more or less what I want. Check the man (:he
+formatoptions) to see the different options for the formating.
+
+From bruno at arcangeli.org  Thu Mar 17 13:46:55 2011
+From: bruno at arcangeli.org (Bruno d'Arcangeli)
+Date: Thu, 17 Mar 2011 18:46:55 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <20110317162358.GA15534@pancho.name>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+	<20110317162358.GA15534@pancho.name>
+Message-ID: <1300383715-sup-3198@panda>
+
+Le 17/03/2011 ? 17:23, pancho horrillo a ?crit:
+> If you want Vim to reformat the text when you edit it, just run :set
+> formatoptions+=a or add it to your vimrc, etc.  gq}     reflow till
+> the end of the paragraph gqap    reflow the whole paragraph
+
+Cool. Last time i've asked for this on a list, i was flamed.  I've added
+this to my .vimrc:
+au BufRead /tmp/sup.* set formatoptions+=a
+-- 
+Bruno d'Arcangeli
+
+From support at plecavalier.com  Thu Mar 17 14:14:46 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 14:14:46 -0400
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300378468-sup-2125@pruts.nl>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+	<1300378468-sup-2125@pruts.nl>
+Message-ID: <1300384913-sup-4027@plc.intranet.plecavalier.com>
+
+Excerpts from Ico Doornekamp's message of Thu Mar 17 12:19:29 -0400 2011:
+> * On Thu Mar 17 15:26:51 +0100 2011, Philippe LeCavalier wrote:
+>  
+> > This is more of a vim question than it is a sup one but I'm not a
+> > member of the vim list so I thought I'd ask you guys first.
+> > 
+> > Since I don't write very well I always end up making changes while
+> > re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> > did when I first typed the text. So all the lines I've edited aren't
+> > wrapped like the others. It can make reading my mail challenging at
+> > times.
+> > 
+> > Perhaps I'm misunderstanding how to properly edit text in vim?
+> 
+> I guess this can be called a 'feature' of vim, Bram probably has a good
+> reason for making it behave as it does. 
+> 
+> As far as I know, wrapping only occurs when you are in insert mode
+> adding text at the end of the current line, but not when you are
+> inserting text in the middle of a line.
+> 
+> My own habit is to just add or remove the text as a go, and hit the key
+> sequence 'gwap' to clean up the mess, which means so much as 'reformat
+> (rewrap) the current paragraph'. The vim help for 'gw':
+> 
+>   gw{motion}    Format the lines that {motion} moves over.  Similar to
+>                 |gq| but puts the cursor back at the same position in
+>                 the text.  However, 'formatprg' and 'formatexpr' are
+>                 not used.  {not in Vi}
+> 
+> where {motion} would be 'ap', meaning 'a paragraph'.
+> 
+> It looks kind of cumbersome in the beginning, but I'm very much used to
+> it and don't even think about it anymore.
+> 
+> 
+> 
+> -- 
+> :wq
+> ^X^Cy^K^X^C^C^C^C
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+That's pretty much what I expected since I had already visited the
+options for textwidth and the like. I can certainly get used to a kbd
+sequence since I expect that sort of thing when using Vim. In fact,
+since adopting sup my hands don't really leave the keyboard.
+
+However what James mentioned about formatoptions might alleviate that.
+James, I add these types of things to my vim line in config.yaml rather
+than my rc file. I to don't always want wrapping at 72 and the like. But
+I do always want this in sup.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Mar 17 15:15:30 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 15:15:30 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300375667-sup-4657@panda>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300375667-sup-4657@panda>
+Message-ID: <1300385916-sup-3971@plc.intranet.plecavalier.com>
+
+Hi Bruno.
+Excerpts from Bruno d'Arcangeli's message of Thu Mar 17 11:32:12 -0400 2011:
+> Le 17/03/2011 ? 15:17, Philippe LeCavalier a ?crit:
+> > Hi All.
+> > 
+> > Does anyone know of a way to background or perhaps queue
+> > sending mail. Sup has me so efficient I've even lost the patience to
+> > wait for msgs to be sent. I really want to hit 'y' and move on.
+> > 
+> > Any thoughts, experiences? My first though was manipulating the buffers
+> > so that the previous buffer would get called back before the mail gets
+> > confirmed as sent and then the confirmation itself could still be
+> > displayed in the notification area.
+> 
+> Try with a real mta like postfix or exim. There are simple to use/configure.
+> Personnaly, i've a little preference in exim.
+> 
+I've used both and can't really say I prefer one over the other but I'm
+not certain I understand how that would help me background or queue
+sending mail in sup. Like right now, after I press 'y', I want sup to
+_immediately_ bring me to either my inbox-mode or this thread in
+thread-mode. Either buffer would be fine with me though I suspect for
+continuity proposes return to the thread might be more logical. I just
+don't want to wait for the 'Message Sent!'.
+
+Even if Exim or Postfix might act faster than msmtp(what I'm using now)
+sup is set up in a way that it waits for the process to terminate before
+bringing me to the previous buffer. What I'd like to suggest is that sup
+should immediately bring you to the previous buffer.
+-- 
+Thanks,
+Phil
+
+From tero at tilus.net  Thu Mar 17 15:54:59 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 17 Mar 2011 21:54:59 +0200
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+Message-ID: <1300391568-sup-154@tilus.net>
+
+Philippe LeCavalier, 2011-03-17 16:17:
+> Sup has me so efficient I've even lost the patience to
+> wait for msgs to be sent.
+
+You need to wait?  I don't.  Sup is instatly back after hitting 'y'.
+Your MTA must be somehow broken.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Thu Mar 17 15:55:09 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 17 Mar 2011 15:55:09 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300385916-sup-3971@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300375667-sup-4657@panda>
+	<1300385916-sup-3971@plc.intranet.plecavalier.com>
+Message-ID: <1300391638-sup-7379@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 15:15:30 -0400 2011:
+
+Hi Philippe,
+
+> Even if Exim or Postfix might act faster than msmtp(what I'm using
+> now) sup is set up in a way that it waits for the process to
+> terminate before bringing me to the previous buffer. What I'd like
+> to suggest is that sup should immediately bring you to the previous
+> buffer.
+
+I get a near instant return to the buffer when submitting via
+'sendmail' (exim in my case).  It's only takes the time required to
+spit the content of the mail through the pipe to that process...once
+done, the delivery is asyncrhonous to sup.  If it's not behaving that
+way when using a real mta, something with the mta config is borked.[1]
+
+Thanks
+-Ben
+
+[1] By default sendmail used to try immediate handoff before queuing,
+    which could result in delayed return.  I'm not sure if it still
+    does though.
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From support at plecavalier.com  Thu Mar 17 16:10:36 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 16:10:36 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300391568-sup-154@tilus.net>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+Message-ID: <1300392345-sup-5151@plc.intranet.plecavalier.com>
+
+Hi Tero.
+Excerpts from Tero Tilus's message of Thu Mar 17 15:54:59 -0400 2011:
+> Philippe LeCavalier, 2011-03-17 16:17:
+> > Sup has me so efficient I've even lost the patience to
+> > wait for msgs to be sent.
+> 
+> You need to wait?  I don't.  Sup is instatly back after hitting 'y'.
+> Your MTA must be somehow broken.
+That's because of your connection speed. Like right now I'm at a client
+that's got me connected to a 10Mbps fibre link so it feels 'instant'.
+But some client have slower DSL links and when I'm at home -I'm in the
+country- I've got a 1.5Mps wireless and Sup makes me wait 5 to 10
+seconds while msmtp terminates. That pause drives me nuts. I want sup to
+leave that buffer in the background. Like what about someone on dial-up
+or a very slow DSL. It must be even longer.
+ 
+-- 
+Thanks,
+Phil
+
+From kevinr at free-dissociation.com  Thu Mar 17 16:16:09 2011
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Thu, 17 Mar 2011 16:16:09 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300385916-sup-3971@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300375667-sup-4657@panda>
+	<1300385916-sup-3971@plc.intranet.plecavalier.com>
+Message-ID: <1300392204-sup-5911@black-opal.free-dissociation.com>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 15:15:30 -0400 2011:
+> Even if Exim or Postfix might act faster than msmtp(what I'm using now)
+> sup is set up in a way that it waits for the process to terminate before
+> bringing me to the previous buffer. What I'd like to suggest is that sup
+> should immediately bring you to the previous buffer.
+
+Exim or Postfix will both act as the local message queue for you, unlike
+msmtp which blocks while it talks to the upstream remote mail server.
+It's not so much Sup's blocking as msmtp's blocking here which is the
+problem, IME -- talking to the local MTA is wicked fast, and you can set
+your local MTA to use your upstream remote mail server as its smarthost
+-- and there's no reason to add a message queue to Sup if your MTA can
+handle it.  
+
+Given Exim's recent security troubles I'd recommend Postfix.
+
+- Kevin
+--
+Kevin Riggle (kevinr at free-dissociation.com) 
+http://free-dissociation.com
+
+From tyberius_prime at coonabibba.de  Thu Mar 17 11:40:52 2011
+From: tyberius_prime at coonabibba.de (Tyberius Prime)
+Date: Thu, 17 Mar 2011 16:40:52 +0100
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+Message-ID: <1300376344-sup-8109@h1610647.stratoserver.net>
+
+Hey, 
+
+I usually just hit gqap on every paragraph that looks out of line, and vim
+rewraps it for me.
+
+See http://vimdoc.sourceforge.net/htmldoc/change.html#gq
+
+
+So long,
+Tyberius Prime
+
+Excerpts from Philippe LeCavalier's message of Do M?r 17 15:26:51 +0100 2011:
+> Hi All.
+> 
+> This is more of a vim question than it is a sup one but I'm not a
+> member of the vim list so I thought I'd ask you guys first.
+> 
+> Since I don't write very well I always end up making changes while
+> re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> did when I first typed the text. So all the lines I've edited aren't
+> wrapped like the others. It can make reading my mail challenging at
+> times.
+> 
+> Perhaps I'm misunderstanding how to properly edit text in vim?
+> 
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Thu Mar 17 18:32:19 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Thu, 17 Mar 2011 23:32:19 +0100
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300392345-sup-5151@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+	<1300392345-sup-5151@plc.intranet.plecavalier.com>
+Message-ID: <1300400477-sup-3208@twin.sascha.silbe.org>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 21:10:36 +0100 2011:
+
+> But some client have slower DSL links and when I'm at home -I'm in the
+> country- I've got a 1.5Mps wireless and Sup makes me wait 5 to 10
+> seconds while msmtp terminates. That pause drives me nuts. I want sup to
+> leave that buffer in the background. Like what about someone on dial-up
+> or a very slow DSL. It must be even longer.
+
+Give nullmailer a try. It will queue your message and deliver it in the
+background. No need to hack sup and keep it running until the message
+has been delivered.
+
+On my laptops I've integrated nullmailer with NetworkManager so I can
+write mails while on the bus and have them delivered as soon as I enter
+the reach of a wifi network that I have access to. A custom ssh based
+transport tunnels the mails to my smarthost (the university network
+blocks the SMTP ports).
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 500 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110317/2b52e4ea/attachment.bin>
+
+From sean.escriva at gmail.com  Thu Mar 17 18:42:36 2011
+From: sean.escriva at gmail.com (Sean Escriva)
+Date: Thu, 17 Mar 2011 15:42:36 -0700
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+Message-ID: <AANLkTi=qM0QTRMu469hfbby+97xTfgoh_B6Xtsjfy=41@mail.gmail.com>
+
+On Thu, Mar 17, 2011 at 7:17 AM, Philippe LeCavalier
+<support at plecavalier.com> wrote:
+>
+> Hi All.
+>
+> Does anyone know of a way to background or perhaps queue
+> sending mail. Sup has me so efficient I've even lost the patience to
+> wait for msgs to be sent. I really want to hit 'y' and move on.
+>
+> Any thoughts, experiences? My first though was manipulating the buffers
+> so that the previous buffer would get called back before the mail gets
+> confirmed as sent and then the confirmation itself could still be
+> displayed in the notification area.
+
+It sounds like you're refering to how msmtp blocks while talking to
+your smtp server.
+As others have mentioned exim or postfix will do the job. My
+preference is postifx.
+
+If you are already using msmtp, perhaps the msmtpq script would be
+preferable for you, there's a readme that details usage:
+
+http://msmtp.git.sourceforge.net/git/gitweb.cgi?p=msmtp/msmtp;a=tree;f=scripts/msmtpq;h=edde598fe8394b371a8c67a0dc910423ae88904b;hb=HEAD
+
+From support at plecavalier.com  Thu Mar 17 19:08:41 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 19:08:41 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300400477-sup-3208@twin.sascha.silbe.org>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+	<1300392345-sup-5151@plc.intranet.plecavalier.com>
+	<1300400477-sup-3208@twin.sascha.silbe.org>
+Message-ID: <1300403212-sup-7826@plc.intranet.plecavalier.com>
+
+Excerpts from Sascha Silbe's message of Thu Mar 17 18:32:19 -0400 2011:
+> Excerpts from Philippe LeCavalier's message of Thu Mar 17 21:10:36 +0100 2011:
+> 
+> > But some client have slower DSL links and when I'm at home -I'm in the
+> > country- I've got a 1.5Mps wireless and Sup makes me wait 5 to 10
+> > seconds while msmtp terminates. That pause drives me nuts. I want sup to
+> > leave that buffer in the background. Like what about someone on dial-up
+> > or a very slow DSL. It must be even longer.
+> 
+> Give nullmailer a try. It will queue your message and deliver it in the
+> background. No need to hack sup and keep it running until the message
+> has been delivered.
+> 
+> On my laptops I've integrated nullmailer with NetworkManager so I can
+> write mails while on the bus and have them delivered as soon as I enter
+> the reach of a wifi network that I have access to. A custom ssh based
+> transport tunnels the mails to my smarthost (the university network
+> blocks the SMTP ports).
+> 
+> Sascha
+> 
+That sounds just about perfect. These kinds of conversations always
+leave me wondering why I haven't heard of said program before, in this
+case it's nullmailer. I guess I should just be happy I'm learning
+something new every day! Thanks Sascha!
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Mar 17 19:10:44 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 19:10:44 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300392204-sup-5911@black-opal.free-dissociation.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300375667-sup-4657@panda>
+	<1300385916-sup-3971@plc.intranet.plecavalier.com>
+	<1300392204-sup-5911@black-opal.free-dissociation.com>
+Message-ID: <1300403326-sup-4036@plc.intranet.plecavalier.com>
+
+Excerpts from Kevin Riggle's message of Thu Mar 17 16:16:09 -0400 2011:
+> Excerpts from Philippe LeCavalier's message of Thu Mar 17 15:15:30 -0400 2011:
+> > Even if Exim or Postfix might act faster than msmtp(what I'm using now)
+> > sup is set up in a way that it waits for the process to terminate before
+> > bringing me to the previous buffer. What I'd like to suggest is that sup
+> > should immediately bring you to the previous buffer.
+> 
+> Exim or Postfix will both act as the local message queue for you, unlike
+> msmtp which blocks while it talks to the upstream remote mail server.
+> It's not so much Sup's blocking as msmtp's blocking here which is the
+> problem, IME -- talking to the local MTA is wicked fast, and you can set
+> your local MTA to use your upstream remote mail server as its smarthost
+> -- and there's no reason to add a message queue to Sup if your MTA can
+> handle it.  
+> 
+> Given Exim's recent security troubles I'd recommend Postfix.
+> 
+> - Kevin
+> --
+> Kevin Riggle (kevinr at free-dissociation.com) 
+> http://free-dissociation.com
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+Thanks Kevin. I get what everyone is saying now. I just needed explained
+as you did. Makes total sense to me now. I'm going to give preference to
+Sascha's suggestion first. But if I'm unsuccessful I'll definitely give
+a local -full- MTA a try.
+-- 
+Thanks,
+Phil
+
+From tero at tilus.net  Thu Mar 17 20:53:46 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 18 Mar 2011 02:53:46 +0200
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300392345-sup-5151@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+	<1300392345-sup-5151@plc.intranet.plecavalier.com>
+Message-ID: <1300408936-sup-5939@tilus.net>
+
+Philippe LeCavalier, 2011-03-17 22:10:
+> > You need to wait?  I don't.  Sup is instatly back after hitting 'y'.
+> That's because of your connection speed.
+
+Are you kidding?  I've sent mail using sup when hanging on GPRS
+(roughly 30 kbps and 1500ms ping lag) in a train moving 200 km/h.
+Instant send.  If it was about uplink speed I definitely would have
+experienced it then.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From support at plecavalier.com  Thu Mar 17 21:31:21 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 21:31:21 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300408936-sup-5939@tilus.net>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+	<1300392345-sup-5151@plc.intranet.plecavalier.com>
+	<1300408936-sup-5939@tilus.net>
+Message-ID: <1300411874-sup-4334@plc.intranet.plecavalier.com>
+
+Excerpts from Tero Tilus's message of Thu Mar 17 20:53:46 -0400 2011:
+> Philippe LeCavalier, 2011-03-17 22:10:
+> > > You need to wait?  I don't.  Sup is instatly back after hitting 'y'.
+> > That's because of your connection speed.
+> 
+> Are you kidding?
+No I wasn't.
+>I've sent mail using sup when hanging on GPRS (roughly 30 kbps and
+>1500ms ping lag) in a train moving 200 km/h.  Instant send.  If it was
+>about uplink speed I definitely would have experienced it then.
+I agree. I understand now that it was, as explained, msmtp waiting for
+the remote smtp session to finish. Whcih, whether I knew that or not
+wasn't really my point. I just wanted to throw the process of msmtp
+blocking while talking to the relay in the background. But I see know
+that using the local MTA would be just as 'instant' as putting the
+buffer in the background. Or perhaps should I say making that need
+obsolete...
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Mar 17 21:34:54 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Mar 2011 21:34:54 -0400
+Subject: [sup-talk] background or queue msg sending
+In-Reply-To: <1300403212-sup-7826@plc.intranet.plecavalier.com>
+References: <1300371126-sup-4692@plc.intranet.plecavalier.com>
+	<1300391568-sup-154@tilus.net>
+	<1300392345-sup-5151@plc.intranet.plecavalier.com>
+	<1300400477-sup-3208@twin.sascha.silbe.org>
+	<1300403212-sup-7826@plc.intranet.plecavalier.com>
+Message-ID: <1300411900-sup-8374@plc.intranet.plecavalier.com>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 19:08:41 -0400 2011:
+> Excerpts from Sascha Silbe's message of Thu Mar 17 18:32:19 -0400 2011:
+> > Excerpts from Philippe LeCavalier's message of Thu Mar 17 21:10:36 +0100 2011:
+> > 
+> > > But some client have slower DSL links and when I'm at home -I'm in the
+> > > country- I've got a 1.5Mps wireless and Sup makes me wait 5 to 10
+> > > seconds while msmtp terminates. That pause drives me nuts. I want sup to
+> > > leave that buffer in the background. Like what about someone on dial-up
+> > > or a very slow DSL. It must be even longer.
+> > 
+> > Give nullmailer a try. It will queue your message and deliver it in the
+> > background. No need to hack sup and keep it running until the message
+> > has been delivered.
+> > 
+> > On my laptops I've integrated nullmailer with NetworkManager so I can
+> > write mails while on the bus and have them delivered as soon as I enter
+> > the reach of a wifi network that I have access to. A custom ssh based
+> > transport tunnels the mails to my smarthost (the university network
+> > blocks the SMTP ports).
+> > 
+> > Sascha
+> > 
+> That sounds just about perfect. These kinds of conversations always
+> leave me wondering why I haven't heard of said program before, in this
+> case it's nullmailer. I guess I should just be happy I'm learning
+> something new every day! Thanks Sascha!
+Sascha, would you be so kind as to post(or send me) your remotes file if
+you use TLS? I can seem to get nullmailer working with my host. It's
+timing out on the cert check since it's not a valid cert. In msmtp I
+used to use:
+
+tls on tls_certcheck off tls_starttls off But I can't seem to find
+anything related to that for nullmailer.
+-- 
+Thanks,
+Phil
+
+From sochotnicky at redhat.com  Fri Mar 18 02:32:31 2011
+From: sochotnicky at redhat.com (Stanislav Ochotnicky)
+Date: Fri, 18 Mar 2011 07:32:31 +0100
+Subject: [sup-talk] Endless loop when using chronic extension straight from
+	git
+Message-ID: <1300429882-sup-6298@sochotnicky.usersys.redhat.com>
+
+I encountered this weird endless loop when I was trying to hack on sup
+a bit and using it at the same time.
+
+I have a shell script that looks more-less like this:
+-------------------
+#!/bin/sh
+export SUP_LOG_LEVEL=debug
+cd ~/projects/sup
+ruby -I lib bin/sup
+----------------
+
+Normal usage/searching is OK, but when I run sup like that and do
+query like "after:(2 days ago)" sup goes into endless loop (with ruby
+CPU use going to 100%). I also have to kill off the remaining ruby
+process (as in -SIGKILL). When I try to do the same with sup already
+installed with "gem install sup" everything works as expected.
+
+Note that I can reproduce this even with 0.12.1 tag checked out in git
+so it's not my changes that are causing this.
+
+It seems like I am doing something terribly wrong here. Any idea what
+that might be?
+
+--
+Stanislav Ochotnicky <sochotnicky at redhat.com>
+Software Engineer - Base Operating Systems Brno
+
+PGP: 7B087241
+Red Hat Inc.                               http://cz.redhat.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110318/c3d142de/attachment-0001.bin>
+
+From shadowfirebird at gmail.com  Fri Mar 18 05:50:45 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 18 Mar 2011 09:50:45 +0000
+Subject: [sup-talk] Sup: RangeError: value in posting list too large.
+Message-ID: <AANLkTimkgq4jiZJpPZpG2VM1RNgZck0e-RjRQSBOpLOA@mail.gmail.com>
+
+Got the above error while Sup was flushing indexes after an initial message
+polling on start.   Ubuntu 9.04.
+
+Sup restarted okay afterwards, but it just crashes in the same way.
+
+Any ideas?
+
+
+
+-- 
+What a tangled web we weave / Go 'round with circumstance / Someone show me
+how to tell / The dancer from the dance...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110318/9dae17da/attachment.html>
+-------------- next part --------------
+--- IndexError from thread: poll after loading inbox
+RangeError: Value in posting list too large.
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:272:in `_dangerous_allterms_begin'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:272:in `each_prefixed_term'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:285:in `each_source_info'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `to_a'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `benchmark'
+/usr/lib/ruby/1.8/benchmark.rb:293:in `measure'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `benchmark'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:89:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:89:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:154:in `poll_from'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:113:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:103:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:103:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:102:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:102:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:49:in `poll_with_sources'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:68:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:684:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:625:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:78:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From paul.a.grove at gmail.com  Fri Mar 18 05:57:31 2011
+From: paul.a.grove at gmail.com (Paul Grove)
+Date: Fri, 18 Mar 2011 09:57:31 +0000
+Subject: [sup-talk] Endless loop when using chronic extension straight
+	from git
+In-Reply-To: <1300429882-sup-6298@sochotnicky.usersys.redhat.com>
+References: <1300429882-sup-6298@sochotnicky.usersys.redhat.com>
+Message-ID: <1300442123-sup-1862@localhost>
+
+I have also got this problem, Although I havnt looked into it, I cannot
+use on:, after:, and such for fear of it failing.
+
+I am also using the latest sup from git
+
+Excerpts from Stanislav Ochotnicky's message of Fri Mar 18 06:32:31 +0000 2011:
+> I encountered this weird endless loop when I was trying to hack on sup
+> a bit and using it at the same time.
+> 
+> I have a shell script that looks more-less like this:
+> -------------------
+> #!/bin/sh
+> export SUP_LOG_LEVEL=debug
+> cd ~/projects/sup
+> ruby -I lib bin/sup
+> ----------------
+> 
+> Normal usage/searching is OK, but when I run sup like that and do
+> query like "after:(2 days ago)" sup goes into endless loop (with ruby
+> CPU use going to 100%). I also have to kill off the remaining ruby
+> process (as in -SIGKILL). When I try to do the same with sup already
+> installed with "gem install sup" everything works as expected.
+> 
+> Note that I can reproduce this even with 0.12.1 tag checked out in git
+> so it's not my changes that are causing this.
+> 
+> It seems like I am doing something terribly wrong here. Any idea what
+> that might be?
+> 
+
+From support at plecavalier.com  Fri Mar 18 09:56:26 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 18 Mar 2011 09:56:26 -0400
+Subject: [sup-talk] vim text wrapping
+In-Reply-To: <1300384913-sup-4027@plc.intranet.plecavalier.com>
+References: <1300371571-sup-2777@plc.intranet.plecavalier.com>
+	<1300378468-sup-2125@pruts.nl>
+	<1300384913-sup-4027@plc.intranet.plecavalier.com>
+Message-ID: <1300456131-sup-3142@plc.intranet.plecavalier.com>
+
+Excerpts from Philippe LeCavalier's message of Thu Mar 17 14:14:46 -0400 2011:
+> Excerpts from Ico Doornekamp's message of Thu Mar 17 12:19:29 -0400 2011:
+> > * On Thu Mar 17 15:26:51 +0100 2011, Philippe LeCavalier wrote:
+> >  
+> > > This is more of a vim question than it is a sup one but I'm not a
+> > > member of the vim list so I thought I'd ask you guys first.
+> > > 
+> > > Since I don't write very well I always end up making changes while
+> > > re-reading myself. When I edit a line Vim doesn't wrap anymore like it
+> > > did when I first typed the text. So all the lines I've edited aren't
+> > > wrapped like the others. It can make reading my mail challenging at
+> > > times.
+> > > 
+> > > Perhaps I'm misunderstanding how to properly edit text in vim?
+> > 
+> > I guess this can be called a 'feature' of vim, Bram probably has a good
+> > reason for making it behave as it does. 
+> > 
+> > As far as I know, wrapping only occurs when you are in insert mode
+> > adding text at the end of the current line, but not when you are
+> > inserting text in the middle of a line.
+> > 
+> > My own habit is to just add or remove the text as a go, and hit the key
+> > sequence 'gwap' to clean up the mess, which means so much as 'reformat
+> > (rewrap) the current paragraph'. The vim help for 'gw':
+> > 
+> >   gw{motion}    Format the lines that {motion} moves over.  Similar to
+> >                 |gq| but puts the cursor back at the same position in
+> >                 the text.  However, 'formatprg' and 'formatexpr' are
+> >                 not used.  {not in Vi}
+> > 
+> > where {motion} would be 'ap', meaning 'a paragraph'.
+> > 
+> > It looks kind of cumbersome in the beginning, but I'm very much used to
+> > it and don't even think about it anymore.
+> > 
+> > 
+> > 
+> > -- 
+> > :wq
+> > ^X^Cy^K^X^C^C^C^C
+> > _______________________________________________
+> > sup-talk mailing list
+> > sup-talk at rubyforge.org
+> > http://rubyforge.org/mailman/listinfo/sup-talk
+> > 
+> That's pretty much what I expected since I had already visited the
+> options for textwidth and the like. I can certainly get used to a kbd
+> sequence since I expect that sort of thing when using Vim. In fact,
+> since adopting sup my hands don't really leave the keyboard.
+> 
+> However what James mentioned about formatoptions might alleviate that.
+> James, I add these types of things to my vim line in config.yaml rather
+> than my rc file. I to don't always want wrapping at 72 and the like. But
+> I do always want this in sup.
+
+Thought I'd post back after having lived with formatoptions+=a for a
+day. This options is _really_ annoying. It's hard to explain, but
+although it does what I wanted in that it automatically wraps text when
+editing lines it also drove me nuts because it prevents you from
+inserting linebreaks -something I do regularly. So I'm back to just -c
+'set textwidth=72' and will employ the gwap kbd sequence.
+ 
+-- 
+Thanks,
+Phil
+
+From shadowfirebird at gmail.com  Mon Mar 21 05:53:12 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Mon, 21 Mar 2011 09:53:12 +0000
+Subject: [sup-talk] Sup bug tracker down for >week?
+Message-ID: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+
+Does everyone else see the sup bug tracker as down?  It seems to have been
+down for at least a week.
+
+My Sup has crashed, no-one on this list seems to be able to help me and the
+bug tracker is down.  Much as I like Sup, I think this might be game over as
+far as I'm concerned...
+
+-- 
+What a tangled web we weave / Go 'round with circumstance / Someone show me
+how to tell / The dancer from the dance...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110321/a1ad7f5c/attachment.html>
+
+From aidecoe at aidecoe.name  Mon Mar 21 11:31:12 2011
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Mon, 21 Mar 2011 16:31:12 +0100
+Subject: [sup-talk] Sup bug tracker down for >week?
+In-Reply-To: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+References: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+Message-ID: <1300721303-sup-2863@ittemni>
+
+Excerpts from Shadowfirebird's message of Mon Mar 21 10:53:12 +0100
+2011:
+> Does everyone else see the sup bug tracker as down?  It seems to have
+> been down for at least a week.
+
+?The page you are looking for is temporarily unavailable.
+Please try again later.?
+
+
+> My Sup has crashed,
+
+How? If it still crashes after restart, try to recreate the index. It
+helped once when I had a total crash.
+
+-- 
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110321/2937d01d/attachment.bin>
+
+From michael+sup at stapelberg.de  Mon Mar 21 11:20:51 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 21 Mar 2011 16:20:51 +0100
+Subject: [sup-talk] Sup bug tracker down for >week?
+In-Reply-To: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+References: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+Message-ID: <1300720800-sup-7933@midna.zekjur.net>
+
+Hi Shadowfirebird,
+
+Excerpts from Shadowfirebird's message of 2011-03-21 10:53:12 +0100:
+> Does everyone else see the sup bug tracker as down?  It seems to have been
+> down for at least a week.
+
+William has taken it down due to the amount of spambot traffic killing his
+server, see his message from 2011-01-10 with Message ID
+1294636135-sup-6653 at masanjin.net.
+
+Best regards,
+Michael
+
+From shadowfirebird at gmail.com  Tue Mar 22 12:47:47 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Tue, 22 Mar 2011 16:47:47 +0000
+Subject: [sup-talk] Sup bug tracker down for >week?
+In-Reply-To: <1300721303-sup-2863@ittemni>
+References: <AANLkTinMGNG353_ocTwiN+W4ATs9yQR+FJgyOv2fkpdJ@mail.gmail.com>
+	<1300721303-sup-2863@ittemni>
+Message-ID: <AANLkTikON1jLgfrL9UU=fT6aCBv_F5nZM6vX-Bi7kXvr@mail.gmail.com>
+
+Having tried to recreate the index, after four hours this process has
+crashed too.
+
+/usr/lib/ruby/gems/1.8/gems/lockfile-1.4.3/lib/lockfile.rb:364:in `unlock':
+/home/fred/.sup/lock (Lockfile::StolenLockError)
+
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:87:in `unlock'
+
+from /usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup-sync:206
+
+from /usr/bin/sup-sync:19:in `load'
+
+from /usr/bin/sup-sync:19
+
+
+
+That's it for me I think.  Maybe I'll try Sup again after it's been through
+a few more versions.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110322/ece16c89/attachment-0001.html>
+
+From jonas at lophus.org  Tue Mar 22 14:01:23 2011
+From: jonas at lophus.org (Jonas H.)
+Date: Tue, 22 Mar 2011 19:01:23 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D1DACF2.3000400@lophus.org>
+References: <4D0E8DDD.20505@lophus.org>
+	<1292830767-sup-1667@tilus.net>	<4D0F5C5E.7030809@lophus.org>
+	<1292853433-sup-364@tilus.net>	<4D1321A2.9070206@lophus.org>
+	<1293749950-sup-6919@tilus.net>	<4D1D17BC.8050006@lophus.org>
+	<1293755723-sup-3842@tilus.net> <4D1DACF2.3000400@lophus.org>
+Message-ID: <4D88E3F3.304@lophus.org>
+
+On 12/31/2010 11:14 AM, Jonas H. wrote:
+> On 12/31/2010 01:45 AM, Tero Tilus wrote:
+>> Jonas H., 2010-12-31 01:37:
+>>> If you want I could make up a small test mbox file (new Thunderbird
+>>> profile) and send it?
+>>
+>> Please do. File a bug<http://masanjin.net/sup-bugs/> and attach a
+>> (minimal) mbox to trigger it.
+>>
+>
+> http://masanjin.net/sup-bugs/issue141
+
+Any news on this issue?
+
+From wmorgan-sup at masanjin.net  Sun Mar 27 16:41:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 Mar 2011 20:41:59 +0000
+Subject: [sup-talk] sup v2 progress report
+Message-ID: <1301257195-sup-9486@masanjin.net>
+
+Hello all,
+
+I'm happy to report that Sup version 2 is well underway!
+
+Sup version 2 features:
+- a client/server model that works over HTTP, allowing
+    a) development of other clients, e.g. web-based and phone-based
+    b) simultaneous access from multiple clients
+    c) IMAP emulation, aka no more lock-in!
+- an improved console-based client
+
+Heliotrope, the server component, is close to ready for a version 1 release.
+You can find it at https://github.com/wmorgan/heliotrope/.
+
+The client, which I'm calling Turnsole, is coming along swimmingly. I hope to
+release a pre-alpha some-stuff-actually-works version within the next few days.
+Much of the UI code has been borrowed from Sup, but the internals are quite
+different:
+- it's event-based, rather than thread-based, which streamlines a lot of the
+  code and avoids a whole big class of bugs.
+- all the index and email threading code is ripped out
+- most of the email parsing code is gone
+- it handles Ruby 1.9 string encoding stuff correctly, rather than having
+  random checks scattered around
+
+I think you're going to like it, since:
+- the threads are pre-computed on the server side, so it's much, much faster
+- you can finally view attachments locally!
+
+Stay tuned for more. We're still a ways off before it's a drop-in replacement,
+but I'm excited about how everything is coming together.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Mon Mar 28 00:14:24 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Mon, 28 Mar 2011 06:14:24 +0200
+Subject: [sup-talk] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+
+Thank you very much.
+
+ I've been using sup for quite a few months now, and I must say that
+the labels-centric point of view really is an improvement over the
+other mail management systems.
+I've been following sup news very closely, and I'm really excited
+about heliotrope/turnsole.
+
+I have tried the new system a little bit, and I have a few things to say :
+- you must have 'html2text' (not specified) installed on your system,
+as long as you have any html mail. I think this is the case for too
+many of us, unfortunately.
+- I didn't find rubymail with gem, but found it under the name rmail
+- I still had some problem with the encoding stuff. I was using ruby
+v1.9.2 (or so I thought), but got the "ArgumentError - invalid byte
+sequence in UTF-8" error. Strange thing, the log showed me evidence
+that I was using ruby v1.9.1 (problems came from files in
+"/usr/lib/ruby/gems/1.9.1"). So I switched back to v1.8.7 from AUR
+(I'm using archlinux), and the problem just went away.
+
+In the light of what you wrote, I have two questions :
+- Is sup development bound to be stopped, at least when
+heliotrope/turnsole will be ready ?
+- Is there any mailing-list for this new project, or should we keep
+using those related with sup ?
+- Do you have any address where I can find and test turnsole ?
+
+Again, thank you very much for your work and your help, and I'm
+talking to everyone on these lists.
+
+Regards,
+
+-- 
+Matthieu RAKOTOJAONA
+
+From nicolas.pouillard at gmail.com  Mon Mar 28 08:52:52 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 28 Mar 2011 05:52:52 -0700 (PDT)
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+
+On Sun, 27 Mar 2011 20:41:59 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Hello all,
+> 
+> I'm happy to report that Sup version 2 is well underway!
+> 
+> Sup version 2 features:
+> - a client/server model that works over HTTP, allowing
+>     a) development of other clients, e.g. web-based and phone-based
+>     b) simultaneous access from multiple clients
+>     c) IMAP emulation, aka no more lock-in!
+> - an improved console-based client
+> 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+> 
+> The client, which I'm calling Turnsole, is coming along swimmingly. I hope to
+> release a pre-alpha some-stuff-actually-works version within the next few days.
+> Much of the UI code has been borrowed from Sup, but the internals are quite
+> different:
+> - it's event-based, rather than thread-based, which streamlines a lot of the
+>   code and avoids a whole big class of bugs.
+> - all the index and email threading code is ripped out
+> - most of the email parsing code is gone
+> - it handles Ruby 1.9 string encoding stuff correctly, rather than having
+>   random checks scattered around
+> 
+> I think you're going to like it, since:
+> - the threads are pre-computed on the server side, so it's much, much faster
+> - you can finally view attachments locally!
+> 
+> Stay tuned for more. We're still a ways off before it's a drop-in replacement,
+> but I'm excited about how everything is coming together.
+
+While mass importing an mbox I got this:
+
+$ ... heliotrope-add ...
+; forced to decode html. running html2text on 868b mime part...
+end offset is 237534473
+.../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible character encodings: UTF-8 and ASCII-8BIT (Encoding::CompatibilityError)
+  from .../heliotrope/lib/heliotrope/decoder.rb:109:in `decode_rfc2047'
+  from .../heliotrope/lib/heliotrope/message.rb:208:in `decode_header'
+  from .../heliotrope/lib/heliotrope/message.rb:30:in `parse!'
+  from bin/heliotrope-add:105:in `<main>'
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From lincoln at comum.org  Mon Mar 28 10:21:54 2011
+From: lincoln at comum.org (Lincoln de Sousa)
+Date: Mon, 28 Mar 2011 11:21:54 -0300
+Subject: [sup-talk] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <20110328142153.GA27479@lixeiro>
+
+On Sun, Mar 27, 2011 at 08:41:59PM +0000, William Morgan wrote:
+> Hello all,
+> 
+> I'm happy to report that Sup version 2 is well underway!
+
+Hehe, believe me, you're not the only one happy with this news :)
+
+> Sup version 2 features:
+> - a client/server model that works over HTTP, allowing
+>     a) development of other clients, e.g. web-based and phone-based
+>     b) simultaneous access from multiple clients
+>     c) IMAP emulation, aka no more lock-in!
+> - an improved console-based client
+> 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+This is something that makes me think that this sup server could be used
+as an MDA receiving mails directly from the MTA.
+
+What currently have is the following env:
+
+   MTA
+     -> MDA (courier for me)
+     -> MDA Maildir (offlineimap in my case)
+     -> sup (heliotrope)
+     -> Mail reader
+
+Why not doing something like this?!:
+
+   MTA -> sup (heliotrope) -> Mail reader
+
+I've started to write a web app to read my mails and I'm not using an
+IMAP, POP or any other of these protocols, it's based on a python
+library I'm writting to be generict enough to connect with anything. But
+I'd love to abandon this abstraction layer in favor of sup :D
+
+
+Cheers,
+-- 
+Lincoln de Sousa <lincoln at comum.org>
+xmpp:lincoln at comum.org
+http://comum.org
+http://culturadigital.br
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110328/4b8ad61b/attachment.bin>
+
+From groups at hjdivad.com  Mon Mar 28 10:57:25 2011
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Mon, 28 Mar 2011 07:57:25 -0700
+Subject: [sup-talk] sup v2 progress report
+In-Reply-To: <AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+Message-ID: <1301323986-sup-3291@nyx.local>
+
+Excerpts from Matthieu Rakotojaona's message of Sun Mar 27 21:14:24 -0700 2011:
+> Thank you very much.
+
+...
+
+> I've been following sup news very closely, and I'm really excited
+> about heliotrope/turnsole.
+
++1 on encouragement.  I switched to sup a few months back and I love it.  I'm
+also very excited about supv2 as it seems you're working on exactly the sort of
+things that are, at present, insufficiently awesome about sup.
+
+In particular, local viewing of attachments would be very nice.
+
+> I have tried the new system a little bit, and I have a few things to say :
+> - you must have 'html2text' (not specified) installed on your system,
+> as long as you have any html mail. I think this is the case for too
+> many of us, unfortunately.
+
++1 on this for sure.  I'm not actually sure why I keep getting HTML only mail
+from some people, but I presume there's some tragically popular and not very
+nice mail client that does this.
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From wmorgan-sup at masanjin.net  Mon Mar 28 18:57:26 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Mar 2011 22:57:26 +0000
+Subject: [sup-talk] sup v2 progress report
+In-Reply-To: <AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+Message-ID: <1301353031-sup-7684@masanjin.net>
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-03-28:
+> I have tried the new system a little bit, and I have a few things to say :
+> - you must have 'html2text' (not specified) installed on your system,
+> as long as you have any html mail. I think this is the case for too
+> many of us, unfortunately.
+> - I didn't find rubymail with gem, but found it under the name rmail
+
+Thanks, I will update the README.
+
+> - I still had some problem with the encoding stuff. I was using ruby
+> v1.9.2 (or so I thought), but got the "ArgumentError - invalid byte
+> sequence in UTF-8" error.
+
+Ok, I'm still working on tracking this down. If you have a backtrace
+handy, that would be useful.
+
+> - Is sup development bound to be stopped, at least when
+> heliotrope/turnsole will be ready ?
+
+I'm planning on moving my efforts entirely over to heliotrope +
+turnsole. Which isn't that big of a deal, really, since I haven't done
+much on Sup for years.
+
+> - Is there any mailing-list for this new project, or should we keep
+> using those related with sup ?
+
+I'll keep talking about it here until people complain.
+
+> - Do you have any address where I can find and test turnsole ?
+
+Check back in a few days.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 28 23:11:04 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 03:11:04 +0000
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+Message-ID: <1301368236-sup-9189@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible character encodings: UTF-8 and ASCII-8BIT (Encoding::CompatibilityError)
+
+Hm. I think I know what the problem is. Stay tuned.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 28 23:12:26 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 03:12:26 +0000
+Subject: [sup-talk] sup v2 progress report
+In-Reply-To: <20110328142153.GA27479@lixeiro>
+References: <1301257195-sup-9486@masanjin.net> <20110328142153.GA27479@lixeiro>
+Message-ID: <1301368290-sup-3072@masanjin.net>
+
+Reformatted excerpts from Lincoln de Sousa's message of 2011-03-28:
+> This is something that makes me think that this sup server could be used as
+> an MDA receiving mails directly from the MTA.
+
+Yeah, this is not so far-fetched. Heliotrope is pretty close to this point
+altready (e.g. it can take a single raw email on stdin).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Mar 29 00:00:36 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 04:00:36 +0000
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+Message-ID: <1301371130-sup-6618@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible
+> character encodings: UTF-8 and ASCII-8BIT
+> (Encoding::CompatibilityError)
+
+Can you try with the latest master? If it still doesn't work, are you
+able to narrow down the string encodings of from and word?
+
+This 1.9 string encoding stuff is tricky business, especially combined
+with the messy world of email. I think I'm getting close.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rthrd at web.de  Tue Mar 29 13:18:41 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Tue, 29 Mar 2011 19:18:41 +0200
+Subject: [sup-talk] searching _F_rom header
+Message-ID: <1301418888-sup-2223@PrxServer3>
+
+I'm starting to get accustumed to searching my emails.
+If I'm searching from-headers with a from:adress at mail.tld syntax, only a part of the messages show up. It seems that several e-mail clients capitalize the Headers (From: someone <someone at somehost.somedomain> instead of from: someone <someone at somehost.somedomain>), and sup -- or xapian -- seems to ignore these emails.
+
+Ruthard
+
+From nicolas.pouillard at gmail.com  Tue Mar 29 17:19:00 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 29 Mar 2011 14:19:00 -0700 (PDT)
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <1301371130-sup-6618@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+	<1301371130-sup-6618@masanjin.net>
+Message-ID: <4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+
+On Tue, 29 Mar 2011 04:00:36 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> > .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible
+> > character encodings: UTF-8 and ASCII-8BIT
+> > (Encoding::CompatibilityError)
+> 
+> Can you try with the latest master? If it still doesn't work, are you
+> able to narrow down the string encodings of from and word?
+> 
+> This 1.9 string encoding stuff is tricky business, especially combined
+> with the messy world of email. I think I'm getting close.
+
+Nice, it seems to go a lot further. However there seems to be some strange
+blocking behavior, like using CPU and producing nothing in hours.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wmorgan-sup at masanjin.net  Tue Mar 29 17:31:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 21:31:06 +0000
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+	<1301371130-sup-6618@masanjin.net>
+	<4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+Message-ID: <1301434157-sup-5884@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-29:
+> Nice, it seems to go a lot further. However there seems to be some strange
+> blocking behavior, like using CPU and producing nothing in hours.
+
+Weird. I wonder if it's triggering some regex worst case like we've seen
+before in Sup. Are you able to narrow down what message or text is
+causing this? I will add a --verbose option, which might make this
+easier.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From btricha at gmail.com  Wed Mar 30 10:21:04 2011
+From: btricha at gmail.com (Bryan Richardson)
+Date: Wed, 30 Mar 2011 08:21:04 -0600
+Subject: [sup-talk] Archive Emails to Different Source
+In-Reply-To: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+References: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+Message-ID: <AANLkTi=zGKr6e_2dq9Y7+sDhUEOG9+vhUe3cpzhXvR0C@mail.gmail.com>
+
+Anyone have an idea about this? I'm really hoping Sup can be a viable
+option for archiving emails...
+
+--
+Thanks!
+Bryan
+
+On Fri, Mar 11, 2011 at 2:46 PM, Bryan Richardson <btricha at gmail.com> wrote:
+> Hello All,
+>
+> I'm using Sup to access email from my company's Microsoft Exchange
+> Server via IMAP (using offlineimap). My Exchange mailbox size
+> limitation is 1GB, so every once in a while I will move email from my
+> Inbox to a personal Outlook archive file that is stored on my local
+> machine. However, when I do this the emails that I archive get removed
+> from my local IMAP cache the next time offlineimap runs.
+>
+> Is it possible to have Sup archive (or otherwise move) email messages
+> to a different IMAP source? I'm not so much worried about being able
+> to remove the messages from my Exchange account via Sup as I am
+> maintaining a local copy of all my email accessible via Sup. I can
+> archive them via Sup first then archive them in Outlook if that's what
+> it takes.
+>
+> Please advise.
+>
+> --
+> Thanks!
+> Bryan
+>
+
+From marka at pobox.com  Wed Mar 30 11:39:47 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 30 Mar 2011 11:39:47 -0400
+Subject: [sup-talk] Archive Emails to Different Source
+In-Reply-To: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+References: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+Message-ID: <1301499350-sup-8327@bloovis.org>
+
+Excerpts from Bryan Richardson's message of Fri Mar 11 16:46:54 -0500 2011:
+> I'm using Sup to access email from my company's Microsoft Exchange
+> Server via IMAP (using offlineimap). My Exchange mailbox size
+> limitation is 1GB, so every once in a while I will move email from my
+> Inbox to a personal Outlook archive file that is stored on my local
+> machine. However, when I do this the emails that I archive get removed
+> from my local IMAP cache the next time offlineimap runs.
+
+I would recommend using fetchmail instead of offlineimap.  That way
+you are ensured that you have local copies of your email that won't
+get deleted, no matter what happens on your Exchange server.  I used
+offlineimap briefly because so many people on this mailing list said
+it was wonderful.  But when it started deleting messages that
+apparently other Outlook users had "recalled", I went back to
+fetchmail.
+
+I use fetchmail in combination with maildrop, which actually places
+the emails in maildir directories.  You can also use procmail instead
+of maildrop, though its configuration language is a bit obscure.
+

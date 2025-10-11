@@ -1,0 +1,1451 @@
+From rthrd at web.de  Fri Apr  1 07:14:25 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Fri, 01 Apr 2011 13:14:25 +0200
+Subject: [sup-talk] Cannot view old messages
+Message-ID: <1301656253-sup-3829@PrxServer3>
+
+I've got a strange problem:
+I cannot view old messages in my mbox.
+
+This mbox is several years old, and I imported it with sup-sync.
+all messages showed up in inbox-mode, I can search it and messages are found,
+but in thread-view mode the body of the message don't show up.
+If I view the mbox directly (via less or so), I can read all messages, but it's a bit tedious ;-)
+
+So why does sup search these messages, but don't show them?
+
+Ruthard
+
+From wmorgan-sup at masanjin.net  Sat Apr  2 14:15:48 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 02 Apr 2011 18:15:48 +0000
+Subject: [sup-talk] turnsole alpha preview
+Message-ID: <1301767622-sup-4907@masanjin.net>
+
+Ok, if you've managed to get Heliotrope running, you can now try a super-alpha
+preview of Turnsole, the curses client.
+
+Get it by cloning
+  https://wmorgan at github.com/wmorgan/turnsole.git
+and then following the instructions in HACKING. You will have to update your
+Heliotrope repo to the latest master as well.
+
+Things that work: searching, getting results from the server, viewing threads,
+changing labels in thread-view-mode. (The very, very basics.)
+
+Things that don't work: almost everything else. Any by "don't work" I mean will
+crash with a backtrace. Lots of code still needs to be updated. I've also
+ripped out various hooks and config options when they've gotten in my way.
+
+But generally this should be a faster, leaner experience. It's at roughly 1/3
+the sup codebase and I'm hoping it won't grow too much more.
+
+For fun, run two turnsoles at the same time and marvel at your power.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From mariano.mara at gmail.com  Sat Apr  2 17:32:09 2011
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Sat, 2 Apr 2011 18:32:09 -0300
+Subject: [sup-talk] turnsole alpha preview
+In-Reply-To: <1301767622-sup-4907@masanjin.net>
+References: <1301767622-sup-4907@masanjin.net>
+Message-ID: <20110402213209.GB2315@kafka>
+
+On 02.04.11 18:15, William Morgan wrote:
+> Ok, if you've managed to get Heliotrope running, you can now try a super-alpha
+> preview of Turnsole, the curses client.
+>
+> Get it by cloning
+>   https://wmorgan at github.com/wmorgan/turnsole.git
+> and then following the instructions in HACKING. You will have to update your
+> Heliotrope repo to the latest master as well.
+>
+> Things that work: searching, getting results from the server, viewing threads,
+> changing labels in thread-view-mode. (The very, very basics.)
+>
+> Things that don't work: almost everything else. Any by "don't work" I mean will
+> crash with a backtrace. Lots of code still needs to be updated. I've also
+> ripped out various hooks and config options when they've gotten in my way.
+>
+> But generally this should be a faster, leaner experience. It's at roughly 1/3
+> the sup codebase and I'm hoping it won't grow too much more.
+>
+> For fun, run two turnsoles at the same time and marvel at your power.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+
+
+Hi there,
+ncursesw is giving me a hard time ("invalid value for @cert_chain" being the error).
+I tried ncursesw 1.2.4.1, 1.2.4.2 and 1.2.4.3 but all failed with the
+same error. Since I know nothin' about Ruby I was hoping somebody can
+suggest a way to fix this so that I can try turnsole (find below what
+I did).
+
+TIA,
+Mariano
+
+mariano at kafka:~/Sandbox/turnsole$ ruby --version
+ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+mariano at kafka:~/Sandbox/turnsole$ gem --version
+1.7.1
+mariano at kafka:~/Sandbox/turnsole$ sudo gem install trollop ncursesw console
+Successfully installed trollop-1.16.2
+Building native extensions.  This could take a while...
+ERROR:  While executing gem ... (Gem::FormatException)
+ncursesw-1.2.4.3 has an invalid value for @cert_chain
+mariano at kafka:~/Sandbox/turnsole$ sudo gem install ncursesw --version '<1.2.4.3'
+Fetching: ncursesw-1.2.4.2.gem (100%)
+Building native extensions.  This could take a while...
+ERROR:  While executing gem ... (Gem::FormatException)
+ncursesw-1.2.4.2 has an invalid value for @cert_chain
+
+
+From wmorgan-sup at masanjin.net  Sat Apr  2 18:21:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 02 Apr 2011 22:21:06 +0000
+Subject: [sup-talk] turnsole alpha preview
+In-Reply-To: <20110402213209.GB2315@kafka>
+References: <1301767622-sup-4907@masanjin.net> <20110402213209.GB2315@kafka>
+Message-ID: <1301782823-sup-791@masanjin.net>
+
+Reformatted excerpts from Mariano Mara's message of 2011-04-02:
+> ncursesw is giving me a hard time ("invalid value for @cert_chain"
+> being the error).
+
+It looks like this is some kind of (horrible) Rubygems problem. There
+are various possible workarounds posted here:
+
+http://stackoverflow.com/questions/5520333/rails-3-install-error-invalid-value-for-cert-chain
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Sun Apr  3 03:48:11 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 03 Apr 2011 10:48:11 +0300
+Subject: [sup-talk] Cannot view old messages
+In-Reply-To: <1301656253-sup-3829@PrxServer3>
+References: <1301656253-sup-3829@PrxServer3>
+Message-ID: <1301816622-sup-4348@tilus.net>
+
+Ruthard Baudach, 2011-04-01 14:14:
+> I cannot view old messages in my mbox.
+
+Have you at some point been able to see them?  Could it be that the
+mbox file has since be modified?  Then the offsets (thats afaik how
+sup points to messages in mbox sources) stored in sup index for those
+messages might be all wrong and sup can't find the raw message
+anymore.
+
+You could try backup index + dump + reindex mbox source with restore
+from dump.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rthrd at web.de  Mon Apr  4 10:34:41 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Mon, 04 Apr 2011 16:34:41 +0200
+Subject: [sup-talk] Fwd: Re:  Cannot view old messages
+Message-ID: <1301927658-sup-7539@PrxServer3>
+
+--- Begin forwarded message from Ruthard Baudach ---
+From: Ruthard Baudach <ruthard.baudach at web.de>
+To: sup-talk <sup-talk at rubyforge.org>
+Date: Mon, 04 Apr 2011 16:26:03 +0200
+Subject: Re: [sup-talk] Cannot view old messages
+
+> === Tero Tilus schrieb am 2011-04-03 09:48: === <
+> Ruthard Baudach, 2011-04-01 14:14:
+> > I cannot view old messages in my mbox.
+> 
+> Have you at some point been able to see them? 
+
+Yes I have.
+
+> Could it be that the
+> mbox file has since be modified?
+
+Yes if has
+>  Then the offsets (thats afaik how
+> sup points to messages in mbox sources) stored in sup index for those
+> messages might be all wrong and sup can't find the raw message
+> anymore.
+
+Good idea - but should not be the problem.
+
+What I did was to
+    1) exported my Opera mail.
+    2) run sup-sync /path/to/mbox
+
+et voil? there was a running sup
+
+weeks later I found out that I could not search mail that was several
+years old but was not able to read the body of it.
+
+Later on I moved my sup installation to another box by installing sup
+there, copying the mbox file, and running sup-index on the new box.
+
+I had to delete xapian and repeat this once or twice till everything
+worked, and yes, I viewed the mbox once with mutt, and had to re-sync
+and relabel afterwards.
+
+Several weeks later I searched for an email from Okt/2010 - when I
+already used, yet on my old machine - and could not read the body.
+
+Does anyone else have the same problem?
+
+I can live with that at the moment, but it would be not nice, if it were
+a real sup "feature".
+
+Ruthard 
+--- End forwarded message ---
+
+From d.t.k at gmx.de  Wed Apr  6 18:14:09 2011
+From: d.t.k at gmx.de (dtk)
+Date: Thu, 7 Apr 2011 00:14:09 +0200
+Subject: [sup-talk] coloring tagged threads
+Message-ID: <20110406221409.GA23729@minibox>
+
+Hi all,
+
+I've been playin' around with and configuring sup for a few evenings now.
+
+One thing that doesn't seem to work for me is coloring tagged threads. I set
+:tagged: in my colors.yaml, but pressing 't' only advances the line selector one
+line without coloring the last one. The (then previously) selected thread gets
+tagged, though, so I can apply commands with '='.
+
+I'm using sup v0.12.1 installed via gem.
+
+Can anyone confirm this behavior or gimme a hint at what I'm doin' wrong?
+
+tia!
+dtk
+
+From d.t.k at gmx.de  Wed Apr  6 18:21:06 2011
+From: d.t.k at gmx.de (dtk)
+Date: Thu, 7 Apr 2011 00:21:06 +0200
+Subject: [sup-talk] coloring tagged threads
+In-Reply-To: <20110406221409.GA23729@minibox>
+References: <20110406221409.GA23729@minibox>
+Message-ID: <20110406222105.GB23729@minibox>
+
+OK, never mind -.-
+My terminal was scrolled somewhat to the right so I couldn't see the 'tagged'
+column *duh*
+(I for some reason expected tagged threads to be highlighted as starred
+ones and wasn't suspicous)
+
+Thanks anyway!
+dtk
+
+
+
+On Thu, Apr 07, 2011 at 12:14:09AM +0200, dtk wrote:
+> Hi all,
+>
+> I've been playin' around with and configuring sup for a few evenings now.
+>
+> One thing that doesn't seem to work for me is coloring tagged threads. I set
+> :tagged: in my colors.yaml, but pressing 't' only advances the line selector one
+> line without coloring the last one. The (then previously) selected thread gets
+> tagged, though, so I can apply commands with '='.
+>
+> I'm using sup v0.12.1 installed via gem.
+>
+> Can anyone confirm this behavior or gimme a hint at what I'm doin' wrong?
+>
+> tia!
+> dtk
+
+From d.t.k at gmx.de  Mon Apr 11 04:08:52 2011
+From: d.t.k at gmx.de (dtk)
+Date: Mon, 11 Apr 2011 10:08:52 +0200
+Subject: [sup-talk] Maildir support
+Message-ID: <1302508168-sup-3103@minibox>
+
+Hi all,
+
+I've been using sup for a few days now, and I have to say, I'm absolutely in
+love with the concept!! I'm only getting used to archiving threads immediately
+and trusting sup to bring it back up when something new happens, but my mail
+processing has never been that efficient. Thank you very much!
+
+There is one niggle though, that bothers me. I am using offlineimap to sync an
+IMAP server with the local maildir that sup works on. That works rather nicely
+for one direction (IMAP -> local), but when I work on my local maildir (read
+mails, delete them, mark them as spam), changes don't get propagated back to the
+server.
+I think this might be due to the fact that my sup doesn't seems to move mail
+from the new/ to the cur/ dir of mein mailbox and therefor never any flags
+(Seen, Thrashed) are added?
+This is quite unpleasant to me, since that means that the inbox on the mail
+server (that other clients like a web mailer and a thunderbird at work use)
+stays cluttered with the usual bunch of mails arriving.
+So I enjoy being able to efficiently organize my mail when working from my box,
+but everytime I am away from it and I therefor have to use another client, I am
+presented with a mailbox that not only intermingles my legitimate mail with the
+occasional spam getting through and the mail I already dismissed (deleted), it
+not even has the mails I already processed marked as read.
+This is a pretty huge deal for me.
+
+I do imagine though that quite a few of you are using a similar setup. Can you
+please tell me how you handle the situation? Why doesn't my sup add the correct
+maildir flags? Am I holding it wrong? -.-
+
+tia for you support!
+dtk
+
+From damien.leone at fensalir.fr  Mon Apr 11 05:22:09 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 11 Apr 2011 11:22:09 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302508168-sup-3103@minibox>
+References: <1302508168-sup-3103@minibox>
+Message-ID: <1302513523-sup-904@mailer>
+
+Hello,
+
+By default sup doesn't modify the sources at all. There is a branch
+that allows backward synchronization, you will find more informations
+at the following address:
+
+http://www.mail-archive.com/sup-devel at rubyforge.org/msg00983.html
+
+Cheers,
+
+Excerpts from dtk's message of lun. avril 11 10:08:52 +0200 2011:
+> Hi all,
+> 
+> I've been using sup for a few days now, and I have to say, I'm absolutely in
+> love with the concept!! I'm only getting used to archiving threads immediately
+> and trusting sup to bring it back up when something new happens, but my mail
+> processing has never been that efficient. Thank you very much!
+> 
+> There is one niggle though, that bothers me. I am using offlineimap to sync an
+> IMAP server with the local maildir that sup works on. That works rather nicely
+> for one direction (IMAP -> local), but when I work on my local maildir (read
+> mails, delete them, mark them as spam), changes don't get propagated back to the
+> server.
+> I think this might be due to the fact that my sup doesn't seems to move mail
+> from the new/ to the cur/ dir of mein mailbox and therefor never any flags
+> (Seen, Thrashed) are added?
+> This is quite unpleasant to me, since that means that the inbox on the mail
+> server (that other clients like a web mailer and a thunderbird at work use)
+> stays cluttered with the usual bunch of mails arriving.
+> So I enjoy being able to efficiently organize my mail when working from my box,
+> but everytime I am away from it and I therefor have to use another client, I am
+> presented with a mailbox that not only intermingles my legitimate mail with the
+> occasional spam getting through and the mail I already dismissed (deleted), it
+> not even has the mails I already processed marked as read.
+> This is a pretty huge deal for me.
+> 
+> I do imagine though that quite a few of you are using a similar setup. Can you
+> please tell me how you handle the situation? Why doesn't my sup add the correct
+> maildir flags? Am I holding it wrong? -.-
+> 
+> tia for you support!
+> dtk
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+GPG: 0x82EB4DDF
+
+From rthrd at web.de  Mon Apr 11 09:05:09 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Mon, 11 Apr 2011 15:05:09 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302508168-sup-3103@minibox>
+References: <1302508168-sup-3103@minibox>
+Message-ID: <1302526640-sup-7095@PrxServer3>
+
+> === dtk schrieb am 2011-04-11 10:08: === <
+
+> So I enjoy being able to efficiently organize my mail when working from my box,
+> but everytime I am away from it and I therefor have to use another client, I am
+> presented with a mailbox that not only intermingles my legitimate mail with the
+> occasional spam getting through and the mail I already dismissed (deleted), it
+> not even has the mails I already processed marked as read.
+> This is a pretty huge deal for me.
+> 
+> I do imagine though that quite a few of you are using a similar setup. Can you
+> please tell me how you handle the situation? Why doesn't my sup add the correct
+> maildir flags? Am I holding it wrong? -.-
+
+Thou shalt not have another e-mail client beside of sup -- because sup
+does not change the e-mail sources, and if other mail clients change
+sources, sup won't be able to find the emails any longer.
+
+There are some workarounds for this, I installed sup on a PC I can
+access via dyndns, run sup there and log in with ssh to read my mail
+from different locations.
+Disadvantage: I cannot view attachements where I need a framebuffer
+device.
+
+Well -I could reconfigure my mailcap to use X-programs to view
+attachments and use ssh with X-forwarding, might work.
+
+William Morgan is working on a server - client based solution that will
+solve this problem, but I don't dare to try it yet - being not work in
+progress, but yet in development.
+
+Greetings,
+
+Ruthard
+
+From d.t.k at gmx.de  Mon Apr 11 17:44:51 2011
+From: d.t.k at gmx.de (dtk)
+Date: Mon, 11 Apr 2011 23:44:51 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302513523-sup-904@mailer>
+References: <1302508168-sup-3103@minibox> <1302513523-sup-904@mailer>
+Message-ID: <1302557683-sup-109@minibox>
+
+Hi Damien,
+
+Excerpts from Damien Leone's message of Mon Apr 11 11:22:09 +0200 2011:
+> By default sup doesn't modify the sources at all.
+why is that? I thought the way a MUA is supposed to work with a maildir is
+rather straight forward[0]?
+
+> There is a branch
+> that allows backward synchronization, you will find more informations
+> at the following address:
+>
+> http://www.mail-archive.com/sup-devel at rubyforge.org/msg00983.html
+Thanks for the hint!!
+I am a bit suspicious, though :| I don't know much about git, but doesn't that
+essentially mean that the branch is always stuck behind the features in master
+until the new features have manually been merged in?
+And that for every release of master a manual release of the 'maildir' branch
+has to be made?
+
+Additionally, I consider this a very basic feature. What happens, if there is
+another basic feature that is maintained in _another_ branch? How will I ever be
+able to use them together?
+
+You know, I'm just wondering why this feature isn't merged in upstream. Are
+there any reasons why anyone would _not_ want proper maildir handling? Or is this
+just a political decision (scared, since I've seen a few of those pull down cool
+projects :/)?
+
+Anyway, thanks for your fast reply!
+dtk
+
+
+----------
+[0]http://en.wikipedia.org/wiki/Maildir#Technical_operation
+
+
+From d.t.k at gmx.de  Mon Apr 11 17:58:26 2011
+From: d.t.k at gmx.de (dtk)
+Date: Mon, 11 Apr 2011 23:58:26 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302526640-sup-7095@PrxServer3>
+References: <1302508168-sup-3103@minibox> <1302526640-sup-7095@PrxServer3>
+Message-ID: <1302558306-sup-4515@minibox>
+
+Hi Ruthard,
+thanks for your explanation!
+
+Excerpts from Ruthard Baudach's message of Mon Apr 11 15:05:09 +0200 2011:
+> Thou shalt not have another e-mail client beside of sup -- because sup
+> does not change the e-mail sources, and if other mail clients change
+> sources, sup won't be able to find the emails any longer.
+hmm, that feels like a rather basic ability of a MUA. Or am I mistaken? :/
+
+> There are some workarounds for this, I installed sup on a PC I can
+> access via dyndns, run sup there and log in with ssh to read my mail
+> from different locations.
+yeah, obviously many people use mutt that way, running in a screen. But that
+really ruins the whole offline reading thingy for me... ;P
+
+> William Morgan is working on a server - client based solution that will
+> solve this problem, but I don't dare to try it yet - being not work in
+> progress, but yet in development.
+k, I have to admit that I don't quite get yet why we need a distributed
+architecture to properly flag our mails (ok, maybe solving that problem is just
+a byproduct), but it sure sounds nice. Thunderbird, Claws, mutt et al make do
+without tough, me thinks :|
+I am just wondering if merging aforementioned branch into master wouldn't make
+for a proper, fast and low-effort solution till the server-client refactoring
+has been put together and been thorougly tested?
+
+Or am I missing something?
+Thanks for your help!
+dtk
+
+From damien.leone at fensalir.fr  Tue Apr 12 03:34:45 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Tue, 12 Apr 2011 09:34:45 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302557683-sup-109@minibox>
+References: <1302508168-sup-3103@minibox> <1302513523-sup-904@mailer>
+	<1302557683-sup-109@minibox>
+Message-ID: <1302593225-sup-1657@mailer>
+
+Hi,
+
+Excerpts from dtk's message of lun. avril 11 23:44:51 +0200 2011:
+> why is that? I thought the way a MUA is supposed to work with a maildir is
+> rather straight forward[0]?
+
+Well, yeah, but not sup. :)
+
+> Thanks for the hint!!
+> I am a bit suspicious, though :| I don't know much about git, but doesn't that
+> essentially mean that the branch is always stuck behind the features in master
+> until the new features have manually been merged in?
+> And that for every release of master a manual release of the 'maildir' branch
+> has to be made?
+
+I keep the maildir-sync branch up to date. If you want the latest
+version of sup and the maildir synchronization support then use the
+branch maildir-sync-next from my repository.
+
+> Additionally, I consider this a very basic feature. What happens, if there is
+> another basic feature that is maintained in _another_ branch? How will I ever be
+> able to use them together?
+
+Other features usually get merged faster.
+
+> You know, I'm just wondering why this feature isn't merged in upstream. Are
+> there any reasons why anyone would _not_ want proper maildir handling? Or is this
+> just a political decision (scared, since I've seen a few of those pull down cool
+> projects :/)?
+
+I think it will be merged for the next version although I didn't have
+any confirmation from William yet. I don't see any reason why that
+wouldn't be the case, as you said there are a lot of people interested
+in this feature.
+
+The reason why it is not merged yet is that the code has been finished
+a few weeks ago and needs some more testing (even if I've been using
+it for 9 months without trouble as well as other people from this
+list).
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+GPG: 0x82EB4DDF
+
+From d.t.k at gmx.de  Tue Apr 12 16:41:29 2011
+From: d.t.k at gmx.de (dtk)
+Date: Tue, 12 Apr 2011 22:41:29 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302593225-sup-1657@mailer>
+References: <1302508168-sup-3103@minibox> <1302513523-sup-904@mailer>
+	<1302557683-sup-109@minibox> <1302593225-sup-1657@mailer>
+Message-ID: <1302640248-sup-4660@minibox>
+
+
+Hi Damien,
+thanks for your patient reply!
+
+Excerpts from Damien Leone's message of Tue Apr 12 09:34:45 +0200 2011:
+> Excerpts from dtk's message of lun. avril 11 23:44:51 +0200 2011:
+> > why is that? I thought the way a MUA is supposed to work with a maildir is
+> > rather straight forward[0]?
+>
+> Well, yeah, but not sup. :)
+yeah, I did already recognize. not impressed :|
+
+> > You know, I'm just wondering why this feature isn't merged in upstream. Are
+> > there any reasons why anyone would _not_ want proper maildir handling? Or is this
+> > just a political decision (scared, since I've seen a few of those pull down cool
+> > projects :/)?
+>
+> I think it will be merged for the next version although I didn't have
+> any confirmation from William yet. I don't see any reason why that
+> wouldn't be the case, as you said there are a lot of people interested
+> in this feature.
+>
+> The reason why it is not merged yet is that the code has been finished
+> a few weeks ago and needs some more testing (even if I've been using
+> it for 9 months without trouble as well as other people from this
+> list).
+actually, this soothes my concerns quite a bit. Although I still wonder a bit
+why this feature hasn't been built in right from the beginning, not being merged
+upstream due to being brand new is about the best explanation I can imagine.
+
+Well, I guess I'll just check out your branch these days and hold my breath that
+it makes it into the next release ;)
+
+Thanks again
+dtk
+
+From matthieu.rakotojaona at gmail.com  Tue Apr 12 17:43:10 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 12 Apr 2011 23:43:10 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <1302640248-sup-4660@minibox>
+References: <1302508168-sup-3103@minibox> <1302513523-sup-904@mailer>
+	<1302557683-sup-109@minibox> <1302593225-sup-1657@mailer>
+	<1302640248-sup-4660@minibox>
+Message-ID: <BANLkTikM7+nYQ2PSzUYNnc+Hnwz2WcAdBA@mail.gmail.com>
+
+On Tue, Apr 12, 2011 at 10:41 PM, dtk <d.t.k at gmx.de> wrote:
+> Although I still wonder a bit
+> why this feature hasn't been built in right from the beginning
+My two cents, which are only worth one :
+
+The syncing model (often used through IMAP) is based on an old
+file-centric idea : POP is a sum of all your mails, IMAP is a folder
+for each of your "group" of mail.
+
+But this approach allows one mail to be only in one folder, or at
+least that's the way it was thought in the beginning.
+
+Yet, Sup approach, which is just like GMail, is mail-centric : a
+single mail can be in different folders. But instead of copying it in
+different folders, you can do much better: this single mail can be
+tagged as being part of different "groups"; theses groups are
+differentiated by labels. This way you can make it be in different
+"groups" much more easily than with older systems.
+
+Heliotrope's (Sup next iteration) README :
+> Heliotrope provides all the features you actually want in a modern email
+> client:
+>
+> - fast, full-text search over all messages
+> - automatic threading
+> - arbitrary labels
+> - a sophisticated query language
+> - support for signed and encrypted email
+> - an extensible JSON-over-HTTP API
+
+So, to sum up, with sup, one mail has multiple labels, and with
+Maildir/mbox, one folder( ~ one label) has multiple mails.
+
+So, when you apply labels to mails with sup, you have to copy them to
+all the folders in the maildir format. But you also have to check for
+all the folders where the mail could be, ... which is not so trivial.
+
+Even though, I totally agree with you : I'd love to see my mails being
+synced back. Not proposing it in the main branch makes it a little bit
+closed. But I have no excuse to complain, because I'm not
+contributing. So, I'm just waiting patiently (and use GMail) =]
+
+Waiting on the heliotrop/turnsole projects !
+
+
+
+-- 
+Matthieu RAKOTOJAONA
+
+From d.t.k at gmx.de  Tue Apr 12 18:18:36 2011
+From: d.t.k at gmx.de (dtk)
+Date: Wed, 13 Apr 2011 00:18:36 +0200
+Subject: [sup-talk] Maildir support
+In-Reply-To: <BANLkTikM7+nYQ2PSzUYNnc+Hnwz2WcAdBA@mail.gmail.com>
+References: <1302508168-sup-3103@minibox> <1302513523-sup-904@mailer>
+	<1302557683-sup-109@minibox> <1302593225-sup-1657@mailer>
+	<1302640248-sup-4660@minibox>
+	<BANLkTikM7+nYQ2PSzUYNnc+Hnwz2WcAdBA@mail.gmail.com>
+Message-ID: <1302645777-sup-1933@minibox>
+
+Excerpts from Matthieu Rakotojaona's message of Tue Apr 12 23:43:10 +0200 2011:
+> On Tue, Apr 12, 2011 at 10:41 PM, dtk <d.t.k at gmx.de> wrote:
+> > Although I still wonder a bit
+> > why this feature hasn't been built in right from the beginning
+> My two cents, which are only worth one :
+Au contraire! I highly appreciate your thoughts and opinion!
+
+> So, to sum up, with sup, one mail has multiple labels, and with
+> Maildir/mbox, one folder( ~ one label) has multiple mails.
+>
+> So, when you apply labels to mails with sup, you have to copy them to
+> all the folders in the maildir format. But you also have to check for
+> all the folders where the mail could be, ... which is not so trivial.
+I have to admit I wasn't very precise when asking for 'proper' maildir
+handling. In fact, I didn't intent to ask for a solution that maps the complete
+label concept (which as you stated is way more powerful) onto the old-fashioned
+directory based approach. What I rather had in mind was a subset like the
+exception that is made for sent mail for the other standard directories. Sent
+mail is already being copied into a specified source to be kind of backwards
+compatible with the classical maildir structure. And I would feel it to be a
+natural extension to do so for spam, deleted, read mail as well.
+
+> Waiting on the heliotrop/turnsole projects !
+Thanks for the hint. Since two very well respected colleagues of mine are using
+'not much' right now, you might want to add that one to your list in case you
+don't mind using emacs.
+
+l8r
+dtk
+
+From sup at zevv.nl  Thu Apr 14 03:39:44 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 14 Apr 2011 09:39:44 +0200
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <1302766464-sup-8275@pruts.nl>
+
+* On Sun Mar 27 22:41:59 +0200 2011, William Morgan wrote:
+ 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+Heliotrope (Actually Time.parse()) crashes on some illegaly formatted dates:
+
+  /usr/lib/ruby/1.9.1/time.rb:137:in `apply_offset': undefined method `<' for nil:NilClass (NoMethodError)
+  	from /usr/lib/ruby/1.9.1/time.rb:197:in `make_time'
+  	from /usr/lib/ruby/1.9.1/time.rb:261:in `parse'
+  	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:27:in `parse!'
+  	from bin/heliotrope-add:108:in `<main>'
+
+The date of the message was "Wed, 7  2005 22:55: 1  -0180".
+
+Fixed by adding a NoMethodError catch:
+
+diff --git a/lib/heliotrope/message.rb b/lib/heliotrope/message.rb
+index 1682062..d63e411 100644
+--- a/lib/heliotrope/message.rb
++++ b/lib/heliotrope/message.rb
+@@ -23,7 +23,7 @@ class Message
+     @from = Person.from_string decode_header(validate_field(:from, @m.header["from"]))
+     @date = begin
+       Time.parse(validate_field(:date, @m.header["date"])).to_i
+-    rescue ArgumentError
++    rescue ArgumentError, NoMethodError
+       #puts "warning: invalid date field #{@m.header['date']}"
+       Time.at 0
+     end
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From sup at zevv.nl  Thu Apr 14 03:51:50 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 14 Apr 2011 09:51:50 +0200
+Subject: [sup-talk] [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <1302767233-sup-1329@pruts.nl>
+
+* On Sun Mar 27 22:41:59 +0200 2011, William Morgan wrote:
+ 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+Here's another crash, but I've not been able yet to find out what exactly is
+happening. The problem seems to be caused by a mismatch of multipart mime
+boundary strings. 
+
+/home/ico/external/heliotrope/lib/heliotrope/message.rb:151:in `decode_mime_parts': undefined method `multipart?' for nil:NilClass (NoMethodError)
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:154:in `decode_mime_parts'
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:130:in `mime_parts'
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:116:in `has_attachment?'
+	from /home/ico/external/heliotrope/lib/heliotrope/index.rb:77:in `add_message'
+	from bin/heliotrope-add:113:in `<main>'
+You have new mail in /home/ico/Maildir
+
+
+I've stripped the offending mail down to the following minimal mbox which causes the crash:
+
+
+>From foo at bar.com  Tue May  9 11:22:38 2006
+Date: Tue, 09 May 2006 02:22:18 -0800
+From: foo at bar.com
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="one"
+Message-Id: <1>
+
+--two
+
+Part 
+
+--three
+
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From btricha at gmail.com  Mon Apr 18 18:26:25 2011
+From: btricha at gmail.com (Bryan Richardson)
+Date: Mon, 18 Apr 2011 16:26:25 -0600
+Subject: [sup-talk] Archive Emails to Different Source
+In-Reply-To: <1301499350-sup-8327@bloovis.org>
+References: <AANLkTi=i6Y-JGo=fHgS--q5V5RViF60ZaE_mH0iC8+j7@mail.gmail.com>
+	<1301499350-sup-8327@bloovis.org>
+Message-ID: <BANLkTinZm7tWyFgRrBENKrEUgG28=5Emew@mail.gmail.com>
+
+On Wed, Mar 30, 2011 at 9:39 AM, Mark Alexander <marka at pobox.com> wrote:
+> I would recommend using fetchmail instead of offlineimap. ?That way
+> you are ensured that you have local copies of your email that won't
+> get deleted, no matter what happens on your Exchange server. ?I used
+> offlineimap briefly because so many people on this mailing list said
+> it was wonderful. ?But when it started deleting messages that
+> apparently other Outlook users had "recalled", I went back to
+> fetchmail.
+>
+> I use fetchmail in combination with maildrop, which actually places
+> the emails in maildir directories. ?You can also use procmail instead
+> of maildrop, though its configuration language is a bit obscure.
+
+Thanks for the responses Mark and Philippe. My apologies for not
+realizing the fact that it's an OfflineIMAP thing and not a Sup thing.
+
+I'll look into the capabilities of OfflineIMAP a bit more, as well as
+investigate fetchmail and maildrop/procmail.
+
+--
+Thanks!
+Bryan
+
+From johnbent at lanl.gov  Mon Apr 18 18:35:20 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 18 Apr 2011 16:35:20 -0600
+Subject: [sup-talk] forward entire thread
+Message-ID: <1303166100-sup-5412@guava.lanl.gov>
+
+Hello,
+
+Is there a way to forward an entire thread with a single command in sup?
+I can't find it...
+-- 
+Thanks,
+
+John 
+
+From johnbent at lanl.gov  Fri Apr 22 10:29:16 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Fri, 22 Apr 2011 08:29:16 -0600
+Subject: [sup-talk] git co old version
+Message-ID: <1303482546-sup-7257@guava.lanl.gov>
+
+Can anyone supply the command-line magic to check out an old version of
+sup from the git repository pls?
+
+Specifically what I'm trying to do is sup-convert-ferret-index to
+finally upgrade to 0.12.  I tried before from an old PPC mac and
+couldn't get it to work.  I'm now on intel SL and actually got gem
+install sup to work (once I upgraded to ruby1.9).  But unfortunately,
+sup 0.12 does not come with sup-convert-ferret-index . . .
+-- 
+Thanks,
+
+John 
+
+From tero at tilus.net  Fri Apr 22 12:14:09 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 22 Apr 2011 19:14:09 +0300
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303482546-sup-7257@guava.lanl.gov>
+References: <1303482546-sup-7257@guava.lanl.gov>
+Message-ID: <1303488368-sup-7145@tilus.net>
+
+John Bent, 2011-04-22 17:29:
+> Can anyone supply the command-line magic to check out an old version
+> of sup from the git repository pls?
+
+To jump to specific tag (releases are tagged) you use `git checkout
+<tag>` and `git tag` to list tags.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From johnbent at lanl.gov  Fri Apr 22 16:03:20 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Fri, 22 Apr 2011 14:03:20 -0600
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303488368-sup-7145@tilus.net>
+References: <1303482546-sup-7257@guava.lanl.gov>
+	<1303488368-sup-7145@tilus.net>
+Message-ID: <1303502527-sup-8162@guava.lanl.gov>
+
+Excerpts from Tero Tilus's message of Fri Apr 22 10:14:09 -0600 2011:
+> John Bent, 2011-04-22 17:29:
+> > Can anyone supply the command-line magic to check out an old version
+> > of sup from the git repository pls?
+> 
+> To jump to specific tag (releases are tagged) you use `git checkout
+> <tag>` and `git tag` to list tags.
+> 
+Excellent.  Thanks.  Also, thanks to Mariano who replied separately with
+the same solution.  Also, thanks for tolerating what's clearly more
+suited for a git message board!
+
+But now a sup problem if you don't mind with sup-convert-ferret-index:
+
+jvpn-132-106:~>sup-convert-ferret-index 
+/opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/index.rb:229:in
+`rescue in init': unknown index type "ferret": no such file to load --
+ferret (RuntimeError)
+        from
+/opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/index.rb:224:in
+`init'
+        from
+/opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/bin/sup-convert-ferret-index:53:in
+`<top (required)>'
+        from /opt/local/bin/sup-convert-ferret-index:19:in `load'
+        from /opt/local/bin/sup-convert-ferret-index:19:in `<main>'
+
+Anyone see this before?  I'm doing something silly probably.
+-- 
+Thanks,
+
+John 
+
+From tero at tilus.net  Sat Apr 23 05:25:36 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 23 Apr 2011 12:25:36 +0300
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303502527-sup-8162@guava.lanl.gov>
+References: <1303482546-sup-7257@guava.lanl.gov>
+	<1303488368-sup-7145@tilus.net>
+	<1303502527-sup-8162@guava.lanl.gov>
+Message-ID: <1303550452-sup-7133@tilus.net>
+
+John Bent, 2011-04-22 23:03:
+> But now a sup problem if you don't mind with sup-convert-ferret-index:
+> 
+> jvpn-132-106:~>sup-convert-ferret-index 
+> /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/index.rb:229:in
+> `rescue in init': unknown index type "ferret": no such file to load --
+> ferret (RuntimeError)
+
+Wasn't ferret support dropped already before 0.10 or do I just remeber
+wrong?  And why did you ask for git commands if you are using old sup
+from gems?  And in case I got something wrong here, it seems to be
+missing ferret (the gem).  Does gem list show ferret?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From johnbent at lanl.gov  Tue Apr 26 12:30:16 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 26 Apr 2011 10:30:16 -0600
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303550452-sup-7133@tilus.net>
+References: <1303482546-sup-7257@guava.lanl.gov>
+	<1303488368-sup-7145@tilus.net>
+	<1303502527-sup-8162@guava.lanl.gov>
+	<1303550452-sup-7133@tilus.net>
+Message-ID: <1303834843-sup-1995@guava.lanl.gov>
+
+Excerpts from Tero Tilus's message of Sat Apr 23 03:25:36 -0600 2011:
+> John Bent, 2011-04-22 23:03:
+> > But now a sup problem if you don't mind with sup-convert-ferret-index:
+> > 
+> > jvpn-132-106:~>sup-convert-ferret-index 
+> > /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/index.rb:229:in
+> > `rescue in init': unknown index type "ferret": no such file to load --
+> > ferret (RuntimeError)
+> 
+> Wasn't ferret support dropped already before 0.10 or do I just remeber
+> wrong?  
+> 
+I think it was deprecated in 0.10.  0.10 comes with
+sup-convert-ferret-index at least.
+
+> And why did you ask for git commands if you are using old sup
+> from gems?  
+That's cause I'm thrashing a bit here.  :)  I've just been trying
+whatever I can to get a working copy of sup-convert-ferret-index.
+
+> And in case I got something wrong here, it seems to be
+> missing ferret (the gem).  Does gem list show ferret?
+>
+That was indeed the problem.  Thanks!
+
+Sadly however, I still can't get sup-convert-ferret-index to run.  I've
+tried now on two different machines. Any further help or suggestions are
+greatly appreciated.  I'd rather not be stuck w/ sup 0.10 and ferret any
+longer.  :(
+
+1) 10.6.6 OS X
+
+  jvpn-132-106:/tmp>sup-convert-ferret-index 
+  ## Step one: back up all message state to /tmp/sup-state.txt
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/bin/sup-dump --index
+  ferret > /tmp/sup-state.txt
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/ferret-0.11.6.19/lib/ferret/index.rb:736:in
+  `initialize': File Not Found Error occured at <except.c>:93 in xraise
+  (Ferret::FileNotFoundError)
+  Error occured in index.c:840 - sis_find_segments_file
+          couldn't find segments file
+
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/ferret-0.11.6.19/lib/ferret/index.rb:736:in
+  `new'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/ferret-0.11.6.19/lib/ferret/index.rb:736:in
+  `ensure_reader_open'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/ferret-0.11.6.19/lib/ferret/index.rb:591:in
+  `block in size'
+          from /opt/local/lib/ruby1.9/1.9.1/monitor.rb:201:in
+  `mon_synchronize'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/ferret-0.11.6.19/lib/ferret/index.rb:590:in
+  `size'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/ferret_index.rb:33:in
+  `block in load_index'
+          from /opt/local/lib/ruby1.9/1.9.1/monitor.rb:201:in
+  `mon_synchronize'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/ferret_index.rb:31:in
+  `load_index'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/lib/sup/index.rb:71:in
+  `load'
+          from
+  /opt/local/lib/ruby1.9/gems/1.9.1/gems/sup-0.10.2/bin/sup-dump:27:in
+  `<main>'
+
+2) 10.5.8 OS X
+
+  guava:~>sup-convert-ferret-index 
+  Error: you don't have the xapian gem installed, so this script won't do
+  much for you--`gem install xapian` (or xapian-full) first.
+  Try --help for help.
+
+  guava:~>gem list
+
+  *** LOCAL GEMS ***
+  acts_as_xapian (0.1.3)
+  chronic (0.2.3)
+  ferret (0.11.6)
+  gemcutter (0.5.0)
+  gettext (2.1.0)
+  highline (1.5.2)
+  hoe (2.5.0)
+  json_pure (1.2.2)
+  locale (2.0.5)
+  lockfile (1.4.3)
+  mime-types (1.16)
+  ncursesw (1.2.4.1)
+  net-ssh (2.0.20)
+  rake (0.8.7)
+  rmail (1.0.0)
+  rubyforge (2.0.4)
+  sup (0.10.2)
+  trollop (1.15)
+  xapian-core (1.2.3.1)
+  xapian-full (1.1.3.4)
+
+  So, you can see that I have xapian-full but not xapian.  gem install
+  xapian fails with some weird error that makes it look like my gcc
+  isn't properly installed but I use it successfully for other things
+  all the time.  I've attached the gem install error log for this but
+  basically the configure is explicitly adding some linking to objects
+  which don't exist (i.e. crti.o, crtbeginS.o, crtendS.o)
+
+Any thoughts about possible things to try on either machine 1 or 2?  Or
+perhaps the easiest path is some machine 3 running linux?
+-- 
+Thanks,
+
+John 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gem_make.out
+Type: application/octet-stream
+Size: 7572 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110426/57afd671/attachment-0001.obj>
+
+From marc.hartstein at alum.vassar.edu  Tue Apr 26 13:03:19 2011
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Tue, 26 Apr 2011 13:03:19 -0400
+Subject: [sup-talk] Exception crashing sup
+Message-ID: <BANLkTikmgj+kTR6+6OKHo03car9j5nGdrg@mail.gmail.com>
+
+Something happened causing sup to crash, and now I get this exception
+every time I try to start. I'm currently tracking master.
+
+I tried (afterward) doing a dump/sync --restore cycle, which didn't
+fix it. I thought maybe the message which had been being sent when it
+first crashed had gotten corrupted in sent.mbox, so I went in with
+mutt and deleted that manually. After another sync after that, sup
+started up fine and I was able to use it for a bit, but then it
+crashed again. It felt like it was as it tried to load more messages
+to the inbox view, so I'm now thinking the reason it was briefly
+working was just that enough messages had come in over a couple of
+days to push the culprit past what was getting loaded at startup.
+
+The log doesn't look like it will be much help, but I'm attaching it ayway.
+
+Any ideas?
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+
+/home/magus/src/sup/lib/sup/index.rb:555:in `find_docid'
+/home/magus/src/sup/lib/sup/index.rb:560:in `find_doc'
+/home/magus/src/sup/lib/sup/index.rb:570:in `get_entry'
+/home/magus/src/sup/lib/sup/index.rb:200:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/home/magus/src/sup/lib/sup/index.rb:579:in `synchronize'
+/home/magus/src/sup/lib/sup/index.rb:200:in `build_message'
+/home/magus/src/sup/lib/sup/index.rb:194:in `each_message_in_thread_for'
+/home/magus/src/sup/lib/sup/thread.rb:349:in `call'
+/home/magus/src/sup/lib/sup/thread.rb:349:in `load_thread_for_message'
+/home/magus/src/sup/lib/sup/index.rb:194:in `each_message_in_thread_for'
+/home/magus/src/sup/lib/sup/index.rb:194:in `each'
+/home/magus/src/sup/lib/sup/index.rb:194:in `each_message_in_thread_for'
+/home/magus/src/sup/lib/sup/thread.rb:347:in `load_thread_for_message'
+/home/magus/src/sup/lib/sup/thread.rb:339:in `load_n_threads'
+/home/magus/src/sup/lib/sup/index.rb:155:in `each_id_by_date'
+/home/magus/src/sup/lib/sup/index.rb:250:in `each_id'
+/home/magus/src/sup/lib/sup/index.rb:250:in `each'
+/home/magus/src/sup/lib/sup/index.rb:250:in `each_id'
+/home/magus/src/sup/lib/sup/index.rb:155:in `each_id_by_date'
+/home/magus/src/sup/lib/sup/thread.rb:334:in `load_n_threads'
+/home/magus/src/sup/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/magus/src/sup/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/home/magus/src/sup/lib/sup.rb:78:in `reporting_thread'
+/home/magus/src/sup/lib/sup.rb:76:in `initialize'
+/home/magus/src/sup/lib/sup.rb:76:in `new'
+/home/magus/src/sup/lib/sup.rb:76:in `reporting_thread'
+/home/magus/src/sup/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/home/magus/src/sup/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/magus/src/sup/bin/sup:223
+
+From tero at tilus.net  Tue Apr 26 14:33:14 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 26 Apr 2011 21:33:14 +0300
+Subject: [sup-talk] git co old version
+In-Reply-To: <1303834843-sup-1995@guava.lanl.gov>
+References: <1303482546-sup-7257@guava.lanl.gov>
+	<1303488368-sup-7145@tilus.net>
+	<1303502527-sup-8162@guava.lanl.gov>
+	<1303550452-sup-7133@tilus.net>
+	<1303834843-sup-1995@guava.lanl.gov>
+Message-ID: <1303842631-sup-8740@tilus.net>
+
+John Bent, 2011-04-26 19:30:
+> Sadly however, I still can't get sup-convert-ferret-index to run.
+
+I've got no idea whats wrong with your sup-convert-ferret-index.  I'm
+not 100% sure, but I assume you could just try to sup-dump with old
+enough sup (preferably the one you've been using) and reindex +
+restore using current.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From kapil.foss at gmail.com  Tue Apr 26 16:11:24 2011
+From: kapil.foss at gmail.com (kapil.foss at gmail.com)
+Date: Tue, 26 Apr 2011 16:11:24 -0400
+Subject: [sup-talk] Sup: RangeError: value in posting list too large.
+In-Reply-To: <AANLkTimkgq4jiZJpPZpG2VM1RNgZck0e-RjRQSBOpLOA@mail.gmail.com>
+References: <AANLkTimkgq4jiZJpPZpG2VM1RNgZck0e-RjRQSBOpLOA@mail.gmail.com>
+Message-ID: <1303848484-sup-3536@objectrealms.net>
+
+
+Looks like an error from xapian, perhaps an old version of xapian?
+
+http://lists.xapian.org/pipermail/xapian-tickets/2010-March/001552.html
+
+cheers,
+
+Kapil
+
+
+Excerpts from Shadowfirebird's message of Fri Mar 18 05:50:45 -0400 2011:
+> Got the above error while Sup was flushing indexes after an initial message
+> polling on start.   Ubuntu 9.04.
+> 
+> Sup restarted okay afterwards, but it just crashes in the same way.
+> 
+> Any ideas?
+> 
+> --- IndexError from thread: poll after loading inbox
+> RangeError: Value in posting list too large.
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:272:in `_dangerous_allterms_begin'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:272:in `each_prefixed_term'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/index.rb:285:in `each_source_info'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `each'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `to_a'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `call'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `benchmark'
+> /usr/lib/ruby/1.8/benchmark.rb:293:in `measure'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:204:in `benchmark'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:97:in `poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:89:in `each'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/maildir.rb:89:in `poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:154:in `poll_from'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:113:in `do_poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:103:in `each'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:103:in `do_poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:102:in `synchronize'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:102:in `do_poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `send'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `method_missing'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/poll-mode.rb:15:in `poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:49:in `poll_with_sources'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/poll.rb:68:in `poll'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `send'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/util.rb:609:in `method_missing'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:78:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `initialize'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `new'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:684:in `call'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:625:in `call'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:78:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `initialize'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `new'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup.rb:76:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+> (eval):12:in `load_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.12/bin/sup:212
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19
+
+From marc.hartstein at alum.vassar.edu  Tue Apr 26 16:43:21 2011
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Tue, 26 Apr 2011 16:43:21 -0400
+Subject: [sup-talk] Exception crashing sup
+In-Reply-To: <BANLkTikmgj+kTR6+6OKHo03car9j5nGdrg@mail.gmail.com>
+References: <BANLkTikmgj+kTR6+6OKHo03car9j5nGdrg@mail.gmail.com>
+Message-ID: <1303850166-sup-9964@cabinet>
+
+Excerpts from Marc Hartstein's message of Tue Apr 26 13:03:19 -0400 2011:
+> Something happened causing sup to crash, and now I get this exception
+> every time I try to start. I'm currently tracking master.
+
+Finally got it (though that outgoing message is lost because I foolishly
+deleted it earlier; but that's ok, it wasn't that important anyway).
+
+The message_id for the problem message appears to have appeared twice in
+a row in the index. This caused find_docid to fail, ungracefully. Going
+into the devel console, finding the message id, and doing
+Index.delete("<message_id>") appears to have cleared things up nicely.
+
+I believe the problem may have been caused in the first place by my
+impatiently pressing ^L while a message was still sending. Not sure why
+this would have this effect, but that was what I did when it crashed.
+The outgoing message was GPG-signed, which might be relevant.
+
+Sorry I didn't think to preserve the message for analysis. Although it
+appears it made it out to gmail and out to the recipient (and it looks
+fine).
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110426/e67fc6e6/attachment.bin>
+
+From alex.shulgin at gmail.com  Fri Apr 29 06:59:01 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Fri, 29 Apr 2011 13:59:01 +0300
+Subject: [sup-talk] Show unread count in terminal window title
+Message-ID: <BANLkTim7_dDcxcGxLaNtKxtBLEUG7tJJ5Q@mail.gmail.com>
+
+Hello fellow sup users,
+
+I'd like sup to display the count of unread messages in the terminal
+window's titlebar like this: "Sup 0.11 :: Inbox (1)".  Currently it
+only displays "Sup 0.11 :: Inbox".
+
+I've tried searching this list archives, but it appears nobody asked
+for this before, and since the issue tracker is down I can't tell if
+there's such a feature request already.
+
+Any suggestions?  Should I ask on the -devel list instead?
+
+--
+Alex
+PS: I'm proficient in Ruby, but didn't try to read any of the sup code yet.
+
+From paul.a.grove at gmail.com  Fri Apr 29 18:29:42 2011
+From: paul.a.grove at gmail.com (Paul Grove)
+Date: Fri, 29 Apr 2011 23:29:42 +0100
+Subject: [sup-talk] Sending Encrypted and Signed emails with gpg
+Message-ID: <1304115809-sup-4326@localhost>
+
+Hi, I'm using git://gitorious.org/sup/mainline.git and am uptodate as of
+29/04/2011
+
+If I send an email encrypted, the recipient receives the email
+encrypted, If I send signed the recipient receives the email signed, If
+I send en email encrypted and signed, then the recipient only receives
+an encrypted email without the signature.
+
+I can see that If I look at the sent email with sup it says that the
+email was not signed.
+
+I'm not entirely sure how long it has been like this for me, but I know
+it used to work.  I use a mailing list that only accepts encrypted and
+signed emails which used to work fine but it is currently rejecting my
+emails.
+
+I know that a few months ago I pulled in the latest changes (something
+that I hadn't done for quite a while) perhaps it has been like that
+since then.  I pulled in the latest just now just to be sure I wasnt
+something already fixed.
+
+Thanks in advance of any advice,
+Paul
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110429/34b2a0b1/attachment.bin>
+
+From btricha at gmail.com  Fri Apr 29 21:17:16 2011
+From: btricha at gmail.com (Bryan Richardson)
+Date: Fri, 29 Apr 2011 19:17:16 -0600
+Subject: [sup-talk] Draft Message
+Message-ID: <BANLkTinDW2dDeUyH8d6hb8zEtwU9rk4XSA@mail.gmail.com>
+
+Hello All,
+
+I've got an email message in ~/.sup/drafts/0, but it's not showing up
+in Sup as a draft message. Any ideas why not?
+
+--
+Thanks!
+Bryan
+
+From felix.glaser at rwth-aachen.de  Sat Apr 30 06:32:40 2011
+From: felix.glaser at rwth-aachen.de (Felix Glaser)
+Date: Sat, 30 Apr 2011 12:32:40 +0200
+Subject: [sup-talk] Sent mails don't show up
+Message-ID: <1304159425-sup-173@alpha>
+
+Hi *,
+
+after upgrading to sup 0.12.1, sent mails are not shown in sup anymore until a
+reply reaches me, is that the indented behavior? and how can I change that?
+
+cheers leex
+
+From ezyang at MIT.EDU  Sat Apr 30 08:12:50 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 30 Apr 2011 08:12:50 -0400
+Subject: [sup-talk] Sent mails don't show up
+In-Reply-To: <1304159425-sup-173@alpha>
+References: <1304159425-sup-173@alpha>
+Message-ID: <1304165533-sup-1163@ezyang>
+
+Known bug, I've been meaning to investigate and fix but haven't
+gotten 'round to it.  You can find the email you've just sent by
+searching label:sent, and if you press 'a' it will be unarchived.
+
+Edward
+
+Excerpts from Felix Glaser's message of Sat Apr 30 06:32:40 -0400 2011:
+> Hi *,
+> 
+> after upgrading to sup 0.12.1, sent mails are not shown in sup anymore until a
+> reply reaches me, is that the indented behavior? and how can I change that?
+> 
+> cheers leex
+
+From alex.shulgin at gmail.com  Sat Apr 30 08:19:26 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Sat, 30 Apr 2011 15:19:26 +0300
+Subject: [sup-talk] [CRASH] Sup crashed on exit after working with a draft
+	mail
+Message-ID: <BANLkTi=BUkZ61U7sihv+O0CtoEencegEaA@mail.gmail.com>
+
+Hi,
+
+So I had some problems sending some mail the other day and was forced
+to save a draft.  After the problem was resolved, I've sent my draft
+and shortly after quit sup, which lead to an exception:
+
+--- Errno::ENOENT from thread: main
+No such file or directory - /home/user/.sup/drafts/0
+/usr/lib/ruby/1.8/sup/draft.rb:33:in `delete'
+/usr/lib/ruby/1.8/sup/draft.rb:33:in `discard'
+/usr/lib/ruby/1.8/sup/util.rb:570:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/resume-mode.rb:21:in `killable?'
+/usr/lib/ruby/1.8/sup/buffer.rb:432:in `kill_buffer_safely'
+/usr/bin/sup-mail:300
+
+Since the bugtracker is down currently, I'm reporting it here.
+Unfortunately, I don't recall the exact sequence that lead to this
+crash.
+
+This is with Sup 0.11 shipped with Ubuntu 10.11.
+
+--
+Alex
+
+From alex.shulgin at gmail.com  Sat Apr 30 09:04:26 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Sat, 30 Apr 2011 16:04:26 +0300
+Subject: [sup-talk] Show unread count in terminal window title
+In-Reply-To: <BANLkTim7_dDcxcGxLaNtKxtBLEUG7tJJ5Q@mail.gmail.com>
+References: <BANLkTim7_dDcxcGxLaNtKxtBLEUG7tJJ5Q@mail.gmail.com>
+Message-ID: <BANLkTi=CbgUx8b7cyVqCLqkzEuHFFVkCuA@mail.gmail.com>
+
+On Fri, Apr 29, 2011 at 13:59, Alexander Shulgin <alex.shulgin at gmail.com> wrote:
+> Hello fellow sup users,
+>
+> I'd like sup to display the count of unread messages in the terminal
+> window's titlebar like this: "Sup 0.11 :: Inbox (1)". ?Currently it
+> only displays "Sup 0.11 :: Inbox".
+
+And here's what I could find.  There's a hook to set the window title,
+called .sup/hooks/terminal-title-text.rb.  I can get close to what I
+want with this:
+
+("Sup 0.11 :: #{title}" + (num_inbox_unread > 0 ?
+"(#{num_inbox_unread})" : "")) if mode == "inbox-mode"
+
+However, I'd like to avoid hard-coding the "Sup #{version_here}" part,
+or at least use some variable.  Also, there's a bug with manually
+changing (un)read status of a thread: the unread count first goes to
+1, and only on next keystroke it's updated to reflect that the whole
+thread's unread.  The same is when marking a whole thread read...
+
+--
+Alex
+
+From felix.glaser at rwth-aachen.de  Wed Apr 27 05:13:00 2011
+From: felix.glaser at rwth-aachen.de (Felix Glaser)
+Date: Wed, 27 Apr 2011 11:13:00 +0200
+Subject: [sup-talk] crashes while opening a huge email thread
+Message-ID: <1303894636-sup-2971@alpha>
+
+Hi *,
+
+I am running sup v0.12.1 with ruby 1.8.7 (2011-02-18 patchlevel 334)
+[x86_64-linux] on gentoo. Sup was installed via rubygems, gem 1.3.7.
+
+Haven't had any trouble with sup until one of my email threads grew up to
+almost 200 emails, right now the thread holds 202 mails. Whenever I try to
+open the thread sup crashes, error log is attached.
+
+Aside from this bug I have a question/feature request, is there a way to open
+just the last 5 emails of a thread, because it takes rather long to open a
+huge mail thread.
+
+cheers and thanks for developing sup
+leex
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup.error
+Type: application/octet-stream
+Size: 97108 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110427/0d706672/attachment-0001.obj>
+

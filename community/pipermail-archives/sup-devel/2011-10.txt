@@ -1,0 +1,421 @@
+From dmishd at gmail.com  Sat Oct  8 11:15:28 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 8 Oct 2011 16:15:28 +0100
+Subject: [sup-devel] Time for sup 0.13?
+Message-ID: <CAOxvSbdWXmHQ78eDqE3Hq5L9m_xDBwpwA18vFdDtTTrig-QJ6Q@mail.gmail.com>
+
+Hello all
+
+I'm thinking it might be time to bundle up the last year of sup
+development and push it out there. So if no one objects within a week
+I'll merge next into master. I'll notify this list and sup-talk, and
+give more people a chance to try it out and see if there are any
+regressions. Assuming it's alright we should be able to make it sup
+0.13 in November.
+
+Of course William or Rich will need to push the gem out there as I
+don't have access.
+
+Hamish Downer
+
+From eg at gaute.vetsj.com  Sat Oct  8 12:49:52 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 08 Oct 2011 18:49:52 +0200
+Subject: [sup-devel] Time for sup 0.13?
+In-Reply-To: <CAOxvSbdWXmHQ78eDqE3Hq5L9m_xDBwpwA18vFdDtTTrig-QJ6Q@mail.gmail.com>
+References: <CAOxvSbdWXmHQ78eDqE3Hq5L9m_xDBwpwA18vFdDtTTrig-QJ6Q@mail.gmail.com>
+Message-ID: <1318092478-sup-5464@qwerzila>
+
+Excerpts from Hamish D's message of 2011-10-08 17:15:28 +0200:
+> I'm thinking it might be time to bundle up the last year of sup
+> development and push it out there. So if no one objects within a week
+> I'll merge next into master. I'll notify this list and sup-talk, and
+> give more people a chance to try it out and see if there are any
+> regressions. Assuming it's alright we should be able to make it sup
+> 0.13 in November.
+
+Yei! I favour.
+
+- Gaute
+
+From dmishd at gmail.com  Sun Oct  9 13:20:36 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 9 Oct 2011 18:20:36 +0100
+Subject: [sup-devel] Playing with heliotrope/turnsole
+Message-ID: <CAOxvSbeMnuDRgkGupPMxcodq54Y=V38FPWq0893BOLgWT+bVxw@mail.gmail.com>
+
+Hello
+
+I've finally got around to having a bit more of a play with
+turnsole/heliotrope, and I have a few questions that don't appear to
+be answered by the README files.
+
+Firstly, I just tried sending an email using turnsole and got a 500,
+as heliotrope is expecting a particular sendmail command to work.
+Looking through the code I find there is a sendmail hook, but there
+doesn't appear to be a --list-hooks command in heliotrope-add or
+heliotrope-server, or any documentation for the hooks. So I've started
+trying to get it to work and put stuff on the wiki -
+http://sup.rubyforge.org/wiki/wiki.pl?Heliotrope_Sendmail - still a
+work in progress at the moment, though if anyone has a working hook
+for msmtp I'd appreciate it :)
+
+I've also started a wiki page to put general heliotrope/turnsole stuff
+- http://sup.rubyforge.org/wiki/wiki.pl?Heliotrope_And_Turnsole
+
+(As an aside I've noticed there's a little wiki vandalism going on,
+but currently little enough that the occasional manual check should be
+OK.)
+
+Right off to add a few bug reports
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Oct  9 15:27:48 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Oct 2011 19:27:48 +0000
+Subject: [sup-devel] Playing with heliotrope/turnsole
+In-Reply-To: <CAOxvSbeMnuDRgkGupPMxcodq54Y=V38FPWq0893BOLgWT+bVxw@mail.gmail.com>
+References: <CAOxvSbeMnuDRgkGupPMxcodq54Y=V38FPWq0893BOLgWT+bVxw@mail.gmail.com>
+Message-ID: <1318188240-sup-1604@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-10-09:
+> I've finally got around to having a bit more of a play with
+> turnsole/heliotrope, and I have a few questions that don't appear to
+> be answered by the README files.
+
+Great! It's still definitely a work in progress, so expect a few rought
+edges, but I've been using it fulltime for the past few months.
+
+> Looking through the code I find there is a sendmail hook, but there
+> doesn't appear to be a --list-hooks command in heliotrope-add or
+> heliotrope-server, or any documentation for the hooks.
+
+Yeah, adding a --list-hooks is TBD. Feel free to make an issue to track
+this.
+
+> So I've started trying to get it to work and put stuff on the wiki -
+> http://sup.rubyforge.org/wiki/wiki.pl?Heliotrope_Sendmail
+
+Awesome. Thank you.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Sun Oct  9 16:26:01 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 9 Oct 2011 21:26:01 +0100
+Subject: [sup-devel] Playing with heliotrope/turnsole
+In-Reply-To: <1318188240-sup-1604@masanjin.net>
+References: <CAOxvSbeMnuDRgkGupPMxcodq54Y=V38FPWq0893BOLgWT+bVxw@mail.gmail.com>
+	<1318188240-sup-1604@masanjin.net>
+Message-ID: <CAOxvSbcpFOH-W1NSzx8no83c-2uOSOdqJovOA6RHNRyViwxjfw@mail.gmail.com>
+
+>> So I've started trying to get it to work and put stuff on the wiki -
+>> http://sup.rubyforge.org/wiki/wiki.pl?Heliotrope_Sendmail
+
+One thing I wonder - is it possible to import labels from sup somehow?
+
+My mailstore has lots of labels I've added by hand over time and I
+wouldn't want to lost that information. (The mailstore I have in mind
+is mbox, but I'm sure others would be interested).
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Oct  9 17:19:42 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Oct 2011 21:19:42 +0000
+Subject: [sup-devel] Playing with heliotrope/turnsole
+In-Reply-To: <CAOxvSbcpFOH-W1NSzx8no83c-2uOSOdqJovOA6RHNRyViwxjfw@mail.gmail.com>
+References: <CAOxvSbeMnuDRgkGupPMxcodq54Y=V38FPWq0893BOLgWT+bVxw@mail.gmail.com>
+	<1318188240-sup-1604@masanjin.net>
+	<CAOxvSbcpFOH-W1NSzx8no83c-2uOSOdqJovOA6RHNRyViwxjfw@mail.gmail.com>
+Message-ID: <1318195085-sup-6406@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-10-09:
+> One thing I wonder - is it possible to import labels from sup somehow?
+
+I'm working on the Sup upgrade process. It's a little complicated
+because we need a way to merge multiple sup sources into one, and right
+now Heliotrope's LIFO ordering constraint makes that complicated. But
+I have a plan.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eg at gaute.vetsj.com  Thu Oct 13 06:10:27 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 13 Oct 2011 12:10:27 +0200
+Subject: [sup-devel] [PATCH] Don't fail on empty lines while expanding
+Message-ID: <1318500554-sup-8811@qwerzila>
+
+While expanding an GPG signature which must have contained a line that
+ended up as nil while chomp'ing, chomp will crash. This patch filters
+out lines which are nil.
+---
+ lib/sup/modes/thread-view-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 9fcc45d..ec1a82e 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -846,7 +846,7 @@ private
+       else
+         width = buffer.content_width
+       end
+-      lines = lines.map { |l| l.chomp.wrap width }.flatten
++      lines = lines.map { |l| l.chomp.wrap width if l }.flatten
+     end
+     return lines
+   end
+-- 
+1.7.7
+
+
+From dmishd at gmail.com  Sun Oct 16 08:09:41 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 16 Oct 2011 13:09:41 +0100
+Subject: [sup-devel] Preparing for sup 0.13
+Message-ID: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+
+I've merged the next branch into master in preparation for releasing
+sup 0.13. So this is a call for people to try it out and report any
+problems they have before we push it out the door. For basic details
+about running from git see
+http://sup.rubyforge.org/wiki/wiki.pl?Running_From_Git
+
+The major changes since sup 0.12 are:
+
+* crypto stuff rewritten to use the gpgme library, leading to smoother
+operations with encrypted email.
+* add an option for whether sent mail is archived
+* added an account selector when composing email for those who have
+multiple possible from addresses
+* added an asynchronous edit mode - this allows you to carry on using
+sup while composing a message in an external editor
+
+along with various bug fixes large and small.
+
+I'm hoping we can push out 0.13 in November.
+
+Hamish
+
+From marka at pobox.com  Tue Oct 18 09:46:27 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 18 Oct 2011 09:46:27 -0400
+Subject: [sup-devel] [sup-talk] Preparing for sup 0.13
+In-Reply-To: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+Message-ID: <1318945224-sup-126@bloovis.org>
+
+Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> * added an asynchronous edit mode - this allows you to carry on using
+> sup while composing a message in an external editor
+
+I'm not having much luck with this feature.  I was able to write an
+async-edit hook that spawned my editor in a separate gnome-terminal
+window.  But when I exited async-edit mode, sup started responding to
+keystrokes weirdly.  I tried to discard the message I had just
+composed using 'x', so sup asked if I wanted to discard the message,
+and when I hit 'y', it sent the message instead of discarding it.
+After that, sup behaved as if every other keystroke was being
+discarded, and I had to quit and restart.
+
+Other than that, things look good.
+
+From dmishd at gmail.com  Tue Oct 18 13:58:40 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 18 Oct 2011 18:58:40 +0100
+Subject: [sup-devel] [sup-talk] Preparing for sup 0.13
+In-Reply-To: <1318945224-sup-126@bloovis.org>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+	<1318945224-sup-126@bloovis.org>
+Message-ID: <CAOxvSbchWGomtdFSv1yATD1=PvQ0zHZjfrdYx1uJk7RgTqb=CA@mail.gmail.com>
+
+On 18 October 2011 14:46, Mark Alexander <marka at pobox.com> wrote:
+> Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+>> * added an asynchronous edit mode - this allows you to carry on using
+>> sup while composing a message in an external editor
+>
+> I'm not having much luck with this feature. ?I was able to write an
+> async-edit hook that spawned my editor in a separate gnome-terminal
+> window. ?But when I exited async-edit mode, sup started responding to
+> keystrokes weirdly. ?I tried to discard the message I had just
+> composed using 'x', so sup asked if I wanted to discard the message,
+> and when I hit 'y', it sent the message instead of discarding it.
+> After that, sup behaved as if every other keystroke was being
+> discarded, and I had to quit and restart.
+
+Could you email me your hook so I can check if there is anything in it
+that might cause trouble? I've used the mode myself a bit and not hit
+that issue.
+
+I guess it's not really a regression as the feature didn't exist in
+sup 0.12, but would still be good to sort it out ...
+
+Hamish
+
+From marka at pobox.com  Wed Oct 19 10:31:29 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 19 Oct 2011 10:31:29 -0400
+Subject: [sup-devel] [sup-talk] Preparing for sup 0.13
+In-Reply-To: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+Message-ID: <1319034152-sup-5416@bloovis.org>
+
+Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> * added an account selector when composing email for those who have
+> multiple possible from addresses
+
+I'm having a problem with this feature, too.
+
+I have two main email accounts, one for personal email and one for
+work email.  My before-edit.rb hook figures out which account to use
+as the sender (the "From" header) by looking at the recipients (the
+"To" header).  This worked with sup 0.12, but with 0.13 the sender is
+changed back to the default as soon as I exit the editor.
+
+I see that Sascha Silbe said something about this seven months ago:
+
+> This one would possibly break my workflow. My From address is chosen in
+> the before-edit hook based on the set of recipients. Since you only
+> call before-edit once with headers_full as headers, whatever From
+> address gets chosen for the initial reply mode will "stick".
+
+Here's the sanitized before-edit.rb hook, in case that helps:
+
+unless header["In-reply-to"]
+  if header["To"] =~ /widgets/
+    to = header["To"]
+    info "Sending as widgets, to = #{to}"
+    header["From"] = "Mark Alexander <marka at widgets.com>"
+  else
+    to = header["To"]
+    info "Sending as pobox, to = #{to}"
+    header["From"] = "Mark Alexander <marka at pobox.com>"
+  end
+end
+
+From marka at pobox.com  Thu Oct 20 09:18:01 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 20 Oct 2011 09:18:01 -0400
+Subject: [sup-devel] [sup-talk] Preparing for sup 0.13
+In-Reply-To: <1319034152-sup-5416@bloovis.org>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+	<1319034152-sup-5416@bloovis.org>
+Message-ID: <1319116525-sup-839@bloovis.org>
+
+Excerpts from Mark Alexander's message of Wed Oct 19 10:31:29 -0400 2011:
+> Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> > * added an account selector when composing email for those who have
+> > multiple possible from addresses
+> 
+> I'm having a problem with this feature, too.
+> 
+> I have two main email accounts, one for personal email and one for
+> work email.  My before-edit.rb hook figures out which account to use
+> as the sender (the "From" header) by looking at the recipients (the
+> "To" header).  This worked with sup 0.12, but with 0.13 the sender is
+> changed back to the default as soon as I exit the editor.
+
+I'm trying out the attached fix, and so far it seems to work.
+it simply moves the calling of the before-edit hook before
+the creation of the account selector.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: before-edit.patch
+Type: application/octet-stream
+Size: 877 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111020/5c9b47e7/attachment.obj>
+
+From jmazzi at gmail.com  Thu Oct 27 08:34:35 2011
+From: jmazzi at gmail.com (Justin Mazzi)
+Date: Thu, 27 Oct 2011 12:34:35 +0000 (UTC)
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+References: <1278693172-sup-6247@mailer> <1300032886-sup-4779@mailer>
+Message-ID: <loom.20111027T143258-562@post.gmane.org>
+
+Damien Leone <damien.leone <at> fensalir.fr> writes:
+
+> 
+> Sup guys,
+> 
+> Sorry for having been so long.
+> 
+> What's new:
+> 
+> - I added an option in sup-sync-back-maildir to merge the :replied and
+> :forwarded labels/flags so the first time you run the script you
+> should not lose any information on the IMAP side;
+> 
+> - A way to detect if sup-sync-back-to-maildir should be executed in
+> order to synchronize your index back to the Maildir source in order to
+> prevent any loss of information. A magic file is written in the
+> configuration directory everytime the script is executed and it is
+> removed when the sync_back_to_maildir option is set from false to
+> true;
+> 
+> - I fixed a case when messages were not properly updated when they
+> were remotely modified.
+> 
+> I have pushed the last commits to the maildir-sync branch [0], it is
+> rebased from master. I also have a branch rebased from next on my own
+> repository if you'd rather a more up to date branch [1].
+> 
+> Please test and review! For more informations and a howto, read the
+> message quoted below this mail.
+> 
+> [0] http://gitorious.org/sup/mainline/commits/maildir-sync
+> [1] http://git.fensalir.fr/?p=dleone/sup.git
+
+Hey,
+
+The syncing is working pretty well for me except for one thing (with Gmail). 
+
+When archiving a message in sup it doesn't remove the Inbox label 
+from the message. Removing the Inbox label from the message is 
+what makes the email disappear from other clients, like a 
+smartphone.
+
+- Justin Mazzi
+
+
+
+
+From flavio at castelli.name  Sat Oct 29 06:39:12 2011
+From: flavio at castelli.name (Flavio Castelli)
+Date: Sat, 29 Oct 2011 12:39:12 +0200
+Subject: [sup-devel] Sup and imap
+Message-ID: <CAAs+i9JMHw9_TLohiF-jvq4q_g16ao+Au4mPUtwfv=yCtNY-TA@mail.gmail.com>
+
+Hello I would like to know the status of the IMAP support. I read some
+entries on the wiki talking about it but they are a bit outdated.
+
+Is now possible to propagate the actions performed via sup back to the
+IMAP server?
+
+Thanks in advance
+Flavio
+
+From michael+sup at stapelberg.de  Sat Oct 29 08:05:52 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 29 Oct 2011 13:05:52 +0100
+Subject: [sup-devel] Sup and imap
+In-Reply-To: <CAAs+i9JMHw9_TLohiF-jvq4q_g16ao+Au4mPUtwfv=yCtNY-TA@mail.gmail.com>
+References: <CAAs+i9JMHw9_TLohiF-jvq4q_g16ao+Au4mPUtwfv=yCtNY-TA@mail.gmail.com>
+Message-ID: <1319889919-sup-7626@stapelberg.de>
+
+Hi Flavio,
+
+Excerpts from Flavio Castelli's message of 2011-10-29 11:39:12 +0100:
+> Hello I would like to know the status of the IMAP support. I read some
+> entries on the wiki talking about it but they are a bit outdated.
+sup doesn?t have IMAP support due to the ruby IMAP libraries being buggy.
+
+> Is now possible to propagate the actions performed via sup back to the
+> IMAP server?
+Use offlineimap, it can sync in both directions.
+
+Best regards,
+Michael
+

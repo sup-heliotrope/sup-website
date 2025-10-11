@@ -1,0 +1,538 @@
+From matthieu.rakotojaona at gmail.com  Wed Jan  4 18:12:06 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 5 Jan 2012 00:12:06 +0100
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <1325273627-sup-7605@typhon>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+	<1325223938-sup-1516@tw-mbp-wmorgan.local>
+	<CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+	<1325273627-sup-7605@typhon>
+Message-ID: <CAMiZLn0aHvKi_7xLPF6VZ-WZ=sBAF+iC0L2z1Ar1NFsuSPqbmQ@mail.gmail.com>
+
+Okay, for the IMAP interface (called imaptrope) to work, I implemented
+some changes in heliotrope. They are available in
+https://github.com/rakoo/heliotrope as 2 branches :
+
+* master comes directly from yours, as of today;
+* imaptrope-compliance, which adds some methods;
+* mail_gem, which replaces rmail with mail from
+https://github.com/mikel/mail. The former isn't maintained anymore
+while the latter is, which seems better to me.
+
+You can then try imaptrope in https://github.com/rakoo/imaptrope.
+There you will have 2 branches :
+
+* master is  ... master
+* UIDPLUS aims to follow the IMAP RFC
+(www.cs.brown.edu/courses/cs161/asgn/rfc3501.html)
+
+If you want something safe, use the 'safe' tag: It is read-only.
+
+UIDPLUS is here to help OfflineIMAP sync imap servers. Problem is,
+OfflineIMAP is still under development for IMAP-IMAP sync. I will try
+to use imapsync, which looks more bullet-proof.
+
+Adding messages to heliotrope via IMAP still is buggy, mainly because
+of encoding errors. Any bug report is appreciated, of course.
+
+Happy new year !
+
+-- 
+Matthieu RAKOTOJAONA
+
+From michael+sup at stapelberg.de  Sun Jan  8 15:37:25 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Jan 2012 20:37:25 +0000
+Subject: [sup-devel]  importing your sup email into heliotrope
+In-Reply-To: <1325277038-sup-3185@tw-mbp-wmorgan.local>
+References: <1325277038-sup-3185@tw-mbp-wmorgan.local>
+Message-ID: <1326054821-sup-1707@stapelberg.de>
+
+Hi William,
+
+Excerpts from William Morgan's message of 2011-12-30 20:31:24 +0000:
+> 3. Import your mail sources into heliotrope. Mbox and maildir sources
+>    should go pretty quick; IMAP, as usual, will be very slow. For each
+>    source you can do this:
+> 
+>      $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-import --dir <mailstore dir> --sup-dumpfile <dumpfile> --mbox <mbox file>
+I think you meant --sup-label-file, or you did not push some commits yet :).
+
+>    Or replace "--mbox <mbox file>" with the corresponding argument to
+>    your source (use --help to see them all).
+FYI: I used the following command to get all my sources in one command line:
+$ grep uri .sup/sources.yaml | sed 's/^[ \t]*uri: maildir://g' | tr '\n' ' '
+
+The total time for importing was:
+; scanned 133872, indexed 122314, skipped 9485 bad and 2073 seen messages in 12484.5s = 10.7 m/s
+
+Which is awfully long. I took a look at the process list and saw lots of
+html2text process running. Why are they run at all? Are they also run for
+plain-text emails? Most of my emails surely are plain-text, without any need to
+convert HTML.
+
+> 5. Finally, reorder the index so that messages appear in order:
+> 
+>      $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-reindex --reorder --dir <mailstore dir>
+>      $HELIOTROPE_DIR> mv <mailstore dir>/index <mailstore dir>/index-old
+>      $HELIOTROPE_DIR> mv <mailstore dir>/index-reindexed <mailstore dir>/index
+Ugh, this took a lot of time, too:
+; reindexed 120451 messages, skipped 0 spam and 1863 deleted in 9509.3s = 12.7 m/s
+
+Also, the numbers don?t add up. This is a bit confusing. Is there maybe no
+printing of the *final* status? Or is this intended?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Sun Jan  8 15:50:02 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Jan 2012 20:50:02 +0000
+Subject: [sup-devel]  importing your sup email into heliotrope
+References: <1325277038-sup-3185@tw-mbp-wmorgan.local>
+Message-ID: <1326055774-sup-6620@stapelberg.de>
+
+Hi William,
+
+(Re-sent message due to missing sendmail hook and thus wrong from address.)
+
+Excerpts from William Morgan's message of 2011-12-30 20:31:24 +0000:
+> 3. Import your mail sources into heliotrope. Mbox and maildir sources
+>    should go pretty quick; IMAP, as usual, will be very slow. For each
+>    source you can do this:
+> 
+>      $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-import --dir <mailstore dir> --sup-dumpfile <dumpfile> --mbox <mbox file>
+I think you meant --sup-label-file, or you did not push some commits yet :).
+
+>    Or replace "--mbox <mbox file>" with the corresponding argument to
+>    your source (use --help to see them all).
+FYI: I used the following command to get all my sources in one command line:
+$ grep uri .sup/sources.yaml | sed 's/^[ \t]*uri: maildir://g' | tr '\n' ' '
+
+The total time for importing was:
+; scanned 133872, indexed 122314, skipped 9485 bad and 2073 seen messages in 12484.5s = 10.7 m/s
+
+Which is awfully long. I took a look at the process list and saw lots of
+html2text process running. Why are they run at all? Are they also run for
+plain-text emails? Most of my emails surely are plain-text, without any need to
+convert HTML.
+
+> 5. Finally, reorder the index so that messages appear in order:
+> 
+>      $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-reindex --reorder --dir <mailstore dir>
+>      $HELIOTROPE_DIR> mv <mailstore dir>/index <mailstore dir>/index-old
+>      $HELIOTROPE_DIR> mv <mailstore dir>/index-reindexed <mailstore dir>/index
+Ugh, this took a lot of time, too:
+; reindexed 120451 messages, skipped 0 spam and 1863 deleted in 9509.3s = 12.7 m/s
+
+Also, the numbers don?t add up. This is a bit confusing. Is there maybe no
+printing of the *final* status? Or is this intended?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Sun Jan  8 16:23:06 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Jan 2012 21:23:06 +0000
+Subject: [sup-devel] [Heliotrope] Bug: Cannot use UTF-8 characters in subject
+Message-ID: <1326057665-sup-9349@stapelberg.de>
+
+Hey,
+
+I tried sending an email to this list and used an UTF-8 character in the
+message subject. Turnsole (or RMail?) doesn?t like that, and I got the
+following exception:
+
+$ ruby -I lib -I ../heliotrope/lib bin/turnsole
+/home/michael/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/site_ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will be deprecated in the future, use String#encode instead.
+/home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/header.rb:81:in `=~': incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string) (Encoding::CompatibilityError)
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/header.rb:81:in `parse'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:233:in `block in parse_header'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:229:in `each'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:229:in `parse_header'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:194:in `parse_low'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:183:in `parse'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:331:in `parse'
+	from /home/michael/.rvm/gems/ruby-1.9.3-p0 at sup2011-11-18/gems/rmail-1.0.0/lib/rmail/parser.rb:345:in `read'
+	from /home/michael/turnsole/lib/turnsole/modes/edit-message-mode.rb:273:in `parse_file'
+	from /home/michael/turnsole/lib/turnsole/modes/edit-message-mode.rb:166:in `edit_message!'
+	from /home/michael/turnsole/lib/turnsole/modes/compose-mode.rb:19:in `edit_message!'
+	from /home/michael/turnsole/lib/turnsole/modes/compose-mode.rb:47:in `spawn_nicely'
+	from /home/michael/turnsole/lib/turnsole/global.rb:100:in `do'
+	from /home/michael/turnsole/lib/turnsole/input.rb:41:in `handle'
+	from /home/michael/turnsole/lib/turnsole/ui.rb:69:in `block in step'
+	from /home/michael/turnsole/lib/turnsole/ui.rb:100:in `block in spawn_fiber'
+
+Also, I noticed that the tempfile which turnsole used to store my mail was gone
+afterwards :(. The message was not saved as a draft in Heliotrope either. GMail
+does that pretty well, so it would be great if we could keep up here.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Sun Jan  8 16:27:11 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Jan 2012 21:27:11 +0000
+Subject: [sup-devel] [Heliotrope] when importing mail from sup,
+	label "killed" doesn't get changed to "muted"
+Message-ID: <1326057857-sup-7185@stapelberg.de>
+
+Hey again,
+
+I recently imported my mail from sup to heliotrope and noticed that I had a lot
+of threads in my inbox which were killed in sup. A quick glance at the source of
+heliotrope revealed that you made the label name consistent with GMail and
+renamed it to "muted". However, as the subject says, when importing, this label
+is not changed.
+
+For a quick fix after importing the messages, do the following in
+heliotrope-console:
+
+$ ruby -Ilib bin/heliotrope-console --dir /path/to/mailstore
+
+metaindex.set_query Query.new("body", "~killed")
+results = metaindex.get_some_results(metaindex.count_results)
+
+for result in results do
+   labels = result[:labels]
+   labels.delete("killed")
+   labels.add("muted")
+   metaindex.update_thread_labels(result[:thread_id], labels)
+end
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Sun Jan  8 17:48:18 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Jan 2012 22:48:18 +0000
+Subject: [sup-devel] [Heliotrope/Turnsole] How to use IMAP?
+Message-ID: <1326062741-sup-6469@stapelberg.de>
+
+Hi,
+
+So, I?m unsure how to use IMAP or offlineimap + maildir to be precise. I?m
+currently several hundred kilometers away from my IMAP server (which only has a
+slow link, so completely re-syncing my mails would take days), but I have an
+offlineimap copy of it which I keep updating. With sup, it would just scan
+through the maildir and pick up new messages.
+
+Now I want to keep using offlineimap (so that I can switch back to sup if
+necessary) and use heliotrope/turnsole. heliotrope-add seems like the wrong
+tool for this job, since it will do a full scan (!) of my 5 GB of mail (110k
+messages) which takes several hours.
+
+What is the correct way to do this?
+
+Best regards,
+Michael
+
+From wmorgan-sup at masanjin.net  Mon Jan  9 17:30:42 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Jan 2012 14:30:42 -0800
+Subject: [sup-devel]  importing your sup email into heliotrope
+In-Reply-To: <1326055774-sup-6620@stapelberg.de>
+References: <1325277038-sup-3185@tw-mbp-wmorgan.local>
+	<1326055774-sup-6620@stapelberg.de>
+Message-ID: <1326146246-turnsole-46014@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-01-08 12:50:02 -0800:
+> I think you meant --sup-label-file, or you did not push some commits yet :).
+
+Yes, you are right. Thanks.
+
+> The total time for importing was:
+> ; scanned 133872, indexed 122314, skipped 9485 bad and 2073 seen messages in 12484.5s = 10.7 m/s
+> 
+> Which is awfully long. I took a look at the process list and saw lots of
+> html2text process running. Why are they run at all? Are they also run for
+> plain-text emails? Most of my emails surely are plain-text, without any need to
+> convert HTML.
+
+They should only be run for text/html mime parts that are not part of a
+multipart/alternative mime part with a text component (in that case the
+text part is just used directly.)
+
+I believe that is the case, but if you can find a counterexample, please file
+it as a bug: http://github.com/wmorgan/heliotrope/issues.
+
+> ; reindexed 120451 messages, skipped 0 spam and 1863 deleted in 9509.3s = 12.7 m/s
+> 
+> Also, the numbers don?t add up.
+
+120451 + 1863 = 122314, so they do add up. Perhaps what's confusing is that
+import happily preserves your deleted emails, but reindex by default skips
+over them?
+
+Glad to hear you're giving it a try. Keep the bug reports coming.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan  9 18:23:18 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Jan 2012 15:23:18 -0800
+Subject: [sup-devel] [Heliotrope] Bug: Cannot use UTF-8 characters in subject
+In-Reply-To: <1326057665-sup-9349@stapelberg.de>
+References: <1326057665-sup-9349@stapelberg.de>
+Message-ID: <1326151156-turnsole-73610@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-01-08 13:23:06 -0800:
+> I tried sending an email to this list and used an UTF-8 character in the
+> message subject. Turnsole (or RMail?) doesn?t like that, and I got the
+> following exception:
+
+Thanks. I'm hoping we can fix this with the mail gem, as opposed to modyfing
+RMail directly.
+
+> Also, I noticed that the tempfile which turnsole used to store my mail was gone
+> afterwards :(. The message was not saved as a draft in Heliotrope either. GMail
+> does that pretty well, so it would be great if we could keep up here.
+
+Yeah. As a first step we should at least move away from the Ruby tempfile
+library, which deletes the file when a GC happens, and explicitly delete the
+tempfiles only after success.
+
+Can you please file a bug report for both of these on the issues page?
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan  9 18:37:19 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Jan 2012 15:37:19 -0800
+Subject: [sup-devel]  [Heliotrope] when importing mail from sup,
+	label "killed" doesn't get changed to "muted"
+In-Reply-To: <1326057857-sup-7185@stapelberg.de>
+References: <1326057857-sup-7185@stapelberg.de>
+Message-ID: <1326152198-turnsole-42898@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-01-08 13:27:11 -0800:
+> I recently imported my mail from sup to heliotrope and noticed that I
+> had a lot of threads in my inbox which were killed in sup. A quick
+> glance at the source of heliotrope revealed that you made the label
+> name consistent with GMail and renamed it to "muted". However, as the
+> subject says, when importing, this label is not changed.
+
+Thanks for the report. I will fix this so that the import process
+converts the label automatically.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan  9 18:42:33 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Jan 2012 15:42:33 -0800
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <CAMiZLn0aHvKi_7xLPF6VZ-WZ=sBAF+iC0L2z1Ar1NFsuSPqbmQ@mail.gmail.com>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+	<1325223938-sup-1516@tw-mbp-wmorgan.local>
+	<CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+	<1325273627-sup-7605@typhon>
+	<CAMiZLn0aHvKi_7xLPF6VZ-WZ=sBAF+iC0L2z1Ar1NFsuSPqbmQ@mail.gmail.com>
+Message-ID: <1326152528-turnsole-80685@terminus-est>
+
+Excerpts from Matthieu Rakotojaona's message of 2012-01-04 15:12:06 -0800:
+> Okay, for the IMAP interface (called imaptrope) to work, I implemented
+> some changes in heliotrope. They are available in
+> https://github.com/rakoo/heliotrope as 2 branches :
+
+Thanks! I will take a look.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan  9 19:40:56 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Jan 2012 16:40:56 -0800
+Subject: [sup-devel]  [Heliotrope/Turnsole] How to use IMAP?
+In-Reply-To: <1326062741-sup-6469@stapelberg.de>
+References: <1326062741-sup-6469@stapelberg.de>
+Message-ID: <1326155913-turnsole-58321@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-01-08 14:48:18 -0800:
+> What is the correct way to do this?
+
+I need to write some code to do this. For IMAP and GMail, heliotrope-add will
+keep a pointer to thelast message imported, by default. For mbox there is a
+trick you can use. But there's nothing for maildir right now. Please file
+an issue so that I don't forget this!
+-- 
+William <wmorgan at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Fri Jan 13 17:55:52 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 13 Jan 2012 23:55:52 +0100
+Subject: [sup-devel] IMAP interface
+Message-ID: <CAMiZLn2paWWnguKziH793V-sms10FKk_rz6Zbh64BhiqO52TJA@mail.gmail.com>
+
+Hello everyone,
+
+I've made some changes to imaptrope, my IMAP interface [0], to be
+usable with Thunderbird. A few things :
+
+- You will need Trollop, because it's cool
+- I don't understand Thunderbird's authentication mechanisms quite
+well. If you want to use it, set "localhost:10142" as the IMAP server.
+There's no need for encryption
+It looks like Thunderbird authenticates itself for each operation.
+It's a cool thing if your server is remote, but I have a few problems
+with security (next point)
+- When asking for authentication methods to a IMAP server, imaptrope
+answers that it can authenticate with plain text password and cram-md5
+encryption.
+I don't know how the latter works, so it isn't tested ... yet, as soon
+as Thunderbird sees both, it tries to use cram-md5, but fails and then
+uses plain authetication. So basically, you have a few seconds to wait
+before each operation. I suppose you can remove this auth from the
+CAPABILITY answer.
+- Communications clearly are suboptimal ... many calls to the same
+method in heliotrope just for one thing, basically.
+- You may want to use one client at a time. Overall the server is
+stateless, save for the session management, but I haven't had time to
+test its multi-threading capabilities
+- I still have some encoding errors, with "=0D" at the end of each line...
+
+I don't have much time at the moment, but will keep you informed.
+
+cya,
+
+[0] https://github.com/rakoo/imaptrope
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Sat Jan 14 23:54:36 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 14 Jan 2012 20:54:36 -0800
+Subject: [sup-devel]  [Heliotrope] when importing mail from sup,
+	label "killed" doesn't get changed to "muted"
+In-Reply-To: <1326152198-turnsole-42898@terminus-est>
+References: <1326057857-sup-7185@stapelberg.de>
+	<1326152198-turnsole-42898@terminus-est>
+Message-ID: <1326603263-turnsole-54743@terminus-est>
+
+Excerpts from William Morgan's message of 2012-01-09 15:37:19 -0800:
+> Thanks for the report. I will fix this so that the import process
+> converts the label automatically.
+
+This should be fixed.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jan 15 00:45:54 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 14 Jan 2012 21:45:54 -0800
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <CAMiZLn0aHvKi_7xLPF6VZ-WZ=sBAF+iC0L2z1Ar1NFsuSPqbmQ@mail.gmail.com>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+	<1325223938-sup-1516@tw-mbp-wmorgan.local>
+	<CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+	<1325273627-sup-7605@typhon>
+	<CAMiZLn0aHvKi_7xLPF6VZ-WZ=sBAF+iC0L2z1Ar1NFsuSPqbmQ@mail.gmail.com>
+Message-ID: <1326606119-turnsole-85915@terminus-est>
+
+Excerpts from Matthieu Rakotojaona's message of 2012-01-04 15:12:06 -0800:
+> * imaptrope-compliance, which adds some methods;
+
+This looks largely ok but there are some things I would like to change
+before incorporating it (including the use of tabs!). If you make a
+github pull request we can go over the details.
+
+> * mail_gem, which replaces rmail with mail from
+> https://github.com/mikel/mail. The former isn't maintained anymore
+> while the latter is, which seems better to me.
+
+I would love to get away from RMail but the Mail gem has historically
+been the source of many Rails-centric dependencies. They appear to have
+*finally* done away with activesupport, which is great news. But there
+is still a dependency on the i18n gem, which I'm not thrilled about.
+I'm not sure. Maybe it's ok. Let me think about it.
+
+Thanks for your efforts thus far!
+-- 
+William <wmorgan at masanjin.net>
+
+From iamthedata at gmail.com  Tue Jan 31 03:54:29 2012
+From: iamthedata at gmail.com (Gabor Nyitrai)
+Date: Tue, 31 Jan 2012 08:54:29 +0000
+Subject: [sup-devel] keybinding to open link under cursor
+Message-ID: <1327999544-sup-243@haka>
+
+Hello,
+
+I tried to add a keybinding hook to open a link that is on the current
+line, but I got lost browsing the sup source... how do I this? I got this much:
+
+# keybindings.rb
+
+modes['thread-view-mode'].keymap.add :open_link, "Open link on current line", "Y"
+
+class Redwood::ThreadViewMode
+    def open_link
+        m = @message_lines[curpos] or return
+
+        # get the link from the current line somehow
+        #link =~ /http:\/\/[^ ]+/
+        
+        # testing, just to see some response
+        BufferManager.flash "#{curpos}"
+
+        # testing, write content to a file to see what we've got
+        path = "/tmp/sup-temp.txt"
+        File.open(path, 'w') { |io| io.write m.raw_message }
+
+        # open a browser with the link as argument
+        #spawn "chromium-browser", link, [:in, :out, :err] => "/dev/null"
+    end
+end
+
+
+Thanks,
+Gabor
+
+From alvherre at alvh.no-ip.org  Tue Jan 31 09:26:10 2012
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 31 Jan 2012 11:26:10 -0300
+Subject: [sup-devel] keybinding to open link under cursor
+In-Reply-To: <1327999544-sup-243@haka>
+References: <1327999544-sup-243@haka>
+Message-ID: <1328019822-sup-5599@alvh.no-ip.org>
+
+
+Excerpts from Gabor Nyitrai's message of mar ene 31 05:54:29 -0300 2012:
+> Hello,
+> 
+> I tried to add a keybinding hook to open a link that is on the current
+> line, but I got lost browsing the sup source... how do I this? I got this much:
+
+I'm interested, so if you make it work please post it.
+
+How would you handle a link that's longer than the current line?  I
+don't know anything about the buffer implementation, so it seems
+possible a wrapped line appears just as two lines; other representations
+(such as a logical line being composed of more than one physical line)
+would make more sense, but I have no idea how to do that or whether it's
+even possible.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From michael+sup at stapelberg.de  Tue Jan 31 22:16:00 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 01 Feb 2012 03:16:00 +0000
+Subject: [sup-devel] keybinding to open link under cursor
+In-Reply-To: <1327999544-sup-243@haka>
+References: <1327999544-sup-243@haka>
+Message-ID: <1328066069-sup-7491@stapelberg.de>
+
+Hi Gabor,
+
+Excerpts from Gabor Nyitrai's message of 2012-01-31 08:54:29 +0000:
+> I tried to add a keybinding hook to open a link that is on the current
+> line, but I got lost browsing the sup source... how do I this? I got this much:
+Isn?t that a feature which should rather go into the terminal emulator? For
+urxvt, there is the mark-and-yank script:
+https://github.com/bartman/urxvt-scripts
+
+Best regards,
+Michael
+

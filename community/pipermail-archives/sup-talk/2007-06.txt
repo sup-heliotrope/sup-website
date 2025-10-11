@@ -1,0 +1,1906 @@
+From jeff.covey at pobox.com  Sun Jun  3 14:14:02 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 3 Jun 2007 14:14:02 -0400
+Subject: [sup-talk] how to avoid adding labels based on source names
+In-Reply-To: <1180325255-sup-6791@south>
+References: <20070527195013.GB4859@mona.jeffcovey.net>
+	<1180325255-sup-6791@south>
+Message-ID: <20070603181402.GA8650@mona.jeffcovey.net>
+
+on Sun, May 27, 2007 at 09:12:05PM -0700%, William Morgan said:
+
+> > how do i stop sup-sync from adding a label to each message based on the
+> > name of its source?
+> 
+> There is currently no way to do this. This is my top priority change at
+> the moment.
+
+is there any news on this?  there's no rush, but it is the one thing that's
+keeping me from trying sup.  :)
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070603/8025892a/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Sun Jun  3 15:20:47 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Jun 2007 12:20:47 -0700
+Subject: [sup-talk] how to avoid adding labels based on source names
+In-Reply-To: <20070603181402.GA8650@mona.jeffcovey.net>
+References: <20070527195013.GB4859@mona.jeffcovey.net>
+	<1180325255-sup-6791@south>
+	<20070603181402.GA8650@mona.jeffcovey.net>
+Message-ID: <1180898390-sup-7346@south>
+
+Excerpts from jeff covey's message of Sun Jun 03 11:14:02 -0700 2007:
+> is there any news on this?  there's no rush, but it is the one thing
+> that's keeping me from trying sup.  :)
+
+I have a patch for it. Going to do a little more testing and then I'll
+commit, probably later today.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jun  3 17:49:12 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Jun 2007 14:49:12 -0700
+Subject: [sup-talk] tip for running sup-config from svn
+Message-ID: <1180907207-sup-2856@south>
+
+sup-config makes use of a RUBY_INVOCATION environment variable, so if
+you want it to be able to call sup-add and sup-sync nicely, you can run
+it like this (probably bash-specific):
+
+RUBY_INVOCATION="ruby -I lib" ruby -I lib bin/sup-config
+
+I'm about to commit some improvements, so feel free to check it out
+(it shouldn't break your existing config.yaml if any).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jun  3 18:15:57 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Jun 2007 15:15:57 -0700
+Subject: [sup-talk] new in svn: source labels (IMPORTANT)
+Message-ID: <1180908278-sup-4457@south>
+
+I've just committed a changeset that allows arbitrary labels to be
+attached to sources, and sets ALL labels for new messages to be the
+labels from the source.
+
+The previous behavior of automagically applying labels to messages based
+on, e.g., the filename of an mbox source, is no longer the case.
+
+What this means for you: if you want any labels to be automatically
+applied to messages, you need to edit sources.yaml and manually add a
+"labels" entry to the corresponding source. YAML allows you to specify
+these in one line by enclosing them in []'s, or to split them out line
+by line.  Examples:
+
+  labels: [label]
+or
+  labels: [label1, label2]
+or
+  labels:
+   - label
+or
+  labels:
+   - label
+   - label2
+
+Here's a complete example:
+
+- !masanjin.net,2006-10-01/Redwood/MBox/Loader 
+  uri: mbox:///home/w/Mail/ruby-talk
+  cur_offset: 159154117
+  usual: true
+  archived: true
+  id: 36
+  labels: [ruby-talk]
+
+If you don't specify a labels: line for a source, it will be assigned
+the empty set.
+
+Sup-add has a new argument for this, and sup-config will ask you for a
+list of labels, so this only affects existing source.yaml files.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sun Jun  3 21:11:34 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 3 Jun 2007 21:11:34 -0400
+Subject: [sup-talk] gracefully handling missing sources
+In-Reply-To: <1180898390-sup-7346@south>
+References: <20070527195013.GB4859@mona.jeffcovey.net>
+	<1180325255-sup-6791@south>
+	<20070603181402.GA8650@mona.jeffcovey.net>
+	<1180898390-sup-7346@south>
+Message-ID: <20070604011134.GA12184@mona.jeffcovey.net>
+
+on Sun, Jun 03, 2007 at 12:20:47PM -0700%, William Morgan said:
+
+> I have a patch for it. Going to do a little more testing and then I'll
+> commit, probably later today.
+
+thanks!  i updated with svn and am trying it out.  i've run into this
+problem when sup tries to load a source which no longer exists:
+
+./lib/sup/buffer.rb:45: warning: already initialized constant KEY_CANCEL
+./lib/sup/mbox/loader.rb:20:in `initialize': No such file or directory - /home/jeff/mail/dogabulten at dogadernegi.org-2007-06 (Errno::ENOENT)
+        from ./lib/sup/mbox/loader.rb:20:in `open'
+        from ./lib/sup/mbox/loader.rb:20:in `initialize'
+        from ./lib/sup.rb:28:in `new'
+        from ./lib/sup.rb:28:in `yaml_properties'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `call'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `transfer'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `node_import'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+        from /usr/lib/ruby/1.8/yaml.rb:144:in `load_file'
+        from /usr/lib/ruby/1.8/yaml.rb:143:in `open'
+        from /usr/lib/ruby/1.8/yaml.rb:143:in `load_file'
+        from ./lib/sup.rb:84:in `load_yaml_obj'
+        from ./lib/sup/index.rb:278:in `load_sources'
+        from ./lib/sup/index.rb:29:in `load'
+        from bin/sup:58
+
+i have a cron job which deletes zero-length files under ~/mail so they don't
+clutter.  could sup handle no-longer-existent sources gracefully, either
+ignoring them or (perhaps better) offering to remove them from sources.yaml?
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070603/2ca68556/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Mon Jun  4 00:56:54 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Jun 2007 21:56:54 -0700
+Subject: [sup-talk] new in svn: locking
+Message-ID: <1180932944-sup-6021@south>
+
+Sup now detects concurrent sup processes and gives you the opportunity
+to have them commit suicide. Useful because Ferret dies messily when
+more than one process is touching the same index.
+
+You'll need to install the lockfile gem.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From brian at lorf.org  Mon Jun  4 22:52:31 2007
+From: brian at lorf.org (Brian)
+Date: Mon, 04 Jun 2007 21:52:31 -0500
+Subject: [sup-talk] repairing mistakes
+Message-ID: <1181011819-sup-5916@doses>
+
+Sometimes, I tag several messages and then hit &$ rather than ;&$,
+assassinating some innocent bystander message. Is there a nice way to
+fix it? If not, that's OK.
+
+
+From brian at lorf.org  Mon Jun  4 23:16:57 2007
+From: brian at lorf.org (Brian)
+Date: Mon, 04 Jun 2007 22:16:57 -0500
+Subject: [sup-talk] sending attachments
+Message-ID: <1181013314-sup-1307@doses>
+
+Does sup support sending attachments?
+
+
+From wmorgan-sup at masanjin.net  Tue Jun  5 12:58:24 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 05 Jun 2007 09:58:24 -0700
+Subject: [sup-talk] sending attachments
+In-Reply-To: <1181013314-sup-1307@doses>
+References: <1181013314-sup-1307@doses>
+Message-ID: <1181062629-sup-8687@south>
+
+Excerpts from Brian's message of Mon Jun 04 20:16:57 -0700 2007:
+> Does sup support sending attachments?
+
+That's very very high on my list. Probably the one thing I really want
+before a 0.0.9 release. I just haven't summoned the energy to deal with
+it because it's not as sexy as all the other things I've been thinking
+about doing.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun  5 13:11:27 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 05 Jun 2007 10:11:27 -0700
+Subject: [sup-talk] repairing mistakes
+In-Reply-To: <1181011819-sup-5916@doses>
+References: <1181011819-sup-5916@doses>
+Message-ID: <1181062708-sup-3338@south>
+
+Excerpts from Brian's message of Mon Jun 04 19:52:31 -0700 2007:
+> Sometimes, I tag several messages and then hit &$ rather than ;&$,
+> assassinating some innocent bystander message. Is there a nice way to
+> fix it? If not, that's OK.
+
+Right now, no. I really want an undo feature, and it shouldn't be
+terrifically hard to implement. I personally accomplish undo right now
+by hitting ctrl-c and restarting Sup if I screw something up, but that
+only works if you haven't hit the '$' button already.
+
+Once there's a good undo button, I'll probably drop '$' completely, and
+move over to the Mac philosophy of the user not having to care about
+changes in memory vs changes on disk.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jun  6 08:42:06 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 6 Jun 2007 08:42:06 -0400
+Subject: [sup-talk] sup dying with a ferret initialization error
+Message-ID: <20070606124206.GA13658@mona.jeffcovey.net>
+
+i was just adding my 2006 mail to sup's index, and now sup dies with this:
+
+
+./lib/sup/util.rb:5: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:16: warning: method redefined; discarding old dump_lock_id
+./lib/sup/buffer.rb:31: warning: already initialized constant KEY_CANCEL
+[Wed Jun 06 08:37:37 -0400 2007] locking /home/jeff/.sup/lock...
+[Wed Jun 06 08:37:45 -0400 2007] loading index...
+/var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `initialize': IO Error occured at <except.c>:93 in xraise (IOError)
+Error occured in index.c:901 - sis_find_segments_file
+        Error reading the segment infos. Store listing was
+
+
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `new'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `ensure_reader_open'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:581:in `size'
+        from /usr/lib/ruby/1.8/monitor.rb:238:in `synchronize'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:580:in `size'
+        from ./lib/sup/index.rb:113:in `load_index'
+        from ./lib/sup/index.rb:86:in `load'
+        from ./lib/sup/util.rb:315:in `send'
+        from ./lib/sup/util.rb:315:in `method_missing'
+        from bin/sup:86
+
+
+any ideas?
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070606/35d5c5b0/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Wed Jun  6 11:27:52 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 06 Jun 2007 08:27:52 -0700
+Subject: [sup-talk] sup dying with a ferret initialization error
+In-Reply-To: <20070606124206.GA13658@mona.jeffcovey.net>
+References: <20070606124206.GA13658@mona.jeffcovey.net>
+Message-ID: <1181143450-sup-4506@south>
+
+Excerpts from jeff.covey's message of Wed Jun 06 05:42:06 -0700 2007:
+> /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `initialize':
+> IO Error occured at <except.c>:93 in xraise (IOError)
+> Error occured in index.c:901 - sis_find_segments_file
+>         Error reading the segment infos. Store listing was
+> 
+> 
+>         from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in
+
+Crap. I've run into this once before, a while ago, and I think it's a
+Ferret bug. I couldn't figure out how to recover the index and had to
+start over from scratch. Foolishly I deleted everything, so I've been
+waiting to see if it happened again before talking to the Ferret folks.
+
+But if it's happening to you too, I guess I will take this up with the
+Ferret folks. The backtrace may be enough. If the index had email you'd
+be comfortable sharing, you can send me your ~/.sup/ferret directory.
+
+For the immediate future, I don't know if there's anything to do
+besides deleting ~/.sup/ferret and running sup-sync --all-sources --all, 
+and losing whatever message state was in your index. :(
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jun  6 21:30:31 2007
+From: jeff.covey at pobox.com (jeff.covey at pobox.com)
+Date: Wed, 06 Jun 2007 21:30:31 -0400
+Subject: [sup-talk] sup setting my name
+Message-ID: <1181179353-sup-8570@mona>
+
+sup seems to have the idea that my name is "Burning House Zendo", apparently
+based on something it found while indexing.  whenever it finds a message
+from jeff.covey at pobox.com, it displays it with that name, and when i start
+composing a message, it sets the first line to "From: Burning House Zendo
+<jeff.covey at pobox.com>".
+
+why does it do this, and how can i make it stop?  adding an alias for my
+address doesn't help, nor does changing the text after the numbers in
+~/.sup/people.txt.
+
+why doesn't it use the name information i set in ~/.sup/config.yaml?  i have
+:name: set to "jeff covey" there, and have :email: and :alternates: set.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Wed Jun  6 19:03:58 2007
+From: jeff.covey at pobox.com (jeff.covey at pobox.com)
+Date: Wed, 06 Jun 2007 19:03:58 -0400
+Subject: [sup-talk] sup dying with a ferret initialization error
+In-Reply-To: <1181143450-sup-4506@south>
+References: <20070606124206.GA13658@mona.jeffcovey.net>
+	<1181143450-sup-4506@south>
+Message-ID: <1181170820-sup-7755@mona>
+
+Excerpts from William Morgan's message of Wed Jun 06 11:27:52 -0400 2007:
+
+> The backtrace may be enough. If the index had email you'd be comfortable
+> sharing, you can send me your ~/.sup/ferret directory.
+
+i made a backup of it before restoring my index.  let me know if you don't
+have enough information from the backtrace, and i'll send it to you.
+
+> For the immediate future, I don't know if there's anything to do besides
+> deleting ~/.sup/ferret and running sup-sync --all-sources --all, and
+> losing whatever message state was in your index. :(
+
+i had a sup-dump backup from last night, so i was able to hunt down which
+threads i'd labeled.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Thu Jun  7 18:42:09 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Jun 2007 15:42:09 -0700
+Subject: [sup-talk] sup setting my name
+In-Reply-To: <1181179353-sup-8570@mona>
+References: <1181179353-sup-8570@mona>
+Message-ID: <1181256092-sup-5757@south>
+
+Excerpts from jeff.covey's message of Wed Jun 06 18:30:31 -0700 2007:
+> sup seems to have the idea that my name is "Burning House Zendo",
+> apparently based on something it found while indexing.  whenever it
+> finds a message from jeff.covey at pobox.com, it displays it with that
+> name, and when i start composing a message, it sets the first line to
+> "From: Burning House Zendo <jeff.covey at pobox.com>".
+
+Hah. Good catch. I'm going to fix this in a general way by treating all
+names in config.yaml and contacts.txt as definitive. For the time being
+just delete every instance of that name from people.txt, and apply this
+patch:
+
+Index: lib/sup/person.rb
+===================================================================
+--- lib/sup/person.rb   (revision 433)
++++ lib/sup/person.rb   (working copy)
+@@ -19,7 +19,7 @@
+     ## all else being equal, prefer longer names, unless the prior name
+     ## doesn't contain any capitalization
+     oldcount, oldname = @names[email]
+-    @names[email] = [0, name] if oldname.nil? || oldname.length < name.length || (oldname !~ /[A-Z]/ && name =~ /[A-Z]/)
++    @names[email] = [0, name] if oldname.nil?
+     @names[email][0] = Time.now.to_i
+   end
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Jun  8 18:52:31 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 08 Jun 2007 15:52:31 -0700
+Subject: [sup-talk] sup setting my name
+In-Reply-To: <1181256092-sup-5757@south>
+References: <1181179353-sup-8570@mona> <1181256092-sup-5757@south>
+Message-ID: <1181343096-sup-4822@south>
+
+Excerpts from William Morgan's message of Thu Jun 07 15:42:09 -0700 2007:
+> Hah. Good catch. I'm going to fix this in a general way by treating all
+> names in config.yaml and contacts.txt as definitive.
+
+Ok, I believe I've fixed this in SVN. Jeff, you will have to reverse
+that patch before updating, or otherwise resolve the conflict. Let me
+know if I've managed to break something.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Jun  8 19:43:59 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 08 Jun 2007 16:43:59 -0700
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1180321628-sup-8630@south>
+References: <1179909888-sup-1320@doses> <1180321628-sup-8630@south>
+Message-ID: <1181345284-sup-5160@south>
+
+Excerpts from William Morgan's message of Sun May 27 20:15:55 -0700 2007:
+> Excerpts from Brian's message of Wed May 23 01:49:58 -0700 2007:
+> > What should config.yaml look like for multiple accounts? I have
+> > several accounts that use different SMTP relays. My plan is to do
+> > stuff like :sendmail: /usr/bin/nbsmtp -c
+> > /home/brian/.nbsmtp_brian_lorf_org in each account, but I don't
+> > understand how to make sup use any account other than :default:.
+
+Oh, there actually is a good answer for this. I forgot that the one part
+of the multiple accounts stuff that is actually functional is the
+sendmail aspect.
+
+For each different account, add an entry under the :accounts: section of
+config.yaml, copying the fields from the :default: block. E.g.:
+
+  :account_name:
+    :name: A Name
+    :signature: /home/whatever/.signature
+    :alternates: []
+    :email: email at address
+    :sendmail: /sendmail/command
+
+So this should be a sibling of the :default: block. The :account_name:
+thing should be something unique, but can be anything---it's not used
+other than to distinguish them.
+
+Then when you send mail with a From: line set to the primary (or an
+alternate) email address of an account, sup will use the corresponding
+sendmail command. I just gave it a quick try and it seemed to work, but
+test it before accidentally spamming your boss.
+
+The next step will be to be able to select a From address from a list
+when composing (so that the right signature can be put in).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sun Jun 10 14:00:44 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 10 Jun 2007 14:00:44 -0400
+Subject: [sup-talk] ~/.sup/sources.yaml disappearing
+Message-ID: <1181497661-sup-448@mona>
+
+has anyone else experienced a problem with ~/.sup/sources.yaml being wiped
+out?  it's gone away on me a few times, though i'm not sure exactly what
+happens to it.  sup hits an error, and either deletes sources.yaml or makes
+it an empty file.  i can't say which, i just suddenly notice that my sup
+wrapper script is running sup-add to add a bunch of sources which should
+already be there, and when i look at sources.yaml, it's starting to rebuild
+my supiverse from scratch.
+
+i'm afraid i can't say what caused it, either.  the latest time it happened
+was with an error about draw_screen, but the backtrace was gone too fast for
+me to grab it.
+
+sorry to give you so little information, william.  maybe you could check the
+handling of sources.yaml generally?  maybe there's a place where it's opened
+for writing, then never closed before an error occurs?
+
+i'll try to get more details if it happens again.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sun Jun 10 14:12:56 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 10 Jun 2007 14:12:56 -0400
+Subject: [sup-talk] error on loading a saved index
+Message-ID: <1181498605-sup-9938@mona>
+
+after my ~/.sup/sources.yaml was wiped out, i tried sup-adding all my
+sources and running sup-sync --changed on them, but got the ferret error
+again.
+
+so i removed ~/.sup/ferret/* and started from scratch.  i built my index and
+tried to restore its state with the sup-dump backup from the night before.
+everything went well for a time, then it died with this error:
+
+ruby -I lib -w bin/sup-sync --restored --restore sup-backup-2007-06-08-22:08:15
+
+...
+Scanning mbox:///home/jeff/mail/invoice at icgroup.com-2007-06...
+Scanned 2, added 0, updated 2 messages from mbox:///home/jeff/mail/invoice at icgroup.com-2007-06.
+Restored state on 2 (100.00%) messages.
+Scanning mbox:///home/jeff/mail/jchalmers at corp.sourceforge.com-2007-06...
+Scanned 1, added 0, updated 1 messages from mbox:///home/jeff/mail/jchalmers at corp.sourceforge.com-2007-06.
+Restored state on 1 (100.00%) messages.
+Scanning mbox:///home/jeff/mail/jeff.covey at pobox.com-2007-06...
+[Sat Jun 09 11:05:59 -0400 2007] saving index and sources...
+[Sat Jun 09 11:06:00 -0400 2007] unlocking /home/jeff/.sup/lock...
+bin/sup-sync:152: undefined method `sort_by' for nil:NilClass (NoMethodError)
+        from ./lib/sup/poll.rb:115:in `add_messages_from'
+        from ./lib/sup/source.rb:91:in `each'
+        from ./lib/sup/util.rb:349:in `send'
+        from ./lib/sup/util.rb:349:in `__pass'
+        from ./lib/sup/util.rb:338:in `method_missing'
+        from ./lib/sup/poll.rb:95:in `add_messages_from'
+        from ./lib/sup/util.rb:313:in `send'
+        from ./lib/sup/util.rb:313:in `method_missing'
+        from bin/sup-sync:133
+        from bin/sup-sync:128:in `each'
+        from bin/sup-sync:128
+
+
+[so i had to find and manually label messages in sup which had labels in the
+backup.  the bright side is that i'm getting good at writing scripts to fix
+sup when it falls down.  :)]
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sun Jun 10 14:37:52 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 10 Jun 2007 14:37:52 -0400
+Subject: [sup-talk] sup setting my name
+In-Reply-To: <1181343096-sup-4822@south>
+References: <1181179353-sup-8570@mona> <1181256092-sup-5757@south>
+	<1181343096-sup-4822@south>
+Message-ID: <1181499963-sup-777@mona>
+
+> Ok, I believe I've fixed this in SVN.
+
+it's fixed for composing messages, but the name displayed in threads is
+still whatever sup put in people.txt.  in this thread, for example, the
+first message was still displayed as being from Burning House Zendo in
+inbox-mode, thread-view-mode, etc.  i moved people.txt out of the way, and
+it started showing me as jeff.covey.  i edited that to "jeff covey" in the
+newly-generated people.txt, and it started showing me that.
+
+it's not a big deal, but the display is probably most readily intelligible
+if it shows people whatever names they have set for themselves in
+config.yaml and the names they have set for others in contacts.txt.  or
+would it be even better to use "me" for messages from oneself (from all the
+primary and alternate addresses), as gmail does?  "me" takes the least space
+on the screen, leaving more room for the names of the other conversation
+participants, which is what you really want to see.
+
+thanks!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sun Jun 10 17:57:11 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 10 Jun 2007 17:57:11 -0400
+Subject: [sup-talk] ~/.sup/sources.yaml disappearing
+In-Reply-To: <1181497661-sup-448@mona>
+References: <1181497661-sup-448@mona>
+Message-ID: <1181512336-sup-912@mona>
+
+ok, it happened again[0] and i was able to catch it this time.
+
+i hit "q" to quit sup while it was in the middle of doing something (polling
+for new messages, i believe), and got this:
+
+[Sun Jun 10 16:07:48 -0400 2007] good night, sweet prince!
+[Sun Jun 10 16:07:48 -0400 2007] saving index and sources...
+./lib/sup/util.rb:313:in `send': undefined method `draw_screen' for nil:NilClass (NoMethodError)
+        from ./lib/sup/util.rb:313:in `method_missing'
+        from ./lib/sup/modes/poll-mode.rb:12:in `puts'
+        from ./lib/sup/modes/poll-mode.rb:20:in `poll'
+        from ./lib/sup/poll.rb:59:in `do_poll'
+        from ./lib/sup/poll.rb:115:in `add_messages_from'
+        from ./lib/sup/source.rb:91:in `each'
+        from ./lib/sup/util.rb:349:in `send'
+        from ./lib/sup/util.rb:349:in `__pass'
+         ... 26 levels...
+        from ./lib/sup.rb:56:in `reporting_thread'
+        from ./lib/sup/modes/thread-index-mode.rb:342:in `load_n_threads_background'
+        from ./lib/sup/modes/thread-index-mode.rb:391:in `load_threads'
+        from bin/sup:171
+
+after that, my sources.yaml was reset to nothing, and all the associated
+problems followed as before.
+
+thanks,
+jeff
+
+
+[0] and i had to rebuild my whole sup setup from scratch again.  :(
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sun Jun 10 21:30:51 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 10 Jun 2007 21:30:51 -0400
+Subject: [sup-talk] sup failing to display the text of a message
+Message-ID: <20070611013051.GA12580@mona.jeffcovey.net>
+
+sup's displaying the attached message as though it has no text at all; it
+doesn't even show the two sections as attachments that can be viewed.
+
+i think that's enough from me for today!  :)
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+An embedded message was scrubbed...
+From: The freshmeat daily newsletter <freshmeat-news at lists.freshmeat.net>
+Subject: [fm-news] Newsletter for Saturday, June 09th 2007
+Date: Sun, 10 Jun 2007 00:10:07 -0700 (PDT)
+Size: 40585
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20070610/42b1f8bd/attachment-0001.mht 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070610/42b1f8bd/attachment-0001.bin 
+
+From wmorgan-sup at masanjin.net  Mon Jun 11 11:42:42 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 11 Jun 2007 08:42:42 -0700
+Subject: [sup-talk] ~/.sup/sources.yaml disappearing
+In-Reply-To: <1181512336-sup-912@mona>
+References: <1181497661-sup-448@mona> <1181512336-sup-912@mona>
+Message-ID: <1181576042-sup-5097@south>
+
+Hi Jeff,
+
+First let me say that I really appreciate all the feedback and I'm sorry
+that Sup keeps breaking in annoying ways for you. Thanks for being
+patient. Users like you are an asset!
+
+Excerpts from jeff.covey's message of Sun Jun 10 14:57:11 -0700 2007:
+> i hit "q" to quit sup while it was in the middle of doing something
+> (polling for new messages, i believe), and got this:
+> 
+> [Sun Jun 10 16:07:48 -0400 2007] good night, sweet prince!
+> [Sun Jun 10 16:07:48 -0400 2007] saving index and sources...
+> ./lib/sup/util.rb:313:in `send': undefined method `draw_screen' for nil:NilClass (NoMethodError)
+
+Ok, here's my first problem. :)
+
+> after that, my sources.yaml was reset to nothing, and all the associated
+> problems followed as before.
+
+I believe this happens when Sup dies in the process of "saving index and
+sources...". The right answer is to remove all possible the sources of
+error in that process, but maybe I can also change the code to be a
+little more resilient. Let me take a look.
+
+> [0] and i had to rebuild my whole sup setup from scratch again.  :(
+
+Sup writes a sources.yaml.bak for this very reason. I put it in in
+earlier, even buggier days when this often happened to me.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun 11 14:33:51 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 11 Jun 2007 11:33:51 -0700
+Subject: [sup-talk] sup setting my name
+In-Reply-To: <1181499963-sup-777@mona>
+References: <1181179353-sup-8570@mona> <1181256092-sup-5757@south>
+	<1181343096-sup-4822@south> <1181499963-sup-777@mona>
+Message-ID: <1181586632-sup-8137@south>
+
+Excerpts from Jeff Covey's message of Sun Jun 10 11:37:52 -0700 2007:
+> > Ok, I believe I've fixed this in SVN.
+> 
+> it's fixed for composing messages, but the name displayed in threads is
+> still whatever sup put in people.txt.
+
+Ok, it should be "really fixed" now. Everything in contact.txt and
+config.yaml should override everything in people.txt. Which is as it
+should be, as the latter is auto-generated and the former is human-
+generated.
+
+The reason for the weirdness with Burning House Zendo, btw, is that I
+have a heuristic when I have multiple names for a given email address to
+prefer the longest one, which is clearly deficient in many cases.
+
+> would it be even better to use "me" for messages from oneself (from
+> all the primary and alternate addresses), as gmail does?
+
+Apparently I broke that a few revisions ago. Should be fixed now.
+
+Let me know how it's working for you now.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Mon Jun 11 21:22:57 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 11 Jun 2007 21:22:57 -0400
+Subject: [sup-talk] sup setting my name
+In-Reply-To: <1181586632-sup-8137@south>
+References: <1181179353-sup-8570@mona> <1181256092-sup-5757@south>
+	<1181343096-sup-4822@south> <1181499963-sup-777@mona>
+	<1181586632-sup-8137@south>
+Message-ID: <1181611342-sup-2169@mona>
+
+Excerpts from William Morgan's message of Mon Jun 11 14:33:51 -0400 2007:
+
+> Let me know how it's working for you now.
+
+seems to be ok; thanks!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From ian at lorf.org  Tue Jun 12 14:20:13 2007
+From: ian at lorf.org (Ian Taylor)
+Date: Tue, 12 Jun 2007 14:20:13 -0400
+Subject: [sup-talk] no message-id field in header
+Message-ID: <1181671858-sup-239@zap>
+
+When doing...
+
+sup-sync -c
+
+...I see lots of messages about ignoring erroneous messages missing the
+message-id field.
+
+These messages are the same that seem to be ignored by sup.
+
+I really like sup, but I can't rely on it right now because of this. I'm
+using latest subversion.
+
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 20:07:15 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 17:07:15 -0700
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181671858-sup-239@zap>
+References: <1181671858-sup-239@zap>
+Message-ID: <1181693140-sup-3121@south>
+
+Excerpts from Ian Taylor's message of Tue Jun 12 11:20:13 -0700 2007:
+> When doing...
+> 
+> sup-sync -c
+> 
+> ...I see lots of messages about ignoring erroneous messages missing the
+> message-id field.
+
+Do these messages have message id headers? If so, can you send a few my
+way so I can see why Sup is discarding them?
+
+From brian at lorf.org  Tue Jun 12 20:42:12 2007
+From: brian at lorf.org (Brian)
+Date: Tue, 12 Jun 2007 19:42:12 -0500
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181693140-sup-3121@south>
+References: <1181671858-sup-239@zap> <1181693140-sup-3121@south>
+Message-ID: <1181694687-sup-7571@doses>
+
+Excerpts from William Morgan's message of Tue Jun 12 19:07:15 -0500 2007:
+> Excerpts from Ian Taylor's message of Tue Jun 12 11:20:13 -0700 2007:
+> > When doing...
+> > 
+> > sup-sync -c
+> > 
+> > ...I see lots of messages about ignoring erroneous messages missing the
+> > message-id field.
+> 
+> Do these messages have message id headers? If so, can you send a few my
+> way so I can see why Sup is discarding them?
+
+I'm seeing this too. Here's one:
+
+[Tue Jun 12 16:38:42 -0500 2007] ignoring erroneous message at
+imaps://localhost:9930/INBOX#11787508680015216: no message-id field in
+header {"Subject"=>"Your Order with Amazon.com", "date"=>"Wed, 09 May
+2007 15:47:20 -0700", "from"=>"\"auto-confirm at amazon.com\"
+<auto-confirm at amazon.com>", "From"=>"\"auto-confirm at amazon.com\"
+<auto-confirm at amazon.com>", "to"=>"bsl04 at uark.edu", "subject"=>"Your
+Order with Amazon.com", "To"=>"bsl04 at uark.edu", "Date"=>"Wed, 09 May
+2007 15:47:20 -0700"} (source imaps://localhost:9930/INBOX offset
+11787508680015216)
+
+Not sure if this is trustworthy, but when I look at this particular
+message through the uark.edu web interface, it does seem to have a
+message ID: <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+
+This no message-id thing is kind of insidious because it seems to make
+sup ignore stuff sent by programs. Like I'm not getting stuff from
+Amazon or various JIRAs.
+
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 20:48:50 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 17:48:50 -0700
+Subject: [sup-talk] ~/.sup/sources.yaml disappearing
+In-Reply-To: <1181576042-sup-5097@south>
+References: <1181497661-sup-448@mona> <1181512336-sup-912@mona>
+	<1181576042-sup-5097@south>
+Message-ID: <1181695661-sup-6575@south>
+
+Excerpts from William Morgan's message of Mon Jun 11 08:42:42 -0700 2007:
+> Excerpts from jeff.covey's message of Sun Jun 10 14:57:11 -0700 2007:
+> > [Sun Jun 10 16:07:48 -0400 2007] good night, sweet prince!
+> > [Sun Jun 10 16:07:48 -0400 2007] saving index and sources...
+> > ./lib/sup/util.rb:313:in `send': undefined method `draw_screen' for nil:NilClass (NoMethodError)
+> 
+> Ok, here's my first problem. :)
+
+This particular problem should now be fixed, and similar problems mitigated.
+
+> I believe this happens when Sup dies in the process of "saving index
+> and sources...". The right answer is to remove all possible the
+> sources of error in that process, but maybe I can also change the code
+> to be a little more resilient. Let me take a look.
+
+I'm still not sure why sources.yaml, of all files, would end up being
+zero, since the write was pretty atomic, but I've now made it even more
+atomic, so hopefully this shouldn't happen too often any more.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 20:57:02 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 17:57:02 -0700
+Subject: [sup-talk] error on loading a saved index
+In-Reply-To: <1181498605-sup-9938@mona>
+References: <1181498605-sup-9938@mona>
+Message-ID: <1181696154-sup-7679@south>
+
+Excerpts from Jeff Covey's message of Sun Jun 10 11:12:56 -0700 2007:
+> bin/sup-sync:152: undefined method `sort_by' for nil:NilClass (NoMethodError)
+
+Fixed in SVN. Sorry about that.
+
+> [so i had to find and manually label messages in sup which had labels
+> in the backup.  the bright side is that i'm getting good at writing
+> scripts to fix sup when it falls down.  :)]
+
+One small step away from hacking on Sup itself! :)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Tue Jun 12 20:59:16 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 12 Jun 2007 20:59:16 -0400
+Subject: [sup-talk] searches dying with an exception
+Message-ID: <1181696110-sup-7086@mona>
+
+searches just stopped working for me.  i typed "/" and "reunion" to get
+messages about my family reunion, and got the backtrace below.  the same
+happens if i hit "S" on an address in the contacts list.
+
+[Tue Jun 12 20:53:55 -0400 2007] oh crap, an exception
+[Tue Jun 12 20:53:55 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to wmorgan-sup at masanjin dot nets so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: invalid source 460 (error type RuntimeError)
+A backtrace follows:
+./lib/sup/index.rb:284:in `build_message': invalid source 460 (RuntimeError)
+        from ./lib/sup/index.rb:206:in `each_id_by_date'
+        from ./lib/sup/thread.rb:305:in `call'
+        from ./lib/sup/thread.rb:305:in `load_n_threads'
+        from ./lib/sup/index.rb:206:in `each_id_by_date'
+        from ./lib/sup/index.rb:206:in `each'
+        from ./lib/sup/index.rb:206:in `each_id_by_date'
+        from ./lib/sup/thread.rb:301:in `load_n_threads'
+        from ./lib/sup/modes/thread-index-mode.rb:353:in `load_n_threads'
+        from ./lib/sup/modes/thread-index-mode.rb:343:in `load_n_threads_background'
+        from ./lib/sup.rb:58:in `reporting_thread'
+        from ./lib/sup.rb:56:in `initialize'
+        from ./lib/sup.rb:56:in `new'
+        from ./lib/sup.rb:56:in `reporting_thread'
+        from ./lib/sup/modes/thread-index-mode.rb:342:in `load_n_threads_background'
+        from ./lib/sup/modes/thread-index-mode.rb:391:in `load_threads'
+        from bin/sup:212
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 20:59:37 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 17:59:37 -0700
+Subject: [sup-talk] sending attachments
+In-Reply-To: <1181062629-sup-8687@south>
+References: <1181013314-sup-1307@doses> <1181062629-sup-8687@south>
+Message-ID: <1181696351-sup-2801@south>
+
+Excerpts from William Morgan's message of Tue Jun 05 09:58:24 -0700 2007:
+> Excerpts from Brian's message of Mon Jun 04 20:16:57 -0700 2007:
+> > Does sup support sending attachments?
+> 
+> That's very very high on my list. Probably the one thing I really want
+> before a 0.0.9 release.
+
+I have a partial implementation. Expect something soon.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 21:09:41 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 18:09:41 -0700
+Subject: [sup-talk] new in svn: per-account signatures
+Message-ID: <1181696943-sup-559@south>
+
+When you svn update, you'll notice that when composing a message, the
+signature block is no longer passed to the editor. It is now
+automatically appended by Sup based on the From: address of the email.
+
+So, if you have different signatures for different accounts, that's now
+supported.
+
+The other big change is that accounts (except the default account) need
+only have an email field. Everything else is carried over from the
+default account if not present.
+
+For example, here's a snippet of my config.yaml:
+
+  :accounts: 
+    :default: 
+      :alternates: 
+      - wmorgan-ferret at masanjin.net
+      - wmorgan-ruby-talk at masanjin.net
+      - wmorgan-ruby-core at masanjin.net
+      :name: William Morgan
+      :signature: /home/rubyist/.signature
+      :email: wmorgan at masanjin.net
+      :sendmail: /usr/sbin/sendmail -oem -ti
+    :sup:
+      :signature: /home/rubyist/.signature-sup
+      :email: wmorgan-sup at masanjin.net
+
+When I compose mail as wmorgan-sup at masanjin.net, .signature-sup is used;
+otherwise, .signature is used. This is kind of a primitive version of
+Mutt's send-hook.
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Tue Jun 12 21:12:51 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 12 Jun 2007 21:12:51 -0400
+Subject: [sup-talk] exception on sending a message
+Message-ID: <1181696961-sup-4467@mona>
+
+i just got an exception while sending a message.  i composed the message and
+exited the editor, going back to compose-mode.  i hit "q" by mistake and was
+asked whether i wanted to discard the message.  i hit "n", then "y" to send.
+the message was sent, but then i got:
+
+[Tue Jun 12 21:08:44 -0400 2007] oh crap, an exception
+[Tue Jun 12 21:08:44 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to wmorgan-sup at masanjin dot nets so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: undefined method `resize' for nil:NilClass (error type NoMethodError)
+A backtrace follows:
+./lib/sup/buffer.rb:215:in `draw_screen': undefined method `resize' for nil:NilClass (NoMethodError)
+        from ./lib/sup/buffer.rb:441:in `flash'
+        from ./lib/sup/util.rb:313:in `send'
+        from ./lib/sup/util.rb:313:in `method_missing'
+        from ./lib/sup/modes/edit-message-mode.rb:130:in `send_message'
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:178:in `handle_input'
+        from bin/sup:183
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 21:36:21 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 18:36:21 -0700
+Subject: [sup-talk] searches dying with an exception
+In-Reply-To: <1181696110-sup-7086@mona>
+References: <1181696110-sup-7086@mona>
+Message-ID: <1181698441-sup-5914@south>
+
+Excerpts from Jeff Covey's message of Tue Jun 12 17:59:16 -0700 2007:
+> The problem was: invalid source 460 (error type RuntimeError)
+
+This indicates that there's a mismatch because what's in the index and
+what's in sources.yaml. In particular, there's no source with an id of
+460 (wow, you must have a lot) in sources.yaml, but the index contains
+messages which reference that.
+
+This might be a result of the recovery you had to do recently. If your
+source.yaml.bak file is still valid, you might try using that instead.
+(Or at least seeing which source has id 460). Otherwise, I can try and
+resurrect sup-recover-sources.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Tue Jun 12 22:08:16 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Tue, 12 Jun 2007 22:08:16 -0400
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181694687-sup-7571@doses>
+References: <1181671858-sup-239@zap> <1181693140-sup-3121@south>
+	<1181694687-sup-7571@doses>
+Message-ID: <1181700002-sup-7790@zap>
+
+Excerpts from Brian Lewis's message of Tue Jun 12 20:42:12 -0400 2007:
+> Excerpts from William Morgan's message of Tue Jun 12 19:07:15 -0500 2007:
+> > Excerpts from Ian Taylor's message of Tue Jun 12 11:20:13 -0700 2007:
+> > > When doing...
+> > > 
+> > > sup-sync -c
+> > > 
+> > > ...I see lots of messages about ignoring erroneous messages missing the
+> > > message-id field.
+> > 
+> > Do these messages have message id headers? If so, can you send a few my
+> > way so I can see why Sup is discarding them?
+> 
+> I'm seeing this too. Here's one:
+> 
+> [Tue Jun 12 16:38:42 -0500 2007] ignoring erroneous message at
+> imaps://localhost:9930/INBOX#11787508680015216: no message-id field in
+> header {"Subject"=>"Your Order with Amazon.com", "date"=>"Wed, 09 May
+> 2007 15:47:20 -0700", "from"=>"\"auto-confirm at amazon.com\"
+> <auto-confirm at amazon.com>", "From"=>"\"auto-confirm at amazon.com\"
+> <auto-confirm at amazon.com>", "to"=>"bsl04 at uark.edu", "subject"=>"Your
+> Order with Amazon.com", "To"=>"bsl04 at uark.edu", "Date"=>"Wed, 09 May
+> 2007 15:47:20 -0700"} (source imaps://localhost:9930/INBOX offset
+> 11787508680015216)
+> 
+> Not sure if this is trustworthy, but when I look at this particular
+> message through the uark.edu web interface, it does seem to have a
+> message ID:
+> <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+> 
+> This no message-id thing is kind of insidious because it seems to make
+> sup ignore stuff sent by programs. Like I'm not getting stuff from
+> Amazon or various JIRAs.
+> 
+
+Here are some message-ids from a few mails that sup ignored:
+
+Message-id: <".AAA-notification-15376,5453.1181656853"@na-rte-app-5104.iad5.amazon.com>
+
+Message-id: <OFA8E773D2.72645C9A-ON002572F8.003CC9EA-002572F8.003CC9EA at siminn.is>
+
+Message-id: <90565466.1181263346638.JavaMail.j2ee at atlassian01.managed.contegix.com>
+
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 22:10:45 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 19:10:45 -0700
+Subject: [sup-talk] exception on sending a message
+In-Reply-To: <1181696961-sup-4467@mona>
+References: <1181696961-sup-4467@mona>
+Message-ID: <1181700625-sup-1981@south>
+
+Excerpts from Jeff Covey's message of Tue Jun 12 18:12:51 -0700 2007:
+> i just got an exception while sending a message.  i composed the
+> message and exited the editor, going back to compose-mode.  i hit "q"
+> by mistake and was asked whether i wanted to discard the message.  i
+> hit "n", then "y" to send.
+
+Should be fixed in SVN. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun 12 22:11:40 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Jun 2007 19:11:40 -0700
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181694687-sup-7571@doses>
+References: <1181671858-sup-239@zap> <1181693140-sup-3121@south>
+	<1181694687-sup-7571@doses>
+Message-ID: <1181700658-sup-8600@south>
+
+Excerpts from brian's message of Tue Jun 12 17:42:12 -0700 2007:
+> Not sure if this is trustworthy, but when I look at this particular
+> message through the uark.edu web interface, it does seem to have a
+> message ID:
+> <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+
+Do you mind sending me the full headers for this message?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From brian at lorf.org  Tue Jun 12 22:32:21 2007
+From: brian at lorf.org (Brian)
+Date: Tue, 12 Jun 2007 21:32:21 -0500
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181700658-sup-8600@south>
+References: <1181671858-sup-239@zap> <1181693140-sup-3121@south>
+	<1181694687-sup-7571@doses> <1181700658-sup-8600@south>
+Message-ID: <1181701811-sup-4093@doses>
+
+Excerpts from William Morgan's message of Tue Jun 12 21:11:40 -0500 2007:
+> Excerpts from brian's message of Tue Jun 12 17:42:12 -0700 2007:
+> > Not sure if this is trustworthy, but when I look at this particular
+> > message through the uark.edu web interface, it does seem to have a
+> > message ID:
+> > <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+> 
+> Do you mind sending me the full headers for this message?
+
+Pasted from pine. Please let me know if I need to do it some other way.
+Thank you.
+
+Return-path: <RealTimeEmail+USRT--4ZZAM0N3t2 at bounces.amazon.com>
+Received: from mx1.uark.edu (mx1.uark.edu [130.184.5.58])
+ by mailhost.uark.edu (Sun Java System Messaging Server 6.2-6.01 (built Apr  3
+ 2006)) with ESMTPS id <0JJD00LLQ21BO800 at mailhost.uark.edu> for bsl04 at uark.edu;
+ Sat, 09 Jun 2007 03:53:35 -0500 (CDT)
+Received: from mm-notify-out-1104.amazon.com
+ (mm-notify-out-1104.amazon.com [207.171.164.46])
+        by mx1.uark.edu (8.13.8/8.13.8) with ESMTP id l598rUg6012679    for
+ <bsl04 at uark.edu>; Sat, 09 Jun 2007 03:53:30 -0500
+Received: from na-rte-app-1104.vdc.amazon.com ([10.144.96.41])
+ by mm-notify-out-1104.amazon.com with ESMTP; Sat, 09 Jun 2007 01:53:21 -0700
+Received: by na-rte-app-1104.vdc.amazon.com     id AAA-notification-29733,
+ 6108; Sat, 09 Jun 2007 01:53:17 -0700
+Date: Sat, 09 Jun 2007 01:53:17 -0700
+From: "auto-confirm at amazon.com" <auto-confirm at amazon.com>
+Subject: Your Order with Amazon.com
+To: bsl04 at uark.edu
+Message-id:
+ <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+MIME-version: 1.0
+Content-type: Multipart/Alternative; boundary=MuLtIpArT_BoUnDaRy
+Bounces-to: RealTimeEmail+USRT--4ZZAM0N3t2 at bounces.amazon.com
+X-AMAZON-TRACK: notification
+X-AMAZON-MAIL-RELAY-TYPE: notification
+X-PMX-Version: 5.3.1.294258, Antispam-Engine: 2.5.1.298604,
+ Antispam-Data: 2007.6.9.12956
+Original-recipient: rfc822;bsl04 at uark.edu
+X-Perlmx-Spam: Gauge=IIIIIIIII, Probability=9%, Report='PHISH_SUBJ_LOW 0.5,
+ __C230066_P5 0, __CP_NAME_BODY 0, __CP_URI_IN_BODY 0, __CT 0,
+ __CTYPE_HAS_BOUNDARY 0, __CTYPE_MULTIPART 0, __CTYPE_MULTIPART_ALT 0,
+ __FRAUD_419_REFNUM 0, __HAS_MSGID 0, __MIME_CHARSET_FARAWAY 0, __MIME_HTML 0,
+ __MIME_VERSION 0, __PHISH_FROM 0, __PHISH_FROM1 0, __PHISH_FROM_A 0,
+ __PHISH_PHRASE7 0, __PHISH_SUBJ_PHRASE4 0, __SANE_MSGID 0, __STOCK_PHRASE_7 0,
+ __TAG_EXISTS_HTML 0, __dnsbl.njabl.org_TIMEOUT '
+
+
+From wmorgan-sup at masanjin.net  Wed Jun 13 14:04:42 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 Jun 2007 11:04:42 -0700
+Subject: [sup-talk] no message-id field in header
+In-Reply-To: <1181701811-sup-4093@doses>
+References: <1181671858-sup-239@zap> <1181693140-sup-3121@south>
+	<1181694687-sup-7571@doses> <1181700658-sup-8600@south>
+	<1181701811-sup-4093@doses>
+Message-ID: <1181757843-sup-9068@south>
+
+Excerpts from brian's message of Tue Jun 12 19:32:21 -0700 2007:
+> Excerpts from William Morgan's message of Tue Jun 12 21:11:40 -0500 2007:
+> > Excerpts from brian's message of Tue Jun 12 17:42:12 -0700 2007:
+> > > Not sure if this is trustworthy, but when I look at this particular
+> > > message through the uark.edu web interface, it does seem to have a
+> > > message ID:
+> > > <".AAA-notification-29733,6108.1181379197"@na-rte-app-1104.vdc.amazon.com>
+> > 
+> > Do you mind sending me the full headers for this message?
+> 
+> Pasted from pine. Please let me know if I need to do it some other way.
+
+Ok, svn update and see if that fixes it.
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Wed Jun 13 15:47:56 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Wed, 13 Jun 2007 15:47:56 -0400
+Subject: [sup-talk] encoded from/subject lines?
+Message-ID: <1181763799-sup-5238@zap>
+
+I'm seeing a lot more mail since the latest fix for the message-id
+problem. Thanks for fixing that.
+
+Now, a lot of these messages also seem to have portions of the from and
+subject lines that look like this:
+
+-   From: =?ISO-8859-1?B?QW1hem9uLmNvbQ==?= <books at amazon.com>
+
+In the message list view, it's hard to tell who the mail is from or what
+it is about when all I can see is this garbage.
+
+Just letting you know.
+
+
+From wmorgan-sup at masanjin.net  Wed Jun 13 17:38:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 Jun 2007 14:38:04 -0700
+Subject: [sup-talk] encoded from/subject lines?
+In-Reply-To: <1181763799-sup-5238@zap>
+References: <1181763799-sup-5238@zap>
+Message-ID: <1181770524-sup-1225@south>
+
+Excerpts from Ian Taylor's message of Wed Jun 13 12:47:56 -0700 2007:
+> Now, a lot of these messages also seem to have portions of the from and
+> subject lines that look like this:
+> 
+> -   From: =?ISO-8859-1?B?QW1hem9uLmNvbQ==?= <books at amazon.com>
+
+These are RFC 2047 headers. Decoding them is on the todo list. If this
+is prevalent, I will bump up the priority.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jun 13 18:54:16 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 13 Jun 2007 18:54:16 -0400
+Subject: [sup-talk] searches dying with an exception
+In-Reply-To: <1181698441-sup-5914@south>
+References: <1181696110-sup-7086@mona> <1181698441-sup-5914@south>
+Message-ID: <1181775147-sup-8517@mona>
+
+Excerpts from William Morgan's message of Tue Jun 12 21:36:21 -0400 2007:
+
+> > The problem was: invalid source 460 (error type RuntimeError)
+> 
+> This indicates that there's a mismatch because what's in the index and
+> what's in sources.yaml. In particular, there's no source with an id of 460
+
+sure enough.  i must have missed a step the last time i rebuilt everything.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Wed Jun 13 20:10:11 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 13 Jun 2007 20:10:11 -0400
+Subject: [sup-talk] new in svn: per-account signatures
+In-Reply-To: <1181696943-sup-559@south>
+References: <1181696943-sup-559@south>
+Message-ID: <1181779547-sup-1059@mona>
+
+Excerpts from William Morgan's message of Tue Jun 12 21:09:41 -0400 2007:
+
+> When you svn update, you'll notice that when composing a message, the
+> signature block is no longer passed to the editor. It is now automatically
+> appended by Sup based on the From: address of the email.
+
+this seems to work well.  unfortunately, i like having the signature block
+passed to the editor.  :)
+
+though i'm sending mail from a certain email address, i may be sending it on
+behalf of an employer or an organization i'm involved with, and i may not
+want my personal signature attached to it.  under this system, there's no
+way to stop the signature from being included in the message.
+
+i realize you can't include the signature in the text passed to the editor
+because you don't know which signature to use until the editor exits and you
+see what was put in "from:".  maybe a keybinding to toggle the signature
+on/off would do the trick?
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Wed Jun 13 20:13:41 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 13 Jun 2007 20:13:41 -0400
+Subject: [sup-talk] exception on sending a postponed message
+Message-ID: <1181779860-sup-5207@mona>
+
+i resumed editing the message about per-address signatures after postponing
+it, and when i sent it, i got:
+
+[Wed Jun 13 20:10:11 -0400 2007] oh crap, an exception
+[Wed Jun 13 20:10:11 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'undefined method `to_nice_s' for nil:NilClass' (error type NoMethodError)
+A backtrace follows:
+./lib/sup/modes/thread-index-mode.rb:450:in `text_for_thread': undefined method `to_nice_s' for nil:NilClass (NoMethodError)
+        from ./lib/sup/modes/thread-index-mode.rb:432:in `regen_text'
+        from ./lib/sup/util.rb:186:in `map_with_index'
+        from /usr/lib/ruby/1.8/fileutils.rb:1297:in `each_with_index'
+        from ./lib/sup/util.rb:186:in `each'
+        from ./lib/sup/util.rb:186:in `each_with_index'
+        from ./lib/sup/util.rb:186:in `map_with_index'
+        from ./lib/sup/modes/thread-index-mode.rb:432:in `regen_text'
+        from ./lib/sup/modes/thread-index-mode.rb:131:in `update'
+         ... 11 levels...
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:178:in `handle_input'
+        from bin/sup:183
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Wed Jun 13 20:15:33 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 13 Jun 2007 20:15:33 -0400
+Subject: [sup-talk] encoded from/subject lines?
+In-Reply-To: <1181770524-sup-1225@south>
+References: <1181763799-sup-5238@zap> <1181770524-sup-1225@south>
+Message-ID: <1181780082-sup-7976@mona>
+
+Excerpts from William Morgan's message of Wed Jun 13 17:38:04 -0400 2007:
+
+> These are RFC 2047 headers. Decoding them is on the todo list. If this is
+> prevalent, I will bump up the priority.
+
+i see this all the time.  it's usually a good indicator of spam.  :)
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Thu Jun 14 11:32:09 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 14 Jun 2007 11:32:09 -0400
+Subject: [sup-talk] mutt's auto_view and alternative_order
+Message-ID: <1181834033-sup-8054@mona>
+
+something i'm really missing from mutt is the auto_view setting for mime
+types.  unfortunately, so many mail user agents send out only html messages,
+and they appear in sup as just a single "mime attachment" line.  when you
+reply to one of them, you get an empty quote of the sender's message, and
+you have to go back, launch the attachment in an external viewer, copy and
+paste, put the text in the reply with "> "s, etc.
+
+it would be great if config.yaml let the user specify a list of mime types
+which should have their attachments run through the .mailcap-specified
+filters with copiousoutput tags, and have the results inserted into the text
+of the message.  i think it might be good to keep the "mime attachment" line
+as well, so that hitting enter on it would launch an external viewer for the
+times you want that.  (mutt's documentation has a thorough section on how
+they handle .mailcap; it has some good ideas.)
+
+mutt's alternative_order is also nice.  it lets you say, for example, "if
+there's multipart/alternative mail with the same message as text/plain and
+text/html, just show me the text/plain version."  this could be handled
+nicely by displaying the most-desired version as its full text and the
+less-desirable ones as "mime attachment" lines.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Thu Jun 14 12:13:21 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 14 Jun 2007 12:13:21 -0400
+Subject: [sup-talk] sup-sync-back not syncing all usual sources
+Message-ID: <1181836972-sup-1140@mona>
+
+sup-sync-back's help says "If no sources are given, sync back all usual
+sources", but this doesn't seem to be happening.
+
+i just tested it by commenting out the sup-sync-back section of my sup
+wrapper script and marking a bunch of threads to be deleted.  then i ran
+this:
+
+sup-sync-back --move-deleted ~/tmp/sup-deleted.mbox --move-spam ~/tmp/sup-deleted.mbox
+
+, and it acted as though there were nothing to be done.  then i reinstated
+the part of my script which checks which sources need to be sync-backed
+(included below), and it processed them all and moved the deleted messages
+out of them as it should.
+
+thanks,
+jeff
+
+
+ruby='ruby -I lib -w'
+cd ~/tmp/sup/trunk
+
+echo "checking for messages to delete..."
+deletedids=`$ruby bin/sup-dump | grep deleted | sed -e 's/(.*//'`;
+mboxes=~/mail/*-`date +%Y-%m`
+for id in $deletedids ; do
+	deletedmboxes=`grep -l $id $mboxes`;
+	for mbox in $deletedmboxes ; do 
+		$ruby bin/sup-sync-back --move-deleted ~/tmp/sup-deleted.mbox --move-spam ~/tmp/sup-deleted.mbox mbox://$mbox ;
+		$ruby bin/sup-sync --changed mbox://$mbox ;
+	done ;
+done
+
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sat Jun 16 12:58:41 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 16 Jun 2007 12:58:41 -0400
+Subject: [sup-talk] exception on postponing a previously-postponed message
+Message-ID: <1182012999-sup-6849@mona>
+
+i was just editing a message i'd previously postponed, and when i postponed it
+again, i got this:
+
+[Sat Jun 16 12:56:00 -0400 2007] oh crap, an exception
+[Sat Jun 16 12:56:00 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'comparison of Time with nil failed' (error type ArgumentError)
+A backtrace follows:
+./lib/sup/modes/thread-index-mode.rb:129:in `sort_by': comparison of Time with nil failed (ArgumentError)
+        from ./lib/sup/modes/thread-index-mode.rb:129:in `update'
+        from ./lib/sup/modes/thread-index-mode.rb:122:in `handle_delete_update'
+        from ./lib/sup/update.rb:16:in `send'
+        from ./lib/sup/update.rb:16:in `relay'
+        from ./lib/sup/update.rb:16:in `each'
+        from ./lib/sup/update.rb:16:in `relay'
+        from ./lib/sup/util.rb:320:in `send'
+        from ./lib/sup/util.rb:320:in `method_missing'
+        from ./lib/sup/draft.rb:39:in `discard'
+        from ./lib/sup/util.rb:320:in `send'
+        from ./lib/sup/util.rb:320:in `method_missing'
+        from ./lib/sup/modes/resume-mode.rb:43:in `save_as_draft'
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:178:in `handle_input'
+        from bin/sup:183
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Sun Jun 17 16:30:08 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 17 Jun 2007 13:30:08 -0700
+Subject: [sup-talk] sup-sync-back not syncing all usual sources
+In-Reply-To: <1181836972-sup-1140@mona>
+References: <1181836972-sup-1140@mona>
+Message-ID: <1182112191-sup-9971@south>
+
+Excerpts from jeff.covey's message of Thu Jun 14 09:13:21 -0700 2007:
+> sup-sync-back's help says "If no sources are given, sync back all usual
+> sources", but this doesn't seem to be happening.
+
+Fixed in svn. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sun Jun 17 21:00:24 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 17 Jun 2007 21:00:24 -0400
+Subject: [sup-talk] sup-sync-back not syncing all usual sources
+In-Reply-To: <1182112191-sup-9971@south>
+References: <1181836972-sup-1140@mona> <1182112191-sup-9971@south>
+Message-ID: <1182126871-sup-7739@mona>
+
+Excerpts from William Morgan's message of Sun Jun 17 16:30:08 -0400 2007:
+
+> > sup-sync-back's help says "If no sources are given, sync back all usual
+> > sources", but this doesn't seem to be happening.
+> 
+> Fixed in svn. Thanks!
+
+thanks, it now spits out the names of all of my usual sources and moves
+deleted files from some, but not all of them.  i changed my wrapper script
+to first just run sup-sync-back without specifying a source, then to run it
+as i used to do on those sources with messages tagged "deleted" in the
+index.  the first run moves some deleted messages, and the second the rest.
+
+would it make more sense for sup-sync-back to process only those sources
+which need to be synced back (at this stage in sup-sync-back's life, those
+which have spam/deleted messages)?
+
+also, at the end of running sup-sync-back without specifying a source, i get
+this:
+
+Scanning sup://sent...
+Scanned 4, deleted 0, moved 0 messages from sup://sent.
+[Sun Jun 17 20:32:34 -0400 2007] saving index and sources...
+[Sun Jun 17 20:32:35 -0400 2007] unlocking /home/jeff/.sup/lock...
+/usr/lib/ruby/1.8/fileutils.rb:505:in `rename': No such file or directory - /tmp/sup-sync-back-9998.1089.0 or  (Errno::ENOENT)
+        from /usr/lib/ruby/1.8/fileutils.rb:505:in `mv'
+        from /usr/lib/ruby/1.8/fileutils.rb:1395:in `fu_each_src_dest'
+        from /usr/lib/ruby/1.8/fileutils.rb:1411:in `fu_each_src_dest0'
+        from /usr/lib/ruby/1.8/fileutils.rb:1393:in `fu_each_src_dest'
+        from /usr/lib/ruby/1.8/fileutils.rb:494:in `mv'
+        from bin/sup-sync-back:115
+        from bin/sup-sync-back:68:in `each'
+        from bin/sup-sync-back:68
+
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Mon Jun 18 07:33:23 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 18 Jun 2007 07:33:23 -0400
+Subject: [sup-talk] exception on loading more threads
+Message-ID: <1182166294-sup-7610@mona>
+
+i just started sup, hit "m" to load more threads, and got this:
+
+
+[Mon Jun 18 07:27:57 -0400 2007] oh crap, an exception
+[Mon Jun 18 07:27:57 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'IO Error occured at <except.c>:93 in xraise
+Error occured in fs_store.c:293 - fsi_seek_i
+        seeking pos 566286: <Bad file descriptor>
+
+' (error type IOError)
+A backtrace follows:
+./lib/sup/index.rb:211:in `default': IO Error occured at <except.c>:93 in xraise (IOError)
+Error occured in fs_store.c:293 - fsi_seek_i
+        seeking pos 566286: <Bad file descriptor>
+
+        from ./lib/sup/index.rb:211:in `[]'
+        from ./lib/sup/index.rb:211:in `each_id_by_date'
+        from ./lib/sup/index.rb:211:in `each'
+        from ./lib/sup/index.rb:211:in `each_id_by_date'
+        from ./lib/sup/thread.rb:301:in `load_n_threads'
+        from ./lib/sup/modes/thread-index-mode.rb:354:in `unsynchronized_load_n_threads'
+        from (eval):3:in `load_n_threads'
+        from (eval):3:in `synchronize'
+         ... 8 levels...
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:178:in `handle_input'
+        from bin/sup:183
+checking for messages to delete...
+./lib/sup/util.rb:5: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:16: warning: method redefined; discarding old dump_lock_id
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Mon Jun 18 11:47:50 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 Jun 2007 08:47:50 -0700
+Subject: [sup-talk] new in svn: rfc2047 header decoding,
+	and charset conversion
+Message-ID: <1182181055-sup-7065@south>
+
+RFC2047 headers and MIME message parts with Content-Type headers are now
+converted to the local character set (default utf8 if not set).  This
+should work immediately for new messages. In order to see these changes
+on messages already in the index, you'll need to:
+
+  1. delete any entries in people.txt and contact.txt that are
+     RFC2047-encoded; and
+  2. run sup-sync --all --all-sources
+
+If you see warnings in the Sup log about decoding, that means iconv
+couldn't convert the original message to your character set. It's a
+little picky and apparently doesn't offer anything more fine-grained
+than "encode everything or raise an exception". We just use the original
+message as is, as we've been doing all along, in that case.
+
+On my Debian box with LANG=en_US.utf-8, running Sup in gnome-terminal, I
+can now see accented characters. Yay! Haven't yet tried wide characters.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Mon Jun 18 19:37:43 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 18 Jun 2007 19:37:43 -0400
+Subject: [sup-talk] searching for text in threads
+Message-ID: <1182209720-sup-7475@mona>
+
+i'm wondering how people handle searching for messages referencing a given
+topic.  searching with "/" brings up a list of threads concerning it, but if
+it's a thread from a mailing list with 50 messages and only one is about
+what you need, how do you hunt down which of the 50 is the one you want?
+
+in thread-view-mode, sup is effectively a pager.  in that mode, should "/"
+search for and highlight text as any other pager would?
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Mon Jun 18 20:00:52 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 18 Jun 2007 20:00:52 -0400
+Subject: [sup-talk] GPG Support
+In-Reply-To: <D55C81AD71647428E7B489B6@Sumatra.local>
+References: <D55C81AD71647428E7B489B6@Sumatra.local>
+Message-ID: <1182210252-sup-8502@mona>
+
+Excerpts from Chris Lee's message of Thu May 17 17:24:11 -0400 2007:
+
+> GPG support is coming along nicely right now. 
+
+great!  :)  sorry for the delay in replying.
+
+> If all email addresses of an email have keys, then, and only then, do I
+> encrypt the email - this means if you have highly sensitive info, and you
+> miskey an address, whoops it goes out unencrypted * I need a way to know
+> if the user want to encrypt and/or sign an email and then alert him/her if
+> I don't have all the required keys.
+
+i rarely want to send encrypted mail, and i want the mail i usually send
+left unencrypted so i have a clear copy for my reference.  from my
+perspective, i'd rather just be able to hit a keybinding to turn encryption
+on when i want it, instead of having it done automatically.
+
+> I don't sign any email right now :(
+
+that's the main thing i use gpg for.  :)
+
+> The sources.yaml file is pgp encrypted now.
+
+why is that?  there doesn't seem to be any sensitive information in
+sources.yaml, and encrypting it makes it harder to deal with.
+
+> it'd be nice to extend protections to non-pgp users.  Should I use openssl
+> to encrypt the config file and then have the pgp password(s) in there?
+
+i wouldn't bother with storing passwords/phrases and encrypting files, i
+would just let gpg prompt people for the words/phrases as needed.  if they
+don't want to type them each time, they can use something like gpg-agent.
+
+> I only use one GPG private key, which is not tied to the sending address
+> (it's specified in config.yaml).  This should be easy to fix if I store
+> all the passphrases in an encrypted file.  * Do you need this feature?
+
+i only use one key myself, but it would be nice to be able to specify a key
+for each account under ":accounts:".
+
+> You'll have to encrypt your sources.yaml file manually before the first
+> time you launch sup with pgp support.  This totally breaks sup-add,
+> sup-sync, and anything else that reads sources.yaml right now
+
+yes, again, i'm not sure why you're encrypting sources.yaml.  it seems to be
+adding unnecessary complications.
+
+thanks again,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Wed Jun 27 13:25:50 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 Jun 2007 10:25:50 -0700
+Subject: [sup-talk] sorry about the non-responsiveness
+Message-ID: <1182964981-sup-6783@south>
+
+I'm not just deleting all your bug reports and feature requests!  A
+combination of a big release at work and an ill-timed contemporaneous
+vacation has left me with little time for Sup. But next week I should
+have some quality time to spend. Meanwhile I've written 95% of the
+attachment code; just haven't gotten a chance to plug it in yet.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jun 28 15:03:52 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 Jun 2007 12:03:52 -0700
+Subject: [sup-talk] searching for text in threads
+In-Reply-To: <1182209720-sup-7475@mona>
+References: <1182209720-sup-7475@mona>
+Message-ID: <1183057404-sup-4295@south>
+
+Excerpts from jeff.covey's message of Mon Jun 18 16:37:43 -0700 2007:
+> in thread-view-mode, sup is effectively a pager.  in that mode, should
+> "/" search for and highlight text as any other pager would?
+
+Absolutely. This is one more item on the desperately-needed list.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sat Jun 30 05:29:07 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 30 Jun 2007 05:29:07 -0400
+Subject: [sup-talk] sup dying with another ferret error
+Message-ID: <20070630092906.GA16008@mona.jeffcovey.net>
+
+i just started sup this morning, and it died as it was polling for new
+messages.  now it does this whenever i try to start it:
+
+
+[Sat Jun 30 05:10:24 -0400 2007] oh crap, an exception
+[Sat Jun 30 05:10:24 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'IO Error occured at <except.c>:93 in xraise
+Error occured in index.c:901 - sis_find_segments_file
+        Error reading the segment infos. Store listing was
+
+
+' (error type IOError)
+A backtrace follows:
+/var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `initialize': IO Error occured at <except.c>:93 in xraise (IOError)
+Error occured in index.c:901 - sis_find_segments_file
+        Error reading the segment infos. Store listing was
+
+
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `new'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:726:in `ensure_reader_open'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:733:in `ensure_searcher_open'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:755:in `do_search'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:334:in `search'
+        from /usr/lib/ruby/1.8/monitor.rb:238:in `synchronize'
+        from /var/lib/gems/1.8/gems/ferret-0.11.4/lib/ferret/index.rb:333:in `search'
+        from ./lib/sup/index.rb:312:in `load_entry_for_id'
+         ... 33 levels...
+        from ./lib/sup.rb:66:in `reporting_thread'
+        from ./lib/sup/modes/thread-index-mode.rb:343:in `load_n_threads_background'
+        from ./lib/sup/modes/thread-index-mode.rb:393:in `load_threads'
+        from bin/sup:171
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sat Jun 30 13:29:53 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 30 Jun 2007 13:29:53 -0400
+Subject: [sup-talk] sorry about the non-responsiveness
+In-Reply-To: <1182964981-sup-6783@south>
+References: <1182964981-sup-6783@south>
+Message-ID: <20070630172953.GA16906@mona.jeffcovey.net>
+
+it's ok with me -- aside from the various workarounds, sup has been working
+fine for me until it blew up this morning.  i think it's been a couple of
+weeks, the longest i've been able to use it at a stretch!  :)
+
+unfortunately, every attempt i make now to build/rebuild the index
+eventually leads to a ferret error, so i'm on a forced sup vacation.
+
+thanks for the update!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070630/8d7b3801/attachment.bin 
+

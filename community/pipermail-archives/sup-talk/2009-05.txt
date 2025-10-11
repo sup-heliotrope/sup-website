@@ -1,0 +1,4289 @@
+From bwalton at artsci.utoronto.ca  Fri May  1 12:54:47 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri,  1 May 2009 12:54:47 -0400
+Subject: [sup-talk] [PATCH] Keymap: make new + (apply to tagged) behaviour
+	nicer
+Message-ID: <1241196888-16400-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Ok, so I updated to the next branch to work on updating/polishing the
+flexible sent source patch and the new + key for apply to tagged
+behaviour is driving me nuts.  I had a lot of muscle memory built up
+around the semi-colon, so it's a tough adjustment for me.  I'm willing
+to make it, of course, since I think the overall reasoning is sound.
+That being said, mapping = to do the same thing as + will save having
+to hold shift to access this.
+
+I hope this is ok.  Patch to follow.
+
+Thanks
+-Ben
+
+From bwalton at artsci.utoronto.ca  Fri May  1 12:54:48 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri,  1 May 2009 12:54:48 -0400
+Subject: [sup-talk] [PATCH] Keymap: make new + (apply to tagged) behaviour
+	nicer
+In-Reply-To: <1241196888-16400-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1241196888-16400-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1241196888-16400-2-git-send-email-bwalton@artsci.utoronto.ca>
+
+Make = a synonym for + in the thread index mode so that shift isn't
+required to apply an action to all tagged messages.
+---
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 7b87bf6..b44dc18 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -42,7 +42,7 @@ EOS
+     k.add :toggle_tagged, "Tag/untag selected thread", 't'
+     k.add :toggle_tagged_all, "Tag/untag all threads", 'T'
+     k.add :tag_matching, "Tag matching threads", 'g'
+-    k.add :apply_to_tagged, "Apply next command to all tagged threads", '+'
++    k.add :apply_to_tagged, "Apply next command to all tagged threads", '+', '='
+     k.add :join_threads, "Force tagged threads to be joined into the same thread", '#'
+     k.add :undo, "Undo the previous action", 'u'
+   end
+-- 
+1.6.2.1
+
+
+From sgoldman at tower-research.com  Fri May  1 16:23:53 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 01 May 2009 16:23:53 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <f96e0240904300729l1493160eqdcc642af5aae1c15@mail.gmail.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+	<f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+	<1241098531-sup-1508@entry>
+	<1241101364-sup-9621@sgoldmanlinux.tower-research.com>
+	<f96e0240904300729l1493160eqdcc642af5aae1c15@mail.gmail.com>
+Message-ID: <1241209146-sup-3561@sgoldmanlinux.tower-research.com>
+
+I have found the offensive commit...
+
+Whoever was working on this, can you take a look and figure out where
+the bug is?
+
+(And for all you perl bashers out there, given this ridiculous line
+of ruby, you officially can't talk any more shit.)
+
+
+063ec996a24b13b5dc9a59e21aa42ba629ab510a
+
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -97,7 +97,7 @@ EOS
+         numi = 0
+         add_messages_from source do |m, offset, entry|
+           ## always preserve the labels on disk.
+-          m.labels = entry[:label].split(/\s+/).map { |x| x.intern } if entry
++          m.labels = ((m.labels - [:unread, :inbox]) + entry[:label].split(/\s+/).map { |x| x.intern }).uniq if entry
+           yield "Found message at #{offset} with labels {#{m.labels * ', '}}"
+           unless entry
+             num += 1
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Mon May  4 08:59:49 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 05:59:49 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <f96e0240904300707k4d629f33hc660a9792545257e@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+	<f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+	<1241045035-sup-1534@entry>
+	<f96e0240904300707k4d629f33hc660a9792545257e@mail.gmail.com>
+Message-ID: <1241441484-sup-8964@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-04-30:
+> Since I'm back into mucking with this bit, are you open to having the
+> maildir scanning code move messages from new/ to cur/?  This could
+> help with the unique id vs directory scanning issue.
+
+Would it really help? I'd be willing if so, but I don't see how. Maybe
+I'm missing something.
+
+I've avoided moving new/ to cur/ because I didn't see any benefit to
+Sup, and it conflicts with the hands-off philosophy, so it just seemed
+like one more thing we could screw up. But if there is a real reason to
+do it, I'd probably be willing.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May  4 09:32:04 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 06:32:04 -0700
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241209146-sup-3561@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+	<f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+	<1241098531-sup-1508@entry>
+	<1241101364-sup-9621@sgoldmanlinux.tower-research.com>
+	<f96e0240904300729l1493160eqdcc642af5aae1c15@mail.gmail.com>
+	<1241209146-sup-3561@sgoldmanlinux.tower-research.com>
+Message-ID: <1241443759-sup-9889@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2009-05-01:
+> I have found the offensive commit...
+
+Interesting. I think I see the problem. Were all the messages that
+magically reappeared in your inbox messages that were sent to mailing
+lists, or otherwise messages that somehow appeared twice in your inbox?
+
+> (And for all you perl bashers out there, given this ridiculous line
+> of ruby, you officially can't talk any more shit.)
+
+No one here has bashed Perl. Personally I prefer bashing Python (when
+I'm not too busy bashing Java (when I'm not too busy bashing C++)), and
+credit Perl for much of what I like about Ruby.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bdwalton at gmail.com  Mon May  4 09:41:17 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Mon, 4 May 2009 09:41:17 -0400
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <1241441484-sup-8964@entry>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+	<f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+	<1241045035-sup-1534@entry>
+	<f96e0240904300707k4d629f33hc660a9792545257e@mail.gmail.com>
+	<1241441484-sup-8964@entry>
+Message-ID: <f96e0240905040641y5e2a5efetfacee48b8e4260d2@mail.gmail.com>
+
+On Mon, May 4, 2009 at 8:59 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Ben Walton's message of 2009-04-30:
+>> Since I'm back into mucking with this bit, are you open to having the
+>> maildir scanning code move messages from new/ to cur/?  This could
+>> help with the unique id vs directory scanning issue.
+>
+> Would it really help? I'd be willing if so, but I don't see how. Maybe
+> I'm missing something.
+
+Scan both folders (cur/, new/) on startup or sup-sync.  After that,
+scan only new.  Since mail is moved out of new/ into cur/ after
+detection, the time stamp stuff could be dropped since it would be
+redundant anyway.  I think I'd confused myself about the id generation
+issue, so it wouldn't likely be of benefit there.
+
+> I've avoided moving new/ to cur/ because I didn't see any benefit to
+> Sup, and it conflicts with the hands-off philosophy, so it just seemed
+> like one more thing we could screw up. But if there is a real reason to
+> do it, I'd probably be willing.
+
+Sup would be a better Maildir citizen, since this is the intended way
+to access/use a maildir source.
+
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From sgoldman at tower-research.com  Mon May  4 09:46:35 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Mon, 04 May 2009 09:46:35 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241443759-sup-9889@entry>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+	<f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+	<1241098531-sup-1508@entry>
+	<1241101364-sup-9621@sgoldmanlinux.tower-research.com>
+	<f96e0240904300729l1493160eqdcc642af5aae1c15@mail.gmail.com>
+	<1241209146-sup-3561@sgoldmanlinux.tower-research.com>
+	<1241443759-sup-9889@entry>
+Message-ID: <1241444694-sup-9120@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Mon May 04 09:32:04 -0400 2009:
+> Reformatted excerpts from Steve Goldman's message of 2009-05-01:
+> > I have found the offensive commit...
+> 
+> Interesting. I think I see the problem. Were all the messages that
+> magically reappeared in your inbox messages that were sent to mailing
+> lists, or otherwise messages that somehow appeared twice in your inbox?
+
+Most of the messages I archive come from lists, so this is possible.
+The lists I'm on are smart enough to not deliver messages twice, most
+of the time.
+
+> > (And for all you perl bashers out there, given this ridiculous line
+> > of ruby, you officially can't talk any more shit.)
+> 
+> No one here has bashed Perl. Personally I prefer bashing Python (when
+> I'm not too busy bashing Java (when I'm not too busy bashing C++)), and
+> credit Perl for much of what I like about Ruby.
+
+Live and let live!!
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Mon May  4 10:24:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 07:24:15 -0700
+Subject: [sup-talk] [PATCH] Keymap: make new + (apply to tagged)
+	behaviour nicer
+In-Reply-To: <1241196888-16400-2-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1241196888-16400-1-git-send-email-bwalton@artsci.utoronto.ca>
+	<1241196888-16400-2-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1241446972-sup-1257@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-01:
+> Make = a synonym for + in the thread index mode so that shift isn't
+> required to apply an action to all tagged messages.
+
+Good idea. Can you make this change against the better-buffer-list
+branch instead of next? It's not applying as is.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May  4 10:28:43 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 07:28:43 -0700
+Subject: [sup-talk] [PATCH] Bug fixes and speed improvements for maildir
+	handling.
+In-Reply-To: <a412e2a70904210843p6410e83dyabccb3dec5c9fd0a@mail.gmail.com>
+References: <a412e2a70904210843p6410e83dyabccb3dec5c9fd0a@mail.gmail.com>
+Message-ID: <1241447258-sup-9435@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-04-21:
+> ---
+>  lib/sup/maildir.rb |   10 +++++++---
+>  1 files changed, 7 insertions(+), 3 deletions(-)
+
+I think I'm going to drop this patch, as the Maildir code is going to
+get changed in other ways very shortly.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May  4 10:35:20 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 07:35:20 -0700
+Subject: [sup-talk] possible mbox "initial From" fix
+In-Reply-To: <6bb609560904291751n3cc62f46g6a4edcba1f97d6f7@mail.gmail.com>
+References: <1241027916-sup-7642@entry>
+	<6bb609560904291751n3cc62f46g6a4edcba1f97d6f7@mail.gmail.com>
+Message-ID: <1241447393-sup-7632@entry>
+
+Reformatted excerpts from Bart Schaefer's message of 2009-04-29:
+> We found that in most cases this failed at (1) or succeeded very
+> quickly at (6a).  Only obscure cases proceed to (7), but if you're
+> dealing with anything like old USENET news archives or folders written
+> by '80s-era mail clients you need either step (4) or step (7) to get
+> past the cruft.
+> 
+> Note that the key is finding "From ... DATE" rather than "From ADDRESS
+> ..." if you really want to distinguish message separators from stuff
+> people type in a message body.  I'm not sure you can do this with a
+> regular expression.
+
+Thanks! This is really helpful. I am a little worried about the current
+fix, since there's no real requirement that an email address have an @
+sign in it for local users, and that will result in false negatives,
+and there's a non-trivial potential for false positives.
+
+If we went this route (which wouldn't require a big changeset), I may
+punt on parsing the date myself and just rely on Time.parse. Speed
+shouldn't really be affected (except in weird pathological cases) since
+the date parsing will be a second step. I like it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Mon May  4 10:44:11 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon,  4 May 2009 10:44:11 -0400
+Subject: [sup-talk] [PATCH] Keymap: improve behaviour of apply to tagged in
+	thread index
+Message-ID: <1241448251-21371-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Make = a synonym for + in the thread index mode so that shift isn't
+required to apply an action to all tagged messages.
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+	This is the requeste resend against better-buffer-list.
+	-Ben
+
+
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 0bce0de..a45175d 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -42,7 +42,7 @@ EOS
+     k.add :toggle_tagged, "Tag/untag selected thread", 't'
+     k.add :toggle_tagged_all, "Tag/untag all threads", 'T'
+     k.add :tag_matching, "Tag matching threads", 'g'
+-    k.add :apply_to_tagged, "Apply next command to all tagged threads", '+'
++    k.add :apply_to_tagged, "Apply next command to all tagged threads", '+', '='
+     k.add :join_threads, "Force tagged threads to be joined into the same thread", '#'
+   end
+ 
+-- 
+1.6.2.1
+
+
+From wmorgan-sup at masanjin.net  Mon May  4 10:48:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 07:48:23 -0700
+Subject: [sup-talk] [PATCH] Keymap: improve behaviour of apply to tagged
+	in thread index
+In-Reply-To: <1241448251-21371-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1241448251-21371-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1241448496-sup-8476@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-04:
+> Make = a synonym for + in the thread index mode so that shift isn't
+> required to apply an action to all tagged messages.
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May  4 12:10:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 09:10:23 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <20090429233820.GA14143@cabinet.hsd1.ma.comcast.net>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+	<20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+	<a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+	<1241038730-sup-2939@entry>
+	<20090429233820.GA14143@cabinet.hsd1.ma.comcast.net>
+Message-ID: <1241451919-sup-8970@entry>
+
+Reformatted excerpts from Marc Hartstein's message of 2009-04-29:
+> On Wed, Apr 29, 2009 at 03:31:52PM -0700, William Morgan wrote:
+> > (All this rigamarole about ordinals and blah blah blah is necessary
+> > because I don't want Sup to rescan the entire Maildir unless absolutely
+> > necessary. One day I'll convert my mbox to a Maildir with 250k files in
+> > it, and a rescan will kill me, especially at Ruby speed.)
+> 
+> How are we defining 'rescan' here?  I can think of a couple of possible
+> meanings, and I'm not sure where you are:
+> 
+> 1. Open every file in the maildir and read from it, every poll.
+> 2. Visit every filename in the maildir to consider whether it is a new
+> file, every poll.
+> 3. Something else I'm not thinking of this instant.
+
+You're probably confused because what I said was wrong. Here's what I
+should have said:
+
+Rescanning the entire directory to check for new mail is unavoidable in
+Maildir. What I *do* have some control over, i.e. can try to optimize,
+is the following operation: given a file in the directory, does it
+represent a new message? One way to do this would be to maintain a set
+of all filenames representing read messages, and to check for existence
+within the set, for every file. Sup doesn't do this; instead it defines
+an ordering on filenames, such that newer filenames are "larger" than
+older filenames under that ordering, and maintains a threshold
+representing the dividing point between new and old. The idea being that
+performing that comparison is quick, and that storing the set of read
+messages is also quick.
+
+(And again, I care about the case where you have 500k messages, and so
+doing set existence is painful. Although perhaps Bloom filters are the
+solution... that would be interesting!)
+
+> So the only way you're going to get a timestamp collision (on the
+> filename timestamp, perhaps not on the actual ctime) is if you have
+> multiple processes delivering mail simultaneously, or if you're
+> synchronizing mail delivered on multiple hosts.  In the case of the
+> latter, a timestamp-based heuristic for finding new messages isn't
+> going to work.
+
+I think the collisions we are seeing are due to timestamp granularity.
+A little research suggests that e.g. ext2fs ctimes are 1-second
+granular. It seems quite easy to get more than one email per second.
+
+> Would it suffice to keep track of the filename of the most recent
+> message added for each maildir source, and check everything with a
+> time portion of the filename equal to or greater than that message for
+> whether it needs to be added?  [although see above about whether that
+> gains anything]
+
+Yes, I think that's the solution. Basically switch from > to >= when
+comparing timestamps, and realize that you're going to get some dupes.
+
+> Having looked into this more closely, I'm starting to seriously
+> reconsider whether maildir is really what I want to be using for storing
+> my mail.  There are some weird timing issues.
+
+Well, mbox has the advantage of being nice and linear so this problem
+goes away, but is horribly broken in other ways (c.f. the recent thread
+about the "From problem"). IMAP is a ridiculous PITA to deal with (at
+least as a client), so you're kinda screwed in every direction here. If
+anything, Maildir is less broken than the other alternatives.
+
+Plus Maildir works really well with git. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May  4 12:22:45 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 May 2009 09:22:45 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <f96e0240905040641y5e2a5efetfacee48b8e4260d2@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+	<f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+	<1241045035-sup-1534@entry>
+	<f96e0240904300707k4d629f33hc660a9792545257e@mail.gmail.com>
+	<1241441484-sup-8964@entry>
+	<f96e0240905040641y5e2a5efetfacee48b8e4260d2@mail.gmail.com>
+Message-ID: <1241453755-sup-6000@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-04:
+> Scan both folders (cur/, new/) on startup or sup-sync.  After that,
+> scan only new.  Since mail is moved out of new/ into cur/ after
+> detection, the time stamp stuff could be dropped since it would be
+> redundant anyway.
+
+Crap, I think you're right. Polling will be trivial and no more messing
+around with timestamps.
+
+In fact I don't even have to scan cur/ on startup; I can just assume
+it's unchanged. If you screw with the Maildir via another MUA you have
+to run sup-sync --changed, just like with every other source.
+
+For this to work, the "offset" for each message will have to be its
+filename. I wonder how many implicit assumptions that will violate.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Mon May  4 13:24:10 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 4 May 2009 13:24:10 -0400
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <20090504165224.GA15815@cabinet.hsd1.ma.comcast.net>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+	<20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+	<a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+	<1241038730-sup-2939@entry>
+	<20090429233820.GA14143@cabinet.hsd1.ma.comcast.net>
+	<1241451919-sup-8970@entry>
+	<20090504165224.GA15815@cabinet.hsd1.ma.comcast.net>
+Message-ID: <a412e2a70905041024k3b2469e6v5e13d00177a23550@mail.gmail.com>
+
+On Mon, May 4, 2009 at 12:52 PM, Marc Hartstein
+<marc.hartstein at alum.vassar.edu> wrote:
+> On Mon, May 04, 2009 at 09:10:23AM -0700, William Morgan wrote:
+>> I think the collisions we are seeing are due to timestamp granularity.
+>> A little research suggests that e.g. ext2fs ctimes are 1-second
+>> granular. It seems quite easy to get more than one email per second.
+>
+> It does, but as I mentioned somewhere in that email, the reference
+> implementation of maildir (qmail) says that it will only deliver one
+> message per second. ?However, I definitely concede that relying on this
+> behavior would be setting things up for something to go wrong down the
+> line.
+
+Just a data point: in my setup (postfix+procmail) I'm seeing multiple messages
+being delivered to the same maildir in the same second.  That was what
+motivated my patch.
+
+From bdwalton at gmail.com  Wed May  6 20:02:26 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Wed, 6 May 2009 20:02:26 -0400
+Subject: [sup-talk] sent source
+Message-ID: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+
+Hi All,
+
+I wanted to poll for thoughts on how to handle a generic mbox as the
+sent source.  My concern is how to deal with file locking...this is
+one of the nastier aspects of mbox files.
+
+The cop-out approach is to allow the user to select any mbox source
+configured as the outbox and admonish them not to use it for incoming
+mail too...that puts us in the same place as ~/.sup/sent.mbox is now.
+Doing this does open sup to user error though and the potential for
+trashed mboxes.
+
+The next option is to play with locks, but that's not straight forward
+at all.  Dovecot, as an example, allows a configuration knob for the
+admin to set the order in which the different mechanisms are used.
+This works as long as all of the mbox consumers use the same sequence.
+ There is still lots of room for error here (NFS, etc).
+
+Option 3 is to simply limit the mbox sent source to the SentLoader
+class which means that 'regular' mbox files available to the user
+can't be a destination for sent mail.
+
+None of these solutions is perfect, and all suck compared to their
+maildir or imap counterparts (I'm not even going to bother with
+ssh+mbox).  What do other 'suppers' think about this?
+
+Thanks
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From bdwalton at gmail.com  Wed May  6 23:11:09 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Wed, 6 May 2009 23:11:09 -0400
+Subject: [sup-talk] flexible sent (wip)
+Message-ID: <f96e0240905062011o51cf195bm24eb83ca60ef58d9@mail.gmail.com>
+
+Hi All,
+
+For those interested in the ability to store mail in places other than
+the sent.mbox file in the $SUP_BASE directory, you can see my work in
+progress by checking out the bw/flexible_sent branch available from:
+git://code.chass.utoronto.ca/bwalton-sup.git
+
+This code is branched from a very recent next on WIlliam's mainline.
+The present state of the code is working in my tests (I've played with
+IMAP and Maildir, but mbox is also a possibility if you're brave...see
+my previous message).  I haven't added the sup-config part yet, so
+you're still required to add a
+
+:sent_source: <some valid source uri>
+
+line to your config.yaml to enable it.
+
+You can setup a testing area (eg separate ferret index, config, etc)
+by running sup with SUP_BASE=/some/alternate/.sup/dir if you want to
+get a feel for it without touching your working setup.
+
+Comments and feedback are welcome.
+
+Thanks
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From flips at luminated.net  Thu May  7 06:38:47 2009
+From: flips at luminated.net (Filip Stokkeland)
+Date: Thu, 7 May 2009 12:38:47 +0200
+Subject: [sup-talk] IMAP questions (n00b) :)
+Message-ID: <24cc29320905070338u1e23c6d3sa78c20dd0da60b19@mail.gmail.com>
+
+Hi! I just discovered and started testing Sup. And it looks great!
+
+I tried browsing through some of the mailing list archives, and I
+found postings saying Sup does not sync back to IMAP(S). So I take it
+then, that when I mark mail as read or as spam, nothing happens on the
+IMAP server, but only in the local Sup index?
+
+And another thing. I have my main work email today sorted on the
+server, using Sieve, so I get new email sorted into 40 different IMAP
+folders. In Sup, can I get it to automatically fetch from all
+subscribed IMAP folders?
+
+Or maybe I should rather fetch all this email into my own local server
+using fetchmail or something and then either put it all in one big
+inbox or multiple mboxes locally and then add this as source?
+
+Best regards
+-- 
+Filip
+
+From flips at luminated.net  Thu May  7 07:58:02 2009
+From: flips at luminated.net (Filip Stokkeland)
+Date: Thu, 7 May 2009 13:58:02 +0200
+Subject: [sup-talk] /usr/bin/run-mailcap
+Message-ID: <24cc29320905070458g7b970ea4rbfcc469d6afc3a3d@mail.gmail.com>
+
+In Sup, installed on a RHEL 5.1 with EPEL, using gems, when I select
+f.ex. html attachments, I just get an error that view doesn't work and
+I get the plain text. A quick grep in the code reveals this:
+
+lib/sup/message-chunks.rb:      cmd = "/usr/bin/run-mailcap
+--action=view '#{@content_type}:#{path}' 2>/dev/null"
+
+I can't find run-mailcap on this RedHat installation. "yum
+whatprovides" didn't help and the mailcap package had no such file
+installed:
+
+# rpm -ql mailcap
+/etc/mailcap
+/etc/mime.types
+/usr/share/man/man4/mailcap.4.gz
+
+Maybe run-mailcap a Debian/Ubuntu thing?  (I'll be back on my regular
+ubuntu installation soon enough anyway, just using a lab machine right
+now.) In Mutt I don't believe I did anything except use my default
+.mailcap ...
+
+Cheers.
+-- 
+Filip
+
+From wmorgan-sup at masanjin.net  Thu May  7 09:07:32 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 May 2009 06:07:32 -0700
+Subject: [sup-talk] /usr/bin/run-mailcap
+In-Reply-To: <24cc29320905070458g7b970ea4rbfcc469d6afc3a3d@mail.gmail.com>
+References: <24cc29320905070458g7b970ea4rbfcc469d6afc3a3d@mail.gmail.com>
+Message-ID: <1241701545-sup-3821@entry>
+
+Reformatted excerpts from Filip Stokkeland's message of 2009-05-07:
+> Maybe run-mailcap a Debian/Ubuntu thing?  (I'll be back on my regular
+> ubuntu installation soon enough anyway, just using a lab machine right
+> now.) In Mutt I don't believe I did anything except use my default
+> .mailcap ...
+
+It could very well be a Debianism. Is there a good alternative for
+RedHat, or does Sup have to start manually parsing ~/.mailcap,
+/etc/mailcap/, etc?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May  7 09:23:33 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 May 2009 06:23:33 -0700
+Subject: [sup-talk] sent source
+In-Reply-To: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+References: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+Message-ID: <1241702060-sup-3211@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-06:
+> The next option is to play with locks, but that's not straight forward
+> at all.
+
+This is my favorite option, because sup-sync-back also has to do mbox
+locking, so I don't think we can avoid the issue in general.
+
+> Dovecot, as an example, allows a configuration knob for the admin to
+> set the order in which the different mechanisms are used.  This works
+> as long as all of the mbox consumers use the same sequence.  There is
+> still lots of room for error here (NFS, etc).
+
+Currently sup-sync-back just says, "hey, you can use this program
+/usr/bin/dotlockfile if you have it" and pushes the details of locking
+to that. I think that's at least a vaguely reasonable approach.  Ideally
+it would be more configurable, would fall back to other locking
+programs, etc., but I think it's significantly better than not doing any
+locking at all.
+
+(Eventually these two mbox writers should share the same locking code,
+but don't feel obligated to refactor as part of your patch if it's
+already getting too hairy.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May  7 09:12:31 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 May 2009 06:12:31 -0700
+Subject: [sup-talk] IMAP questions (n00b) :)
+In-Reply-To: <24cc29320905070338u1e23c6d3sa78c20dd0da60b19@mail.gmail.com>
+References: <24cc29320905070338u1e23c6d3sa78c20dd0da60b19@mail.gmail.com>
+Message-ID: <1241701676-sup-657@entry>
+
+Reformatted excerpts from Filip Stokkeland's message of 2009-05-07:
+> Hi! I just discovered and started testing Sup. And it looks great!
+
+Thanks!
+
+> I tried browsing through some of the mailing list archives, and I
+> found postings saying Sup does not sync back to IMAP(S). So I take it
+> then, that when I mark mail as read or as spam, nothing happens on the
+> IMAP server, but only in the local Sup index?
+
+That's correct. I'm not opposed to pushing those flags back to the IMAP
+server in principle, at least in batch mode (there's a tool that does
+that now for mbox, and I'm working on Maildir), but writing that code
+pretty low on my personal priority queue at the moment.
+
+> And another thing. I have my main work email today sorted on the
+> server, using Sieve, so I get new email sorted into 40 different IMAP
+> folders. In Sup, can I get it to automatically fetch from all
+> subscribed IMAP folders?
+
+There's not a good automatic way of doing this. If you can generate the
+list of folders, then you can run sup-add on each one.
+
+> Or maybe I should rather fetch all this email into my own local server
+> using fetchmail or something and then either put it all in one big
+> inbox or multiple mboxes locally and then add this as source?
+
+Current best practice for IMAP is to sync it locally with a program like
+offlineimap. That also speeds things up, e.g. when you open a thread
+with 100 messages, Sup wants to download them all at once, and IMAP is
+much slower than Maildir for that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Thu May  7 11:29:30 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 7 May 2009 11:29:30 -0400
+Subject: [sup-talk] /usr/bin/run-mailcap
+In-Reply-To: <1241701545-sup-3821@entry>
+References: <24cc29320905070458g7b970ea4rbfcc469d6afc3a3d@mail.gmail.com>
+	<1241701545-sup-3821@entry>
+Message-ID: <a412e2a70905070829w2725cf8dw7ab3c24158bd1bfc@mail.gmail.com>
+
+On Thu, May 7, 2009 at 9:07 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Filip Stokkeland's message of 2009-05-07:
+>> Maybe run-mailcap a Debian/Ubuntu thing? ?(I'll be back on my regular
+>> ubuntu installation soon enough anyway, just using a lab machine right
+>> now.) In Mutt I don't believe I did anything except use my default
+>> .mailcap ...
+>
+> It could very well be a Debianism. Is there a good alternative for
+> RedHat, or does Sup have to start manually parsing ~/.mailcap,
+> /etc/mailcap/, etc?
+
+For my Fedora 4 system, I found the run-mailcap script somewhere
+(I forget where now, but I probably used Google to find it), and manually
+installed it in /usr/bin.
+
+From bwalton at artsci.utoronto.ca  Thu May  7 09:21:21 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 07 May 2009 09:21:21 -0400
+Subject: [sup-talk] /usr/bin/run-mailcap
+In-Reply-To: <1241701545-sup-3821@entry>
+References: <24cc29320905070458g7b970ea4rbfcc469d6afc3a3d@mail.gmail.com>
+	<1241701545-sup-3821@entry>
+Message-ID: <1241702388-sup-6440@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Thu May 07 09:07:32 -0400 2009:
+> It could very well be a Debianism. Is there a good alternative for
+> RedHat, or does Sup have to start manually parsing ~/.mailcap,
+> /etc/mailcap/, etc?
+
+I just copied the script onto my box (rhel5.3) and it works fine.
+Maybe a config knob for those that can't stick it in /usr/bin (or a
+less hardcoded way of calling it to allow for $PATH).
+
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090507/5bc6dee1/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Thu May  7 17:57:22 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 07 May 2009 17:57:22 -0400
+Subject: [sup-talk] sent source
+In-Reply-To: <1241702060-sup-3211@entry>
+References: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+	<1241702060-sup-3211@entry>
+Message-ID: <1241733359-sup-131@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Thu May 07 09:23:33 -0400 2009:
+> Reformatted excerpts from Ben Walton's message of 2009-05-06:
+> > The next option is to play with locks, but that's not straight forward
+> > at all.
+> 
+> This is my favorite option, because sup-sync-back also has to do mbox
+> locking, so I don't think we can avoid the issue in general.
+
+Ok.  This is the direction I'll go.  This will be the most difficult
+part of the whole thing.
+
+> Currently sup-sync-back just says, "hey, you can use this program
+> /usr/bin/dotlockfile if you have it" and pushes the details of locking
+> to that. I think that's at least a vaguely reasonable approach.  Ideally
+> it would be more configurable, would fall back to other locking
+> programs, etc., but I think it's significantly better than not doing any
+> locking at all.
+
+Wouldn't it be nicer to handle this internally?
+
+> (Eventually these two mbox writers should share the same locking code,
+> but don't feel obligated to refactor as part of your patch if it's
+> already getting too hairy.)
+
+Ok.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090507/9dcc7d13/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Thu May  7 18:01:16 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 07 May 2009 18:01:16 -0400
+Subject: [sup-talk] flexible sent source (update)
+Message-ID: <1241733502-sup-26@ntdws12.chass.utoronto.ca>
+
+
+Hi All,
+
+I've pushed a few new changes to the bw/flexible_sent branch at
+git://code.chass.utoronto.ca/bwalton-sup.git.  It is now possible to
+use sup-config to choose which (valid) mail source to store messages
+in and I tweaked how the special sent label is applied.
+
+I'd appreciate it if those interested in the topic played with this
+branch.  William, I'd also appreciate any feedback you have on it at
+this point.  (Do you mind pulling my branch, or would you prefer a
+git-send-email stack of patches?)
+
+I still need to tackle mbox locking...
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090507/b2a65479/attachment.bin>
+
+From andrew at pimlott.net  Fri May  8 12:42:26 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Fri, 8 May 2009 09:42:26 -0700
+Subject: [sup-talk] sup-sync dies; memory limit?
+Message-ID: <20090508164226.GA28854@pimlott.net>
+
+I have been running sup-sync on a new mailbox, and it tends to get
+partway through and then die, but not in the same place each time.
+Twice, the error has been like
+
+/var/lib/gems/1.8/gems/sup-0.7/lib/sup/crypto.rb:162:in ``': Cannot allocate memory - /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --use-agent --verify /tmp/28751-0-redwood.signature /tmp/28751-0-redwood.payload 2> /dev/null (Errno::ENOMEM)
+
+followed by a backtrace.  Another time, it was just
+
+zsh: killed     /var/lib/gems/1.8/bin/sup-sync --all-sources
+
+I monitored the sup-sync process the last time.  It's memory use grew
+slowly, and the process died at around 64M of virtual memory.  I don't
+have any memory limits set.  Is it possible that sup-sync or ruby uses
+some itself?  Any other ideas?
+
+Andrew
+
+From bwalton at artsci.utoronto.ca  Fri May  8 22:10:55 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 08 May 2009 22:10:55 -0400
+Subject: [sup-talk] sent source
+In-Reply-To: <1241702060-sup-3211@entry>
+References: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+	<1241702060-sup-3211@entry>
+Message-ID: <1241834800-sup-1443@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Thu May 07 09:23:33 -0400 2009:
+> Currently sup-sync-back just says, "hey, you can use this program
+> /usr/bin/dotlockfile if you have it" and pushes the details of locking
+> to that. I think that's at least a vaguely reasonable approach.  Ideally
+> it would be more configurable, would fall back to other locking
+> programs, etc., but I think it's significantly better than not doing any
+> locking at all.
+
+...Ok, what about implementing the dotlockfile functionality inside a
+LockManager singleton?  I'm thinking about something that would accept
+a list of required locks before allowing read and write.  It would
+then provide with_readlock(file, &block) and with_writelock(file,
+&block) methods that obtain required locks and yield to the caller to
+do the actual work.
+
+> (Eventually these two mbox writers should share the same locking code,
+> but don't feel obligated to refactor as part of your patch if it's
+> already getting too hairy.)
+
+sup-sync-back could make use of this LockManager too.
+
+Thoughts?
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090508/8b72cea9/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Sat May  9 09:01:04 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 09 May 2009 06:01:04 -0700
+Subject: [sup-talk] sent source
+In-Reply-To: <1241834800-sup-1443@ntdws12.chass.utoronto.ca>
+References: <f96e0240905061702m43899549p5ea53b5b6c478b02@mail.gmail.com>
+	<1241702060-sup-3211@entry>
+	<1241834800-sup-1443@ntdws12.chass.utoronto.ca>
+Message-ID: <1241873892-sup-9543@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-08:
+> ...Ok, what about implementing the dotlockfile functionality inside a
+> LockManager singleton?  I'm thinking about something that would accept
+> a list of required locks before allowing read and write.  It would
+> then provide with_readlock(file, &block) and with_writelock(file,
+> &block) methods that obtain required locks and yield to the caller to
+> do the actual work.
+
+That sounds good to me and is very much in the spirit of the current Sup
+codebase. I'd like to also have a non-yield mechanism (e.g. #lock and
+#unlock methods), similar to the interface Mutex exposes, because
+sometimes it's irritating to use the block form, but that's icing on the
+cake.
+
+> sup-sync-back could make use of this LockManager too.
+
+Yes, definitely they should all share the same code path.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From andrew at pimlott.net  Mon May 11 14:26:15 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Mon, 11 May 2009 11:26:15 -0700
+Subject: [sup-talk] sup-sync dies; memory limit?
+In-Reply-To: <20090508164226.GA28854@pimlott.net>
+References: <20090508164226.GA28854@pimlott.net>
+Message-ID: <20090511182615.GI28854@pimlott.net>
+
+I forgot to mention, this was the latest release (0.7) installed with
+gem.  I just tried the current git mainline (clearing all my .sup state
+first), and it got through my whole mailbox without a problem.
+
+Andrew
+
+On Fri, May 08, 2009 at 09:42:26AM -0700, Andrew Pimlott wrote:
+> I have been running sup-sync on a new mailbox, and it tends to get
+> partway through and then die, but not in the same place each time.
+> Twice, the error has been like
+> 
+> /var/lib/gems/1.8/gems/sup-0.7/lib/sup/crypto.rb:162:in ``': Cannot allocate memory - /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --use-agent --verify /tmp/28751-0-redwood.signature /tmp/28751-0-redwood.payload 2> /dev/null (Errno::ENOMEM)
+> 
+> followed by a backtrace.  Another time, it was just
+> 
+> zsh: killed     /var/lib/gems/1.8/bin/sup-sync --all-sources
+> 
+> I monitored the sup-sync process the last time.  It's memory use grew
+> slowly, and the process died at around 64M of virtual memory.  I don't
+> have any memory limits set.  Is it possible that sup-sync or ruby uses
+> some itself?  Any other ideas?
+> 
+> Andrew
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From wmorgan-sup at masanjin.net  Tue May 12 13:19:48 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 May 2009 10:19:48 -0700
+Subject: [sup-talk] sup-sync dies; memory limit?
+In-Reply-To: <20090511182615.GI28854@pimlott.net>
+References: <20090508164226.GA28854@pimlott.net>
+	<20090511182615.GI28854@pimlott.net>
+Message-ID: <1242148438-sup-9068@entry>
+
+Reformatted excerpts from Andrew Pimlott's message of 2009-05-11:
+> On Fri, May 08, 2009 at 09:42:26AM -0700, Andrew Pimlott wrote:
+> > I don't have any memory limits set.  Is it possible that sup-sync or
+> > ruby uses some itself?  Any other ideas?
+
+Very mysterious. Sup-sync doesn't do anything fancy with memory; it's a
+fairly straight-forward Ruby script. Maybe one of the C extensions (like
+Ferret) has a memory leak.
+
+> I forgot to mention, this was the latest release (0.7) installed with
+> gem.  I just tried the current git mainline (clearing all my .sup
+> state first), and it got through my whole mailbox without a problem.
+
+Evey more mysterious. The differences between these two versions are
+trivial:
+
+diff --git a/origin/release-0.7:bin/sup-sync b/origin/master:bin/sup-sync
+index ac5caf6..91710d4 100644
+--- a/origin/release-0.7:bin/sup-sync
++++ b/origin/master:bin/sup-sync
+@@ -143,12 +143,7 @@ begin
+       next if target == :changed && entry && entry[:source_id].to_i == source.id && entry[:source_info].to_i == offset
+ 
+       ## get the state currently in the index
+-      index_state =
+-        if entry
+-          entry[:label].split(/\s+/).map { |x| x.intern }
+-        else
+-          nil
+-        end
++      index_state = entry[:label].split(/\s+/).map { |x| x.intern } if entry
+ 
+       ## skip if we're operating on restored messages, and this one
+       ## ain't.
+@@ -163,7 +158,7 @@ begin
+       ## assign message labels based on the operation we're performing
+       case op
+       when :asis
+-        m.labels = index_state if index_state
++        m.labels = ((m.labels - [:unread, :inbox]) + index_state).uniq if index_state
+       when :restore
+         ## if the entry exists on disk
+         if restored_state[m.id]
+
+
+I'm at a loss.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From andrew at pimlott.net  Tue May 12 14:31:58 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Tue, 12 May 2009 11:31:58 -0700
+Subject: [sup-talk] sup-sync dies; memory limit?
+In-Reply-To: <1242148438-sup-9068@entry>
+References: <20090508164226.GA28854@pimlott.net>
+	<20090511182615.GI28854@pimlott.net> <1242148438-sup-9068@entry>
+Message-ID: <20090512183158.GO28854@pimlott.net>
+
+On Tue, May 12, 2009 at 10:19:48AM -0700, William Morgan wrote:
+> Reformatted excerpts from Andrew Pimlott's message of 2009-05-11:
+> > On Fri, May 08, 2009 at 09:42:26AM -0700, Andrew Pimlott wrote:
+> > > I don't have any memory limits set.  Is it possible that sup-sync or
+> > > ruby uses some itself?  Any other ideas?
+> 
+> Very mysterious.
+
+I cannot reproduce the problem anymore, but as far as I know, nothing
+changed on my system (other than the inbox I am testing with evolving
+routinely).  sup-sync from the 0.7 gem now runs to completion and never
+uses more than ~36M virtual memory (before it got up around 60M before
+crashing).  It doesn't seem possible that the git copy of sup affected
+the installed gem.  So I'm at a complete loss too.  
+
+Andrew
+
+From wmorgan-sup at masanjin.net  Tue May 12 15:54:35 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 May 2009 12:54:35 -0700
+Subject: [sup-talk] sup-sync dies; memory limit?
+In-Reply-To: <20090512183158.GO28854@pimlott.net>
+References: <20090508164226.GA28854@pimlott.net>
+	<20090511182615.GI28854@pimlott.net> <1242148438-sup-9068@entry>
+	<20090512183158.GO28854@pimlott.net>
+Message-ID: <1242158027-sup-1409@entry>
+
+Reformatted excerpts from Andrew Pimlott's message of 2009-05-12:
+> It doesn't seem possible that the git copy of sup affected the
+> installed gem.  So I'm at a complete loss too.  
+
+Let's just pretend this never happened.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From damon.conway at alchemysystems.com  Tue May 12 13:18:45 2009
+From: damon.conway at alchemysystems.com (Damon Conway)
+Date: Tue, 12 May 2009 12:18:45 -0500
+Subject: [sup-talk] sup crash when doing search
+Message-ID: <1242148324-sup-9511@case>
+
+
+I installed the chronic gem with "sudo gem install chronic", and then tried a search by date.
+
+I did "before:(1st apr)" in a global search, and sup crashed.  I have included the exception log below.
+My guess is that I'm missing a gem, but I'm not quite sure which one.  I just installed sup yesterday
+after I found it when looking around for any news on imap support in nmh so it's very likely that I've
+missed something.
+
+So far sup is quite impressive.  Keep up the good work, and thanks for the mail client.
+
+Thanks,
+Damon
+
+Some system details:
+	Ubuntu 9.04
+	Dell XPS 1210
+	ruby 1.8.7 (2008-08-11 patchlevel 72) [i486-linux]
+	gnome-terminal 2.26.0
+	Screen version 4.00.03jw4 (FAU) 2-May-06
+
+--- NoMethodError from thread: main
+private method `gsub' called for nil:NilClass
+/var/lib/gems/1.8/gems/sup-0.7/lib/sup/index.rb:568:in `parse_user_query_string'
+/var/lib/gems/1.8/gems/sup-0.7/lib/sup/util.rb:499:in `send'
+/var/lib/gems/1.8/gems/sup-0.7/lib/sup/util.rb:499:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.7/lib/sup/modes/search-results-mode.rb:29:in `spawn_from_query'
+/var/lib/gems/1.8/gems/sup-0.7/bin/sup:239
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+From andrew at pimlott.net  Tue May 12 19:33:03 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Tue, 12 May 2009 16:33:03 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+Message-ID: <20090512233303.GU28854@pimlott.net>
+
+I'm making my second try at switching to sup (though the first was
+pretty half-assed).  I'm in that state where too many things are
+happening that I don't understand, so I need some clarification on how
+things are supposed to work.  I'm using the mainline as of a few days
+ago, where the last checkin is may 4.
+
+There seem to be serious consistency issues.  For example, I applied a
+label "cal" to a thread.  I press "L" to list labels, and it's not
+there.  I sync the mailbox, unsure if this is needed.  (It shouldn't be,
+of course--if it is, I hope this is intended to be fixed, perhaps with
+the undo work.)  Now, "cal" shows up in the label list, but with a
+message count less than the number I labeled.  At some point down the
+line, after more activity, it gets the count right.
+
+Similarly, I have now a mailbox in which I deleted a thread of 2
+messages, then added a reply to that mailbox (from outside sup).  In my
+inbox, I only see the reply, and the labels are "inbox".  Shouldn't the
+thread always "stick together"?  If I switch to the "deleted" label, I
+see the expected thread of three messages, but on all three the labels
+are "deleted, inbox".  I had another case recently in all messages in a
+thread had labels "deleted, inbox", but the thread still showed up in my
+inbox.  Any idea what's going on?
+
+Andrew
+
+From ezyang at MIT.EDU  Wed May 13 01:23:49 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 13 May 2009 01:23:49 -0400
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <20090513042345.GB18461@cabinet.hsd1.ma.comcast.net>
+References: <20090512233303.GU28854@pimlott.net>
+	<20090513042345.GB18461@cabinet.hsd1.ma.comcast.net>
+Message-ID: <1242192198-sup-9446@javelin>
+
+Excerpts from marc.hartstein's message of Wed May 13 00:23:45 -0400 2009:
+> 'deleted' means "don't show this to me even if there are new messages in
+> the thread.
+
+I was under the impression that "killing" a thread was what did that?
+
+Cheers,
+Edward
+
+From marcus-sup at bar-coded.net  Wed May 13 03:14:12 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 08:14:12 +0100
+Subject: [sup-talk] sup crash when doing search
+In-Reply-To: <1242148324-sup-9511@case>
+References: <1242148324-sup-9511@case>
+Message-ID: <1242198767-sup-3140@tomsk>
+
+On 12.5.2009, Damon Conway wrote:
+> I did "before:(1st apr)" in a global search, and sup crashed.  I have included
+> the exception log below.
+
+I can reproduce this, although this used to work. Not sure whats
+happening offhand but I'll poke around and see if I can fix it.
+
+Marcus
+
+From marcus-sup at bar-coded.net  Wed May 13 04:50:24 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 09:50:24 +0100
+Subject: [sup-talk] sup crash when doing search
+In-Reply-To: <1242198767-sup-3140@tomsk>
+References: <1242148324-sup-9511@case> <1242198767-sup-3140@tomsk>
+Message-ID: <1242204467-sup-6823@tomsk>
+
+On 13.5.2009, I wrote:
+> I can reproduce this, although this used to work. Not sure whats
+> happening offhand but I'll poke around and see if I can fix it.
+
+Ok, the crash doesnt happen in master only in next. The reason for the
+crash is the new "limit" search option that doesnt check if chronic
+has failed. Patch for that to follow (against next).
+
+Theres also another bug in that Chronic should default to date
+searches in the past as email is almost always dated earlier than your
+current time (except spam). So theres a patch for that following as
+well (against master)
+
+Marcus
+
+From marcus-sup at bar-coded.net  Wed May 13 05:00:31 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 10:00:31 +0100
+Subject: [sup-talk] [PATCH] limit option parser nil check
+Message-ID: <1242205071-sup-2484@tomsk>
+
+The limit search option doesnt check if the current search term is nil
+(when chronic has failed for instance). This patch (against next) adds
+the check.
+---
+ lib/sup/index.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index c66a24e..4ebc966 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -584,7 +584,7 @@ protected
+         BufferManager.flash "Can't understand limit #{lim.inspect}!"
+         subs = nil
+       end
+-    end
++    end unless subs.nil?
+     
+     if subs
+       [@qparser.parse(subs), extraopts]
+-- 
+1.5.4.1
+
+From marcus-sup at bar-coded.net  Wed May 13 05:02:31 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 10:02:31 +0100
+Subject: [sup-talk] [PATCH] Chronic context fix
+Message-ID: <1242205240-sup-5042@tomsk>
+
+Chronic should use a context of :past for email date searches as emails
+tend to be in the past. This fixes a problem when the wrong year is
+guessed. To search for emails in the future you now need to be less
+ambiguous (1 apr 2099 instead of 1 apr).
+---
+ lib/sup/index.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 235a18c..779bf02 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -506,7 +506,7 @@ protected
+       subs = subs.gsub(/\b(before|on|in|during|after):(\((.+?)\)\B|(\S+)\b)/) do
+         break if chronic_failure
+         field, datestr = $1, ($3 || $4)
+-        realdate = Chronic.parse(datestr, :guess => false, :context => :none)
++        realdate = Chronic.parse(datestr, :guess => false, :context => :past)
+         if realdate
+           case field
+           when "after"
+-- 
+1.5.4.1
+
+From marcus-sup at bar-coded.net  Wed May 13 05:31:36 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 10:31:36 +0100
+Subject: [sup-talk] sup crash when doing search
+In-Reply-To: <1242204467-sup-6823@tomsk>
+References: <1242148324-sup-9511@case> <1242198767-sup-3140@tomsk>
+	<1242204467-sup-6823@tomsk>
+Message-ID: <1242207018-sup-4894@tomsk>
+
+On 13.5.2009, I wrote:
+> Theres also another bug in that Chronic should default to date
+> searches in the past as email is almost always dated earlier than your
+> current time (except spam). So theres a patch for that following as
+> well (against master)
+
+I should also have added that chronic doesnt understand dates like
+"1st apr" strangely, but it should have told you (the patches fix this
+problem). "1 apr", "apr 1st" are ok I think.
+
+Marcus
+
+From henri.ducrocq at gmail.com  Wed May 13 07:37:04 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Wed, 13 May 2009 12:37:04 +0100
+Subject: [sup-talk] Notification tools
+Message-ID: <1242213878-sup-4217@ptoseis>
+
+(First of alli: Thanks William for that very gorgeous piece of software!)
+
+I would like to use mail-notification (or an equivalent) to display the status of
+my inbox in my system tray, I mean the number of unread emails.
+But of course that program isn't aware of what messages have been read inside sup.
+
+What can I do to fix this? I thought about having the after-poll hook dump all new
+messages into a dummy mbox file, which would be monitored by mail-notification..
+But there must be a simpler way?
+
+From andrew at pimlott.net  Wed May 13 10:53:11 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Wed, 13 May 2009 07:53:11 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <20090513042345.GB18461@cabinet.hsd1.ma.comcast.net>
+References: <20090512233303.GU28854@pimlott.net>
+	<20090513042345.GB18461@cabinet.hsd1.ma.comcast.net>
+Message-ID: <20090513145311.GX28854@pimlott.net>
+
+On Wed, May 13, 2009 at 12:23:45AM -0400, Marc Hartstein wrote:
+> 'deleted' means "don't show this to me even if there are new messages in
+> the thread.
+
+Is this the intended behavior?  Unfortunately, I'm seeing several
+variations.  I have a thread now, which I deleted then added a new
+message to, and some but not all of the previously deleted messages are
+back in my inbox.  If I quit sup and restart, only the new message is in
+my inbox.  As I said, the labels shown in the message headers are
+inconsistent as well.  In this case, both the deleted messages and the
+new message had the deleted label, which contradicts them showing up in
+my inbox.  After a quit and restart, the new message loses the deleted
+label when viewed from my inbox.  But if I do a label search for
+deleted, the whole thread is there--and even the new message has the
+deleted label.
+
+Andrew
+
+From marcus-sup at bar-coded.net  Wed May 13 11:28:06 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 13 May 2009 16:28:06 +0100
+Subject: [sup-talk] Strange problem in before-edit hook
+Message-ID: <1242228484-sup-2569@tomsk>
+
+The automatic setting of the from address on a reply works really well
+in sup, but I've been trying to get new emails do something similar
+with the hook mechanism.
+
+I've got the before-edit hook to do set my from address by picking up
+the previously used from address from a search using the sent label.
+Basically this means if I send a new email to someone using a specific
+from address, it picks up my last used from address as the default the
+next time I send them an email.  This saves having to write something
+specific for every email/domain I send to.
+
+It works really well but I get the odd crash in the hook because the
+header['To'] sometimes is an array rather than the expected string.
+I've got around this by doing a to_s on the header but I cant figure
+out why I'd ever get an array. Anyone got any ideas?
+
+Heres the hook:
+
+### start of before-edit
+fr = nil
+emailto = ""
+
+hdrto = header["To"].to_s
+
+hdrto.split(' ').find() { |e| e.include?("@") }.each() do |ee| 
+    if ee.include?("<")
+        emailto = ee[1..-2] 
+    else 
+        emailto = ee 
+    end 
+end
+
+Index.index.search_each("to:\"#{emailto}\" AND label:sent") { |id, score| m = Index.build_message(id); fr = m.from }
+
+header["From"] = fr.full_address unless fr.nil?
+header["Return-Path"] = header["From"]
+### end of before-edit
+
+From wmorgan-sup at masanjin.net  Wed May 13 14:11:10 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 May 2009 11:11:10 -0700
+Subject: [sup-talk] flexible sent source (update)
+In-Reply-To: <1241733502-sup-26@ntdws12.chass.utoronto.ca>
+References: <1241733502-sup-26@ntdws12.chass.utoronto.ca>
+Message-ID: <1242238048-sup-6168@entry>
+
+Hi Ben,
+
+Reformatted excerpts from Ben Walton's message of 2009-05-07:
+> I'd appreciate it if those interested in the topic played with this
+> branch.  William, I'd also appreciate any feedback you have on it at
+> this point.  (Do you mind pulling my branch, or would you prefer a
+> git-send-email stack of patches?)
+
+This branch looks great. Thanks! We're going to have to rebase it
+against master before merging in, but I think that will be easier once I
+merge a few other branches down from next to master.
+
+> I still need to tackle mbox locking...
+
+This is puntable for now, if we make it clear to the user that their
+sent box shouldn't also receive mail.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Wed May 13 14:50:23 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 13 May 2009 14:50:23 -0400
+Subject: [sup-talk] flexible sent source (update)
+In-Reply-To: <1242238048-sup-6168@entry>
+References: <1241733502-sup-26@ntdws12.chass.utoronto.ca>
+	<1242238048-sup-6168@entry>
+Message-ID: <1242240494-sup-9505@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed May 13 14:11:10 -0400 2009:
+> Reformatted excerpts from Ben Walton's message of 2009-05-07:
+> > I'd appreciate it if those interested in the topic played with this
+> > branch.  William, I'd also appreciate any feedback you have on it at
+> > this point.  (Do you mind pulling my branch, or would you prefer a
+> > git-send-email stack of patches?)
+> 
+> This branch looks great. Thanks! We're going to have to rebase it
+> against master before merging in, but I think that will be easier once I
+> merge a few other branches down from next to master.
+
+Ok.  I can do that when you're ready.
+
+> > I still need to tackle mbox locking...
+> 
+> This is puntable for now, if we make it clear to the user that their
+> sent box shouldn't also receive mail.
+
+Well, I'm working on it (slowly) already.  It shouldn't be as bad as
+I'd initially thought it would be.  The lockfile library should handle
+the needs for the dotlocking, and I'll add some fcntl and flock
+support too, so that it's "stackable" in a similar fashion to the way
+dovecot works.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090513/bbdf512e/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Wed May 13 14:54:53 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 May 2009 11:54:53 -0700
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242213878-sup-4217@ptoseis>
+References: <1242213878-sup-4217@ptoseis>
+Message-ID: <1242239740-sup-8633@entry>
+
+Reformatted excerpts from Henri Ducrocq's message of 2009-05-13:
+> (First of alli: Thanks William for that very gorgeous piece of
+> software!)
+
+Glad you find it useful!
+
+> I would like to use mail-notification (or an equivalent) to display
+> the status of my inbox in my system tray, I mean the number of unread
+> emails.  But of course that program isn't aware of what messages have
+> been read inside sup.
+
+Sounds great. I'd love to have that too.
+
+> What can I do to fix this? I thought about having the after-poll hook
+> dump all new messages into a dummy mbox file, which would be monitored
+> by mail-notification..  But there must be a simpler way?
+
+Having now read the mail-notification manpage... the problem is
+mail-notification. It should provide a way for other apps to signal a
+notification (the whole Unix philosophy of decomposability, etc.) but it
+does not.
+
+Periodically dumping all new messages into a dummy mbox file is a
+terrible idea, but I think that's your only Sup-specific option.
+Patching mail-notification is a better idea, though that may not be what
+you want to hear.
+
+If you're using a recent Gnome, you have some other options. If you're
+running notification-daemon (e.g. Ubuntu 9.04), you can install the
+libnotify-bin package and having the after-poll hook call notify-bin on
+new email. (Not quite the same.) You can also look at the
+indicator-applet: libindicate also has Python bindings, so you could
+install python-indicate and write a python short program to use that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 13 14:55:28 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 May 2009 11:55:28 -0700
+Subject: [sup-talk] flexible sent source (update)
+In-Reply-To: <1242238048-sup-6168@entry>
+References: <1241733502-sup-26@ntdws12.chass.utoronto.ca>
+	<1242238048-sup-6168@entry>
+Message-ID: <1242240924-sup-7948@entry>
+
+Oh yeah:
+
+Reformatted excerpts from William Morgan's message of 2009-05-13:
+> Reformatted excerpts from Ben Walton's message of 2009-05-07:
+> > (Do you mind pulling my branch, or would you prefer a git-send-email
+> > stack of patches?)
+
+I'm perfectly happy to pull from your branch.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 13 16:55:51 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 May 2009 13:55:51 -0700
+Subject: [sup-talk] "interning empty string" from sup-sync
+In-Reply-To: <20090513190821.GC18461@cabinet.hsd1.ma.comcast.net>
+References: <20090513190821.GC18461@cabinet.hsd1.ma.comcast.net>
+Message-ID: <1242248081-sup-5132@entry>
+
+Reformatted excerpts from Marc Hartstein's message of 2009-05-13:
+> /home/magus/src/sup/bin/sup-sync:159:in `intern': interning empty string
+> (ArgumentError)
+>         from /home/magus/src/sup/bin/sup-sync:159
+
+That's a bug. Turns out String#split doesn't exactly behave how I
+thought:
+
+$ irb
+>> " a  b c ".split
+=> ["a", "b", "c"]
+>> " a  b c ".split(/\s+/)
+=> ["", "a", "b", "c"]
+
+I've fixed this in next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 13 21:52:14 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 13 May 2009 18:52:14 -0700
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242261120-sup-2999@cabinet>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet>
+Message-ID: <1242265757-sup-2754@entry>
+
+Reformatted excerpts from Marc Hartstein's message of 2009-05-13:
+> Has anybody done anything like this?  Any code snippets?
+
+I really need to clean up the code so that all of Sup's special query
+parsing (chronic, contact aliases, etc.) is accessible, but you can do
+simple queries directly through the Ferret API with a script like:
+
+  require 'sup'
+  i = Redwood::Index.new
+  i.load
+  puts "total unread: " + i.ferret.search("label:unread").total_hits
+  puts "inbox unread: " + i.ferret.search("label:unread AND label:inbox").total_hits
+
+That gets you the number of messages, not the number of threads. (Sup
+doesn't store the latter.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marcus-sup at bar-coded.net  Thu May 14 04:37:38 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Thu, 14 May 2009 09:37:38 +0100
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242273707-sup-1213@cabinet>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+	<1242273707-sup-1213@cabinet>
+Message-ID: <1242290067-sup-3675@tomsk>
+
+On 14.5.2009, Marc Hartstein wrote:
+> Although, I just tried this (I seem to have had to append .to_s to each
+> of the total_hits), and it works, but all my results are exactly 15
+> greater than the relevant numbers I see if I go into the label menu with
+> <L><Enter>.  Any idea what might cause that?
+
+I think the Sup version will by default not include killed or deleted
+messages so that might be whats causing it.
+
+Marcus
+
+From nicolas.pouillard at gmail.com  Thu May 14 09:04:44 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 14 May 2009 15:04:44 +0200
+Subject: [sup-talk] Notification tools
+In-Reply-To: <391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+Message-ID: <1242305907-sup-1542@ausone.inria.fr>
+
+Excerpts from Henri Ducrocq's message of Thu May 14 02:23:00 +0200 2009:
+> On Wed, May 13, 2009 at 7:54 PM, William Morgan <wmorgan-sup at masanjin.net>wrote:
+> 
+> > Periodically dumping all new messages into a dummy mbox file is a
+> > terrible idea, but I think that's your only Sup-specific option.
+> > Patching mail-notification is a better idea, though that may not be what
+> > you want to hear.
+> 
+> 
+> It isn't :)
+> 
+> > If you're using a recent Gnome, you have some other options. If you're
+> > running notification-daemon (e.g. Ubuntu 9.04), you can install the
+> > libnotify-bin package and having the after-poll hook call notify-bin on
+> > new email. (Not quite the same.) You can also look at the
+> > indicator-applet: libindicate also has Python bindings, so you could
+> > install python-indicate and write a python short program to use that.
+> 
+> 
+> I don't use Gnome or KDE (or anything really.)
+> Re. the notification-daemon tip, that's what I'm doing already (via a python
+> script of mine, I didn't know about notify-bin!), but sure it isn't the
+> same.
+> What I might do: Have after-poll dump the number of unread messages into a
+> file,
+> and display that value in my dzen status bar. It might be good enough.
+
+I'm doing something quite similar:
+
+I have a status-bar-text hook.
+
+$ cat ~/.sup/hooks/status-bar-text.rb
+dir = ENV['HOME']+'/.sup/'
+state_new = dir+'state.new'
+File.open(state_new, 'w') do |f|
+  f.puts "SupState { sup_num_inbox_unread = #{num_inbox_unread} }"
+end
+File.rename(state_new, dir+'state') rescue nil
+nil
+
+Then I have tweaked my xmonad config to inject the contents of this
+file in my dzen bar.
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+
+From manselton at googlemail.com  Fri May 15 13:37:08 2009
+From: manselton at googlemail.com (Maurice McCarthy)
+Date: Fri, 15 May 2009 17:37:08 +0000
+Subject: [sup-talk] gmail login
+Message-ID: <8c09a1500905151037m351adedyefdde82c244e17c0@mail.gmail.com>
+
+Hi I'm a noob user and not a programmer. Thanks
+for your brilliant efforts. I've asked the grml
+team to include sup by default. http://grml.org
+They ought to love it as grml is a Debian based
+installable live distro for admins and geeks.
+
+The sup log tells me that when I log in to my
+gmail account it ends up logging in using
+plain text.
+
+Fri May 15 17:20:06 +0000 2009: CRAM-MD5 authentication failed:
+Net::IMAP::NoResponseError. Trying LOGIN auth...
+Fri May 15 17:20:06 +0000 2009: LOGIN authentication failed:
+Net::IMAP::NoResponseError. Trying plain-text LOGIN...
+Fri May 15 17:20:06 +0000 2009: Successfully connected to
+imaps://imap.googlemail.com:993/INBOX.
+
+Have I got something configured wrongly or am I
+really advertising my password to the world? Or
+is it going through a secure tunnel anyhow?
+
+Many Thanks in advance for your advice If
+pipermail had been searchable I'd have looked
+in the archives before bothering you. Sorry
+for the inconvenience if this has already been
+asked.
+
+Maurice
+
+
+-- 
+Best Wishes
+
+From bwalton at artsci.utoronto.ca  Fri May 15 13:57:38 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 15 May 2009 13:57:38 -0400
+Subject: [sup-talk] gmail login
+In-Reply-To: <8c09a1500905151037m351adedyefdde82c244e17c0@mail.gmail.com>
+References: <8c09a1500905151037m351adedyefdde82c244e17c0@mail.gmail.com>
+Message-ID: <1242409947-sup-5182@ntdws12.chass.utoronto.ca>
+
+Excerpts from Maurice McCarthy's message of Fri May 15 13:37:08 -0400 2009:
+> The sup log tells me that when I log in to my
+> gmail account it ends up logging in using
+> plain text.
+
+This is normal and just a part of a standard IMAP connection auth
+sequence.  Unless you've got kerberos enabled/SASL auth stuff in
+place, the standard IMAP auth options are all pretty nasty (pop3 is no
+better)...
+
+> Fri May 15 17:20:06 +0000 2009: CRAM-MD5 authentication failed:
+> Net::IMAP::NoResponseError. Trying LOGIN auth...
+> Fri May 15 17:20:06 +0000 2009: LOGIN authentication failed:
+> Net::IMAP::NoResponseError. Trying plain-text LOGIN...
+> Fri May 15 17:20:06 +0000 2009: Successfully connected to
+> imaps://imap.googlemail.com:993/INBOX.
+
+You still connected via an ssl secured connection, so even using
+horrible auth mechanisms like this, you're reasonably protected during
+transit.
+
+Looks good from here.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090515/3372a1e8/attachment.bin>
+
+From david.guibert at gmail.com  Fri May 15 08:41:33 2009
+From: david.guibert at gmail.com (David Guibert)
+Date: Fri, 15 May 2009 14:41:33 +0200
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242331711-sup-4976@cabinet>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+	<1242273707-sup-1213@cabinet> <1242290067-sup-3675@tomsk>
+	<1242331711-sup-4976@cabinet>
+Message-ID: <1242391055-sup-4644@orsine>
+
+Hi,
+
+>From Marc Hartstein:
+> Excerpts from Marcus Williams's message of Thu May 14 04:37:38 -0400 2009:
+> > On 14.5.2009, Marc Hartstein wrote:
+> > > Although, I just tried this (I seem to have had to append .to_s to each
+> > > of the total_hits), and it works, but all my results are exactly 15
+> > > greater than the relevant numbers I see if I go into the label menu with
+> > > <L><Enter>.  Any idea what might cause that?
+> > 
+> > I think the Sup version will by default not include killed or deleted
+> > messages so that might be whats causing it.
+> 
+> Deleted Unread messages accounted for 5 of the 15, but there are no
+> Killed, so the remaining 10 are still a mystery.
+
+Spam.
+
+I changed sup-biff to contain:
+
+#!/bin/bash
+
+ruby -I '~/src/sup/lib' <<EOF
+require 'sup'
+i = Redwood::Index.new
+i.load
+
+puts "total  spam +            unread: " + i.ferret.search("label:unread").total_hits.to_s
+puts "total !spam + !deleted + unread: " + i.ferret.search("!label:spam !label:deleted +label:unread").total_hits.to_s
+puts "inbox                    unread: " + i.ferret.search("!label:spam !label:deleted +label:inbox +label:unread").total_hits.to_s
+puts "inbox total:  " + i.ferret.search("!label:spam !label:deleted +label:inbox").total_hits.to_s
+EOF
+
+regards.
+-- 
+David
+
+From henri.ducrocq at gmail.com  Fri May 15 17:22:14 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Fri, 15 May 2009 22:22:14 +0100
+Subject: [sup-talk] Notification tools
+Message-ID: <1242422476-sup-9185@ptoseis>
+
+Excerpts from Nicolas Pouillard's message of Thu May 14 14:04:44 +0100 2009:
+> I have a status-bar-text hook.
+... 
+> Then I have tweaked my xmonad config to inject the contents of this
+> file in my dzen bar.
+
+But isn't status-bar-text only triggered by keystrokes?
+Anyways, I'm updating the file from after-poll.rb, it seems to work.
+Henri
+(oops, Nicolas you're gonna receive this email twice)
+
+-- 
+-- 
+Henri
+
+From kirr at landau.phys.spbu.ru  Sat May 16 11:01:14 2009
+From: kirr at landau.phys.spbu.ru (Kirill Smelkov)
+Date: Sat, 16 May 2009 19:01:14 +0400
+Subject: [sup-talk] [PATCH] chmod a+x bin/*
+Message-ID: <1242486074-5822-1-git-send-email-kirr@landau.phys.spbu.ru>
+
+The files in there are all executables, and this simplifies running sup
+in-tree.
+---
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100644 => 100755 bin/sup
+ mode change 100644 => 100755 bin/sup-add
+ mode change 100644 => 100755 bin/sup-config
+ mode change 100644 => 100755 bin/sup-dump
+ mode change 100644 => 100755 bin/sup-recover-sources
+ mode change 100644 => 100755 bin/sup-sync
+ mode change 100644 => 100755 bin/sup-sync-back
+ mode change 100644 => 100755 bin/sup-tweak-labels
+
+diff --git a/bin/sup b/bin/sup
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-add b/bin/sup-add
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-config b/bin/sup-config
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-dump b/bin/sup-dump
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-recover-sources b/bin/sup-recover-sources
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-sync b/bin/sup-sync
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-sync-back b/bin/sup-sync-back
+old mode 100644
+new mode 100755
+diff --git a/bin/sup-tweak-labels b/bin/sup-tweak-labels
+old mode 100644
+new mode 100755
+-- 
+1.6.3.9.g6345d
+
+From bwalton at artsci.utoronto.ca  Sat May 16 13:16:14 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 16 May 2009 13:16:14 -0400
+Subject: [sup-talk] [PATCH] chmod a+x bin/*
+In-Reply-To: <1242486074-5822-1-git-send-email-kirr@landau.phys.spbu.ru>
+References: <1242486074-5822-1-git-send-email-kirr@landau.phys.spbu.ru>
+Message-ID: <1242494144-sup-9441@ntdws12.chass.utoronto.ca>
+
+Excerpts from Kirill Smelkov's message of Sat May 16 11:01:14 -0400 2009:
+> The files in there are all executables, and this simplifies running sup
+> in-tree.
+'
++1
+
+I was about to do the same patch.
+
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090516/53fcd395/attachment.bin>
+
+From henri.ducrocq at gmail.com  Sun May 17 15:23:41 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Sun, 17 May 2009 20:23:41 +0100
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242391055-sup-4644@orsine>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+	<1242273707-sup-1213@cabinet> <1242290067-sup-3675@tomsk>
+	<1242331711-sup-4976@cabinet> <1242391055-sup-4644@orsine>
+Message-ID: <1242587689-sup-9833@ptoseis>
+
+I'm having a related problem, but this one is totally internal to Sup:
+After I read a new email, in most cases (possibly always, I can't say)
+the number of unread emails isn't decremented and stays at 1.
+I am talking about the number of unread messages shown on the labels
+page ('L' shortcut.)
+
+This is fixed by restarting Sup.
+
+I'm using the gem version of Sup, do I need to switch to the development
+branch?
+
+-- 
+Henri
+
+From wmorgan-sup at masanjin.net  Mon May 18 11:11:58 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 08:11:58 -0700
+Subject: [sup-talk] merge activity report
+Message-ID: <1242659511-sup-4534@entry>
+
+Just a brief status report.
+
+In next:
+
+- I've added some refinements to the undo code on the undo-manager
+  branch and merged that into next. If you're working on something
+  related to this code, you may need to rebase.
+
+- I've fixed the mbox "From " line detector to try and only split when a
+  valid date is encountered. (This is on branch various-mbox-fixes.)
+  This seems to work well for me, but who knows what crazy date formats
+  are out there. I have it logging a message whenever it finds a From
+  line and something that it can't parse as a date (and thus decides not
+  to split), so you may want to keep an eye on the log buffer if you're
+  using mbox. You can also add test cases to
+  tests/test_header_parsing.rb, in method test_from_line_splitting, if
+  you have a particular case you're worried about.
+
+In master:
+
+- I've merged a bunch of stable-seeming features down to master,
+  including the new buffer code, so you will have to retrain your
+  fingers to use '=' or '+' instead of ';', which now brings up the
+  buffer window.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 11:21:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 08:21:40 -0700
+Subject: [sup-talk] [PATCH] chmod a+x bin/*
+In-Reply-To: <1242486074-5822-1-git-send-email-kirr@landau.phys.spbu.ru>
+References: <1242486074-5822-1-git-send-email-kirr@landau.phys.spbu.ru>
+Message-ID: <1242660088-sup-2297@entry>
+
+Reformatted excerpts from Kirill Smelkov's message of 2009-05-16:
+> The files in there are all executables, and this simplifies running sup
+> in-tree.
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 11:22:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 08:22:11 -0700
+Subject: [sup-talk] [PATCH] Chronic context fix
+In-Reply-To: <1242205240-sup-5042@tomsk>
+References: <1242205240-sup-5042@tomsk>
+Message-ID: <1242660123-sup-512@entry>
+
+Reformatted excerpts from Marcus Williams's message of 2009-05-13:
+> Chronic should use a context of :past for email date searches as
+> emails tend to be in the past. This fixes a problem when the wrong
+> year is guessed. To search for emails in the future you now need to be
+> less ambiguous (1 apr 2099 instead of 1 apr).
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Mon May 18 13:19:46 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 18 May 2009 13:19:46 -0400
+Subject: [sup-talk] merge activity report
+In-Reply-To: <1242659511-sup-4534@entry>
+References: <1242659511-sup-4534@entry>
+Message-ID: <1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Mon May 18 11:11:58 -0400 2009:
+
+Let me know when you'd like the flexible sent stuff rebased and
+against which branch.  I'm ready with that any time.
+
+Still working on the locking stuff, which is proving quite
+interesting.
+
+Thanks
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090518/59f3b839/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon May 18 14:24:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 11:24:54 -0700
+Subject: [sup-talk] merge activity report
+In-Reply-To: <1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+References: <1242659511-sup-4534@entry>
+	<1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+Message-ID: <1242670748-sup-7451@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-18:
+> Let me know when you'd like the flexible sent stuff rebased and
+> against which branch.  I'm ready with that any time.
+
+Ok. It will have to be rebased against master, and probably should wait
+till I've merged down the scanning-speedups and various-mbox-fixes
+branches, to avoid unnecessary conflicts. (The former seems stable
+enough, but the latter I've just updated and needs a little more
+steeping.)
+
+> Still working on the locking stuff, which is proving quite
+> interesting.
+
+Glad to hear it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 14:26:10 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 11:26:10 -0700
+Subject: [sup-talk] [PATCH] limit option parser nil check
+In-Reply-To: <1242205071-sup-2484@tomsk>
+References: <1242205071-sup-2484@tomsk>
+Message-ID: <1242671123-sup-6919@entry>
+
+Reformatted excerpts from Marcus Williams's message of 2009-05-13:
+> The limit search option doesnt check if the current search term is nil
+> (when chronic has failed for instance). This patch (against next) adds
+> the check.
+
+I've reworked this code in the parser-user-query-fix branch, currently
+merged into next, and it should no longer require this fix.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 14:31:35 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 11:31:35 -0700
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242265757-sup-2754@entry>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+Message-ID: <1242671206-sup-2630@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-05-13:
+>   require 'sup'
+>   i = Redwood::Index.new
+>   i.load
+>   puts "total unread: " + i.ferret.search("label:unread").total_hits
+>   puts "inbox unread: " + i.ferret.search("label:unread AND
+> label:inbox").total_hits
+
+In the parser-user-query-fix branch (merged into next), you can now use
+Index.run_query, which takes a query and returns an array of doc ids.
+So you can now do this:
+
+  require 'sup'
+  i = Redwood::Index.new
+  i.load
+  puts "total unread: " + i.run_query("label:unread").size.to_s
+  puts "inbox unread: " + i.run_query("label:unread AND label:inbox").size.to_s
+
+which has the same effect as above, but now you should be able to pass
+in all the fancy options you can use on the search line (from:/to: with
+contacts, :limit, date options if you have chronic installed, etc).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 14:44:01 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 11:44:01 -0700
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242587689-sup-9833@ptoseis>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+	<1242273707-sup-1213@cabinet> <1242290067-sup-3675@tomsk>
+	<1242331711-sup-4976@cabinet> <1242391055-sup-4644@orsine>
+	<1242587689-sup-9833@ptoseis>
+Message-ID: <1242672174-sup-8915@entry>
+
+Reformatted excerpts from Henri Ducrocq's message of 2009-05-17:
+> I'm having a related problem, but this one is totally internal to Sup:
+> After I read a new email, in most cases (possibly always, I can't say)
+> the number of unread emails isn't decremented and stays at 1.  I am
+> talking about the number of unread messages shown on the labels page
+> ('L' shortcut.)
+
+Is this still the case after you save state with "$"?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 15:17:33 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 12:17:33 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <20090512233303.GU28854@pimlott.net>
+References: <20090512233303.GU28854@pimlott.net>
+Message-ID: <1242674066-sup-6463@entry>
+
+Reformatted excerpts from Andrew Pimlott's message of 2009-05-12:
+> There seem to be serious consistency issues.  For example, I applied a
+> label "cal" to a thread.  I press "L" to list labels, and it's not
+> there.
+
+Can you try this again? There was a bug with new labels, where they were
+disappearing from the label list under certain conditions (though not
+from the index).
+
+Note that that list only counts messages.
+
+> I sync the mailbox, unsure if this is needed.  (It shouldn't be, of
+> course--if it is, I hope this is intended to be fixed, perhaps with
+> the undo work.)
+
+Currently it is needed. It would be possible to avoid it, with some work
+(Sup has an event broadcast mechanism for things like this), though I
+think it will be difficult to maintain the "<label> AND unread" counts.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 18 15:19:49 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 18 May 2009 12:19:49 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <1242192198-sup-9446@javelin>
+References: <20090512233303.GU28854@pimlott.net>
+	<20090513042345.GB18461@cabinet.hsd1.ma.comcast.net>
+	<1242192198-sup-9446@javelin>
+Message-ID: <1242674270-sup-8612@entry>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-05-12:
+> Excerpts from marc.hartstein's message of Wed May 13 00:23:45 -0400 2009:
+> > 'deleted' means "don't show this to me even if there are new
+> > messages in the thread.
+> 
+> I was under the impression that "killing" a thread was what did that?
+
+Deleted messages don't show up under normal searches. (You have to
+explicitly add label:deleted). Killed threads show up in searches,
+just not in your inbox.
+
+Killing a thread means "I might find this conversation useful one day,
+but stop bugging me about it now."
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From henri.ducrocq at gmail.com  Mon May 18 16:03:55 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Mon, 18 May 2009 21:03:55 +0100
+Subject: [sup-talk] Notification tools
+In-Reply-To: <1242672174-sup-8915@entry>
+References: <1242213878-sup-4217@ptoseis> <1242239740-sup-8633@entry>
+	<391beaa80905131723k4b59090bi5bd541d97d1a75f2@mail.gmail.com>
+	<1242261120-sup-2999@cabinet> <1242265757-sup-2754@entry>
+	<1242273707-sup-1213@cabinet> <1242290067-sup-3675@tomsk>
+	<1242331711-sup-4976@cabinet> <1242391055-sup-4644@orsine>
+	<1242587689-sup-9833@ptoseis> <1242672174-sup-8915@entry>
+Message-ID: <1242676869-sup-9153@ptoseis>
+
+Excerpts from William Morgan's message of Mon May 18 19:44:01 +0100 2009:
+> Reformatted excerpts from Henri Ducrocq's message of 2009-05-17:
+> > I'm having a related problem, but this one is totally internal to Sup:
+> > After I read a new email, in most cases (possibly always, I can't say)
+> > the number of unread emails isn't decremented and stays at 1.  I am
+> > talking about the number of unread messages shown on the labels page
+> > ('L' shortcut.)
+> 
+> Is this still the case after you save state with "$"?
+
+Oops, I didn't know about "$"...
+All is working as expected now, thanks!
+
+-- 
+Henri
+
+From marka at pobox.com  Wed May 20 10:55:28 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 20 May 2009 07:55:28 -0700
+Subject: [sup-talk] Strange random changing of default colors
+Message-ID: <a412e2a70905200755n58df4ed2k77b9a1926d876ee@mail.gmail.com>
+
+For while now I've been running off of the next branch,
+and I've been noticing strange and hard-to-reproduce
+problems with sup changing the default colors.  When
+I start it, things are fine for a few minutes, and the default
+colors (for things like the unused portion of the display
+or quoted text) are fine.  Then after a few minutes,
+the default colors will get changed to yellow-on-black,
+or black-on-red, or some other strange thing.  I haven't
+been able to track down exactly what causes this.
+Sometimes it happens when going through my inbox;
+sometimes from doing a '/' to search for a string.
+
+The only thing I can say is that the new default colors
+seem to have been picked from some line that was
+being displayed by sup.  For example, a few times
+when an "unreceived message" line was being displayed
+in a thread, and I moved the highlight over that line,
+the default colors got changed to the colors of that
+line (black on red in this case).
+
+I've seen this on both Fedora Core 4 with xterm,
+and OpenSUSE 10.2 with konsole.  So it's possible
+it's a problem with older versions of ncurses.
+I'll try this on Ubuntu 8.10 at some point soon.
+
+Has anybody else noticed this?
+
+From marka at pobox.com  Wed May 20 14:04:08 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 20 May 2009 11:04:08 -0700
+Subject: [sup-talk] Strange random changing of default colors
+In-Reply-To: <1242840017-sup-6420@cabinet>
+References: <a412e2a70905200755n58df4ed2k77b9a1926d876ee@mail.gmail.com>
+	<1242840017-sup-6420@cabinet>
+Message-ID: <a412e2a70905201104n13a078f9xf4cfcb746b918dcc@mail.gmail.com>
+
+On Wed, May 20, 2009 at 10:26 AM, Marc Hartstein
+<marc.hartstein at alum.vassar.edu> wrote:
+> Excerpts from Mark Alexander's message of Wed May 20 10:55:28 -0400 2009:
+> I'm running Gentoo here, and keep my system fairly up-to-date.  ncurses
+> is 5.6-r2, and I run under screen under rxvt-unicode.
+
+I forgot to mention I'm running screen too.  I'll try eliminating screen
+to see if that changes anything.
+
+From wmorgan-sup at masanjin.net  Wed May 20 14:52:04 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 20 May 2009 11:52:04 -0700
+Subject: [sup-talk] Strange random changing of default colors
+In-Reply-To: <a412e2a70905200755n58df4ed2k77b9a1926d876ee@mail.gmail.com>
+References: <a412e2a70905200755n58df4ed2k77b9a1926d876ee@mail.gmail.com>
+Message-ID: <1242845310-sup-6904@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-05-20:
+> For while now I've been running off of the next branch, and I've been
+> noticing strange and hard-to-reproduce problems with sup changing the
+> default colors.
+
+I've fixed this in master and next. The problem was that Curses limits
+you to a set number of color pairs, and I had thought that limit was 16
+(the Ruby bindings don't seem to expose it), and so if you used Sup for
+long enough you would eventually run out of colors and it would
+helpfully replace old color definitions with new ones for you. :)
+
+But rumors suggest that the limit is more like 64, except in archaic
+cases, so I've hard-coded that instead of 16, and experimentally it
+seems fine to me (even running through screen).
+
+Let me know if you experience more color weirdness, especially on
+archaic systems like Mac OS and Windows.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From henri.ducrocq at gmail.com  Wed May 20 21:31:16 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Thu, 21 May 2009 02:31:16 +0100
+Subject: [sup-talk] Handling window resizing
+In-Reply-To: <391beaa80905201334y4c1832adp161bb28d52f08e1@mail.gmail.com>
+References: <391beaa80905201334y4c1832adp161bb28d52f08e1@mail.gmail.com>
+Message-ID: <1242868891-sup-4321@ptoseis>
+
+Excerpts from Henri Ducrocq's message of Wed May 20 21:34:36 +0100 2009:
+> I'm using a tiling window manager and my windows get resized quite
+> frequently. However Sup isn't detecting these events and I have to press
+> Control-L to redraw the screen.
+
+I tried to do it myself, first by checking for Ncurses::KEY_RESIZE in
+nonblocking_getch in buffer.rb (couldn't work because of the IO.select),
+then slightly less unsuccessfully by catching the WINCH event, but it
+looks like the signal isn't emitted in a completely consistent manner
+every time I resize the window.
+
+Any advice William? (Of course I'm secretly hoping you're gonna fix it
+yourself :)
+-- 
+Henri
+
+From andrew at pimlott.net  Thu May 21 10:46:07 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Thu, 21 May 2009 07:46:07 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <1242674066-sup-6463@entry>
+References: <20090512233303.GU28854@pimlott.net> <1242674066-sup-6463@entry>
+Message-ID: <20090521144607.GC28854@pimlott.net>
+
+On Mon, May 18, 2009 at 12:17:33PM -0700, William Morgan wrote:
+> Reformatted excerpts from Andrew Pimlott's message of 2009-05-12:
+> > There seem to be serious consistency issues.  For example, I applied a
+> > label "cal" to a thread.  I press "L" to list labels, and it's not
+> > there.
+> 
+> Can you try this again?
+
+What branch?  No change on mainline.
+
+> > I sync the mailbox, unsure if this is needed.  (It shouldn't be, of
+> > course--if it is, I hope this is intended to be fixed, perhaps with
+> > the undo work.)
+> 
+> Currently it is needed. It would be possible to avoid it, with some work
+> (Sup has an event broadcast mechanism for things like this), though I
+> think it will be difficult to maintain the "<label> AND unread" counts.
+
+What I'm getting at is, why not keep the index up-to-date at all times?
+The only reason I see not to is so the user can say "oops" and quit
+without saving.  But that's what undo is for.  (Or transactions.)
+
+Andrew
+
+From wmorgan-sup at masanjin.net  Thu May 21 11:22:55 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 21 May 2009 08:22:55 -0700
+Subject: [sup-talk] Handling window resizing
+In-Reply-To: <1242868891-sup-4321@ptoseis>
+References: <391beaa80905201334y4c1832adp161bb28d52f08e1@mail.gmail.com>
+	<1242868891-sup-4321@ptoseis>
+Message-ID: <1242919028-sup-7847@entry>
+
+Reformatted excerpts from Henri Ducrocq's message of 2009-05-20:
+> I tried to do it myself, first by checking for Ncurses::KEY_RESIZE in
+> nonblocking_getch in buffer.rb (couldn't work because of the
+> IO.select), then slightly less unsuccessfully by catching the WINCH
+> event, but it looks like the signal isn't emitted in a completely
+> consistent manner every time I resize the window.
+> 
+> Any advice William?
+
+Sadly no. There have been various attempts, by myself and others to trap
+sigwinch (see e.g.
+http://www.nabble.com/The-recent-patch-"redraw-screen-upon-sigwinch"-td22662878.html
+which is referencing commit 9bc61b52f1a4fb3492e3799240815ed0c2a7b67f)
+and to handle Ncurses::KEY_RESIZE, but something always seems screwey.
+
+A free copy of Sup to anyone who figures this out.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May 21 11:24:42 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 21 May 2009 08:24:42 -0700
+Subject: [sup-talk] inconsistencies and new user confusion
+In-Reply-To: <20090521144607.GC28854@pimlott.net>
+References: <20090512233303.GU28854@pimlott.net> <1242674066-sup-6463@entry>
+	<20090521144607.GC28854@pimlott.net>
+Message-ID: <1242919384-sup-7255@entry>
+
+Reformatted excerpts from Andrew Pimlott's message of 2009-05-21:
+> What branch?  No change on mainline.
+
+Sorry, the "next" branch.
+
+> What I'm getting at is, why not keep the index up-to-date at all
+> times?  The only reason I see not to is so the user can say "oops" and
+> quit without saving.  But that's what undo is for.  (Or transactions.)
+
+This is certainly an option in the future. We've used "$" because until
+recently there hasn't been an undo, and because it gives me fond
+memories of Mutt. Once undo is fleshed out a bit more, auto-syncing
+could certainly be an option.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Thu May 21 12:05:37 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 21 May 2009 10:05:37 -0600
+Subject: [sup-talk] mailing list alias
+Message-ID: <1242921784-sup-7643@tangerine.lanl.gov>
+
+I switched from pine and my life is much better.  Thanks William, et al.
+
+However, I do miss being able to create an contact alias that pine
+expands to a set of email addresses:
+http://www.washington.edu/doit/Lessons/Pine/create_list.html
+
+I know there are ways to create full fledged mailing lists (through my
+work or a google group or something) but sometimes this seems heavy
+weight.  How are other people handling this?  Does sup already have
+this?  Is it time for me to learn ruby?
+
+Thanks,
+
+John
+
+From marka at pobox.com  Thu May 21 12:33:12 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 21 May 2009 09:33:12 -0700
+Subject: [sup-talk] Strange random changing of default colors
+In-Reply-To: <1242845310-sup-6904@entry>
+References: <a412e2a70905200755n58df4ed2k77b9a1926d876ee@mail.gmail.com>
+	<1242845310-sup-6904@entry>
+Message-ID: <1242923554-sup-5796@r50p>
+
+Excerpts from William Morgan's message of Wed May 20 11:52:04 -0700 2009:
+> I've fixed this in master and next.
+
+Thanks!  It's looking good so far, after a day of use.
+
+From marka at pobox.com  Sat May 23 14:19:03 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Sat, 23 May 2009 11:19:03 -0700
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80 as
+ the wrap length.
+Message-ID: <1243102667-sup-6007@r50p>
+
+---
+ lib/sup/message-chunks.rb |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 1bf7796..a463fd4 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -41,7 +41,6 @@ end
+ 
+ module Redwood
+ module Chunk
+-  WRAP_LEN = 80 # wrap messages and text attachments at this width
+ 
+   class Attachment
+     HookManager.register "mime-decode", <<EOS
+@@ -109,7 +108,7 @@ EOS
+       @lines = nil
+       if text
+         @lines = text.gsub("\r\n", "\n").gsub(/\t/, "        ").gsub(/\r/, "").split("\n")
+-        @lines = lines.map {|l| l.chomp.wrap WRAP_LEN}.flatten
++        @lines = lines.map {|l| l.chomp.wrap Ncurses.cols}.flatten
+         @quotable = true
+       end
+     end
+@@ -161,7 +160,7 @@ EOS
+ 
+     attr_reader :lines
+     def initialize lines
+-      @lines = lines.map { |l| l.chomp.wrap WRAP_LEN }.flatten # wrap
++      @lines = lines.map { |l| l.chomp.wrap Ncurses.cols }.flatten # wrap
+ 
+       ## trim off all empty lines except one
+       @lines.pop while @lines.length > 1 && @lines[-1] =~ /^\s*$/ && @lines[-2] =~ /^\s*$/
+-- 
+1.5.6.3
+
+From marka at pobox.com  Sat May 23 14:25:57 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Sat, 23 May 2009 11:25:57 -0700
+Subject: [sup-talk] [PATCH] Put labels before subject in thread index view.
+Message-ID: <1243102820-sup-6578@r50p>
+
+
+This patch is probably controversial, and I expect it
+to be rejected.  But I really like the way Gmail puts
+the labels before the subject, and I've duplicated that here.
+It helps out at work, where subject lines tend to be very
+long, pushing the labels past the right edge of the window.
+---
+ lib/sup/modes/thread-index-mode.rb |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index f65d241..897dca7 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -843,10 +843,11 @@ protected
+       [subj_color, size_widget_text],
+       [:to_me_color, t.labels.member?(:attachment) ? "@" : " "],
+       [:to_me_color, dp ? ">" : (p ? '+' : " ")],
+-      [subj_color, t.subj + (t.subj.empty? ? "" : " ")],
+     ] +
+-      (t.labels - @hidden_labels).map { |label| [:label_color, "+#{label} "] } +
+-      [[:snippet_color, snippet]
++      (t.labels - @hidden_labels).map { |label| [:label_color, "#{label} "] } +
++      [
++      [subj_color, t.subj + (t.subj.empty? ? "" : " ")],
++      [:snippet_color, snippet],
+     ]
+   end
+ 
+-- 
+1.5.6.3
+
+From bwalton at artsci.utoronto.ca  Sat May 23 15:22:28 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 23 May 2009 15:22:28 -0400
+Subject: [sup-talk] [PATCH] Put labels before subject in thread index
+	view.
+In-Reply-To: <1243102820-sup-6578@r50p>
+References: <1243102820-sup-6578@r50p>
+Message-ID: <1243106464-sup-8438@ntdws12.chass.utoronto.ca>
+
+Excerpts from Mark Alexander's message of Sat May 23 14:25:57 -0400 2009:
+> 
+> This patch is probably controversial, and I expect it
+> to be rejected.  But I really like the way Gmail puts
+> the labels before the subject, and I've duplicated that here.
+> It helps out at work, where subject lines tend to be very
+> long, pushing the labels past the right edge of the window.
+
+I'll give the idea a +1.  I'd prefer labels first also.  It would also
+be more uniform when you get mail without a subject...[why yes, I do
+get those from people! :(].
+
+I didn't look at the patch itself, so this comment is purely on the
+idea.
+
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090523/df5d8b16/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Sat May 23 15:23:23 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 23 May 2009 15:23:23 -0400
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <1243102667-sup-6007@r50p>
+References: <1243102667-sup-6007@r50p>
+Message-ID: <1243106591-sup-6639@ntdws12.chass.utoronto.ca>
+
+Excerpts from Mark Alexander's message of Sat May 23 14:19:03 -0400 2009:
+
++1 to this also.
+
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090523/1c908b26/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Sat May 23 17:42:29 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sat, 23 May 2009 23:42:29 +0200
+Subject: [sup-talk] [PATCH] Put labels before subject in thread index
+	view.
+In-Reply-To: <1243106464-sup-8438@ntdws12.chass.utoronto.ca>
+References: <1243102820-sup-6578@r50p>
+	<1243106464-sup-8438@ntdws12.chass.utoronto.ca>
+Message-ID: <1243114920-sup-2740@ausone.local>
+
+Excerpts from Ben Walton's message of Sat May 23 21:22:28 +0200 2009:
+> Excerpts from Mark Alexander's message of Sat May 23 14:25:57 -0400 2009:
+> > 
+> > This patch is probably controversial, and I expect it
+> > to be rejected.  But I really like the way Gmail puts
+> > the labels before the subject, and I've duplicated that here.
+> > It helps out at work, where subject lines tend to be very
+> > long, pushing the labels past the right edge of the window.
+> 
+> I'll give the idea a +1.  I'd prefer labels first also.  It would also
+> be more uniform when you get mail without a subject...[why yes, I do
+> get those from people! :(].
+> 
+> I didn't look at the patch itself, so this comment is purely on the
+> idea.
+
++1 to the idea too!
+
+-- 
+Nicolas Pouillard
+
+From ezyang at MIT.EDU  Sat May 23 19:32:32 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 23 May 2009 19:32:32 -0400
+Subject: [sup-talk] Multiple email accounts
+Message-ID: <1243121499-sup-7569@javelin>
+
+Hello all,
+
+Does Sup have any built-in support for multiple sending email accounts, i.e.
+using the source to determine what the "From" header should be, and swapping
+SMTP servers accordingly?
+
+Cheers,
+Edward
+
+From rhomunuq+ml_sup at gmail.com  Sat May 23 19:57:36 2009
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Sun, 24 May 2009 00:57:36 +0100
+Subject: [sup-talk] Multiple email accounts
+In-Reply-To: <1243121499-sup-7569@javelin>
+References: <1243121499-sup-7569@javelin>
+Message-ID: <1243122989-sup-7769@leda>
+
+> Does Sup have any built-in support for multiple sending email accounts, i.e.
+> using the source to determine what the "From" header should be, and swapping
+> SMTP servers accordingly?
+
+Yes. See
+<http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply> and
+<http://sup.rubyforge.org/wiki/wiki.pl?Msmtp>.
+
+Cheers,
+~Iain
+
+From bwalton at artsci.utoronto.ca  Sat May 23 20:00:54 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 23 May 2009 20:00:54 -0400
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+References: <1243102667-sup-6007@r50p>
+	<4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+Message-ID: <1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+
+Excerpts from Michael Stipicevic's message of Sat May 23 16:18:03 -0400 2009:
+> I don't know, reading little e-mails on a widescreen monitor gets really
+> annoying. Forcing 80 columns keeps it easier on the eyes. Could this be put
+> into an option somehow?
+
+But if you leave sup's "we dont' force wrapping" rules alone, this
+makes reading mail scroll free if your terminal is wide enough and
+doesn't change the behaviour if the terminal is narrower.  (Not that
+I'm against making it an option either.)
+
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090523/6fdee8b1/attachment.bin>
+
+From johnbent at lanl.gov  Sun May 24 01:54:42 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Sat, 23 May 2009 23:54:42 -0600
+Subject: [sup-talk] scary exception
+In-Reply-To: <1240854270-sup-8870@entry>
+References: <1240802707-sup-2069@tangerine.lanl.gov>
+	<1240852818-sup-1006@entry>
+	<1240853542-sup-4778@tangerine.lanl.gov>
+	<1240854270-sup-8870@entry>
+Message-ID: <1243143847-sup-5003@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Mon Apr 27 11:46:43 -0600 2009:
+> Reformatted excerpts from John Bent's message of 2009-04-27:
+> > I'm sorry.  I don't remember.  The timestamp on my sup executable says
+> > Jan 13 2009.  I'll try to upgrade and see if I ever see this again.  
+> 
+> Yeah, I think it was around March that things got merged in. Try it with
+> the latest & greatest and see if it happens again.
+>
+Ok, I figured out what the problem was.  I used to be able to stay
+current with git pull; rake gem; sudo gem install pkg/sup-999.gem.  But
+with a new work proxy and my inability to get git to work w/ a proxy, I
+switched to:
+
+git clone http://git.gitorious.org/sup/mainline.git
+
+Then I couldn't figure out how to make a gem in mainline or install so I
+just figured out I could approximate an install by copying bin/* into my
+path . . . forgot the lib.  Anyway, I got the scary exception again and
+looked at exception-log.txt and realized I had a mismatch with my libs.
+So now I'm doing the git clone mainline thing and using ruby -l lib -w
+bin/sup.
+
+Anyway, at the risk of embarrassing myself, I wanted to get this info
+out there in case some other poor schlub wanders down my same convoluted
+path. 
+
+Thanks,
+
+John
+
+From henri.ducrocq at gmail.com  Sun May 24 08:48:41 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Sun, 24 May 2009 13:48:41 +0100
+Subject: [sup-talk] [PATCH] Put labels before subject in thread index
+	view.
+In-Reply-To: <1243125562-sup-287@cabinet>
+References: <1243102820-sup-6578@r50p> <1243125562-sup-287@cabinet>
+Message-ID: <1243169011-sup-8091@ptoseis>
+
+Excerpts from Marc Hartstein's message of Sun May 24 01:42:20 +0100 2009:
+> This is a great idea, but can we get it configurable/delegated to a
+> hook?  Bonus points if there's a straightforward way to be able to
+> switch between the two modes at runtime.
+> 
+> I've occasionally thought I'd want this, as I get a lot of long subject
+> too, but I wouldn't want multiply-tagged messages [especially with
+> special tags like inbox and unread] to have the tags obscure the
+> subject.
+
+We could have an even more configurable presentation of the messages,
+with the possibility of having a multiline view, e.g. subject on the
+first line, labels on the second, excerpt of the text on the 3rd...
+
+-- 
+Henri
+
+From micah at riseup.net  Sun May 24 15:52:37 2009
+From: micah at riseup.net (Micah Anderson)
+Date: Sun, 24 May 2009 15:52:37 -0400
+Subject: [sup-talk] Getting gpg to work
+Message-ID: <87k5462s8q.fsf@pond.riseup.net>
+
+
+Hi,
+
+I've just started working with sup and am stuck with a gpg problem.
+
+I'm getting gpg messages that aren't being decoded automatically. They
+show up as attachments to a message, and the message body shows as
+empty. If I go down to the attachment itself and hit enter I see down
+below it saying, "Viewing multipart/encrypted attachment..." and then it
+says, "Couldn't execute view command, viewing as text." I dont know what
+view command it attempted to execute, but then I see the following in
+the body:
+
+
+--mimepart_4a195eca478b1_5b73..fdbe593a824f3
+Content-Type: application/pgp-encrypted
+Content-Disposition: attachment
+
+Version: 1
+
+--mimepart_4a195eca478b1_5b73..fdbe593a824f3
+Content-Type: application/octet-stream; charset=UTF-8
+Content-Disposition: inline; filename=message.asc
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+...
+
+-----END PGP MESSAGE-----
+
+--mimepart_4a195eca478b1_5b73..fdbe593a824f3--
+
+
+What do I need to do to get this to work?
+
+Thanks!
+Micah
+
+
+From ezyang at MIT.EDU  Mon May 25 14:18:51 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Mon, 25 May 2009 14:18:51 -0400
+Subject: [sup-talk] Multiple email accounts
+In-Reply-To: <1243122989-sup-7769@leda>
+References: <1243121499-sup-7569@javelin> <1243122989-sup-7769@leda>
+Message-ID: <1243275433-sup-6834@javelin>
+
+Excerpts from rhomunuq+ml_sup's message of Sat May 23 19:57:36 -0400 2009:
+> Yes. See
+> <http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply> and
+> <http://sup.rubyforge.org/wiki/wiki.pl?Msmtp>.
+
+Great, that's 99% of what I need. The last 1% is, can Sup auto-detect
+what From line to send based on the source of the message, if the
+To: header is not intact? (This is commonly the case for mailing lists.
+
+Cheers,
+Edward
+
+From henri.ducrocq at gmail.com  Tue May 26 11:14:24 2009
+From: henri.ducrocq at gmail.com (Henri Ducrocq)
+Date: Tue, 26 May 2009 16:14:24 +0100
+Subject: [sup-talk] [PATCH] New hook: after-save
+Message-ID: <1243349962-sup-2625@ptoseis>
+
+This hook is run when the user presses on '$' to save the state and
+index.
+I'm using this to update a file used by my dzen status bar to display the
+number of unread emails in my inbox.
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 56dcdff..e3e70bb 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -20,6 +20,12 @@ Variables:
+   thread: The message thread being marked as spam.
+ EOS
+ 
++  HookManager.register "after-save", <<EOS
++Executes immediately after saving the index.
++Variables:
++num_inbox_total_unread: the total number of unread messages in the inbox
++EOS
++
+   register_keymap do |k|
+     k.add :load_threads, "Load #{LOAD_MORE_THREAD_NUM} more threads", 'M'
+     k.add_multi "Load all threads (! to confirm) :", '!' do |kk|
+@@ -409,6 +415,7 @@ EOS
+         end
+       end
+     end
++    HookManager.run "after-save", :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+   end
+ 
+   def cleanup
+
+-- 
+Henri
+
+From wmorgan-sup at masanjin.net  Wed May 27 09:39:06 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 06:39:06 -0700
+Subject: [sup-talk] mailing list alias
+In-Reply-To: <1242921784-sup-7643@tangerine.lanl.gov>
+References: <1242921784-sup-7643@tangerine.lanl.gov>
+Message-ID: <1243431456-sup-9767@entry>
+
+Reformatted excerpts from John Bent's message of 2009-05-21:
+> I switched from pine and my life is much better.  Thanks William, et
+> al.
+
+Glad you like it!
+
+> However, I do miss being able to create an contact alias that pine
+> expands to a set of email addresses:
+> http://www.washington.edu/doit/Lessons/Pine/create_list.html
+
+Sounds like a good idea. Currently Sup has no way of doing this, but a
+little modification of the contact manager would probably be all that's
+required.
+
+> Is it time for me to learn ruby?
+
+It's always time to learn Ruby!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 27 11:58:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 08:58:23 -0700
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+References: <1243102667-sup-6007@r50p>
+	<4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+	<1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+Message-ID: <1243439667-sup-3947@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-23:
+> But if you leave sup's "we dont' force wrapping" rules alone, this
+> makes reading mail scroll free if your terminal is wide enough and
+> doesn't change the behaviour if the terminal is narrower.  (Not that
+> I'm against making it an option either.)
+
+Seems like there are three main modes of operation that would be
+desirable:
+
+1. wrap at 80 chars;
+2. wrap at current terminal width;
+3. don't wrap.
+
+(In all cases, existing line breaks in the message are left alone.)
+
+Would a three-way toggle irritate anyone?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 27 12:03:13 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 09:03:13 -0700
+Subject: [sup-talk] scary exception
+In-Reply-To: <1243143847-sup-5003@tangerine.lanl.gov>
+References: <1240802707-sup-2069@tangerine.lanl.gov>
+	<1240852818-sup-1006@entry>
+	<1240853542-sup-4778@tangerine.lanl.gov>
+	<1240854270-sup-8870@entry>
+	<1243143847-sup-5003@tangerine.lanl.gov>
+Message-ID: <1243439962-sup-7477@entry>
+
+Reformatted excerpts from John Bent's message of 2009-05-23:
+> current with git pull; rake gem; sudo gem install pkg/sup-999.gem.  But
+> with a new work proxy and my inability to get git to work w/ a proxy, I
+> switched to:
+> 
+> git clone http://git.gitorious.org/sup/mainline.git
+> 
+> Then I couldn't figure out how to make a gem in mainline or install
+
+These operations should all be the same, regardless of whether you're
+cloning the git:// uri or the http:// one.
+
+> just figured out I could approximate an install by copying bin/* into my
+> path . . . forgot the lib.  Anyway, I got the scary exception again and
+> looked at exception-log.txt and realized I had a mismatch with my libs.
+> So now I'm doing the git clone mainline thing and using ruby -l lib -w
+> bin/sup.
+
+Sup does maintain different version numbers for bin/sup and lib/sup.rb,
+and checks for a mismatch, but that's not useful for different versions
+from git, since they all claim version "git".
+
+Oh well, glad it works now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Wed May 27 12:05:09 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 27 May 2009 12:05:09 -0400
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <1243439667-sup-3947@entry>
+References: <1243102667-sup-6007@r50p>
+	<4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+	<1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+	<1243439667-sup-3947@entry>
+Message-ID: <1243440258-sup-7690@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed May 27 11:58:23 -0400 2009:
+> Seems like there are three main modes of operation that would be
+> desirable:
+> 
+> 1. wrap at 80 chars;
+> 2. wrap at current terminal width;
+> 3. don't wrap.
+> 
+> (In all cases, existing line breaks in the message are left alone.)
+> 
+> Would a three-way toggle irritate anyone?
+
+Yes, for the message itself, this would work just fine.  I'm ok with
+the toggle too.
+
+For the header display though, the terminal width should be honoured,
+I think.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090527/4914d9ff/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Wed May 27 12:07:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 09:07:08 -0700
+Subject: [sup-talk] [PATCH] Put labels before subject in thread index
+	view.
+In-Reply-To: <1243125562-sup-287@cabinet>
+References: <1243102820-sup-6578@r50p> <1243125562-sup-287@cabinet>
+Message-ID: <1243440237-sup-9372@entry>
+
+Reformatted excerpts from Marc Hartstein's message of 2009-05-23:
+> This is a great idea, but can we get it configurable/delegated to a
+> hook?
+
+I'd be happy to add an index-model-subject-widget hook, similar to the
+index-mode-size-widget hook, if someone wants to write one.
+
+> I've occasionally thought I'd want this, as I get a lot of long
+> subject too, but I wouldn't want multiply-tagged messages [especially
+> with special tags like inbox and unread] to have the tags obscure the
+> subject.
+
+Unread, starred, and other system labels shouldn't be displayed in
+thread-view-mode. Index will, except in inbox-mode. It might not be too
+bad. 
+
+I'll apply this patch and we'll see who yells.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Wed May 27 12:13:30 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 27 May 2009 09:13:30 -0700
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <1243439667-sup-3947@entry>
+References: <1243102667-sup-6007@r50p>
+	<4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+	<1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+	<1243439667-sup-3947@entry>
+Message-ID: <a412e2a70905270913x6024bb26wd76e448987b7fb26@mail.gmail.com>
+
+On Wed, May 27, 2009 at 8:58 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Would a three-way toggle irritate anyone?
+
+Sounds good to me.
+
+From wmorgan-sup at masanjin.net  Wed May 27 12:22:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 09:22:54 -0700
+Subject: [sup-talk] Multiple email accounts
+In-Reply-To: <1243275433-sup-6834@javelin>
+References: <1243121499-sup-7569@javelin> <1243122989-sup-7769@leda>
+	<1243275433-sup-6834@javelin>
+Message-ID: <1243440902-sup-4117@entry>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-05-25:
+> Great, that's 99% of what I need. The last 1% is, can Sup auto-detect
+> what From line to send based on the source of the message, if the To:
+> header is not intact? (This is commonly the case for mailing lists.
+
+You can use the reply-from hook to set it automatically however you
+want. Try adding something like the following (completely untested!) to
+~/.sup/hooks/reply-from.rb:
+
+  case message.from.email
+  when /sup-talk at rubyforge.org/i
+    Person.from_address "Edward Z. Yang <ezy+i-love-sup at mit.edu>"
+  end
+
+If the hook returns nil, Sup does the default computation.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From guillaume.quintard at gmail.com  Wed May 27 12:24:07 2009
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Wed, 27 May 2009 18:24:07 +0200
+Subject: [sup-talk] Arg, gmail
+Message-ID: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+
+Hi all,
+I'm having a *little* problem with gmail: I can't send mail with
+neither msmtp nor ssmtp, I get "no route to host" with the first one
+and "can't auth" with the latter, even though last year it worked (I
+got too annoyed by ferrets errors I dropped sup, shame on me!). If
+anyone has a (s|m)smtp+gmail config, could he please mail me in
+private to help me tackle this? I don't want to flood the mlist.
+
+By the way, two questions:
+- when we'll we see an automatic option to save changes to a mail as
+we quit it (.a or ,a or x to kill the buffer)?
+- I can haz a width limit so I don't loose sight of my mails whenever
+I sleep on the right key? (cheezburger would be good too)
+in inbox-mode that's just max(arbitrary_size, terminal_width)
+in thread-view-mode max(terminal_width, 80 + max_depth*indent)
+
+anyway, awesome job, I'm always amazed that sup is the only one of it's kind.
+
+-- 
+Guillaume
+
+From wmorgan-sup at masanjin.net  Wed May 27 12:25:44 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 09:25:44 -0700
+Subject: [sup-talk] Getting gpg to work
+In-Reply-To: <87k5462s8q.fsf@pond.riseup.net>
+References: <87k5462s8q.fsf@pond.riseup.net>
+Message-ID: <1243441483-sup-2270@entry>
+
+Reformatted excerpts from Micah Anderson's message of 2009-05-24:
+> I'm getting gpg messages that aren't being decoded automatically. 
+
+In the early part of Sup's log, does it mention being able to find the
+gpg binary? (When in Sup, hit b until you see the log-mode buffer and
+then scroll to the top.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 27 12:38:26 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 27 May 2009 09:38:26 -0700
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+Message-ID: <1243442108-sup-6538@entry>
+
+Hi Guillaume,
+
+Nice to hear from you again.
+
+Reformatted excerpts from Guillaume Quintard's message of 2009-05-27:
+> (I got too annoyed by ferrets errors I dropped sup, shame on me!).
+
+I think we have fixed those in the meanwhile.
+
+> - when we'll we see an automatic option to save changes to a mail as
+> we quit it (.a or ,a or x to kill the buffer)?
+
+You mean, so that you don't have to press '$'? When you press 'q'
+everything's automatically saved. Does that help?
+
+But now that we have undo support, removing the '$' key is an option in
+the future.
+
+> - I can haz a width limit so I don't loose sight of my mails whenever
+> I sleep on the right key? (cheezburger would be good too)
+> in inbox-mode that's just max(arbitrary_size, terminal_width)
+> in thread-view-mode max(terminal_width, 80 + max_depth*indent)
+
+This isn't exactly what you want, but you can press '[' to jump back to
+the left side of the screen.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rhomunuq+ml_sup at gmail.com  Wed May 27 12:36:45 2009
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Wed, 27 May 2009 17:36:45 +0100
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+Message-ID: <1243442046-sup-3254@leda>
+
+(Replying to the list in case of future person with the same problem.)
+
+> I'm having a *little* problem with gmail: I can't send mail with
+> neither msmtp nor ssmtp, I get "no route to host" with the first one
+> and "can't auth" with the latter, even though last year it worked
+
+Gmail uses non-standard port 587.
+
+Partial example .msmtprc:
+
+account whateveryouwant
+auth on
+host smtp.gmail.com
+port 587
+user yourusername at gmail.com
+password yourpassword
+tls on
+tls_starttls on
+tls_certcheck off  # Insecure; better would be to add the Gmail cert to
+tls_trust_file
+auto_from on
+
+From guillaume.quintard at gmail.com  Wed May 27 13:29:34 2009
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Wed, 27 May 2009 19:29:34 +0200
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1243442108-sup-6538@entry>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+	<1243442108-sup-6538@entry>
+Message-ID: <1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+
+On Wed, May 27, 2009 at 6:38 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+
+account gmail
+auth on
+host smtp.gmail.com
+port 587
+user foo at gmail.com
+password bar
+tls on
+tls_starttls on
+tls_certcheck off
+tls_trust_file
+auto_from on
+
+and I get
+smtp: cannot connect to smtp.gmail.com, port 587: No route to host
+ msmtp: could not send mail (account gmail from /home/shivan/.msmtprc)
+Problem sending mail: Couldn't execute msmtp --account=gmail -t
+
+I don't get what I'm not doing right
+
+> I think we have fixed those in the meanwhile.
+>
+I heard so, that's why I'm back, and so far, so good.
+
+> You mean, so that you don't have to press '$'? When you press 'q'
+> everything's automatically saved. Does that help?
+
+not really, I don't close sup very often. what annoys me is that if I
+take care of a few mails, by using ",a", go back to inbox, and reload
+the view, the mails are still there. Killing the buffer could save.
+Since it's only one mail, that would go fast.
+
+
+> This isn't exactly what you want, but you can press '[' to jump back to
+> the left side of the screen.
+
+nope, that's not exactly what I want :-)
+
+-- 
+Guillaume
+
+From rhomunuq+ml_sup at gmail.com  Wed May 27 13:36:45 2009
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Wed, 27 May 2009 18:36:45 +0100
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+	<1243442108-sup-6538@entry>
+	<1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+Message-ID: <1243445671-sup-2031@leda>
+
+> tls_trust_file
+
+Sorry, this was some careless copy-and-pasting on my part.
+tls_trust_file was part of the commented line above, not supposed to be
+on a separate line by itself.
+
+But that's not what is causing the problem...
+
+> smtp: cannot connect to smtp.gmail.com, port 587: No route to host
+>  msmtp: could not send mail (account gmail from /home/shivan/.msmtprc)
+> Problem sending mail: Couldn't execute msmtp --account=gmail -t
+
+What is the output of:
+telnet smtp.gmail.com 587
+?
+
+From nicolas.pouillard at gmail.com  Wed May 27 13:41:33 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 27 May 2009 19:41:33 +0200
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+	<1243442108-sup-6538@entry>
+	<1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+Message-ID: <1243446006-sup-832@ausone.local>
+
+Excerpts from Guillaume Quintard's message of Wed May 27 19:29:34 +0200 2009:
+> On Wed, May 27, 2009 at 6:38 PM, William Morgan
+> <wmorgan-sup at masanjin.net> wrote:
+> 
+> account gmail
+> auth on
+> host smtp.gmail.com
+> port 587
+> user foo at gmail.com
+> password bar
+> tls on
+> tls_starttls on
+> tls_certcheck off
+> tls_trust_file
+> auto_from on
+> 
+> and I get
+> smtp: cannot connect to smtp.gmail.com, port 587: No route to host
+>  msmtp: could not send mail (account gmail from /home/shivan/.msmtprc)
+> Problem sending mail: Couldn't execute msmtp --account=gmail -t
+> 
+> I don't get what I'm not doing right
+
+I use this one (mostly the same except tls things and no auto_from):
+
+defaults
+tls on
+
+account gmail
+host smtp.gmail.com
+port 587
+auth on
+user foo
+password bar
+tls_starttls on
+tls_trust_file ............../ThawtePremiumServerCA.crt
+tls_certcheck on
+logfile /var/log/msmtp.log
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From marka at pobox.com  Wed May 27 13:42:54 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 27 May 2009 10:42:54 -0700
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+	<1243442108-sup-6538@entry>
+	<1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+Message-ID: <a412e2a70905271042m1baadac1ydf02986aa7b17a2d@mail.gmail.com>
+
+On Wed, May 27, 2009 at 10:29 AM, Guillaume Quintard
+<guillaume.quintard at gmail.com> wrote:
+> smtp: cannot connect to smtp.gmail.com, port 587: No route to host
+
+I'm away from my home machine so can't check what I'm using there
+to send to gmail (I know it's working with msmtp, though).  However,
+I did try the following just now from a BSD machine:
+
+% telnet smtp.gmail.com 587
+Trying 209.85.201.111...
+telnet: connect to address 209.85.201.111: Connection refused
+% telnet smtp.gmail.com 465
+Trying 209.85.201.111...
+Connected to gmail-smtp-msa.l.google.com.
+Escape character is '^]'.
+
+So you might want to try port 465.
+
+
+
+
+il (account gmail from /home/shivan/.msmtprc)
+> Problem sending mail: Couldn't execute msmtp --account=gmail -t
+>
+> I don't get what I'm not doing right
+>
+>> I think we have fixed those in the meanwhile.
+>>
+> I heard so, that's why I'm back, and so far, so good.
+>
+>> You mean, so that you don't have to press '$'? When you press 'q'
+>> everything's automatically saved. Does that help?
+>
+> not really, I don't close sup very often. what annoys me is that if I
+> take care of a few mails, by using ",a", go back to inbox, and reload
+> the view, the mails are still there. Killing the buffer could save.
+> Since it's only one mail, that would go fast.
+>
+>
+>> This isn't exactly what you want, but you can press '[' to jump back to
+>> the left side of the screen.
+>
+> nope, that's not exactly what I want :-)
+>
+> --
+> Guillaume
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From nicolas.pouillard at gmail.com  Wed May 27 13:43:11 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 27 May 2009 19:43:11 +0200
+Subject: [sup-talk] [PATCH] Use terminal width instead of hardcoded 80
+	as the wrap length.
+In-Reply-To: <a412e2a70905270913x6024bb26wd76e448987b7fb26@mail.gmail.com>
+References: <1243102667-sup-6007@r50p>
+	<4c4248150905231318kab3819dw68e3a3a614241c0d@mail.gmail.com>
+	<1243123134-sup-8032@ntdws12.chass.utoronto.ca>
+	<1243439667-sup-3947@entry>
+	<a412e2a70905270913x6024bb26wd76e448987b7fb26@mail.gmail.com>
+Message-ID: <1243446173-sup-4694@ausone.local>
+
+Excerpts from Mark Alexander's message of Wed May 27 18:13:30 +0200 2009:
+> On Wed, May 27, 2009 at 8:58 AM, William Morgan
+> <wmorgan-sup at masanjin.net> wrote:
+> > Would a three-way toggle irritate anyone?
+> 
+> Sounds good to me.
+
+It would also fit my needs.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From guillaume.quintard at gmail.com  Wed May 27 13:53:04 2009
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Wed, 27 May 2009 19:53:04 +0200
+Subject: [sup-talk] Arg, gmail
+In-Reply-To: <1243445671-sup-2031@leda>
+References: <1e5fdab70905270924t798c4e5er3978e717b2215d48@mail.gmail.com>
+	<1243442108-sup-6538@entry>
+	<1e5fdab70905271029i1863ef73o7c3570069e6ed978@mail.gmail.com>
+	<1243445671-sup-2031@leda>
+Message-ID: <1e5fdab70905271053qd175badj56474d496fc0ee4a@mail.gmail.com>
+
+On Wed, May 27, 2009 at 7:36 PM, Iain <rhomunuq+ml_sup at gmail.com> wrote:
+> What is the output of:
+> telnet smtp.gmail.com 587
+
+I don't like that. it just keeps hanging, but on another machine,
+outside of the LAN, it works perfectly fine. I should talk to the
+admins I guess.
+
+Thanks for your time guys.
+
+-- 
+Guillaume
+
+From marcus-sup at bar-coded.net  Wed May 27 14:51:06 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 27 May 2009 19:51:06 +0100
+Subject: [sup-talk] Multiple email accounts
+In-Reply-To: <1243440902-sup-4117@entry>
+References: <1243121499-sup-7569@javelin> <1243122989-sup-7769@leda>
+	<1243275433-sup-6834@javelin> <1243440902-sup-4117@entry>
+Message-ID: <1243449836-sup-6622@tomsk>
+
+On 27.5.2009, William Morgan wrote:
+> > Great, that's 99% of what I need. The last 1% is, can Sup auto-detect
+> > what From line to send based on the source of the message, if the To:
+> > header is not intact? (This is commonly the case for mailing lists.
+> 
+> You can use the reply-from hook to set it automatically however you
+> want. Try adding something like the following (completely untested!) to
+> ~/.sup/hooks/reply-from.rb:
+[snip]
+
+Note also that you might be able to do what you want with the regexen
+options in config.yaml - so for instance Sup works out that I reply to
+the sup talk mail list with marcus-sup at .... It uses the envelope-to
+header to figure this out I seem to remember (coupled with the regexen
+settings).
+
+So under one of my accounts I have:
+
+ :regexen:
+   - marcus-.*(at)mydomain.com
+
+(where (at) is replaced with @, and mydomain.com is replaced with the
+obvious).
+
+This make sup recognise all incoming emails to my email extensions
+that all begin with "marcus-" and unlike the :alternative: settings
+are used by sup to figure out what address to reply with. Works well
+for all the mailing lists I'm using.
+
+The only problem is they dont get used for sending new addresses (but
+I recently sent an email about how I get around that).
+
+HTH
+
+Marcus
+
+From sean.escriva at gmail.com  Wed May 27 19:13:47 2009
+From: sean.escriva at gmail.com (Sean Escriva)
+Date: Wed, 27 May 2009 16:13:47 -0700
+Subject: [sup-talk] oops, previous sup exception log
+Message-ID: <20090527231347.GA13064@gmail.com>
+
+just realized I hadn't seen the answer to this before, sorry for the
+repost, I'll try a different source method. thanks for the previous
+answer William
+
+From wmorgan-sup at masanjin.net  Thu May 28 11:07:58 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 May 2009 08:07:58 -0700
+Subject: [sup-talk] [PATCH] New hook: after-save
+In-Reply-To: <1243349962-sup-2625@ptoseis>
+References: <1243349962-sup-2625@ptoseis>
+Message-ID: <1243523190-sup-8907@entry>
+
+Reformatted excerpts from Henri Ducrocq's message of 2009-05-26:
+> This hook is run when the user presses on '$' to save the state and
+> index.
+> I'm using this to update a file used by my dzen status bar to display the
+> number of unread emails in my inbox.
+
+I think I'd prefer to modify the current after-poll hook to an
+"after-state-change-hook" (or a better name) and have it fire after
+either a poll or a save happens.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May 28 11:11:25 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 May 2009 08:11:25 -0700
+Subject: [sup-talk] UTF-8 message sending patch
+In-Reply-To: <1240861799-sup-787@colargol.tihlde.org>
+References: <1240861799-sup-787@colargol.tihlde.org>
+Message-ID: <1243523439-sup-4045@entry>
+
+Reformatted excerpts from Helge Titlestad's message of 2009-04-27:
+> I think the patch (attached) fixes my problems, but it's probably far
+> from complete. It doesn't detect non-utf8-but-still-illegal-strings,
+> it assumes every header except Subject is an address, and so on.
+> 
+> Any feedback is welcome. (:
+
+This has all been added in. If you get a chance, please try the current
+master branch of Sup and see if it has the behavior you desire. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May 28 11:13:56 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 May 2009 08:13:56 -0700
+Subject: [sup-talk] merge activity report
+In-Reply-To: <1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+References: <1242659511-sup-4534@entry>
+	<1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+Message-ID: <1243523591-sup-5117@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-18:
+> Let me know when you'd like the flexible sent stuff rebased and
+> against which branch.  I'm ready with that any time.
+
+Sorry for the delay on this. I've merged down everything related so a
+rebase against master should be pretty easy for you. Once that's done
+I will merge it into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu May 28 11:18:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 May 2009 08:18:15 -0700
+Subject: [sup-talk] pending 0.8 release
+Message-ID: <1243523649-sup-7696@entry>
+
+Hi suppers,
+
+I've merged down several stable-seeming feature branches onto master in
+anticipation of an 0.8 release. This release will includes utf8 fixes,
+faster mbox reading, preliminary undo support, and many bugfixes. If you
+get a chance, please give it a try and report any problems you
+encounter.
+
+For the next next version, 0.9, I'd love to see:
+- Ben Walton's flexible sent source changes
+- Maildir support in sup-sync-back, if I get a chance
+- undo support on more actions
+- three-way toggle for message text wrapping
+- and whatever else you guys feel like submitting patches for!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Thu May 28 11:31:36 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 28 May 2009 11:31:36 -0400
+Subject: [sup-talk] merge activity report
+In-Reply-To: <1243523591-sup-5117@entry>
+References: <1242659511-sup-4534@entry>
+	<1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+	<1243523591-sup-5117@entry>
+Message-ID: <1243524514-sup-7560@ntdws12.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Thu May 28 11:13:56 -0400 2009:
+> Sorry for the delay on this. I've merged down everything related so a
+> rebase against master should be pretty easy for you. Once that's done
+> I will merge it into next.
+
+No problem.  I'd actually rebased against master last night as I'd
+seen a flurry of activity on the gitorious rss feed.  I did this again
+just now and force-pushed my changes to
+git://code.chass.utoronto.ca/bwalton-sup.git.  [I note this for anyone
+that may have pulled from my branch previously...rebasing isn't a nice
+thing to do with published branches :) ]
+
+It's the bw/flexible_sent branch available from that URL.
+
+I haven't spent any time on the LockManager stuff in the last week+
+though, as the NBA finals have been sapping up my evenings!
+
+Does this rebased branch meet your needs?
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090528/d00cca51/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Thu May 28 12:37:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 28 May 2009 09:37:11 -0700
+Subject: [sup-talk] merge activity report
+In-Reply-To: <1243524514-sup-7560@ntdws12.chass.utoronto.ca>
+References: <1242659511-sup-4534@entry>
+	<1242667096-sup-7844@ntdws12.chass.utoronto.ca>
+	<1243523591-sup-5117@entry>
+	<1243524514-sup-7560@ntdws12.chass.utoronto.ca>
+Message-ID: <1243528605-sup-9712@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-28:
+> Does this rebased branch meet your needs?
+
+Look great. Merged into next. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ingmar at exherbo.org  Thu May 28 13:03:16 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Thu, 28 May 2009 17:03:16 +0000
+Subject: [sup-talk] [PATCH] Use rake/packagegemtask
+Message-ID: <20090528170316.GA4359@bach>
+
+Sup?
+
+Attached is a patch to use rake/packagegemtask, instead of calling gem1.8 manually.
+As far as I can see gem1.8 is a debianism, so calling it directly should
+probably be avoided. Thoughts?
+
+Regards,
+Ingmar
+
+-- 
+Exherbo KDE, X.org maintainer
+
+From bwalton at artsci.utoronto.ca  Thu May 28 15:32:42 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 28 May 2009 15:32:42 -0400
+Subject: [sup-talk] utf patch needs work, i think
+Message-ID: <1243539136-sup-9008@ntdws12.chass.utoronto.ca>
+
+
+I just found something funny with the new utf patch.  The only thing I
+noticed in the headers of relevance was:
+
+To:    =?utf-16be?b?/v8AfgA6ACcAJwAgMEIwijBMMGgwRjBUMFYwRDB+MFcA?=
+     =?utf-16be?b?MF8wAg==?= <j.chetwynd at btinternet.com>
+
+
+The displayed mail can be seen here:
+http://www.cquest.utoronto.ca/u/bwalton/utf-wtf.png
+
+I'll save the message if it's of any use in debugging the problem (it
+was a post to the git list).  There wasn't anything in the body itself
+that looked odd to my quick visual inspection.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090528/eec38321/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Thu May 28 19:32:56 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 28 May 2009 19:32:56 -0400
+Subject: [sup-talk] utf patch needs work, i think
+In-Reply-To: <1243539136-sup-9008@ntdws12.chass.utoronto.ca>
+References: <1243539136-sup-9008@ntdws12.chass.utoronto.ca>
+Message-ID: <1243553511-sup-472@ntdws12.chass.utoronto.ca>
+
+Excerpts from Ben Walton's message of Thu May 28 15:32:42 -0400 2009:
+> 
+> I just found something funny with the new utf patch.  The only thing I
+> noticed in the headers of relevance was:
+> 
+> To:    =?utf-16be?b?/v8AfgA6ACcAJwAgMEIwijBMMGgwRjBUMFYwRDB+MFcA?=
+>      =?utf-16be?b?MF8wAg==?= <j.chetwynd at btinternet.com>
+
+...a followup on the list makes me wonder if this isn't actually a sup
+thing, but a weird encoding 'joke' by the poster.  Even if the body
+display wasn't a sup bug, the name is still munged up.
+
+-Ben
+
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090528/fc984a86/attachment.bin>
+
+From micah at riseup.net  Fri May 29 00:19:24 2009
+From: micah at riseup.net (Micah Anderson)
+Date: Fri, 29 May 2009 00:19:24 -0400
+Subject: [sup-talk] Getting gpg to work
+References: <87k5462s8q.fsf@pond.riseup.net> <1243441483-sup-2270@entry>
+Message-ID: <8763fkwng3.fsf@pond.riseup.net>
+
+William Morgan <wmorgan-sup at masanjin.net> writes:
+
+> Reformatted excerpts from Micah Anderson's message of 2009-05-24:
+>> I'm getting gpg messages that aren't being decoded automatically. 
+>
+> In the early part of Sup's log, does it mention being able to find the
+> gpg binary? (When in Sup, hit b until you see the log-mode buffer and
+> then scroll to the top.)
+
+Indeed I do:
+
+[Fri May 29 00:17:42 -0400 2009] crypto: detected gpg binary in /usr/bin/gpg
+
+micah
+
+
+From israel.herraiz at gmail.com  Fri May 29 08:48:06 2009
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Fri, 29 May 2009 14:48:06 +0200
+Subject: [sup-talk] [PATCH] Prettier printing of enclosed messages
+Message-ID: <4a1fdabb.0a1ad00a.399c.23fb@mx.google.com>
+
+Hi,
+
+this patch prints enclosed messages with only some selected headers
+instead of the full headers, just as "normal" messages.
+
+Cheers,
+Israel
+
+---
+ lib/sup/message-chunks.rb |   26 +++++++++++++++++++-------
+ lib/sup/message.rb        |   17 +++++++++++++----
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 1bf7796..7b55c91 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -208,13 +208,25 @@ EOS
+ 
+   class EnclosedMessage
+     attr_reader :lines
+-    def initialize from, body
+-      @from = from
+-      @lines = body.split "\n"
+-    end
++    def initialize from, to, cc, date, subj
++      @from = from ? "unknown sender" : from.full_adress
++      @to = to ? "" : to.map { |p| p.full_address }.join(", ")
++      @cc = cc ? "" : cc.map { |p| p.full_address }.join(", ")
++      if date
++        @date = date.rfc822
++      else
++        @date = ""
++      end
+ 
+-    def from
+-      @from ? @from.longname : "unknown sender"
++      @subj = subj
++
++      @lines = "\nFrom: #{from}\n"
++      @lines += "To: #{to}\n"
++      if !cc.empty?
++        @lines += "Cc: #{cc}\n"
++      end
++      @lines += "Date: #{date}\n"
++      @lines += "Subject: #{subj}\n\n"
+     end
+ 
+     def inlineable?; false end
+@@ -224,7 +236,7 @@ EOS
+     def viewable?; false end
+ 
+     def patina_color; :generic_notice_patina_color end
+-    def patina_text; "Begin enclosed message from #{from} (#{@lines.length} lines)" end
++    def patina_text; "Begin enclosed message sent on #{@date}" end
+ 
+     def color; :quote_color end
+   end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 6dd1f7d..72ec6c5 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -383,10 +383,19 @@ private
+       chunks
+     elsif m.header.content_type == "message/rfc822"
+       payload = RMail::Parser.read(m.body)
+-      from = payload.header.from.first
+-      from_person = from ? Person.from_address(from.format) : nil
+-      [Chunk::EnclosedMessage.new(from_person, payload.to_s)] +
+-        message_to_chunks(payload, encrypted)
++      from = payload.header.from.first ? payload.header.from.first.format : ""
++      to = payload.header.to.map { |p| p.format }.join(", ")
++      cc = payload.header.cc.map { |p| p.format }.join(", ")
++      subj = payload.header.subject
++      subj = subj ? Message.normalize_subj(payload.header.subject.gsub(/\s+/, " ").gsub(/\s+$/, "")) : subj
++      if Rfc2047.is_encoded? subj
++        subj = Rfc2047.decode_to $encoding, subj
++      end
++      msgdate = payload.header.date
++      from_person = from ? Person.from_address (from) : nil
++      to_people = to ? Person.from_address_list (to) : nil
++      cc_people = cc ? Person.from_address_list (cc) : nil
++      [Chunk::EnclosedMessage.new(from_person, to_people, cc_people, msgdate, subj)] + message_to_chunks(payload, encrypted)
+     else
+       filename =
+         ## first, paw through the headers looking for a filename
+-- 
+1.6.3.1
+
+
+From israel.herraiz at gmail.com  Fri May 29 09:19:23 2009
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Fri, 29 May 2009 15:19:23 +0200
+Subject: [sup-talk] [PATCH] Fixing a couple of warnings (was Prettier
+	printing of enclosed messages)
+Message-ID: <691d00b80905290619y77769363t5ca4cbd7f270cc26@mail.gmail.com>
+
+The patch introduced a couple of warnings. They are fixed with the
+attached patch.
+
+Cheers,
+Israel
+
+---
+ lib/sup/message.rb |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 72ec6c5..422aafb 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -392,9 +392,9 @@ private
+         subj = Rfc2047.decode_to $encoding, subj
+       end
+       msgdate = payload.header.date
+-      from_person = from ? Person.from_address (from) : nil
+-      to_people = to ? Person.from_address_list (to) : nil
+-      cc_people = cc ? Person.from_address_list (cc) : nil
++      from_person = from ? Person.from_address(from) : nil
++      to_people = to ? Person.from_address_list(to) : nil
++      cc_people = cc ? Person.from_address_list(cc) : nil
+       [Chunk::EnclosedMessage.new(from_person, to_people, cc_people,
+msgdate, subj)] + message_to_chunks(payload, encrypted)
+     else
+       filename =
+-- 
+1.6.3.1
+
+From israel.herraiz at gmail.com  Fri May 29 08:48:06 2009
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Fri, 29 May 2009 14:48:06 +0200
+Subject: [sup-talk] [PATCH] Prettier printing of enclosed messages
+Message-ID: <4a1fe5cd.0a04d00a.1d89.ffffe1b2@mx.google.com>
+
+Hi,
+
+this patch prints enclosed messages with only some selected headers
+instead of the full headers, just as "normal" messages.
+
+Cheers,
+Israel
+
+---
+ lib/sup/message-chunks.rb |   26 +++++++++++++++++++-------
+ lib/sup/message.rb        |   17 +++++++++++++----
+ 2 files changed, 32 insertions(+), 11 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 1bf7796..7b55c91 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -208,13 +208,25 @@ EOS
+ 
+   class EnclosedMessage
+     attr_reader :lines
+-    def initialize from, body
+-      @from = from
+-      @lines = body.split "\n"
+-    end
++    def initialize from, to, cc, date, subj
++      @from = from ? "unknown sender" : from.full_adress
++      @to = to ? "" : to.map { |p| p.full_address }.join(", ")
++      @cc = cc ? "" : cc.map { |p| p.full_address }.join(", ")
++      if date
++        @date = date.rfc822
++      else
++        @date = ""
++      end
+ 
+-    def from
+-      @from ? @from.longname : "unknown sender"
++      @subj = subj
++
++      @lines = "\nFrom: #{from}\n"
++      @lines += "To: #{to}\n"
++      if !cc.empty?
++        @lines += "Cc: #{cc}\n"
++      end
++      @lines += "Date: #{date}\n"
++      @lines += "Subject: #{subj}\n\n"
+     end
+ 
+     def inlineable?; false end
+@@ -224,7 +236,7 @@ EOS
+     def viewable?; false end
+ 
+     def patina_color; :generic_notice_patina_color end
+-    def patina_text; "Begin enclosed message from #{from} (#{@lines.length} lines)" end
++    def patina_text; "Begin enclosed message sent on #{@date}" end
+ 
+     def color; :quote_color end
+   end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 6dd1f7d..72ec6c5 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -383,10 +383,19 @@ private
+       chunks
+     elsif m.header.content_type == "message/rfc822"
+       payload = RMail::Parser.read(m.body)
+-      from = payload.header.from.first
+-      from_person = from ? Person.from_address(from.format) : nil
+-      [Chunk::EnclosedMessage.new(from_person, payload.to_s)] +
+-        message_to_chunks(payload, encrypted)
++      from = payload.header.from.first ? payload.header.from.first.format : ""
++      to = payload.header.to.map { |p| p.format }.join(", ")
++      cc = payload.header.cc.map { |p| p.format }.join(", ")
++      subj = payload.header.subject
++      subj = subj ? Message.normalize_subj(payload.header.subject.gsub(/\s+/, " ").gsub(/\s+$/, "")) : subj
++      if Rfc2047.is_encoded? subj
++        subj = Rfc2047.decode_to $encoding, subj
++      end
++      msgdate = payload.header.date
++      from_person = from ? Person.from_address (from) : nil
++      to_people = to ? Person.from_address_list (to) : nil
++      cc_people = cc ? Person.from_address_list (cc) : nil
++      [Chunk::EnclosedMessage.new(from_person, to_people, cc_people, msgdate, subj)] + message_to_chunks(payload, encrypted)
+     else
+       filename =
+         ## first, paw through the headers looking for a filename
+-- 
+1.6.3.1
+
+
+From wmorgan-sup at masanjin.net  Sat May 30 20:48:13 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 30 May 2009 17:48:13 -0700
+Subject: [sup-talk] Getting gpg to work
+In-Reply-To: <8763fkwng3.fsf@pond.riseup.net>
+References: <87k5462s8q.fsf@pond.riseup.net> <1243441483-sup-2270@entry>
+	<8763fkwng3.fsf@pond.riseup.net>
+Message-ID: <1243730754-sup-8672@entry>
+
+Reformatted excerpts from Micah Anderson's message of 2009-05-28:
+> [Fri May 29 00:17:42 -0400 2009] crypto: detected gpg binary in /usr/bin/gpg
+
+Any other obvious messages in the log about multipart/encrypted?
+
+Assuming not, can you forward the email to me? I won't be able to
+decrypt it, presumably, but maybe I can figure out what's going on. The
+mime structure you've supplied looks fine, and Sup's gpg support is
+good, so I'm curious why it's not working for you.
+
+(Feel free to munge the headers and bodies if you desire, just don't
+change the mime stuff.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat May 30 20:59:51 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 30 May 2009 17:59:51 -0700
+Subject: [sup-talk] utf patch needs work, i think
+In-Reply-To: <1243553511-sup-472@ntdws12.chass.utoronto.ca>
+References: <1243539136-sup-9008@ntdws12.chass.utoronto.ca>
+	<1243553511-sup-472@ntdws12.chass.utoronto.ca>
+Message-ID: <1243731497-sup-5619@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-05-28:
+> ...a followup on the list makes me wonder if this isn't actually a sup
+> thing, but a weird encoding 'joke' by the poster.  Even if the body
+> display wasn't a sup bug, the name is still munged up.
+
+I have the same message. I'll play around with it... I suspect there's
+something like a tab or a weird character coming out of the decoding
+(which appears to be some non-utf16 text claiming a utf16 big-endian
+encoding) that is screwing with Ncurses.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat May 30 21:03:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 30 May 2009 18:03:40 -0700
+Subject: [sup-talk] [PATCH] Use rake/packagegemtask
+In-Reply-To: <20090528170633.GA4432@bach>
+References: <20090528170316.GA4359@bach> <20090528170633.GA4432@bach>
+Message-ID: <1243731812-sup-3370@entry>
+
+Reformatted excerpts from Ingmar Vanhassel's message of 2009-05-28:
+> Ehm, attached right now...
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Sun May 31 20:54:08 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 31 May 2009 20:54:08 -0400
+Subject: [sup-talk] [RFC] Bounce messages
+Message-ID: <1243817649-7642-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Hi All,
+
+I spent a few hours this evening putting together the basics of (I
+think) the last feature of mutt that I miss in sup: Message bouncing.
+
+It works in it's current form, but I think it needs a little further
+tweaking before it is merge ready.
+
+Currently it's pretty dumb wrt which sendmail command it calls.  It
+simply calls sendmail with some sane (for my environment, anyway) args
+and a list of recipients (skipping the -t flag which makes it read
+recipients from headers in the input).  I didn't want to implement a
+second mail variable per account, although that would solve the
+problem, and I didn't want to use the default sendmail command with
+the -t stripped from the args (although that would also work).
+
+The other thing that I don't like presently is the confirmation UI.
+Without resorting to a whole bounce-mode, is there a better way to
+handle this in the face of (potentially) multiple recipients that may
+make the question stretch outside the viewable area?
+
+I'm interested in what others think is the right solution to these
+problems...and whether others besides myself miss this feature of
+mutt.
+
+Thanks
+-Ben
+
+From bwalton at cquest.utoronto.ca  Sun May 31 21:01:10 2009
+From: bwalton at cquest.utoronto.ca (Ben Walton)
+Date: Sun, 31 May 2009 21:01:10 -0400
+Subject: [sup-talk] (no subject)
+Message-ID: <200906010101.n5111ADJ007928@ntdws12.chass.utoronto.ca>
+
+>From 702b2cc1e652c1f20f4280b11355cb337291df87 Mon Sep 17 00:00:00 2001
+From: Ben Walton <bwalton at artsci.utoronto.ca>
+Date: Sun, 31 May 2009 20:37:11 -0400
+Subject: [PATCH] Add bounce message feature
+
+By pressing ! in thread view mode, a message can be re-injected to the
+mail system without any modification.  The interesting/useful property
+of this feature is that, because only the envelope sender changes, the
+mail will show up at the new destination with the original From:
+header.  A use case for this is redirecting mail sent to an individual
+into a ticket system such that the original sender gets the
+auto-response.
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ lib/sup/modes/thread-view-mode.rb |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 42c6280..4737dde 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -41,6 +41,7 @@ EOS
+ #    k.add :collapse_non_new_messages, "Collapse all but unread messages", 'N'
+     k.add :reply, "Reply to a message", 'r'
+     k.add :forward, "Forward a message or attachment", 'f'
++    k.add :bounce, "Bounce message to other recipient(s)", '!'
+     k.add :alias, "Edit alias/nickname for a person", 'i'
+     k.add :edit_as_new, "Edit message as new", 'D'
+     k.add :save_to_disk, "Save message/attachment to disk", 's'
+@@ -172,6 +173,24 @@ EOS
+     end
+   end
+ 
++  def bounce
++    m = @message_lines[curpos] or return
++    to = BufferManager.ask_for_contacts(:people, "Bounce To: ") or return
++
++    if BufferManager.ask_yes_or_no "Really bounce to #{to.join(', ')}?"
++      cmd = "sendmail -oem -i #{to.map { |t| t.email}.join(' ')}"
++      begin
++        IO.popen(cmd, 'w') do |sm|
++          sm.puts m.raw_message
++        end
++        raise SendmailCommandFailed, "Couldn't execute #{cmd}" unless $? == 0
++      rescue SystemCallError, SendmailCommandFailed => e
++        Redwood::log "Problem sending mail: #{e.message}"
++        BufferManager.flash "Problem sending mail: #{e.message}"
++      end
++    end
++  end
++
+   include CanAliasContacts
+   def alias
+     p = @person_lines[curpos] or return
+-- 
+1.6.3
+
+
+From bwalton at artsci.utoronto.ca  Sun May 31 21:04:45 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 31 May 2009 21:04:45 -0400
+Subject: [sup-talk] (no subject)
+In-Reply-To: <200906010101.n5111ADJ007928@ntdws12.chass.utoronto.ca>
+References: <200906010101.n5111ADJ007928@ntdws12.chass.utoronto.ca>
+Message-ID: <1243818192-sup-3945@ntdws12.chass.utoronto.ca>
+
+Excerpts from Ben Walton's message of Sun May 31 21:01:10 -0400 2009:
+
+> >From 702b2cc1e652c1f20f4280b11355cb337291df87 Mon Sep 17 00:00:00 2001
+> From: Ben Walton <bwalton at artsci.utoronto.ca>
+> Date: Sun, 31 May 2009 20:37:11 -0400
+> Subject: [PATCH] Add bounce message feature
+
+...sorry for the odd way in which this arrived.  The changed behaviour
+in the recent git send-email threw me for a bit and I fired the cover
+letter without the patch following.
+
+Thanks.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090531/e287f32c/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Sun May 31 22:13:40 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 31 May 2009 22:13:40 -0400
+Subject: [sup-talk] (no subject)
+In-Reply-To: <200906010101.n5111ADJ007928@ntdws12.chass.utoronto.ca>
+References: <200906010101.n5111ADJ007928@ntdws12.chass.utoronto.ca>
+Message-ID: <1243822252-sup-9322@ntdws12.chass.utoronto.ca>
+
+Excerpts from Ben Walton's message of Sun May 31 21:01:10 -0400 2009:
+> >From 702b2cc1e652c1f20f4280b11355cb337291df87 Mon Sep 17 00:00:00 2001
+> From: Ben Walton <bwalton at artsci.utoronto.ca>
+> Date: Sun, 31 May 2009 20:37:11 -0400
+> Subject: [PATCH] Add bounce message feature
+
+I thought I'd also clarify that in its final form, there should be a
+refactor of EditMessageMode::send_message to pull out the wrapped
+IO.popen into a method usable for sending a normal message and
+bouncing a message.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090531/a19dd890/attachment.bin>
+

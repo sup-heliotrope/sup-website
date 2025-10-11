@@ -1,0 +1,459 @@
+From rthrd at web.de  Thu Sep  1 01:28:24 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Thu, 01 Sep 2011 07:28:24 +0200
+Subject: [sup-talk] turnsole crashes
+Message-ID: <1314854903-sup-1099@PrxServer3>
+
+
+Finally I started trying heliotrope/turnsole.
+
+Heliotrope runs, http://localhost8042 shows a nice list with all of my
+e-mails.
+
+ruby -I /home/ruthard/heliotrope/lib bin/turnsole raises:
+
+/var/lib/gems/1.9.1/gems/console-0.5/lib/console/string.rb:27:in
+`display_width': malformed string: incomplete multibyte character at
+position 99 (ArgumentError)
+        from
+/var/lib/gems/1.9.1/gems/console-0.5/lib/console/string.rb:27:in
+`display_width'
+        from /home/ruthard/turnsole/lib/turnsole/buffer.rb:61:in `write'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:242:in `block
+in draw_line_from_array'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:228:in `each'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:228:in
+`each_with_index'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:228:in
+`draw_line_from_array'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:203:in
+`draw_line'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/line-cursor-mode.rb:51:in
+`draw_line'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:48:in `block in
+draw!'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:48:in `each'
+        from
+/home/ruthard/turnsole/lib/turnsole/modes/scroll-mode.rb:48:in `draw!'
+        from /home/ruthard/turnsole/lib/turnsole/buffer.rb:45:in
+`force_draw!'
+        from /home/ruthard/turnsole/lib/turnsole/buffer.rb:41:in `draw!'
+        from /home/ruthard/turnsole/lib/turnsole/screen.rb:212:in
+`draw!'
+        from /home/ruthard/turnsole/lib/turnsole/ui.rb:43:in `step'
+        from bin/turnsole:150:in `<main>'
+I've updated all gems, upgraded to ruby 1.9.1, yet the same result.
+
+What can I do further?
+
+Yours, Ruthard
+
+From wmorgan-sup at masanjin.net  Wed Sep  7 15:18:12 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 07 Sep 2011 19:18:12 +0000
+Subject: [sup-talk] turnsole crashes
+In-Reply-To: <1314854903-sup-1099@PrxServer3>
+References: <1314854903-sup-1099@PrxServer3>
+Message-ID: <1315422876-sup-5270@masanjin.net>
+
+
+Reformatted excerpts from Ruthard Baudach's message of 2011-09-01:
+> ruby -I /home/ruthard/heliotrope/lib bin/turnsole raises:
+> 
+> /var/lib/gems/1.9.1/gems/console-0.5/lib/console/string.rb:27:in
+> `display_width': malformed string: incomplete multibyte character at
+> position 99 (ArgumentError)
+
+Thanks for the bug report. These character encoding issues are difficult
+to track down. Can you create an issue for this here?
+
+https://github.com/wmorgan/turnsole/issues
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jomat+sup-talk at jmt.gr  Fri Sep  9 13:35:30 2011
+From: jomat+sup-talk at jmt.gr (jomat)
+Date: Fri, 09 Sep 2011 17:35:30 +0000
+Subject: [sup-talk] Showing archived messages
+Message-ID: <1315588865-sup-1492@v2.zyria.de>
+
+Hi,
+
+I'm using the git version of sup, but could observe the same behavior in
+0.11.
+
+According to http://sup.rubyforge.org/NewUserGuide.txt, my inbox are all
+mails with the label "inbox": "This means that your inbox is nothing
+more than the result of the search for all messages with the label
+"inbox".". If I press l (l : Edit or add labels for a thread) on a thread
+in my inbox, there is no inbox label.
+The new user guide also told me "Force non-occurrence by -, e.g.
+-body:"hot soup"." for searches. Now I don't know if I didn't understand
+it, but shouldn't a search for -label:inbox show my archive? At least, it
+really should not show messages with the inbox label, but it does. If I
+toggle the detailed header with h, Labels: inbox, ... is displayed.
+
+What am I doing wrong and how do I display the archived messages?
+
+Thanks,
+jomat
+
+From david.froger at gmail.com  Sun Sep 18 09:02:00 2011
+From: david.froger at gmail.com (David Froger)
+Date: Sun, 18 Sep 2011 15:02:00 +0200
+Subject: [sup-talk] utf8-issue
+Message-ID: <1316350334-sup-6304@david-desktop>
+
+
+Hi all,
+
+Thanks for the excellent sup!
+
+I'm french, and so I have utf-8 issues... I'm trying to follow the first method
+of the wiki (that is, using the sources obtained from Git):
+http://sup.rubyforge.org/wiki/wiki.pl?UTF8
+
+libncurses5-dev and  libncursesw5-dev are  installed.  Changing to  the ncursesw
+branch, applying the patch and returnin to the next branch works.
+
+However, when I run sup with : "ruby -Ilib bin/sup", I get the error message:
+
+/usr/lib/ruby/1.8/sup/poll.rb:31: undefined method `[]' for nil:NilClass
+(NoMethodError)
+  from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+  from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+  from ./lib/sup.rb:374
+  from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+  from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+  from bin/sup:22
+
+Because I'm not familiar with ruby, I don't understand what is not working... Is
+the rubygems version to old?  I'm on ubuntu 10.04
+
+The command "apt-cache policy rubygems" give:
+
+rubygems:
+  Install??: 1.3.5-1ubuntu2
+  Candidat?: 1.3.5-1ubuntu2
+ Table de version?:
+ *** 1.3.5-1ubuntu2 0
+        500 http://fr.archive.ubuntu.com/ubuntu/ lucid/universe Packages
+        100 /var/lib/dpkg/status
+
+Or is another package missing?
+
+
+Thanks for any help !
+
+Best,
+David
+-- 
+
+From michael+sup at stapelberg.de  Sun Sep 18 09:17:07 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 18 Sep 2011 14:17:07 +0100
+Subject: [sup-talk] utf8-issue
+In-Reply-To: <1316350334-sup-6304@david-desktop>
+References: <1316350334-sup-6304@david-desktop>
+Message-ID: <1316351787-sup-6406@stapelberg.de>
+
+Hi David,
+
+Excerpts from David Froger's message of 2011-09-18 14:02:00 +0100:
+> /usr/lib/ruby/1.8/sup/poll.rb:31: undefined method `[]' for nil:NilClass
+> (NoMethodError)
+>   from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+>   from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+>   from ./lib/sup.rb:374
+>   from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+>   from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+>   from bin/sup:22
+Please use ruby1.9.1 and install the ncursesw gem with gem1.9.1 install
+ncursesw. That should fix all UTF-8 issues.
+
+Best regards,
+Michael
+
+From david.froger at gmail.com  Sun Sep 18 09:36:11 2011
+From: david.froger at gmail.com (David Froger)
+Date: Sun, 18 Sep 2011 15:36:11 +0200
+Subject: [sup-talk] utf8-issue
+In-Reply-To: <1316350334-sup-6304@david-desktop>
+References: <1316350334-sup-6304@david-desktop>
+Message-ID: <CAHnizxNm6EPxoU2wE8s2NrWLt8wg78ApUxNxua0OioCVyd3Xnw@mail.gmail.com>
+
+I just found the solution here:
+http://www.mail-archive.com/sup-devel at rubyforge.org/msg00692.html
+
+It solved my problem. I then update the index from v1 to v4 as sup
+asked, and I have utf-8 working nice!
+
+I added a "Troubleshooting" to the wiki:
+
+http://sup.rubyforge.org/wiki/wiki.pl?UTF8
+
+best,
+David
+
+From david.froger at gmail.com  Sun Sep 18 09:41:59 2011
+From: david.froger at gmail.com (David Froger)
+Date: Sun, 18 Sep 2011 15:41:59 +0200
+Subject: [sup-talk] utf8-issue
+In-Reply-To: <1316351787-sup-6406@stapelberg.de>
+References: <1316350334-sup-6304@david-desktop>
+	<1316351787-sup-6406@stapelberg.de>
+Message-ID: <1316353275-sup-1373@david-desktop>
+
+> Please use ruby1.9.1 and install the ncursesw gem with gem1.9.1 install
+> ncursesw. That should fix all UTF-8 issues.
+
+Thanks Michael, I will try!
+-- 
+
+From colin.yates at gmail.com  Wed Sep 28 17:39:56 2011
+From: colin.yates at gmail.com (Colin Yates)
+Date: Wed, 28 Sep 2011 22:39:56 +0100
+Subject: [sup-talk] Help - sup is garbling characters and chopping off the
+	ends of lines
+Message-ID: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+
+Hi all,
+
+gmail -> offlineimap -> sup on Ubuntu natty (all updates) x64 using xmonad
+and xterm with en-GB.UTF-8 locale
+
+I get the usual "missing ncursesw" and "cannot determine locale" but I don't
+think they are the cause of this issue.
+
+The problem is that some of the messages have the ends of their lines
+chopped off.  If I read them via the gmail web interface or mutt then they
+are fine.  The text as rendered by sup is:
+
+--- start
+different departments and he didnM-b~@~Yt have percentages, but the most com
+--- end
+
+the text as rendered by the web and mutt:
+
+--- start
+different departments and he didn?t have percentages, but the most common is
+--- end
+
+the test as rendered by sup's source view (V):
+
+--- start
+different departments and he didn=92t have percentages, but the most common=
+ is
+--- end
+
+I also installed on a Debian stable server with the same result.
+
+Any ideas?  I really want to be able to use sup but this is a blocker.
+
+Newbie here, so please go gently :)
+
+Col
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110928/8f7fea01/attachment.html>
+
+From groups at hjdivad.com  Thu Sep 29 17:06:29 2011
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Thu, 29 Sep 2011 14:06:29 -0700
+Subject: [sup-talk] Showing archived messages
+In-Reply-To: <1315588865-sup-1492@v2.zyria.de>
+References: <1315588865-sup-1492@v2.zyria.de>
+Message-ID: <1317330195-sup-9666@nyx.local>
+
+Excerpts from jomat's message of Fri Sep 09 10:35:30 -0700 2011:
+> Now I don't know if I didn't understand
+> it, but shouldn't a search for -label:inbox show my archive?
+
+I gather from experimentation (rather than documentation) that queries must have
+at least one positive clause.  A query with a single negative clause is treated
+as a positive clause.  I don't know of a way to search for ?anything?, but
+here's an example of a query that almost gets you what you want:
+
+  to:me -label:inbox
+
+I expect this is a bug and that `-label:inbox` is intended to work as you
+expect.
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From diego.joss at hispeed.ch  Thu Sep 29 18:32:33 2011
+From: diego.joss at hispeed.ch (Diego Joss)
+Date: Fri, 30 Sep 2011 00:32:33 +0200
+Subject: [sup-talk] Showing archived messages
+In-Reply-To: <1317330195-sup-9666@nyx.local>
+References: <1315588865-sup-1492@v2.zyria.de> <1317330195-sup-9666@nyx.local>
+Message-ID: <20110929223233.GA7353@hispeed.ch>
+
+Hi,
+
+if I'm not mistaken, you can use the 'all' keyword to match all
+messages. I haven't tested with sup, but sup is using xapian, and with
+notmuch (http://notmuchmail.org/), which also uses xapian, it works.
+
+thus try:
+all -label:inbox
+
+Diego
+
+On Thu, Sep 29, 2011 at 02:06:29PM -0700, David J. Hamilton wrote:
+> Excerpts from jomat's message of Fri Sep 09 10:35:30 -0700 2011:
+> > Now I don't know if I didn't understand
+> > it, but shouldn't a search for -label:inbox show my archive?
+> 
+> I gather from experimentation (rather than documentation) that queries must have
+> at least one positive clause.  A query with a single negative clause is treated
+> as a positive clause.  I don't know of a way to search for ?anything?, but
+> here's an example of a query that almost gets you what you want:
+> 
+>   to:me -label:inbox
+> 
+> I expect this is a bug and that `-label:inbox` is intended to work as you
+> expect.
+> -- 
+> med v?nlig h?lsning
+> David J. Hamilton
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From groups at hjdivad.com  Fri Sep 30 11:51:36 2011
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Fri, 30 Sep 2011 08:51:36 -0700
+Subject: [sup-talk] Showing archived messages
+In-Reply-To: <20110929223233.GA7353@hispeed.ch>
+References: <1315588865-sup-1492@v2.zyria.de> <1317330195-sup-9666@nyx.local>
+	<20110929223233.GA7353@hispeed.ch>
+Message-ID: <1317397868-sup-9773@nyx.local>
+
+Excerpts from Diego Joss's message of Thu Sep 29 15:32:33 -0700 2011:
+> Hi,
+> 
+> if I'm not mistaken, you can use the 'all' keyword to match all
+> messages. I haven't tested with sup, but sup is using xapian, and with
+> notmuch (http://notmuchmail.org/), which also uses xapian, it works.
+> 
+> thus try:
+> all -label:inbox
+
+Seems to work for me.  Thanks Diego.
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From dmishd at gmail.com  Fri Sep 30 14:03:24 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Fri, 30 Sep 2011 19:03:24 +0100
+Subject: [sup-talk] Help - sup is garbling characters and chopping off
+ the ends of lines
+In-Reply-To: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+References: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+Message-ID: <CAOxvSbdEuzhx7HsryCyvGSGn9h4W-jZ14MHdvR=23SvNDh+sZg@mail.gmail.com>
+
+> gmail -> offlineimap -> sup on Ubuntu natty (all updates) x64 using xmonad
+> and xterm with en-GB.UTF-8 locale
+> I get the usual "missing ncursesw" and "cannot determine locale" but I don't
+> think they are the cause of this issue.
+> The problem is that some of the messages have the ends of their lines
+> chopped off.
+
+Have you checked if the message is just indented a bit? If it is in a
+string of replies, then press 'n' to go down until the message is
+selected and then press '[' to reset the margin.
+
+If I read them via the gmail web interface or mutt then they
+> are fine. ?The text as rendered by sup is:
+> --- start
+> different departments and he didnM-b~@~Yt have percentages, but the most com
+> --- end
+
+This will be related to the lack of ncursesw - if you:
+
+sudo apt-get install libncursesw5-dev rubygems
+sudo gem install ncursesw
+
+Then you should get the full range of characters.
+
+Hamish
+
+From colin.yates at gmail.com  Fri Sep 30 14:25:18 2011
+From: colin.yates at gmail.com (Colin Yates)
+Date: Fri, 30 Sep 2011 19:25:18 +0100
+Subject: [sup-talk] Help - sup is garbling characters and chopping off
+	the ends of lines
+In-Reply-To: <CAOxvSbdEuzhx7HsryCyvGSGn9h4W-jZ14MHdvR=23SvNDh+sZg@mail.gmail.com>
+References: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+	<CAOxvSbdEuzhx7HsryCyvGSGn9h4W-jZ14MHdvR=23SvNDh+sZg@mail.gmail.com>
+	Hi Hamish, 
+Message-ID: <1317406494-sup-2375@os.Home>
+
+I upgraded to oneric and the wrapping issue has gone away - it was definitely a bug.
+
+I cannot install the ncursesw gem due to a missing dependency - after install ruby1.9full and just about every ncurses package I could find I gave up :).
+
+No worries - the UTF-8 issue is less of an issue than the wrapping.
+
+
+Excerpts from Hamish D's message of Fri Sep 30 19:03:24 +0100 2011:
+> > gmail -> offlineimap -> sup on Ubuntu natty (all updates) x64 using xmonad
+> > and xterm with en-GB.UTF-8 locale
+> > I get the usual "missing ncursesw" and "cannot determine locale" but I don't
+> > think they are the cause of this issue.
+> > The problem is that some of the messages have the ends of their lines
+> > chopped off.
+> 
+> Have you checked if the message is just indented a bit? If it is in a
+> string of replies, then press 'n' to go down until the message is
+> selected and then press '[' to reset the margin.
+> 
+> If I read them via the gmail web interface or mutt then they
+> > are fine. ?The text as rendered by sup is:
+> > --- start
+> > different departments and he didnM-b~@~Yt have percentages, but the most com
+> > --- end
+> 
+> This will be related to the lack of ncursesw - if you:
+> 
+> sudo apt-get install libncursesw5-dev rubygems
+> sudo gem install ncursesw
+> 
+> Then you should get the full range of characters.
+> 
+> Hamish
+
+From dmishd at gmail.com  Fri Sep 30 14:58:40 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Fri, 30 Sep 2011 19:58:40 +0100
+Subject: [sup-talk] Help - sup is garbling characters and chopping off
+ the ends of lines
+In-Reply-To: <1317406494-sup-2375@os.Home>
+References: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+	<CAOxvSbdEuzhx7HsryCyvGSGn9h4W-jZ14MHdvR=23SvNDh+sZg@mail.gmail.com>
+	<1317406494-sup-2375@os.Home>
+Message-ID: <CAOxvSbdS5fJEaXEYNivC83ws3VGFBuvdHWXRFnRFS45Lsg1v+g@mail.gmail.com>
+
+> I cannot install the ncursesw gem due to a missing dependency - after install ruby1.9full and just about every ncurses package I could find I gave up :).
+
+Do you get an error message about 'mkmf' - if so then you need to
+install ruby-dev (or ruby1.9.1-dev) in order to get that. And make
+sure you use gem1.9.1 if you are using ruby 1.9.
+
+Anyway, glad to hear your main problem has been solved.
+Hamish
+

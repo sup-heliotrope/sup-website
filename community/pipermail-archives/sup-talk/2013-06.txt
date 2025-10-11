@@ -1,0 +1,195 @@
+From skyronic at gmail.com  Sat Jun 15 14:24:17 2013
+From: skyronic at gmail.com (Anirudh Sanjeev)
+Date: Sat, 15 Jun 2013 19:54:17 +0530
+Subject: [sup-talk] Want to contribute to sup
+Message-ID: <CAE4LD9q+CMMQeqfUwpQ9Dpz=+60dOdvV+Yuu3s+XTAKgwm7OMA@mail.gmail.com>
+
+Hi,
+
+I tried using sup in Jan 2010 [1] and used it for a while and was a little
+disheartened when I didn't see a release for a while. Eventually I went
+about using a regular client but I kept checking up on sup.
+
+Today, I discover that the project is active again. And I am a better
+programmer than the last time I tried to work on sup 3 years ago, so I feel
+I can make some meaningful contributions. I will definitely try out the new
+release after I get home.
+
+I found that the offlineimap/Maildir approach to fetching email resulted in
+emails remaining marked as "unread" on the server and web-clients. Is this
+still the behavior when we use offlineimap to fetch the mail?
+
+Thank you,
+Anirudh
+
+
+[1]: http://rubyforge.org/pipermail/sup-talk/2010-January/003726.html
+
+-- 
+Co-founder and Developer, RazorFlow
+http://razorflow.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130615/fca79bb2/attachment-0001.html>
+
+From eg at gaute.vetsj.com  Sat Jun 15 15:36:04 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 15 Jun 2013 17:36:04 +0200
+Subject: [sup-talk] Want to contribute to sup
+In-Reply-To: <CAE4LD9q+CMMQeqfUwpQ9Dpz=+60dOdvV+Yuu3s+XTAKgwm7OMA@mail.gmail.com>
+References: <CAE4LD9q+CMMQeqfUwpQ9Dpz=+60dOdvV+Yuu3s+XTAKgwm7OMA@mail.gmail.com>
+Message-ID: <1371310273-sup-6422@qwerzila>
+
+Excerpts from Anirudh Sanjeev's message of 2013-06-15 16:24:17 +0200:
+> I tried using sup in Jan 2010 [1] and used it for a while and was a little
+> disheartened when I didn't see a release for a while. Eventually I went
+> about using a regular client but I kept checking up on sup.
+> 
+> Today, I discover that the project is active again. And I am a better
+> programmer than the last time I tried to work on sup 3 years ago, so I feel
+> I can make some meaningful contributions. I will definitely try out the new
+> release after I get home.
+
+Great! In case you're not aware of it, also check out the sup-devel list [1].
+
+ 
+> I found that the offlineimap/Maildir approach to fetching email resulted in
+> emails remaining marked as "unread" on the server and web-clients. Is this
+> still the behavior when we use offlineimap to fetch the mail?
+
+
+The work on syncing back status changes to IMAP (through maildir) is
+going on in the maildir-sync branch [2]. It is not yet included in a
+release, but it will hopefully soon be ready. Usage instructions [3] and
+some development notes [4] are available in the wiki.
+
+
+Regards, Gaute
+
+
+
+[1] http://rubyforge.org/pipermail/sup-devel/
+[2] https://github.com/sup-heliotrope/sup/tree/maildir-sync
+[3] https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+[4] https://github.com/sup-heliotrope/sup/wiki/Development%3A-Maildir-syncback
+
+From eg at gaute.vetsj.com  Fri Jun 21 12:07:19 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 21 Jun 2013 14:07:19 +0200
+Subject: [sup-talk] Release 0.13.1
+Message-ID: <1371816327-sup-6968@qwerzila>
+
+Greetings,
+
+I have just pushed version 0.13.1 of Sup to rubygems. This release holds
+should still be Ruby 1.8 compatible and holds the backported patches
+since the last release. 
+
+No big changes, but a number of fixes has been applied.
+
+Regards, Gaute
+
+
+From pearson at changedmy.name  Sat Jun 22 02:10:29 2013
+From: pearson at changedmy.name (James Pearson)
+Date: Fri, 21 Jun 2013 19:10:29 -0700
+Subject: [sup-talk] Release 0.13.1
+In-Reply-To: <1371816327-sup-6968@qwerzila>
+References: <1371816327-sup-6968@qwerzila>
+Message-ID: <CA+ds9gJCfauTgS1LvrsOF0QREAKh9pKy=a550nj=1ZNi7wBvzA@mail.gmail.com>
+
+I was going to ask why the tags on the Gitorious repo[0] hadn't been
+updated, when I visited the (new!) website and saw that development has
+moved onto Github[1] (and restarted!).  I'm apparently very behind the
+times - and perhaps now I should dig out those changes I made and submit
+them...
+
+Glad to see things moving along again.
+ - P
+
+[0]: http://gitorious.org/sup/mainline
+[1]: https://github.com/sup-heliotrope/sup
+
+
+On Fri, Jun 21, 2013 at 5:07 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+> Greetings,
+>
+> I have just pushed version 0.13.1 of Sup to rubygems. This release holds
+> should still be Ruby 1.8 compatible and holds the backported patches
+> since the last release.
+>
+> No big changes, but a number of fixes has been applied.
+>
+> Regards, Gaute
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130621/dd6a7cd6/attachment.html>
+
+From eg at gaute.vetsj.com  Sat Jun 22 10:48:13 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 22 Jun 2013 12:48:13 +0200
+Subject: [sup-talk] Release 0.13.1
+In-Reply-To: <CA+ds9gJCfauTgS1LvrsOF0QREAKh9pKy=a550nj=1ZNi7wBvzA@mail.gmail.com>
+References: <1371816327-sup-6968@qwerzila>
+	<CA+ds9gJCfauTgS1LvrsOF0QREAKh9pKy=a550nj=1ZNi7wBvzA@mail.gmail.com>
+Message-ID: <1371897680-sup-4189@qwerzila>
+
+Excerpts from James Pearson's message of 2013-06-22 04:10:29 +0200:
+> I was going to ask why the tags on the Gitorious repo[0] hadn't been
+> updated, when I visited the (new!) website and saw that development has
+> moved onto Github[1] (and restarted!).  I'm apparently very behind the
+> times - and perhaps now I should dig out those changes I made and submit
+> them...
+> 
+> Glad to see things moving along again.
+>  - P
+> 
+> [0]: http://gitorious.org/sup/mainline
+> [1]: https://github.com/sup-heliotrope/sup
+
+Yup! Dig 'em up. We generally prefer pull requests [0] now a days. Also,
+we've collected contribution/development resources in the new wiki [1].
+
+
+I have asked William if he would agree to redirect to/mention the new setup
+in the old gitorious repo. He gave me access to the sup-team, but I am
+unfortunately not allowed to make any admin changes to the repository.
+
+
+Regards, Gaute
+
+
+[0] https://github.com/sup-heliotrope/sup/pulls
+[1] https://github.com/sup-heliotrope/sup/wiki/Development
+
+
+From eg at gaute.vetsj.com  Wed Jun 26 12:38:00 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 26 Jun 2013 14:38:00 +0200
+Subject: [sup-talk] Release Sup 0.13.2 and ncursesw-sup 1.3.1.3
+Message-ID: <1372250076-sup-9668@qwerzila>
+
+Greetings,
+
+another release in the 0.13-line. Together with a new release of
+ncursesw-sup with help from Steven Lawrance Sup should now work on
+FreeBSD 10 (a wiki page with more info is in the works).
+
+$ gem install ncursesw-sup
+$ gem install sup
+
+
+Thanks to all contributors!
+
+
+Cheers,
+Gaute
+
+

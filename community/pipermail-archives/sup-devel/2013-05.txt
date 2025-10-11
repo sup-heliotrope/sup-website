@@ -1,0 +1,1035 @@
+From eg at gaute.vetsj.com  Thu May  2 08:17:18 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 02 May 2013 10:17:18 +0200
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <CAHWBo_aKjp__dkjuJ-tYHpKJuv2G=k_jxTWMo0QyyUtvxZbGXA@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<1367233230-sup-3593@tesla> <517E5BD8.6030803@gaute.vetsj.com>
+	<CAHWBo_aKjp__dkjuJ-tYHpKJuv2G=k_jxTWMo0QyyUtvxZbGXA@mail.gmail.com>
+Message-ID: <5182210E.4040100@gaute.vetsj.com>
+
+
+
+On 30. april 2013 11:44, Horacio Sanson wrote:
+> Great to see Sup getting back on track again..
+> 
+> I submitted some patches for the Gmail dumper of Heliotrope some time ago
+> but the lack of non alphabet languages (Japanese, Chinese) made it
+> impossible for me to keep using heliotrope/turnesole.
+> 
+> The main issue to support Japanese/Chinese with heliotrope was that
+> whistlepig (indexer) lacked the ability to tokenize these languages. Also
+> the half baked UTF-8 support caused several issues with these languages.
+> 
+> I would like to help in testing/implementing support for these languages,
+> starting with Japanese, but I would require some guidance. First I would
+> like to know is there is a way to configure the Xapian tokenizer
+> (segmenter) within sup? Please consider that I am new to both sup and to
+> Xapian.
+
+Hi Horacio,
+
+consider opening an issue at
+https://github.com/sup-heliotrope/sup/issues to make sure this doesn't
+disappear. Some changes will probably be made to the indexer when going
+to Mail (from RMail), but I hope to be able to migrate the existing
+index. Perhaps its time to get it right for arbitrary languages as well.
+I am unfamiliar with Japanes/Chinese - does UTF-8 cover the needs?
+
+Mail is better at handling UTF-8 and I think there was some fork that
+had some extra support for Japanese.
+
+Regards, Gaute
+
+From eg at gaute.vetsj.com  Tue May  7 11:54:22 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 07 May 2013 13:54:22 +0200
+Subject: [sup-devel] sup 0.13 - please test
+In-Reply-To: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+Message-ID: <5188EB6E.8070504@gaute.vetsj.com>
+
+On 28. april 2013 22:32, Hamish D wrote:
+> We'd like to get version 0.13 of sup out soon.  There's a fair bit of
+> work gone into sup since 0.12 was released (in January 2011) that it
+> would be good to get out there. Once that is done we can then work on
+> the bigger goals we have for 0.14 - see
+> https://github.com/sup-heliotrope/sup/wiki/Development#roadmap for
+> those plans.
+> 
+> So the question is, are there any serious bugs that we should fix
+> before releasing 0.13?
+
+Greetings sup-devel and sup-talk,
+
+
+Thanks to several contributors I think we should be getting ready for
+0.13 now soon, we've removed a lot of old and deprecated stuff and
+generally cleaned a bit up.
+
+There is a new web page: http://supmua.org which is getting in shape and
+a wiki which is quickly growing: https://github.com/sup-heliotrope/sup/wiki
+
+We have forked our own version of ncursesw (ncursesw-sup) which now is a
+dependency for sup [1].
+
+To be able to do the next release we need some testing of the current
+state of 'develop' and the new ncursesw-sup gem. For instructions on how
+to help out with testing the latest git version (develop) check out:
+https://github.com/sup-heliotrope/sup/wiki/Running-from-git
+
+If you have any problems or questions please ask.
+
+Report issues to: https://github.com/sup-heliotrope/sup/issues
+
+
+[1] https://rubygems.org/gems/ncursesw-sup
+
+
+Regards,
+Gaute
+
+From hsanson at gmail.com  Thu May  9 01:39:08 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 9 May 2013 10:39:08 +0900
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <5182210E.4040100@gaute.vetsj.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<1367233230-sup-3593@tesla> <517E5BD8.6030803@gaute.vetsj.com>
+	<CAHWBo_aKjp__dkjuJ-tYHpKJuv2G=k_jxTWMo0QyyUtvxZbGXA@mail.gmail.com>
+	<5182210E.4040100@gaute.vetsj.com>
+Message-ID: <CAHWBo_ZC176WjeMpPs_rJE9=41exnxxJ0ENfLpHRj1ZtOpg2Ng@mail.gmail.com>
+
+UTF-8 handles most cases but I still have to deal with emails in
+ISO2022-JP, Shift-JIS and EUC-JP. After some research it seems Xapian has
+no support for Asian languages. I will try to make some tests and open an
+issue if I cannot make it work.
+
+I can see in the sup configuration file that the stem language can be
+configured but there are no CJK stemmers for Xapian that I can find.
+
+
+On Thu, May 2, 2013 at 5:17 PM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+>
+>
+> On 30. april 2013 11:44, Horacio Sanson wrote:
+> > Great to see Sup getting back on track again..
+> >
+> > I submitted some patches for the Gmail dumper of Heliotrope some time ago
+> > but the lack of non alphabet languages (Japanese, Chinese) made it
+> > impossible for me to keep using heliotrope/turnesole.
+> >
+> > The main issue to support Japanese/Chinese with heliotrope was that
+> > whistlepig (indexer) lacked the ability to tokenize these languages. Also
+> > the half baked UTF-8 support caused several issues with these languages.
+> >
+> > I would like to help in testing/implementing support for these languages,
+> > starting with Japanese, but I would require some guidance. First I would
+> > like to know is there is a way to configure the Xapian tokenizer
+> > (segmenter) within sup? Please consider that I am new to both sup and to
+> > Xapian.
+>
+> Hi Horacio,
+>
+> consider opening an issue at
+> https://github.com/sup-heliotrope/sup/issues to make sure this doesn't
+> disappear. Some changes will probably be made to the indexer when going
+> to Mail (from RMail), but I hope to be able to migrate the existing
+> index. Perhaps its time to get it right for arbitrary languages as well.
+> I am unfamiliar with Japanes/Chinese - does UTF-8 cover the needs?
+>
+> Mail is better at handling UTF-8 and I think there was some fork that
+> had some extra support for Japanese.
+>
+> Regards, Gaute
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130509/e4a66d23/attachment.html>
+
+From hsanson at gmail.com  Thu May  9 09:28:10 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 9 May 2013 18:28:10 +0900
+Subject: [sup-devel] Experimental Gmail Source
+Message-ID: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+
+I am trying to implement a new source for Gmail accounts. This is copied
+from my efforts to do the same in Heliotrope.
+
+Here is an experimental implementation that can read the email from Gmail
+and add it to the Sup index:
+
+https://github.com/hsanson/sup/tree/gmail_source
+
+To use:
+
+  - Install leveldb gem "sudo gem install leveldb-ruby"
+  - Add a gmail source:   sup-add gmail://username at gmail.com
+  - Start sup and see how it syncs your emails.
+
+Warnings:
+
+  - This is experimental
+  - This always syncs only the All mailbox so make sure to use an
+     account with not too many emails for testing.
+  - All email data and headers are stored in a LevelDB database at:
+       ~/.sup/gmail/account
+
+Help:
+
+  - How do I stop the source poll when I quit sup? If I have a large amount
+    of emails when polling is running and I quit sup the process hangs
+there.
+    Does sup has a mechanism to stop the polling in progress?
+  - For some reason I get duplicate "Inbox" and "Sent" labels in the list of
+    labels and I am not sure why.
+  - I still have no clue on how to handle sync-back. That is how to
+propagate
+    changes made in sup back to Gmail. Any tips on how the maildir source
+    does it would be appreciated.
+
+regards
+Horacio Sanson
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130509/b112f3f5/attachment.html>
+
+From eric.weikl at gmx.net  Thu May  9 19:13:12 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Thu, 09 May 2013 21:13:12 +0200
+Subject: [sup-devel] Experimental Gmail Source
+In-Reply-To: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+References: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+Message-ID: <1368126620-sup-137@mint>
+
+Hi Horacio,
+
+Excerpts from Horacio Sanson's message of 2013-05-09 11:28:10 +0200:
+>   - I still have no clue on how to handle sync-back. That is how to
+>     propagate changes made in sup back to Gmail. Any tips on how the
+>     maildir source does it would be appreciated.
+
+The maildir branch currently only syncs the flags supported by the
+maildir spec (by manipulating the file name, see "What can I put in
+info?"[1]). These flags can be synced back to GMail or other mail
+providers using offlineimap.
+
+To sync arbitrary labels, we would probably have to modify the original
+mail headers, like GMail seems to do with the X-GM-LABELS label (I only
+looked at your code, I don't have a GMail account).
+
+Gaute and Matthieu started gathering some ideas in the Wiki[2].
+
+Cheers,
+Eric
+
+Links:
+[1] http://cr.yp.to/proto/maildir.html
+[2] https://github.com/sup-heliotrope/sup/wiki/Development%3A-Maildir-syncback
+
+From hsanson at gmail.com  Sat May 11 00:30:08 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sat, 11 May 2013 09:30:08 +0900
+Subject: [sup-devel] How to get labels from sup for a specific message id?
+Message-ID: <CAHWBo_Z-Wmqdq6z+b5Qcnic8sQSLMsh=3h9_C-n0LT8urbLW3A@mail.gmail.com>
+
+For my gmail source [1] I need to find out the labels for each message in
+sup. This is to update the remote Gmail with the labels the user set using
+sup.
+
+I am not very familiar with sup source code and my attempts to extract the
+message labels based on the message id have failed.
+
+My last try was:
+
+index = Redwood::Index.instance
+msg = index.build_message(uid)
+
+but this results in an error about Range not being converted to Integer.
+The uid is the id I use to register the message to sup during the poll
+method call.
+
+Any tips are appreciated
+Horacio
+
+[1] https://github.com/hsanson/sup/tree/gmail_source
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130511/00fb9918/attachment.html>
+
+From eg at gaute.vetsj.com  Sat May 11 10:15:07 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 11 May 2013 12:15:07 +0200
+Subject: [sup-devel] Experimental Gmail Source
+In-Reply-To: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+References: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+Message-ID: <518E1A2B.2080903@gaute.vetsj.com>
+
+
+
+On 09. mai 2013 11:28, Horacio Sanson wrote:
+> I am trying to implement a new source for Gmail accounts. This is 
+> copied from my efforts to do the same in Heliotrope.
+> 
+> Here is an experimental implementation that can read the email from 
+> Gmail and add it to the Sup index:
+> 
+> https://github.com/hsanson/sup/tree/gmail_source
+> 
+> To use:
+> 
+> - Install leveldb gem "sudo gem install leveldb-ruby" - Add a gmail 
+> source:   sup-add gmail://username at gmail.com - Start sup and see how 
+> it syncs your emails.
+> 
+> Warnings:
+> 
+> - This is experimental - This always syncs only the All mailbox so 
+> make sure to use an account with not too many emails for testing. - 
+> All email data and headers are stored in a LevelDB database at: 
+> ~/.sup/gmail/account
+> 
+
+> - For some reason I get duplicate "Inbox" and "Sent" labels in the 
+> list of labels and I am not sure why. 
+>  - I still have no clue on how  to handle sync-back. That is how to
+propagate
+> changes made in sup
+> back to Gmail. Any tips on how the maildir source does it would be 
+> appreciated.
+
+Hi Horacio,
+
+nice work. Working directly with GMail labels is probably a good idea
+(the other option is to move messages between IMAP folders). I have a
+design question though:
+
+Should remote sources be part of regular sup? Or should rather the
+fetching and syncing be put in a separate script which creates a LevelDB
+setup like you have it with a Gmail source in sup working directly on it?
+
+Recall that the IMAP source was removed in 52e29ba [1] (discussion
+probably on the mailinglist somewhere).
+
+I like this approach for GMail, but I would like to see it for regular
+IMAP sources as well with folders as labels.. I briefly experimented
+with a maildir-root folder approach [2] which treats all underlying
+maildirs as sources which correspond to a label (do not use,
+incomplete). It of course presents a plethora of questions on how to
+sync messages between labels, but implementing it is is probably
+relatively straight forward.
+
+> Help:
+> 
+> - How do I stop the source poll when I quit sup? If I have a large 
+> amount of emails when polling is running and I quit sup the process
+> hangs there. 
+
+This normally runs in a separate thread, I don't think maildir really
+stops the polling - so I sometimes get an error if I quit sup while the
+polling is running and various stuff just disappears underneath the poller.
+
+I don't have the chance to get into your other questions at the moment.
+
+Regards, Gaute
+
+[1] https://github.com/sup-heliotrope/sup/commit/52e29ba
+[2] https://github.com/gauteh/sup/tree/maildir-root
+
+From eg at gaute.vetsj.com  Sat May 11 10:38:16 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 11 May 2013 12:38:16 +0200
+Subject: [sup-devel] sup for 2.0
+Message-ID: <518E1F98.5070308@gaute.vetsj.com>
+
+Greetings suppers,
+
+I was thinking about setting up a branch for next generation sup, I have
+partly switched to Mail (in stead of RMail) and started migrating to
+using safe-ids in the index as opposed to the slightly modified
+message-id and message-refs. I have put this in a sup-for-two branch
+[1]. It is based on the discussion in issue 22 [2].
+
+Anyway, my proposal is: we set up a sup-for-two branch on origin. The
+things that should go in there are:
+- maildir-sync
+- Mail
+- Id -> safe id change
+- other big changes we want for sup-0.14 or the future
+
+The only mature feature here is the maildir-sync branch (which I have
+also based my Mail work on). I still think that we should merge in the
+Mail work pretty soon because the change of id to safeid (also for all
+refs) will be extra work to port later - given that we move to Mail.
+There are some issues and unfinished things still:
+- performance (about half of RMail)
+- only implemented for maildir, not for mbox or for sending
+- haven't figured out all threading logic [3]
+- migration script for index [4] is incomplete (and it might not even be
+really possible)
+
+Mail is UTF-8 (but crashes on too nasty input [5]), I've started to
+collect nasty emails for testing purposes.. we should add those to the
+test-suite somehow. So far most UTF-8 issues seems to have been solved
+by [6] and native UTF-8 in Mail. Tested on some 25k of email of
+extremely varying quality.
+
+Comments are appreciated.
+
+Regards, Gaute
+
+
+[1] https://github.com/gauteh/sup/tree/sup-for-two
+[2] https://github.com/sup-heliotrope/sup/issues/22
+[3] https://github.com/gauteh/sup/blob/sup-for-two/lib/sup/thread.rb#L299
+[4] https://github.com/gauteh/sup/blob/sup-for-two/bin/sup-migrate-index
+[5] https://github.com/mikel/mail/issues/544
+[6] https://github.com/gauteh/sup/blob/sup-for-two/lib/sup/util.rb#L344
+
+From hsanson at gmail.com  Sat May 11 18:18:46 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sun, 12 May 2013 03:18:46 +0900
+Subject: [sup-devel] Experimental Gmail Source
+In-Reply-To: <518E1A2B.2080903@gaute.vetsj.com>
+References: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+	<518E1A2B.2080903@gaute.vetsj.com>
+Message-ID: <CAHWBo_ZMce1GV=ChkLrSNbz9Lf-DtPb4W479kChXmUFMQf5qpw@mail.gmail.com>
+
+On Sat, May 11, 2013 at 7:15 PM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+>
+>
+> On 09. mai 2013 11:28, Horacio Sanson wrote:
+> > I am trying to implement a new source for Gmail accounts. This is
+> > copied from my efforts to do the same in Heliotrope.
+> >
+> > Here is an experimental implementation that can read the email from
+> > Gmail and add it to the Sup index:
+> >
+> > https://github.com/hsanson/sup/tree/gmail_source
+> >
+> > To use:
+> >
+> > - Install leveldb gem "sudo gem install leveldb-ruby" - Add a gmail
+> > source:   sup-add gmail://username at gmail.com - Start sup and see how
+> > it syncs your emails.
+> >
+> > Warnings:
+> >
+> > - This is experimental - This always syncs only the All mailbox so
+> > make sure to use an account with not too many emails for testing. -
+> > All email data and headers are stored in a LevelDB database at:
+> > ~/.sup/gmail/account
+> >
+>
+> > - For some reason I get duplicate "Inbox" and "Sent" labels in the
+> > list of labels and I am not sure why.
+> >  - I still have no clue on how  to handle sync-back. That is how to
+> propagate
+> > changes made in sup
+> > back to Gmail. Any tips on how the maildir source does it would be
+> > appreciated.
+>
+> Hi Horacio,
+>
+> nice work. Working directly with GMail labels is probably a good idea
+> (the other option is to move messages between IMAP folders). I have a
+> design question though:
+>
+> Should remote sources be part of regular sup? Or should rather the
+> fetching and syncing be put in a separate script which creates a LevelDB
+> setup like you have it with a Gmail source in sup working directly on it?
+>
+
+
+I don't like the current two step sync setup that Sup uses now (IMAP ->
+Maildir -> Sup). It requires external programs (offlineimap) and
+synchronization is one way only. I know about the sync-back branch but
+AFAIK it is still limited to flags only. Also Maildir is an old storage
+format that doesn't work well with current email workflows. For example I
+have tons of duplicate emails on several folders due to the use of
+mailboxes rather than labels.
+
+I would prefer Sup to take care of the mail storage/indexing (as heliotrope
+does) and the sources be in charge of syncing the Sup storage/index with
+the remote servers. I understand that this can be difficult due to the
+difference in paradigm between IMAP/POP and Sup but GMail offers extensions
+that map directly to Sup workflow. GMail gives each email a unique 64bit
+ascending indentifier to all mail messages and adds labels them. I don't
+even need the LevelDB database as I could easily implement the source so it
+fetches the mail headers and body from the Gmail server directly when
+requested. I only added the LevelDB storage as a cache to speed up the
+message lookups and for offline use.
+
+
+> Recall that the IMAP source was removed in 52e29ba [1] (discussion
+> probably on the mailinglist somewhere).
+>
+>
+Yes I know this and reading the commits and source code of this source I
+can tell that William hated the IMAP protocol. This is understandable as I
+myself have dealt with this protocol and know first hand how broken it is.
+But again with the extensions supported by GMail servers the implementation
+is far easier to do.
+
+
+> I like this approach for GMail, but I would like to see it for regular
+> IMAP sources as well with folders as labels.. I briefly experimented
+> with a maildir-root folder approach [2] which treats all underlying
+> maildirs as sources which correspond to a label (do not use,
+> incomplete). It of course presents a plethora of questions on how to
+> sync messages between labels, but implementing it is is probably
+> relatively straight forward.
+>
+>
+IMAP is a horrible protocol and implementing it requires herculean effort.
+Still once the Gmail source is finished it can become a starting point for
+a more complete IMAP source.
+
+
+> > Help:
+> >
+> > - How do I stop the source poll when I quit sup? If I have a large
+> > amount of emails when polling is running and I quit sup the process
+> > hangs there.
+>
+> This normally runs in a separate thread, I don't think maildir really
+> stops the polling - so I sometimes get an error if I quit sup while the
+> polling is running and various stuff just disappears underneath the poller.
+>
+>
+I see that sup simply kills the threads... would be better if each source
+had a stop method that Sup could invoke to stop the polling. I will try to
+look into this issue as it is problematic for remote sources with large
+amounts of emails.
+
+I don't have the chance to get into your other questions at the moment.
+>
+>
+Thanks for answering my inquiries. If you have a chance I would really like
+to know how to get the labels for a specific email from the index. I need
+this to implement the sync-back part of the Gmail source.
+
+regards,
+Horacio
+
+
+> Regards, Gaute
+>
+> [1] https://github.com/sup-heliotrope/sup/commit/52e29ba
+> [2] https://github.com/gauteh/sup/tree/maildir-root
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130512/d8ebe0a6/attachment-0001.html>
+
+From eg at gaute.vetsj.com  Mon May 13 07:46:33 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 13 May 2013 09:46:33 +0200
+Subject: [sup-devel] sup 0.13 - please test
+In-Reply-To: <5188EB6E.8070504@gaute.vetsj.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<5188EB6E.8070504@gaute.vetsj.com>
+Message-ID: <51909A59.4030003@gaute.vetsj.com>
+
+
+
+On 07. mai 2013 13:54, Gaute Hope wrote:
+> On 28. april 2013 22:32, Hamish D wrote:
+>> We'd like to get version 0.13 of sup out soon.  There's a fair bit of
+>> work gone into sup since 0.12 was released (in January 2011) that it
+>> would be good to get out there. Once that is done we can then work on
+>> the bigger goals we have for 0.14 - see
+>> https://github.com/sup-heliotrope/sup/wiki/Development#roadmap for
+>> those plans.
+>>
+>> So the question is, are there any serious bugs that we should fix
+>> before releasing 0.13?
+> 
+> Greetings sup-devel and sup-talk,
+> 
+> 
+> Thanks to several contributors I think we should be getting ready for
+> 0.13 now soon, we've removed a lot of old and deprecated stuff and
+> generally cleaned a bit up.
+> 
+> There is a new web page: http://supmua.org which is getting in shape and
+> a wiki which is quickly growing: https://github.com/sup-heliotrope/sup/wiki
+> 
+> We have forked our own version of ncursesw (ncursesw-sup) which now is a
+> dependency for sup [1].
+
+I think we are as good as we are going to get now. Unless something big
+comes up we will release 0.13 on Wednesday.
+
+Regards, Gaute
+
+
+From matthieu.rakotojaona at gmail.com  Mon May 13 23:15:31 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 14 May 2013 01:15:31 +0200
+Subject: [sup-devel] sup 0.13 - please test
+In-Reply-To: <51909A59.4030003@gaute.vetsj.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<5188EB6E.8070504@gaute.vetsj.com>
+	<51909A59.4030003@gaute.vetsj.com>
+Message-ID: <1368485829-sup-9105@kpad>
+
+Excerpts from Gaute Hope's message of lun. mai 13 09:46:33 +0200 2013:
+> 
+> On 07. mai 2013 13:54, Gaute Hope wrote:
+> > On 28. april 2013 22:32, Hamish D wrote:
+> >> We'd like to get version 0.13 of sup out soon.  There's a fair bit of
+> >> work gone into sup since 0.12 was released (in January 2011) that it
+> >> would be good to get out there. Once that is done we can then work on
+> >> the bigger goals we have for 0.14 - see
+> >> https://github.com/sup-heliotrope/sup/wiki/Development#roadmap for
+> >> those plans.
+> >>
+> >> So the question is, are there any serious bugs that we should fix
+> >> before releasing 0.13?
+> > 
+> > Greetings sup-devel and sup-talk,
+> > 
+> > 
+> > Thanks to several contributors I think we should be getting ready for
+> > 0.13 now soon, we've removed a lot of old and deprecated stuff and
+> > generally cleaned a bit up.
+> > 
+> > There is a new web page: http://supmua.org which is getting in shape and
+> > a wiki which is quickly growing: https://github.com/sup-heliotrope/sup/wiki
+> > 
+> > We have forked our own version of ncursesw (ncursesw-sup) which now is a
+> > dependency for sup [1].
+> 
+> I think we are as good as we are going to get now. Unless something big
+> comes up we will release 0.13 on Wednesday.
+> 
+> Regards, Gaute
+> 
+
+Guys you are awesome. I am running sup like a breeze from ruby 1.8 with
+the gem built from the gemspec. I could even use the gpgme gem to
+sign/encrypt/decrypt/verify some emails, so it really is a huge thing to
+me.
+
+I do have a problem running with ruby 1.9 though, with xapian not
+launching correctly. 
+
+-- 
+Matthieu Rakotojaona
+
+From hsanson at gmail.com  Wed May 15 02:10:22 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 15 May 2013 11:10:22 +0900
+Subject: [sup-devel] Experimental Gmail Source
+In-Reply-To: <CAHWBo_ZMce1GV=ChkLrSNbz9Lf-DtPb4W479kChXmUFMQf5qpw@mail.gmail.com>
+References: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+	<518E1A2B.2080903@gaute.vetsj.com>
+	<CAHWBo_ZMce1GV=ChkLrSNbz9Lf-DtPb4W479kChXmUFMQf5qpw@mail.gmail.com>
+Message-ID: <CAHWBo_ZY7bWTxfqbQ1H3hu-q6mzKZm-YYe-+t0b-0M7xwUDfYQ@mail.gmail.com>
+
+Hello all,
+
+I am still trying to implement sync-back functionality to my GMail source
+but not going anywhere.
+The problem I have is that the Sup index keeps the messages ids provided by
+RMail (e.g. 20cf301af801a2aa8b04dc6e9931 at google.com) and not the id I get
+from the source that is the X-MSG-ID provided by Gmail
+(e.g. 1434541737393941768). I need a way to query the index using the Gmail
+provided id and get a message back or at least it's labels so I can compare
+and update them on the server side if required.
+
+This is what I have found so far:
+
+  - There is no way to query the index for a message using the source
+(Gmail) provided id.
+  - The only places I can see where the source message ids are stored is in
+a locations array
+     that keeps the source own id and the source message id.
+  - Sup index provides methods to query messages by id (build_message,
+contains_id?, etc)
+    but the id they accept is the message id provided my RMail, not the id
+of the source.
+
+Questions:
+
+  - What is the purpose of the locations array? To allow a single message
+to exists on
+    multiple sources?
+  - Is there an easy way to query the index to return a message/messages
+using the
+    source provided id?
+  - Is a good idea to add a term to the index that keeps the source id
+along with the message id?
+
+regards,
+Horacio
+
+
+
+
+On Sun, May 12, 2013 at 3:18 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+
+>
+>
+>
+> On Sat, May 11, 2013 at 7:15 PM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>
+>>
+>>
+>> On 09. mai 2013 11:28, Horacio Sanson wrote:
+>> > I am trying to implement a new source for Gmail accounts. This is
+>> > copied from my efforts to do the same in Heliotrope.
+>> >
+>> > Here is an experimental implementation that can read the email from
+>> > Gmail and add it to the Sup index:
+>> >
+>> > https://github.com/hsanson/sup/tree/gmail_source
+>> >
+>> > To use:
+>> >
+>> > - Install leveldb gem "sudo gem install leveldb-ruby" - Add a gmail
+>> > source:   sup-add gmail://username at gmail.com - Start sup and see how
+>> > it syncs your emails.
+>> >
+>> > Warnings:
+>> >
+>> > - This is experimental - This always syncs only the All mailbox so
+>> > make sure to use an account with not too many emails for testing. -
+>> > All email data and headers are stored in a LevelDB database at:
+>> > ~/.sup/gmail/account
+>> >
+>>
+>> > - For some reason I get duplicate "Inbox" and "Sent" labels in the
+>> > list of labels and I am not sure why.
+>> >  - I still have no clue on how  to handle sync-back. That is how to
+>> propagate
+>> > changes made in sup
+>> > back to Gmail. Any tips on how the maildir source does it would be
+>> > appreciated.
+>>
+>> Hi Horacio,
+>>
+>> nice work. Working directly with GMail labels is probably a good idea
+>> (the other option is to move messages between IMAP folders). I have a
+>> design question though:
+>>
+>> Should remote sources be part of regular sup? Or should rather the
+>> fetching and syncing be put in a separate script which creates a LevelDB
+>> setup like you have it with a Gmail source in sup working directly on it?
+>>
+>
+>
+> I don't like the current two step sync setup that Sup uses now (IMAP ->
+> Maildir -> Sup). It requires external programs (offlineimap) and
+> synchronization is one way only. I know about the sync-back branch but
+> AFAIK it is still limited to flags only. Also Maildir is an old storage
+> format that doesn't work well with current email workflows. For example I
+> have tons of duplicate emails on several folders due to the use of
+> mailboxes rather than labels.
+>
+> I would prefer Sup to take care of the mail storage/indexing (as
+> heliotrope does) and the sources be in charge of syncing the Sup
+> storage/index with the remote servers. I understand that this can be
+> difficult due to the difference in paradigm between IMAP/POP and Sup but
+> GMail offers extensions that map directly to Sup workflow. GMail gives each
+> email a unique 64bit ascending indentifier to all mail messages and adds
+> labels them. I don't even need the LevelDB database as I could easily
+> implement the source so it fetches the mail headers and body from the Gmail
+> server directly when requested. I only added the LevelDB storage as a cache
+> to speed up the message lookups and for offline use.
+>
+>
+>> Recall that the IMAP source was removed in 52e29ba [1] (discussion
+>> probably on the mailinglist somewhere).
+>>
+>>
+> Yes I know this and reading the commits and source code of this source I
+> can tell that William hated the IMAP protocol. This is understandable as I
+> myself have dealt with this protocol and know first hand how broken it is.
+> But again with the extensions supported by GMail servers the implementation
+> is far easier to do.
+>
+>
+>> I like this approach for GMail, but I would like to see it for regular
+>> IMAP sources as well with folders as labels.. I briefly experimented
+>> with a maildir-root folder approach [2] which treats all underlying
+>> maildirs as sources which correspond to a label (do not use,
+>> incomplete). It of course presents a plethora of questions on how to
+>> sync messages between labels, but implementing it is is probably
+>> relatively straight forward.
+>>
+>>
+> IMAP is a horrible protocol and implementing it requires herculean effort.
+> Still once the Gmail source is finished it can become a starting point for
+> a more complete IMAP source.
+>
+>
+>> > Help:
+>> >
+>> > - How do I stop the source poll when I quit sup? If I have a large
+>> > amount of emails when polling is running and I quit sup the process
+>> > hangs there.
+>>
+>> This normally runs in a separate thread, I don't think maildir really
+>> stops the polling - so I sometimes get an error if I quit sup while the
+>> polling is running and various stuff just disappears underneath the
+>> poller.
+>>
+>>
+> I see that sup simply kills the threads... would be better if each source
+> had a stop method that Sup could invoke to stop the polling. I will try to
+> look into this issue as it is problematic for remote sources with large
+> amounts of emails.
+>
+> I don't have the chance to get into your other questions at the moment.
+>>
+>>
+> Thanks for answering my inquiries. If you have a chance I would really
+> like to know how to get the labels for a specific email from the index. I
+> need this to implement the sync-back part of the Gmail source.
+>
+> regards,
+> Horacio
+>
+>
+>> Regards, Gaute
+>>
+>> [1] https://github.com/sup-heliotrope/sup/commit/52e29ba
+>> [2] https://github.com/gauteh/sup/tree/maildir-root
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130515/9233e342/attachment.html>
+
+From eg at gaute.vetsj.com  Wed May 15 08:30:27 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 15 May 2013 10:30:27 +0200
+Subject: [sup-devel] Release 0.13.0
+Message-ID: <519347A3.4070500@gaute.vetsj.com>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Greetings fellow Suppers,
+
+We have just released version 0.13.0 at Rubygems:
+
+  https://rubygems.org/gems/sup
+
+to install:
+
+  gem install sup
+
+for more information check out the wiki:
+
+  https://github.com/sup-heliotrope/sup/wiki
+
+or the new web site:
+
+  http://supmua.org
+
+
+Thanks a lot to all who have contributed over the last years since the
+previous release, and in particular all those who have been part of
+effort to get Sup going again and getting this release out as well as
+William Morgan who has let us keep working on Sup. I hope it will last!
+
+
+Please report bugs too:
+
+  https://github.com/sup-heliotrope/sup/issues
+
+
+- - The Sup maintainers
+
+
+Note: The gem has been signed with my key (included below), note
+however that Rubygems signing is still only in its infancy.
+
+- -----BEGIN CERTIFICATE-----
+MIIDVDCCAjygAwIBAgIBADANBgkqhkiG9w0BAQUFADBQMQswCQYDVQQDDAJlZzEV
+MBMGCgmSJomT8ixkARkWBWdhdXRlMRUwEwYKCZImiZPyLGQBGRYFdmV0c2oxEzAR
+BgoJkiaJk/IsZAEZFgNjb20wHhcNMTMwNTA4MTAzODQ3WhcNMTQwNTA4MTAzODQ3
+WjBQMQswCQYDVQQDDAJlZzEVMBMGCgmSJomT8ixkARkWBWdhdXRlMRUwEwYKCZIm
+iZPyLGQBGRYFdmV0c2oxEzARBgoJkiaJk/IsZAEZFgNjb20wggEiMA0GCSqGSIb3
+DQEBAQUAA4IBDwAwggEKAoIBAQC7sNc5zY4MrYB7eywE/aK2IoDqpM9lq4ZFlHzt
+Pmq1LG6ah2lu/HfjqxiPoqwY7QkdSOGDLSk7G8YBqDA/tODhkPPSTqxBDzYyCO46
+haWTtoN5tJkxIDJKp1nVXHi0Mlb4GJVKd9P0q95BeBYBfs8vyPN+y4b4Gebgx9U3
+KqMDbe5h9MAPZGmtiRFMb3ugmiujDm7v8fACa5EtSvK/lxMkRDglecT/knE99NYI
+l35SO/Bune1bxYmkwW64mQ4wRlGVeAnX+19msALfS9rdJL26dfW2LgqWi5QoVTBH
+KNKTl/i3fxK0mzgtnoRCWdMJQFNNonFTnPUUawi1c9Kh4AdPAgMBAAGjOTA3MAkG
+A1UdEwQCMAAwHQYDVR0OBBYEFJNCOxL0SWcbW2M+DIEUzAMz1bZsMAsGA1UdDwQE
+AwIEsDANBgkqhkiG9w0BAQUFAAOCAQEAr3QUayd0geBDExO+WwzaEPAuUZ3zWQYG
+G9vrplCkmJtjS/X/wVAef7Jn/V5MNkXKXsiOgXJXki+n7HulNZUf1rzr7Un96gVJ
+1hq/ZTuapnPpstBqqdv60RB8HNGydHQeEz6us5z3nj+KchPqJ657Dz8oX/Nm6/24
+7QSQpCh8xBYdSWEpoIE0zUSY77LtVTRVwIr9uDpWTTr9kCVBINBsOQNjWKruEWjV
++JMuDs+iWefpF4R3BySoOc1Q4WoES3+oc0qo37MsAZyfnQIPTZkyLZCMxeL6Mha4
+hFc2yANBj8voaY5C74Cg2VqExtcnSaxUtW9wC4w5hOlg0AVfb1JWzg==
+- -----END CERTIFICATE-----
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQIcBAEBAgAGBQJRk0eiAAoJEJgnp+igdJAj58oP/2APxYsJ3RWtlhFGDk5IVSeW
+XNxw449fyRB1pnsyUvFvtkf0IU6SzVF/lV+Iq2mNIgGlsN1wKU5zk92Ic3cm0KAh
+dO8YmvQP46NV0UqZWSg6cu91cMbBOUD1KIpww633fEjN7N9fHuAO1BWZlQqpTt/S
+Y7bkpCCQWzwcY9yDtiZDp1qXQoLvxTg8epsIV1XwgGi9G/h0IAXZIG2VqmQl/80T
+0VteWfGHZ/PWa+34/101Q5uN8SXo+HLW2o4UD0lPSL0RRoQE0AkilbctzOQT6TE4
+lYmhPmgFDBoW5XWv73JxkS8y95BcYCUl2Q3w0KuyeYJeAIYWaU8WTCebYEBMnuud
+Lob97x/o+YA8SQylSnJxOyT8kTqvH4ZG7X2yEeJztJQaNagUlKIuvujF/s1lCaRi
+2O5kcI6UaAC6yu3XUwXESsXOQ0cUQnbG6P/CZtBXDFaeYqMHq5KSbjm99h+s8l6/
+97VQCxa2JYaaQb5wHtk0jrPAmpbA+EXJ4LzlMZeDMRf7+J1Ag8Y6XDRP2BN2p6Q8
+QKNoHrrPpCPZyXDxoMYHVoGl4UYXCS0n8jTdUG62b5fJjs9A5YayT4PiXtmxs/B3
+HYsDc9jGsoZyduJWI36pPQgc9wb65rpRLm1NMySokzp1zIydEmYZY8+Y+zXa2xba
+31ciZlyNkN0TO/JmU34G
+=Trft
+-----END PGP SIGNATURE-----
+
+From eg at gaute.vetsj.com  Mon May 20 07:24:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 20 May 2013 09:24:23 +0200
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <CAHWBo_ZC176WjeMpPs_rJE9=41exnxxJ0ENfLpHRj1ZtOpg2Ng@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<1367233230-sup-3593@tesla> <517E5BD8.6030803@gaute.vetsj.com>
+	<CAHWBo_aKjp__dkjuJ-tYHpKJuv2G=k_jxTWMo0QyyUtvxZbGXA@mail.gmail.com>
+	<5182210E.4040100@gaute.vetsj.com>
+	<CAHWBo_ZC176WjeMpPs_rJE9=41exnxxJ0ENfLpHRj1ZtOpg2Ng@mail.gmail.com>
+Message-ID: <5199CFA7.9020900@gaute.vetsj.com>
+
+Hi,
+
+There has recently been opened an issue regarding this:
+
+https://github.com/sup-heliotrope/sup/issues/60
+
+Regards, Gaute
+
+On 09. mai 2013 03:39, Horacio Sanson wrote:
+> UTF-8 handles most cases but I still have to deal with emails in
+> ISO2022-JP, Shift-JIS and EUC-JP. After some research it seems Xapian has
+> no support for Asian languages. I will try to make some tests and open an
+> issue if I cannot make it work.
+> 
+> I can see in the sup configuration file that the stem language can be
+> configured but there are no CJK stemmers for Xapian that I can find.
+> 
+> 
+> On Thu, May 2, 2013 at 5:17 PM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> 
+>>
+>>
+>> On 30. april 2013 11:44, Horacio Sanson wrote:
+>>> Great to see Sup getting back on track again..
+>>>
+>>> I submitted some patches for the Gmail dumper of Heliotrope some time ago
+>>> but the lack of non alphabet languages (Japanese, Chinese) made it
+>>> impossible for me to keep using heliotrope/turnesole.
+>>>
+>>> The main issue to support Japanese/Chinese with heliotrope was that
+>>> whistlepig (indexer) lacked the ability to tokenize these languages. Also
+>>> the half baked UTF-8 support caused several issues with these languages.
+>>>
+>>> I would like to help in testing/implementing support for these languages,
+>>> starting with Japanese, but I would require some guidance. First I would
+>>> like to know is there is a way to configure the Xapian tokenizer
+>>> (segmenter) within sup? Please consider that I am new to both sup and to
+>>> Xapian.
+>>
+>> Hi Horacio,
+>>
+>> consider opening an issue at
+>> https://github.com/sup-heliotrope/sup/issues to make sure this doesn't
+>> disappear. Some changes will probably be made to the indexer when going
+>> to Mail (from RMail), but I hope to be able to migrate the existing
+>> index. Perhaps its time to get it right for arbitrary languages as well.
+>> I am unfamiliar with Japanes/Chinese - does UTF-8 cover the needs?
+>>
+>> Mail is better at handling UTF-8 and I think there was some fork that
+>> had some extra support for Japanese.
+>>
+>> Regards, Gaute
+>>
+> 
+
+From matthieu.rakotojaona at gmail.com  Tue May 21 21:47:16 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 21 May 2013 23:47:16 +0200
+Subject: [sup-devel] Experimental Gmail Source
+In-Reply-To: <CAHWBo_ZY7bWTxfqbQ1H3hu-q6mzKZm-YYe-+t0b-0M7xwUDfYQ@mail.gmail.com>
+References: <CAHWBo_Y6jEWCH8O+m1iw5_p4qd8ghxgvCsa1+15xR7fh+6S0nA@mail.gmail.com>
+	<518E1A2B.2080903@gaute.vetsj.com>
+	<CAHWBo_ZMce1GV=ChkLrSNbz9Lf-DtPb4W479kChXmUFMQf5qpw@mail.gmail.com>
+	<CAHWBo_ZY7bWTxfqbQ1H3hu-q6mzKZm-YYe-+t0b-0M7xwUDfYQ@mail.gmail.com>
+Message-ID: <1369172802-sup-2003@kpad>
+
+Hey Horacio,
+
+I took a stab at your gmail_source branch, and made a few
+fixes/improvements [0]:
+
+- Add configuration option in sup-add
+- Dump the LevelDB path in the sources.yaml
+- Add a load_from_yaml method for a source to initialize its working
+  values (for instance, the @db cannot be serialized, it needs to be
+  reconstructed)
+- Fixed the msg_att monkey-patch for imap.rb
+
+All in all, the gmail source seems to work. I tested it on my usual
+gmail account, I haven't tried to download it all, but I did download a
+few dozens of emails without a problem. I'd like to warn users about
+LevelDB though: it's sad to say, but as other wmorgan's stuff, it looks
+abandoned. There are at least 2 bugs you will encounter if you try it: a
+pb in configuration (fixed in [1]) and you need the `snappy` gem to make
+it work if your db is more than 4MB large [2]. There are some up-to-date
+forks, though.
+
+I see LevelDB is used mostly for storing messages and mailboxes
+uid{validity/last}, but if we are to use gmail (it's the only IMAP
+provider that makes sense for sup), I believe we would stick to the All
+Mail label, right ? So, no need for storing this in db, rather in the
+sources.yaml file. Also, if leveldb-ruby is unreliable (I did encounter
+some issues way back about something with glibc...), and we want to use
+it for caching messages, I think we can salvage heliotrope's zmbox [3]
+because it's so simple to use yet far better than simple mbox.
+
+Regarding your ids questions, if you want to access the sup's messages
+from the gmail source, you could use the mail's Message-ID header and
+apply the same logic as in Message.sanitize_message_id. Caution,
+however: I've already encountered the case where multiple messages in
+GMail (i.e multiple X-GM-MSGID) have the same Message-ID, so they would
+be considered the same in sup/heliotrope... yeah, that's annoying as
+hell, and I don't know how we can solve this in the case of multiple
+sources.
+
+If you want to sync-back, maybe sup can call a source-level "sync_back"
+method with the current known state ? Speaking of which, for general
+synchronization we could reuse the elegant offlineimap's sync algorithm
+[4]. The idea is basic: have each source class store a snapshot of the
+state.  When a message is modified on the source, diff the change with
+the known status and propagate to sup; when a message is modified in
+sup, diff with the known status and propagate to the source.
+
+Just a brain dump.
+
+[0] https://github.com/rakoo/sup/tree/gmail_source
+[1] https://github.com/wmorgan/leveldb-ruby/pull/27
+[2] https://github.com/wmorgan/leveldb-ruby/issues/23
+[3] https://github.com/sup-heliotrope/heliotrope/blob/64d4b50d5649ec616a311a4cf6955137fdaeb13d/lib/heliotrope/zmbox.rb
+[4] http://offlineimap.org/howitworks.html
+
+Regards,
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130521/1fc3b5b4/attachment.bin>
+

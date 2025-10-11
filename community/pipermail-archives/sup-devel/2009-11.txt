@@ -1,0 +1,2865 @@
+From wmorgan-sup at masanjin.net  Tue Nov  3 12:45:17 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Nov 2009 09:45:17 -0800
+Subject: [sup-devel] test
+Message-ID: <1257270304-sup-3058@masanjin.net>
+
+Just making sure the new list works.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Nov  3 13:12:02 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Nov 2009 10:12:02 -0800
+Subject: [sup-devel] test
+In-Reply-To: <1257270304-sup-3058@masanjin.net>
+References: <1257270304-sup-3058@masanjin.net>
+Message-ID: <1257271895-sup-7431@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2009-11-03:
+> Just making sure the new list works.
+
+Trying again.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From pi+sup at pihost.us  Tue Nov  3 22:05:19 2009
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Tue,  3 Nov 2009 20:05:19 -0700
+Subject: [sup-devel] [PATCH] If we have a COLUMNS environment variable,
+	wrap to that instead of 80.
+Message-ID: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+
+From: Anthony Martinez <pi at pihost.us>
+
+I find that this provides a much smoother terminal experience,
+especially with dumped HTML output. At least on Linux+zsh, this
+environment variable is automatically updated, and if it doesn't exist,
+sup will continue to happily default to 80.
+---
+ lib/sup/message-chunks.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 581b707..881ac4b 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -41,7 +41,7 @@ end
+ 
+ module Redwood
+ module Chunk
+-  WRAP_LEN = 80 # wrap messages and text attachments at this width
++  WRAP_LEN = ENV["COLUMNS"] || 80 # wrap messages and text attachments at this width
+ 
+   class Attachment
+     HookManager.register "mime-decode", <<EOS
+-- 
+1.6.5
+
+
+From pi+sup at pihost.us  Tue Nov  3 22:22:24 2009
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Tue, 03 Nov 2009 20:22:24 -0700
+Subject: [sup-devel] [PATCH] If we have a COLUMNS environment variable,
+	wrap to that instead of 80.
+In-Reply-To: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+References: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+Message-ID: <1257304795-sup-5302@home.mrtheplague.net>
+
+Excerpts from Anthony Martinez's message of Tue Nov 03 20:05:19 -0700 2009:
+> I find that this provides a much smoother terminal experience,
+Or it would if I tested it. Sorry about the bad patch, seems today isn't my day.
+:)
+
+Either way, I'd like to see something like this. Discussion?
+
+From pi+sup at pihost.us  Tue Nov  3 22:51:46 2009
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Tue, 03 Nov 2009 20:51:46 -0700
+Subject: [sup-devel] [CORRECTED PATCH] If we can get the terminal width,
+	use that for WRAP_LEN.
+In-Reply-To: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+References: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+Message-ID: <1257306460-sup-1506@home.mrtheplague.net>
+
+I find that this provides a much smoother terminal experience,
+especially with elinks configured to dump to the same size in hook
+scripts.
+
+At least on Linux, "stty size"'s second numerical output is the number
+of columns, and if that fails somehow, sup will continue to happily
+default to 80.
+---
+ lib/sup/message-chunks.rb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 581b707..56ddf1e 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -41,7 +41,8 @@ end
+
+ module Redwood
+ module Chunk
+-  WRAP_LEN = 80 # wrap messages and text attachments at this width
++  TERM_WIDTH = `stty size 2>/dev/null`.split[1].to_i # to_i returns 0 if it fails.
++  WRAP_LEN = TERM_WIDTH > 0 && TERM_WIDTH || 80 # wrap messages and text attachments at this width
+
+   class Attachment
+     HookManager.register "mime-decode", <<EOS
+
+From bburky at bburky.com  Wed Nov  4 11:50:29 2009
+From: bburky at bburky.com (Blake Burkhart)
+Date: Wed, 04 Nov 2009 10:50:29 -0600
+Subject: [sup-devel] [PATCH] If we have a COLUMNS environment variable,
+	wrap to that instead of 80.
+In-Reply-To: <1257304795-sup-5302@home.mrtheplague.net>
+References: <1257303919-30524-1-git-send-email-pi+sup@pihost.us>
+	<1257304795-sup-5302@home.mrtheplague.net>
+Message-ID: <1257349056-sup-7760@Backspace.local>
+
+Excerpt from Anthony Martinez's message of Tue Nov 03 21:22:24 -0600 2009:
+> Either way, I'd like to see something like this. Discussion?
+
+Personally, I regularly use a full-screen width terminal. I'm on a Mac using a
+drop-down terminal app called Visor [1]. It lets me have an always accessible
+terminal app. However it's the with of the entire screen (probably 200-ish
+columns wide), which would be almost unusable if the things were wrapped to
+the full width.
+
+Also, general typography rules say to have a line length of about 2 to 3
+lowercase alphabets wide for easily readable text. With monospaced fonts, as
+in a terminal, all you characters are the same with. So you get a suggested
+line length of 26 * 3 which is 78. I have no idea if anyone reasonably tries
+to apply typography rules to terminal apps though...
+
+[1] http://visor.binaryage.com/
+
+-- 
+Blake Burkhart
+
+From rlane at club.cc.cmu.edu  Thu Nov  5 00:49:38 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed,  4 Nov 2009 21:49:38 -0800
+Subject: [sup-devel] [PATCH] handle UpdateManager events in the main loop
+Message-ID: <1257400178-26889-1-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ bin/sup                            |    2 +
+ lib/sup/buffer.rb                  |   17 +++++++++++---
+ lib/sup/draft.rb                   |    2 +-
+ lib/sup/modes/thread-index-mode.rb |   42 ++++++++++++++++++------------------
+ lib/sup/modes/thread-view-mode.rb  |   12 +++++-----
+ lib/sup/poll.rb                    |    2 +-
+ lib/sup/update.rb                  |   21 ++++++++++++++++++
+ 7 files changed, 65 insertions(+), 33 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 78c396a..348070a 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -224,6 +224,8 @@ begin
+       nil
+     end
+ 
++    UpdateManager.dequeue_all
++
+     if c.nil?
+       if BufferManager.sigwinch_happened?
+         debug "redrawing screen on sigwinch"
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 35b7080..42005e8 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -4,6 +4,13 @@ require 'ncurses'
+ 
+ if defined? Ncurses
+ module Ncurses
++  $event_read_fd, $event_write_fd = IO.pipe
++
++  def post_event
++    $event_write_fd << 'x'
++    $event_write_fd.flush
++  end
++
+   def rows
+     lame, lamer = [], []
+     stdscr.getmaxyx lame, lamer
+@@ -32,9 +39,11 @@ module Ncurses
+     ## it is NECESSARY to wrap Ncurses.getch in a select() otherwise all
+     ## background threads will be BLOCKED. (except in very modern versions
+     ## of libncurses-ruby. the current one on ubuntu seems to work well.)
+-    if IO.select([$stdin], nil, nil, 0.5)
+-      c = Ncurses.getch
+-    end
++    read_fds, = IO.select([$stdin, $event_read_fd], nil, nil, 0.5)
++    return unless read_fds
++
++    $event_read_fd.readpartial 1024 if read_fds.member? $event_read_fd
++    Ncurses.getch if read_fds.member? $stdin
+   end
+ 
+   ## pretends ctrl-c's are ctrl-g's
+@@ -44,7 +53,7 @@ module Ncurses
+     KEY_CANCEL
+   end
+ 
+-  module_function :rows, :cols, :curx, :nonblocking_getch, :safe_nonblocking_getch, :mutex, :sync
++  module_function :rows, :cols, :curx, :nonblocking_getch, :safe_nonblocking_getch, :mutex, :sync, :post_event
+ 
+   remove_const :KEY_ENTER
+   remove_const :KEY_CANCEL
+diff --git a/lib/sup/draft.rb b/lib/sup/draft.rb
+index 5ea2935..5632e67 100644
+--- a/lib/sup/draft.rb
++++ b/lib/sup/draft.rb
+@@ -31,7 +31,7 @@ class DraftManager
+     raise ArgumentError, "not a draft: source id #{m.source.id.inspect}, should be #{DraftManager.source_id.inspect} for #{m.id.inspect}" unless m.source.id.to_i == DraftManager.source_id
+     Index.delete m.id
+     File.delete @source.fn_for_offset(m.source_info)
+-    UpdateManager.relay self, :single_message_deleted, m
++    UpdateManager.enqueue self, :single_message_deleted, m
+   end
+ end
+ 
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 12a76f9..323c565 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -117,7 +117,7 @@ EOS
+       ## are set, and the second to show the cursor having moved
+ 
+       update_text_for_line curpos
+-      UpdateManager.relay self, :read, t.first
++      UpdateManager.enqueue self, :read, t.first
+       when_done.call if when_done
+     end
+   end
+@@ -246,18 +246,18 @@ EOS
+     pos = curpos
+     if t.has_label? :starred # if ANY message has a star
+       t.remove_label :starred # remove from all
+-      UpdateManager.relay self, :unstarred, t.first
++      UpdateManager.enqueue self, :unstarred, t.first
+       lambda do
+         t.first.add_label :starred
+-        UpdateManager.relay self, :starred, t.first
++        UpdateManager.enqueue self, :starred, t.first
+         regen_text
+       end
+     else
+       t.first.add_label :starred # add only to first
+-      UpdateManager.relay self, :starred, t.first
++      UpdateManager.enqueue self, :starred, t.first
+       lambda do
+         t.remove_label :starred
+-        UpdateManager.relay self, :unstarred, t.first
++        UpdateManager.enqueue self, :unstarred, t.first
+         regen_text
+       end
+     end
+@@ -283,19 +283,19 @@ EOS
+     pos = curpos
+     if t.has_label? :inbox
+       t.remove_label :inbox
+-      UpdateManager.relay self, :archived, t.first
++      UpdateManager.enqueue self, :archived, t.first
+       lambda do
+         thread.apply_label :inbox
+         update_text_for_line pos
+-        UpdateManager.relay self,:unarchived, thread.first
++        UpdateManager.enqueue self,:unarchived, thread.first
+       end
+     else
+       t.apply_label :inbox
+-      UpdateManager.relay self, :unarchived, t.first
++      UpdateManager.enqueue self, :unarchived, t.first
+       lambda do
+         thread.remove_label :inbox
+         update_text_for_line pos
+-        UpdateManager.relay self, :unarchived, thread.first
++        UpdateManager.enqueue self, :unarchived, thread.first
+       end
+     end
+   end
+@@ -306,20 +306,20 @@ EOS
+     if t.has_label? :spam
+       t.remove_label :spam
+       add_or_unhide t.first
+-      UpdateManager.relay self, :unspammed, t.first
++      UpdateManager.enqueue self, :unspammed, t.first
+       lambda do
+         thread.apply_label :spam
+         self.hide_thread thread
+-        UpdateManager.relay self,:spammed, thread.first
++        UpdateManager.enqueue self,:spammed, thread.first
+       end
+     else
+       t.apply_label :spam
+       hide_thread t
+-      UpdateManager.relay self, :spammed, t.first
++      UpdateManager.enqueue self, :spammed, t.first
+       lambda do
+         thread.remove_label :spam
+         add_or_unhide thread.first
+-        UpdateManager.relay self,:unspammed, thread.first
++        UpdateManager.enqueue self,:unspammed, thread.first
+       end
+     end
+   end
+@@ -329,20 +329,20 @@ EOS
+     if t.has_label? :deleted
+       t.remove_label :deleted
+       add_or_unhide t.first
+-      UpdateManager.relay self, :undeleted, t.first
++      UpdateManager.enqueue self, :undeleted, t.first
+       lambda do
+         t.apply_label :deleted
+         hide_thread t
+-        UpdateManager.relay self, :deleted, t.first
++        UpdateManager.enqueue self, :deleted, t.first
+       end
+     else
+       t.apply_label :deleted
+       hide_thread t
+-      UpdateManager.relay self, :deleted, t.first
++      UpdateManager.enqueue self, :deleted, t.first
+       lambda do
+         t.remove_label :deleted
+         add_or_unhide t.first
+-        UpdateManager.relay self, :undeleted, t.first
++        UpdateManager.enqueue self, :undeleted, t.first
+       end
+     end
+   end
+@@ -542,10 +542,10 @@ EOS
+     UndoManager.register "labeling thread" do
+       thread.labels = old_labels
+       update_text_for_line pos
+-      UpdateManager.relay self, :labeled, thread.first
++      UpdateManager.enqueue self, :labeled, thread.first
+     end
+ 
+-    UpdateManager.relay self, :labeled, thread.first
++    UpdateManager.enqueue self, :labeled, thread.first
+   end
+ 
+   def multi_edit_labels threads
+@@ -570,7 +570,7 @@ EOS
+           LabelManager << l
+         end
+       end
+-      UpdateManager.relay self, :labeled, t.first
++      UpdateManager.enqueue self, :labeled, t.first
+     end
+ 
+     regen_text
+@@ -578,7 +578,7 @@ EOS
+     UndoManager.register "labeling #{threads.size.pluralize 'thread'}" do
+       threads.zip(old_labels).map do |t, old_labels|
+         t.labels = old_labels
+-        UpdateManager.relay self, :labeled, t.first
++        UpdateManager.enqueue self, :labeled, t.first
+       end
+       regen_text
+     end
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 2da0555..4e4290f 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -262,7 +262,7 @@ EOS
+     @thread.labels = Set.new(reserved_labels) + new_labels
+     new_labels.each { |l| LabelManager << l }
+     update
+-    UpdateManager.relay self, :labeled, @thread.first
++    UpdateManager.enqueue self, :labeled, @thread.first
+   end
+ 
+   def toggle_starred
+@@ -284,7 +284,7 @@ EOS
+     ## TODO: don't recalculate EVERYTHING just to add a stupid little
+     ## star to the display
+     update
+-    UpdateManager.relay self, :single_message_labeled, m
++    UpdateManager.enqueue self, :single_message_labeled, m
+   end
+ 
+   ## called when someone presses enter when the cursor is highlighting
+@@ -502,28 +502,28 @@ EOS
+   def archive_and_then op
+     dispatch op do
+       @thread.remove_label :inbox
+-      UpdateManager.relay self, :archived, @thread.first
++      UpdateManager.enqueue self, :archived, @thread.first
+     end
+   end
+ 
+   def spam_and_then op
+     dispatch op do
+       @thread.apply_label :spam
+-      UpdateManager.relay self, :spammed, @thread.first
++      UpdateManager.enqueue self, :spammed, @thread.first
+     end
+   end
+ 
+   def delete_and_then op
+     dispatch op do
+       @thread.apply_label :deleted
+-      UpdateManager.relay self, :deleted, @thread.first
++      UpdateManager.enqueue self, :deleted, @thread.first
+     end
+   end
+ 
+   def unread_and_then op
+     dispatch op do
+       @thread.apply_label :unread
+-      UpdateManager.relay self, :unread, @thread.first
++      UpdateManager.enqueue self, :unread, @thread.first
+     end
+   end
+ 
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index ec51dec..a6ed912 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -178,7 +178,7 @@ EOS
+   ## does the gui callback stuff, etc.
+   def add_new_message m
+     Index.add_message m
+-    UpdateManager.relay self, :added, m
++    UpdateManager.enqueue self, :added, m
+   end
+ end
+ 
+diff --git a/lib/sup/update.rb b/lib/sup/update.rb
+index d386801..31c4b3c 100644
+--- a/lib/sup/update.rb
++++ b/lib/sup/update.rb
+@@ -16,12 +16,33 @@ class UpdateManager
+ 
+   def initialize
+     @targets = {}
++    @queue = []
++    @lock = Mutex.new
+   end
+ 
+   def register o; @targets[o] = true; end
+   def unregister o; @targets.delete o; end
+ 
++  def enqueue sender, type, *args
++    @lock.synchronize { @queue << [sender, type, args] }
++    Ncurses.post_event if defined? Ncurses
++    debug "enqueued #{([type] + args) * ' '}"
++  end
++
++  def dequeue_all
++    until @queue.empty?
++      old_queue = @lock.synchronize do
++        returning(@queue) { @queue = [] }
++      end
++
++      old_queue.each do |sender, type, args|
++        relay sender, type, *args
++      end
++    end
++  end
++
+   def relay sender, type, *args
++    debug "relaying #{([type] + args) * ' '}" unless type == :tick
+     meth = "handle_#{type}_update".intern
+     @targets.keys.each { |o| o.send meth, sender, *args unless o == sender if o.respond_to? meth }
+   end
+-- 
+1.6.4.2
+
+
+From wmorgan-sup at masanjin.net  Thu Nov  5 15:23:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 05 Nov 2009 12:23:11 -0800
+Subject: [sup-devel] test
+In-Reply-To: <1257270304-sup-3058@masanjin.net>
+References: <1257270304-sup-3058@masanjin.net>
+Message-ID: <1257452583-sup-3041@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2009-11-03:
+> Just making sure the new list works.
+
+One more time.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup-bugs at masanjin.net  Thu Nov  5 15:27:38 2009
+From: sup-bugs at masanjin.net (William Morgan)
+Date: Thu, 05 Nov 2009 20:27:38 +0000
+Subject: [sup-devel] [issue1] signature block not separated by a newline in
+	sent messages
+Message-ID: <1257452858.49.0.55077786119.issue1@masanjin.net>
+
+
+New submission from William Morgan <wmorgan-sup at masanjin.net>:
+
+In messages with no extra newlines at the end, the preview window displays the 
+signature block with a newline prepended, which is correct. However, the actual 
+sent message doesn't have this newline, and the signature follows the text 
+immediately without a blank line.
+
+----------
+messages: 1
+nosy: w
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: git master
+title: signature block not separated by a newline in sent messages
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue1>
+_________________________________________
+
+From wmorgan-sup at masanjin.net  Thu Nov  5 15:34:12 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 05 Nov 2009 12:34:12 -0800
+Subject: [sup-devel] [issue1] signature block not separated by a newline
+	in sent messages
+In-Reply-To: <1257452858.49.0.55077786119.issue1@masanjin.net>
+References: <1257452858.49.0.55077786119.issue1@masanjin.net>
+Message-ID: <1257452945-sup-9932@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2009-11-05:
+> messages: 1
+> nosy: w
+> priority: bug
+> ruby_version: 1.8.7
+> status: unread
+> sup_version: git master
+> title: signature block not separated by a newline in sent messages
+
+Ok, so I have roundup set up at this address:
+http://masanjin.net/sup-bugs/
+
+There are a couple things I don't like about it, but we can give it a
+shot for now.
+
+You don't have to register to create an issue (or to edit any of the
+existing ones, sigh), but if you'd like to assign yourself issues, you
+should set up an account.
+
+Any email that's cc'ed to sup-bugs with the appropriate subject will
+become part of the bug record. Automatic emails to sup-devel are only
+triggered on the creation of an issue. So if you're replying to an
+issue, you should think about what's on the to line a little.
+
+Feel free to add your issues! I'm going to point to this thing in the
+0.9.1. error message, instead of sup-talk.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From plz at z-labs.com.ar  Thu Nov  5 18:02:36 2009
+From: plz at z-labs.com.ar (Pablo Luis Zorzoli)
+Date: Thu, 05 Nov 2009 20:02:36 -0300
+Subject: [sup-devel] test
+In-Reply-To: <1257452583-sup-3041@masanjin.net>
+References: <1257270304-sup-3058@masanjin.net>
+	<1257452583-sup-3041@masanjin.net>
+Message-ID: <1257462081-sup-247@mini-z>
+
+Excerpts from William Morgan's message of Thu Nov 05 17:23:11 -0300 2009:
+> Reformatted excerpts from William Morgan's message of 2009-11-03:
+> > Just making sure the new list works.
+> 
+> One more time.
+
+It works like a charm.
+
+From bburky at bburky.com  Thu Nov  5 20:18:02 2009
+From: bburky at bburky.com (Blake Burkhart)
+Date: Thu, 05 Nov 2009 19:18:02 -0600
+Subject: [sup-devel] Bug: Closing main inbox buffer and crashing
+Message-ID: <1257469857-sup-4704@Backspace.local>
+
+I managed to close the main inbox buffer in sup. This seems reproducible by
+creating a new message, exiting from the editor and then not immediately
+sending it. While this draft message is open in "compose-mode", switch back to
+"inbox-mode" and attempt to close sup, answering "yes" to "Really quit?" but
+"no" to "Discard message?"
+
+At this point the only buffers open are "compose-mode" and "log-mode"
+according to the buffer list. If you close all buffers with the "x" key, sup
+will crash with the following error:
+
+--- NoMethodError from thread: main
+undefined method `title' for nil:NilClass
+/Users/blake/Code/Others/sup/lib/sup/buffer.rb:775:in `get_status_and_title'
+/Users/blake/Code/Others/sup/lib/sup/buffer.rb:307:in `draw_screen'
+/Users/blake/Code/Others/sup/bin/sup:324
+
+I'm currently running the "next" branch, but I can also reproduce this with
+"master."
+
+Note, if the "compose-mode" buffer is open when attempting to close sup, there
+is no problem, sup does not close the main inbox buffer.
+
+-- Blake Burkhart
+
+From markr.anderson at amd.com  Fri Nov  6 15:00:38 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Fri, 6 Nov 2009 13:00:38 -0700
+Subject: [sup-devel] Crash when I tried to resync after moving files from my
+	offlineimap repo to a separate archive maildir
+Message-ID: <1257537462-sup-4310@testarossa>
+
+I'm still really raw with this Ruby stuff.
+
+I wonder if there's some way to prevent the running of before-add-message in sup-sync. I get the message on many of the mails that have already been categorized.
+
+But this seems like it could be separate. Perhaps my offlineimap was moving files around? I guess that's possible, I do have a web interface to the same IMAP box.
+
+Could it gracefully handle things when possible?
+
+-Mark
+
+
+[Fri Nov 06 12:45:10 -0700 2009] WARNING: problem getting messages from maildir:/home/manderso/MailExchange/INBOX: Problem reading file for id 12569185230017708: "/home/manderso/MailExc
+hange/INBOX/new/1256918523_0.28833.testarossa,U=146122,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,": No such file or directory - /home/manderso/MailExchange/INBOX/new/1256918523_0.28833.te
+starossa,U=146122,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,.
+(eval):1: warning: instance variable @source_marked_read not initialized
+[Fri Nov 06 12:45:10 -0700 2009] hook: error running /home/manderso/.sup/hooks/before-add-message.rb: undefined method `index' for nil:NilClass
+[Fri Nov 06 12:45:10 -0700 2009] hook: /home/manderso/.sup/hooks/before-add-message.rb:49:in `__run'
+/home/manderso/.sup/hooks/before-add-message.rb:47:in `each'
+/home/manderso/.sup/hooks/before-add-message.rb:47:in `__run'
+/home/manderso/src/sup-git/mainline/lib/sup/hook.rb:42:in `__run'
+/home/manderso/src/sup-git/mainline/lib/sup/hook.rb:83:in `run'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `send'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `method_missing'
+/home/manderso/src/sup-git/mainline/lib/sup/poll.rb:150:in `each_message_from'
+/home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:160:in `each'
+/home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:157:in `upto'
+/home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:157:in `each'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:560:in `send'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:560:in `__pass'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:547:in `method_missing'
+/home/manderso/src/sup-git/mainline/lib/sup/poll.rb:139:in `each_message_from'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `send'
+/home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `method_missing'
+/home/manderso/src/sup-git/mainline/bin/sup-sync:146
+/home/manderso/src/sup-git/mainline/bin/sup-sync:141:in `each'
+/home/manderso/src/sup-git/mainline/bin/sup-sync:141
+[Fri Nov 06 12:45:10 -0700 2009] unlocking /home/manderso/.sup/lock...
+/home/manderso/src/ruby/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]': :(null) isn't a valid argument for IndexReader.get_document(index) (ArgumentError)
+        from /home/manderso/src/ruby/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+        from /tool/pandora64/.package/ruby-1.8.7-p72/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+        from /home/manderso/src/ruby/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:413:in `[]'
+        from /home/manderso/src/sup-git/mainline/lib/sup/ferret_index.rb:257:in `build_message'
+        from /tool/pandora64/.package/ruby-1.8.7-p72/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+        from /home/manderso/src/sup-git/mainline/lib/sup/ferret_index.rb:256:in `build_message'
+        from /home/manderso/src/sup-git/mainline/bin/sup-sync:149
+        from /home/manderso/src/sup-git/mainline/lib/sup/poll.rb:151:in `each_message_from'
+        from /home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:160:in `each'
+        from /home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:157:in `upto'
+        from /home/manderso/src/sup-git/mainline/lib/sup/maildir.rb:157:in `each'
+        from /home/manderso/src/sup-git/mainline/lib/sup/util.rb:560:in `send'
+        from /home/manderso/src/sup-git/mainline/lib/sup/util.rb:560:in `__pass'
+        from /home/manderso/src/sup-git/mainline/lib/sup/util.rb:547:in `method_missing'
+        from /home/manderso/src/sup-git/mainline/lib/sup/poll.rb:139:in `each_message_from'
+        from /home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `send'
+        from /home/manderso/src/sup-git/mainline/lib/sup/util.rb:520:in `method_missing'
+        from /home/manderso/src/sup-git/mainline/bin/sup-sync:146
+        from /home/manderso/src/sup-git/mainline/bin/sup-sync:141:in `each'
+        from /home/manderso/src/sup-git/mainline/bin/sup-sync:141
+
+
+From pi+sup at pihost.us  Fri Nov  6 21:16:42 2009
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Fri, 06 Nov 2009 19:16:42 -0700
+Subject: [sup-devel] [sup-talk] Sup-sync exception
+In-Reply-To: <1257537789-sup-1961@testarossa>
+References: <1257452860-sup-7983@testarossa> <1257520288-sup-8595@onnadayr.ca>
+	<1257537789-sup-1961@testarossa>
+Message-ID: <1257556260-sup-1272@home.mrtheplague.net>
+
+Excerpts from Mark Anderson's message of Fri Nov 06 13:06:17 -0700 2009:
+> There was another patch that is complementary in getting the console to
+> recognize the width of the terminal, I forget the tname, but here's what I
+> have in my message-chunks.rb:
+> 
+>   TERM_WIDTH = `stty size 2>/dev/null`.split[1].to_i # to_i returns 0 if it fails
+>   WRAP_LEN = TERM_WIDTH > 0 && TERM_WIDTH || 80 # wrap messages and text attachments at this width
+> 
+> I don't know why that patch preferred `stty` to ENV["COLUMNS"], since that one
+> had worked for me.
+
+That'd be my patch. I used stty because ENV["COLUMNS"] doesn't consistently work
+for me:
+
+$ echo $COLUMNS
+132
+$ perl -wE 'say $ENV{COLUMNS}'
+Use of uninitialized value in say at -e line 1.
+
+$ ruby -e 'puts ENV["COLUMNS"]'
+nil
+$ irb
+irb(main):001:0> ENV["COLUMNS"]
+=> "132"
+
+In Sup's console mode, ENV["COLUMNS"] is set, but when I tried
+  WRAP_LEN = ENV["COLUMNS"]
+in message-chunks.rb, it gets nil. It appears to have something to do with
+readline:
+
+$ irb --noreadline
+irb(main):001:0> ENV["COLUMNS"]
+=> nil
+
+I also tried Ncurses.cols, as suggested on sup-devel, and got a similar
+exception to yours. `stty`, albeit cheesy, works well enough for right now (even
+though I'm not quite happy with it, since, in addition to its reliance on the
+output of an external command, it also won't react to window size changes)
+
+Perhaps this should be a configuration option -- give it a number to wrap to
+that width, :auto to wrap to the terminal size (in some fashion that will allow
+it to resize when the terminal does), and in the absence of any configuration,
+80.
+
+-- 
+Every program has at least one bug and can be shortened by at least one
+instruction -- from which, by induction, one can deduce that every
+program can be reduced to one instruction which doesn't work.
+
+From marka at pobox.com  Fri Nov  6 23:10:33 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 06 Nov 2009 23:10:33 -0500
+Subject: [sup-devel] [sup-talk] Sup-sync exception
+In-Reply-To: <1257556260-sup-1272@home.mrtheplague.net>
+References: <1257452860-sup-7983@testarossa> <1257520288-sup-8595@onnadayr.ca>
+	<1257537789-sup-1961@testarossa>
+	<1257556260-sup-1272@home.mrtheplague.net>
+Message-ID: <1257566953-sup-306@r50p>
+
+Excerpts from Anthony Martinez's message of Fri Nov 06 21:16:42 -0500 2009:
+> That'd be my patch. I used stty because ENV["COLUMNS"] doesn't consistently work
+> for me:
+> 
+> $ echo $COLUMNS
+> 132
+> $ perl -wE 'say $ENV{COLUMNS}'
+> Use of uninitialized value in say at -e line 1.
+
+It sounds like you didn't do this:
+
+export COLUMNS
+
+From sup-bugs at masanjin.net  Sat Nov  7 13:06:30 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 07 Nov 2009 18:06:30 +0000
+Subject: [sup-devel] [issue2] msgid non-uniqueness
+Message-ID: <1257617190.5.0.336645039558.issue2@masanjin.net>
+
+
+New submission from anonymous:
+
+An important assumption in Sup is that message IDs are unique (or, at least that
+duplicate message IDs refer to the same abstract message). Normally this is
+true, but an attacker could trivially copy the id of a legitimate message,
+overwriting it in the index.
+
+Is this a problem we care about? Is there anything we can do about it?
+
+----------
+messages: 2
+nosy: anonymous
+priority: bug
+ruby_version: any
+status: unread
+sup_version: 0.9
+title: msgid non-uniqueness
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue2>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Nov  7 14:39:56 2009
+From: sup-bugs at masanjin.net (Blake Burkhart)
+Date: Sat, 07 Nov 2009 19:39:56 +0000
+Subject: [sup-devel] [issue3] Closing main inbox buffer and crashing
+Message-ID: <1257622796.53.0.0965044838271.issue3@masanjin.net>
+
+
+New submission from Blake Burkhart <bburky at bburky.com>:
+
+I posted this a couple days ago on sup-devel, and didn't get a response. Thought 
+I'd repost it here on the tracker anyway.
+
+I managed to close the main inbox buffer in sup. This seems reproducible by
+creating a new message, exiting from the editor and then not immediately
+sending it. While this draft message is open in "compose-mode", switch back to
+"inbox-mode" and attempt to close sup, answering "yes" to "Really quit?" but
+"no" to "Discard message?"
+
+At this point the only buffers open are "compose-mode" and "log-mode"
+according to the buffer list. If you close all buffers with the "x" key, sup
+will crash with the following error:
+
+--- NoMethodError from thread: main
+undefined method `title' for nil:NilClass
+/Users/blake/Code/Others/sup/lib/sup/buffer.rb:775:in `get_status_and_title'
+/Users/blake/Code/Others/sup/lib/sup/buffer.rb:307:in `draw_screen'
+/Users/blake/Code/Others/sup/bin/sup:324
+
+I'm currently running the "next" branch, but I can also reproduce this with
+"master."
+
+Note, if the "compose-mode" buffer is open when attempting to close sup, there
+is no problem, sup does not close the main inbox buffer.
+
+----------
+messages: 3
+nosy: bburky
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: git master
+title: Closing main inbox buffer and crashing
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue3>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Nov  7 15:24:10 2009
+From: sup-bugs at masanjin.net (William Morgan)
+Date: Sat, 07 Nov 2009 20:24:10 +0000
+Subject: [sup-devel] [issue4] be able to kill buffers in buffer-list-mode
+Message-ID: <1257625450.85.0.697495716313.issue4@masanjin.net>
+
+
+New submission from William Morgan <wmorgan-sup at masanjin.net>:
+
+i'd like to be able to kill buffers in buffer-list-mode by pressing 'x'. 
+currently i have to hit enter to raise the buffer and then 'x'.
+
+----------
+messages: 4
+nosy: w
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: be able to kill buffers in buffer-list-mode
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue4>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Nov  7 16:09:17 2009
+From: sup-bugs at masanjin.net (seschwar)
+Date: Sat, 07 Nov 2009 21:09:17 +0000
+Subject: [sup-devel] [issue5] white on black in colors.yaml looks like
+	default on default
+Message-ID: <1257628157.53.0.667373052282.issue5@masanjin.net>
+
+
+New submission from seschwar <seschwar at googlemail.com>:
+
+I use a terminal with a light background color.  Whenever I set
+an element to white foreground and black background color -- like
+:status in this example -- the element looks like I had set the colors
+to default/default.
+
+---
+:status:
+    :fg: white
+    :bg: black
+...
+looks like
+---
+:status:
+    :fg: default
+    :bg: default
+...
+
+However these are all displayed correctly:
+
+---
+:status:
+    :fg: blue
+    :bg: black
+...
+---
+:status:
+    :fg: white
+    :bg: blue
+...
+---
+:status:
+    :fg: white
+    :bg: default
+...
+
+This problem is still present in the current "next" branch.
+
+----------
+messages: 5
+nosy: seschwar
+priority: bug
+ruby_version: 1.8.7_p174
+status: unread
+sup_version: 0.9
+title: white on black in colors.yaml looks like default on default
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue5>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Nov  7 16:21:51 2009
+From: sup-bugs at masanjin.net (seschwar)
+Date: Sat, 07 Nov 2009 21:21:51 +0000
+Subject: [sup-devel] [issue6] add an ask_for_to config option
+Message-ID: <1257628911.55.0.104494796803.issue6@masanjin.net>
+
+
+New submission from seschwar <seschwar at googlemail.com>:
+
+Adding and an ask_for_to config option would allow to edit the header
+along with all others later in $EDITOR only.
+
+Together with the already existing ask_for_* options it would work
+like Mutt's $edit_headers.  This would allow to skip *all* prompts
+when composing a message and editing the headers in $EDITOR only.
+
+----------
+messages: 6
+nosy: seschwar
+priority: feature request
+ruby_version: 1.8.7_p174
+status: unread
+sup_version: 0.9
+title: add an ask_for_to config option
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue6>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 10 00:16:03 2009
+From: sup-bugs at masanjin.net (Rich Lane)
+Date: Tue, 10 Nov 2009 05:16:03 +0000
+Subject: [sup-devel] [issue7] per-source poll interval
+Message-ID: <1257830163.81.0.281752964078.issue7@masanjin.net>
+
+
+New submission from Rich Lane <rlane at club.cc.cmu.edu>:
+
+It would be nice to be able to configure the poll interval per-source in
+sources.yaml. This would probably also mean refactoring the poll loop so that
+sources could be polled independently and changing the definition of the poll hooks.
+
+----------
+messages: 7
+nosy: rlane
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9.1
+title: per-source poll interval
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue7>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 10 01:59:42 2009
+From: sup-bugs at masanjin.net (Rich Lane)
+Date: Tue, 10 Nov 2009 06:59:42 +0000
+Subject: [sup-devel] [issue8] ruby 1.9 compatibility
+Message-ID: <1257836382.46.0.473802932084.issue8@masanjin.net>
+
+
+New submission from Rich Lane <rlane at club.cc.cmu.edu>:
+
+Tracking bug for 1.9 compatibility.
+
+ncurses needs a few fixes: http://github.com/rlane/ncurses
+
+rmail has encoding issues: http://github.com/rlane/rubymail
+
+Opening mbox files with the "BINARY" encoding seems to work. Patch attached.
+
+
+The rmail patch above is very hacky. But, these combined are enough to let me
+index a bunch of spam and run sup with no obvious problems.
+
+----------
+assignedto: rlane
+files: mbox-binary-encoding.patch
+messages: 8
+nosy: rlane
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: 0.9
+title: ruby 1.9 compatibility
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue8>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mbox-binary-encoding.patch
+Type: text/x-patch
+Size: 569 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091110/88600908/attachment.bin>
+
+From sup-bugs at masanjin.net  Tue Nov 10 18:30:32 2009
+From: sup-bugs at masanjin.net (micah)
+Date: Tue, 10 Nov 2009 23:30:32 +0000
+Subject: [sup-devel] [issue9] VCS artifacts being shipped in the gem
+Message-ID: <1257895832.25.0.688101043926.issue9@masanjin.net>
+
+
+New submission from micah <micah at riseup.net>:
+
+There appears to be some VCS artifacts that are the result of a merge that
+wasn't cleaned up being distributed:
+
+pond% find ./ -name \*hook\*                                                   
+                                             ~/.gem/ruby/1.8
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_BASE_8625_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_BASE_8681_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_REMOTE_8681_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_BACKUP_8625_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_LOCAL_8625_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_LOCAL_8681_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_BACKUP_8681_rb.html
+./doc/sup-0.9/rdoc/files/lib/sup/hook_rb_REMOTE_8625_rb.html
+./doc/sup-0.9/ri/Redwood/Console/clear_hooks-i.yaml
+./doc/sup-0.9/ri/Redwood/HookManager/print_hooks-i.yaml
+./gems/sup-0.9/lib/sup/hook.rb.BASE.8625.rb
+./gems/sup-0.9/lib/sup/hook.rb.REMOTE.8681.rb
+./gems/sup-0.9/lib/sup/hook.rb
+./gems/sup-0.9/lib/sup/hook.rb.BASE.8681.rb
+./gems/sup-0.9/lib/sup/hook.rb.BACKUP.8625.rb
+./gems/sup-0.9/lib/sup/hook.rb.LOCAL.8681.rb
+./gems/sup-0.9/lib/sup/hook.rb.LOCAL.8625.rb
+./gems/sup-0.9/lib/sup/hook.rb.REMOTE.8625.rb
+./gems/sup-0.9/lib/sup/hook.rb.BACKUP.8681.rb
+
+----------
+messages: 9
+nosy: micah
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: 0.9
+title: VCS artifacts being shipped in the gem
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue9>
+_________________________________________
+
+From sup-bugs at masanjin.net  Wed Nov 11 11:11:29 2009
+From: sup-bugs at masanjin.net (Christopher Bertels)
+Date: Wed, 11 Nov 2009 16:11:29 +0000
+Subject: [sup-devel] [issue10] Show labels of polled messages
+Message-ID: <1257955889.47.0.883956565031.issue10@masanjin.net>
+
+
+New submission from Christopher Bertels <mailinglist at flasht.de>:
+
+I've posted this to the sup-talk mailinglist a month ago, but no one replied and
+so I'll repost it here, since this is what the tracker is for, ain't it ;)
+
+here's the original message, I've also attached the patch (it's based on my
+m17n-branch but it can be easily rebased on master - that is, if there's any
+interest of including this into sup's mainline).
+
+---------
+
+I always thought it would be nice to see to which labels new polled
+messages have been added. Usually, when I see new messages arrived,
+most of them aren't in my inbox, since I archive the messages of most
+of my sources (e.g. mailinglists like this one).
+
+Then, I usually go and look at the labels-list-mode to see where new
+messages got added. I've attached a patch that displays the labels of
+newly polled messages at the bottom, next to the amount of total
+messages added from polling. The patch is based on my i18n branch, but
+it should be easy to rebase it on next or master.
+
+What do you think of it?
+
+----------
+files: label_notification.patch
+messages: 10
+nosy: bakkdoor
+priority: feature request
+ruby_version: 1.8
+status: unread
+sup_version: 0.9
+title: Show labels of polled messages
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue10>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: label_notification.patch
+Type: text/x-patch
+Size: 3505 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091111/a3c616d3/attachment.bin>
+
+From ph at malaprop.org  Wed Nov 11 14:05:19 2009
+From: ph at malaprop.org (Peter Harkins)
+Date: Wed, 11 Nov 2009 13:05:19 -0600
+Subject: [sup-devel] patches for issues 6 and 10; q about 7
+Message-ID: <1257965837-sup-1835@argyle>
+
+Howdy, new sup user here. I was poking around the issue tracker and
+issues 6 and 10 looked pretty straightforward. 
+http://masanjin.net/sup-bugs/issue6
+http://masanjin.net/sup-bugs/issue10
+
+I've attached my patches to this email as well as uploaded to the
+tracker (it sounds like the workflow is in flux a little right now).
+My git repo is public at http://github.com/Harkins/sup for anyone
+curious.
+
+
+William, would you be interested in a patch for issue 7, adding a
+configurable timeout to each source? I could do this as well.
+http://masanjin.net/sup-bugs/issue7
+
+
+-- 
+Peter Harkins  -  http://push.cx  -  http://NearbyGamers.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Edited-bakkdoor-s-patch-for-issue10-for-next.patch
+Type: application/octet-stream
+Size: 2108 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091111/93b16c9e/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-issue6-Added-ask_for_to-to-match-_cc-_bcc-and-_subje.patch
+Type: application/octet-stream
+Size: 2458 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091111/93b16c9e/attachment-0001.obj>
+
+From sup-bugs at masanjin.net  Wed Nov 11 17:14:34 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 11 Nov 2009 22:14:34 +0000
+Subject: [sup-devel] [issue11] Add "Reply-To" to the "Reply To" menu
+In-Reply-To: <1257977674.17.0.0680341683131.issue11@masanjin.net>
+Message-ID: <1257977674.17.0.0680341683131.issue11@masanjin.net>
+
+
+New submission from anonymous:
+
+Currently in the "Reply To" menu there are three options: "Sender" "Mailing
+List" and "Customized".
+
+However sometimes (such when subscribing to mailing list) there is mime
+"Reply-To" field that is different from the sender address.
+
+IMO when there is a "Reply-To" mime field, another option should be added to the
+"Reply To" menu (can't think of a good name for it tough).
+
+----------
+messages: 16
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: Add "Reply-To" to the "Reply To" menu
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue11>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Wed Nov 11 23:31:08 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 11 Nov 2009 23:31:08 -0500
+Subject: [sup-devel] patches for issues 6 and 10; q about 7
+In-Reply-To: <1257965837-sup-1835@argyle>
+References: <1257965837-sup-1835@argyle>
+Message-ID: <1257999287-sup-7196@zyrg.net>
+
+Excerpts from Peter Harkins's message of Wed Nov 11 14:05:19 -0500 2009:
+> Howdy, new sup user here. I was poking around the issue tracker and
+> issues 6 and 10 looked pretty straightforward. 
+> http://masanjin.net/sup-bugs/issue6
+> http://masanjin.net/sup-bugs/issue10
+> 
+> I've attached my patches to this email as well as uploaded to the
+> tracker (it sounds like the workflow is in flux a little right now).
+> My git repo is public at http://github.com/Harkins/sup for anyone
+> curious.
+
+These look good to me. I've pushed them to branches display-poll-labels
+and config-ask-for-to in my repo* and merged them to master.
+
+* git://github.com/rlane/sup
+
+> William, would you be interested in a patch for issue 7, adding a
+> configurable timeout to each source? I could do this as well.
+> http://masanjin.net/sup-bugs/issue7
+
+Go for it. I've had several people want to change the poll interval and
+I've had to tell them to edit the source.
+
+From tero at tilus.net  Thu Nov 12 11:00:18 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 12 Nov 2009 18:00:18 +0200
+Subject: [sup-devel] [issue11] Add "Reply-To" to the "Reply To" menu
+In-Reply-To: <1257977674.17.0.0680341683131.issue11@masanjin.net>
+References: <1257977674.17.0.0680341683131.issue11@masanjin.net>
+Message-ID: <1258039714-sup-5426@tilus.net>
+
+anonymous, 2009-11-12 00:14:
+> IMO when there is a "Reply-To" mime field, another option should be
+> added to the "Reply To" menu
+
+IMO Reply-To should be the default when available and it seems to be
+too.  This is how recipient is sorted out for reply to option "Sender"
+(from reply-mode.rb, @m is the message)
+
+  to = @m.is_list_message? ? @m.from : (@m.replyto || @m.from)
+
+What would be the use-case for separate sender and "reply-to" options?
+
+> (can't think of a good name for it tough).
+
+If there really is need for separate options like that I would pick
+
+ - Sender: Reply-To (or From), which would be always available
+ - Bounce back: Return-Path (or From), available when it differs from
+   the previous
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From web-sup at superscript.com  Sun Nov 15 18:27:37 2009
+From: web-sup at superscript.com (William Erik Baxter)
+Date: Sun, 15 Nov 2009 18:27:37 -0500
+Subject: [sup-devel] Correct AM/PM selector in DATE_FORMAT
+Message-ID: <1258327627-sup-6728@kronos>
+
+The selector case was incorrect in DATE_FORMAT: %P instead of %p.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Correct-AM-PM-selector-in-DATE_FORMAT.patch
+Type: application/octet-stream
+Size: 799 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091115/02e6c90b/attachment.obj>
+
+From sup-bugs at masanjin.net  Mon Nov 16 16:16:34 2009
+From: sup-bugs at masanjin.net (micah)
+Date: Mon, 16 Nov 2009 21:16:34 +0000
+Subject: [sup-devel] [issue12] fixing gpg keyid handling in signing
+In-Reply-To: <1258406194.83.0.679207394644.issue12@masanjin.net>
+Message-ID: <1258406194.83.0.679207394644.issue12@masanjin.net>
+
+
+New submission from micah <micah at riseup.net>:
+
+I propose that the following gpg invocation in the sign function contained in
+lib/crypto.rb is changed.
+
+from:
+
+    output = run_gpg "--output - --armor --detach-sign --textmode --local-user
+'#{from}' #{payload_fn.path}"
+
+to:
+
+    output = run_gpg "--output - --armor --detach-sign --textmode
+#{payload_fn.path}"
+
+The reason is because (as I discussed on sup-talk), sup is using the From
+address to guess which gpg key it should use for signing, this is not the right
+thing to do, instead sup should use the default-key that gpg provides, which is
+user configurable in .gnupg/gpg.conf. As it is now, if the user has configured
+this, they are surprised to find that their preferred key is not used, and
+instead a different one could be used, causing issues.
+
+The --local-user flag overrides the default-key setting, which when set in
+.gnupg/gpg.conf is intended to be used unless it is explicitly overridden by the
+--local-user flag, overriding it implicitly is the wrong way to do that.
+
+If I remove the "--local-user '#{from}'" then sup behaves the way I
+expect, ie. it uses the key I have specified in my gpg.conf. 
+
+I'd also suggest that a :gpgkey: account configuration variable is added to sup
+so that a user can specify, for their different account identities, in
+.sup/config.yaml the specific key they wish to use, if they want to. If they do
+not, the behavior should be to use the one that gpg uses, which can be done by
+*not* passing the --local-user flag *unless* the :gpgkey: is specified for that
+account.
+
+----------
+messages: 20
+nosy: micah
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: next
+title: fixing gpg keyid handling in signing
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue12>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 17 06:31:05 2009
+From: sup-bugs at masanjin.net (Carlos Garcia Campos)
+Date: Tue, 17 Nov 2009 11:31:05 +0000
+Subject: [sup-devel] [issue13] Crypto selector default options
+In-Reply-To: <1258457465.08.0.918987088694.issue13@masanjin.net>
+Message-ID: <1258457465.08.0.918987088694.issue13@masanjin.net>
+
+
+New submission from Carlos Garcia Campos <carlosgc at gnome.org>:
+
+I always send emails from a certain account signed, so every time I compose an email from such 
+account I have to change the Crypto selector option from none to Sign. The thing is that I forget to 
+change that option quite often, so it would be nice if there were an option in the config file to change 
+default crypto options for every account. Or maybe a crypto-hook where I can do it myself. 
+
+Thanks.
+
+----------
+messages: 21
+nosy: carlosgc
+priority: feature request
+ruby_version: 1.8
+status: unread
+sup_version: next
+title: Crypto selector default options
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue13>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 17 13:32:20 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 17 Nov 2009 18:32:20 +0000
+Subject: [sup-devel] [issue14] Poll update message should accumulate changes
+	if UI is idle
+In-Reply-To: <1258482740.0.0.442361884723.issue14@masanjin.net>
+Message-ID: <1258482740.0.0.442361884723.issue14@masanjin.net>
+
+
+New submission from anonymous:
+
+I usually leave my sup window up for a long time, and I have lots of filter
+rules in my before-add-message hook, so many of the messages that come in don't
+show up in my inbox.
+
+Could someone who knows what they're doing help me patch the polling update to
+keep a running total of the messages (Found 2 messages, 0 to inbox), so that I
+can see how active mail has been since I last touched it.
+
+We could keep the last update separate from the running total, if that's valuable.
+
+----------
+messages: 22
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7-p72
+status: unread
+sup_version: 0.9.1
+title: Poll update message should accumulate changes if UI is idle
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue14>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 17 13:36:04 2009
+From: sup-bugs at masanjin.net (Mark Anderson)
+Date: Tue, 17 Nov 2009 18:36:04 +0000
+Subject: [sup-devel] [issue15] BugTracker: Feature requests shouldn't
+	require the Ruby	version
+In-Reply-To: <1258482964.38.0.699410028803.issue15@masanjin.net>
+Message-ID: <1258482964.38.0.699410028803.issue15@masanjin.net>
+
+
+New submission from Mark Anderson <MarkR.Anderson at amd.com>:
+
+I was just entering a feature request, and the ticket wouldn't accept creation
+without a Ruby version.
+
+I agree that Ruby version is a must-have field for bug submission, but perhaps
+the web logic could detect that a feature request doesn't have to have the Ruby
+version supplied.
+
+Just a thought.
+
+----------
+messages: 23
+nosy: mranders
+priority: feature request
+ruby_version: 1.8.7-p72
+status: unread
+sup_version: 0.9.1
+title: BugTracker: Feature requests shouldn't require the Ruby version
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue15>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 17 15:29:35 2009
+From: sup-bugs at masanjin.net (Mark Anderson)
+Date: Tue, 17 Nov 2009 20:29:35 +0000
+Subject: [sup-devel] [issue16] Messages on sup startup
+In-Reply-To: <1258489775.12.0.817458172429.issue16@masanjin.net>
+Message-ID: <1258489775.12.0.817458172429.issue16@masanjin.net>
+
+
+New submission from Mark Anderson <MarkR.Anderson at amd.com>:
+
+I see these warnings on startup, and I wondered if they are fixed in some branch
+I'm unaware of? Do they only show up in my version of Ruby?
+
+I had some simple fixes for them, but I still haven't figured out how to
+generate patches.
+
+
+$HOME/src/sup-git/mainline/lib/sup/util.rb:9: warning: method redefined;
+discarding old gen_lock_id
+$HOME/src/sup-git/mainline/lib/sup/util.rb:20: warning: method redefined;
+discarding old dump_lock_id
+[Tue Nov 17 11:37:39 -0700 2009] WARNING: can't find character set by using
+locale, defaulting to utf-8
+$HOME/src/sup-git/mainline/lib/sup/message-chunks.rb:36: warning: method
+redefined; discarding old make_tmpname
+$HOME/src/sup-git/mainline/lib/sup/imap.rb:119: warning: ambiguous first
+argument; put parentheses or even spaces
+$HOME/src/sup-git/mainline/lib/sup/xapian_index.rb:398: warning: `&' interpreted
+as argument prefix
+
+----------
+messages: 24
+nosy: mranders
+priority: bug
+ruby_version: 1.8.7-p72
+status: unread
+sup_version: 0.9.1
+title: Messages on sup startup
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue16>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Nov 17 15:43:57 2009
+From: sup-bugs at masanjin.net (Benoit PIERRE)
+Date: Tue, 17 Nov 2009 20:43:57 +0000
+Subject: [sup-devel] [issue17] signature dectecion regexp to liberal
+In-Reply-To: <1258490637.79.0.340874377555.issue17@masanjin.net>
+Message-ID: <1258490637.79.0.340874377555.issue17@masanjin.net>
+
+
+New submission from Benoit PIERRE <benoit.pierre at gmail.com>:
+
+For example I receive some messages from http://appdb.winehq.org who look like this:
+
+Test Results added to version 1.x of Fallout 3 by xxxx
+-------------------------------------------------------
+http://appdb.winehq.org/objectManager.php?sClass=version&iId=14322&iTestingId=46626
+This Test data has been submitted by xxxx.
+Appdb admin reply text:
+Since something is not working, it's not gold.
+
+Best regards.
+The AppDB team
+http://appdb.winehq.org/
+
+resulting in sup marking the whole body (except the fist line) as a signature.
+
+I know not every mailer stick to ^-- $, but maybe sup could use some kind of
+heuristic based on the size of the signature?
+
+Also, ironically, the messages I receive from the sup mailing list end in:
+
+_______________________________________________
+sup-talk mailing list
+sup-talk at rubyforge.org
+http://rubyforge.org/mailman/listinfo/sup-talk
+
+with an added:
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue12>
+_________________________________________
+
+
+when they come from the tracker...
+
+----------
+messages: 25
+nosy: bpierre
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: all
+title: signature dectecion regexp to liberal
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue17>
+_________________________________________
+
+From ingmar at exherbo.org  Tue Nov 17 18:25:26 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Wed, 18 Nov 2009 00:25:26 +0100
+Subject: [sup-devel] [PATCH] Comment tweak,
+	XapianIndex doesn't use GDBM anymore since 4d82ef88
+Message-ID: <1258500326-17510-1-git-send-email-ingmar@exherbo.org>
+
+---
+ lib/sup/xapian_index.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+A really minor comment tweak, but I'd still like to see it fixed... :-)
+
+diff --git a/lib/sup/xapian_index.rb b/lib/sup/xapian_index.rb
+index 34d67d5..cebb148 100644
+--- a/lib/sup/xapian_index.rb
++++ b/lib/sup/xapian_index.rb
+@@ -3,7 +3,7 @@ require 'set'
+ 
+ module Redwood
+ 
+-# This index implementation uses Xapian for searching and GDBM for storage. It
++# This index implementation uses Xapian for searching and storage. It
+ # tends to be slightly faster than Ferret for indexing and significantly faster
+ # for searching due to precomputing thread membership.
+ class XapianIndex < BaseIndex
+-- 
+1.6.5.2.433.g23cdb
+
+
+From bburky at bburky.com  Wed Nov 18 02:08:00 2009
+From: bburky at bburky.com (Blake Burkhart)
+Date: Wed, 18 Nov 2009 01:08:00 -0600
+Subject: [sup-devel] [PATCH] Added Growl notifications for new messages
+Message-ID: <1258526534-sup-7223@Backspace.local>
+
+I use sup on a Mac and often use the Growl notification system in many apps.
+This would be a useful feature in sup because I often don't have my terminal
+window visible.
+
+The attached patch uses the ruby growl bindings (in the growl gem) to display
+a notification with the text that is normally displayed in the sup window when
+new messages are added to the inbox after polling. For the notification icon I
+just borrowed the Apple Mail.app icon.
+
+I realize this probably isn't something that most people want as it's Mac
+only, but I thought I'd share it for others. If anyone does try it, make sure
+you have the growl gem installed and the growlnotify command line tool
+installed.
+
+As this is currently it will fail if the gem is not installed. I'm not really
+that familiar with this binding enough to make it fail gracefully.
+
+Growl website: http://growl.info/
+
+-- 
+Blake Burkhart
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Added-Growl-notifications-for-new-messages.patch
+Type: application/octet-stream
+Size: 1203 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091118/e700eccf/attachment-0001.obj>
+
+From sup-bugs at masanjin.net  Wed Nov 18 04:24:13 2009
+From: sup-bugs at masanjin.net (James Rowe)
+Date: Wed, 18 Nov 2009 09:24:13 +0000
+Subject: [sup-devel] [issue18] Thread loading exception with xapian
+In-Reply-To: <1258536253.12.0.977685357393.issue18@masanjin.net>
+Message-ID: <1258536253.12.0.977685357393.issue18@masanjin.net>
+
+
+New submission from James Rowe <jnrowe at gmail.com>:
+
+When loading all threads using the xapian backend I receive the following 
+exception:
+
+    --- RuntimeError from thread: load threads for thread-index-mode
+    wrong id called on nil
+    ./lib/sup.rb:17:in `id'
+    ./lib/sup/modes/thread-index-mode.rb:225:in `update'
+    ./lib/sup/hook.rb:122:in `sort_by'
+    ./lib/sup/modes/thread-index-mode.rb:225:in `each'
+    ./lib/sup/modes/thread-index-mode.rb:225:in `sort_by'
+    ./lib/sup/modes/thread-index-mode.rb:225:in `update'
+    ./lib/sup/modes/thread-index-mode.rb:223:in `synchronize'
+    ./lib/sup/modes/thread-index-mode.rb:223:in `update'
+    ./lib/sup/modes/thread-index-mode.rb:637:in `__unprotected_load_n_threads'
+    (eval):12:in `load_n_threads'
+    ./lib/sup/modes/thread-index-mode.rb:609:in `load_n_threads_background'
+    ./lib/sup.rb:77:in `reporting_thread'
+    ./lib/sup.rb:75:in `initialize'
+    ./lib/sup.rb:75:in `new'
+    ./lib/sup.rb:75:in `reporting_thread'
+    ./lib/sup/modes/thread-index-mode.rb:608:in `load_n_threads_background'
+    ./lib/sup/modes/thread-index-mode.rb:679:in `__unprotected_load_threads'
+    (eval):12:in `load_threads'
+    ./bin/sup:199
+
+The message that triggers the exception is attached, luckily it was to a public 
+ML.
+
+----------
+files: 2,S
+messages: 26
+nosy: jnrowe
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: Thread loading exception with xapian
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue18>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 2,S
+Type: application/octet-stream
+Size: 8557 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091118/627c0497/attachment.obj>
+
+From tero at tilus.net  Wed Nov 18 08:03:20 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 18 Nov 2009 15:03:20 +0200
+Subject: [sup-devel] [issue14] Poll update message should accumulate
+	changes if UI is idle
+In-Reply-To: <1258482740.0.0.442361884723.issue14@masanjin.net>
+References: <1258482740.0.0.442361884723.issue14@masanjin.net>
+Message-ID: <1258548374-sup-6031@tilus.net>
+
+anonymous, 2009-11-17 20:32:
+> Could someone who knows what they're doing help me patch the polling
+> update to keep a running total of the messages (Found 2 messages, 0
+> to inbox), so that I can see how active mail has been since I last
+> touched it.
+
+Peeking into log buffer doesn't work for you?
+
+> We could keep the last update separate from the running total, if
+> that's valuable.
+
+What would be the appropriate starting point for the running total?
+Sup startup?  You can (I think) write an after-poll hook to do the
+thing.  It might look something like this (minus typos and bugs).
+
+class PollTotals
+  cattr_accessor :all
+  cattr_accessor :inbox
+end
+
+PollTotals.all ||= 0
+PollTotals.inbox ||= 0
+
+PollTotals.all += num
+PollTotals.inbox += num_inbox
+
+info "Total #{PollTotals.all} messages, #{PollTotals.inbox} to inbox"
+# or however the logger thingy worked...
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup-bugs at masanjin.net  Wed Nov 18 08:19:49 2009
+From: sup-bugs at masanjin.net (micah)
+Date: Wed, 18 Nov 2009 13:19:49 +0000
+Subject: [sup-devel] [issue19] crash when temporary space is unavailable
+In-Reply-To: <1258550389.35.0.535342663935.issue19@masanjin.net>
+Message-ID: <1258550389.35.0.535342663935.issue19@masanjin.net>
+
+
+New submission from micah <micah at riseup.net>:
+
+My /tmp filled up. This caused sup to crash and burn horribly, leaving me with a
+messed up terminal and some nasty stuff on the screen:
+
+[Wed Nov 18 06:29:03 -0500 2009] ERROR: oh crap, an exception
+                                                            
+----------------------------------------------------------------
+                                                                               
+                                             I'm very sorry. It seems that an
+error occurred in Sup. Please
+                                              accept my sincere apologies. If
+you don't mind, please send the
+                                                                               
+                             contents of ~/.sup/exception-log.txt and a brief
+report of the
+                              circumstances to sup-talk at rubyforge dot orgs so
+that I might
+                                                                               
+             address this problem. Thank you!
+                                                                               
+                                             
+                                                                               
+                                             Sincerely,
+                                                                               
+                                                       William
+ ----------------------------------------------------------------
+                                                                 ---
+RuntimeError from thread: periodic poll
+                                                                               
+                            cannot generate tempfile `/tmp/21653-12-redwood.payload'
+                       /usr/lib/ruby/1.8/tempfile.rb:52:in `initialize'
+                                                                      
+/usr/lib/ruby/1.8/sup/crypto.rb:84:in `new'
+                                                                               
+                                  /usr/lib/ruby/1.8/sup/crypto.rb:84:in `verify'
+                   /usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+
+THe exception log has this:
+
+--- RuntimeError from thread: periodic poll
+cannot generate tempfile `/tmp/21653-12-redwood.payload'
+/usr/lib/ruby/1.8/tempfile.rb:52:in `initialize'
+/usr/lib/ruby/1.8/sup/crypto.rb:84:in `new'
+/usr/lib/ruby/1.8/sup/crypto.rb:84:in `verify'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/1.8/sup/message.rb:388:in `multipart_signed_to_chunks'
+/usr/lib/ruby/1.8/sup/message.rb:428:in `message_to_chunks'
+/usr/lib/ruby/1.8/sup/message.rb:239:in `load_from_source!'
+/usr/lib/ruby/1.8/sup/message.rb:335:in `build_from_source'
+/usr/lib/ruby/1.8/sup/poll.rb:145:in `each_message_from'
+/usr/lib/ruby/1.8/sup/maildir.rb:160:in `each'
+/usr/lib/ruby/1.8/sup/maildir.rb:157:in `upto'
+/usr/lib/ruby/1.8/sup/maildir.rb:157:in `each'
+/usr/lib/ruby/1.8/sup/util.rb:560:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/1.8/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/1.8/sup/poll.rb:139:in `each_message_from'
+/usr/lib/ruby/1.8/sup/poll.rb:93:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:81:in `each'
+/usr/lib/ruby/1.8/sup/poll.rb:81:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:80:in `synchronize'
+/usr/lib/ruby/1.8/sup/poll.rb:80:in `do_poll'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:65:in `start'
+/usr/lib/ruby/1.8/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:74:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:74:in `new'
+/usr/lib/ruby/1.8/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/poll.rb:62:in `start'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/bin/sup-mail:202
+
+I certainly don't expect sup to work when /tmp is full, but perhaps a more
+graceful handling of these conditions is in order?
+
+----------
+messages: 30
+nosy: micah
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: next
+title: crash when temporary space is unavailable
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue19>
+_________________________________________
+
+From sup-bugs at masanjin.net  Wed Nov 18 09:56:31 2009
+From: sup-bugs at masanjin.net (Jon Dowland)
+Date: Wed, 18 Nov 2009 14:56:31 +0000
+Subject: [sup-devel] [issue20] Rakefile tweaks relating to dependencies
+In-Reply-To: <1258556191.32.0.524787040794.issue20@masanjin.net>
+Message-ID: <1258556191.32.0.524787040794.issue20@masanjin.net>
+
+
+New submission from Jon Dowland <jon+masanjin.net at alcopop.org>:
+
+Disclaimer: I know next to nothing about rake, and I didn't want to install sup 
+via rubygems.
+
+I've just gone through a dance like so
+
+$ rake
+   rake aborted!
+   no such file to load -- <some-dependency>
+
+resolve the dependency, rinse and repeat, until I figure out that there's no 
+default target for the Rakefile anyway.
+
+Is it possible for rake to emit a list of all required (and missing) packages, 
+the first time a load fails? That would be nice.
+
+Also, some dependencies did not fail in this way, and instead caused sup-config 
+to die later on. These were highline and trollop. I've no idea why the "rake" 
+step didn't pick up on these, they are clearly in the Rakefile...
+
+----------
+messages: 31
+nosy: jon
+priority: feature request
+ruby_version: 1.8
+status: unread
+sup_version: 44336aa8ce39ea0769ad03ec3fac483ddc0e855b
+title: Rakefile tweaks relating to dependencies
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue20>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Wed Nov 18 12:20:52 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 18 Nov 2009 12:20:52 -0500
+Subject: [sup-devel] [PATCH] Added Growl notifications for new messages
+In-Reply-To: <1258526534-sup-7223@Backspace.local>
+References: <1258526534-sup-7223@Backspace.local>
+Message-ID: <1258564558-sup-4079@zyrg.net>
+
+Excerpts from Blake Burkhart's message of Wed Nov 18 02:08:00 -0500 2009:
+> The attached patch uses the ruby growl bindings (in the growl gem) to display
+> a notification with the text that is normally displayed in the sup window when
+> new messages are added to the inbox after polling. For the notification icon I
+> just borrowed the Apple Mail.app icon.
+
+I think the after-poll hook provides the variables you need. If you
+could refactor it into that hook it would be a nice addition to the
+Hooks wiki page.
+
+From markr.anderson at amd.com  Wed Nov 18 14:30:49 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Wed, 18 Nov 2009 12:30:49 -0700
+Subject: [sup-devel] [issue14] Poll update message should accumulate
+	changes if UI is idle
+In-Reply-To: <1258548374-sup-6031@tilus.net>
+References: <1258482740.0.0.442361884723.issue14@masanjin.net>
+	<1258548374-sup-6031@tilus.net>
+Message-ID: <1258571852-sup-3843@testarossa>
+
+Excerpts from Tero Tilus's message of Wed Nov 18 06:03:20 -0700 2009:
+> anonymous, 2009-11-17 20:32:
+> > Could someone who knows what they're doing help me patch the polling
+> > update to keep a running total of the messages (Found 2 messages, 0
+> > to inbox), so that I can see how active mail has been since I last
+> > touched it.
+> 
+> Peeking into log buffer doesn't work for you?
+
+Peeking into the log buffer requires me to do an action when all I
+want to know is a summary of the actions the program has taken while
+I've been away. It's actually already trying to tell me what it's
+done, but it's only telling me what happened as a part of the last
+polling action.
+
+I'd like to know the summary of the polling actions since I last
+*touched* sup, not just the result of the last polling action, which
+is often along the line of "0 messages, 0 to inbox".
+
+I don't have a memory location inside my brain dedicated to the time
+of my last interaction with the mail client. To make sense of the
+polling log I need to have some idea of what the changes are since I
+last looked at it, more things to remember.  The computer should be
+able to relieve me of some of those things, at least that's what I
+want it to do.
+
+> > > We could keep the last update separate from the running total, if
+> > that's valuable.
+> 
+> What would be the appropriate starting point for the running total?
+> Sup startup?  You can (I think) write an after-poll hook to do the
+> thing.  It might look something like this (minus typos and bugs).
+
+I want to clear the running total each time I interact with the
+interface, but that's too vague.  I don't think I want some flag
+updated each time I press a key, although that would probably give me
+most of what I'm looking for here.
+
+I need a tighter definition of when I want to have the PollTotals
+cleared.  Here is a short list of some possibilities.
+
+1. Every time I press any key on the keyboard
+
+2. Every time I intentionally visit the inbox-mode (such as 'I' or
+   visiting the inbox-mode buffer from the buffer-list screen, not
+   just cycling 'b', that might be an accidental visit)
+
+3. Some new command to specifically flush the counter
+
+4. The right thing I can't think of yet.
+
+-Mark
+
+
+From markr.anderson at amd.com  Wed Nov 18 15:27:03 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Wed, 18 Nov 2009 13:27:03 -0700
+Subject: [sup-devel] [issue14] Poll update message should accumulate
+	changes if UI is idle
+In-Reply-To: <1258571852-sup-3843@testarossa>
+References: <1258482740.0.0.442361884723.issue14@masanjin.net>
+	<1258548374-sup-6031@tilus.net> <1258571852-sup-3843@testarossa>
+Message-ID: <1258575879-sup-7642@testarossa>
+
+
+So I tried cattr_accessor, and that doesn't work without Rails, apparently, so I just did this:
+
+class PollTotals
+  def PollTotals.all
+    @@all
+  end
+  def PollTotals.all=(value)
+    @@all=value
+  end
+
+  def PollTotals.inbox
+    @@inbox
+  end
+  def PollTotals.inbox=(value)
+    @@inbox=value
+  end
+
+  @@all=0
+  @@inbox=0
+end
+
+PollTotals.all   += num
+PollTotals.inbox += num_inbox
+
+info "Total #{PollTotals.all} messages, #{PollTotals.inbox} to inbox"
+# or however the logger thingy worked...
+
+However, that gives the following. 
+
+Loaded 1 new message, 0 to inbox.
+/home/manderso/.sup/hooks/after-poll.rb:2: warning: redefine all
+/home/manderso/.sup/hooks/after-poll.rb:5: warning: redefine all=
+/home/manderso/.sup/hooks/after-poll.rb:9: warning: redefine inbox
+/home/manderso/.sup/hooks/after-poll.rb:12: warning: redefine inbox=
+
+It seems a bit wasteful to redefine the class every time through, is there a better hook to put this in?
+
+
+From bburky at bburky.com  Wed Nov 18 16:52:09 2009
+From: bburky at bburky.com (Blake Burkhart)
+Date: Wed, 18 Nov 2009 15:52:09 -0600
+Subject: [sup-devel] [PATCH] Added Growl notifications for new messages
+In-Reply-To: <1258569836-sup-5572@Backspace.local>
+References: <1258526534-sup-7223@Backspace.local>
+	<1258564558-sup-4079@zyrg.net>
+	<1258569836-sup-5572@Backspace.local>
+Message-ID: <1258580571-sup-648@Backspace.local>
+
+Excerpts from Blake Burkhart's message of Wed Nov 18 12:46:03 -0600 2009:
+> Excerpts from Rich Lane's message of Wed Nov 18 11:20:52 -0600 2009:
+> > I think the after-poll hook provides the variables you need. If you
+> > could refactor it into that hook it would be a nice addition to the
+> > Hooks wiki page.
+> 
+> Oh, really? I didn't really know too much about the hooks other than the basic
+> before-add-message one I'm using. Sure, I'll try to refactor it and add to the
+> wiki.
+
+Okay. I added it to the Hooks wiki page in the form of a after-poll hook. I
+didn't realize there were so many hooks.
+
+-- 
+Blake Burkhart
+
+From markr.anderson at amd.com  Wed Nov 18 17:50:39 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Wed, 18 Nov 2009 15:50:39 -0700
+Subject: [sup-devel] thread confusion
+Message-ID: <1258584557-sup-3267@testarossa>
+
+I have a thread that shows up 2 messages in one view (search on a number in the title)
+
+And shows up as 1 message in another view (search-mode on a label)
+
+When I added another label to the view where I could see both messages in one thread, and '$' to commit the changes, the thread shows up properly in the label view.
+
+Any ideas what was going on?
+
+I'm using Xapian.
+
+-Mark
+
+
+From tero at tilus.net  Thu Nov 19 00:43:02 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Nov 2009 07:43:02 +0200
+Subject: [sup-devel] [issue14] Poll update message should accumulate
+	changes if UI is idle
+In-Reply-To: <1258575879-sup-7642@testarossa>
+References: <1258482740.0.0.442361884723.issue14@masanjin.net>
+	<1258548374-sup-6031@tilus.net> <1258571852-sup-3843@testarossa>
+	<1258575879-sup-7642@testarossa>
+Message-ID: <1258609244-sup-8616@tilus.net>
+
+Mark Anderson, 2009-11-18 22:27:
+> It seems a bit wasteful to redefine the class every time through, is
+> there a better hook to put this in?
+
+Put the class in poll_totals.rb and require 'poll_totals' in the hook.
+You might need to hardcode path to require.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From markr.anderson at amd.com  Thu Nov 19 02:21:44 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Thu, 19 Nov 2009 00:21:44 -0700
+Subject: [sup-devel] [issue14] Poll update message should accumulate
+	changes if UI is idle
+In-Reply-To: <1258609244-sup-8616@tilus.net>
+References: <1258482740.0.0.442361884723.issue14@masanjin.net>
+	<1258548374-sup-6031@tilus.net> <1258571852-sup-3843@testarossa>
+	<1258575879-sup-7642@testarossa> <1258609244-sup-8616@tilus.net>
+Message-ID: <1258615176-sup-3338@testarossa>
+
+Excerpts from Tero Tilus's message of Wed Nov 18 22:43:02 -0700 2009:
+> Mark Anderson, 2009-11-18 22:27:
+> > It seems a bit wasteful to redefine the class every time through, is
+> > there a better hook to put this in?
+> 
+> Put the class in poll_totals.rb and require 'poll_totals' in the hook.
+> You might need to hardcode path to require.
+
+I actually just put the class definition in startup.rb, which I prefer. 
+
+It's probably not considered as "clean", but it works.
+
+-Mark
+
+
+From cam+sup at cammunism.org  Thu Nov 19 03:13:51 2009
+From: cam+sup at cammunism.org (Cameron Matheson)
+Date: Thu, 19 Nov 2009 01:13:51 -0700
+Subject: [sup-devel] [PATCH] Make sup's textfield behave more like readline
+Message-ID: <1258618384-sup-3721@cammunism.org>
+
+Hello,
+
+I've noticed that when using the Ctrl-a keybinding in sup's textfield,
+the entire input is deleted after typing anything if C-a was the first
+key pressed.  I've also been missing readline's C-u (deletes anything
+before the cursor).  I've attached a patch to fix/implement these
+issues.  The C-u implementation is a bit ugly, but I couldn't find a
+better way to do it in ncurses.
+
+I also switched some of the key-code integers to character-literal
+syntax as I thought that was a bit more readable.
+
+Thanks,
+Cameron
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-readline.patch
+Type: application/octet-stream
+Size: 1354 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091119/9be23329/attachment.obj>
+
+From tero at tilus.net  Thu Nov 19 03:30:33 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Nov 2009 10:30:33 +0200
+Subject: [sup-devel] [issue15] BugTracker: Feature requests shouldn't
+	require the Ruby version
+In-Reply-To: <1258482964.38.0.699410028803.issue15@masanjin.net>
+References: <1258482964.38.0.699410028803.issue15@masanjin.net>
+Message-ID: <1258619263-sup-3040@tilus.net>
+
+Mark Anderson, 2009-11-17 20:36:
+> I was just entering a feature request, and the ticket wouldn't
+> accept creation without a Ruby version.
+
+For now it might be better to use 'none' in cases where version really
+doesn't matter at all.
+
+> I agree that Ruby version is a must-have field for bug submission,
+> but perhaps the web logic could detect that a feature request
+> doesn't have to have the Ruby version supplied.
+
+Ruby version could IMO be a list just like 'Tags'.  If it is made
+mandatory for bugs only the list should contain 'dunno' too and the
+name could be 'Affected ruby versions'.
+
+Could we already kick off a discussion regarding wanted/needed changes
+to tracker layout?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From markr.anderson at amd.com  Thu Nov 19 17:46:19 2009
+From: markr.anderson at amd.com (Mark Anderson)
+Date: Thu, 19 Nov 2009 15:46:19 -0700
+Subject: [sup-devel] Exception log
+Message-ID: <1258670687-sup-3418@testarossa>
+
+I was just going through and deleting an older buffer.
+
+I don't know anything specifically about the state of the thread that was being visited.
+
+-Mark
+
+
+--- NoMethodError from thread: load messages for thread-view-mode
+undefined method `content_width' for nil:NilClass
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:876:in `from_width'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:801:in `text_for_thread_at'
+/home/manderso/src/sup-git/mainline/lib/sup/hook.rb:55:in `each_with_index'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:800:in `each'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:800:in `each_with_index'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:800:in `text_for_thread_at'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:751:in `update_text_for_line'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:119:in `select'
+/home/manderso/src/sup-git/mainline/lib/sup.rb:77:in `reporting_thread'
+/home/manderso/src/sup-git/mainline/lib/sup.rb:75:in `initialize'
+/home/manderso/src/sup-git/mainline/lib/sup.rb:75:in `new'
+/home/manderso/src/sup-git/mainline/lib/sup.rb:75:in `reporting_thread'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:101:in `select'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:151:in `launch_another_thread'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-index-mode.rb:133:in `launch_next_thread_after'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-view-mode.rb:518:in `dispatch'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-view-mode.rb:490:in `delete_and_then'
+/home/manderso/src/sup-git/mainline/lib/sup/modes/thread-view-mode.rb:465:in `delete_and_next'
+/home/manderso/src/sup-git/mainline/lib/sup/mode.rb:51:in `send'
+/home/manderso/src/sup-git/mainline/lib/sup/mode.rb:51:in `handle_input'
+/home/manderso/src/sup-git/mainline/lib/sup/buffer.rb:265:in `handle_input'
+/home/manderso/src/sup-git/mainline/bin/sup:243
+
+
+From rlane at club.cc.cmu.edu  Thu Nov 19 23:51:02 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 19 Nov 2009 23:51:02 -0500
+Subject: [sup-devel] Correct AM/PM selector in DATE_FORMAT
+In-Reply-To: <1258327627-sup-6728@kronos>
+References: <1258327627-sup-6728@kronos>
+Message-ID: <1258691207-sup-5245@zyrg.net>
+
+Excerpts from William Erik Baxter's message of Sun Nov 15 18:27:37 -0500 2009:
+> The selector case was incorrect in DATE_FORMAT: %P instead of %p.
+
+Branch date-format-fix, merged to master.
+
+git://github.com/rlane/sup
+
+From rlane at club.cc.cmu.edu  Thu Nov 19 23:51:12 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 19 Nov 2009 23:51:12 -0500
+Subject: [sup-devel] [PATCH] Make sup's textfield behave more like
+	readline
+In-Reply-To: <1258618384-sup-3721@cammunism.org>
+References: <1258618384-sup-3721@cammunism.org>
+Message-ID: <1258691037-sup-6789@zyrg.net>
+
+Excerpts from Cameron Matheson's message of Thu Nov 19 03:13:51 -0500 2009:
+> Hello,
+> 
+> I've noticed that when using the Ctrl-a keybinding in sup's textfield,
+> the entire input is deleted after typing anything if C-a was the first
+> key pressed.  I've also been missing readline's C-u (deletes anything
+> before the cursor).  I've attached a patch to fix/implement these
+> issues.  The C-u implementation is a bit ugly, but I couldn't find a
+> better way to do it in ncurses.
+> 
+> I also switched some of the key-code integers to character-literal
+> syntax as I thought that was a bit more readable.
+> 
+> Thanks,
+> Cameron
+
+I definitely like the control key literals. I'm not an ncurses expert
+though, so I'll hold off on merging this to give one (anyone?) a chance
+to comment.
+
+Branch textfield-tweaks at git://github.com/rlane/sup
+
+From rlane at club.cc.cmu.edu  Thu Nov 19 23:51:17 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 19 Nov 2009 23:51:17 -0500
+Subject: [sup-devel] [PATCH] Comment tweak,
+	XapianIndex doesn't use GDBM anymore since 4d82ef88
+In-Reply-To: <1258500326-17510-1-git-send-email-ingmar@exherbo.org>
+References: <1258500326-17510-1-git-send-email-ingmar@exherbo.org>
+Message-ID: <1258691742-sup-2434@zyrg.net>
+
+Excerpts from Ingmar Vanhassel's message of Tue Nov 17 18:25:26 -0500 2009:
+> ---
+>  lib/sup/xapian_index.rb |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> A really minor comment tweak, but I'd still like to see it fixed... :-)
+
+Branch xapian-comment-fix, merged to master at git://github.com/rlane/sup
+
+From stevenrwalter at gmail.com  Fri Nov 20 09:07:14 2009
+From: stevenrwalter at gmail.com (Steven Walter)
+Date: Fri, 20 Nov 2009 09:07:14 -0500
+Subject: [sup-devel] [PATCH] Make sup's textfield behave more like
+	readline
+In-Reply-To: <1258691037-sup-6789@zyrg.net>
+References: <1258618384-sup-3721@cammunism.org> <1258691037-sup-6789@zyrg.net>
+Message-ID: <e06498070911200607k4575134fla5adf57c11c76c5d@mail.gmail.com>
+
+On Thu, Nov 19, 2009 at 11:51 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+>> I also switched some of the key-code integers to character-literal
+>> syntax as I thought that was a bit more readable.
+>>
+>> Thanks,
+>> Cameron
+>
+> I definitely like the control key literals. I'm not an ncurses expert
+> though, so I'll hold off on merging this to give one (anyone?) a chance
+> to comment.
+
+I like it.  Here's C-w.
+-- 
+-Steven Walter <stevenrwalter at gmail.com>
+"The rotter who simpers that he sees no difference between the power
+of the dollar and the power of the whip, ought to learn the difference
+on his own hide."
+    -Francisco d'Anconia, Atlas Shrugged
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-C-W-for-textfields.patch
+Type: text/x-patch
+Size: 874 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091120/9d9ad842/attachment.bin>
+
+From sup-bugs at masanjin.net  Fri Nov 20 13:15:35 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 20 Nov 2009 18:15:35 +0000
+Subject: [sup-devel] [issue21] "undefined method" error on sup-sync
+In-Reply-To: <1258740935.07.0.108445056294.issue21@masanjin.net>
+Message-ID: <1258740935.07.0.108445056294.issue21@masanjin.net>
+
+
+New submission from anonymous:
+
+When I run "sup-sync", regardless or the source (I tried IMAP and
+Maildir), I get this error:
+
+$ sup-sync
+Scanning maildir:/home/nedludd/.mail/INBOX...
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/source.rb:88:in `done?':
+undefined method `>=' for true:TrueClass (NoMethodError)
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:560:in `__pass'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:547:in
+`method_missing'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/poll.rb:137:in
+`each_message_from'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/lib/sup/util.rb:520:in
+`method_missing'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/bin/sup-sync:146:in `block
+in <top (required)>'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/bin/sup-sync:141:in `each'
+       from /usr/lib/ruby/gems/1.9.1/gems/sup-0.9/bin/sup-sync:141:in `<top
+(required)>'
+       from /usr/bin/supbin/sup-sync:19:in `load'
+       from /usr/bin/supbin/sup-sync:19:in `<main>'
+
+
+[I'm on Arch with sup 0.9 and Ruby 1.9.1]
+
+----------
+messages: 36
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: 0.9
+title: "undefined method" error on sup-sync
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue21>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Nov 21 14:33:47 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 21 Nov 2009 19:33:47 +0000
+Subject: [sup-devel] [issue22] Remove ncurses gem dependency
+In-Reply-To: <1258832027.7.0.329764082628.issue22@masanjin.net>
+Message-ID: <1258832027.7.0.329764082628.issue22@masanjin.net>
+
+
+New submission from anonymous:
+
+On ubuntu 9.10 there is not gem for ncurses
+sudo gem install ncurses
+ERROR:  could not find gem ncurses locally or in a repository
+
+instead you must install ncurses via apt-get
+sudo apt-get install libncurses-ruby
+
+now when installing a gem that depends on ncurses I still run into problems:
+sudo gem install sup
+ERROR:  Error installing sup:
+       sup requires ncurses (>= 0.9.1, runtime)
+
+Now try:
+sudo gem install --ignore-dependencies ncurses sup
+...
+
+Now execute sup
+/usr/lib/ruby/1.8/rubygems.rb:827:in `report_activate_error': Could not find
+RubyGem ncurses (>= 0.9.1) (Gem::LoadError)
+       from /usr/lib/ruby/1.8/rubygems.rb:261:in `activate'
+       from /usr/lib/ruby/1.8/rubygems.rb:296:in `activate'
+       from /usr/lib/ruby/1.8/rubygems.rb:295:in `each'
+       from /usr/lib/ruby/1.8/rubygems.rb:295:in `activate'
+       from /usr/lib/ruby/1.8/rubygems.rb:68:in `gem'
+       from ../bin/sup:18
+
+To fix this issue I had to manually edit the gemspec and comment out the ncurses
+dependency.
+
+I thought maybe it was only ubuntu that didn't have an ncurses gem so I opened a
+feature request with rubygems to maybe automatically comment out ignored
+dependencies and they replied that there is no such gem.    
+
+http://rubyforge.org/tracker/?func=detail&atid=578&aid=27468&group_id=126
+
+----------
+messages: 37
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: Remove ncurses gem dependency
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue22>
+_________________________________________
+
+From tero at tilus.net  Sun Nov 22 04:08:21 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 22 Nov 2009 11:08:21 +0200
+Subject: [sup-devel] [issue22] Remove ncurses gem dependency
+In-Reply-To: <1258832027.7.0.329764082628.issue22@masanjin.net>
+References: <1258832027.7.0.329764082628.issue22@masanjin.net>
+Message-ID: <1258879815-sup-3348@tilus.net>
+
+Long story short: I believe there is no reason to remove dependency.
+If I don't hear anything that changes my opinion, I'll close this.
+
+anonymous, 2009-11-21 21:33:
+> On ubuntu 9.10 there is not gem for ncurses
+> sudo gem install ncurses
+> ERROR:  could not find gem ncurses locally or in a repository
+
+Rubygems has its own repo where it looks for gems no matter what
+distro you are on.  On Debian Lenny the situation with ncurses looks
+like this
+
+terotil at kuovi:~$ gem list --remote ncurses
+*** REMOTE GEMS ***
+terotil at kuovi:~$ gem list ncurses
+*** LOCAL GEMS ***
+ncurses (0.9.1)
+terotil at kuovi:~$
+
+I've installed ncurses, but it is not available now.  This is probably
+temporary and due to fact that gems.rubyforge.org has been repointed
+to the gemcutter.org.  I just got this mail
+
+ * * *
+From: noreply <noreply at rubyforge.org> 
+To: tero <tero tilus net>
+Date: Sat, 21 Nov 2009 22:51:51 -0500 (EST)
+Subject: [RubyForge] Gem index has been shut down 
+Labels: inbox, rubyforge  
+
+Hello -
+
+You're receiving this email because you're a RubyForge project admin
+and a recent change probably affects you. A few days ago we repointed
+gems.rubyforge.org to the gemcutter.org box.  This means that Nick
+Quaranto's excellent gemcutter app is now indexing and serving all the
+gems - so rather than having two gem indexes, we now have one.  As a
+consequence of this, when you release files to RubyForge you will
+probably also want to do a "gem push" to get them onto gemcutter and
+into the main gem index.
+
+Note that you can continue to release gems (and other files) at
+RubyForge; it's just that gems won't automatically make it into the
+main gem index.
+
+Yours,
+
+The RubyForge support team
+http://rubyforge.org/projects/support/
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Nov 23 16:47:55 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 23 Nov 2009 23:47:55 +0200
+Subject: [sup-devel] [issue22] Remove ncurses gem dependency
+In-Reply-To: <1258879815-sup-3348@tilus.net>
+References: <1258832027.7.0.329764082628.issue22@masanjin.net>
+	<1258879815-sup-3348@tilus.net>
+Message-ID: <1259011961-sup-4195@tilus.net>
+
+Sorry about asking stupid things, but why is sup depending on gem
+ncurses bindings instead of the one bundled with Ruby?  (besides the
+obvious fact that a gem can't quite "depend" on extensions like it
+depends on other gems)
+
+ps. FYI, the ncurses gem is back online.
+    http://gems.rubyforge.org/gems/ncurses
+
+    terotil at kuovi:~$ gem list --remote ncurses
+    *** REMOTE GEMS ***
+    ncurses (0.9.1)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From cam+sup at cammunism.org  Mon Nov 23 17:25:53 2009
+From: cam+sup at cammunism.org (Cameron Matheson)
+Date: Mon, 23 Nov 2009 15:25:53 -0700
+Subject: [sup-devel] [issue22] Remove ncurses gem dependency
+In-Reply-To: <1259011961-sup-4195@tilus.net>
+References: <1258832027.7.0.329764082628.issue22@masanjin.net>
+	<1258879815-sup-3348@tilus.net> <1259011961-sup-4195@tilus.net>
+Message-ID: <1259014446-sup-128@cammunism.org>
+
+Excerpts from Tero Tilus's message of Mon Nov 23 14:47:55 -0700 2009:
+> Sorry about asking stupid things, but why is sup depending on gem
+> ncurses bindings instead of the one bundled with Ruby?
+
+I think the Curses module is included in the ruby standard lib, but not
+Ncurses (which defines the Form library that sup uses)
+
+Cam
+
+From sup-bugs at masanjin.net  Tue Nov 24 13:58:38 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 24 Nov 2009 18:58:38 +0000
+Subject: [sup-devel] [issue23] Crash shortly after startup
+In-Reply-To: <1259089118.99.0.85235123109.issue23@masanjin.net>
+Message-ID: <1259089118.99.0.85235123109.issue23@masanjin.net>
+
+
+New submission from anonymous:
+
+I added an IMAP source to sup using sup-add, and after that, sup crashed with
+the attached exception-log.txt consistantly shortly after startup. Removing the
+IMAP source prevented the crash.
+
+----------
+files: exception-log.txt
+messages: 44
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: Crash shortly after startup
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue23>
+_________________________________________
+-------------- next part --------------
+--- ArgumentError from thread: poll after loading inbox
+:(null) isn't a valid argument for IndexReader.get_document(index)
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:413:in `[]'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/ferret_index.rb:257:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/ferret_index.rb:256:in `build_message'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:94:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:151:in `each_message_from'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/imap.rb:197:in `each'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/imap.rb:185:in `upto'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/imap.rb:185:in `each'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:547:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:139:in `each_message_from'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:93:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:81:in `each'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:81:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:80:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:80:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/poll-mode.rb:15:in `poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:48:in `poll'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/bin/sup:196
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:77:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `new'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.9/bin/sup:196
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:669:in `call'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:669:in `__unprotected_load_threads'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:610:in `call'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:610:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:77:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `new'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:608:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:679:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.9/bin/sup:196
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+From sup-bugs at masanjin.net  Wed Nov 25 12:26:37 2009
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Wed, 25 Nov 2009 17:26:37 +0000
+Subject: [sup-devel] [issue24] sup doesn't understand inline encoding of
+	file names
+In-Reply-To: <1259169997.29.0.0635477316095.issue24@masanjin.net>
+Message-ID: <1259169997.29.0.0635477316095.issue24@masanjin.net>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+When I receive emails with attachments with inline encoding such as:
+
+=?ISO-8859-1?Q?framside_sm=E5_stader_STORE_VYER.jpg?=
+
+sup should convert them to: framside_sm?_stader_STORE_VYER.jpg
+
+this has been happening on all different checkouts i've tried.
+
+- gaute
+
+----------
+messages: 45
+nosy: gauteh
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: stettberger/time_marks rebased on recent next
+title: sup doesn't understand inline encoding of file names
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue24>
+_________________________________________
+
+From sup-bugs at masanjin.net  Wed Nov 25 12:41:44 2009
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Wed, 25 Nov 2009 17:41:44 +0000
+Subject: [sup-devel] [issue25] config option: gpg encrypt on default
+In-Reply-To: <1259170904.16.0.17203785843.issue25@masanjin.net>
+Message-ID: <1259170904.16.0.17203785843.issue25@masanjin.net>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+Excuse me if this already exists;
+
+An config option to make sup already have the gpg: encrypt, signed, both or none 
+set by default when replying or creating new messages.
+
+- gaute
+
+----------
+messages: 46
+nosy: gauteh
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: git
+title: config option: gpg encrypt on default
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue25>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Thu Nov 26 02:55:42 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 26 Nov 2009 02:55:42 -0500
+Subject: [sup-devel] encoding branch
+Message-ID: <1259209351-sup-4273@zyrg.net>
+
+I've pushed a branch "encoding" to my repo (git://github.com/rlane/sup)
+which has many fixes for the encoding issues ruby 1.9 creates. It
+successfully indexes the Enron and SpamAssassin corpuses, as well as all
+my own mail. AFAIK we've taken care of all the other ruby 1.9 issues, so
+sup should work fine now. Let me know if it doesn't.
+
+Caveats:
+  Xapian-only
+  still contains debugging code, so it will be slower
+
+From tero at tilus.net  Thu Nov 26 08:10:31 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 26 Nov 2009 15:10:31 +0200
+Subject: [sup-devel] [issue24] sup doesn't understand inline encoding of
+	file names
+In-Reply-To: <1259169997.29.0.0635477316095.issue24@masanjin.net>
+References: <1259169997.29.0.0635477316095.issue24@masanjin.net>
+Message-ID: <1259240959-sup-1704@tilus.net>
+
+Gaute Hope, 2009-11-25 19:26:
+> When I receive emails with attachments with inline encoding such as:
+> 
+> =?ISO-8859-1?Q?framside_sm=E5_stader_STORE_VYER.jpg?=
+> 
+> sup should convert them to: framside_sm?_stader_STORE_VYER.jpg
+
+Patch attached.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0005-RFC-2047-decode-attachment-file-names.patch
+Type: application/octet-stream
+Size: 903 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091126/ebd263a3/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Fri Nov 27 14:42:34 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 27 Nov 2009 14:42:34 -0500
+Subject: [sup-devel] [issue24] sup doesn't understand inline encoding of
+	file names
+In-Reply-To: <1259240959-sup-1704@tilus.net>
+References: <1259169997.29.0.0635477316095.issue24@masanjin.net>
+	<1259240959-sup-1704@tilus.net>
+Message-ID: <1259350580-sup-2386@zyrg.net>
+
+Excerpts from Tero Tilus's message of Thu Nov 26 08:10:31 -0500 2009:
+> Gaute Hope, 2009-11-25 19:26:
+> > When I receive emails with attachments with inline encoding such as:
+> > 
+> > =?ISO-8859-1?Q?framside_sm=E5_stader_STORE_VYER.jpg?=
+> > 
+> > sup should convert them to: framside_sm?_stader_STORE_VYER.jpg
+> 
+> Patch attached.
+
+Branch decode-attachment-filenames, merged to master.
+
+From rlane at club.cc.cmu.edu  Fri Nov 27 14:42:42 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 27 Nov 2009 14:42:42 -0500
+Subject: [sup-devel] [PATCH] Make sup's textfield behave more like
+	readline
+In-Reply-To: <e06498070911200607k4575134fla5adf57c11c76c5d@mail.gmail.com>
+References: <1258618384-sup-3721@cammunism.org> <1258691037-sup-6789@zyrg.net>
+	<e06498070911200607k4575134fla5adf57c11c76c5d@mail.gmail.com>
+Message-ID: <1259350479-sup-2904@zyrg.net>
+
+Excerpts from Steven Walter's message of Fri Nov 20 09:07:14 -0500 2009:
+> On Thu, Nov 19, 2009 at 11:51 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> >> I also switched some of the key-code integers to character-literal
+> >> syntax as I thought that was a bit more readable.
+> >>
+> >> Thanks,
+> >> Cameron
+> >
+> > I definitely like the control key literals. I'm not an ncurses expert
+> > though, so I'll hold off on merging this to give one (anyone?) a chance
+> > to comment.
+> 
+> I like it.  Here's C-w.
+
+Committed to textfield-tweaks and branch merged to master.
+
+From rlane at club.cc.cmu.edu  Fri Nov 27 16:14:03 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 27 Nov 2009 16:14:03 -0500
+Subject: [sup-devel] pull request
+Message-ID: <1259356302-sup-3408@zyrg.net>
+
+Hi William,
+
+Please pull branch master from git://github.com/rlane/sup. This includes
+the following topic branches:
+
+xapian-comment-fix
+config-ask-for-to
+fix-bounce-cmd
+display-poll-labels
+decode-attachment-filenames
+textfield-tweaks
+thread-view-mode-undo
+date-format-fix
+
+From sup-bugs at masanjin.net  Sat Nov 28 10:00:20 2009
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Sat, 28 Nov 2009 15:00:20 +0000
+Subject: [sup-devel] [issue26] spam protection doesn't work good enough for
+	bug tracker
+In-Reply-To: <1259420420.18.0.727314222342.issue26@masanjin.net>
+Message-ID: <1259420420.18.0.727314222342.issue26@masanjin.net>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+I.e.: http://masanjin.net/sup-bugs/issue6
+
+or check the history of: http://masanjin.net/sup-bugs/issue11, i reverted the 
+changes.
+
+- gaute
+
+----------
+keyword: bugtracker
+messages: 54
+nosy: gauteh
+priority: bug
+ruby_version: ?
+status: unread
+sup_version: ?
+title: spam protection doesn't work good enough for bug tracker
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue26>
+_________________________________________
+
+From wmorgan-sup at masanjin.net  Mon Nov 30 08:42:57 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 30 Nov 2009 05:42:57 -0800
+Subject: [sup-devel] pull request
+In-Reply-To: <1259356302-sup-3408@zyrg.net>
+References: <1259356302-sup-3408@zyrg.net>
+Message-ID: <1259588530-sup-8150@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-11-27:
+> Please pull branch master from git://github.com/rlane/sup.
+
+Pulled, and merged into next. Awesome stuff. Thanks everyone!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup-bugs at masanjin.net  Mon Nov 30 17:01:49 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 30 Nov 2009 22:01:49 +0000
+Subject: [sup-devel] [issue27] sup-sync crashes on gpg multipart signed
+	message
+In-Reply-To: <1259618509.77.0.166512535731.issue27@masanjin.net>
+Message-ID: <1259618509.77.0.166512535731.issue27@masanjin.net>
+
+
+New submission from anonymous:
+
+sup-sync seems to crash on some mails. I've tried removing the first problematic
+mail, only to have it crash on the next one. I've attached the one this
+stacktrace is from.
+
+Maybe the issue is that the entire mail is multipart/mixed, with a first and a
+second part. The second part is a simple text/plain footer added by Mailman, but
+the first part is a multipart/signed thing (with a different boundary)? 
+
+Updating message
+maildir:/Users/marten/Mail/INBOX.Lists.NotMuch#12594169380004531; labels
+inbox,unread,notmuch => inbox,unread,notmuch; offset 12594169380004531 =>
+12594169380004531
+/Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:507:in
+`message_to_chunks': undefined method `downcase' for nil:NilClass (NoMethodError)
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:440:in
+`message_to_chunks'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:440:in `map'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:440:in
+`message_to_chunks'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:244:in
+`load_from_source!'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/message.rb:340:in
+`build_from_source'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/poll.rb:145:in `each_message_from'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:160:in `each'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:157:in `upto'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:157:in `each'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `send'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `__pass'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/util.rb:547:in `method_missing'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/poll.rb:139:in `each_message_from'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/bin/sup-sync:146
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/bin/sup-sync:141:in `each'
+	from /Library/Ruby/Gems/1.8/gems/sup-0.9/bin/sup-sync:141
+	from /usr/bin/sup-sync:19:in `load'
+	from /usr/bin/sup-sync:19
+
+This stacktrace starts at line 507, I had to edit in something to get at the
+filename in of the mail in the maildir store, so it's not quite the same as in
+0.9 gem, and probably not the same as in mainline/master. 507 on my system is:
+
+500  ## if there's a filename, we'll treat it as an attachment.
+501  if filename
+502    # add this to the attachments list if its not a generated html
+503    # attachment (should we allow images with generated names?).
+504    # Lowercase the filename because searches are easier that way 
+505    @attachments.push filename.downcase unless filename =~ /^sup-attachment-/
+506     add_label :attachment unless filename =~ /^sup-attachment-/
+507     content_type = m.header.content_type.downcase || "application/unknown" #
+sometimes RubyMail gives us nil
+508     [Chunk::Attachment.new(content_type, filename, m, sibling_types)]
+
+----------
+files: sup-problematic-mail
+messages: 55
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: sup-sync crashes on gpg multipart signed message
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue27>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-problematic-mail
+Type: application/octet-stream
+Size: 4531 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091130/61ba2340/attachment-0001.obj>
+

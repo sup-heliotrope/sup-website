@@ -1,0 +1,864 @@
+From wmorgan-sup at masanjin.net  Fri Jan  2 07:53:24 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 02 Jan 2009 04:53:24 -0800
+Subject: [sup-talk] a few sup newbie questions
+In-Reply-To: <1230630305-sup-9424@audrey>
+References: <1229548441-sup-531@audrey> <1229552235-sup-1046@entry>
+	<1230571384-sup-9910@audrey> <1230573934-sup-5232@cabinet>
+	<1230630305-sup-9424@audrey>
+Message-ID: <1230900174-sup-3836@entry>
+
+Reformatted excerpts from marianne.promberger+sup-talk's message of 2008-12-30:
+> Thanks. Any chance you could give me a pointer on how I can get it to
+> "return a person"?
+> 
+> I've tried stuff like ... (in ~/.sup/hook/reply-from.rb)
+> 
+> if message.to =~ /rubyforge/
+>   hook_reply_from = "My Name <email at domain.com>"
+> end
+> 
+> if message.recipient_email =~ /rubyforge/
+>    return "My name <email at domain.com>"
+> end
+> 
+> ... with different variations of patterns I'm testing for and with
+> different returned strings. 
+
+You can create a person from a string by using this method:
+
+  PersonManager.person_for "My name <email at domain.com>"
+
+You can give it any valid email address, and it takes care of returning
+the same Person object for duplicate addresses.
+
+Brief Ruby aside: If you're going to be doing a lot of such comparisons,
+you can structure the hook like:
+
+  PersonManager.person_for case
+    when message.to =~ /rubyforge/
+      "My name <email at email1.org>"
+    when message.recipient_email =~ /rubyforge/
+      "My name <email at email2.org>"
+    else
+      "My name <default at default.org>"
+  end
+
+Note that the return statement isn't required (the final value of the
+hook is used), and multiple if-then's can be collapsed into a case
+statement.
+
+> Any pointers appreciated! (Including general information where I could
+> RTFM ..  I looked at "sup -l" but that's pretty brief.
+
+Sadly, there's no good documentation for this right now beyond asking on
+the mailing list. (Well besides learning Ruby and looking at the code.)
+I'm sorry about that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marianne.promberger+sup-talk at gmail.com  Tue Jan  6 09:49:07 2009
+From: marianne.promberger+sup-talk at gmail.com (Marianne)
+Date: Tue, 06 Jan 2009 15:49:07 +0100
+Subject: [sup-talk] questions about reply-from & before-edit hooks and
+	accounts
+Message-ID: <1231252310-sup-6112@audrey>
+
+Hi, 
+
+I'm now successfully using two hooks to use my sup-talk specific e-mail address
+for mail to this list:
+
+reply-from.rb:
+
+PersonManager.person_for case
+                         when message.recipient_email =~ /rubyforge/
+                           "my.name+sup-talk at gmail.com"
+                         end
+before-edit.rb:
+
+if header["To"] =~ /rubyforge/
+  header["From"] = "Marianne <my.name+sup-talk at gmail.com>"
+end
+
+It seems that the "Person" returned by the reply-from hook matches to some
+extent, but not completely, an account in my ~/.sup/config.yaml, where I have a
+:sup-talk: section with its own e-mail, sendmail, and signature. The hook picks
+not just the correct e-mail, but also the corresponding sendmail, but not the
+signature of that section.
+
+For before-edit.rb, I have found no way to switch the signature and sendmail
+along with the "from" address. I know there is a signature hook which I could
+use for the first, but how to do the latter.
+
+Maybe I'm missing something, but ideally, I'd love to see something where I
+could define different accounts in the config.yaml, then have a way that works
+both for replying and for new mail to pick *all* settings of that account from
+config.yaml.
+
+An additional question: For friends & family recipients, I'd like to use my
+private settings. I maintain a list of such e-mail addresses in an external text
+file, and I think that's neater than listing them all in each hook when needed.
+
+In before-add-message.rb, I use this:
+
+privatfile = File.open("/home/mpromber/.mutt/privataddr","r")
+if ! privatfile.grep(/#{message.from.email}/).empty?
+  message.add_label :privat
+end
+
+but it seems "message.from.email" is not available for before-edit.rb.
+
+I'm currently using this as a workaround:
+
+privatfile = File.open("/home/mpromber/.mutt/privataddr","r")
+toaddr = header["To"].scan(/[a-z0-9+._-]+@[a-z0-9.-]+\.[a-z]{2,4}/).join(sep="")
+regexaddr = "^" + toaddr + "$"
+if ! privatfile.grep(/#{regexaddr}/).empty?
+  header["From"] = "Marianne <myprivate at address.com>"
+end
+
+Is there an easier mail to access the recipient e-mail address? And I also guess
+I have to rewrite this to handle the case of several recipients, which
+definitely would be easier if there's already and array of recipient addresses I
+can refer to.
+
+Thanks, 
+
+Marianne
+
+-- 
+Marianne Promberger
+PGP/GnuPG public key ID 80AD9916
+
+From marcus-sup at bar-coded.net  Tue Jan  6 15:13:53 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Tue, 06 Jan 2009 20:13:53 +0000
+Subject: [sup-talk] questions about reply-from & before-edit hooks and
+	accounts
+In-Reply-To: <1231252310-sup-6112@audrey>
+References: <1231252310-sup-6112@audrey>
+Message-ID: <1231272504-sup-1247@tomsk>
+
+On 6.1.2009, marianne.promberger+sup-talk wrote:
+> reply-from.rb:
+> 
+> PersonManager.person_for case
+>                          when message.recipient_email =~ /rubyforge/
+>                            "my.name+sup-talk at gmail.com"
+>                          end
+> before-edit.rb:
+> 
+> if header["To"] =~ /rubyforge/
+>   header["From"] = "Marianne <my.name+sup-talk at gmail.com>"
+> end
+[snip]
+
+> Maybe I'm missing something, but ideally, I'd love to see something where I
+> could define different accounts in the config.yaml, then have a way that works
+> both for replying and for new mail to pick *all* settings of that account from
+> config.yaml.
+
+You might want to look through the archives for the regexen option - I
+use it for this purpose (although it only solves your reply-to case).
+
+Add something like
+
+:regexen:
+  - my.name+.*@gmail.com
+
+to your settings on an account (you can use regexes here and have more
+than one if you want, but the one above will work in your case). This
+allows sup to recognise your mail "aliases" and replies to incoming
+mails addressed to these emails with the correct from address
+automagically.
+
+It wont help for mails you compose (ie "new" mails, not replies), but
+it works well for replies.
+
+HTH
+
+Marcus
+           
+
+From lee at writequit.org  Thu Jan  8 09:55:09 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Thu, 08 Jan 2009 07:55:09 -0700
+Subject: [sup-talk] Selectionbar movement on new messages
+Message-ID: <1231426230-sup-3131@Cartographer>
+
+Hi Sup-talkers,
+I was wondering if there was a way to make sure the selection bar *didn't*
+change what email it was over when a new email is loaded?
+
+There is nothing more frustrating than going to delete or kill an email only
+to have Sup load a new message to the inbox and shift all the messages so that
+I kill the message right above the one I wanted to delete.
+
+So, is it possible to set up Sup to do this?
+
+Thanks,
+Lee
+
+From johnbent at lanl.gov  Thu Jan  8 10:33:14 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 08 Jan 2009 08:33:14 -0700
+Subject: [sup-talk] proxy settings
+Message-ID: <1231428609-sup-582@tangerine.lanl.gov>
+
+My work place has instituted a new proxy system and since then I've been
+unable to use either git or gem (I'm using 0.5 still).  Does anyone
+please know any way around this?  Is sup also available as a tarball
+somewhere perhaps?
+
+I'm missing out on all sorts of new sup goodness.  :(
+
+Thanks,
+
+John
+
+From johnbent at lanl.gov  Thu Jan  8 10:28:03 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 08 Jan 2009 08:28:03 -0700
+Subject: [sup-talk] Selectionbar movement on new messages
+In-Reply-To: <1231426230-sup-3131@Cartographer>
+References: <1231426230-sup-3131@Cartographer>
+Message-ID: <1231428437-sup-8726@tangerine.lanl.gov>
+
+Excerpts from Lee Hinman's message of Thu Jan 08 07:55:09 -0700 2009:
+> I was wondering if there was a way to make sure the selection bar *didn't*
+> change what email it was over when a new email is loaded?
+> 
+> There is nothing more frustrating than going to delete or kill an email only
+> to have Sup load a new message to the inbox and shift all the messages so that
+> I kill the message right above the one I wanted to delete.
+> 
+> So, is it possible to set up Sup to do this?
+> 
+Second!  Thanks Lee.
+
+John
+> Thanks,
+> Lee
+
+From marianne.promberger+sup-talk at gmail.com  Thu Jan  8 14:51:37 2009
+From: marianne.promberger+sup-talk at gmail.com (Marianne)
+Date: Thu, 08 Jan 2009 20:51:37 +0100
+Subject: [sup-talk] Availability of key presses in different modes
+Message-ID: <1231444262-sup-3650@audrey>
+
+Hi,
+
+Is there a specific reason why certain key presses are not available in some
+modes?
+
+I'm thinking specifically about using "&" to kill a thread from thread-view
+mode, and of "A" or "a" to archive a thread from search-results-mode.
+
+The first would save me killing the buffer before killing the thread, since I
+sometimes have to at least glance at a thread before deciding I want to kill it.
+
+The second is much more important, really. I go through mail by mailing list, so
+I use "L" to search for mail with a specific label. It seems I cannot then
+archive threads from that view. Am I missing something? 
+
+Thanks,
+
+Marianne
+
+-- 
+Marianne Promberger
+PGP/GnuPG public key ID 80AD9916
+
+From lee at writequit.org  Thu Jan  8 23:51:30 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Thu, 08 Jan 2009 21:51:30 -0700
+Subject: [sup-talk] proxy settings
+In-Reply-To: <1231428609-sup-582@tangerine.lanl.gov>
+References: <1231428609-sup-582@tangerine.lanl.gov>
+Message-ID: <1231476664-sup-1535@Cartographer>
+
+Excerpts from John Bent's message of Thu Jan 08 08:33:14 -0700 2009:
+> My work place has instituted a new proxy system and since then I've been
+> unable to use either git or gem (I'm using 0.5 still).  Does anyone
+> please know any way around this?  Is sup also available as a tarball
+> somewhere perhaps?
+> 
+> I'm missing out on all sorts of new sup goodness.  :(
+> 
+> Thanks,
+> 
+> John
+
+You should be able to download either a tgz or a gem from this link:
+
+http://rubyforge.org/frs/?group_id=2603&release_id=24444
+
+- Lee
+
+From andrew at pimlott.net  Tue Jan 13 13:37:25 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Tue, 13 Jan 2009 10:37:25 -0800
+Subject: [sup-talk] fixing mbox+ssh
+Message-ID: <20090113183725.GK11701@pimlott.net>
+
+As far as I can tell, mbox+ssh access has not been maintained recently.
+I wanted to use it, so I figured out how to make it work using Net::SFTP
+instead of Net:SSH directly.  Below is what I have ligthly tested so
+far.  I have never written Ruby before, so hints are welcome.
+
+Using SFTP looks like it should simplify the whole module such that it
+could largely be rewritten.  Would this be ok?  The thing I don't
+understand since I haven't really looked at the whole sup source (and
+don't know Ruby norms) is what the synchronization is for.  What
+concurrency do we have, and do we expect Net:SSH to be concurrency-safe?
+
+Andrew
+
+diff --git a/lib/sup/mbox/ssh-file.rb b/lib/sup/mbox/ssh-file.rb
+index d474636..2f3a4e6 100644
+--- a/lib/sup/mbox/ssh-file.rb
++++ b/lib/sup/mbox/ssh-file.rb
+@@ -1,4 +1,4 @@
+-require 'net/ssh'
++require 'net/sftp'
+ 
+ module Redwood
+ module MBox
+@@ -114,7 +114,7 @@ class SSHFile
+   def to_s; "mbox+ssh://#@host/#@fn"; end ## TODO: remove this EVILness
+ 
+   def connect
+-    do_remote nil
++    unsafe_connect
+   end
+ 
+   def eof?; @offset >= size; end
+@@ -125,9 +125,10 @@ class SSHFile
+   def path; @fn end
+ 
+   def size
++    unsafe_connect
+     if @file_size.nil? || (Time.now - @last_size_check) > SIZE_CHECK_INTERVAL
+       @last_size_check = Time.now
+-      @file_size = do_remote("wc -c #@fn").split.first.to_i
++      @file_size = @shell.stat!(@fn).size
+     end
+     @file_size
+   end
+@@ -170,49 +171,25 @@ private
+       @shell, @shell_mutex = @@shells_mutex.synchronize do
+         unless @@shells.member? @key
+           say "Opening SSH connection to #{@host} for #@fn..."
+-          session = Net::SSH.start @host, @ssh_opts
+-          say "Starting SSH shell..."
+-          @@shells[@key] = [session.shell.sync, Mutex.new]
++          session = Net::SFTP.start @host, @ssh_opts
++          @@shells[@key] = [session, Mutex.new]
+         end
+         @@shells[@key]
+       end
+       
+       say "Checking for #@fn..."
+-      @shell_mutex.synchronize { raise Errno::ENOENT, @fn unless @shell.test("-e #@fn").status == 0 }
++      @shell_mutex.synchronize { raise Errno::ENOENT, @fn unless @shell.stat!(@fn) }
+     ensure
+       shutup
+     end
+   end
+ 
+-  def do_remote cmd, expected_size=0
+-    retries = 0
+-    result = nil
+-
+-    begin
+-      unsafe_connect
+-      if cmd
+-        # MBox::debug "sending command: #{cmd.inspect}"
+-        result = @shell_mutex.synchronize { x = @shell.send_command cmd; sleep 0.25; x }
+-        raise SSHFileError, "Failure during remote command #{cmd.inspect}: #{(result.stderr || result.stdout || "")[0 .. 100]}" unless result.status == 0
+-      end
+-      ## Net::SSH::Exceptions seem to happen every once in a while for
+-      ## no good reason.
+-    rescue Net::SSH::Exception, *RECOVERABLE_ERRORS
+-      if (retries += 1) <= 3
+-        @@shells_mutex.synchronize do
+-          @shell = nil
+-          @@shells[@key] = nil
+-        end
+-        retry
+-      end
+-      raise
+-    end
+-
+-    result.stdout if cmd
+-  end
+-
+   def get_bytes offset, size
+-    do_remote "tail -c +#{offset + 1} #@fn | head -c #{size}", size
++    unsafe_connect
++    h = @shell.open!(@fn)
++    r = @shell.read!(h, offset, size)
++    @shell.close!(h)
++    r
+   end
+ 
+   def expand_buf_forward n=REASONABLE_TRANSFER_SIZE
+
+From daniel at wagner-home.com  Tue Jan 13 18:36:09 2009
+From: daniel at wagner-home.com (Daniel Wagner)
+Date: Tue, 13 Jan 2009 18:36:09 -0500
+Subject: [sup-talk] Availability of key presses in different modes
+Message-ID: <1231889727-sup-2774@buckwheat>
+
+I hope this isn't a repeat.  My mail hasn't been going out for a few
+days (for reasons totally unrelated to sup ;-), and I'm not sure exactly
+which was the last one that made it through...
+
+Excerpts from marianne.promberger+sup-talk's message of Thu Jan 08 14:51:37 -0500 2009:
+> I'm thinking specifically about using "&" to kill a thread from thread-view
+
+Try hitting '.' or ',' first.  There are two reasonable actions after
+dealing with a message, either returning to the inbox or moving to the
+next message.  '.' selects the former; ',' the latter.
+
+> mode, and of "A" or "a" to archive a thread from search-results-mode.
+
+Are you sure this doesn't work?  It works here (admittedly on an ancient
+version of sup, so the keybindings may have changed).  Keep in mind that
+for the change to be applied, you must press '$' to write the changes to
+disk (or exit the view with 'x') and press '@' in your other buffers to
+update the view with the changes.
+
+Good luck!
+~d
+
+From marianne.promberger+sup-talk at gmail.com  Wed Jan 14 13:13:11 2009
+From: marianne.promberger+sup-talk at gmail.com (Marianne)
+Date: Wed, 14 Jan 2009 18:13:11 +0000
+Subject: [sup-talk] Availability of key presses in different modes
+In-Reply-To: <1231889727-sup-2774@buckwheat>
+References: <1231444262-sup-3650@audrey> <1231889727-sup-2774@buckwheat>
+Message-ID: <1231956668-sup-456@audrey>
+
+
+
+Excerpts from Daniel Wagner's message of Tue Jan 13 23:36:09 +0000 2009:
+> Excerpts from marianne.promberger+sup-talk's message of Thu Jan 08 14:51:37 -0500 2009:
+> > I'm thinking specifically about using "&" to kill a thread from thread-view
+> 
+> Try hitting '.' or ',' first.  There are two reasonable actions after
+> dealing with a message, either returning to the inbox or moving to the
+> next message.  '.' selects the former; ',' the latter.
+
+No, it doesn't work for killing the thread, that key is not available in
+thread-view-mode on my sup 0.6. I can do other things after hitting "." or ",",
+like archiving or marking as read, but not kill a thread.
+
+Incidentally, I'd also think it would be even better to have either returning
+to the inbox or moving to the next message the default and let the user use keys
+like "a" directly, in addition to being able to pick a desired behavior by
+prepending "." or "," explicitly.  It's just much harder to be aware all the
+time of which mode you're in than always hitting "a" to archive.
+
+Similarly, I think it's a terrible idea that "S" is bound to "mark as spam" when
+I'm in the inbox or search-results mode, but search for messages from that
+person when I'm in thread-view mode. It's not all that unreasonable to want to
+search for mail from a particular person directly on a single message in the
+inbox or when viewing search results. Marking as spam would be particularly bad
+if that is hooked to some behavior like piping the message to train
+spamassassin.
+
+> > mode, and of "A" or "a" to archive a thread from search-results-mode.
+> 
+> Are you sure this doesn't work?  It works here (admittedly on an ancient
+> version of sup, so the keybindings may have changed).  
+
+Sorry, I only tested "A", since I always use that from the inbox mode. "a"
+works, "A" doesn't.
+
+Thanks,
+
+Marianne
+
+From marianne.promberger+sup-talk at gmail.com  Wed Jan 14 13:34:31 2009
+From: marianne.promberger+sup-talk at gmail.com (Marianne)
+Date: Wed, 14 Jan 2009 18:34:31 +0000
+Subject: [sup-talk] questions about reply-from & before-edit hooks and
+	accounts
+In-Reply-To: <1231272504-sup-1247@tomsk>
+References: <1231252310-sup-6112@audrey> <1231272504-sup-1247@tomsk>
+Message-ID: <1231957899-sup-8229@audrey>
+
+Excerpts from Marcus Williams's message of Tue Jan 06 20:13:53 +0000 2009:
+> 
+> You might want to look through the archives for the regexen option - I
+> use it for this purpose (although it only solves your reply-to case).
+> 
+
+Thanks for that tip. I've tried it and it works, although as you note it only
+works for replying. For me, it also unfortunately does not set my name to the
+:name: set in that account, but instead uses the part of the e-mail in front of
+the "@" as my name.
+
+However, I have to correct myself when I wrote that picking a person with the
+reply-from.rb doesn't pick the correct sig from that account. While I still
+think I tested this and it didn't work, this is now the second post to sup-talk
+where sup picks the correct sig from my sup-talk account in config.yaml. 
+
+So that's great; I just miss being able to handle this in before-edit.rb in a
+similar way as in reply-from.rb, i.e, by having access to things like
+"message.recipient_email", and return a person from config.yaml
+
+Sorry for all the nagging, I know sup is beta. Take it as a compliment that sup
+has so many nice features that it raises the standards to which it will be held :)
+
+Marianne
+
+From apmanine at free.fr  Tue Jan 20 08:41:49 2009
+From: apmanine at free.fr (apmanine at free.fr)
+Date: Tue, 20 Jan 2009 14:41:49 +0100
+Subject: [sup-talk] New user IMAP question
+Message-ID: <1232458852-sup-2019@eveque.lipn.univ-paris13.fr>
+
+First of all, thank you for sup.  I'm a long-time user of the mail
+client of opera, which shares the same "anti-folder" philosophy than
+sup, and this is the first time I found another mail client with similar
+functionalities. I'm very pleased by sup, especially as it uses console,
+and as it allows VIM integration.
+
+I have a very usual question, for which I was not able to find a
+definitive answer in the mailing-list archives.
+
+I understood that sup does not synchronise deleted e-mails with IMAP,
+but does it exists a third-party way to achieve such a synchronization?
+OfflineIMAP appears to be well-fitted, but it exports mails in "maildir"
+format,  which is not handled by sup-sync-back. As only mbox files are
+supported, I assumed that perhaps it may exist some tools to synchronize
+mbox with IMAP accounts?
+
+Thanks.
+
+AP
+
+From admin at clockingit.com  Mon Jan 19 15:53:56 2009
+From: admin at clockingit.com (Erlend Simonsen)
+Date: Mon, 19 Jan 2009 21:53:56 +0100
+Subject: [sup-talk] sup regexp exception..
+Message-ID: <1232398436.461.2.camel@localhost.localdomain>
+
+I got this with 0.6:
+
+[Mon Jan 19 21:41:31 +0100 2009] fetching IMAP headers 1..3672
+[Mon Jan 19 21:41:32 +0100 2009] done fetching IMAP headers
+[Mon Jan 19 21:42:15 +0100 2009] warning: error (Iconv::IllegalSequence) decoding message body from UTF-8: " '[New File]', '"...
+[Mon Jan 19 21:42:22 +0100 2009] unlocking /home/erlends/.sup/lock...
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/mbox.rb:31:in `read_header': unmatched ): /@p\237\002\000\000\000\000ly-To):(?-mix:\s*(.*?\S)\s*)$/ (RegexpError)
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:93:in `load_header'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `send'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `__pass'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:525:in `method_missing'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/message.rb:63:in `initialize'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:151:in `new'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:151:in `add_messages_from'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:167:in `each'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:155:in `upto'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:155:in `each'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `send'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `__pass'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:525:in `method_missing'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:141:in `add_messages_from'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup-sync:136
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup-sync:131:in `each'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup-sync:131
+	from /usr/bin/sup-sync:19:in `load'
+	from /usr/bin/sup-sync:19
+
+
+It was able to fetch 117 messages, though, so I fired up sup to look at
+what was there and got this:
+
+--- RegexpError from thread: poll after loading inbox
+unmatched ): /\260B\367\001\000\000\000\000-mix:\s*(.*?\S)\s*)$/
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/mbox.rb:26:in `read_header'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:93:in `load_header'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:525:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/message.rb:213:in `load_from_source!'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/message.rb:194:in `chunks'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/message.rb:144:in `snippet'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:182:in `sync_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:160:in `add_messages_from'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:167:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:155:in `upto'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/imap.rb:155:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:525:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:141:in `add_messages_from'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:98:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:86:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:86:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:85:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:85:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/poll-mode.rb:17:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:53:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup:166
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83
+
+
+I do get an obscene amount of spam and broken emails, so that might have
+something to do with it. 
+
+-- Erlend
+
+
+From einars at gmail.com  Thu Jan 22 01:02:24 2009
+From: einars at gmail.com (Einars Lielmanis)
+Date: Thu, 22 Jan 2009 08:02:24 +0200
+Subject: [sup-talk] UTF-8 woes
+Message-ID: <1232602097-sup-3993@traj>
+
+Sup is awesome! Good job, William! :-)
+
+Yet, when using it for one day, some minor and less minor suckiness
+and breakage in regard of non-english mails emerged as my recipients
+started complaining about broken emails. I'm using sup/git under
+64-bit arch linux with msmtp for sending, so maybe it would be better
+with something sendmail-ish, have no idea, but still:
+
+1. the subject with non-english (e.g, latvian accented) chars gets no
+special treatment and safe encoding, and as such gets broken somewhere
+on the wire,
+
+2. something about the message text, probably missing
+"Content-Transfer-Encoding: 8bit" makes my emails with latvian
+characters explode with ugliness for my poor recipients on Outlook;
+
+3. The minor glitch that the Sup's display is slightly messed up, if
+the message contains multi-byte characters in headers -- fixed either
+very nicely by extending String with length_utf8 (and substr_utf8, and
+others as needed) function, and replacing s.length with s.length_utf8
+in lib/sup/buffer.rb or by going the ugly way of assuming that all
+strings are and will be utf-8 and dropping a horrendous monkeypatch
+into the lib/sup/util.rb with
+
+class String
++  def length
++    self.scan(/./u).size
++  end
+
+
+To see what exactly is wrong with the sending of mails I compared of
+how the same mail is sent by mutt and how -- by sup. You can see the
+mails here: http://spicausis.lv/sup/ where mail-mutt.txt is good,
+mail-sup.txt is bad.
+
+My ruby skills are non-existant yet, but I guess I'll try to whip up
+patches for these things today, if somebody with more ruby and sup and
+mta shizzle don't beat me to that.
+
+
+Cheers,
+
+Einar Lielmanis
+
+From guillaume.quintard at gmail.com  Thu Jan 22 07:19:47 2009
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Thu, 22 Jan 2009 13:19:47 +0100
+Subject: [sup-talk] A few questions
+Message-ID: <1e5fdab70901220419n7345d28br428ff169d450ad87@mail.gmail.com>
+
+Hi, I used sup for something like 6 months, but stopped long time ago
+because ferret quirks made it unbearable. I checked ferret recently
+but didn't see alot of releases lately. Has ferret increased its
+stability while I was away?
+
+And what about that sup rewrite? Has there been progress on this one?
+
+I truly love sup ideas, but wat I experienced a few months ago made it
+unusable to, hope it has changed :-)
+
+-- 
+Guillaume Quintard
+
+From guillaume.quintard at gmail.com  Thu Jan 22 08:40:33 2009
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Thu, 22 Jan 2009 14:40:33 +0100
+Subject: [sup-talk] A few questions
+In-Reply-To: <1232629684-sup-8624@ausone.inria.fr>
+References: <1e5fdab70901220419n7345d28br428ff169d450ad87@mail.gmail.com>
+	<1232629684-sup-8624@ausone.inria.fr>
+Message-ID: <1e5fdab70901220540m3bcece9j346e6f7b7c90a43e@mail.gmail.com>
+
+On Thu, Jan 22, 2009 at 2:10 PM, Nicolas Pouillard
+<nicolas.pouillard at gmail.com> wrote:
+> I no longer have ferret errors from 2-3 months, some changes about locks done
+> in the git repo have greatly improved the situation.
+
+w00t \o/
+
+thanks for the info
+
+-- 
+Guillaume Quintard
+
+From tyberius_prime at coonabibba.de  Thu Jan 22 11:16:27 2009
+From: tyberius_prime at coonabibba.de (Tyberius Prime)
+Date: Thu, 22 Jan 2009 17:16:27 +0100
+Subject: [sup-talk] UTF-8 woes
+In-Reply-To: <1232602097-sup-3993@traj>
+References: <1232602097-sup-3993@traj>
+Message-ID: <1232640702-sup-1568@h984274.serverkompetenz.net>
+
+Hi,
+
+I'm also struck by Sup's UTF-8 weirdnesses,
+and can't get German szetz to display correctly
+(and they mess with the line width as well).
+The other umlauts work though, and I don't know why.
+
+I'd also appreciate work on sending utf-8,
+though subject encoding is a weird beast.
+(And my ruby skills are 'by transfer' only as well).
+
+So long,
+Tyberius Prime
+
+> 2. something about the message text, probably missing
+> "Content-Transfer-Encoding: 8bit" makes my emails with latvian
+> characters explode with ugliness for my poor recipients on Outlook;
+> 
+> 3. The minor glitch that the Sup's display is slightly messed up, if
+> the message contains multi-byte characters in headers -- fixed either
+> very nicely by extending String with length_utf8 (and substr_utf8, and
+> others as needed) function, and replacing s.length with s.length_utf8
+> in lib/sup/buffer.rb or by going the ugly way of assuming that all
+> strings are and will be utf-8 and dropping a horrendous monkeypatch
+> into the lib/sup/util.rb with
+> 
+> class String
+> +  def length
+> +    self.scan(/./u).size
+> +  end
+> 
+> 
+> To see what exactly is wrong with the sending of mails I compared of
+> how the same mail is sent by mutt and how -- by sup. You can see the
+> mails here: http://spicausis.lv/sup/ where mail-mutt.txt is good,
+> mail-sup.txt is bad.
+> 
+> My ruby skills are non-existant yet, but I guess I'll try to whip up
+> patches for these things today, if somebody with more ruby and sup and
+> mta shizzle don't beat me to that.
+> 
+> 
+> Cheers,
+> 
+> Einar Lielmanis
+
+From cbenuzzi at gmail.com  Thu Jan 29 16:45:24 2009
+From: cbenuzzi at gmail.com (Chris Benuzzi)
+Date: Thu, 29 Jan 2009 15:45:24 -0600
+Subject: [sup-talk] When using "default" in colors.yaml or colormap.rb,
+	sup throws an 	exception
+Message-ID: <dac0accd0901291345v5d811e87x10316ee886bc7752@mail.gmail.com>
+
+Hello.  First of all, thanks for this program!
+
+I'm using a transparent terminal and would like to get sup's
+background color set to "default".
+
+So far, I have tried the following:
+
+1. I created a colors.yaml file with the format:
+  :label:
+    :fg: yellow
+    :bg: default
+    :attrs: bold
+2. When this gave no joy, I wiped colors.yaml and edited colormap.rb
+directly, like:
+:label => { :fg => "yellow", :bg => "default" }
+
+I am able to set normal colors either way, an exception is only thrown
+if I set any color to "default".
+I have included the error message below, as well as any other relevant
+info I can think of.
+If you can give some suggestions on what else to check, or if you need
+anything else, please let me know.
+Thanks again for sup, and for your consideration.
+
+Christopher Benuzzi
+
+--- ArgumentError from thread: main
+couldn't initialize curses color pair 4, -1 (key 1)
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/colormap.rb:130:in `color_for'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/colormap.rb:206:in `send'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/colormap.rb:206:in
+`method_missing'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/buffer.rb:106:in `write'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/scroll-mode.rb:51:in
+`draw'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/scroll-mode.rb:49:in
+`each'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/scroll-mode.rb:49:in
+`draw'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/line-cursor-mode.rb:24:in
+`draw'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/buffer.rb:97:in `draw'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/buffer.rb:294:in `draw_screen'
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup:153
+/usr/local/bin/sup:19:in `load'
+/usr/local/bin/sup:19
+
+OS: Debian "Lenny" w/libncurses-ruby installed (Other curses and ruby
+libs too, don't remember all.)
+Ruby: ruby 1.8.7 (2008-08-11 patchlevel 72) [i686-linux] installed from source
+Terminal emulator:  aterm, invoked with "aterm -tr -trsb -sh 42 -fg white"
+
+Additionally, (to get sup working) in
+/home/splicer/ruby-1.8.7-p72/ext/curses I did:
+ruby extconf.rb
+make
+make install
+
+And here is my gem list:
+actionmailer (2.2.2)
+actionpack (2.2.2)
+activerecord (2.2.2)
+activeresource (2.2.2)
+activesupport (2.2.2)
+cgi_multipart_eof_fix (2.5.0)
+chronic (0.2.3)
+daemons (1.0.10)
+fastthread (1.0.1)
+ferret (0.11.6)
+gem_plugin (0.2.3)
+gettext (1.93.0)
+highline (1.5.0)
+hoe (1.8.3)
+lockfile (1.4.3)
+mime-types (1.15)
+mongrel (1.1.5)
+mysql (2.7)
+ncurses (0.9.1)
+net-ssh (2.0.8)
+rails (2.2.2)
+rake (0.8.3)
+rmail (1.0.0)
+rubyforge (1.0.2)
+sup (0.6)
+trollop (1.10.2)
+validates_timeliness (1.1.5)
+

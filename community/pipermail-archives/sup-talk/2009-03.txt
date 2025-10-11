@@ -1,0 +1,2976 @@
+From sgoldman at tower-research.com  Mon Mar  2 17:19:10 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Mon, 02 Mar 2009 17:19:10 -0500
+Subject: [sup-talk] Feature request -- web interface
+Message-ID: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+
+Will someone please make a web interface for sup?
+
+Please call it supdog.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From fedzor at gmail.com  Mon Mar  2 17:51:44 2009
+From: fedzor at gmail.com (fedzor)
+Date: Mon, 2 Mar 2009 17:51:44 -0500
+Subject: [sup-talk] Feature request -- web interface
+In-Reply-To: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+References: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+Message-ID: <5888A055-9611-4932-9015-C31FEB2DD380@gmail.com>
+
+
+On Mar 2, 2009, at 5:19 PM, Steve Goldman wrote:
+
+> Will someone please make a web interface for sup?
+>
+> Please call it supdog.
+
+I believe one was made already, using merb, but I can't remember its  
+name (nor could I get it to work)
+
+From me at nicholasbs.net  Mon Mar  2 18:02:46 2009
+From: me at nicholasbs.net (Nicholas Bergson-Shilcock)
+Date: Mon, 02 Mar 2009 18:02:46 -0500
+Subject: [sup-talk] Feature request -- web interface
+In-Reply-To: <5888A055-9611-4932-9015-C31FEB2DD380@gmail.com>
+References: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+	<5888A055-9611-4932-9015-C31FEB2DD380@gmail.com>
+Message-ID: <1236034935-sup-7379@twoface>
+
+Excerpts from fedzor's message of Mon Mar 02 17:51:44 -0500 2009:
+> 
+> On Mar 2, 2009, at 5:19 PM, Steve Goldman wrote:
+> 
+> > Will someone please make a web interface for sup?
+> >
+> > Please call it supdog.
+> 
+> I believe one was made already, using merb, but I can't remember its  
+> name (nor could I get it to work)
+
+It's called wup, though I've never gotten it to work either:
+http://jinsync.com/?q=node/16
+
+-Nick
+
+From wmorgan-sup at masanjin.net  Tue Mar  3 17:48:05 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Mar 2009 14:48:05 -0800
+Subject: [sup-talk] Feature request -- web interface
+In-Reply-To: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+References: <1236032192-sup-8087@sgoldmanlinux.tower-research.com>
+Message-ID: <1236120219-sup-3367@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2009-03-02:
+> Will someone please make a web interface for sup?
+
+The whole point of Sup is that I hate clicking on the interweb for my
+emails!
+
+That said, Leslie Wu hacked something together at some point. If you dig
+up her code, or even the past examples about how to use
+devel/console.sh, I don't think it would be hard to get something
+minimal working.
+
+> Please call it supdog.
+
+That would be a good name.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 16 13:25:44 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 16 Mar 2009 10:25:44 -0700
+Subject: [sup-talk] undo
+In-Reply-To: <1235074446-sup-453@entry>
+References: <1234764952-sup-604@rmtacc25-lb.rcs.rpi.edu>
+	<1235074446-sup-453@entry>
+Message-ID: <1237224235-sup-9627@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-02-19:
+> Thanks, I'll take a look!
+
+Mike, this looks great. I've put it on a branch called "undo-manager"
+and merged it into next. Everyone, please try hitting the 'u' key. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 16 13:27:48 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 16 Mar 2009 10:27:48 -0700
+Subject: [sup-talk] preparing for 0.7
+Message-ID: <1237224356-sup-1941@entry>
+
+Hi all,
+
+I've prepared master for an 0.7 release. If you get a chance, please try
+it out and let me know if there's anything obviously broken. The changes
+I'm most excited about are the Ferret locking (so hopefully no more
+index corruption) and being able to type long answers to Sup's
+questions.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:33:34 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:33:34 +0100
+Subject: [sup-talk] Some patches
+Message-ID: <1237228109-sup-5666@ausone.local>
+
+Hi all,
+
+Some months ago, an unfortunate configuration of my machine caused
+sendmail to silently don't send my messages when the network connection
+was not there or something like that...
+
+The consequence is that I have some patches, that I thought was on the list
+and there not. So I resend them.
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:35:43 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:35:43 +0100
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels using
+	-lab (the "; l" key binding)
+Message-ID: <1237228536-sup-7811@ausone.local>
+
+Resent..
+
+---
+ lib/sup/modes/thread-index-mode.rb |   19 ++++++++++++++-----
+ 1 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 3dd0498..bde61cf 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -448,13 +448,22 @@ EOS
+   end
+ 
+   def multi_edit_labels threads
+-    user_labels = BufferManager.ask_for_labels :add_labels, "Add labels: ", [], @hidden_labels
++    user_labels = BufferManager.ask_for_labels :labels, "Add/remove labels (use -label to remove): ", [], @hidden_labels
+     return unless user_labels
+-    
+-    hl = user_labels.select { |l| @hidden_labels.member? l }
++
++    user_labels.map! { |l| (l.to_s =~ /^-/)? [l.to_s.gsub(/^-?/, '').to_sym, true] : [l, false] }
++    hl = user_labels.select { |(l,_)| @hidden_labels.member? l }
+     if hl.empty?
+-      threads.each { |t| user_labels.each { |l| t.apply_label l } }
+-      user_labels.each { |l| LabelManager << l }
++      threads.each do |t|
++        user_labels.each do |(l, to_remove)|
++          if to_remove
++            t.remove_label l
++          else
++            t.apply_label l
++          end
++        end
++      end
++      user_labels.each { |(l,_)| LabelManager << l }
+     else
+       BufferManager.flash "'#{hl}' is a reserved label!"
+     end
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:36:28 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:36:28 +0100
+Subject: [sup-talk] [PATCH] Buffer switching,
+	'bn' for the next one and 'bp' for the previous
+In-Reply-To: <1227194855-12300-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1227194855-12300-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1237228583-sup-7694@ausone.local>
+
+Resent...
+
+---
+ bin/sup |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 152c42c..965f2ee 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -66,8 +66,10 @@ global_keymap = Keymap.new do |k|
+   k.add :quit_ask, "Quit Sup, but ask first", 'q'
+   k.add :quit_now, "Quit Sup immediately", 'Q'
+   k.add :help, "Show help", '?'
+-  k.add :roll_buffers, "Switch to next buffer", 'b'
+-#  k.add :roll_buffers_backwards, "Switch to previous buffer", 'B'
++  k.add_multi "(n)ext/(p)revious:", 'b' do |kk|
++    kk.add :roll_buffers, "Switch to next buffer", 'n'
++    kk.add :roll_buffers_backwards, "Switch to previous buffer", 'p'
++  end
+   k.add :kill_buffer, "Kill the current buffer", 'x'
+   k.add :list_buffers, "List all buffers", 'B'
+   k.add :list_contacts, "List contacts", 'C'
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:37:03 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:37:03 +0100
+Subject: [sup-talk] [PATCH] Resync listable_labels and applyable_labels with
+	reality
+Message-ID: <1237228607-sup-5240@ausone.local>
+
+Resent...
+
+The listable_labels method listed all labels except unread
+which seems an unneeded complication/restriction, so it's
+renamed to all_labels. The applyable_labels was in fact
+user-defined labels so it's renamed to user_defined_labels.
+---
+ bin/sup                          |    2 +-
+ lib/sup/buffer.rb                |    4 +++-
+ lib/sup/label.rb                 |   13 +++++--------
+ lib/sup/modes/label-list-mode.rb |    4 ++--
+ 4 files changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 152c42c..e82d1ce 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -237,7 +237,7 @@ begin
+     when :search_unread
+       SearchResultsMode.spawn_from_query "is:unread"
+     when :list_labels
+-      labels = LabelManager.listable_labels.map { |l| LabelManager.string_for l }
++      labels = LabelManager.all_labels.map { |l| LabelManager.string_for l }
+       user_label = bm.ask_with_completions :label, "Show threads with label (enter for listing): ", labels
+       unless user_label.nil?
+         if user_label.empty?
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 0447f61..5d0b7eb 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -478,7 +478,9 @@ EOS
+     default = default_labels.join(" ")
+     default += " " unless default.empty?
+ 
+-    applyable_labels = (LabelManager.applyable_labels - forbidden_labels).map { |l| LabelManager.string_for l }.sort_by { |s| s.downcase }
++    # here I would prefer to give more control and allow all_labels instead of
++    # user_defined_labels only
++    applyable_labels = (LabelManager.user_defined_labels - forbidden_labels).map { |l| LabelManager.string_for l }.sort_by { |s| s.downcase }
+ 
+     answer = ask_many_with_completions domain, question, applyable_labels, default
+ 
+diff --git a/lib/sup/label.rb b/lib/sup/label.rb
+index 70a26ea..e63db9e 100644
+--- a/lib/sup/label.rb
++++ b/lib/sup/label.rb
+@@ -7,9 +7,6 @@ class LabelManager
+   ## add/remove these via normal label mechanisms.
+   RESERVED_LABELS = [ :starred, :spam, :draft, :unread, :killed, :sent, :deleted, :inbox, :attachment ]
+ 
+-  ## labels which it nonetheless makes sense to search for by
+-  LISTABLE_RESERVED_LABELS = [ :starred, :spam, :draft, :sent, :killed, :deleted, :inbox, :attachment ]
+-
+   ## labels that will typically be hidden from the user
+   HIDDEN_RESERVED_LABELS = [ :starred, :unread, :attachment ]
+ 
+@@ -28,18 +25,18 @@ class LabelManager
+     self.class.i_am_the_instance self
+   end
+ 
+-  ## all listable (just user-defined at the moment) labels, ordered
++  ## all labels user-defined and system, ordered
+   ## nicely and converted to pretty strings. use #label_for to recover
+   ## the original label.
+-  def listable_labels
++  def all_labels
+     ## uniq's only necessary here because of certain upgrade issues
+-    (LISTABLE_RESERVED_LABELS + @labels.keys).uniq
++    (RESERVED_LABELS + @labels.keys).uniq
+   end
+ 
+-  ## all apply-able (user-defined and system listable) labels, ordered
++  ## all user-defined labels, ordered
+   ## nicely and converted to pretty strings. use #label_for to recover
+   ## the original label.
+-  def applyable_labels
++  def user_defined_labels
+     @labels.keys
+   end
+ 
+diff --git a/lib/sup/modes/label-list-mode.rb b/lib/sup/modes/label-list-mode.rb
+index 132b654..a35d110 100644
+--- a/lib/sup/modes/label-list-mode.rb
++++ b/lib/sup/modes/label-list-mode.rb
+@@ -48,12 +48,12 @@ protected
+ 
+   def regen_text
+     @text = []
+-    labels = LabelManager.listable_labels
++    labels = LabelManager.all_labels
+ 
+     counts = labels.map do |label|
+       string = LabelManager.string_for label
+       total = Index.num_results_for :label => label
+-      unread = Index.num_results_for :labels => [label, :unread]
++      unread = (label == :unread)? total : Index.num_results_for(:labels => [label, :unread])
+       [label, string, total, unread]
+     end.sort_by { |l, s, t, u| s.downcase }
+ 
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:37:38 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:37:38 +0100
+Subject: [sup-talk] [PATCH] Remove the people.txt mapping.
+Message-ID: <1237228647-sup-3919@ausone.local>
+
+Resent...
+
+---
+ lib/sup.rb         |    4 +--
+ lib/sup/account.rb |    5 +--
+ lib/sup/contact.rb |    2 +-
+ lib/sup/person.rb  |   66 +++++----------------------------------------------
+ 4 files changed, 11 insertions(+), 66 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 93369a5..d833dff 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -53,7 +53,6 @@ module Redwood
+   COLOR_FN   = File.join(BASE_DIR, "colors.yaml")
+   SOURCE_FN  = File.join(BASE_DIR, "sources.yaml")
+   LABEL_FN   = File.join(BASE_DIR, "labels.txt")
+-  PERSON_FN  = File.join(BASE_DIR, "people.txt")
+   CONTACT_FN = File.join(BASE_DIR, "contacts.txt")
+   DRAFT_DIR  = File.join(BASE_DIR, "drafts")
+   SENT_FN    = File.join(BASE_DIR, "sent.mbox")
+@@ -115,7 +114,7 @@ module Redwood
+   end
+ 
+   def start
+-    Redwood::PersonManager.new Redwood::PERSON_FN
++    Redwood::PersonManager.new
+     Redwood::SentManager.new Redwood::SENT_FN
+     Redwood::ContactManager.new Redwood::CONTACT_FN
+     Redwood::LabelManager.new Redwood::LABEL_FN
+@@ -130,7 +129,6 @@ module Redwood
+   def finish
+     Redwood::LabelManager.save if Redwood::LabelManager.instantiated?
+     Redwood::ContactManager.save if Redwood::ContactManager.instantiated?
+-    Redwood::PersonManager.save if Redwood::PersonManager.instantiated?
+     Redwood::BufferManager.deinstantiate! if Redwood::BufferManager.instantiated?
+   end
+ 
+diff --git a/lib/sup/account.rb b/lib/sup/account.rb
+index f8ac0fc..6f86129 100644
+--- a/lib/sup/account.rb
++++ b/lib/sup/account.rb
+@@ -5,8 +5,8 @@ class Account < Person
+ 
+   def initialize h
+     raise ArgumentError, "no name for account" unless h[:name]
+-    raise ArgumentError, "no name for email" unless h[:name]
+-    super h[:name], h[:email], 0, true
++    raise ArgumentError, "no email for account" unless h[:email]
++    super h[:name], h[:email]
+     @sendmail = h[:sendmail]
+     @signature = h[:signature]
+   end
+@@ -42,7 +42,6 @@ class AccountManager
+     hash[:alternates] ||= []
+ 
+     a = Account.new hash
+-    PersonManager.register a
+     @accounts[a] = true
+ 
+     if default
+diff --git a/lib/sup/contact.rb b/lib/sup/contact.rb
+index b0c272e..bbb872f 100644
+--- a/lib/sup/contact.rb
++++ b/lib/sup/contact.rb
+@@ -17,7 +17,7 @@ class ContactManager
+       IO.foreach(fn) do |l|
+         l =~ /^([^:]*): (.*)$/ or raise "can't parse #{fn} line #{l.inspect}"
+         aalias, addr = $1, $2
+-        p = PersonManager.person_for addr, :definitive => true
++        p = PersonManager.person_for addr
+         @p2a[p] = aalias
+         @a2p[aalias] = p unless aalias.nil? || aalias.empty?
+       end
+diff --git a/lib/sup/person.rb b/lib/sup/person.rb
+index fb58f23..995620b 100644
+--- a/lib/sup/person.rb
++++ b/lib/sup/person.rb
+@@ -3,60 +3,24 @@ module Redwood
+ class PersonManager
+   include Singleton
+ 
+-  def initialize fn
+-    @fn = fn
+-    @@people = {}
+-
+-    ## read in stored people
+-    IO.readlines(fn).map do |l|
+-      l =~ /^(.*)?:\s+(\d+)\s+(.*)$/ or next
+-      email, time, name = $1, $2, $3
+-      @@people[email] = Person.new name, email, time, false
+-    end if File.exists? fn
+-
++  def initialize
+     self.class.i_am_the_instance self
+   end
+ 
+-  def save
+-    File.open(@fn, "w") do |f|
+-      @@people.each do |email, p|
+-        next if p.email == p.name
+-        next if p.name =~ /=/ # drop rfc2047-encoded, and lots of other useless emails. definitely a heuristic.
+-        f.puts "#{p.email}: #{p.timestamp} #{p.name}"
+-      end
+-    end
+-  end
+-
+-  def self.people_for s, opts={}
++  def self.people_for s
+     return [] if s.nil?
+-    s.split_on_commas.map { |ss| self.person_for ss, opts }
++    s.split_on_commas.map { |ss| self.person_for ss }
+   end
+ 
+-  def self.person_for s, opts={}
+-    p = Person.from_address(s) or return nil
+-    p.definitive = true if opts[:definitive]
+-    register p
+-  end
+-  
+-  def self.register p
+-    oldp = @@people[p.email]
+-
+-    if oldp.nil? || p.better_than?(oldp)
+-      @@people[p.email] = p
+-    end
+-
+-    @@people[p.email].touch!
+-    @@people[p.email]
++  def self.person_for s
++    Person.from_address(s)
+   end
+ end
+ 
+-## don't create these by hand. rather, go through personmanager, to
+-## ensure uniqueness and overriding.
+ class Person 
+-  attr_accessor :name, :email, :timestamp
+-  bool_accessor :definitive
++  attr_accessor :name, :email
+ 
+-  def initialize name, email, timestamp=0, definitive=false
++  def initialize name, email
+     raise ArgumentError, "email can't be nil" unless email
+     
+     if name
+@@ -67,26 +31,10 @@ class Person
+     end
+ 
+     @email = email.gsub(/^\s+|\s+$/, "").gsub(/\s+/, " ").downcase
+-    @definitive = definitive
+-    @timestamp = timestamp
+-  end
+-
+-  ## heuristic: whether the name attached to this email is "real", i.e. 
+-  ## we should bother to store it.
+-  def generic?
+-    @email =~ /no\-?reply/
+-  end
+-
+-  def better_than? o
+-    return false if o.definitive? || generic?
+-    return true if definitive?
+-    o.name.nil? || (name && name.length > o.name.length && name =~ /[a-z]/)
+   end
+ 
+   def to_s; "#@name <#@email>" end
+ 
+-  def touch!; @timestamp = Time.now.to_i end
+-
+ #   def == o; o && o.email == email; end
+ #   alias :eql? :==
+ #   def hash; [name, email].hash; end
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:38:17 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:38:17 +0100
+Subject: [sup-talk] [PATCH] Remove the now useless PersonManager
+In-Reply-To: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+References: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+Message-ID: <1237228691-sup-735@ausone.local>
+
+Resent..
+
+Replace PersonManager.person_for by Person.from_address
+and PersonManager.people_for by Person.from_address_list
+---
+ lib/sup.rb                         |    1 -
+ lib/sup/buffer.rb                  |    2 +-
+ lib/sup/contact.rb                 |    2 +-
+ lib/sup/index.rb                   |    4 ++--
+ lib/sup/message.rb                 |   16 ++++++++--------
+ lib/sup/modes/edit-message-mode.rb |    6 +++---
+ lib/sup/modes/reply-mode.rb        |    2 +-
+ lib/sup/modes/thread-view-mode.rb  |    4 ++--
+ lib/sup/person.rb                  |   22 +++++-----------------
+ 9 files changed, 23 insertions(+), 36 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index d833dff..b3ebd38 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -114,7 +114,6 @@ module Redwood
+   end
+ 
+   def start
+-    Redwood::PersonManager.new
+     Redwood::SentManager.new Redwood::SENT_FN
+     Redwood::ContactManager.new Redwood::CONTACT_FN
+     Redwood::LabelManager.new Redwood::LABEL_FN
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 0447f61..657027d 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -506,7 +506,7 @@ EOS
+     answer = BufferManager.ask_many_emails_with_completions domain, question, completions, default
+ 
+     if answer
+-      answer.split_on_commas.map { |x| ContactManager.contact_for(x) || PersonManager.person_for(x) }
++      answer.split_on_commas.map { |x| ContactManager.contact_for(x) || Person.from_address(x) }
+     end
+   end
+ 
+diff --git a/lib/sup/contact.rb b/lib/sup/contact.rb
+index bbb872f..51fd0e9 100644
+--- a/lib/sup/contact.rb
++++ b/lib/sup/contact.rb
+@@ -17,7 +17,7 @@ class ContactManager
+       IO.foreach(fn) do |l|
+         l =~ /^([^:]*): (.*)$/ or raise "can't parse #{fn} line #{l.inspect}"
+         aalias, addr = $1, $2
+-        p = PersonManager.person_for addr
++        p = Person.from_address addr
+         @p2a[p] = aalias
+         @a2p[aalias] = p unless aalias.nil? || aalias.empty?
+       end
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index cda5cee..d2e58ce 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -447,9 +447,9 @@ EOS
+         t = @index[docid][:to]
+ 
+         if AccountManager.is_account_email? f
+-          t.split(" ").each { |e| contacts[PersonManager.person_for(e)] = true }
++          t.split(" ").each { |e| contacts[Person.from_address(e)] = true }
+         else
+-          contacts[PersonManager.person_for(f)] = true
++          contacts[Person.from_address(f)] = true
+         end
+       end
+     end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index e01e245..88d9ce3 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -78,10 +78,10 @@ class Message
+     
+     @from =
+       if header["from"]
+-        PersonManager.person_for header["from"]
++        Person.from_address header["from"]
+       else
+         fakename = "Sup Auto-generated Fake Sender <sup at fake.sender.example.com>"
+-        PersonManager.person_for fakename
++        Person.from_address fakename
+       end
+ 
+     Redwood::log "faking message-id for message from #@from: #{id}" if fakeid
+@@ -105,9 +105,9 @@ class Message
+       end
+ 
+     @subj = header.member?("subject") ? header["subject"].gsub(/\s+/, " ").gsub(/\s+$/, "") : DEFAULT_SUBJECT
+-    @to = PersonManager.people_for header["to"]
+-    @cc = PersonManager.people_for header["cc"]
+-    @bcc = PersonManager.people_for header["bcc"]
++    @to = Person.from_address_list header["to"]
++    @cc = Person.from_address_list header["cc"]
++    @bcc = Person.from_address_list header["bcc"]
+ 
+     ## before loading our full header from the source, we can actually
+     ## have some extra refs set by the UI. (this happens when the user
+@@ -117,10 +117,10 @@ class Message
+     @refs = (@refs + refs).uniq
+     @replytos = (header["in-reply-to"] || "").scan(/<(.+?)>/).map { |x| sanitize_message_id x.first }
+ 
+-    @replyto = PersonManager.person_for header["reply-to"]
++    @replyto = Person.from_address header["reply-to"]
+     @list_address =
+       if header["list-post"]
+-        @list_address = PersonManager.person_for header["list-post"].gsub(/^<mailto:|>$/, "")
++        @list_address = Person.from_address header["list-post"].gsub(/^<mailto:|>$/, "")
+       else
+         nil
+       end
+@@ -391,7 +391,7 @@ private
+     elsif m.header.content_type == "message/rfc822"
+       payload = RMail::Parser.read(m.body)
+       from = payload.header.from.first
+-      from_person = from ? PersonManager.person_for(from.format) : nil
++      from_person = from ? Person.from_address(from.format) : nil
+       [Chunk::EnclosedMessage.new(from_person, payload.to_s)] +
+         message_to_chunks(payload, encrypted)
+     else
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index cc6e7af..31aa897 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -321,8 +321,8 @@ protected
+ 
+     ## do whatever crypto transformation is necessary
+     if @crypto_selector && @crypto_selector.val != :none
+-      from_email = PersonManager.person_for(@header["From"]).email
+-      to_email = [@header["To"], @header["Cc"], @header["Bcc"]].flatten.compact.map { |p| PersonManager.person_for(p).email }
++      from_email = Person.from_address(@header["From"]).email
++      to_email = [@header["To"], @header["Cc"], @header["Bcc"]].flatten.compact.map { |p| Person.from_address(p).email }
+ 
+       m = CryptoManager.send @crypto_selector.val, from_email, to_email, m
+     end
+@@ -412,7 +412,7 @@ private
+   end
+ 
+   def sig_lines
+-    p = PersonManager.person_for(@header["From"])
++    p = Person.from_address(@header["From"])
+     from_email = p && p.email
+ 
+     ## first run the hook
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index 4e08e8e..c1c542b 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -63,7 +63,7 @@ EOS
+       if hook_reply_from
+         hook_reply_from
+       elsif @m.recipient_email && AccountManager.is_account_email?(@m.recipient_email)
+-        PersonManager.person_for(@m.recipient_email)
++        Person.from_address(@m.recipient_email)
+       elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+         b
+       else
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 5f578d3..45c1247 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -148,7 +148,7 @@ EOS
+   def subscribe_to_list
+     m = @message_lines[curpos] or return
+     if m.list_subscribe && m.list_subscribe =~ /<mailto:(.*?)\?(subject=(.*?))>/
+-      ComposeMode.spawn_nicely :from => AccountManager.account_for(m.recipient_email), :to => [PersonManager.person_for($1)], :subj => $3
++      ComposeMode.spawn_nicely :from => AccountManager.account_for(m.recipient_email), :to => [Person.from_address($1)], :subj => $3
+     else
+       BufferManager.flash "Can't find List-Subscribe header for this message."
+     end
+@@ -157,7 +157,7 @@ EOS
+   def unsubscribe_from_list
+     m = @message_lines[curpos] or return
+     if m.list_unsubscribe && m.list_unsubscribe =~ /<mailto:(.*?)\?(subject=(.*?))>/
+-      ComposeMode.spawn_nicely :from => AccountManager.account_for(m.recipient_email), :to => [PersonManager.person_for($1)], :subj => $3
++      ComposeMode.spawn_nicely :from => AccountManager.account_for(m.recipient_email), :to => [Person.from_address($1)], :subj => $3
+     else
+       BufferManager.flash "Can't find List-Unsubscribe header for this message."
+     end
+diff --git a/lib/sup/person.rb b/lib/sup/person.rb
+index 995620b..ca70351 100644
+--- a/lib/sup/person.rb
++++ b/lib/sup/person.rb
+@@ -1,22 +1,5 @@
+ module Redwood
+ 
+-class PersonManager
+-  include Singleton
+-
+-  def initialize
+-    self.class.i_am_the_instance self
+-  end
+-
+-  def self.people_for s
+-    return [] if s.nil?
+-    s.split_on_commas.map { |ss| self.person_for ss }
+-  end
+-
+-  def self.person_for s
+-    Person.from_address(s)
+-  end
+-end
+-
+ class Person 
+   attr_accessor :name, :email
+ 
+@@ -110,6 +93,11 @@ class Person
+     Person.new name, email
+   end
+ 
++  def self.from_address_list ss
++    return [] if ss.nil?
++    ss.split_on_commas.map { |s| self.from_address s }
++  end
++
+   def indexable_content
+     [name, email, email.split(/@/).first].join(" ")
+   end
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:40:09 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:40:09 +0100
+Subject: [sup-talk] [PATCH] Resync listable_labels and applyable_labels with
+	reality
+Message-ID: <1237228801-sup-301@ausone.local>
+
+Resent...
+
+The listable_labels method listed all labels except unread
+which seems an unneeded complication/restriction, so it's
+renamed to all_labels. The applyable_labels was in fact
+user-defined labels so it's renamed to user_defined_labels.
+---
+ bin/sup                          |    2 +-
+ lib/sup/buffer.rb                |    4 +++-
+ lib/sup/label.rb                 |   13 +++++--------
+ lib/sup/modes/label-list-mode.rb |    4 ++--
+ 4 files changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 152c42c..e82d1ce 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -237,7 +237,7 @@ begin
+     when :search_unread
+       SearchResultsMode.spawn_from_query "is:unread"
+     when :list_labels
+-      labels = LabelManager.listable_labels.map { |l| LabelManager.string_for l }
++      labels = LabelManager.all_labels.map { |l| LabelManager.string_for l }
+       user_label = bm.ask_with_completions :label, "Show threads with label (enter for listing): ", labels
+       unless user_label.nil?
+         if user_label.empty?
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 0447f61..5d0b7eb 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -478,7 +478,9 @@ EOS
+     default = default_labels.join(" ")
+     default += " " unless default.empty?
+ 
+-    applyable_labels = (LabelManager.applyable_labels - forbidden_labels).map { |l| LabelManager.string_for l }.sort_by { |s| s.downcase }
++    # here I would prefer to give more control and allow all_labels instead of
++    # user_defined_labels only
++    applyable_labels = (LabelManager.user_defined_labels - forbidden_labels).map { |l| LabelManager.string_for l }.sort_by { |s| s.downcase }
+ 
+     answer = ask_many_with_completions domain, question, applyable_labels, default
+ 
+diff --git a/lib/sup/label.rb b/lib/sup/label.rb
+index 70a26ea..e63db9e 100644
+--- a/lib/sup/label.rb
++++ b/lib/sup/label.rb
+@@ -7,9 +7,6 @@ class LabelManager
+   ## add/remove these via normal label mechanisms.
+   RESERVED_LABELS = [ :starred, :spam, :draft, :unread, :killed, :sent, :deleted, :inbox, :attachment ]
+ 
+-  ## labels which it nonetheless makes sense to search for by
+-  LISTABLE_RESERVED_LABELS = [ :starred, :spam, :draft, :sent, :killed, :deleted, :inbox, :attachment ]
+-
+   ## labels that will typically be hidden from the user
+   HIDDEN_RESERVED_LABELS = [ :starred, :unread, :attachment ]
+ 
+@@ -28,18 +25,18 @@ class LabelManager
+     self.class.i_am_the_instance self
+   end
+ 
+-  ## all listable (just user-defined at the moment) labels, ordered
++  ## all labels user-defined and system, ordered
+   ## nicely and converted to pretty strings. use #label_for to recover
+   ## the original label.
+-  def listable_labels
++  def all_labels
+     ## uniq's only necessary here because of certain upgrade issues
+-    (LISTABLE_RESERVED_LABELS + @labels.keys).uniq
++    (RESERVED_LABELS + @labels.keys).uniq
+   end
+ 
+-  ## all apply-able (user-defined and system listable) labels, ordered
++  ## all user-defined labels, ordered
+   ## nicely and converted to pretty strings. use #label_for to recover
+   ## the original label.
+-  def applyable_labels
++  def user_defined_labels
+     @labels.keys
+   end
+ 
+diff --git a/lib/sup/modes/label-list-mode.rb b/lib/sup/modes/label-list-mode.rb
+index 132b654..a35d110 100644
+--- a/lib/sup/modes/label-list-mode.rb
++++ b/lib/sup/modes/label-list-mode.rb
+@@ -48,12 +48,12 @@ protected
+ 
+   def regen_text
+     @text = []
+-    labels = LabelManager.listable_labels
++    labels = LabelManager.all_labels
+ 
+     counts = labels.map do |label|
+       string = LabelManager.string_for label
+       total = Index.num_results_for :label => label
+-      unread = Index.num_results_for :labels => [label, :unread]
++      unread = (label == :unread)? total : Index.num_results_for(:labels => [label, :unread])
+       [label, string, total, unread]
+     end.sort_by { |l, s, t, u| s.downcase }
+ 
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:41:08 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:41:08 +0100
+Subject: [sup-talk] [PATCH] Fix a bug in sup-tweak-label when multiple
+	sources are given.
+Message-ID: <1237228863-sup-2359@ausone.local>
+
+Resent...
+
+---
+ bin/sup-tweak-labels |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/bin/sup-tweak-labels b/bin/sup-tweak-labels
+index 4d1313e..0beb77e 100644
+--- a/bin/sup-tweak-labels
++++ b/bin/sup-tweak-labels
+@@ -71,7 +71,7 @@ begin
+   end.map { |s| s.id }
+   Trollop::die "nothing to do: no sources" if source_ids.empty?
+ 
+-  query = "+(" + source_ids.map { |id| "source_id:#{id}" }.join(" ") + ")"
++  query = "+(" + source_ids.map { |id| "source_id:#{id}" }.join(" OR ") + ")"
+   if add_labels.empty?
+     ## if all we're doing is removing labels, we can further restrict the
+     ## query to only messages with those labels
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:38:02 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:38:02 +0100
+Subject: [sup-talk] [PATCH] Close the "remove email->name mapping" issue
+In-Reply-To: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+References: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+Message-ID: <1237228672-sup-4442@ausone.local>
+
+Resent...
+
+---
+ ...e-aae5ae6378afa9bd2a8e1b15d28ba7ccef867791.yaml |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/bugs/issue-aae5ae6378afa9bd2a8e1b15d28ba7ccef867791.yaml b/bugs/issue-aae5ae6378afa9bd2a8e1b15d28ba7ccef867791.yaml
+index cd3820d..83cc00a 100644
+--- a/bugs/issue-aae5ae6378afa9bd2a8e1b15d28ba7ccef867791.yaml
++++ b/bugs/issue-aae5ae6378afa9bd2a8e1b15d28ba7ccef867791.yaml
+@@ -5,8 +5,8 @@ type: :bugfix
+ component: sup
+ release: 
+ reporter: William Morgan <wmorgan-sup at masanjin.net>
+-status: :unstarted
+-disposition: 
++status: :closed
++disposition: :fixed
+ creation_time: 2008-05-19 23:42:25.910550 Z
+ references: []
+ 
+@@ -20,4 +20,8 @@ log_events:
+   - William Morgan <wmorgan-sup at masanjin.net>
+   - unassigned from release 0.6
+   - ""
++- - 2008-11-22 16:31:27.450146 Z
++  - Nicolas Pouillard <nicolas.pouillard at gmail.com>
++  - closed with disposition fixed
++  - This mapping and the PersonManager are now removed.
+ git_branch: 
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:39:40 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:39:40 +0100
+Subject: [sup-talk] [PATCH] Fix a recurring bug about killed threads.
+Message-ID: <1237228775-sup-8139@ausone.local>
+
+Resent...
+
+---
+ ...e-60d86dd32054533a6206f698033ec668af6a7574.yaml |   10 ++++++++--
+ lib/sup/modes/thread-index-mode.rb                 |    2 +-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/bugs/issue-60d86dd32054533a6206f698033ec668af6a7574.yaml b/bugs/issue-60d86dd32054533a6206f698033ec668af6a7574.yaml
+index 7fb616c..2830fff 100644
+--- a/bugs/issue-60d86dd32054533a6206f698033ec668af6a7574.yaml
++++ b/bugs/issue-60d86dd32054533a6206f698033ec668af6a7574.yaml
+@@ -5,8 +5,8 @@ type: :bugfix
+ component: indexing
+ release: 
+ reporter: William Morgan <wmorgan-sup at masanjin.net>
+-status: :unstarted
+-disposition: 
++status: :closed
++disposition: :fixed
+ creation_time: 2008-04-25 19:28:51.369257 Z
+ references: []
+ 
+@@ -20,4 +20,10 @@ log_events:
+   - William Morgan <wmorgan-sup at masanjin.net>
+   - unassigned from release 0.6
+   - ""
++- - 2008-11-21 14:23:17.566852 Z
++  - Nicolas Pouillard <nicolas.pouillard at gmail.com>
++  - closed with disposition fixed
++  - |-
++    Loading options was not given to load_thread_for_message in
++    ThreadIndexMode.add_or_unhide.
+ git_branch: 
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 3dd0498..73144db 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -567,7 +567,7 @@ protected
+   def add_or_unhide m
+     @ts_mutex.synchronize do
+       if (is_relevant?(m) || @ts.is_relevant?(m)) && !@ts.contains?(m)
+-        @ts.load_thread_for_message m
++        @ts.load_thread_for_message m, @load_thread_opts
+       end
+ 
+       @hidden_threads.delete @ts.thread_for(m)
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:56:17 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:56:17 +0100
+Subject: [sup-talk] [PATCH] decoding: handle more misspellings,
+	in particular ISO-8859-15
+Message-ID: <1237229771-sup-9316@ausone.local>
+
+Resent...
+
+---
+ lib/sup/util.rb |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index fc62532..dbcffcc 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -620,11 +620,12 @@ end
+ 
+ class Iconv
+   def self.easy_decode target, charset, text
+-    return text if charset =~ /^(x-unknown|unknown[-_]?8bit|ascii[-_]?7[-_]?bit)$/i
++    return text if charset =~ /^(x-unknown|unknown[-_ ]?8bit|ascii[-_ ]?7[-_ ]?bit)$/i
+     charset = case charset
+-                when /UTF[-_]?8/i: "utf-8"
+-                when /(iso[-_])?latin[-_]?1$/i: "ISO-8859-1"
+-                when /unicode[-_]1[-_]1[-_]utf[-_]7/i: "utf-7"
++                when /UTF[-_ ]?8/i: "utf-8"
++                when /(iso[-_ ])?latin[-_ ]?1$/i: "ISO-8859-1"
++                when /iso[-_ ]?8859[-_ ]?15/i: 'ISO-8859-15'
++                when /unicode[-_ ]1[-_ ]1[-_ ]utf[-_]7/i: "utf-7"
+                 else charset
+               end
+ 
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Mon Mar 16 14:56:44 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 16 Mar 2009 19:56:44 +0100
+Subject: [sup-talk] [PATCH] Handle a nil 'default_attachment_save_dir' option
+Message-ID: <1237229795-sup-5645@ausone.local>
+
+Resent...
+
+---
+ lib/sup/modes/thread-view-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index ce9f13d..a2d6eb4 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -260,7 +260,7 @@ EOS
+     chunk = @chunk_lines[curpos] or return
+     case chunk
+     when Chunk::Attachment
+-      fn = BufferManager.ask_for_filename :filename, "Save attachment to file: ", ($config[:default_attachment_save_dir] + chunk.filename)
++      fn = BufferManager.ask_for_filename(:filename, "Save attachment to file: ", ($config[:default_attachment_save_dir] || '') + chunk.filename)
+       save_to_file(fn) { |f| f.print chunk.raw_content } if fn
+     else
+       m = @message_lines[curpos]
+
+-- 
+Nicolas Pouillard
+
+From marka at pobox.com  Tue Mar 17 14:29:51 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 17 Mar 2009 11:29:51 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237224356-sup-1941@entry>
+References: <1237224356-sup-1941@entry>
+Message-ID: <a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+
+On Mon, Mar 16, 2009 at 10:27 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+
+> I've prepared master for an 0.7 release. If you get a chance, please try
+> it out and let me know if there's anything obviously broken. The changes
+> I'm most excited about are the Ferret locking (so hopefully no more
+> index corruption) and being able to type long answers to Sup's
+> questions.
+
+Thanks!  I'm trying it now.
+
+Last month I discovered sup and attempted to use it
+in a serious way as a replacement for mutt.  I fed it
+around 10000 messages that I had in my ~/Maildir
+and tried to use it for several days.  But I kept running
+into ferret-related crashes every few minutes, so I
+abandoned the effort and went back to mutt.
+
+I wasn't willing to give up completely, though, and
+started to investigate the idea of replacing ferret
+with Sphinx (yes, I know about the Sup-As-Service
+project, but I was impatient).  I didn't get too far
+with that, though (lack of time, mainly).  Sphinx
+is a pain, frankly, and I was racking my brains for
+ways of dealing sanely with the incremental indexing,
+the matching of message IDs with Sphinx IDs, and
+the XML interface.
+
+So I'm really glad to see the new release and hope
+the ferret-related bugs are gone.  So far things
+look good.  It's lasted lots longer than it did before,
+but I'm feeling cautious and will run it for a few more days
+before considering moving away from mutt full-time.
+
+--Mark
+
+From wmorgan-sup at masanjin.net  Wed Mar 18 09:49:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 Mar 2009 06:49:15 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+Message-ID: <1237383823-sup-8242@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-17:
+> I wasn't willing to give up completely, though, and started to
+> investigate the idea of replacing ferret with Sphinx (yes, I know
+> about the Sup-As-Service project, but I was impatient).  I didn't get
+> too far with that, though (lack of time, mainly).  Sphinx is a pain,
+> frankly, and I was racking my brains for ways of dealing sanely with
+> the incremental indexing, the matching of message IDs with Sphinx IDs,
+> and the XML interface.
+
+I played around with Sphinx a little bit since that's apparently the hot
+shit nowadays, but had a similar experience---the combination of having
+to feed everything to it in XML, manually manage the incremental
+indexes, and deal with a remote server that would take 1-2 seconds to
+pick up changes was hellish. I was not motivated to continue.
+
+So I still think Ferret is the best search engine for Ruby apps, despite
+being unmaintained and highly thread-unsafe.
+
+> So I'm really glad to see the new release and hope the ferret-related
+> bugs are gone.  So far things look good.  It's lasted lots longer than
+> it did before, but I'm feeling cautious and will run it for a few more
+> days before considering moving away from mutt full-time.
+
+Glad to hear it. I'm definitely interested in whether it holds up.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 18 09:50:36 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 Mar 2009 06:50:36 -0700
+Subject: [sup-talk] Some patches
+In-Reply-To: <1237228109-sup-5666@ausone.local>
+References: <1237228109-sup-5666@ausone.local>
+Message-ID: <1237384169-sup-3253@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2009-03-16:
+> The consequence is that I have some patches, that I thought was on the
+> list and there not. So I resend them.
+
+Patch bomb! Looks like a lot of good stuff. Probably too late for 0.7
+though.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Mar 18 10:35:17 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 18 Mar 2009 15:35:17 +0100
+Subject: [sup-talk] Some patches
+In-Reply-To: <1237384169-sup-3253@entry>
+References: <1237228109-sup-5666@ausone.local> <1237384169-sup-3253@entry>
+Message-ID: <1237386701-sup-9341@ausone.local>
+
+Excerpts from William Morgan's message of Wed Mar 18 14:50:36 +0100 2009:
+> Reformatted excerpts from nicolas.pouillard's message of 2009-03-16:
+> > The consequence is that I have some patches, that I thought was on the
+> > list and there not. So I resend them.
+> 
+> Patch bomb! Looks like a lot of good stuff. Probably too late for 0.7
+> though.
+
+No problems, however two of them could be worthy:
+
+- "Handle a nil 'default_attachment_save_dir' option"
+  I think that this one is a regression due to the introduction of this
+  option.
+
+- "Fix a recurring bug about killed threads."
+  Could be handy to have this feature working :)
+
+Also note that I run sup with these patches since four months now :)
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Wed Mar 18 11:15:50 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 Mar 2009 08:15:50 -0700
+Subject: [sup-talk] Some patches
+In-Reply-To: <1237386701-sup-9341@ausone.local>
+References: <1237228109-sup-5666@ausone.local> <1237384169-sup-3253@entry>
+	<1237386701-sup-9341@ausone.local>
+Message-ID: <1237389250-sup-4011@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2009-03-18:
+> - "Handle a nil 'default_attachment_save_dir' option"
+>   I think that this one is a regression due to the introduction of
+>   this option.
+
+Heh, I also fixed this one independently, so it's already in master.
+
+> - "Fix a recurring bug about killed threads."
+>   Could be handy to have this feature working :)
+
+Ok, I've applied this to master. I'm going to aim for releasing tomorrow
+or the day after, so now's a good time to try your favorite features and
+make sure they still work!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Mar 18 11:33:08 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 18 Mar 2009 16:33:08 +0100
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels
+	using -lab (the "; l" key binding)
+In-Reply-To: <1237228536-sup-7811@ausone.local>
+References: <1237228536-sup-7811@ausone.local>
+Message-ID: <1237390328-sup-1506@ausone.local>
+
+This patch conflict with the undo feature, I've locally resolved the merge.
+However I don't really know what the best way to share the conflict
+resolution.
+
+Excerpts from Nicolas Pouillard's message of Mon Mar 16 19:35:43 +0100 2009:
+> Resent..
+> 
+> ---
+>  lib/sup/modes/thread-index-mode.rb |   19 ++++++++++++++-----
+>  1 files changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+> index 3dd0498..bde61cf 100644
+> --- a/lib/sup/modes/thread-index-mode.rb
+> +++ b/lib/sup/modes/thread-index-mode.rb
+> @@ -448,13 +448,22 @@ EOS
+>    end
+>  
+>    def multi_edit_labels threads
+> -    user_labels = BufferManager.ask_for_labels :add_labels, "Add labels: ", [], @hidden_labels
+> +    user_labels = BufferManager.ask_for_labels :labels, "Add/remove labels (use -label to remove): ", [], @hidden_labels
+>      return unless user_labels
+> -    
+> -    hl = user_labels.select { |l| @hidden_labels.member? l }
+> +
+> +    user_labels.map! { |l| (l.to_s =~ /^-/)? [l.to_s.gsub(/^-?/, '').to_sym, true] : [l, false] }
+> +    hl = user_labels.select { |(l,_)| @hidden_labels.member? l }
+>      if hl.empty?
+> -      threads.each { |t| user_labels.each { |l| t.apply_label l } }
+> -      user_labels.each { |l| LabelManager << l }
+> +      threads.each do |t|
+> +        user_labels.each do |(l, to_remove)|
+> +          if to_remove
+> +            t.remove_label l
+> +          else
+> +            t.apply_label l
+> +          end
+> +        end
+> +      end
+> +      user_labels.each { |(l,_)| LabelManager << l }
+>      else
+>        BufferManager.flash "'#{hl}' is a reserved label!"
+>      end
+> 
+
+-- 
+Nicolas Pouillard
+
+From lee at writequit.org  Wed Mar 18 11:39:34 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Wed, 18 Mar 2009 09:39:34 -0600
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237383823-sup-8242@entry>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry>
+Message-ID: <1237390594-sup-949@black>
+
+Excerpts from William Morgan's message of Wed Mar 18 07:49:15 -0600 2009:
+> So I still think Ferret is the best search engine for Ruby apps, despite
+> being unmaintained and highly thread-unsafe.
+
+Has anyone looked into using Hyper Estraier
+(http://hyperestraier.sourceforge.net/) as a backend instead of Ferret (if
+the problems with Ferret are bad enough to want to switch)?
+
+I've had really good luck with it, it indexes fast and the searches are
+super-quick. The ruby bindings for it are great!
+
+Just curious.
+
+- Lee
+
+From eravin at panix.com  Wed Mar 18 11:46:40 2009
+From: eravin at panix.com (Ed Ravin)
+Date: Wed, 18 Mar 2009 11:46:40 -0400
+Subject: [sup-talk] sup and NetBSD?
+Message-ID: <20090318154639.GB5268@panix.com>
+
+Is anyone using sup on a NetBSD system?  sup-0.6 won't install as a gem
+because it wants ncurses-0.9.1 which won't compile properly.  I tried
+to install later versions of ncurses - I was able to compile ncurses-0.9.2
+as well as the later versions which are named ruby-ncurses, but upon
+running sup, sup kept saying it couldn't find ncurses even though it was
+allegedly installed.
+
+I'm using NetBSD 4.0 on i386.
+
+Thanks,
+
+	-- Ed
+
+From nicolas.pouillard at gmail.com  Wed Mar 18 13:24:54 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 18 Mar 2009 18:24:54 +0100
+Subject: [sup-talk] [PATCH] Add lib/sup/undo.rb to Manifest.txt
+Message-ID: <1237397094-34077-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ Manifest.txt |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/Manifest.txt b/Manifest.txt
+index 6ecfe67..be633d7 100644
+--- a/Manifest.txt
++++ b/Manifest.txt
+@@ -71,5 +71,6 @@ lib/sup/suicide.rb
+ lib/sup/tagger.rb
+ lib/sup/textfield.rb
+ lib/sup/thread.rb
++lib/sup/undo.rb
+ lib/sup/update.rb
+ lib/sup/util.rb
+-- 
+1.6.1.2
+
+
+From marka at pobox.com  Wed Mar 18 17:11:05 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 18 Mar 2009 14:11:05 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237383823-sup-8242@entry>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry>
+Message-ID: <a412e2a70903181411s388d2147l136b68f0a1fe7bd2@mail.gmail.com>
+
+On Wed, Mar 18, 2009 at 6:49 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> I'm definitely interested in whether it holds up.
+
+It's holding up very well; no crashes after two days.  This is wonderful!
+
+I have encountered a few odd minor issues.  One is that
+it seems not to recognize Message-ID headers that are
+split over two lines.  For example, here's one that caused
+it to generate a faked-up ID:
+
+Message-ID:
+ <72E99544C4530E4F92DCC03303F8CF820145EDC05D at PA-EXMBX01.widget.com>
+
+There's a newline after the colon, and the message ID follows
+on the next line, indented with one space.  I believe this one
+was generated by Outlook, but I've also seen Alpine do this.
+
+This is messing up threading.  Without delving into
+the source, I am guessing this an rmail bug, not a sup bug.
+
+From wmorgan-sup at masanjin.net  Thu Mar 19 12:58:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Mar 2009 09:58:15 -0700
+Subject: [sup-talk] sup and NetBSD?
+In-Reply-To: <20090318154639.GB5268@panix.com>
+References: <20090318154639.GB5268@panix.com>
+Message-ID: <1237481832-sup-3207@entry>
+
+Reformatted excerpts from Ed Ravin's message of 2009-03-18:
+> Is anyone using sup on a NetBSD system?  sup-0.6 won't install as a gem
+> because it wants ncurses-0.9.1 which won't compile properly.  I tried
+> to install later versions of ncurses - I was able to compile ncurses-0.9.2
+> as well as the later versions which are named ruby-ncurses, but upon
+> running sup, sup kept saying it couldn't find ncurses even though it was
+> allegedly installed.
+
+I know there've been some folks trying with OpenBSD and FreeBSD but I
+don't recalled NetBSD. You can search the list archives... I believe
+they had issues with ncurses or libc or something, but I don't recall
+the specifics.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Mar 19 13:02:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Mar 2009 10:02:11 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237390594-sup-949@black>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry> <1237390594-sup-949@black>
+Message-ID: <1237481941-sup-9121@entry>
+
+Reformatted excerpts from Lee Hinman's message of 2009-03-18:
+> Has anyone looked into using Hyper Estraier
+> (http://hyperestraier.sourceforge.net/) as a backend instead of Ferret
+> (if the problems with Ferret are bad enough to want to switch)?
+
+I looked at it briefly but judging from the mailing list traffic it's
+not really maintained, or at least people's questions aren't being
+answered. I already have that with Ferret. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Mar 19 13:14:18 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Mar 2009 10:14:18 -0700
+Subject: [sup-talk] [PATCH] Add lib/sup/undo.rb to Manifest.txt
+In-Reply-To: <1237397094-34077-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1237397094-34077-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1237482833-sup-8683@entry>
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Thu Mar 19 15:18:07 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 19 Mar 2009 12:18:07 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237383823-sup-8242@entry>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry>
+Message-ID: <a412e2a70903191218x209c1cb1p6f46e718b2f90395@mail.gmail.com>
+
+I left the new sup running all night, and when
+I looked at it this morning, it had dropped
+at least one new message.  I didn't figure that
+out until I saw replies to the lost message.
+Poking about with mutt and searching for
+the message using devel/console.sh showed
+that it really was missing from the ferret index.
+Running sup-sync --all on the maildir source in question
+fixed it, but it was still worrisome.
+
+This is on a work machine that gets messages
+from dozens of mailing lists, cron jobs, etc.
+I have fetchmail running in the background
+and polling every two minutes.  Then procmail
+is used to stuff things into a dozen folders
+in ~/Maildir (for use with mutt).
+
+So I'm wondering if there is some kind of race
+condition between sup and fetchmail/procmail.  I'm not
+even sure how to debug this since it's apparently
+an infrequent event (and one that isn't noticeable
+right away).
+
+From wmorgan-sup at masanjin.net  Thu Mar 19 15:25:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Mar 2009 12:25:23 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <a412e2a70903191218x209c1cb1p6f46e718b2f90395@mail.gmail.com>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry>
+	<a412e2a70903191218x209c1cb1p6f46e718b2f90395@mail.gmail.com>
+Message-ID: <1237490703-sup-4095@entry>
+
+[resend to list]
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-19:
+> So I'm wondering if there is some kind of race condition between sup
+> and fetchmail/procmail.  I'm not even sure how to debug this since
+> it's apparently an infrequent event (and one that isn't noticeable
+> right away).
+
+Hm, that would be bad. The right way to debug this is to wait for it to
+happen again (!) and examine the contents of the poll-mode and log-mode
+buffers, which should describe what Sup thinks it was doing at the time.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Thu Mar 19 16:41:06 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 19 Mar 2009 13:41:06 -0700
+Subject: [sup-talk] preparing for 0.7
+In-Reply-To: <1237490703-sup-4095@entry>
+References: <1237224356-sup-1941@entry>
+	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>
+	<1237383823-sup-8242@entry>
+	<a412e2a70903191218x209c1cb1p6f46e718b2f90395@mail.gmail.com>
+	<1237490703-sup-4095@entry>
+Message-ID: <a412e2a70903191341o744efb9bw3a02ebb1585a9b8b@mail.gmail.com>
+
+On Thu, Mar 19, 2009 at 12:25 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Hm, that would be bad. The right way to debug this is to wait for it to
+> happen again (!) and examine the contents of the poll-mode and log-mode
+> buffers, which should describe what Sup thinks it was doing at the time.
+
+That's my plan.  I did look at the two log buffers when I noticed
+the problem, but by then it was too late.  I'll keep an eye on it.
+
+From marka at pobox.com  Fri Mar 20 13:11:37 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 20 Mar 2009 10:11:37 -0700
+Subject: [sup-talk] Patch for message-id problem
+Message-ID: <a412e2a70903201011p5ff990ccn6e74fad3cee60648@mail.gmail.com>
+
+Here's a patch for the message-id problem I mentioned
+earlier, where the header line was split into two lines:
+
+Message-ID:
+ <D3C12B2AD838B44DA9D6B2CA334246D011E72A73A4 at PA-EXMBX04.widget.com>
+
+I've also seen other header lines that were split in this way,
+so this patch works for them too.
+
+I've added a somewhat large test case to the unit test
+that is an exact copy of a message that was causing
+me problems, but with the company name changed to protect
+the innocent.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msgid.patch
+Type: application/octet-stream
+Size: 4830 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090320/9debd13d/attachment.obj>
+
+From marka at pobox.com  Sat Mar 21 08:57:33 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Sat, 21 Mar 2009 05:57:33 -0700
+Subject: [sup-talk] Patch for using default colors
+Message-ID: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+
+I noticed that sup wasn't using my terminal's
+default colors when displaying the text of
+a message.  Instead of the expected black on
+light-yellow (my defaults), it was using white on black.
+I also see a message in the mailing list archives
+from Jan 29 titled "When using 'default' in colors.yaml
+or colormap.rb, sup throws an exception" that seems
+to describe the same problem.
+
+I have attached a patch that works for me, and might
+be a workaround for the other problem as well.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: defaultcolors.patch
+Type: text/x-patch
+Size: 281 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090321/3756fefe/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Sun Mar 22 12:59:59 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 Mar 2009 09:59:59 -0700
+Subject: [sup-talk] Patch for message-id problem
+In-Reply-To: <a412e2a70903201011p5ff990ccn6e74fad3cee60648@mail.gmail.com>
+References: <a412e2a70903201011p5ff990ccn6e74fad3cee60648@mail.gmail.com>
+Message-ID: <1237740682-sup-5677@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-20:
+> Here's a patch for the message-id problem I mentioned earlier, where
+> the header line was split into two lines:
+
+Thanks! I've modified this slightly so that the regex looks like:
+
+  HEADER_RE = /\s*(.*?)\s*/
+
+which I believe is equivalent to your change.
+
+I've applied the patch directly to master and that will probably be the
+last thing going in before an 0.7 release.
+
+> I've added a somewhat large test case to the unit test that is an
+> exact copy of a message that was causing me problems, but with the
+> company name changed to protect the innocent.
+
+Very useful. Thanks!
+
+A minor comment: for future patches, it will be easier for me to apply
+your changes if you use git format-patch instead of git diff.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Mar 22 13:30:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 Mar 2009 10:30:30 -0700
+Subject: [sup-talk] New user questions...
+In-Reply-To: <c46e347b0902260933qafa051bp185bd8339a6f10a0@mail.gmail.com>
+References: <c46e347b0902260933qafa051bp185bd8339a6f10a0@mail.gmail.com>
+Message-ID: <1237741980-sup-3384@entry>
+
+Hi Vadim,
+
+Better late than never, right?
+
+Reformatted excerpts from Vadim Gutnik's message of 2009-02-26:
+> Is there a plan to make sup recognize email breaks at least as well as
+> mutt does?),
+
+Yes, absolutely. This is a high-priority bug.
+
+> 1) I use getmail to get my POP3SSL mail and put it into mdir format.
+> Usually, when getmail tells me it found a message, I go to my running
+> sup process and press "P" for it to pick up the mail, and sup shows
+> the new message.  Sometimes (maybe 5-10% of the time?) sup does not
+> find the new message until I quit and restart it. Known problem?
+
+Interesting. Someone's recently reported a similar problem, also with
+Maildir, but in their case the message wasn't added to the index at all.
+
+> Is there anything I can do to help debug it?
+
+If there's any way to reliably reproduce this so that I can see it
+happening locally, of course, that's the ideal solution. Otherwise, if
+you notice it happening in the wild, you can also look at the log buffer
+and the poll buffer and see if there's anything obviously wrong about
+what Sup reports.
+
+> 2) At least once or twice I've hit "d" by habit (and mistake). Is
+> there a way to search for "deleted" messages? I could
+> just rebuild the index from scratch and reapply labels if I had to,
+> but ...there must be an easier way, right?
+
+You can search for deleted messages by using "\" (label:deleted), or by
+using L.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Mar 22 13:46:17 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 Mar 2009 10:46:17 -0700
+Subject: [sup-talk] [PATCH] sup-mail crash
+In-Reply-To: <1234477287.6877.10.camel@onnadayr.ca>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail>
+	<1234220954-sup-3688@entry> <1234268739-sup-5896@tomsk>
+	<1234475856-sup-8907@entry> <1234477287.6877.10.camel@onnadayr.ca>
+Message-ID: <1237743974-sup-3407@entry>
+
+Whoops, I lied. This was the other bugfix I wanted to get in to 0.7.
+
+Reformatted excerpts from Rick Tessner's message of 2009-02-12:
+> I've had this problem occassionally about a "hash modified during
+> iteration" and I use maildir rather than mbox.
+> 
+> Attached is a patch to fix that problem.
+
+Thanks! I've applied an equivalent patch to master:
+
+-    header.each { |k, v| header[k.downcase] = v }
++    header.keys.each { |k| header[k.downcase] = v } # canonicalize
+
+Please let me know if the current master works for you.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Sun Mar 22 13:56:34 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Sun, 22 Mar 2009 11:56:34 -0600
+Subject: [sup-talk] New user questions...
+In-Reply-To: <1237741980-sup-3384@entry>
+References: <c46e347b0902260933qafa051bp185bd8339a6f10a0@mail.gmail.com>
+	<1237741980-sup-3384@entry>
+Message-ID: <1237744468-sup-9939@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Sun Mar 22 11:30:30 -0600 2009:
+> Hi Vadim,
+> 
+> Better late than never, right?
+> 
+> Reformatted excerpts from Vadim Gutnik's message of 2009-02-26:
+> > Is there a plan to make sup recognize email breaks at least as well as
+> > mutt does?),
+> 
+> Yes, absolutely. This is a high-priority bug.
+> 
+> > 1) I use getmail to get my POP3SSL mail and put it into mdir format.
+> > Usually, when getmail tells me it found a message, I go to my running
+> > sup process and press "P" for it to pick up the mail, and sup shows
+> > the new message.  Sometimes (maybe 5-10% of the time?) sup does not
+> > find the new message until I quit and restart it. Known problem?
+> 
+> Interesting. Someone's recently reported a similar problem, also with
+> Maildir, but in their case the message wasn't added to the index at all.
+> 
+> > Is there anything I can do to help debug it?
+> 
+> If there's any way to reliably reproduce this so that I can see it
+> happening locally, of course, that's the ideal solution. Otherwise, if
+> you notice it happening in the wild, you can also look at the log buffer
+> and the poll buffer and see if there's anything obviously wrong about
+> what Sup reports.
+> 
+> > 2) At least once or twice I've hit "d" by habit (and mistake). Is
+> > there a way to search for "deleted" messages? I could
+> > just rebuild the index from scratch and reapply labels if I had to,
+> > but ...there must be an easier way, right?
+> 
+> You can search for deleted messages by using "\" (label:deleted), or by
+> using L.
+>
+Also, you can hit '@' to revert to your last saved point (i.e. last time
+you hit '$'), and this will undelete it as well as undoing all your
+other unsaved changes.  Also, hasn't someone recently submitted an Undo
+patch?
+
+From wmorgan-sup at masanjin.net  Sun Mar 22 15:22:50 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 Mar 2009 12:22:50 -0700
+Subject: [sup-talk] New user questions...
+In-Reply-To: <1237744468-sup-9939@tangerine.lanl.gov>
+References: <c46e347b0902260933qafa051bp185bd8339a6f10a0@mail.gmail.com>
+	<1237741980-sup-3384@entry>
+	<1237744468-sup-9939@tangerine.lanl.gov>
+Message-ID: <1237749728-sup-8889@entry>
+
+Reformatted excerpts from John Bent's message of 2009-03-22:
+> Also, you can hit '@' to revert to your last saved point (i.e. last
+> time you hit '$'), and this will undelete it as well as undoing all
+> your other unsaved changes.  Also, hasn't someone recently submitted
+> an Undo patch?
+
+Oh right. If you check out the "next" branch in git, you'll have undo
+power too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Mar 22 17:21:46 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 Mar 2009 14:21:46 -0700
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels
+	using -lab (the "; l" key binding)
+In-Reply-To: <1237390328-sup-1506@ausone.local>
+References: <1237228536-sup-7811@ausone.local>
+	<1237390328-sup-1506@ausone.local>
+Message-ID: <1237756617-sup-7606@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2009-03-18:
+> This patch conflict with the undo feature, I've locally resolved the
+> merge. However I don't really know what the best way to share the
+> conflict resolution.
+
+That's a good question. For some reason git format-patch doesn't produce
+anything for merge commits, even if they contain conflict resolution
+changes. Maybe it's for a good reason; I don't know.
+
+But you can use git diff. After merging and resolving the conflict, if
+you do "git diff HEAD^", that should output the conflict-resolution
+changes. You can send that to me and I can use it to replicate the
+commit.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From decklin at red-bean.com  Sun Mar 22 20:04:30 2009
+From: decklin at red-bean.com (Decklin Foster)
+Date: Sun, 22 Mar 2009 20:04:30 -0400
+Subject: [sup-talk] [PATCH] sup-mail crash
+In-Reply-To: <1237743974-sup-3407@entry>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail>
+	<1234220954-sup-3688@entry> <1234268739-sup-5896@tomsk>
+	<1234475856-sup-8907@entry> <1234477287.6877.10.camel@onnadayr.ca>
+	<1237743974-sup-3407@entry>
+Message-ID: <1237766667-sup-7746@gillespie.rupamsunyata.org>
+
+Excerpts from William Morgan's message of Sun Mar 22 13:46:17 -0400 2009:
+> Please let me know if the current master works for you.
+
+WFM. I was just about to send a patch when I noticed this
+thread :)
+
+Debian users, here's a package of master to test:
+http://apt.rupamsunyata.org/sup/
+I'll just wait for 0.7 to upload something official.
+-- 
+things change.
+decklin at red-bean.com
+
+From nicolas.pouillard at gmail.com  Mon Mar 23 06:26:23 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 23 Mar 2009 11:26:23 +0100
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels
+	using -lab (the "; l" key binding)
+In-Reply-To: <1237756617-sup-7606@entry>
+References: <1237228536-sup-7811@ausone.local>
+	<1237390328-sup-1506@ausone.local> <1237756617-sup-7606@entry>
+Message-ID: <1237803829-sup-8994@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Sun Mar 22 22:21:46 +0100 2009:
+> Reformatted excerpts from nicolas.pouillard's message of 2009-03-18:
+> > This patch conflict with the undo feature, I've locally resolved the
+> > merge. However I don't really know what the best way to share the
+> > conflict resolution.
+> 
+> That's a good question. For some reason git format-patch doesn't produce
+> anything for merge commits, even if they contain conflict resolution
+> changes. Maybe it's for a good reason; I don't know.
+> 
+> But you can use git diff. After merging and resolving the conflict, if
+> you do "git diff HEAD^", that should output the conflict-resolution
+> changes. You can send that to me and I can use it to replicate the
+> commit.
+
+I've applied the resolution in a local branch, a attach to patches.
+The first is done with 'git diff' before commit the conflict resolution.
+The second is done with 'git diff HEAD^' just after.
+
+-- 
+Nicolas Pouillard
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: undo+multi_edit_labels+remove.patch
+Type: application/octet-stream
+Size: 1901 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090323/aa8a4b3b/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: undo+multi_edit_labels+remove2.patch
+Type: application/octet-stream
+Size: 1861 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090323/aa8a4b3b/attachment-0001.obj>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 08:20:29 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 05:20:29 -0700
+Subject: [sup-talk] proxy settings
+In-Reply-To: <1231428609-sup-582@tangerine.lanl.gov>
+References: <1231428609-sup-582@tangerine.lanl.gov>
+Message-ID: <1237810728-sup-1590@entry>
+
+Reformatted excerpts from John Bent's message of 2009-01-08:
+> My work place has instituted a new proxy system and since then I've
+> been unable to use either git or gem (I'm using 0.5 still).  Does
+> anyone please know any way around this?  Is sup also available as a
+> tarball somewhere perhaps?
+
+Does it work if you use http access to the repo?
+
+  git clone http://git.gitorious.org/sup/mainline.git
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 10:43:09 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 07:43:09 -0700
+Subject: [sup-talk] sup 0.7 package
+Message-ID: <1237819206-sup-8258@entry>
+
+Since I have a sordid history of mispackaging things, and since I've
+switched the release process away from Hoe entirely, I thought I'd give
+you guys a chance to try out the 0.7 package before I upload it to
+Rubyforge.
+
+If you 
+  gem install sup --source http://masanjin.net/
+you should get the 0.7 release of Sup. Please give it a shot and let me
+know if anything obvious is broken.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 10:49:13 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 07:49:13 -0700
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels
+	using -lab (the "; l" key binding)
+In-Reply-To: <1237803829-sup-8994@ausone.inria.fr>
+References: <1237228536-sup-7811@ausone.local>
+	<1237390328-sup-1506@ausone.local> <1237756617-sup-7606@entry>
+	<1237803829-sup-8994@ausone.inria.fr>
+Message-ID: <1237819702-sup-964@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2009-03-23:
+> I've applied the resolution in a local branch, a attach to patches.
+> The first is done with 'git diff' before commit the conflict resolution.
+> The second is done with 'git diff HEAD^' just after.
+
+Only the second patch was really necessary. But thanks, it worked!
+
+I've applied this patch on a branch called multi-remove-labels and it's
+been merged into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 10:51:38 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 07:51:38 -0700
+Subject: [sup-talk] [PATCH] Buffer switching,
+	'bn' for the next one and 'bp' for the previous
+In-Reply-To: <1237228583-sup-7694@ausone.local>
+References: <1227194855-12300-1-git-send-email-nicolas.pouillard@gmail.com>
+	<1237228583-sup-7694@ausone.local>
+Message-ID: <1237819889-sup-833@entry>
+
+Branch roll-buffers, merged into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 10:54:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 07:54:08 -0700
+Subject: [sup-talk] [PATCH] Fix a bug in sup-tweak-label when multiple
+	sources are given.
+In-Reply-To: <1237228863-sup-2359@ausone.local>
+References: <1237228863-sup-2359@ausone.local>
+Message-ID: <1237820038-sup-1673@entry>
+
+Applied directly to master, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 10:57:14 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 07:57:14 -0700
+Subject: [sup-talk] [PATCH] decoding: handle more misspellings,
+	in particular ISO-8859-15
+In-Reply-To: <1237229771-sup-9316@ausone.local>
+References: <1237229771-sup-9316@ausone.local>
+Message-ID: <1237820223-sup-8741@entry>
+
+Thanks! Branch encoding-misspellings, merged into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 11:12:55 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 08:12:55 -0700
+Subject: [sup-talk] Patch for using default colors
+In-Reply-To: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+References: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+Message-ID: <1237821007-sup-7059@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-21:
+> I noticed that sup wasn't using my terminal's default colors when
+> displaying the text of a message.  Instead of the expected black on
+> light-yellow (my defaults), it was using white on black.
+
+Thanks for the patch. I've started a topic branch called default-colors.
+Currently using this patch makes Sup look crazy for me, so I haven't
+merged it into next.
+
+I think the problem is the Sup is setting the background color to be
+black. Parts of the screen have the "ncurses default" and parts of it
+have black. I do think it's a step in the right direction though.
+
+> I also see a message in the mailing list archives from Jan 29 titled
+> "When using 'default' in colors.yaml or colormap.rb, sup throws an
+> exception" that seems to describe the same problem.
+
+This is a different problem, having to do with Sup's notion of a default
+color. From what I recall it was a YAML issue or something.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Mar 23 11:18:15 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 23 Mar 2009 16:18:15 +0100
+Subject: [sup-talk] [PATCH] Allow multi_edit_labels to remove labels
+	using -lab (the "; l" key binding)
+In-Reply-To: <1237819702-sup-964@entry>
+References: <1237228536-sup-7811@ausone.local>
+	<1237390328-sup-1506@ausone.local> <1237756617-sup-7606@entry>
+	<1237803829-sup-8994@ausone.inria.fr> <1237819702-sup-964@entry>
+Message-ID: <1237821480-sup-8013@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Mon Mar 23 15:49:13 +0100 2009:
+> Reformatted excerpts from nicolas.pouillard's message of 2009-03-23:
+> > I've applied the resolution in a local branch, a attach to patches.
+> > The first is done with 'git diff' before commit the conflict resolution.
+> > The second is done with 'git diff HEAD^' just after.
+> 
+> Only the second patch was really necessary. But thanks, it worked!
+> 
+> I've applied this patch on a branch called multi-remove-labels and it's
+> been merged into next.
+
+Great
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 11:25:05 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 08:25:05 -0700
+Subject: [sup-talk] Patch for using default colors
+In-Reply-To: <1237821007-sup-7059@entry>
+References: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+	<1237821007-sup-7059@entry>
+Message-ID: <1237821821-sup-2056@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-03-23:
+> This is a different problem, having to do with Sup's notion of a
+> default color. From what I recall it was a YAML issue or something.
+
+Nope, I was misremembering. You were right on the money---that was a
+related bug. In fact, it contained the other half of the solution.
+
+I've merged default-colors into next. Give it a shot.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Mar 23 11:45:55 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 23 Mar 2009 16:45:55 +0100
+Subject: [sup-talk] The recent patch "redraw screen upon sigwinch"
+Message-ID: <1237822979-sup-3515@ausone.inria.fr>
+
+Hi,
+
+I just pulled 'next' and I got a problem with this patch. I run sup in a
+screen and pull that screen through ssh on another machine with another
+screen device. With this patch sup seems blocked, CTRL-C unfreeze it,
+I answer no to the question, and then I can't do a CTRL-L.
+
+I've locally reverted this patch.
+
+Best regards,
+
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Mon Mar 23 12:25:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 Mar 2009 09:25:40 -0700
+Subject: [sup-talk] The recent patch "redraw screen upon sigwinch"
+In-Reply-To: <1237822979-sup-3515@ausone.inria.fr>
+References: <1237822979-sup-3515@ausone.inria.fr>
+Message-ID: <1237825275-sup-6509@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2009-03-23:
+> I just pulled 'next' and I got a problem with this patch. I run sup in
+> a screen and pull that screen through ssh on another machine with
+> another screen device. With this patch sup seems blocked, CTRL-C
+> unfreeze it, I answer no to the question, and then I can't do a
+> CTRL-L.
+
+Yeah, I have the same behavior. I thought I had tested this but I guess
+not. I've reverted the branch and remerged into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Mon Mar 23 12:34:51 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 23 Mar 2009 09:34:51 -0700
+Subject: [sup-talk] Patch for using default colors
+In-Reply-To: <1237821007-sup-7059@entry>
+References: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+	<1237821007-sup-7059@entry>
+Message-ID: <1237825823-sup-3035@r50p>
+
+Excerpts from William Morgan's message of Mon Mar 23 08:12:55 -0700 2009:
+> Reformatted excerpts from Mark Alexander's message of 2009-03-21:
+> > I noticed that sup wasn't using my terminal's default colors when
+> > displaying the text of a message.  Instead of the expected black on
+> > light-yellow (my defaults), it was using white on black.
+> 
+> Thanks for the patch. I've started a topic branch called default-colors.
+> Currently using this patch makes Sup look crazy for me, so I haven't
+> merged it into next.
+
+I half-expected it would look bad for you.  I may be seeing the same
+thing, but without defining it as "crazy" :-) .  For example, when
+viewing a short message, I see the text of the message in the proper
+default colors.  But the blank space below it is all black.  I can
+live with that, but it's clearly not ideal.
+
+From marka at pobox.com  Tue Mar 24 15:45:28 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 24 Mar 2009 12:45:28 -0700
+Subject: [sup-talk] Piping multiple messages
+Message-ID: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+
+Sup has been stable enough that I've pretty much abandoned mutt,
+except for one really useful feature it has: the ability to pipe
+multiple (tagged) messages to a single pipe.  I use this every day to
+run cron job messages from nightly tests into a script that produces
+pretty summaries.  I know, I could get really fancy and try to do this
+with procmail, but I need to cut and paste the summaries manually into
+a web page.
+
+I was thinking about how to add this feature to sup, and am not sure
+what it should look like to the user.  There are two ways I can think of:
+
+One way is to tag multiple threads, compress them into a single thread
+using '#', open the thread, then use a new a "pipe entire thread"
+command.
+
+A simpler way for the user, but perhaps harder to implement, would be
+to tag the threads as before, and then use a new "pipe
+all tagged threads" command.  Unfortunately, the '|' command
+at the thread-index level already means "modify search".
+
+Thoughts?  Am I the only person in the world who uses this
+obscure mutt feature? :-)
+
+From wmorgan-sup at masanjin.net  Tue Mar 24 17:01:44 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Mar 2009 14:01:44 -0700
+Subject: [sup-talk] Piping multiple messages
+In-Reply-To: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+References: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+Message-ID: <1237927869-sup-4016@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-24:
+> Sup has been stable enough that I've pretty much abandoned mutt,
+
+Awesome to hear.
+
+> A simpler way for the user, but perhaps harder to implement, would be
+> to tag the threads as before, and then use a new "pipe all tagged
+> threads" command.  Unfortunately, the '|' command at the thread-index
+> level already means "modify search".
+
+This is the way to go. No need to play around with the thread structure.
+We already individual message piping in thread-view-mode, so adding it
+to thread-index-mode shouldn't be hard.
+
+The keyboard command is a bit unfortunate though.
+
+How many people actually use "|" to modify a search?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Tue Mar 24 18:21:10 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 24 Mar 2009 15:21:10 -0700
+Subject: [sup-talk] Configurable SIG_PATTERN?
+Message-ID: <a412e2a70903241521u726dc83ajdb75c967bee2fb44@mail.gmail.com>
+
+Here's another little feature I'd like to see (and
+maybe implement when I get the time):
+
+I get a lot of automated messages from Bugzilla
+at work, full of long lines of dashes separating
+blocks of text.  Sup has been interpreting
+these blocks as signatures when they're within
+15 (MAX_SIG_DISTANCE) lines from the end of the
+message.  So I hacked the SIG_PATTERN so that
+only the first regexp is used.  This is probably
+wrong for many users, though.
+
+I was thinking it might be nice to have
+both SIG_PATTERN and MAX_SIG_DISTANCE settable
+in config.yaml.  Does this make sense?
+
+From johnbent at lanl.gov  Tue Mar 24 19:36:05 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 24 Mar 2009 17:36:05 -0600
+Subject: [sup-talk] Configurable SIG_PATTERN?
+In-Reply-To: <a412e2a70903241521u726dc83ajdb75c967bee2fb44@mail.gmail.com>
+References: <a412e2a70903241521u726dc83ajdb75c967bee2fb44@mail.gmail.com>
+Message-ID: <1237937711-sup-1156@tangerine.lanl.gov>
+
+Excerpts from Mark Alexander's message of Tue Mar 24 16:21:10 -0600 2009:
+> Here's another little feature I'd like to see (and
+> maybe implement when I get the time):
+> 
+> I get a lot of automated messages from Bugzilla
+> at work, full of long lines of dashes separating
+> blocks of text.  Sup has been interpreting
+> these blocks as signatures when they're within
+> 15 (MAX_SIG_DISTANCE) lines from the end of the
+> message.  So I hacked the SIG_PATTERN so that
+> only the first regexp is used.  This is probably
+> wrong for many users, though.
+> 
+> I was thinking it might be nice to have
+> both SIG_PATTERN and MAX_SIG_DISTANCE settable
+> in config.yaml.  Does this make sense?
+>
+Makes sense to me.  Sounds like even better would be if it was
+configurable on a per-label or mailing list basis.
+
+John
+
+From johnbent at lanl.gov  Tue Mar 24 19:43:25 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 24 Mar 2009 17:43:25 -0600
+Subject: [sup-talk] bounce feature
+Message-ID: <1237938120-sup-2351@tangerine.lanl.gov>
+
+Some of the recent emails got me remembering the only thing I miss about
+pine: bounce.  It was like forward but for the base case when you didn't
+want to edit the message at all.  Forward works OK, but it's about 4-5
+extra keystrokes.
+
+From wmorgan-sup at masanjin.net  Tue Mar 24 22:37:16 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Mar 2009 19:37:16 -0700
+Subject: [sup-talk] bounce feature
+In-Reply-To: <1237938120-sup-2351@tangerine.lanl.gov>
+References: <1237938120-sup-2351@tangerine.lanl.gov>
+Message-ID: <1237948579-sup-3742@entry>
+
+Reformatted excerpts from John Bent's message of 2009-03-24:
+> Some of the recent emails got me remembering the only thing I miss
+> about pine: bounce.  It was like forward but for the base case when
+> you didn't want to edit the message at all.  Forward works OK, but
+> it's about 4-5 extra keystrokes.
+
+Not quite the same as bounce, but D in thread-view-mode will edit the
+message as a new one. Bounce preserves the original sender, and this one
+rewrites it, but if anything this is more like forward than bounce is.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Mar 25 04:58:48 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 25 Mar 2009 09:58:48 +0100
+Subject: [sup-talk] Piping multiple messages
+In-Reply-To: <1237927869-sup-4016@entry>
+References: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+	<1237927869-sup-4016@entry>
+Message-ID: <1237971313-sup-4247@ausone.local>
+
+Excerpts from William Morgan's message of Tue Mar 24 22:01:44 +0100 2009:
+> Reformatted excerpts from Mark Alexander's message of 2009-03-24:
+> > Sup has been stable enough that I've pretty much abandoned mutt,
+> 
+> Awesome to hear.
+> 
+> > A simpler way for the user, but perhaps harder to implement, would be
+> > to tag the threads as before, and then use a new "pipe all tagged
+> > threads" command.  Unfortunately, the '|' command at the thread-index
+> > level already means "modify search".
+> 
+> This is the way to go. No need to play around with the thread structure.
+> We already individual message piping in thread-view-mode, so adding it
+> to thread-index-mode shouldn't be hard.
+> 
+> The keyboard command is a bit unfortunate though.
+> 
+> How many people actually use "|" to modify a search?
+
+That's fine to keep '|' for piping, but we need another key for modify a
+search.
+
+Maybe one should add a submap of keys doing advanced search things.
+
+-- 
+Nicolas Pouillard
+
+From vasudeva at linkswarm.com  Wed Mar 25 07:11:51 2009
+From: vasudeva at linkswarm.com (vasudeva)
+Date: Wed, 25 Mar 2009 07:11:51 -0400
+Subject: [sup-talk] Piping multiple messages
+In-Reply-To: <1237971313-sup-4247@ausone.local>
+References: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+	<1237927869-sup-4016@entry> <1237971313-sup-4247@ausone.local>
+Message-ID: <1237979385-sup-6382@lenin>
+
+Excerpts from Nicolas Pouillard's message of Wed Mar 25 04:58:48 -0400 2009:
+> Excerpts from William Morgan's message of Tue Mar 24 22:01:44 +0100 2009:
+> > How many people actually use "|" to modify a search?
+> 
+> That's fine to keep '|' for piping, but we need another key for modify a
+> search.
+
+To be honest, I didn't even know that keystroke existed, and I've been
+using sup every day as my primary client for probably a year+. I don't
+see it documented anywhere now that I look. Is there a way to have found
+out about this (and other items) without reading each patch?
+-- 
+linkswarm.com :: Collaborative Insolence
+vasudeva.linkswarm.com/gallery :: For The Faint of Heart
+
+
+From nicolas.pouillard at gmail.com  Wed Mar 25 08:20:56 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 25 Mar 2009 13:20:56 +0100
+Subject: [sup-talk] Piping multiple messages
+In-Reply-To: <1237979385-sup-6382@lenin>
+References: <a412e2a70903241245s20144fd2uec3ccfc84a6b8da5@mail.gmail.com>
+	<1237927869-sup-4016@entry> <1237971313-sup-4247@ausone.local>
+	<1237979385-sup-6382@lenin>
+Message-ID: <1237983576-sup-4691@ausone.local>
+
+Excerpts from vasudeva's message of Wed Mar 25 12:11:51 +0100 2009:
+> Excerpts from Nicolas Pouillard's message of Wed Mar 25 04:58:48 -0400 2009:
+> > Excerpts from William Morgan's message of Tue Mar 24 22:01:44 +0100 2009:
+> > > How many people actually use "|" to modify a search?
+> > 
+> > That's fine to keep '|' for piping, but we need another key for modify a
+> > search.
+> 
+> To be honest, I didn't even know that keystroke existed, and I've been
+> using sup every day as my primary client for probably a year+. I don't
+> see it documented anywhere now that I look. Is there a way to have found
+> out about this (and other items) without reading each patch?
+
+After searching something '\something<enter>', if you type '?' you will
+see the description of '|'.
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 08:33:11 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 05:33:11 -0700
+Subject: [sup-talk] When using "default" in colors.yaml or colormap.rb,
+	sup throws an exception
+In-Reply-To: <dac0accd0901291345v5d811e87x10316ee886bc7752@mail.gmail.com>
+References: <dac0accd0901291345v5d811e87x10316ee886bc7752@mail.gmail.com>
+Message-ID: <1237984368-sup-1706@entry>
+
+Reformatted excerpts from Chris Benuzzi's message of 2009-01-29:
+> I'm using a transparent terminal and would like to get sup's
+> background color set to "default".
+
+This should be fixed in git next. Check it out.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ingmar at exherbo.org  Wed Mar 25 09:56:07 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Wed, 25 Mar 2009 13:56:07 +0000
+Subject: [sup-talk] [PATCH 2/2] Initial zsh completion.
+In-Reply-To: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+References: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+Message-ID: <1237989367-21630-2-git-send-email-ingmar@exherbo.org>
+
+---
+ contrib/completion/_sup.zsh |  114 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 114 insertions(+), 0 deletions(-)
+ create mode 100644 contrib/completion/_sup.zsh
+
+diff --git a/contrib/completion/_sup.zsh b/contrib/completion/_sup.zsh
+new file mode 100644
+index 0000000..76870ca
+--- /dev/null
++++ b/contrib/completion/_sup.zsh
+@@ -0,0 +1,114 @@
++#compdef sup sup-add sup-config sup-dump sup-sync sup-sync-back sup-tweak-labels sup-recover-sources
++# vim: set et sw=2 sts=2 ts=2 ft=zsh :
++
++# TODO: sources completion: maildir://some/dir, mbox://some/file, ...
++#       for sup-add, sup-sync, sup-sync-back, sup-tweak-labels
++
++(( ${+functions[_sup_cmd]} )) ||
++_sup_cmd()
++{
++  _arguments -s : \
++    "(--list-hooks -l)"{--list-hooks,-l}"[list all hooks and descriptions, and quit]" \
++    "(--no-threads -n)"{--no-threads,-n}"[turn off threading]" \
++    "(--no-initial-poll -o)"{--no-initial-poll,-o}"[Don't poll for new messages when starting]" \
++    "(--search -s)"{--search,-s}"[search for this query upon startup]:Query: " \
++    "(--compose -c)"{--compose,-c}"[compose message to this recipient upon startup]:Email: " \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_add_cmd]} )) ||
++_sup_add_cmd()
++{
++  _arguments -s : \
++    "(--archive -a)"{--archive,-a}"[automatically archive all new messages from this source]" \
++    "(--unusual -u)"{--unusual,-u}"[do not automatically poll for new messages from this source]" \
++    "(--labels -l)"{--labels,-l}"[set of labels to apply to all messages from this source]:Labels: " \
++    "(--force-new -f)"{--force-new,-f}"[create a new account for this source, even if one already exists]" \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_config_cmd]} )) ||
++_sup_config_cmd()
++{
++  _arguments -s : \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_dump_cmd]} )) ||
++_sup_dump_cmd()
++{
++  _arguments -s : \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_recover_sources_cmd]} )) ||
++_sup_recover_sources_cmd()
++{
++  _arguments -s : \
++    "--archive[automatically archive all new messages from this source]" \
++    "--scan-num[number of messages to scan per source]:" \
++    "--unusual[do not automatically poll for new messages from this source]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_sync_cmd]} )) ||
++_sup_sync_cmd()
++{
++  # XXX Add only when --restore is given: (--restored -r)
++  #     Add only when --changed or--all are given: (--start-at -s)
++  _arguments -s : \
++    "--new[operate on new messages only]" \
++    "(--changed -c)"{--changed,-c}"[scan over the entire source for messages that have been deleted, altered, or moved from another source]" \
++    "(--restored -r)"{--restored,-r}"[operate only on those messages included in a dump file as specified by --restore which have changed state]" \
++    "(--all -a)"{--all,-a}"[operate on all messages in the source, regardless of newness or changedness]" \
++    "(--start-at -s)"{--start-at,-s}"[start at a particular offset]:Offset: " \
++    "--asis[if the message is already in the index, preserve its state, otherwise, use default source state]" \
++    "--restore[restore message state from a dump file created with sup-dump]:File:_file" \
++    "--discard[discard any message state in the index and use the default source state]" \
++    "(--archive -x)"{--archive,-x}"[mark messages as archived when using the default source state]" \
++    "(--read -e)"{--read,-e}"[mark messages as read when using the default source state]" \
++    "--extra-labels[apply these labels when using the default source state]:Labels: " \
++    "(--verbose -v)"{--verbose,-v}"[print message ids as they're processed]" \
++    "(--optimize -o)"{--optimize,-o}"[as the final operation, optimize the index]" \
++    "--all-sources[scan over all sources]" \
++    "(--dry-run -n)"{--dry-run,-n}"[don't actually modify the index]" \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_sync_back_cmd]} )) ||
++_sup_sync_back_cmd()
++{
++  _arguments -s : \
++    "(--drop-deleted -d)"{--drop-deleted,-d}"[drop deleted messages]" \
++    "--move-deleted[move deleted messages to a local mbox file]:File:_file" \
++    "(--drop-spam -s)"{--drop-spam,-s}"[drop spam messages]" \
++    "--move-spam[move spam messages to a local mbox file]:File:_file" \
++    "--with-dotlockfile[specific dotlockfile location (mbox files only)]:File:_file" \
++    "--dont-use-dotlockfile[don't use dotlockfile to lock mbox files]" \
++    "(--verbose -v)"{--verbose,-v}"[print message ids as they're processed]" \
++    "(--dry-run -n)"{--dry-run,-n}"[don't actually modify the index]" \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++(( ${+functions[_sup_tweak_labels_cmd]} )) ||
++_sup_tweak_labels_cmd()
++{
++  _arguments -s : \
++    "(--add -a)"{--add,-a}"[which labels to add to every message from the specified sources]:Labels: " \
++    "(--remove -r)"{--remove,-r}"[which labels to remove from every message from the specified sources]:Labels: " \
++    "--all-sources[scan over all sources]" \
++    "(--verbose -v)"{--verbose,-v}"[print message ids as they're processed]" \
++    "(--dry-run -n)"{--dry-run,-n}"[don't actually modify the index]" \
++    "--version[show version information]" \
++    "(--help -h)"{--help,-h}"[show help]"
++}
++
++_call_function ret _${words[1]//-/_}_cmd
++return ret
++
+-- 
+1.6.2.1
+
+
+From ingmar at exherbo.org  Wed Mar 25 09:56:06 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Wed, 25 Mar 2009 13:56:06 +0000
+Subject: [sup-talk] [PATCH 1/2] Use a valid version ('999') for gems built
+	from git
+Message-ID: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+
+See ed12112f, where the same was done in the Rakefile
+---
+ sup.gemspec |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sup.gemspec b/sup.gemspec
+index 71b79ed..4341448 100644
+--- a/sup.gemspec
++++ b/sup.gemspec
+@@ -9,7 +9,7 @@ FILES = EXTRA_FILES + EXECUTABLES.map { |f| "bin/#{f}" } + LIB_DIRS.map { |d| Di
+ 
+ Gem::Specification.new do |s|
+   s.name = %q{sup}
+-  s.version = Redwood::VERSION
++  s.version = Redwood::VERSION == "git" ? "999" : Redwood::VERSION
+   s.date = Time.now.to_s
+   s.authors = ["William Morgan"]
+   s.email = %q{wmorgan-sup at masanjin.net}
+-- 
+1.6.2.1
+
+
+From ingmar at exherbo.org  Wed Mar 25 10:32:14 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Wed, 25 Mar 2009 14:32:14 +0000
+Subject: [sup-talk] [PATCH] Add lib/sup/undo.rb to Manifest.txt
+Message-ID: <20090325143214.GA21873@bach>
+
+In-Reply-To: <1237482833-sup-8683 at entry>
+
+I don't think this was pushed? It's not on next as far as I can see.
+
+-- 
+Exherbo KDE, X.org maintainer
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 10:37:46 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 07:37:46 -0700
+Subject: [sup-talk] [PATCH 1/2] Use a valid version ('999') for gems
+	built from git
+In-Reply-To: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+References: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+Message-ID: <1237991728-sup-1607@entry>
+
+Funny, I just fixed this issue. LMK if it doesn't work for you.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 10:38:04 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 07:38:04 -0700
+Subject: [sup-talk] [PATCH 2/2] Initial zsh completion.
+In-Reply-To: <1237989367-21630-2-git-send-email-ingmar@exherbo.org>
+References: <1237989367-21630-1-git-send-email-ingmar@exherbo.org>
+	<1237989367-21630-2-git-send-email-ingmar@exherbo.org>
+Message-ID: <1237991869-sup-5557@entry>
+
+Thanks! Branch zsh-completion, merged into next.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 10:44:46 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 07:44:46 -0700
+Subject: [sup-talk] [PATCH] Add lib/sup/undo.rb to Manifest.txt
+In-Reply-To: <20090325143214.GA21873@bach>
+References: <20090325143214.GA21873@bach>
+Message-ID: <1237992263-sup-3846@entry>
+
+Reformatted excerpts from Ingmar Vanhassel's message of 2009-03-25:
+> I don't think this was pushed? It's not on next as far as I can see.
+
+Weird. Ok, fixed. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ingmar at exherbo.org  Wed Mar 25 10:50:40 2009
+From: ingmar at exherbo.org (Ingmar Vanhassel)
+Date: Wed, 25 Mar 2009 14:50:40 +0000
+Subject: [sup-talk] [PATCH] Add lib/sup/undo.rb to Manifest.txt
+In-Reply-To: <20090325143214.GA21873@bach>
+References: <20090325143214.GA21873@bach>
+Message-ID: <20090325145040.GA22238@bach>
+
+On Wed, Mar 25, 2009 at 02:32:14PM +0000, Ingmar Vanhassel wrote:
+> In-Reply-To: <1237482833-sup-8683 at entry>
+> 
+> I don't think this was pushed? It's not on next as far as I can see.
+
+It is now, sorry for the noise. :)
+
+-- 
+Exherbo KDE, X.org maintainer
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 10:52:10 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 07:52:10 -0700
+Subject: [sup-talk] Sup 0.7 released
+Message-ID: <1237992317-sup-1158@entry>
+
+I'm happy to announce the release of Sup 0.7.
+
+The big win in this release is that Ferret index corruption issues
+should now be fixed, thanks to an extensive programming of locking and
+thread-safety-adding.
+
+The other nice change is that text entry will now scroll to the right
+upon overflow, thanks to some arcane Curses magic.
+
+To get it: gem install sup, or visit http://sup.rubyforge.org.
+
+What is it?
+-----------
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Sup makes it easy to:
+- Handle massive amounts of email.
+
+- Mix email from different sources: mbox files (even across different
+  machines), Maildir directories, IMAP folders, POP accounts, and
+  GMail accounts.
+
+- Instantaneously search over your entire email collection. Search
+  over body text, or use a query language to combine search
+  predicates in any way.
+
+- Handle multiple accounts. Replying to email sent to a particular
+  account will use the correct SMTP server, signature, and from
+  address.
+
+- Add custom code to handle certain types of messages or to handle
+  certain types of text within messages.
+
+- Organize email with user-defined labels, automatically track
+  recent contacts, and much more!
+
+The goal of Sup is to become the email client of choice for nerds
+everywhere.
+
+Select changes in this release:
+-------------------------------
+* Ferret index corruption issues fixed
+* Text entry now scrolls to the right on overflow, i.e. is actually usable
+* Ctrl-C now asks user if Sup should die ungracefully
+* Add a limit:<int> search operator to limit the number of results
+* Added a --query option to sup-tweak-labels
+* Added a new hook: shutdown
+* Automatically add self as recipient on crypted sent messages
+* Read in X-Foo headers
+* Added global keybinding 'U' shows only unread messages
+* As always, many minor bugfixes and tweaks
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 12:00:35 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 09:00:35 -0700
+Subject: [sup-talk] [PATCH] Remove the now useless PersonManager
+In-Reply-To: <1237228691-sup-735@ausone.local>
+References: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+	<1237228691-sup-735@ausone.local>
+Message-ID: <1237996695-sup-8283@entry>
+
+I've placed these two, and the previous patch about removing people.txt,
+on the branch dont-canonicalize-email-addresses, merged into next. I've
+added a couple commits that fix email parsing from the index, and that
+save the new email addresses to the index when saving an email. I think
+this is pretty close to fixing the problem.
+
+I'm going to send out a summary of this issue and a couple other
+interesting bits of the next branch shortly.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 12:02:24 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 09:02:24 -0700
+Subject: [sup-talk] Patch for using default colors
+In-Reply-To: <1237825823-sup-3035@r50p>
+References: <a412e2a70903210557g7587c6fh62b2afb6e4731e9a@mail.gmail.com>
+	<1237821007-sup-7059@entry> <1237825823-sup-3035@r50p>
+Message-ID: <1237996920-sup-6810@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-03-23:
+> I half-expected it would look bad for you.  I may be seeing the same
+> thing, but without defining it as "crazy" :-) .  For example, when
+> viewing a short message, I see the text of the message in the proper
+> default colors.  But the blank space below it is all black.  I can
+> live with that, but it's clearly not ideal.
+
+This should be fixed in next. LMK if not.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 25 12:30:04 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Mar 2009 09:30:04 -0700
+Subject: [sup-talk] a couple highlights in next
+Message-ID: <1237996976-sup-379@entry>
+
+Hi all,
+
+Here's a summary of all the fun stuff that's currently merged into the
+next branch:
+
+- zsh completion for sup commandline commands, thanks to Ingmar
+  Vanhassel. (zsh-completion)
+
+- Undo support for many commands, thanks to Mike Stipicevic.
+  (undo-manager)
+
+- You can now remove labels from multiple tagged threads, thanks to
+  Nicolas Pouillard, using the syntax -label. (multi-remove-labels)
+
+- Sup works on terminals with transparent backgrounds (and that's fixed
+  copy-and-paste for me too!), thanks to Mark Alexander.
+  (default-colors)
+
+- Pressing 'b' now lets you roll buffers both forward and backward,
+  also thanks to Nicolas Pouillard. (roll-buffers)
+
+- Duplicate messages (including messages you send to a mailing list, and
+  then receive a copy of) should now have their labels merged, except
+  for unread and inbox labels. So if you automatically label messages
+  from mailing lists via the before-add-hook, that should work better
+  for you now. (merge-labels)
+
+- Saving message state is now backgrounded, so pressing '$' after
+  reading a big thread shouldn't interfere with your life. It still 
+  blocks when closing a buffer, though, so I have to make that work.
+  (background-save)
+
+- Email canonicalization, also thanks to Nicolas Pouillard. There's been
+  a long-standing problem in Sup where names associated with email
+  addresses are saved and reused. Unfortunately many automated systems
+  like JIRA, evite, blogger, etc. will send you email on behalf of
+  someone else, using the same email address but different names. The
+  issue was compounded because Sup decided that longer names should
+  always replace shorter ones, so receiving some spam claiming to be
+  from your address but with a random name would have all sorts of crazy
+  effects.
+  
+  This should now be fixed. The mapping is no longer maintained.
+  Addresses are still stored in the index, both for search purposes,
+  and for thread-index-mode. (Otherwise thread-index-mode has to reread
+  the headers from the message source, which is slow.) Once
+  thread-view-mode is opened, the headers must be read from the source
+  anyways, so the email address is updated to the correct version.
+  
+  So, incoming new email should be fine. Sup will store whatever
+  name is in the headers, and won't do any canonicalization.
+
+  For older email, you can update the index manually by viewing the
+  message in thread-view-mode, and forcing Sup to re-save it, e.g.
+  by changing the labels and then changing them back. Marking it as
+  read, and then reading it, should do the trick, at least for read
+  messages.
+
+  You can also make judicious use of sup-sync to do this for all
+  messages in your index.  (dont-canonicalize-email-addresses)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Mar 25 14:03:28 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 25 Mar 2009 19:03:28 +0100
+Subject: [sup-talk] [PATCH] Remove the now useless PersonManager
+In-Reply-To: <1237996695-sup-8283@entry>
+References: <ea2d84848a9fed1fbceb3837aacf8bcf86bd0602.1227456947.git.nicolas.pouillard@gmail.com>
+	<1237228691-sup-735@ausone.local> <1237996695-sup-8283@entry>
+Message-ID: <1238004157-sup-8443@ausone.local>
+
+Excerpts from William Morgan's message of Wed Mar 25 17:00:35 +0100 2009:
+> I've placed these two, and the previous patch about removing people.txt,
+> on the branch dont-canonicalize-email-addresses, merged into next. I've
+> added a couple commits that fix email parsing from the index, and that
+> save the new email addresses to the index when saving an email. I think
+> this is pretty close to fixing the problem.
+
+Great this set of patches was indeed somewhat half baked.
+
+> I'm going to send out a summary of this issue and a couple other
+> interesting bits of the next branch shortly.
+
+A lot of great stuffs!
+
+-- 
+Nicolas Pouillard
+
+From glasse at cs.rpi.edu  Fri Mar 27 13:22:06 2009
+From: glasse at cs.rpi.edu (Ethan Glasser-Camp)
+Date: Fri, 27 Mar 2009 13:22:06 -0400
+Subject: [sup-talk] Config in VCS
+Message-ID: <49CD0B3E.9010002@cs.rpi.edu>
+
+Hi, long time reader, first time caller.
+
+Many years ago I used fetchmail+Mutt to handle my mail, but all my
+configuration was lost in a hard drive crash and I didn't have the
+energy to recreate it. So as I look at sup, I am judging how difficult
+it is to keep its configuration in a git repo (for easier replication
+and backup).
+
+One problem I see is that sources.yaml contains both all the information
+about how to access a source, and its current state. I would like to
+keep the first in version control, and the second not. So I would like
+sources.yaml split into a sources.yaml and a sources-state.yaml; the
+first one would be the information about how to access the sources, and
+the second one would map source ID to its cur_offset.
+
+What do you think?
+
+Ethan
+
+From nicolas.pouillard at gmail.com  Sat Mar 28 06:03:40 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sat, 28 Mar 2009 11:03:40 +0100
+Subject: [sup-talk] Config in VCS
+In-Reply-To: <49CD0B3E.9010002@cs.rpi.edu>
+References: <49CD0B3E.9010002@cs.rpi.edu>
+Message-ID: <1238234052-sup-2032@ausone.home>
+
+Excerpts from Ethan Glasser-Camp's message of Fri Mar 27 18:22:06 +0100 2009:
+> Hi, long time reader, first time caller.
+> 
+> Many years ago I used fetchmail+Mutt to handle my mail, but all my
+> configuration was lost in a hard drive crash and I didn't have the
+> energy to recreate it. So as I look at sup, I am judging how difficult
+> it is to keep its configuration in a git repo (for easier replication
+> and backup).
+> 
+> One problem I see is that sources.yaml contains both all the information
+> about how to access a source, and its current state. I would like to
+> keep the first in version control, and the second not. So I would like
+> sources.yaml split into a sources.yaml and a sources-state.yaml; the
+> first one would be the information about how to access the sources, and
+> the second one would map source ID to its cur_offset.
+
+I keep my sup configuration including the whole sources.yaml file in a
+darcs repository. Even if the data was split in two files I would prefer
+to also save it.
+
+About backups, I recommend sup users to make regular sup-dump's, not only
+because sup still have bugs but also because it's the only (meta)data
+needed to reconstruct your index.
+
+**NOTE to sup developers**
+Moreover I think that sup should write a log file being some kind of sup-dump
+delta:
+
+  messageid (oldlabel1 oldlabel2 -> oldlabel2 newlabel3)
+  ...
+
+I think I will try to implement this feature soon.
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Sun Mar 29 12:30:36 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 29 Mar 2009 09:30:36 -0700
+Subject: [sup-talk] [PATCH] Resync listable_labels and applyable_labels
+	with reality
+In-Reply-To: <1237228801-sup-301@ausone.local>
+References: <1237228801-sup-301@ausone.local>
+Message-ID: <1238343951-sup-9965@entry>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2009-03-16:
+> The listable_labels method listed all labels except unread which seems
+> an unneeded complication/restriction, so it's renamed to all_labels.
+> The applyable_labels was in fact user-defined labels so it's renamed
+> to user_defined_labels.
+
+I've put this on branch labels-rework and merged into next. I think the
+net effect is that you'll see "unread" when you press L, which is fine.
+
+If you want to submit a followup patch that allows users to set
+"reserved" labels via 'l', I'd consider applying it. I'm a little
+concerned that you'd see a big list like "unread, inbox, attachment,
+sent" for every single interesting message, but I think I'd rather err
+on the side of giving more power than less.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Sun Mar 29 12:53:02 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 29 Mar 2009 18:53:02 +0200
+Subject: [sup-talk] [PATCH] Resync listable_labels and applyable_labels
+	with reality
+In-Reply-To: <1238343951-sup-9965@entry>
+References: <1237228801-sup-301@ausone.local> <1238343951-sup-9965@entry>
+Message-ID: <1238345555-sup-491@ausone.local>
+
+Excerpts from William Morgan's message of Sun Mar 29 18:30:36 +0200 2009:
+> Reformatted excerpts from Nicolas Pouillard's message of 2009-03-16:
+> > The listable_labels method listed all labels except unread which seems
+> > an unneeded complication/restriction, so it's renamed to all_labels.
+> > The applyable_labels was in fact user-defined labels so it's renamed
+> > to user_defined_labels.
+> 
+> I've put this on branch labels-rework and merged into next. I think the
+> net effect is that you'll see "unread" when you press L, which is fine.
+> 
+> If you want to submit a followup patch that allows users to set
+> "reserved" labels via 'l', I'd consider applying it. I'm a little
+> concerned that you'd see a big list like "unread, inbox, attachment,
+> sent" for every single interesting message, but I think I'd rather err
+> on the side of giving more power than less.
+
+Indeed, may one can sort them to have the boring ones first?
+
+-- 
+Nicolas Pouillard
+
+From glasse at cs.rpi.edu  Tue Mar 31 00:57:38 2009
+From: glasse at cs.rpi.edu (Ethan Glasser-Camp)
+Date: Tue, 31 Mar 2009 00:57:38 -0400
+Subject: [sup-talk] Config in VCS
+In-Reply-To: <1238234052-sup-2032@ausone.home>
+References: <49CD0B3E.9010002@cs.rpi.edu> <1238234052-sup-2032@ausone.home>
+Message-ID: <49D1A2C2.4020406@cs.rpi.edu>
+
+Nicolas Pouillard wrote:
+> I keep my sup configuration including the whole sources.yaml file in a
+> darcs repository. Even if the data was split in two files I would prefer
+> to also save it.
+
+Really? How often do you commit? Certainly not every mail message..
+Aren't you uncomfortable with your working copy becoming dirty every
+time you receive mail?
+
+Ethan
+
+
+
+From nicolas.pouillard at gmail.com  Tue Mar 31 07:39:16 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 31 Mar 2009 13:39:16 +0200
+Subject: [sup-talk] Config in VCS
+In-Reply-To: <49D1A2C2.4020406@cs.rpi.edu>
+References: <49CD0B3E.9010002@cs.rpi.edu> <1238234052-sup-2032@ausone.home>
+	<49D1A2C2.4020406@cs.rpi.edu>
+Message-ID: <1238499402-sup-7426@ausone.inria.fr>
+
+Excerpts from Ethan Glasser-Camp's message of Tue Mar 31 06:57:38 +0200 2009:
+> Nicolas Pouillard wrote:
+> > I keep my sup configuration including the whole sources.yaml file in a
+> > darcs repository. Even if the data was split in two files I would prefer
+> > to also save it.
+> 
+> Really? How often do you commit? Certainly not every mail message..
+> Aren't you uncomfortable with your working copy becoming dirty every
+> time you receive mail?
+
+I commit when I make a change to the configuration, add a contact, change
+a hook, or add a label. So yes essentially my working copy always have
+unrecorded changes, and I do not consider this harmful.
+
+-- 
+Nicolas Pouillard
+
+From bdwalton at gmail.com  Tue Mar 31 09:36:51 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Tue, 31 Mar 2009 09:36:51 -0400
+Subject: [sup-talk] Config in VCS
+In-Reply-To: <1238499402-sup-7426@ausone.inria.fr>
+References: <49CD0B3E.9010002@cs.rpi.edu> <1238234052-sup-2032@ausone.home>
+	<49D1A2C2.4020406@cs.rpi.edu> <1238499402-sup-7426@ausone.inria.fr>
+Message-ID: <f96e0240903310636t7fd05667h8b55e676636f239d@mail.gmail.com>
+
+I keep my .sup on local storage and rsync it to nfs nightly (so it
+gets included in the backups).  I auto-commit the .sup.bak (nfs copy)
+nightly into git.  I also do manual commits any time I make a config
+change.
+
+-Ben
+
+On Tue, Mar 31, 2009 at 7:39 AM, Nicolas Pouillard
+<nicolas.pouillard at gmail.com> wrote:
+> Excerpts from Ethan Glasser-Camp's message of Tue Mar 31 06:57:38 +0200 2009:
+>> Nicolas Pouillard wrote:
+>> > I keep my sup configuration including the whole sources.yaml file in a
+>> > darcs repository. Even if the data was split in two files I would prefer
+>> > to also save it.
+>>
+>> Really? How often do you commit? Certainly not every mail message..
+>> Aren't you uncomfortable with your working copy becoming dirty every
+>> time you receive mail?
+>
+> I commit when I make a change to the configuration, add a contact, change
+> a hook, or add a label. So yes essentially my working copy always have
+> unrecorded changes, and I do not consider this harmful.
+>
+> --
+> Nicolas Pouillard
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+

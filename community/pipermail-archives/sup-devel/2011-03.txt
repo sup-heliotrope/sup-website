@@ -1,0 +1,1211 @@
+From dmishd at gmail.com  Tue Mar  1 14:38:38 2011
+From: dmishd at gmail.com (Hamish)
+Date: Tue, 01 Mar 2011 19:38:38 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298762120-sup-1118@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net>
+Message-ID: <1299008245-sup-5110@whisper>
+
+Excerpts from William Morgan's message of Sat Feb 26 23:15:50 +0000 2011:
+> Reformatted excerpts from William Morgan's message of 2011-02-26:
+> > I'm about to push some changes to Heliotrope that should make it easy to get
+> > started with. I will announce here.
+> 
+> Check out the README and see if the instructions work for you.
+
+They do indeed, thank you. It's fun to play about with. I look forward
+to watching it develop and hopefully contributing :)
+
+Hamish Downer
+
+From gregor at hoffleit.de  Wed Mar  2 07:43:51 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Wed, 02 Mar 2011 13:43:51 +0100
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1299008245-sup-5110@whisper>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+Message-ID: <1299062215-sup-8517@sam.mediasupervision.de>
+
+I keep getting stalls from the heliotrope-server process.
+
+When adding a certain mbox file, the server reproducably hangs after
+1167 messages, leading to an RestClient::RequestTimeout exception in
+heliotrope-add.
+
+At this point I have to kill -KILL the heliotrope-server process.
+
+I can't give away the mbox file. Any hints how I could debug the
+heliotrope-server script?
+
+
+Nice work otherwise! The web client is a nice demonstration of what
+might come out of this project ;-)
+
+    Gregor
+
+
+
+* Hamish <dmishd at gmail.com> [Di M?r 01 20:38:38 +0100 2011]
+> Excerpts from William Morgan's message of Sat Feb 26 23:15:50 +0000 2011:
+> > Reformatted excerpts from William Morgan's message of 2011-02-26:
+> > > I'm about to push some changes to Heliotrope that should make it easy to get
+> > > started with. I will announce here.
+> > 
+> > Check out the README and see if the instructions work for you.
+> 
+> They do indeed, thank you. It's fun to play about with. I look forward
+> to watching it develop and hopefully contributing :)
+
+From wmorgan-sup at masanjin.net  Wed Mar  2 13:51:58 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 02 Mar 2011 18:51:58 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1299062215-sup-8517@sam.mediasupervision.de>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+Message-ID: <1299091467-sup-7084@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-03-02:
+> I can't give away the mbox file. Any hints how I could debug the
+> heliotrope-server script?
+
+Can you isolate the message? It might be that it has a huge attachment
+that RMail is taking forever to parse, and that results in a client
+timeout.
+
+I need to move the message processing out of the request loop,
+obviously.
+
+As a workaround (which also is much faster), kill the server, wipe
+everything, and use `heliotrope-add -d <dir>` to import an mbox or
+maildir without having to go through HTTP.
+
+> Nice work otherwise! The web client is a nice demonstration of what
+> might come out of this project ;-)
+
+Thanks! I'm currently working on stripping everything out of Sup that
+will be handled by the server. The good news is that this is a LOT, and
+that Sup will be much leaner and meaner than before.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From gregor at hoffleit.de  Thu Mar  3 12:32:34 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 03 Mar 2011 18:32:34 +0100
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1299091467-sup-7084@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+Message-ID: <1299172989-sup-8183@sam.mediasupervision.de>
+
+William, I was able to isolate my problem: For me, heliotrope-add hangs
+for messages with more than 32768 content lines.
+
+I have attached two mbox files, each containing a single message.
+The message in good.mbox has 32768 content lines (excluding header) and
+has no problem in heliotrope-add. The message in bad.mbox has 32769
+content lines, and heliotrope-add hangs when trying to add this message.
+
+I haven't yet tried to locate the locate the problem in the source.
+
+Regards,
+    Gregor
+
+
+* William Morgan <wmorgan-sup at masanjin.net> [Mi M?r 02 19:51:58 +0100 2011]
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-03-02:
+> > I can't give away the mbox file. Any hints how I could debug the
+> > heliotrope-server script?
+> 
+> Can you isolate the message? It might be that it has a huge attachment
+> that RMail is taking forever to parse, and that results in a client
+> timeout.
+> 
+> I need to move the message processing out of the request loop,
+> obviously.
+> 
+> As a workaround (which also is much faster), kill the server, wipe
+> everything, and use `heliotrope-add -d <dir>` to import an mbox or
+> maildir without having to go through HTTP.
+> 
+> > Nice work otherwise! The web client is a nice demonstration of what
+> > might come out of this project ;-)
+> 
+> Thanks! I'm currently working on stripping everything out of Sup that
+> will be handled by the server. The good news is that this is a LOT, and
+> that Sup will be much leaner and meaner than before.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mbox-32768lines.tar.gz
+Type: application/x-gzip
+Size: 804 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110303/27c79630/attachment.gz>
+
+From wmorgan-sup at masanjin.net  Thu Mar  3 14:17:36 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 03 Mar 2011 19:17:36 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1299172989-sup-8183@sam.mediasupervision.de>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+Message-ID: <1299179837-sup-4675@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-03-03:
+> William, I was able to isolate my problem: For me, heliotrope-add hangs
+> for messages with more than 32768 content lines.
+
+Crazy! I will take a look. Thanks for the good debugging.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Thu Mar  3 14:38:14 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Thu, 03 Mar 2011 20:38:14 +0100
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298485426-sup-5530@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+	<4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+	<1298485426-sup-5530@masanjin.net>
+Message-ID: <1299179944-sup-5017@xo15-sascha.sascha.silbe.org>
+
+Excerpts from William Morgan's message of Wed Feb 23 19:43:34 +0100 2011:
+
+> - Individual messages have "state", including unread, starred, and all the
+>   other things you've mentioned.
+
+Are you going to support user-defined "states"? I have quite a few
+labels that would make much more sense on the message than on the thread
+(e.g. todo-{low,normal,high}).
+
+I sometimes "reply" to messages without setting a recipient in order to
+record private notes. It would be nice if this capability was either
+preserved (i.e. don't choke if there's no recipient) or maybe even
+explicit support for non-mail objects (notes, attached files, reminder
+dates, etc.) added.
+
+> - The user can set the labels for a thread, but can't create labels that have
+>   the same name as a message state.
+
+Hmm, that has a chance of conflicting with user-defined message states...
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110303/4b54cbb9/attachment.bin>
+
+From damien.leone at fensalir.fr  Fri Mar  4 04:05:52 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Fri, 04 Mar 2011 10:05:52 +0100
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296054871-sup-9586@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+Message-ID: <1299229478-sup-2055@mailer>
+
+Hello,
+
+Could I have an access so I can push the finished maildir-sync branch
+as well as some other patches?
+
+My gitorious login is dleone.
+
+Thanks,
+
+Excerpts from William Morgan's message of mer. janv. 26 16:18:59 +0100 2011:
+> Reformatted excerpts from Michael Stapelberg's message of 2011-01-24:
+> > I don?t have enough time to be the only person doing this, but I do
+> > offer my help on reviewing/merging patches. Maybe having more than one
+> > guy with commit access turns out to be a good thing?
+> 
+> Yeah, maybe that's the right idea.
+> 
+> So let's try this. Michael, Tero, Sascha, Edward, and everyone else
+> who's had code make it into Sup successfully... if you send me your
+> Gitorious usernames, I will add you to the Sup group and you will have
+> push access. Then you can bypass the list mailing list for patches
+> entirely, which will save me a lot of work.
+> 
+> All I ask is that you divide things into nice topic branches and merge
+> them into next but not master. I'll merge individual branches into
+> master when prepping for a release.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Fri Mar  4 07:16:41 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Fri, 04 Mar 2011 13:16:41 +0100
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296054871-sup-9586@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+Message-ID: <1299240549-sup-530@xo15-sascha.sascha.silbe.org>
+
+Excerpts from William Morgan's message of Wed Jan 26 16:18:59 +0100 2011:
+
+> So let's try this. Michael, Tero, Sascha, Edward, and everyone else
+> who's had code make it into Sup successfully... if you send me your
+> Gitorious usernames, I will add you to the Sup group and you will have
+> push access.
+
+I've finally created a gitorious account. I don't quite like the wording
+of the ToS [1] concerning licenses (the way I read it Gitorious AS is
+allowed to redistribute my code using a proprietary license), but
+then the sup repository with all my submitted patches already is hosted
+by them...
+
+> Then you can bypass the list mailing list for patches
+> entirely, which will save me a lot of work.
+
+I'm happy to push my patches, but I'd still prefer to get at least one
+Reviewed-By to make sure my changes are kosher.
+
+> All I ask is that you divide things into nice topic branches and merge
+> them into next but not master. I'll merge individual branches into
+> master when prepping for a release.
+
+Noted.
+
+Sascha
+
+[1] http://en.gitorious.org/tos/
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110304/99d68da8/attachment.bin>
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Fri Mar  4 07:19:03 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Fri, 04 Mar 2011 13:19:03 +0100
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1299240549-sup-530@xo15-sascha.sascha.silbe.org>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+	<1299240549-sup-530@xo15-sascha.sascha.silbe.org>
+Message-ID: <1299241093-sup-4960@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Sascha Silbe's message of Fri Mar 04 13:16:41 +0100 2011:
+
+> I've finally created a gitorious account.
+
+And of course forgot to mention the account name: silbe.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110304/c5d9c77d/attachment.bin>
+
+From sup at zevv.nl  Sun Mar  6 13:34:56 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Sun, 06 Mar 2011 19:34:56 +0100
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+Message-ID: <1299436337-sup-4604@pruts.nl>
+
+Hi all,
+
+Back in the old days when using mutt, I regularly used to send mails to
+myself as reminders or short notes. Sup however shows intelligent
+behaviour, recognizes the message is both sent and received, and
+attaches a 'sent' label to it, and thus the mail does not show up in the
+inbox.
+
+Is there a simple workaround for this ? Could this be considered a bug,
+or is this just functioning as designed ?
+
+Thanks,
+
+Ico
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From steve.goldman at gmail.com  Sun Mar  6 14:15:29 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Sun, 6 Mar 2011 14:15:29 -0500
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+In-Reply-To: <1299436337-sup-4604@pruts.nl>
+References: <1299436337-sup-4604@pruts.nl>
+Message-ID: <AANLkTinhMkSpSR7FLO+hWc2TYgScrU0mikad4dsHaF+M@mail.gmail.com>
+
+This is a bug to me.  Although, if I recall, sup did not used to
+behave this way.  So likely someone thought the opposite was a bug.
+
+On Sun, Mar 6, 2011 at 1:34 PM, Ico Doornekamp <sup at zevv.nl> wrote:
+> Hi all,
+>
+> Back in the old days when using mutt, I regularly used to send mails to
+> myself as reminders or short notes. Sup however shows intelligent
+> behaviour, recognizes the message is both sent and received, and
+> attaches a 'sent' label to it, and thus the mail does not show up in the
+> inbox.
+>
+> Is there a simple workaround for this ? Could this be considered a bug,
+> or is this just functioning as designed ?
+>
+> Thanks,
+>
+> Ico
+>
+> --
+> :wq
+> ^X^Cy^K^X^C^C^C^C
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From dmishd at gmail.com  Sun Mar  6 18:36:24 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 06 Mar 2011 23:36:24 +0000
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+In-Reply-To: <1299436337-sup-4604@pruts.nl>
+References: <1299436337-sup-4604@pruts.nl>
+Message-ID: <1299454258-sup-7115@whisper>
+
+Excerpts from Ico Doornekamp's message of Sun Mar 06 18:34:56 +0000 2011:
+> Back in the old days when using mutt, I regularly used to send mails to
+> myself as reminders or short notes. Sup however shows intelligent
+> behaviour, recognizes the message is both sent and received, and
+> attaches a 'sent' label to it, and thus the mail does not show up in the
+> inbox.
+> 
+> Is there a simple workaround for this ? Could this be considered a bug,
+> or is this just functioning as designed ?
+
+I generally prefer sent email to not show up in the inbox - I try to
+keep my inbox somewhere near zero (though I rarely achieve it ...)
+
+A work around could be to add the inbox label to sent mail that is just
+to you. In before-add-message.rb you could have something like:
+
+
+if message.from.email == "me at mine.com" && message.to.length == 1 && message.to[0].email == "me at mine.com"
+  message.add_label :inbox
+end
+
+
+I haven't tested that, so you may want to check your logs if you try
+using it. Or you could have a keyword in the subject - [ACTION] maybe -
+and have a hook filter for that.
+
+Hamish
+
+From sup at zevv.nl  Mon Mar  7 01:51:57 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Mon, 07 Mar 2011 07:51:57 +0100
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+In-Reply-To: <1299454258-sup-7115@whisper>
+References: <1299436337-sup-4604@pruts.nl> <1299454258-sup-7115@whisper>
+Message-ID: <1299480660-sup-5856@pruts.nl>
+
+* On Mon Mar 07 00:36:24 +0100 2011, Hamish wrote:
+ 
+> Excerpts from Ico Doornekamp's message of Sun Mar 06 18:34:56 +0000 2011:
+> > Back in the old days when using mutt, I regularly used to send mails to
+> > myself as reminders or short notes. Sup however shows intelligent
+> > behaviour, recognizes the message is both sent and received, and
+> > attaches a 'sent' label to it, and thus the mail does not show up in the
+> > inbox.
+> > 
+> > Is there a simple workaround for this ? Could this be considered a bug,
+> > or is this just functioning as designed ?
+> 
+> I generally prefer sent email to not show up in the inbox - I try to
+> keep my inbox somewhere near zero (though I rarely achieve it ...)
+> 
+> A work around could be to add the inbox label to sent mail that is just
+> to you. In before-add-message.rb you could have something like:
+> 
+> 
+> if message.from.email == "me at mine.com" && message.to.length == 1 && message.to[0].email == "me at mine.com"
+>   message.add_label :inbox
+> end
+> 
+> I haven't tested that, so you may want to check your logs if you try
+> using it.
+
+Works like a charm. Thanks!
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From aidecoe at aidecoe.name  Mon Mar  7 03:27:56 2011
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Mon, 07 Mar 2011 09:27:56 +0100
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+In-Reply-To: <1299454258-sup-7115@whisper>
+References: <1299436337-sup-4604@pruts.nl> <1299454258-sup-7115@whisper>
+Message-ID: <1299486205-sup-2424@ittemni>
+
+Excerpts from Hamish's message of Mon Mar 07 00:36:24 +0100 2011:
+> Excerpts from Ico Doornekamp's message of Sun Mar 06 18:34:56 +0000 2011:
+> > Back in the old days when using mutt, I regularly used to send mails to
+> > myself as reminders or short notes. Sup however shows intelligent
+> > behaviour, recognizes the message is both sent and received, and
+> > attaches a 'sent' label to it, and thus the mail does not show up in the
+> > inbox.
+> > 
+> > Is there a simple workaround for this ? Could this be considered a bug,
+> > or is this just functioning as designed ?
+> 
+> I generally prefer sent email to not show up in the inbox - I try to
+> keep my inbox somewhere near zero (though I rarely achieve it ...)
+> 
+> A work around could be to add the inbox label to sent mail that is just
+> to you. In before-add-message.rb you could have something like:
+> 
+> 
+> if message.from.email == "me at mine.com" && message.to.length == 1 && message.to[0].email == "me at mine.com"
+>   message.add_label :inbox
+> end
+
+Why not have requested behaviour (sent mail in inbox) and hook for
+archiving?  E.g. I am usually modyfing labels on sent mail.  And it's
+easier to archive sent mail than unarchive it.
+-- 
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110307/06ea9644/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Mar  7 13:27:20 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 07 Mar 2011 18:27:20 +0000
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1299229478-sup-2055@mailer>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net> <1299229478-sup-2055@mailer>
+Message-ID: <1299522431-sup-5264@masanjin.net>
+
+Reformatted excerpts from Damien Leone's message of 2011-03-04:
+> My gitorious login is dleone.
+
+Added.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar  7 13:27:38 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 07 Mar 2011 18:27:38 +0000
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1299241093-sup-4960@xo15-sascha.sascha.silbe.org>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+	<1299240549-sup-530@xo15-sascha.sascha.silbe.org>
+	<1299241093-sup-4960@xo15-sascha.sascha.silbe.org>
+Message-ID: <1299522452-sup-1082@masanjin.net>
+
+Reformatted excerpts from Sascha Silbe's message of 2011-03-04:
+> And of course forgot to mention the account name: silbe.
+
+Added.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From damien.leone at fensalir.fr  Mon Mar  7 16:22:50 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 07 Mar 2011 22:22:50 +0100
+Subject: [sup-devel] [PATCH] Mark the thread as read after the
+	ThreadViewMode has been instancied and displayed
+In-Reply-To: <1298826320-sup-8596@mailer>
+References: <1298826320-sup-8596@mailer>
+Message-ID: <1299532949-sup-5258@mailer>
+
+Pushed.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From damien.leone at fensalir.fr  Mon Mar  7 16:23:28 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 07 Mar 2011 22:23:28 +0100
+Subject: [sup-devel] [PATCH] line-cursor-mode: Add an option to disable
+	automatic threads loading when scrolling down for slow CPUs
+In-Reply-To: <1298825716-sup-3818@mailer>
+References: <1298825716-sup-3818@mailer>
+Message-ID: <1299532993-sup-1598@mailer>
+
+Pushed.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From damien.leone at fensalir.fr  Sun Mar 13 12:13:05 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 13 Mar 2011 17:13:05 +0100
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+Message-ID: <1300032642-sup-9716@mailer>
+
+Sup guys,
+
+Please see commit messages for detailed informations.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-reply-mode-improve-the-way-headers-are-handled.patch
+Type: application/octet-stream
+Size: 5389 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110313/596a02ed/attachment-0003.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-edit-message-mode-Add-an-optional-account-selector.patch
+Type: application/octet-stream
+Size: 4018 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110313/596a02ed/attachment-0004.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-edit-message-mode-Fix-the-way-signatures-are-handled.patch
+Type: application/octet-stream
+Size: 3266 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110313/596a02ed/attachment-0005.obj>
+
+From damien.leone at fensalir.fr  Sun Mar 13 12:41:04 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 13 Mar 2011 17:41:04 +0100
+Subject: [sup-devel] Adding backward synchronization for Maildir sources
+In-Reply-To: <1278693172-sup-6247@mailer>
+References: <1278693172-sup-6247@mailer>
+Message-ID: <1300032886-sup-4779@mailer>
+
+Sup guys,
+
+Sorry for having been so long.
+
+What's new:
+
+- I added an option in sup-sync-back-maildir to merge the :replied and
+:forwarded labels/flags so the first time you run the script you
+should not lose any information on the IMAP side;
+
+- A way to detect if sup-sync-back-to-maildir should be executed in
+order to synchronize your index back to the Maildir source in order to
+prevent any loss of information. A magic file is written in the
+configuration directory everytime the script is executed and it is
+removed when the sync_back_to_maildir option is set from false to
+true;
+
+- I fixed a case when messages were not properly updated when they
+were remotely modified.
+
+I have pushed the last commits to the maildir-sync branch [0], it is
+rebased from master. I also have a branch rebased from next on my own
+repository if you'd rather a more up to date branch [1].
+
+Please test and review! For more informations and a howto, read the
+message quoted below this mail.
+
+[0] http://gitorious.org/sup/mainline/commits/maildir-sync
+[1] http://git.fensalir.fr/?p=dleone/sup.git
+
+Excerpts from Damien Leone's message of ven. juil. 09 18:44:01 +0200 2010:
+> Sup guys,
+> 
+> I have been working on backward synchronization for Maildir sources
+> last week and I need your help to test and review the code.
+> 
+> I pushed my commits (based on the 'next' branch) to my repo which you
+> can find here [0] for the web interface and here [1] for the git
+> address.
+> 
+> The following is related to Maildir sources ONLY.
+> 
+> So what does work and what does not (if you don't want to read this,
+> scroll to the quick howto below):
+> 
+> - Sup will now stay synchronized with your remote sources by detecting
+> if a message has been remotely updated (ie: you change a flag from
+> another client), these updates will be applied to your local index and
+> your thread-view-mode buffers should be properly refreshed;
+> 
+> - When a message is remotely deleted, it should now disappear from
+> your index;
+> 
+> - There is a new configuration option called "sync_back_to_maildir"
+> which is false by default. When true, this option updates your actual
+> Maildir files when you change a label, this is done in real time
+> before being saved to xapian. So for instance if you use offlineimap
+> the changes should be synched back to your IMAP server by the next
+> poll in Sup (assuming that your before-poll hook runs offlineimap);
+> 
+> - I wrote a "sup-sync-back-maildir" script that will synchronize all
+> messages from your sources at once. This should be executed the first
+> time BEFORE any polling, otherwise your IMAP server will be synched to
+> your Sup index and if you did not used another client to mark your
+> emails as read etc. (like me) and to update your IMAP server then you
+> will lose all what you did in Sup (labels, etc.);
+> 
+> - I added two new hidden labels in Sup: 'replied' and 'forwarded',
+> they are automatically added when replying, forwarding or bouncing a
+> message, this is to bring a better Maildir support to Sup, this should
+> be invisible for users;
+> 
+> - However you will probably lose all your remote 'replied' and
+> 'forwarded' flags after your first backward synchronization to Maildir
+> since Sup dropped these labels when it added your messages to xapian.
+> 
+> - Moving a message from a Maildir source to another is not (yet?)
+> supported.
+> 
+> So, you should now be able to use multiple clients to handle your
+> emails, for instance I can use gmail to mark messages as starred or
+> so, it will be reflected in Sup. In the same way, if I mark a message
+> as read in Sup it will appear as read in the gmail web interface.
+> 
+> I tested this code with my main account (2 GB and like 15 Maildir
+> sources) it works fine so far.
+> 
+> Be warned that it is highly experimental, but if you use offlineimap
+> it has a realdelete option so you *should* not lose any email, in the
+> worst case it might mess your flags/labels up.
+> 
+> I tested it only with offlineimap working with a gmail account.
+> 
+> Quick howto:
+> 
+> 1. Close sup
+> 2. Backup your emails and your xapian index or use another Sup session
+> 3. Clone the branch [1]
+> 4. IMPORTANT: run "bin/sup-sync-back-maildir" to synchronize the
+>    Maildirs you wish, check the help
+> 5. Add ":sync_back_to_maildir: true" to your config.yaml
+> 6. Run and use sup
+> 
+> Please test it and make reviews! :)
+> 
+> NOTE: if you want this to work, get sure that you are not calling
+> offlineimap with the '-q' option (as suggested in the wiki) otherwise
+> it will ignore the flag updates on IMAP server, so check your
+> before-poll hook.
+> 
+> [0] http://git.fensalir.fr/?p=dleone/sup.git
+> [1] $ git clone git://fensalir.fr/dleone/sup.git -b maildir-sync
+> 
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From damien.leone at fensalir.fr  Sun Mar 13 12:42:17 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 13 Mar 2011 17:42:17 +0100
+Subject: [sup-devel] [PATCH] Avoid O(n^2) complexity for maildir
+	deduplication.
+In-Reply-To: <1295563453-31049-1-git-send-email-ezyang@mit.edu>
+References: <1295563453-31049-1-git-send-email-ezyang@mit.edu>
+Message-ID: <1300034524-sup-1251@mailer>
+
+Pushed, thanks!
+
+Excerpts from Edward Z. Yang's message of jeu. janv. 20 23:44:13 +0100 2011:
+> Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+> ---
+>  lib/sup/maildir.rb |    8 +++++---
+>  1 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+> index ba8efed..bc30baa 100644
+> --- a/lib/sup/maildir.rb
+> +++ b/lib/sup/maildir.rb
+> @@ -128,14 +128,16 @@ class Maildir < Source
+>      ## deleted arrays, meaning that its flags changed or that it has
+>      ## been moved, these ids need to be removed from added and deleted
+>      add_to_delete = del_to_delete = []
+> +    map = Hash.new { |hash, key| hash[key] = [] }
+> +    deleted.each do |id_del|
+> +        map[maildir_data(id_del)[0]].push id_del
+> +    end
+>      added.each do |id_add|
+> -      deleted.each do |id_del|
+> -        if maildir_data(id_add)[0] == maildir_data(id_del)[0]
+> +        map[maildir_data(id_add)[0]].each do |id_del|
+>            updated.push [ id_del, id_add ]
+>            add_to_delete.push id_add
+>            del_to_delete.push id_del
+>          end
+> -      end
+>      end
+>      added -= add_to_delete
+>      deleted -= del_to_delete
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Sun Mar 13 16:21:06 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Sun, 13 Mar 2011 21:21:06 +0100
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1300032642-sup-9716@mailer>
+References: <1300032642-sup-9716@mailer>
+Message-ID: <1300045320-sup-8627@twin.sascha.silbe.org>
+
+Excerpts from Damien Leone's message of Sun Mar 13 17:13:05 +0100 2011:
+
+> Sup guys,
+> 
+> Please see commit messages for detailed informations.
+
+> Attachment: 0001-reply-mode-improve-the-way-headers-are-handled.patch
+
+This one would possibly break my workflow. My From address is chosen in
+the before-edit hook based on the set of recipients. Since you only
+call before-edit once with headers_full as headers, whatever From
+address gets chosen for the initial reply mode will "stick".
+
+It also seems that something I wanted to do for some time was already
+possible with the old code, but isn't anymore with yours: Changing the
+contents of the To and CC fields for the selector. Even arbitrary headers
+(Mail-Followup-To in my case) could be keyed on the selector. I now
+understand why before-edit was invoked multiple times. :)
+
+And the part where I need to avoid modifying the body on subsequent
+invocations looks like a bug in the original code: @bodies[k] should
+contain a _copy_ of body (currently all @bodies[k] contain a reference
+to the same instance, rendering the Hash useless).
+
+BTW, do you know about Hash.merge! ? Some parts of your code could have
+been simplified by using merge! instead of merge.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 500 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110313/9b0ba930/attachment.bin>
+
+From snaipperi at gmail.com  Mon Mar 21 14:38:31 2011
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Mon, 21 Mar 2011 20:38:31 +0200
+Subject: [sup-devel] Ruby 1.9.2 Rakefile & LOAD_PATH
+Message-ID: <AANLkTim7rVtS4+b-Pbv-DLNKYh-bSCjnUT=thDAJJmZM@mail.gmail.com>
+
+Hey folks,
+
+I posted on sup-talk in last December about an issue in the Rakefile
+of sup when it comes to Ruby 1.9.2. The whole thing boils down to
+this: https://rails.lighthouseapp.com/projects/8994/tickets/2921
+
+Ruby 1.9.2 doesn't include the "." into LOAD_PATH anymore. Would
+anybody like to fix this in the master? The fix is simple, just adding
+"./" in front of the paths of the sup-version.rb and sup-files.rb. I
+don't see why this would affect earlier Ruby versions in a negative
+way, but of course I recommend testing it works before commiting to
+the git.
+
+Made merge request @ http://gitorious.org/sup/mainline/merge_requests/11
+
+Patch also below.
+
+Regards,
+Matti Eiden
+
+
+
+diff -aur sup-build/Rakefile sup-build.new/Rakefile
+--- sup-build/Rakefile	2011-03-21 19:44:57.000000000 +0200
++++ sup-build.new/Rakefile	2011-03-21 19:52:37.000000000 +0200
+@@ -31,8 +31,8 @@
+
+ $:.push "lib"
+ require 'rubygems'
+-require "sup-files"
+-require "sup-version"
++require "./sup-files"
++require "./sup-version"
+ require 'rake/gempackagetask.rb'
+
+ spec = Gem::Specification.new do |s|
+
+From eg at gaute.vetsj.com  Mon Mar 21 20:11:16 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 22 Mar 2011 01:11:16 +0100
+Subject: [sup-devel] [issue132] strange encoding error
+In-Reply-To: <1290508608.33.0.253409523291.issue132@masanjin.net>
+References: <1290508608.33.0.253409523291.issue132@masanjin.net>
+Message-ID: <1300752553-sup-725@qwerzila>
+
+Excerpts from anonymous's message of 2010-11-23 11:36:48 +0100:
+> 
+> New submission from anonymous:
+> 
+> this happens when i try to send an email...
+> 
+> ----------------------------------------------------------------
+> --- Encoding::CompatibilityError from thread: main
+> incompatible character encodings: UTF-8 and ASCII-8BIT
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/serialize.rb:112:in
+> `serialize_low'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/serialize.rb:99:in `block in
+
+Hi,
+
+ran into the same problem today; this seems to be a problem with rmail.
+Apply this patch to the installed gem:
+
+
+diff -ru rmail-1.0.0/lib/rmail/serialize.rb rmail-1.0.0-new//lib/rmail/serialize.rb
+--- rmail-1.0.0/lib/rmail/serialize.rb	2011-03-22 01:08:07.413333337 +0100
++++ rmail-1.0.0-new//lib/rmail/serialize.rb	2011-03-22 01:07:45.183333337 +0100
+@@ -109,6 +109,7 @@
+         @output << message.header.to_s
+         unless message.body.nil?
+           @output << "\n"
++          message.body.force_encoding 'UTF-8'
+           @output << message.body
+           if depth == 0 and message.body.length > 0 and
+               message.body[-1] != ?\n
+ 
+Best regards,
+Gaute Hope
+
+From wmorgan-sup at masanjin.net  Sun Mar 27 16:41:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 Mar 2011 20:41:59 +0000
+Subject: [sup-devel] sup v2 progress report
+Message-ID: <1301257195-sup-9486@masanjin.net>
+
+Hello all,
+
+I'm happy to report that Sup version 2 is well underway!
+
+Sup version 2 features:
+- a client/server model that works over HTTP, allowing
+    a) development of other clients, e.g. web-based and phone-based
+    b) simultaneous access from multiple clients
+    c) IMAP emulation, aka no more lock-in!
+- an improved console-based client
+
+Heliotrope, the server component, is close to ready for a version 1 release.
+You can find it at https://github.com/wmorgan/heliotrope/.
+
+The client, which I'm calling Turnsole, is coming along swimmingly. I hope to
+release a pre-alpha some-stuff-actually-works version within the next few days.
+Much of the UI code has been borrowed from Sup, but the internals are quite
+different:
+- it's event-based, rather than thread-based, which streamlines a lot of the
+  code and avoids a whole big class of bugs.
+- all the index and email threading code is ripped out
+- most of the email parsing code is gone
+- it handles Ruby 1.9 string encoding stuff correctly, rather than having
+  random checks scattered around
+
+I think you're going to like it, since:
+- the threads are pre-computed on the server side, so it's much, much faster
+- you can finally view attachments locally!
+
+Stay tuned for more. We're still a ways off before it's a drop-in replacement,
+but I'm excited about how everything is coming together.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Mar 28 08:52:52 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 28 Mar 2011 05:52:52 -0700 (PDT)
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+
+On Sun, 27 Mar 2011 20:41:59 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Hello all,
+> 
+> I'm happy to report that Sup version 2 is well underway!
+> 
+> Sup version 2 features:
+> - a client/server model that works over HTTP, allowing
+>     a) development of other clients, e.g. web-based and phone-based
+>     b) simultaneous access from multiple clients
+>     c) IMAP emulation, aka no more lock-in!
+> - an improved console-based client
+> 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+> 
+> The client, which I'm calling Turnsole, is coming along swimmingly. I hope to
+> release a pre-alpha some-stuff-actually-works version within the next few days.
+> Much of the UI code has been borrowed from Sup, but the internals are quite
+> different:
+> - it's event-based, rather than thread-based, which streamlines a lot of the
+>   code and avoids a whole big class of bugs.
+> - all the index and email threading code is ripped out
+> - most of the email parsing code is gone
+> - it handles Ruby 1.9 string encoding stuff correctly, rather than having
+>   random checks scattered around
+> 
+> I think you're going to like it, since:
+> - the threads are pre-computed on the server side, so it's much, much faster
+> - you can finally view attachments locally!
+> 
+> Stay tuned for more. We're still a ways off before it's a drop-in replacement,
+> but I'm excited about how everything is coming together.
+
+While mass importing an mbox I got this:
+
+$ ... heliotrope-add ...
+; forced to decode html. running html2text on 868b mime part...
+end offset is 237534473
+.../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible character encodings: UTF-8 and ASCII-8BIT (Encoding::CompatibilityError)
+  from .../heliotrope/lib/heliotrope/decoder.rb:109:in `decode_rfc2047'
+  from .../heliotrope/lib/heliotrope/message.rb:208:in `decode_header'
+  from .../heliotrope/lib/heliotrope/message.rb:30:in `parse!'
+  from bin/heliotrope-add:105:in `<main>'
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wmorgan-sup at masanjin.net  Mon Mar 28 18:57:26 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Mar 2011 22:57:26 +0000
+Subject: [sup-devel] [sup-talk] sup v2 progress report
+In-Reply-To: <AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+Message-ID: <1301353031-sup-7684@masanjin.net>
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-03-28:
+> I have tried the new system a little bit, and I have a few things to say :
+> - you must have 'html2text' (not specified) installed on your system,
+> as long as you have any html mail. I think this is the case for too
+> many of us, unfortunately.
+> - I didn't find rubymail with gem, but found it under the name rmail
+
+Thanks, I will update the README.
+
+> - I still had some problem with the encoding stuff. I was using ruby
+> v1.9.2 (or so I thought), but got the "ArgumentError - invalid byte
+> sequence in UTF-8" error.
+
+Ok, I'm still working on tracking this down. If you have a backtrace
+handy, that would be useful.
+
+> - Is sup development bound to be stopped, at least when
+> heliotrope/turnsole will be ready ?
+
+I'm planning on moving my efforts entirely over to heliotrope +
+turnsole. Which isn't that big of a deal, really, since I haven't done
+much on Sup for years.
+
+> - Is there any mailing-list for this new project, or should we keep
+> using those related with sup ?
+
+I'll keep talking about it here until people complain.
+
+> - Do you have any address where I can find and test turnsole ?
+
+Check back in a few days.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 28 23:11:04 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 03:11:04 +0000
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+Message-ID: <1301368236-sup-9189@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible character encodings: UTF-8 and ASCII-8BIT (Encoding::CompatibilityError)
+
+Hm. I think I know what the problem is. Stay tuned.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Mar 29 00:00:36 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 04:00:36 +0000
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+Message-ID: <1301371130-sup-6618@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible
+> character encodings: UTF-8 and ASCII-8BIT
+> (Encoding::CompatibilityError)
+
+Can you try with the latest master? If it still doesn't work, are you
+able to narrow down the string encodings of from and word?
+
+This 1.9 string encoding stuff is tricky business, especially combined
+with the messy world of email. I think I'm getting close.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Tue Mar 29 17:19:00 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 29 Mar 2011 14:19:00 -0700 (PDT)
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <1301371130-sup-6618@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+	<1301371130-sup-6618@masanjin.net>
+Message-ID: <4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+
+On Tue, 29 Mar 2011 04:00:36 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Nicolas Pouillard's message of 2011-03-28:
+> > .../heliotrope/lib/heliotrope/decoder.rb:109:in `gsub': incompatible
+> > character encodings: UTF-8 and ASCII-8BIT
+> > (Encoding::CompatibilityError)
+> 
+> Can you try with the latest master? If it still doesn't work, are you
+> able to narrow down the string encodings of from and word?
+> 
+> This 1.9 string encoding stuff is tricky business, especially combined
+> with the messy world of email. I think I'm getting close.
+
+Nice, it seems to go a lot further. However there seems to be some strange
+blocking behavior, like using CPU and producing nothing in hours.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wmorgan-sup at masanjin.net  Tue Mar 29 17:31:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Mar 2011 21:31:06 +0000
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+References: <1301257195-sup-9486@masanjin.net>
+	<4d9084a4.cc7e0e0a.6404.ffff8fad@mx.google.com>
+	<1301371130-sup-6618@masanjin.net>
+	<4d924cc4.5925e30a.5311.ffffc603@mx.google.com>
+Message-ID: <1301434157-sup-5884@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-03-29:
+> Nice, it seems to go a lot further. However there seems to be some strange
+> blocking behavior, like using CPU and producing nothing in hours.
+
+Weird. I wonder if it's triggering some regex worst case like we've seen
+before in Sup. Are you able to narrow down what message or text is
+causing this? I will add a --verbose option, which might make this
+easier.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Mon Mar 28 00:14:24 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Mon, 28 Mar 2011 06:14:24 +0200
+Subject: [sup-devel] [sup-talk] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <AANLkTimqLoHDVWNpwUsFAc+E9csfxgwUwCWsuo08a5QJ@mail.gmail.com>
+
+Thank you very much.
+
+ I've been using sup for quite a few months now, and I must say that
+the labels-centric point of view really is an improvement over the
+other mail management systems.
+I've been following sup news very closely, and I'm really excited
+about heliotrope/turnsole.
+
+I have tried the new system a little bit, and I have a few things to say :
+- you must have 'html2text' (not specified) installed on your system,
+as long as you have any html mail. I think this is the case for too
+many of us, unfortunately.
+- I didn't find rubymail with gem, but found it under the name rmail
+- I still had some problem with the encoding stuff. I was using ruby
+v1.9.2 (or so I thought), but got the "ArgumentError - invalid byte
+sequence in UTF-8" error. Strange thing, the log showed me evidence
+that I was using ruby v1.9.1 (problems came from files in
+"/usr/lib/ruby/gems/1.9.1"). So I switched back to v1.8.7 from AUR
+(I'm using archlinux), and the problem just went away.
+
+In the light of what you wrote, I have two questions :
+- Is sup development bound to be stopped, at least when
+heliotrope/turnsole will be ready ?
+- Is there any mailing-list for this new project, or should we keep
+using those related with sup ?
+- Do you have any address where I can find and test turnsole ?
+
+Again, thank you very much for your work and your help, and I'm
+talking to everyone on these lists.
+
+Regards,
+
+-- 
+Matthieu RAKOTOJAONA
+

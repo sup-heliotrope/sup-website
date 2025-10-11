@@ -1,0 +1,38 @@
+From eg at gaute.vetsj.com  Mon Aug 22 07:30:31 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 22 Aug 2011 13:30:31 +0200
+Subject: [sup-devel] Ruby 1.9.2 Rakefile & LOAD_PATH
+In-Reply-To: <AANLkTim7rVtS4+b-Pbv-DLNKYh-bSCjnUT=thDAJJmZM@mail.gmail.com>
+References: <AANLkTim7rVtS4+b-Pbv-DLNKYh-bSCjnUT=thDAJJmZM@mail.gmail.com>
+Message-ID: <1314012417-sup-4773@qwerzila>
+
+Excerpts from Matti Eiden's message of 2011-03-21 19:38:31 +0100:
+> I posted on sup-talk in last December about an issue in the Rakefile
+> of sup when it comes to Ruby 1.9.2. The whole thing boils down to
+> this: https://rails.lighthouseapp.com/projects/8994/tickets/2921
+> 
+> Made merge request @ http://gitorious.org/sup/mainline/merge_requests/11
+
+Hi,
+
+this still persists.. here is another alternative using
+require_relative. Please apply original or my modified, works for me on
+latest next.
+
+Best regards,
+Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Rakefile-Require-sup-from-relative-dir.patch
+Type: application/octet-stream
+Size: 627 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110822/f9ed4daa/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110822/f9ed4daa/attachment.bin>
+

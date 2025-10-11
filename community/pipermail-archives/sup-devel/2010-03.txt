@@ -1,0 +1,2865 @@
+From michael+sup at stapelberg.de  Mon Mar  1 08:45:54 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 01 Mar 2010 14:45:54 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267293663-sup-2241@zyrg.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+Message-ID: <1267450467-sup-4411@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Sa Feb 27 19:05:58 +0100 2010:
+> The problem is sign_start will be nil if the text isn't on a line by
+> itself, causing a crash a few lines later. This happened to me when I
+How about using the following solution?
+
+gpg_start = "-----BEGIN PGP SIGNED MESSAGE-----"
+gpg_end = "-----END PGP SIGNED MESSAGE-----"
+gpg = lines.select { |l| true if l =~ /#{gpg_start}/ .. l =~ /#{gpg_end}/ }
+msg.body = gpg.join("\n")
+
+Is there a way to avoid the ugly "true if"? When just leaving it out, ruby
+complained saying "ArgumentError: bad value for range".
+
+Best regards,
+Michael
+
+From stettberger at dokucode.de  Mon Mar  1 09:36:10 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Mon, 01 Mar 2010 15:36:10 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267450467-sup-4411@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+Message-ID: <1267454104-sup-9569@peer.zerties.org>
+
+Excerpts from Michael Stapelberg's message of Mo M?r 01 14:45:54 +0100 2010:
+> Hi Rich,
+> 
+> Excerpts from Rich Lane's message of Sa Feb 27 19:05:58 +0100 2010:
+> > The problem is sign_start will be nil if the text isn't on a line by
+> > itself, causing a crash a few lines later. This happened to me when I
+> How about using the following solution?
+> 
+> gpg_start = "-----BEGIN PGP SIGNED MESSAGE-----"
+> gpg_end = "-----END PGP SIGNED MESSAGE-----"
+> gpg = lines.select { |l| true if l =~ /#{gpg_start}/ .. l =~ /#{gpg_end}/ }
+> msg.body = gpg.join("\n")
+> 
+> Is there a way to avoid the ugly "true if"? When just leaving it out, ruby
+> complained saying "ArgumentError: bad value for range".
+
+Hi, there,
+tried this, but broke on this specific message, cause the string was
+included but there was no signature.
+
+This works for me:
+
+517         ## Check for inline-PGP
+518         if body =~ /^-----BEGIN PGP SIGNED MESSAGE-----/
+519             gpg_start = "^-----BEGIN PGP SIGNED MESSAGE-----"
+520             gpg_signature = "^-----BEGIN PGP SIGNATURE-----"
+521             gpg_end = "^-----END PGP SIGNED MESSAGE-----"
+522             gpg = lines.select { |l| true if l =~ /#{gpg_start}/ .. l =~ /#{gpg_end}/ }
+523             body = lines.select { |l| true if l =~ /#{gpg_start}/ .. l =~ /#{gpg_signature}/ }
+524             msg = RMail::Message.new
+525             msg.body = gpg.join("\n")
+526 
+527             payload = RMail::Message.new
+528             payload.body = body[1..-2].join("\n")
+529 
+530             File.open("/tmp/msg", "w+") {|f| f.write(msg.body)}
+531             File.open("/tmp/payload", "w+") {|f| f.write(payload.body)}
+532             return [CryptoManager.verify(nil, msg, false), message_to_chunks(payload)].flatten.compact
+533         end
+
+greetz didi
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100301/ff92d5b2/attachment.bin>
+
+From stettberger at dokucode.de  Mon Mar  1 09:49:08 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Mon, 01 Mar 2010 15:49:08 +0100
+Subject: [sup-devel] [PATCH] fix textfield truncation
+In-Reply-To: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267454855-sup-1443@peer.zerties.org>
+
+Excerpts from Rich Lane's message of Fr Jan 22 08:46:40 +0100 2010:
+> Long query strings (for example) are (for some people) silently truncated.
+> Other people have seen large amounts of whitespace inserted at word boundaries.
+> These issues are caused by using a multiline text field. This patch uses a
+> single-line dynamically growable textfield instead. It also disables the
+> field-blanking misfeature.
+> ---
+>  lib/sup/textfield.rb |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
+> 
+> diff --git a/lib/sup/textfield.rb b/lib/sup/textfield.rb
+> index 9afeb34..1c19751 100644
+> --- a/lib/sup/textfield.rb
+> +++ b/lib/sup/textfield.rb
+> @@ -33,7 +33,9 @@ class TextField
+>      @w, @y, @x, @width = window, y, x, width
+>      @question = question
+>      @completion_block = block
+> -    @field = Ncurses::Form.new_field 1, @width - question.length, @y, @x + question.length, 256, 0
+> +    @field = Ncurses::Form.new_field 1, @width - question.length, @y, @x + question.length, 0, 0
+> +    @field.opts_off Ncurses::Form::O_STATIC
+> +    @field.opts_off Ncurses::Form::O_BLANK
+>      @form = Ncurses::Form.new_form [@field]
+>      @value = default || ''
+>      Ncurses::Form.post_form @form
+
+Breaks sup here, says opts_off isn't a method, using
+
+iU  libncurses-ruby1.8                      1.2.4-2 ruby Extension for the ncurses C library
+
+from debian sid. What version should i use, in order to make this
+work?
+
+greetz didi
+
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100301/43cbf62c/attachment.bin>
+
+From stettberger at dokucode.de  Mon Mar  1 09:50:14 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Mon, 01 Mar 2010 15:50:14 +0100
+Subject: [sup-devel] [PATCH] fix textfield truncation
+In-Reply-To: <1267454855-sup-1443@peer.zerties.org>
+References: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1267454855-sup-1443@peer.zerties.org>
+Message-ID: <1267454978-sup-2249@peer.zerties.org>
+
+Excerpts from Christian Dietrich's message of Mo M?r 01 15:49:08 +0100 2010:
+> Breaks sup here, says opts_off isn't a method, using
+> 
+> iU  libncurses-ruby1.8                      1.2.4-2 ruby Extension for the ncurses C library
+> 
+> from debian sid. What version should i use, in order to make this
+> work?
+
+Sorry, didn't see the other message with the explanation yet.
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100301/946b632b/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Mar  1 09:58:19 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 01 Mar 2010 09:58:19 -0500
+Subject: [sup-devel] [PATCH] show (recipients) instead of lone "me"
+In-Reply-To: <1264118145-sup-5806@ntdws12.chass.utoronto.ca>
+References: <1264087996-sup-5125@changeling.local>
+	<1264109598-sup-3164@tilus.net>
+	<1264118145-sup-5806@ntdws12.chass.utoronto.ca>
+Message-ID: <1267455489-sup-6918@masanjin.net>
+
+Reformatted excerpts from Ben Walton's message of 2010-01-21:
+> I didn't get a chance today, but I'd also give this a +1.  It makes a
+> good deal of sense.
+
+I'm really digging this too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar  1 09:58:59 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 01 Mar 2010 09:58:59 -0500
+Subject: [sup-devel] [PATCH] dont check thread-index-mode dirtiness on
+	every keypress
+In-Reply-To: <1264303037-17440-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264303037-17440-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267455526-sup-1315@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-01-23:
+> Now that changes are instantly written to the index it's unnecessary
+> to put the "modified" message in the status line. Removing this cuts
+> the time for a simple action like moving the cursor by 75% or more,
+> depending on the number of messages loaded.
+
+This is a really nice change.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From stettberger at dokucode.de  Mon Mar  1 10:23:56 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Mon, 01 Mar 2010 16:23:56 +0100
+Subject: [sup-devel] Searching unread messages in label-search-mode
+In-Reply-To: <1267117624-sup-7108@peer.zerties.org>
+References: <1267117624-sup-7108@peer.zerties.org>
+Message-ID: <1267457007-sup-565@peer.zerties.org>
+
+Excerpts from Christian Dietrich's message of Do Feb 25 18:09:06 +0100 2010:
+> Hi,
+> i just added the keystroke 'U' to the label search mode, so you just
+> jump into a search with "AND is:unread" directly from the
+> label-search-mode
+> 
+> greetz didi
+> 
+> http://github.com/stettberger/sup-mail/commit/fbf0f92a6e65ea2e5c56565a92166af2b0c07446
+
+Any chance this is going into next or master?
+
+greetz didi
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100301/6927e4f8/attachment.bin>
+
+From michael+sup at stapelberg.de  Mon Mar  1 11:49:30 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 01 Mar 2010 17:49:30 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267454104-sup-9569@peer.zerties.org>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+Message-ID: <1267462001-sup-1957@midna.zekjur.net>
+
+Hi didi,
+
+Excerpts from Christian Dietrich's message of Mo M?r 01 15:36:10 +0100 2010:
+> tried this, but broke on this specific message, cause the string was
+> included but there was no signature.
+Can you forward this message so that I can have a look, please?
+
+> 517         ## Check for inline-PGP
+> 518         if body =~ /^-----BEGIN PGP SIGNED MESSAGE-----/
+> 519             gpg_start = "^-----BEGIN PGP SIGNED MESSAGE-----"
+> 520             gpg_signature = "^-----BEGIN PGP SIGNATURE-----"
+> 521             gpg_end = "^-----END PGP SIGNED MESSAGE-----"
+Why do you use ^ in the beginning but not $ in the end?
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Mon Mar  1 11:56:43 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 01 Mar 2010 11:56:43 -0500
+Subject: [sup-devel] Searching unread messages in label-search-mode
+In-Reply-To: <1267457007-sup-565@peer.zerties.org>
+References: <1267117624-sup-7108@peer.zerties.org>
+	<1267457007-sup-565@peer.zerties.org>
+Message-ID: <1267462086-sup-6796@zyrg.net>
+
+Please resubmit using git-send-email.
+
+Instead of constructing a query string and spawning a SearchResultsMode,
+take advantage of LabelSearchResultsMode.new accepting an array
+of labels. I suggest modifying LabelSearchResultsMode#spawn_nicely to
+take a *labels argument instead of just one label.
+
+From stettberger at dokucode.de  Mon Mar  1 12:46:52 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Mon, 01 Mar 2010 18:46:52 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267462001-sup-1957@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+Message-ID: <1267465546-sup-2321@peer.zerties.org>
+
+Excerpts from Michael Stapelberg's message of Mo M?r 01 17:49:30 +0100 2010:
+> Hi didi,
+> 
+> Excerpts from Christian Dietrich's message of Mo M??r 01 15:36:10 +0100 2010:
+> > tried this, but broke on this specific message, cause the string was
+> > included but there was no signature.
+> Can you forward this message so that I can have a look, please?
+
+It was your message with the patch.
+
+<1267450467-sup-4411 at midna.zekjur.net>
+
+> 
+> > 517         ## Check for inline-PGP
+> > 518         if body =~ /^-----BEGIN PGP SIGNED MESSAGE-----/
+> > 519             gpg_start = "^-----BEGIN PGP SIGNED MESSAGE-----"
+> > 520             gpg_signature = "^-----BEGIN PGP SIGNATURE-----"
+> > 521             gpg_end = "^-----END PGP SIGNED MESSAGE-----"
+> Why do you use ^ in the beginning but not $ in the end?
+
+You never know what kind of crude mailers are out there.
+
+greetz didi
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100301/f8508232/attachment.bin>
+
+From tarko at lanparty.ee  Tue Mar  2 09:47:42 2010
+From: tarko at lanparty.ee (Tarko Tikan)
+Date: Tue, 02 Mar 2010 16:47:42 +0200
+Subject: [sup-devel] [issue47] utf-8 regression: search&inbox views has
+	garbled utf-8
+In-Reply-To: <1264352828.18.0.950975059303.issue47@masanjin.net>
+References: <1264352828.18.0.950975059303.issue47@masanjin.net>
+Message-ID: <1267541118-sup-2994@lanparty.ee>
+
+hey,
+
+I hit the same bug after upgrade and I've logged my findings (and workarounds) to http://masanjin.net/sup-bugs/issue47
+
+I think the snippet issue might be because http://gitorious.org/sup/mainline/commit/f26d4052c5bf5f327239e8555f4167a2cfa0e00f - snippet might already be wrongly converted in index or needs conversion before display.
+
+-- 
+tarko
+
+From rlane at club.cc.cmu.edu  Thu Mar  4 02:48:16 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 04 Mar 2010 02:48:16 -0500
+Subject: [sup-devel] now in next: sup-cmd
+Message-ID: <1267687531-sup-5689@zyrg.net>
+
+I already had the code for a sup-server sup-cmd sitting around, so I
+wrote a small compatibility layer that lets it run using the mainline
+index API. It outputs YAML.
+
+Usage:
+sup-cmd count 'is:inbox'
+sup-cmd query --offset 10 --limit 5 'is:unread'
+sup-cmd label --add-labels 'bugs' --remove-labels 'inbox' 'is:inbox AND from:bugzilla'
+sup-cmd add --labels 'sent' < email
+
+From nicolas.pouillard at gmail.com  Thu Mar  4 08:10:39 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 04 Mar 2010 05:10:39 -0800 (PST)
+Subject: [sup-devel] now in next: sup-cmd
+In-Reply-To: <1267687531-sup-5689@zyrg.net>
+References: <1267687531-sup-5689@zyrg.net>
+Message-ID: <4b8fb14f.0702d00a.5427.ffffe469@mx.google.com>
+
+On Thu, 04 Mar 2010 02:48:16 -0500, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> I already had the code for a sup-server sup-cmd sitting around, so I
+> wrote a small compatibility layer that lets it run using the mainline
+> index API. It outputs YAML.
+> 
+> Usage:
+> sup-cmd count 'is:inbox'
+> sup-cmd query --offset 10 --limit 5 'is:unread'
+> sup-cmd label --add-labels 'bugs' --remove-labels 'inbox' 'is:inbox AND from:bugzilla'
+> sup-cmd add --labels 'sent' < email
+
+This is great!
+
+BTW is there any hope to reach a kind of concensus of a nice CLI API with
+notmuch people?
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From cworth at cworth.org  Thu Mar  4 13:25:06 2010
+From: cworth at cworth.org (Carl Worth)
+Date: Thu, 04 Mar 2010 10:25:06 -0800
+Subject: [sup-devel] now in next: sup-cmd
+In-Reply-To: <4b8fb14f.0702d00a.5427.ffffe469@mx.google.com>
+References: <1267687531-sup-5689@zyrg.net>
+	<4b8fb14f.0702d00a.5427.ffffe469@mx.google.com>
+Message-ID: <87bpf4eygt.fsf@yoom.home.cworth.org>
+
+On Thu, 04 Mar 2010 05:10:39 -0800 (PST), Nicolas Pouillard <nicolas.pouillard at gmail.com> wrote:
+> > sup-cmd count 'is:inbox'
+> > sup-cmd query --offset 10 --limit 5 'is:unread'
+> > sup-cmd label --add-labels 'bugs' --remove-labels 'inbox' 'is:inbox AND from:bugzilla'
+> > sup-cmd add --labels 'sent' < email
+> 
+> This is great!
+> 
+> BTW is there any hope to reach a kind of concensus of a nice CLI API with
+> notmuch people?
+
+It seems to me, at least, like that would be a worthwhile effort.
+
+I still consider the notmuch UI young enough that it's still quite
+flexible. And I'm here on the sup list if we want to talk here.
+
+For reference, the rough equivalent of the above commands in notmuch
+would be (with footnotes where things don't match exactly):
+
+	notmuch count 'tag:inbox'
+	notmuch search 'tag:unread' [*]
+        notmuch tag +bugs -inbox 'tag:inbox AND from:bugzilla'
+        notmuch new [**]
+
+So, I obviously switched from "label" to "tag" when I moved from sup to
+notmuch. But I do like the "is:" prefix---I can easily see adding that
+at least.
+
+-Carl
+
+[*] Notmuch currently doesn't have an equivalent of --offset and --limit
+but did have --first and --max-threads for a while, (and we'll probably
+be adding the same feature back again). The names of "offset" and "limit"
+sound good to me.
+
+[**] "notmuch new" is certainly only a very poor approximation of
+"sup-cmd add". The notmuch cli does not currently have any way to add an
+explicit file, (instead, "notmuch new" simply finds all new, renamed,
+and deleted files within the mail store). By the way, what's the
+semantic for "sup-cmd add" when it accepts a message on stdin? How is
+the message content every returned later?
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100304/e5f1bcfd/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Fri Mar  5 03:40:27 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 05 Mar 2010 00:40:27 -0800 (PST)
+Subject: [sup-devel] now in next: sup-cmd
+In-Reply-To: <87bpf4eygt.fsf@yoom.home.cworth.org>
+References: <1267687531-sup-5689@zyrg.net>
+	<4b8fb14f.0702d00a.5427.ffffe469@mx.google.com>
+	<87bpf4eygt.fsf@yoom.home.cworth.org>
+Message-ID: <4b90c37b.1701d00a.2f5e.2688@mx.google.com>
+
+On Thu, 04 Mar 2010 10:25:06 -0800, Carl Worth <cworth at cworth.org> wrote:
+> On Thu, 04 Mar 2010 05:10:39 -0800 (PST), Nicolas Pouillard <nicolas.pouillard at gmail.com> wrote:
+> > > sup-cmd count 'is:inbox'
+> > > sup-cmd query --offset 10 --limit 5 'is:unread'
+> > > sup-cmd label --add-labels 'bugs' --remove-labels 'inbox' 'is:inbox AND from:bugzilla'
+> > > sup-cmd add --labels 'sent' < email
+> > 
+> > This is great!
+> > 
+> > BTW is there any hope to reach a kind of concensus of a nice CLI API with
+> > notmuch people?
+> 
+> It seems to me, at least, like that would be a worthwhile effort.
+> 
+> I still consider the notmuch UI young enough that it's still quite
+> flexible. And I'm here on the sup list if we want to talk here.
+> 
+> For reference, the rough equivalent of the above commands in notmuch
+> would be (with footnotes where things don't match exactly):
+> 
+> 	notmuch count 'tag:inbox'
+> 	notmuch search 'tag:unread' [*]
+>         notmuch tag +bugs -inbox 'tag:inbox AND from:bugzilla'
+>         notmuch new [**]
+
+About the sup-cmd label vs notmuch tag commands, I prefer the notmuch syntax.
+Moreover an alias could be added to both to unify between label and tag.
+
+> So, I obviously switched from "label" to "tag" when I moved from sup to
+> notmuch. But I do like the "is:" prefix---I can easily see adding that
+> at least.
+
+Yes please add the is: prefix too, tag: was added to sup.
+
+Regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From scott at foolishpride.org  Mon Mar  8 00:45:54 2010
+From: scott at foolishpride.org (Scott Henson)
+Date: Mon, 8 Mar 2010 00:45:54 -0500
+Subject: [sup-devel] Writing changes back to sources
+Message-ID: <6c0c31751003072145r13f3bdd0m37f47c71995af06e@mail.gmail.com>
+
+I've been working on getting writing changes back to maildirs.  I've got a
+stab that basically re-implements sup-sync-back in its own script, but I'm
+not really satisfied with it.  What I would like to be is create a script
+that will modify a source with an arbitrary sup expression.  I guess some
+examples would be a good way to show what I am talking about.
+
+$ sup-write --drop "is:deleted" maildir:/home/user/Mail/INBOX
+
+This would drop all mail matching the expression "is:deleted" from the INBOX
+source.
+
+$ sup-write --archive maildir:/home/user/Mail/Archives "!label:inbox"
+maildir:/home/user/Mail/INBOX
+
+This would move all messages from the INBOX to Archives that have been
+archived.
+
+$ sup-write --store "has:mailist" maildir:/home/user/Mail/Lists
+
+This would find all messages in the Index and write them to the source.
+
+You could put any valid sup expression in the above and have it push the
+results out to the requested sources.  You could specify multiple sources to
+have it applied across all of them.  My thought is that you would write a
+series of scripts to push changes to the index down to the sources.  For
+instance, remove all deleted mail and spam, then store labels to their own
+sources (good for gmail integration) and finally archive what is left.
+
+To do the above I think we probably need standardize how messages are added
+and removed from sources.  The maildir source has store_message and delete.
+ I would suppose that we would need to implement something similar for the
+other sources (is mbox the only other one left?).  Does this seem to be a
+good idea or do we want to continue having different ways of writing back to
+sources?
+
+-- 
+Scott Henson
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100308/2d44d282/attachment.html>
+
+From scott at foolishpride.org  Mon Mar  8 00:41:28 2010
+From: scott at foolishpride.org (Scott Henson)
+Date: Mon, 8 Mar 2010 00:41:28 -0500
+Subject: [sup-devel] Maildir souce id rework
+In-Reply-To: <6c0c31751003072119i4c330800s6b508157544165e6@mail.gmail.com>
+References: <6c0c31751003072119i4c330800s6b508157544165e6@mail.gmail.com>
+Message-ID: <6c0c31751003072141mc3f0d00sfcf9cb5be18b6adc@mail.gmail.com>
+
+On Mon, Mar 8, 2010 at 12:19 AM, Scott Henson <sjh at foolishpride.org> wrote:
+
+> I've created a branch that changes the id that the maildir source returns,
+> which is then used as the source_info field inside the index.  It seems to
+> work well for me and I'd appreciate some more testing.  This work should
+> make the maildir source more robust and more friendly to other clients
+> accessing the source without completely throwing sup for a loop.  It will
+> also help sync back for maildir (more on this in a second email).
+>
+> A couple notes.  First, the base source.rb class says that the id returned
+> needs to be an integer, but that doesn't seem to be the case.  Also, you'll
+> note that start_offset and end_offset are not really telling the truth in my
+> version of the maildir source.  This doesn't seem to be a problem as nothing
+> seems to be using those two functions.  Second, this source might be
+> slightly slower in some places than the original source and faster in
+> others.  I think most of the work is done in scan_mailbox and the rest of
+> the source should be pretty light.  If anyone has any ideas on how to make
+> scan_mailbox lighter, I'd be very interested.  Also, reset might take a
+> while since it has to sort the ids array.
+>
+> Any help in making this better would be much appreciated.  Thanks.
+>
+>
+Probably need to provide a link.
+http://github.com/shenson/sup/tree/maildir
+
+
+
+
+-- 
+Scott Henson
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100308/c66a9697/attachment.html>
+
+From rlane at club.cc.cmu.edu  Mon Mar  8 00:57:40 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 08 Mar 2010 00:57:40 -0500
+Subject: [sup-devel] [ANN] Sup 0.11 released
+Message-ID: <1268026262-sup-1918@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.11.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+The deprecated Ferret index has been removed.
+
+Remote sources (IMAP, IMAPS, and mbox+ssh) have been deprecated and will be
+removed in 0.12. Tools like offlineimap, fetchmail, and rsync provide a much
+better user experience for these mail sources than Sup would ever be able to by
+itself.
+
+If your terminal supports it you can now use 256 colors in your colorscheme. Run
+the contrib/colorpicker.rb program to get the color names to put in colors.yaml.
+
+Saved searches are now supported. Hit '%' in search-results-mode to save the
+current search, and enter an empty search string to open the list of saved
+searches.
+
+Changelog for 0.11:
+* Remove deprecated Ferret backend.
+* Add deprecation notices to IMAP, IMAPS, and mbox+ssh sources.
+* 256 color support.
+* Backwards-compatible index format improvements.
+* Saved searches.
+* Improved support for custom keybindings.
+* Idle detection - poll totals accumulate and index flushes on idle.
+* Several textfield improvments.
+* New hooks: publish, mentions-attachments, keybindings,
+  index-mode-date-widget, gpg-args, and crypto-settings.
+* sup-cmd for easy programmatic access to a Sup index.
+* As always, many bugfixes and tweaks.
+
+From sup-bugs at masanjin.net  Mon Mar  8 18:05:18 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 08 Mar 2010 23:05:18 +0000
+Subject: [sup-devel] [issue74] sup-dump producing empty file in latest
+	release
+In-Reply-To: <1268089517.99.0.931999852916.issue74@masanjin.net>
+Message-ID: <1268089517.99.0.931999852916.issue74@masanjin.net>
+
+
+New submission from anonymous:
+
+sup-dump produces an empty dump file with git next (0.11 is probably closest
+release). I updated this morning after the release announcement and started the
+process to switch to xapian. Luckily I checked the dumpfile produced because it
+turned out empty :(
+
+----------
+messages: 187
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.5
+status: unread
+sup_version: 0.11/next
+title: sup-dump producing empty file in latest release
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue74>
+_________________________________________
+
+From marcus-sup at quintic.co.uk  Tue Mar  9 04:48:05 2010
+From: marcus-sup at quintic.co.uk (marcus-sup at quintic.co.uk)
+Date: Tue, 09 Mar 2010 09:48:05 +0000
+Subject: [sup-devel] [issue74] sup-dump producing empty file in latest
+ release
+In-Reply-To: <1268089517.99.0.931999852916.issue74@masanjin.net>
+References: <1268089517.99.0.931999852916.issue74@masanjin.net>
+Message-ID: <4B961955.7000306@quintic.co.uk>
+
+On 08/03/2010 23:05, anonymous wrote:
+> sup-dump produces an empty dump file with git next (0.11 is probably closest
+> release). I updated this morning after the release announcement and started the
+> process to switch to xapian. Luckily I checked the dumpfile produced because it
+> turned out empty:(
+
+I reported this, so if any more information is needed I'm on this list 
+(and obviously I'm tracking it in the issue tracker).
+
+Marcus
+
+
+From michael+sup at stapelberg.de  Tue Mar  9 11:43:03 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 17:43:03 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG (updated)
+In-Reply-To: <1267465546-sup-2321@peer.zerties.org>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+	<1267465546-sup-2321@peer.zerties.org>
+Message-ID: <1268152912-sup-4673@midna.zekjur.net>
+
+Hi everybody,
+
+Excerpts from Christian Dietrich's message of Mo M?r 01 18:46:52 +0100 2010:
+> It was your message with the patch.
+Alright, tested it and reworked my patch. The latest version is attached.
+
+Hope it is good enough to get merged now ;-).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-inline-GPG.patch
+Type: application/octet-stream
+Size: 7614 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100309/95bc67d6/attachment.obj>
+
+From sup-bugs at masanjin.net  Tue Mar  9 12:02:56 2010
+From: sup-bugs at masanjin.net (Peter Harkins)
+Date: Tue, 09 Mar 2010 17:02:56 +0000
+Subject: [sup-devel] [issue75] Crash,
+	untouchable threads - DocNotFoundError: No termlist for document
+In-Reply-To: <1268154176.59.0.385153871492.issue75@masanjin.net>
+Message-ID: <1268154176.59.0.385153871492.issue75@masanjin.net>
+
+
+New submission from Peter Harkins <ph at malaprop.org>:
+
+I have three spam threads in my inbox. If I try to interact with them in any way
+- view them, spam them, delete them, etc. - sup crashes.
+
+I'd appreciate any suggestions for how to get rid of them.
+
+--- RuntimeError from thread: index sync
+DocNotFoundError: No termlist for document 2362106147
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:600:in `old_add_term'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:600:in `add_term'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:510:in
+`index_message_labels'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:510:in `each'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:510:in
+`index_message_labels'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:446:in `sync_message'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/xapian_index.rb:98:in
+`update_message_state'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/index.rb:205:in `run_sync_worker'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/index.rb:192:in `start_sync_worker'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:77:in `reporting_thread'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `initialize'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `new'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `reporting_thread'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/index.rb:192:in `start_sync_worker'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/index.rb:236:in `send'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/index.rb:236:in `method_missing'
+/home/harkins/.gems/gems/sup-0.10.2/bin/sup:170
+/home/harkins/.gems/bin/sup:19:in `load'
+/home/harkins/.gems/bin/sup:19
+
+----------
+messages: 189
+nosy: Harkins
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.10.2
+title: Crash, untouchable threads - DocNotFoundError: No termlist for document
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue75>
+_________________________________________
+
+From michael+sup at stapelberg.de  Tue Mar  9 12:04:27 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 18:04:27 +0100
+Subject: [sup-devel] [PATCH] Correctly pad date strings,
+	as they might contain utf-8 characters
+Message-ID: <1268154208-sup-7661@midna.zekjur.net>
+
+Hi,
+
+attached you find a patch for this problem. Quote of the commit message:
+
+  sprintf is not utf8-aware and thus the output gets a wrong padding
+  (correct in terms of bytes, not correct in terms of visible characters).
+  You can notice this using a german locale (de_DE) and viewing mails
+  from march (abbreviated "M?r" in german).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Correctly-pad-date-strings-as-they-might-contain-utf.patch
+Type: application/octet-stream
+Size: 1479 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100309/1aa5e413/attachment.obj>
+
+From michael+sup at stapelberg.de  Tue Mar  9 12:54:18 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 18:54:18 +0100
+Subject: [sup-devel] [PATCH] new hook: compose-from
+Message-ID: <1268157224-sup-7509@midna.zekjur.net>
+
+Hi,
+
+This hook is useful to use different names/addresses depending on the
+destination address, subject, etc. of the message. Example:
+
+  if header["To"] and header["To"] =~ /^sup-(.*)@rubyforge\.org$/
+    Person.from_address "Michael Stapelberg <michael+sup at stapelberg.de>"
+  end
+
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-new-hook-compose-from.patch
+Type: application/octet-stream
+Size: 2209 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100309/92da77e6/attachment.obj>
+
+From ezyang at MIT.EDU  Tue Mar  9 13:18:00 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 09 Mar 2010 13:18:00 -0500
+Subject: [sup-devel] [PATCH] new hook: compose-from
+In-Reply-To: <1268157224-sup-7509@midna.zekjur.net>
+References: <1268157224-sup-7509@midna.zekjur.net>
+Message-ID: <1268158650-sup-7148@ezyang>
+
+Excerpts from Michael Stapelberg's message of Tue Mar 09 12:54:18 -0500 2010:
+> This hook is useful to use different names/addresses depending on the
+> destination address, subject, etc. of the message. Example:
+> 
+>   if header["To"] and header["To"] =~ /^sup-(.*)@rubyforge\.org$/
+>     Person.from_address "Michael Stapelberg <michael+sup at stapelberg.de>"
+>   end
+
+I use before-edit.rb to do a similar thing.  Are the semantics the same?
+
+Cheers,
+Edward
+
+From michael+sup at stapelberg.de  Tue Mar  9 17:21:46 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 23:21:46 +0100
+Subject: [sup-devel] [PATCH] new hook: compose-from
+In-Reply-To: <1268158650-sup-7148@ezyang>
+References: <1268157224-sup-7509@midna.zekjur.net> <1268158650-sup-7148@ezyang>
+Message-ID: <1268173241-sup-7958@midna.zekjur.net>
+
+Hi Edward,
+
+Excerpts from Edward Z. Yang's message of Di M?r 09 19:18:00 +0100 2010:
+> I use before-edit.rb to do a similar thing.  Are the semantics the same?
+Roughly. header["To"] contains a full string (not only the entered address)
+and you have to set header["From"] to a string instead of a Person object.
+
+But yeah, seems like you are right and this hook is redundant.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Tue Mar  9 17:58:33 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 23:58:33 +0100
+Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
+	before-edit for each reply type
+In-Reply-To: <1267295207-sup-7090@zyrg.net>
+References: <1264026370-sup-8092@midna.zekjur.net>
+	<1267295207-sup-7090@zyrg.net>
+Message-ID: <1268175393-sup-8314@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Sa Feb 27 19:29:27 +0100 2010:
+> What happens when you edit the message and then select another reply type?
+You are right, there was a problem here. I reworked the patch, it now behaves
+like this:
+As long as you did not edit the message, selecting another reply type changes
+the body. As soon as you edit one of the bodies, only the headers will be
+changed if you switch to a different reply type.
+
+You find the new version of the patch attached to this mail.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Use-multiple-body-arrays-when-calling-before-edit-fo.patch
+Type: application/octet-stream
+Size: 2475 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100309/024357bf/attachment.obj>
+
+From cworth at cworth.org  Tue Mar  9 19:08:11 2010
+From: cworth at cworth.org (Carl Worth)
+Date: Tue, 09 Mar 2010 16:08:11 -0800
+Subject: [sup-devel] now in next: sup-cmd
+In-Reply-To: <4b90c37b.1701d00a.2f5e.2688@mx.google.com>
+References: <1267687531-sup-5689@zyrg.net>
+	<4b8fb14f.0702d00a.5427.ffffe469@mx.google.com>
+	<87bpf4eygt.fsf@yoom.home.cworth.org>
+	<4b90c37b.1701d00a.2f5e.2688@mx.google.com>
+Message-ID: <87ocix82dw.fsf@yoom.home.cworth.org>
+
+In a recent thread on the sup mailing list there was discussion of the
+similarities of the recently-added sup-cmd command-line interface with
+that of notmuch. And there was at least one proposal for adding some
+syntax to notmuch:
+
+On Fri, 05 Mar 2010 00:40:27 -0800 (PST), Nicolas Pouillard <nicolas.pouillard at gmail.com> wrote:
+> Yes please add the is: prefix too, tag: was added to sup.
+
+I've just added this to notmuch. So you can now search for "is:unread"
+as a synonym for "tag:unread".
+
+Have fun,
+
+-Carl
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100309/d836a38d/attachment.bin>
+
+From ezyang at MIT.EDU  Tue Mar  9 23:50:23 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 09 Mar 2010 23:50:23 -0500
+Subject: [sup-devel] Mysterious nil errors
+Message-ID: <1268196562-sup-1692@ezyang>
+
+Here are some patches that correct some mysterious Nil errors.  I don't
+know what messages caused them or if they're correct.  I don't really want
+them to go in, but I would like to know further directions.
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index ebc73fc..ec12039 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -436,12 +436,12 @@ private
+         end
+ 
+       unless chunks
+-        sibling_types = m.body.map { |p| p.header.content_type }
++        sibling_types = m.body.map { |p| p.header["content_type"] ? p.header.content_type : "application/unknown" }
+         chunks = m.body.map { |p| message_to_chunks p, encrypted, sibling_types }.flatten.compact
+       end
+ 
+       chunks
+-    elsif m.header.content_type && m.header.content_type.downcase == "message/rfc822"
++    elsif m.header["content_type"] && m.header.content_type && m.header.content_type.downcase == "message/rfc822"
+       if m.body
+         payload = RMail::Parser.read(m.body)
+         from = payload.header.from.first ? payload.header.from.first.format : ""
+@@ -458,7 +458,7 @@ private
+         debug "no body for message/rfc822 enclosure; skipping"
+         []
+       end
+-    elsif m.header.content_type && m.header.content_type.downcase == "application/pgp" && m.body
++    elsif m.header["content_type"] && m.header.content_type && m.header.content_type.downcase == "application/pgp" && m.body
+       ## apparently some versions of Thunderbird generate encryped email that
+       ## does not follow RFC3156, e.g. messages with X-Enigmail-Version: 0.95.0
+       ## they have no MIME multipart and just set the body content type to
+@@ -503,7 +503,7 @@ private
+         # Lowercase the filename because searches are easier that way 
+         @attachments.push filename.downcase unless filename =~ /^sup-attachment-/
+         add_label :attachment unless filename =~ /^sup-attachment-/
+-        content_type = (m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
++        content_type = (m.header["content_type"] && m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+         [Chunk::Attachment.new(content_type, filename, m, sibling_types)]
+ 
+       ## otherwise, it's body text
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index f53001f..84399d3 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -231,7 +231,7 @@ EOS
+     old_cursor_thread = cursor_thread
+     @mutex.synchronize do
+       ## let's see you do THIS in python
+-      @threads = @ts.threads.select { |t| !@hidden_threads[t] }.sort_by { |t| [t.date, t.first.id] }.reverse
++      @threads = @ts.threads.select { |t| !@hidden_threads[t] && t.first }.sort_by { |t| [t.date, t.first.id] }.reverse
+       @size_widgets = @threads.map { |t| size_widget_for_thread t }
+       @size_widget_width = @size_widgets.max_of { |w| w.display_length }
+       @date_widgets = @threads.map { |t| date_widget_for_thread t }
+
+From ezyang at MIT.EDU  Tue Mar  9 23:52:45 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 09 Mar 2010 23:52:45 -0500
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268196562-sup-1692@ezyang>
+References: <1268196562-sup-1692@ezyang>
+Message-ID: <1268196678-sup-9427@ezyang>
+
+Actually, I know precisely where this is from:
+
+Content-Type: 
+Content-Disposition: inline
+Content-Transfer-Encoding: base64
+RT-Attachment: 1176783/16113169/7868621
+
+Which translates into an empty string and thus the following
+trace:
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `downcase' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/rmail-1.0.0/lib/rmail/header.rb:537:in `content_type'
+/home/ezyang/Dev/sup/lib/sup/message.rb:439:in `message_to_chunks'
+/home/ezyang/Dev/sup/lib/sup/message.rb:439:in `map'
+/home/ezyang/Dev/sup/lib/sup/message.rb:439:in `message_to_chunks'
+/home/ezyang/Dev/sup/lib/sup/message.rb:244:in `load_from_source!'
+/home/ezyang/Dev/sup/lib/sup/message.rb:340:in `build_from_source'
+/home/ezyang/Dev/sup/lib/sup/poll.rb:163:in `each_message_from'
+/home/ezyang/Dev/sup/lib/sup/maildir.rb:160:in `each'
+[snip]
+
+I suppose this is something that should be fixed on the rmail side...
+
+Cheers,
+Edward
+
+From tero at tilus.net  Wed Mar 10 01:43:12 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 10 Mar 2010 08:43:12 +0200
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268196678-sup-9427@ezyang>
+References: <1268196562-sup-1692@ezyang> <1268196678-sup-9427@ezyang>
+Message-ID: <1268202637-sup-4495@tilus.net>
+
+Edward Z. Yang, 2010-03-10 06:52:
+> I suppose this is something that should be fixed on the rmail
+> side...
+
+And this is definitely not the only one.  Unfortunately RubyMail
+<http://rubyforge.org/projects/rubymail/> is pretty much dead.
+
+It looks like the state of art ruby mail library is currently Mail
+<http://github.com/mikel/mail>.  I don't know how well it would serve
+sup, but rmail definitely has a long list of issues (already worked
+around in sup) and switching mail library would be a lot of work.
+
+Thoughts?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup-bugs at masanjin.net  Wed Mar 10 09:52:46 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 10 Mar 2010 14:52:46 +0000
+Subject: [sup-devel] [issue76] undefined method `new_field' for
+	Ncurses::Form:Module
+In-Reply-To: <1268232766.13.0.536202344862.issue76@masanjin.net>
+Message-ID: <1268232766.13.0.536202344862.issue76@masanjin.net>
+
+
+New submission from anonymous:
+
+Hi have no clue whether ruby and/or sup is installed correctly at all -- I am
+not familiar with ruby and gem and stuff.
+
+What I did is:
+
+- I am on SuSE 11.1
+- I have no admin rights here, thus I did the following to install sup from gem:
+
+gem ins -r rake --install-dir /home/epple/.gem/ruby/1.8
+gem ins -r sup --install-dir /home/epple/.gem/ruby/1.8
+gem ins -r ncursesw --install-dir /home/epple/.gem/ruby/1.8
+
+Then, I can invoke and run sup. (Looks promising.) When I then press "l" to add
+labels to a message, sup quits and prints the following:
+
+[Mi M?r 10 15:47:39 +0100 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/epple/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: main
+undefined method `new_field' for Ncurses::Form:Module
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/textfield.rb:36:in `activate'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:575:in `ask'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:31:in `synchronize'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:31:in `sync'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:574:in `ask'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:463:in
+`ask_many_with_completions'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:532:in `ask_for_labels'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `send'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:545:in `edit_labels'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in `handle_input'
+/home/epple/.gem/ruby/1.8/gems/sup-0.11/bin/sup:279
+/home/epple/.gem/ruby/1.8/bin/sup:19:in `load'
+/home/epple/.gem/ruby/1.8/bin/sup:19
+
+----------
+messages: 190
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2008-08-11 patchlevel 72) [x86_64-linux]
+status: unread
+sup_version: 0.11
+title: undefined method `new_field' for Ncurses::Form:Module
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue76>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Wed Mar 10 12:24:12 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 10 Mar 2010 12:24:12 -0500
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268196562-sup-1692@ezyang>
+References: <1268196562-sup-1692@ezyang>
+Message-ID: <1268241639-sup-9685@zyrg.net>
+
+Excerpts from Edward Z. Yang's message of 2010-03-09 23:50:23 -0500:
+> -        content_type = (m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+> +        content_type = (m.header["content_type"] && m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+
+Could you explain why these changes help? What's the return value of the
+[] call versus the method call?
+
+From ezyang at MIT.EDU  Wed Mar 10 12:40:19 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 10 Mar 2010 12:40:19 -0500
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268241639-sup-9685@zyrg.net>
+References: <1268196562-sup-1692@ezyang> <1268241639-sup-9685@zyrg.net>
+Message-ID: <1268242549-sup-1852@ezyang>
+
+Excerpts from Rich Lane's message of Wed Mar 10 12:24:12 -0500 2010:
+> Excerpts from Edward Z. Yang's message of 2010-03-09 23:50:23 -0500:
+> > -        content_type = (m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+> > +        content_type = (m.header["content_type"] && m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+> 
+> Could you explain why these changes help? What's the return value of the
+> [] call versus the method call?
+
+Sure!  We turn our heads to exhibit 1: The rmail code that implements m.header.content_type
+
+    def content_type(default = nil)
+      if value = self['content-type']
+        value.strip.split(/\s*;\s*/)[0].downcase
+      else
+        if block_given?
+          yield
+        else
+          default
+        end
+      end
+    end
+
+This code takes "text/plain; charset=utf-8" and ensures that only "text/plain"
+is returned.  But what if self['content-type'] is empty?  Then we call split
+on an empty string...
+
+irb(main):001:0> "".strip.split(/\s*;\s*/)
+=> []
+
+Oops; the zero indexing fails.
+
+Actually, the patch is buggy; I should be testing for content-type instead. :-)
+
+Cheers,
+Edward
+
+From rlane at club.cc.cmu.edu  Wed Mar 10 12:59:48 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 10 Mar 2010 12:59:48 -0500
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268242549-sup-1852@ezyang>
+References: <1268196562-sup-1692@ezyang> <1268241639-sup-9685@zyrg.net>
+	<1268242549-sup-1852@ezyang>
+Message-ID: <1268243539-sup-5753@zyrg.net>
+
+If header['content-type'] == "" then it counts as true in ruby. Maybe
+you wanted to check empty? instead? This is an rmail bug, so I think
+instead of adding workarounds to our code we should monkeypatch rmail to
+fix it.
+
+From ezyang at MIT.EDU  Wed Mar 10 13:06:19 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 10 Mar 2010 13:06:19 -0500
+Subject: [sup-devel] Mysterious nil errors
+In-Reply-To: <1268243539-sup-5753@zyrg.net>
+References: <1268196562-sup-1692@ezyang> <1268241639-sup-9685@zyrg.net>
+	<1268242549-sup-1852@ezyang> <1268243539-sup-5753@zyrg.net>
+Message-ID: <1268244332-sup-8923@ezyang>
+
+Excerpts from Rich Lane's message of Wed Mar 10 12:59:48 -0500 2010:
+> If header['content-type'] == "" then it counts as true in ruby. Maybe
+> you wanted to check empty? instead? This is an rmail bug, so I think
+> instead of adding workarounds to our code we should monkeypatch rmail to
+> fix it.
+
+Heh, my ruby-fu isn't quite there yet; I just hacked around until I made all of
+the errors go away. :-)  Monkeypatching the rmail code would not be a bad
+proposition.
+
+Cheers,
+Edward
+
+From michael+sup at stapelberg.de  Wed Mar 10 16:23:26 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 10 Mar 2010 22:23:26 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG (updated)
+In-Reply-To: <1268152912-sup-4673@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+	<1267465546-sup-2321@peer.zerties.org>
+	<1268152912-sup-4673@midna.zekjur.net>
+Message-ID: <1268256145-sup-8174@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Michael Stapelberg's message of Di M?r 09 17:43:03 +0100 2010:
+> Alright, tested it and reworked my patch. The latest version is attached.
+Updated it once again after testing with a user on sup-talk. See attachment
+and please merge it now :).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-inline-GPG.patch
+Type: application/octet-stream
+Size: 7925 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100310/ba9a09f8/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Thu Mar 11 23:20:52 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 11 Mar 2010 23:20:52 -0500
+Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
+	before-edit for each reply type
+In-Reply-To: <1268175393-sup-8314@midna.zekjur.net>
+References: <1264026370-sup-8092@midna.zekjur.net>
+	<1267295207-sup-7090@zyrg.net>
+	<1268175393-sup-8314@midna.zekjur.net>
+Message-ID: <1268366964-sup-2310@zyrg.net>
+
+lib/sup/modes/reply-mode.rb:
+> +      @bodies[k] = Array.new(body)
+
+Why is the body in an array?
+
+lib/sup/modes/reply-mode.rb:
+> +      if !@edited
+> +        self.body = @bodies[@type_selector.val]
+> +      end
+
+The idiomatic way to write this is:
+self.body = @bodies[@type_selector.val] unless @edited
+
+The EditMessageMode constructor also calls the before-edit hook, but I
+guess if it wasn't broken before it won't be now.
+
+lib/sup/modes/reply-mode.rb:
+> +    if new_body != @bodies[@type_selector.val]
+> +      @bodies[@type_selector.val] = new_body
+> +      @edited = true
+> +    end
+
+Is there a reason we can't do this unconditionally?
+
+From rlane at club.cc.cmu.edu  Thu Mar 11 23:43:38 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 11 Mar 2010 23:43:38 -0500
+Subject: [sup-devel] [PATCH] Implement inline GPG (updated)
+In-Reply-To: <1268256145-sup-8174@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+	<1267465546-sup-2321@peer.zerties.org>
+	<1268152912-sup-4673@midna.zekjur.net>
+	<1268256145-sup-8174@midna.zekjur.net>
+Message-ID: <1268368142-sup-4547@zyrg.net>
+
+lib/sup/message.rb:
+
+Since the regexes only match whole lines, why not just do string
+comparisons? I'd also like those strings to be constants but I won't
+insist on that. 
+
+The body assignment should be a ternary.
+
+I really dislike the flip-flop operator but it looks like the best way
+to do this. Please package those selects into a commented Enumerable
+method.
+
+Please factor your two cases in message_to_chunks into very well
+documented methods. message_to_chunks is already too complicated.
+
+From rlane at club.cc.cmu.edu  Thu Mar 11 23:45:06 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 11 Mar 2010 23:45:06 -0500
+Subject: [sup-devel] [PATCH] Correctly pad date strings,
+	as they might contain utf-8 characters
+In-Reply-To: <1268154208-sup-7661@midna.zekjur.net>
+References: <1268154208-sup-7661@midna.zekjur.net>
+Message-ID: <1268369074-sup-8727@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-03-09 12:04:27 -0500:
+> Hi,
+> 
+> attached you find a patch for this problem. Quote of the commit message:
+> 
+>   sprintf is not utf8-aware and thus the output gets a wrong padding
+>   (correct in terms of bytes, not correct in terms of visible characters).
+>   You can notice this using a german locale (de_DE) and viewing mails
+>   from march (abbreviated "M?r" in german).
+> 
+> Best regards,
+> Michael
+
+Thanks, applied directly to master.
+
+From sup-bugs at masanjin.net  Fri Mar 12 02:28:09 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 12 Mar 2010 07:28:09 +0000
+Subject: [sup-devel] [issue77] random crash
+In-Reply-To: <1268378889.12.0.558023869524.issue77@masanjin.net>
+Message-ID: <1268378889.12.0.558023869524.issue77@masanjin.net>
+
+
+New submission from anonymous:
+
+I had just filled in the To address using my external lbdb hook which has always 
+worked before and sup crashed:
+
+--- NoMethodError from thread: main
+undefined method `has_label?' for nil:NilClass
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-
+mode.rb:237:in `edit_message'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/hook.rb:55:in `find'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:81:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:168:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in 
+`each_with_stuff'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:78:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:75:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-
+mode.rb:237:in `find'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-
+mode.rb:237:in `edit_message'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/mode.rb:51:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/mode.rb:51:in 
+`handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/buffer.rb:270:in 
+`handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:270
+/opt/local/bin/sup:19:in `load'
+/opt/local/bin/sup:19
+Reminder: to update your Ferret index to Xapian, run sup-convert-ferret-index.
+
+----------
+messages: 194
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 10.2
+title: random crash
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue77>
+_________________________________________
+
+From michael+sup at stapelberg.de  Fri Mar 12 05:17:44 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 12 Mar 2010 11:17:44 +0100
+Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
+	before-edit for each reply type
+In-Reply-To: <1268366964-sup-2310@zyrg.net>
+References: <1264026370-sup-8092@midna.zekjur.net>
+	<1267295207-sup-7090@zyrg.net>
+	<1268175393-sup-8314@midna.zekjur.net>
+	<1268366964-sup-2310@zyrg.net>
+Message-ID: <1268388251-sup-2106@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Fr M?r 12 05:20:52 +0100 2010:
+> lib/sup/modes/reply-mode.rb:
+> > +      @bodies[k] = Array.new(body)
+> 
+> Why is the body in an array?
+That was left over while refactoring. It isn?t necessary.
+
+> The idiomatic way to write this is:
+> self.body = @bodies[@type_selector.val] unless @edited
+Alright, changed.
+
+> lib/sup/modes/reply-mode.rb:
+> > +    if new_body != @bodies[@type_selector.val]
+> > +      @bodies[@type_selector.val] = new_body
+> > +      @edited = true
+> > +    end
+> 
+> Is there a reason we can't do this unconditionally?
+Yes, I wanted to avoid setting the @edited flag if the user exited the editor
+without making any changes. That way, he can benefit from the changing bodies
+for a longer time.
+
+Updated patch attached.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Use-multiple-body-arrays-when-calling-before-edit-fo.patch
+Type: application/octet-stream
+Size: 2426 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100312/454445e0/attachment-0001.obj>
+
+From michael+sup at stapelberg.de  Fri Mar 12 06:02:00 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 12 Mar 2010 12:02:00 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG (updated)
+In-Reply-To: <1268368142-sup-4547@zyrg.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+	<1267465546-sup-2321@peer.zerties.org>
+	<1268152912-sup-4673@midna.zekjur.net>
+	<1268256145-sup-8174@midna.zekjur.net>
+	<1268368142-sup-4547@zyrg.net>
+Message-ID: <1268390058-sup-9413@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Fr M?r 12 05:43:38 +0100 2010:
+> Since the regexes only match whole lines, why not just do string
+> comparisons? I'd also like those strings to be constants but I won't
+> insist on that. 
+Good point, I changed that.
+
+> The body assignment should be a ternary.
+I avoided that because the line gets incredibly long then (91 characters
+vs. 79 characters inside the if. Are you sure you want that ternary?
+If so, please just change it yourself.
+
+> I really dislike the flip-flop operator but it looks like the best way
+> to do this. Please package those selects into a commented Enumerable
+> method.
+Done.
+
+> Please factor your two cases in message_to_chunks into very well
+> documented methods. message_to_chunks is already too complicated.
+Done.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-inline-GPG.patch
+Type: application/octet-stream
+Size: 8476 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100312/0624816a/attachment.obj>
+
+From bwalton at artsci.utoronto.ca  Fri Mar 12 10:22:22 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 12 Mar 2010 10:22:22 -0500
+Subject: [sup-devel] Writing changes back to sources
+In-Reply-To: <6c0c31751003072145r13f3bdd0m37f47c71995af06e@mail.gmail.com>
+References: <6c0c31751003072145r13f3bdd0m37f47c71995af06e@mail.gmail.com>
+Message-ID: <1268407222-sup-8959@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Scott Henson's message of Mon Mar 08 00:45:54 -0500 2010:
+
+> To do the above I think we probably need standardize how messages
+> are added and removed from sources.  The maildir source has
+> store_message and delete.  I would suppose that we would need to
+> implement something similar for the other sources (is mbox the only
+> other one left?).  Does this seem to be a good idea or do we want to
+> continue having different ways of writing back to sources?
+
+This is overall a good idea, I think.  I haven't looked at this in
+some time, so my memory may be off or the code changed in the interim,
+but if you did something like this, you could like do away with
+SentManager completely.  Without the addition support of the mbox
+store_message method, it would be a skeleton for default_set_source
+(or whatever that method is)...at which point that functionality could
+be handled differently.
+
+Just a few (hopefully valid and useful) thoughts.
+
+Thanks
+-Ben
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100312/8f089fd7/attachment.bin>
+
+From daniel.schoepe at googlemail.com  Sun Mar 14 12:07:05 2010
+From: daniel.schoepe at googlemail.com (Daniel Schoepe)
+Date: Sun, 14 Mar 2010 17:07:05 +0100
+Subject: [sup-devel] [PATCH] Added slip_rows config option
+Message-ID: <1268582825-32353-1-git-send-email-daniel.schoepe@googlemail.com>
+
+This patch adds a slip_rows config option used by thread-view-mode
+that passes the argument to scroll-mode, which already has that
+functionality, but it was only used by completion-mode before.
+The option controls how many lines of context are shown when scrolling
+up/down.
+---
+ lib/sup.rb                        |    3 ++-
+ lib/sup/modes/thread-view-mode.rb |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 2765faa..c94c2b0 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -264,7 +264,8 @@ else
+     :default_attachment_save_dir => "",
+     :sent_source => "sup://sent",
+     :poll_interval => 300,
+-    :wrap_width => 0
++    :wrap_width => 0,
++    :slip_rows => 0
+   }
+   begin
+     FileUtils.mkdir_p Redwood::BASE_DIR
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 63fe211..6138dc7 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -111,7 +111,7 @@ EOS
+   ## objects. @person_lines is a map from row #s to Person objects.
+ 
+   def initialize thread, hidden_labels=[], index_mode=nil
+-    super()
++    super :slip_rows => $config[:slip_rows]
+     @thread = thread
+     @hidden_labels = hidden_labels
+ 
+-- 
+1.7.0
+
+
+From sup-bugs at masanjin.net  Sun Mar 14 20:07:36 2010
+From: sup-bugs at masanjin.net (Brian May)
+Date: Mon, 15 Mar 2010 00:07:36 +0000
+Subject: [sup-devel] [issue78] crashes while scrolling through results
+In-Reply-To: <1268611656.8.0.931978432206.issue78@masanjin.net>
+Message-ID: <1268611656.8.0.931978432206.issue78@masanjin.net>
+
+
+New submission from Brian May <brian at microcomaustralia.com.au>:
+
+Happens when scrolling through search results, on an up to date Debian/sid
+system.
+
+Same problem also happened on Ubuntu/Karmic.
+
+[Sun Mar 14 23:59:39 +0000 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/home/brian/tree/sup/lib/sup.rb:17:in `id'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/hook.rb:123:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `each'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:652:in 
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:624:in 
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup.rb:76:in `reporting_thread'
+/home/brian/tree/sup/lib/sup.rb:74:in `initialize'
+/home/brian/tree/sup/lib/sup.rb:74:in `new'
+/home/brian/tree/sup/lib/sup.rb:74:in `reporting_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:623:in 
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:694:in 
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:89
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:22:in `call'
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:22:in `initialize'
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:22:in `each'
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:22:in `initialize'
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:19:in `new'
+/home/brian/tree/sup/lib/sup/modes/line-cursor-mode.rb:19:in `initialize'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:60:in `initialize'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:6:in `initialize'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:46:in `new'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:46:in 
+`spawn_from_query'
+/home/brian/tree/sup/bin/sup:314
+
+----------
+messages: 195
+nosy: brian
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: b4f256a6d030d8d07cc61561ed1c8ba27287c250
+title: crashes while scrolling through results
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue78>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sun Mar 14 23:27:46 2010
+From: sup-bugs at masanjin.net (Brian May)
+Date: Mon, 15 Mar 2010 03:27:46 +0000
+Subject: [sup-devel] [issue79] crashes when sending email
+In-Reply-To: <1268623666.55.0.473063715174.issue79@masanjin.net>
+Message-ID: <1268623666.55.0.473063715174.issue79@masanjin.net>
+
+
+New submission from Brian May <brian at microcomaustralia.com.au>:
+
+[Mon Mar 15 14:22:55 +1100 2010] No 'ncursesw' gem detected. Install it for wide 
+character support.
+[Mon Mar 15 14:23:38 +1100 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- TypeError from thread: main
+can't convert nil into String
+/home/brian/tree/sup/lib/sup/mbox/loader.rb:117:in `exists?'
+/home/brian/tree/sup/lib/sup/mbox/loader.rb:117:in `store_message'
+/home/brian/tree/sup/lib/sup/util.rb:610:in `send'
+/home/brian/tree/sup/lib/sup/util.rb:610:in `__pass'
+/home/brian/tree/sup/lib/sup/util.rb:597:in `method_missing'
+/home/brian/tree/sup/lib/sup/sent.rb:28:in `write_sent_message'
+/home/brian/tree/sup/lib/sup/util.rb:570:in `send'
+/home/brian/tree/sup/lib/sup/util.rb:570:in `method_missing'
+/home/brian/tree/sup/lib/sup/modes/edit-message-mode.rb:346:in `send_message'
+/home/brian/tree/sup/lib/sup/mode.rb:59:in `send'
+/home/brian/tree/sup/lib/sup/mode.rb:59:in `handle_input'
+/home/brian/tree/sup/lib/sup/buffer.rb:279:in `handle_input'
+/home/brian/tree/sup/bin/sup:279
+
+----------
+messages: 196
+nosy: brian
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: b4f256a6d030d8d07cc61561ed1c8ba27287c250
+title: crashes when sending email
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue79>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Mon Mar 15 01:09:23 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 15 Mar 2010 01:09:23 -0400
+Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
+	before-edit for each reply type
+In-Reply-To: <1268388251-sup-2106@midna.zekjur.net>
+References: <1264026370-sup-8092@midna.zekjur.net>
+	<1267295207-sup-7090@zyrg.net>
+	<1268175393-sup-8314@midna.zekjur.net>
+	<1268366964-sup-2310@zyrg.net>
+	<1268388251-sup-2106@midna.zekjur.net>
+Message-ID: <1268629722-sup-6122@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Mon Mar 15 01:12:52 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 15 Mar 2010 01:12:52 -0400
+Subject: [sup-devel] [PATCH] Added slip_rows config option
+In-Reply-To: <1268582825-32353-1-git-send-email-daniel.schoepe@googlemail.com>
+References: <1268582825-32353-1-git-send-email-daniel.schoepe@googlemail.com>
+Message-ID: <1268629958-sup-6763@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Mon Mar 15 01:19:59 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 15 Mar 2010 01:19:59 -0400
+Subject: [sup-devel] [PATCH] Implement inline GPG (updated)
+In-Reply-To: <1268390058-sup-9413@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+	<1267293663-sup-2241@zyrg.net>
+	<1267450467-sup-4411@midna.zekjur.net>
+	<1267454104-sup-9569@peer.zerties.org>
+	<1267462001-sup-1957@midna.zekjur.net>
+	<1267465546-sup-2321@peer.zerties.org>
+	<1268152912-sup-4673@midna.zekjur.net>
+	<1268256145-sup-8174@midna.zekjur.net>
+	<1268368142-sup-4547@zyrg.net>
+	<1268390058-sup-9413@midna.zekjur.net>
+Message-ID: <1268630380-sup-8431@zyrg.net>
+
+Branch inline-gpg, merged to next.
+
+From sup-bugs at masanjin.net  Wed Mar 17 15:19:57 2010
+From: sup-bugs at masanjin.net (Derek Hval)
+Date: Wed, 17 Mar 2010 19:19:57 +0000
+Subject: [sup-devel] [issue80] test
+In-Reply-To: <1268853597.35.0.801379860174.issue80@masanjin.net>
+Message-ID: <1268853597.35.0.801379860174.issue80@masanjin.net>
+
+
+New submission from Derek Hval <derekhval at yahoo.com>:
+
+test
+
+----------
+messages: 197
+nosy: der74hva3
+priority: feature request
+ruby_version: 1
+status: resolved
+sup_version: 1
+title: test
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue80>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Mar 18 18:20:36 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 18 Mar 2010 22:20:36 +0000
+Subject: [sup-devel] [issue81] View all headers in thread view mode on/off
+In-Reply-To: <1268950835.93.0.894979057024.issue81@masanjin.net>
+Message-ID: <1268950835.93.0.894979057024.issue81@masanjin.net>
+
+
+New submission from anonymous:
+
+A config option that when enabled shows the detailed headers (what you get when 
+you press h in threadview) for all messages when you enter threadview mode, or 
+if this is impossible, a key that would toggle the detailed headers for all 
+messages in a thread, not just the message you're on.
+
+----------
+messages: 198
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7.249-1 (debian)
+status: unread
+sup_version: 0.10.2-1 (debian)
+title: View all headers in thread view mode on/off
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue81>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Mar 18 18:31:18 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 18 Mar 2010 22:31:18 +0000
+Subject: [sup-devel] [issue82] Customizing the color of the selector/cursor
+In-Reply-To: <1268951478.07.0.666387744958.issue82@masanjin.net>
+Message-ID: <1268951478.07.0.666387744958.issue82@masanjin.net>
+
+
+New submission from anonymous:
+
+The cursor/selector doesn't seem to be in colors.yaml, would be nice if we 
+could customize the colour of the cursor.
+
+----------
+messages: 199
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7.249-1
+status: unread
+sup_version: 0.10.2-1
+title: Customizing the color of the selector/cursor
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue82>
+_________________________________________
+
+From sup-bugs at masanjin.net  Fri Mar 19 05:01:00 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 19 Mar 2010 09:01:00 +0000
+Subject: [sup-devel] [issue83] search for a message, not a thread
+In-Reply-To: <1268989260.29.0.892032759501.issue83@masanjin.net>
+Message-ID: <1268989260.29.0.892032759501.issue83@masanjin.net>
+
+
+New submission from anonymous:
+
+When I use 'F' to search a message, sup returns a thread, and most of the time, 
+I have to use '/' again to select the right message.
+I would like that, after a search, matching messages are highlighted in some 
+way.
+
+----------
+messages: 200
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: search for a message, not a thread
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue83>
+_________________________________________
+
+From michael+sup at stapelberg.de  Fri Mar 19 11:34:26 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 16:34:26 +0100
+Subject: [sup-devel] [PATCH 1/2] Make sup-tweak-labels work with ruby 1.9
+Message-ID: <1269012800-sup-3632@midna.zekjur.net>
+
+Hi,
+
+attached you find a patch to make sup-tweak-labels work with 1.9. Maybe the
+line can be written more beautifully.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Make-sup-tweak-labels-work-with-ruby-1.9.patch
+Type: application/octet-stream
+Size: 881 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100319/2e41714d/attachment.obj>
+
+From michael+sup at stapelberg.de  Fri Mar 19 11:36:37 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 16:36:37 +0100
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+Message-ID: <1269012878-sup-691@midna.zekjur.net>
+
+Hi,
+
+the attached patch uses nanosecond resolution to generate the unique id for
+each message of a maildir. This is necessary because I have about 2000 messages
+which have the same mtime and size. I am not sure on how to properly check for
+ruby 1.9 and do the right thing. Also, the user probably needs to run sup-sync
+after this change. Maybe it should be implemented as a config option and be
+enabled by default on new configs by sup-config? Thoughts?
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Use-nanosecond-resolution-of-mtime-for-generating-th.patch
+Type: application/octet-stream
+Size: 893 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100319/bf56ea36/attachment.obj>
+
+From michael+sup at stapelberg.de  Fri Mar 19 14:53:04 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 19:53:04 +0100
+Subject: [sup-devel] [PATCH] Start gpg with LC_MESSAGES=C
+Message-ID: <1269024593-sup-9101@midna.zekjur.net>
+
+Hi,
+
+attached you find a patch which ensures that LC_MESSAGES=C is set when starting
+gpg so that the regexps for interpreting the gpg output work.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Use-LC_MESSAGES-C-when-starting-gpg-so-that-the-rege.patch
+Type: application/octet-stream
+Size: 813 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100319/dd22a1ab/attachment.obj>
+
+From marka at pobox.com  Fri Mar 19 15:17:01 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 19 Mar 2010 15:17:01 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269012878-sup-691@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net>
+Message-ID: <1269026068-sup-6868@r61>
+
+Excerpts from Michael Stapelberg's message of Fri Mar 19 11:36:37 -0400 2010:
+> the attached patch uses nanosecond resolution to generate the unique id for
+> each message of a maildir. This is necessary because I have about 2000 messages
+> which have the same mtime and size.
+
+This a great idea, but if I understand correctly, it requires a file
+system that supports nanosecond resolution on timestamps, like ext4.
+Those of us on ext3 are out of luck, apparently:
+
+  https://ext4.wiki.kernel.org/index.php/Ext4_Howto#Inode-related_features
+
+From michael+sup at stapelberg.de  Fri Mar 19 15:27:36 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 20:27:36 +0100
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269026068-sup-6868@r61>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+Message-ID: <1269026769-sup-3830@midna.zekjur.net>
+
+Hi Mark,
+
+Excerpts from Mark Alexander's message of 2010-03-19 20:17:01 +0100:
+> This a great idea, but if I understand correctly, it requires a file
+> system that supports nanosecond resolution on timestamps, like ext4.
+> Those of us on ext3 are out of luck, apparently:
+>   https://ext4.wiki.kernel.org/index.php/Ext4_Howto#Inode-related_features
+Looks like you are right. The change won?t break on ext3, though, the
+nanoseconds will just be zero. Time to upgrade to ext4, I?d say ;-).
+
+Best regards,
+Michael
+
+From hyperbolist at gmail.com  Fri Mar 19 15:34:32 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Fri, 19 Mar 2010 15:34:32 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269026068-sup-6868@r61>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+Message-ID: <1269026805-sup-2720@changeling.local>
+
+Excerpts from Mark Alexander's message of Fri Mar 19 15:17:01 -0400 2010:
+> Excerpts from Michael Stapelberg's message of Fri Mar 19 11:36:37 -0400 2010:
+> > the attached patch uses nanosecond resolution to generate the unique id for
+> > each message of a maildir. This is necessary because I have about 2000 messages
+> > which have the same mtime and size.
+> 
+> This a great idea, but if I understand correctly, it requires a file
+> system that supports nanosecond resolution on timestamps, like ext4.
+> Those of us on ext3 are out of luck, apparently:
+> 
+>   https://ext4.wiki.kernel.org/index.php/Ext4_Howto#Inode-related_features
+
+Would inserting an SHA1 into the id solve these problems, or does it just 
+introduce more problems?
+
+From bwalton at artsci.utoronto.ca  Fri Mar 19 15:35:31 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 19 Mar 2010 15:35:31 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269026769-sup-3830@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+Message-ID: <1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Michael Stapelberg's message of Fri Mar 19 15:27:36 -0400 2010:
+
+Hi Michael,
+
+> Looks like you are right. The change won?t break on ext3, though, the
+> nanoseconds will just be zero. Time to upgrade to ext4, I?d say ;-).
+
+I like the idea here, but requiring ruby 1.9 _and_ a filesystem
+upgrade for a _mail client_ is a bit of a stretch, don't you think?
+Isn't there a more portable solution?
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From michael+sup at stapelberg.de  Fri Mar 19 15:46:29 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 20:46:29 +0100
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269026805-sup-2720@changeling.local>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026805-sup-2720@changeling.local>
+Message-ID: <1269027951-sup-4565@midna.zekjur.net>
+
+Hi Eric,
+
+Excerpts from Eric Sherman's message of 2010-03-19 20:34:32 +0100:
+> Would inserting an SHA1 into the id solve these problems, or does it just 
+> introduce more problems?
+The latter. The ID needs to be linear, not only unique.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Fri Mar 19 15:47:53 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Mar 2010 20:47:53 +0100
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+	<1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1269027991-sup-5670@midna.zekjur.net>
+
+Hi Ben,
+
+Excerpts from Ben Walton's message of 2010-03-19 20:35:31 +0100:
+> I like the idea here, but requiring ruby 1.9 _and_ a filesystem
+> upgrade for a _mail client_ is a bit of a stretch, don't you think?
+> Isn't there a more portable solution?
+There is: Rich mentioned that proper move/delete handling for maildirs also
+solves the problem. However that doesn?t seem to be planned for the very near
+future, so I posted my patch which fixes the problem right now (given that
+you use ruby 1.9 and a decent filesystem).
+
+Best regards,
+Michael
+
+From bwalton at artsci.utoronto.ca  Fri Mar 19 16:05:06 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 19 Mar 2010 16:05:06 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269027991-sup-5670@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+	<1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+	<1269027991-sup-5670@midna.zekjur.net>
+Message-ID: <1269029060-sup-9476@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Michael Stapelberg's message of Fri Mar 19 15:47:53 -0400 2010:
+
+> There is: Rich mentioned that proper move/delete handling for
+> maildirs also solves the problem. However that doesn?t seem to be
+> planned for the very near future, so I posted my patch which fixes
+> the problem right now (given that you use ruby 1.9 and a decent
+> filesystem).
+
+Ok.  I'd rather work with you towards implementing this handling than
+force an upgrade on myself that would be both ruby and filesystem
+(incl servers and nfs).
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From marka at pobox.com  Fri Mar 19 16:35:38 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 19 Mar 2010 16:35:38 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269027991-sup-5670@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+	<1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+	<1269027991-sup-5670@midna.zekjur.net>
+Message-ID: <1269030873-sup-4844@r61>
+
+Excerpts from Michael Stapelberg's message of Fri Mar 19 15:47:53 -0400 2010:
+> Excerpts from Ben Walton's message of 2010-03-19 20:35:31 +0100:
+> > Isn't there a more portable solution?
+> There is: Rich mentioned that proper move/delete handling for maildirs also
+> solves the problem.
+
+I must have missed that message.  What is the proposed solution?
+How does it solve the problem of out-of-order maildir IDs?
+
+From hyperbolist at gmail.com  Fri Mar 19 16:40:46 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Fri, 19 Mar 2010 16:40:46 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269027951-sup-4565@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026805-sup-2720@changeling.local>
+	<1269027951-sup-4565@midna.zekjur.net>
+Message-ID: <1269029869-sup-4474@changeling.local>
+
+Excerpts from Michael Stapelberg's message of Fri Mar 19 15:46:29 -0400 2010:
+> Excerpts from Eric Sherman's message of 2010-03-19 20:34:32 +0100:
+> > Would inserting an SHA1 into the id solve these problems, or does it just 
+> > introduce more problems?
+> The latter. The ID needs to be linear, not only unique.
+
+Oh I see.
+
+Is it fair to say that if a set of messages are can only be disambiguated 
+by adding nanosecond precision to their timestamps, the ordering across 
+such a set may as well be arbitrary?
+
+In looking at make_id, it seems like we should be able to simply append 
+more numeric noise at the end of the id.  The file size is already appended 
+to the mtime, potentially making the ordering arbitrary for equivalent 
+mtimes.
+
+Would appending x-digits of numeric noise, probably derived from SHA1, be 
+suitable?
+
+From rlane at club.cc.cmu.edu  Fri Mar 19 17:02:44 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 19 Mar 2010 17:02:44 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269029060-sup-9476@pinkfloyd.chass.utoronto.ca>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+	<1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+	<1269027991-sup-5670@midna.zekjur.net>
+	<1269029060-sup-9476@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1269029524-sup-9834@zyrg.net>
+
+Excerpts from Ben Walton's message of 2010-03-19 16:05:06 -0400:
+> Excerpts from Michael Stapelberg's message of Fri Mar 19 15:47:53 -0400 2010:
+> 
+> > There is: Rich mentioned that proper move/delete handling for
+> > maildirs also solves the problem. However that doesn?t seem to be
+> > planned for the very near future, so I posted my patch which fixes
+> > the problem right now (given that you use ruby 1.9 and a decent
+> > filesystem).
+> 
+> Ok.  I'd rather work with you towards implementing this handling than
+> force an upgrade on myself that would be both ruby and filesystem
+> (incl servers and nfs).
+
+I'd also much rather see proper maildir handling. My objections to the
+current patch are Ruby 1.8 compatibility - not just the missing method,
+but that you'd need to reindex whenever switching between Ruby 1.8 and
+1.9.
+
+From marka at pobox.com  Fri Mar 19 17:04:11 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 19 Mar 2010 17:04:11 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269029869-sup-4474@changeling.local>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026805-sup-2720@changeling.local>
+	<1269027951-sup-4565@midna.zekjur.net>
+	<1269029869-sup-4474@changeling.local>
+Message-ID: <1269032594-sup-5368@r61>
+
+Excerpts from Eric Sherman's message of Fri Mar 19 16:40:46 -0400 2010:
+> Would appending x-digits of numeric noise, probably derived from SHA1, be 
+> suitable?
+
+I was thinking the same thing.  For performance, perhaps only the SHA1
+of the file name, not the file contents, would be adequate.
+
+From rlane at club.cc.cmu.edu  Fri Mar 19 17:17:50 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 19 Mar 2010 17:17:50 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269030873-sup-4844@r61>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026769-sup-3830@midna.zekjur.net>
+	<1269027265-sup-5150@pinkfloyd.chass.utoronto.ca>
+	<1269027991-sup-5670@midna.zekjur.net> <1269030873-sup-4844@r61>
+Message-ID: <1269032592-sup-2403@zyrg.net>
+
+Excerpts from Mark Alexander's message of 2010-03-19 16:35:38 -0400:
+> Excerpts from Michael Stapelberg's message of Fri Mar 19 15:47:53 -0400 2010:
+> > Excerpts from Ben Walton's message of 2010-03-19 20:35:31 +0100:
+> > > Isn't there a more portable solution?
+> > There is: Rich mentioned that proper move/delete handling for maildirs also
+> > solves the problem.
+> 
+> I must have missed that message.  What is the proposed solution?
+> How does it solve the problem of out-of-order maildir IDs?
+
+Notmuch implements this correctly. They essentially keep a sorted list
+of mail filenames in the index and then iterate over that and the sorted
+list of the filenames that are currently in the maildir to detect
+inserts, deletes, and renames. 
+
+I just rebased and pushed a multiple-locations branch I've had sitting
+around to mainline. It's probably buggy. It's been a while since I
+thought about this problem, but I think keeping track of multiple
+locations (source/source info) for a single message (identified by
+message-id) should make the maildir logic simpler.
+
+From marka at pobox.com  Fri Mar 19 22:23:00 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 19 Mar 2010 22:23:00 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269032594-sup-5368@r61>
+References: <1269012878-sup-691@midna.zekjur.net> <1269026068-sup-6868@r61>
+	<1269026805-sup-2720@changeling.local>
+	<1269027951-sup-4565@midna.zekjur.net>
+	<1269029869-sup-4474@changeling.local> <1269032594-sup-5368@r61>
+Message-ID: <1269051705-sup-616@r61>
+
+Excerpts from Mark Alexander's message of Fri Mar 19 17:04:11 -0400 2010:
+> Excerpts from Eric Sherman's message of Fri Mar 19 16:40:46 -0400 2010:
+> > Would appending x-digits of numeric noise, probably derived from SHA1, be 
+> > suitable?
+> 
+> I was thinking the same thing.  For performance, perhaps only the SHA1
+> of the file name, not the file contents, would be adequate.
+
+Never mind.  This won't work because it violates the requirement
+that IDs must always increase.
+
+From sup-bugs at masanjin.net  Sat Mar 20 16:20:34 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 20 Mar 2010 20:20:34 +0000
+Subject: [sup-devel] [issue84] GPG Decryption Requests
+In-Reply-To: <1269116433.99.0.720137867047.issue84@masanjin.net>
+Message-ID: <1269116433.99.0.720137867047.issue84@masanjin.net>
+
+
+New submission from anonymous:
+
+Would it be possible to add a feature to prevent GPG decryption requests from 
+occurring unless an encrypted message is actually viewed?
+
+----------
+messages: 201
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: GPG Decryption Requests
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue84>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sun Mar 21 19:30:14 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sun, 21 Mar 2010 23:30:14 +0000
+Subject: [sup-devel] [issue85] GPG Decryption Key Binding
+In-Reply-To: <1269214214.04.0.976768799922.issue85@masanjin.net>
+Message-ID: <1269214214.04.0.976768799922.issue85@masanjin.net>
+
+
+New submission from anonymous:
+
+It would be nice to be able to disable automatic decryption and instead use a key 
+binding to decrypt a viewed message.
+
+----------
+messages: 203
+nosy: anonymous
+priority: feature request
+ruby_version: N/A
+status: unread
+sup_version: 0.11
+title: GPG Decryption Key Binding
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue85>
+_________________________________________
+
+From michael+sup at stapelberg.de  Mon Mar 22 07:30:15 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 22 Mar 2010 12:30:15 +0100
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269012878-sup-691@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net>
+Message-ID: <1269257324-sup-3868@midna.zekjur.net>
+
+Hi,
+
+attached to this mail you can find an updated version of the patch. It now
+uses a fixed length in sprintf for the nanoseconds so that the IDs will be
+increasing.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Use-nanosecond-resolution-of-mtime-for-generating-th.patch
+Type: application/octet-stream
+Size: 895 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100322/1f4f4250/attachment.obj>
+
+From bwalton at artsci.utoronto.ca  Mon Mar 22 12:25:47 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 22 Mar 2010 12:25:47 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269257324-sup-3868@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net>
+	<1269257324-sup-3868@midna.zekjur.net>
+Message-ID: <1269275101-sup-1611@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Michael Stapelberg's message of Mon Mar 22 07:30:15 -0400 2010:
+
+> attached to this mail you can find an updated version of the
+> patch. It now uses a fixed length in sprintf for the nanoseconds so
+> that the IDs will be increasing.
+
+So we're still needing ruby 1.9 and ext4 then?  That's a deal breaker
+for me.  1.9 I can live with, but there is no way my environment will
+be using ext4 any time soon.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From rlane at club.cc.cmu.edu  Mon Mar 22 13:00:47 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 22 Mar 2010 13:00:47 -0400
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269257324-sup-3868@midna.zekjur.net>
+References: <1269012878-sup-691@midna.zekjur.net>
+	<1269257324-sup-3868@midna.zekjur.net>
+Message-ID: <1269276247-sup-3011@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-03-22 07:30:15 -0400:
+> attached to this mail you can find an updated version of the patch. It now
+> uses a fixed length in sprintf for the nanoseconds so that the IDs will be
+> increasing.
+
+If you add a config option (defaulting to false) I'll accept the patch. 
+
+I'm going to restart looking at implementing proper maildir support.
+IIRC the tough part is making it fit within sup's existing source
+interfaces. Part of my reason for nuking IMAP/mbox+ssh sources was to
+make changes to the source API easier, so hopefully this will be more
+tractable now.
+
+From kljohann at gmail.com  Wed Mar 24 22:21:32 2010
+From: kljohann at gmail.com (=?ISO-8859-1?Q?Johann_Kl=E4hn?=)
+Date: Thu, 25 Mar 2010 03:21:32 +0100
+Subject: [sup-devel] Accept ASCII_8BIT in String.check
+In-Reply-To: <b0bc07101003241915t22d13ea2w26468d9d72df972f@mail.gmail.com>
+References: <b0bc07101003241915t22d13ea2w26468d9d72df972f@mail.gmail.com>
+Message-ID: <b0bc07101003241921t5183709j67e7848025aac824@mail.gmail.com>
+
+I was having problems with encoded emails. Using archlinux / ruby
+1.9.1_p378 Iconv.iconv returns the encoding ASCII_8BIT,
+which was rejected by String.check.
+
+Before I was getting debug messages like this when converting mails or
+building the index:
+?couldn't transcode text from ISO-8859-1 (ISO-8859-1) to utf8) (...)
+(got unexpected encoding ASCII-8BIT (String::CheckError))
+My String.check now contains:
+? if respond_to?(:encoding) && !(encoding == Encoding::UTF_8 ||
+encoding == Encoding::ASCII || encoding == Encoding::ASCII_8BIT)
+And everything is working as expected. Instead of text.ascii the real
+umlauts are displayed.
+
+Hope that helps,
+Johann
+
+From rlane at club.cc.cmu.edu  Wed Mar 24 23:20:13 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 24 Mar 2010 23:20:13 -0400
+Subject: [sup-devel] Accept ASCII_8BIT in String.check
+In-Reply-To: <b0bc07101003241921t5183709j67e7848025aac824@mail.gmail.com>
+References: <b0bc07101003241915t22d13ea2w26468d9d72df972f@mail.gmail.com>
+	<b0bc07101003241921t5183709j67e7848025aac824@mail.gmail.com>
+Message-ID: <1269487066-sup-656@zyrg.net>
+
+Excerpts from Johann Kl?hn's message of 2010-03-24 22:21:32 -0400:
+> I was having problems with encoded emails. Using archlinux / ruby
+> 1.9.1_p378 Iconv.iconv returns the encoding ASCII_8BIT,
+> which was rejected by String.check.
+> 
+> Before I was getting debug messages like this when converting mails or
+> building the index:
+> ?couldn't transcode text from ISO-8859-1 (ISO-8859-1) to utf8) (...)
+> (got unexpected encoding ASCII-8BIT (String::CheckError))
+> My String.check now contains:
+> ? if respond_to?(:encoding) && !(encoding == Encoding::UTF_8 ||
+> encoding == Encoding::ASCII || encoding == Encoding::ASCII_8BIT)
+> And everything is working as expected. Instead of text.ascii the real
+> umlauts are displayed.
+> 
+> Hope that helps,
+> Johann
+
+An ASCII_8BIT string means there's a bug in sup. Please add an assertion
+so that the program exits when the encoding is ASCII_8BIT and post the
+backtrace. Also, what sup version is this?
+
+From tero at tilus.net  Thu Mar 25 02:25:21 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 25 Mar 2010 08:25:21 +0200
+Subject: [sup-devel] [PATCH 2/2] Use nanosecond resolution of mtime for
+	generating the unique id for each message
+In-Reply-To: <1269275101-sup-1611@pinkfloyd.chass.utoronto.ca>
+References: <1269012878-sup-691@midna.zekjur.net>
+	<1269257324-sup-3868@midna.zekjur.net>
+	<1269275101-sup-1611@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1269497979-sup-4663@tilus.net>
+
+Ben Walton, 2010-03-22 18:25:
+> So we're still needing ruby 1.9 and ext4 then?  That's a deal
+> breaker for me.
+
+I'm with Ben in this.  I'll need to be able to do without them both
+for quite a while.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rlane at club.cc.cmu.edu  Thu Mar 25 03:12:57 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 25 Mar 2010 03:12:57 -0400
+Subject: [sup-devel] new branch: maildir
+Message-ID: <1269499582-sup-2593@zyrg.net>
+
+This branch makes some drastic changes to how mbox and maildir sources
+work. There's no longer any state associated with a source between Sup
+runs - no cur_offset or mtimes in sources.yaml. Instead, the source
+queries the index to find out which messages it's already seen and which
+messages are new. This enables a much more robust maildir
+implementation that detects the addition or deletion of any message.
+
+It's not totally done yet. It'll detect that a maildir message has been
+deleted, but it doesn't yet remove the old location from the index so
+renames are unlikely to work. There needs to be UI code to handle the
+case where a message matches a search but has been deleted from all
+sources, and probably a utility to remove such messages from the index. 
+I expect sup-sync-back to be broken.
+
+Keeping track of multiple locations per message requires an index format
+change. The upgrade process is trivial and done automatically but you
+won't be able to use that index with an older Sup. For now if you want
+to try this out I suggest using a different SUP_BASE.
+
+I'd appreciate any comments about the code or general approach. If
+anyone would like to contribute an email corpus for the unwritten
+testsuite or pseudocode out some testcases that would be very helpful
+too.
+
+From kljohann at gmail.com  Thu Mar 25 04:02:52 2010
+From: kljohann at gmail.com (=?ISO-8859-1?Q?Johann_Kl=E4hn?=)
+Date: Thu, 25 Mar 2010 09:02:52 +0100
+Subject: [sup-devel] Accept ASCII_8BIT in String.check
+In-Reply-To: <1269487066-sup-656@zyrg.net>
+References: <b0bc07101003241915t22d13ea2w26468d9d72df972f@mail.gmail.com> 
+	<b0bc07101003241921t5183709j67e7848025aac824@mail.gmail.com> 
+	<1269487066-sup-656@zyrg.net>
+Message-ID: <b0bc07101003250102x72de338dt419fe15cd38c3e80@mail.gmail.com>
+
+Ah, now it's perfectly clean to me, I guess I just shouldn't do any debugging
+when I'm too tired.
+The problem is that the call to Iconv.iconv(target, ..., ...) in
+Iconv.easy_decode
+expects target to be typed as "UTF-8", and my environment has
+$encoding = "utf8".
+Iconv can't handle this and thus returns ASCII_8BIT (does no real conversion).
+(I'm using sup 0.11 with ruby 1.9.1_p378.)
+
+From marka at pobox.com  Thu Mar 25 07:24:59 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 25 Mar 2010 07:24:59 -0400
+Subject: [sup-devel] new branch: maildir
+In-Reply-To: <1269499582-sup-2593@zyrg.net>
+References: <1269499582-sup-2593@zyrg.net>
+Message-ID: <1269516077-sup-4573@r61>
+
+Excerpts from Rich Lane's message of Thu Mar 25 03:12:57 -0400 2010:
+> This branch makes some drastic changes to how mbox and maildir sources
+> work.
+
+Thanks for attacking this problem!
+
+I just took a quick look at the diffs, and I have some concern
+about this line in maildir.rb:
+
+  Dir[File.join(subdir, '*')].map do |fn|
+
+I'm worried about the memory usage with some of my maildirs that have
+tens of thousands of files.  Would it be more memory-efficient to
+use Dir.open and Dir.each?  You'd have to filter out "." and "..",
+of course.
+
+From bwalton at artsci.utoronto.ca  Thu Mar 25 09:30:32 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 25 Mar 2010 09:30:32 -0400
+Subject: [sup-devel] new branch: maildir
+In-Reply-To: <1269516077-sup-4573@r61>
+References: <1269499582-sup-2593@zyrg.net> <1269516077-sup-4573@r61>
+Message-ID: <1269523798-sup-9324@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Mark Alexander's message of Thu Mar 25 07:24:59 -0400 2010:
+
+> I'm worried about the memory usage with some of my maildirs that
+> have tens of thousands of files.  Would it be more memory-efficient
+> to use Dir.open and Dir.each?  You'd have to filter out "." and
+> "..", of course.
+
+Agreed:
+
+bwalton @ pinkfloyd : ~/Maildir/new
+$ ls -1 | wc -l
+35058
+
+I do like the overall idea though.  I'll try to give this a spin
+tonight.
+
+Thanks
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From rlane at club.cc.cmu.edu  Thu Mar 25 12:11:57 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 25 Mar 2010 12:11:57 -0400
+Subject: [sup-devel] new branch: maildir
+In-Reply-To: <1269516077-sup-4573@r61>
+References: <1269499582-sup-2593@zyrg.net> <1269516077-sup-4573@r61>
+Message-ID: <1269532152-sup-1158@zyrg.net>
+
+Excerpts from Mark Alexander's message of 2010-03-25 07:24:59 -0400:
+> Excerpts from Rich Lane's message of Thu Mar 25 03:12:57 -0400 2010:
+> > This branch makes some drastic changes to how mbox and maildir sources
+> > work.
+> 
+> Thanks for attacking this problem!
+> 
+> I just took a quick look at the diffs, and I have some concern
+> about this line in maildir.rb:
+> 
+>   Dir[File.join(subdir, '*')].map do |fn|
+> 
+> I'm worried about the memory usage with some of my maildirs that have
+> tens of thousands of files.  Would it be more memory-efficient to
+> use Dir.open and Dir.each?  You'd have to filter out "." and "..",
+> of course.
+
+Hence the "XXX use less memory" :). I've been doing my testing on a 30k
+maildir which works fine. My sup scalability target is a million
+messages and memory becomes a concern there. A maildir filename is about
+30 characters plus any Ruby overhead.
+
+The primitives we have are:
+Iterate through filenames in a directory in arbitrary (?) order.
+Check the existence of a single file in a directory.
+Iterate through filenames with a given prefix stored in the index in lexicographical order.
+Any more?
+
+Right now I took the easiest route which loads both the filesystem and
+indexed filenames into arrays and diffs them. Iterating over the index
+and checking the file's existence won't detect new messages. Iterating
+over the filesystem and checking for existence in the index won't detect
+deleted messages. A solution would be to do both, but that seems
+expensive. It would be good if we could optimize for the case where most
+of the maildir messages have already been indexed.
+
+From michael+sup at stapelberg.de  Fri Mar 26 00:33:07 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 26 Mar 2010 05:33:07 +0100
+Subject: [sup-devel] [PATCH] Bugfix: for encrypted and signed messages,
+	run verification and decryption separately
+Message-ID: <1269577931-sup-7751@midna.zekjur.net>
+
+Hi,
+
+attached to this email you can find a patch which runs verification and
+decryption of signed + encrypted messages separately. This is necessary
+because GPG will stop decrypting a message when the signature cannot be
+verified for any reason (like the public key not being in your keyring).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-for-encrypted-and-signed-messages-run-verific.patch
+Type: application/octet-stream
+Size: 2907 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100326/8d6b1b94/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Sun Mar 28 17:35:08 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Mar 2010 17:35:08 -0400
+Subject: [sup-devel] [PATCH 1/2] Make sup-tweak-labels work with ruby 1.9
+In-Reply-To: <1269012800-sup-3632@midna.zekjur.net>
+References: <1269012800-sup-3632@midna.zekjur.net>
+Message-ID: <1269811961-sup-779@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-03-19 11:34:26 -0400:
+> attached you find a patch to make sup-tweak-labels work with 1.9. Maybe the
+> line can be written more beautifully.
+
+Thanks for the bug report, I committed a change that solved it in a
+different way (87dcb31).
+
+From rlane at club.cc.cmu.edu  Sun Mar 28 17:36:54 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Mar 2010 17:36:54 -0400
+Subject: [sup-devel] [PATCH] Start gpg with LC_MESSAGES=C
+In-Reply-To: <1269024593-sup-9101@midna.zekjur.net>
+References: <1269024593-sup-9101@midna.zekjur.net>
+Message-ID: <1269812185-sup-2258@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-03-19 14:53:04 -0400:
+> attached you find a patch which ensures that LC_MESSAGES=C is set when starting
+> gpg so that the regexps for interpreting the gpg output work.
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sun Mar 28 17:46:46 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Mar 2010 17:46:46 -0400
+Subject: [sup-devel] [PATCH] Bugfix: for encrypted and signed messages,
+	run verification and decryption separately
+In-Reply-To: <1269577931-sup-7751@midna.zekjur.net>
+References: <1269577931-sup-7751@midna.zekjur.net>
+Message-ID: <1269812299-sup-3173@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-03-26 00:33:07 -0400:
+> attached to this email you can find a patch which runs verification and
+> decryption of signed + encrypted messages separately. This is necessary
+> because GPG will stop decrypting a message when the signature cannot be
+> verified for any reason (like the public key not being in your keyring).
+
+Applied to branch inline-gpg and re-merged to next.
+
+From sup-bugs at masanjin.net  Sun Mar 28 22:21:02 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 29 Mar 2010 02:21:02 +0000
+Subject: [sup-devel] [issue86] git-style delta storage
+In-Reply-To: <1269829261.99.0.22306257269.issue86@masanjin.net>
+Message-ID: <1269829261.99.0.22306257269.issue86@masanjin.net>
+
+
+New submission from anonymous:
+
+Maybe this is a crazy idea, but I think it would be a well-rewarding long-term
+project because if it's completed, Sup would be the first mail client to
+implement it: have Sup store mail in delta storage.
+
+An obvious raison d'?tre would be that storing a lot of mail would consume a
+large amount of disk space, and using delta storage would greatly reduce that
+amount, especially when threads that contain messages that quote each other are
+present.
+
+See http://kerneltrap.org/mailarchive/git/2007/9/21/270502 and
+http://kerneltrap.org/mailarchive/git/2007/9/21/273603
+
+Also see http://www.matthias-georgi.de/gitstore
+
+----------
+messages: 204
+nosy: anonymous
+priority: feature request
+ruby_version: 1.9.1_p378
+status: unread
+sup_version: 0.11
+title: git-style delta storage
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue86>
+_________________________________________
+
+From sup-bugs at masanjin.net  Mon Mar 29 16:38:31 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 29 Mar 2010 20:38:31 +0000
+Subject: [sup-devel] [issue87] undefined method `<' for nil:NilClass
+	in	index.rb:truncate_date
+In-Reply-To: <1269895111.8.0.502890815182.issue87@masanjin.net>
+Message-ID: <1269895111.8.0.502890815182.issue87@masanjin.net>
+
+
+New submission from anonymous:
+
+[Mon Mar 29 13:36:23 -0700 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/emarinelli/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+j--- NoMethodError from thread: user-invoked poll
+undefined method `<' for nil:NilClass
+/home/emarinelli/sup_experimental/sup/lib/sup/index.rb:691:in `truncate_date'
+/home/emarinelli/sup_experimental/sup/lib/sup/index.rb:580:in `sync_message'
+/home/emarinelli/sup_experimental/sup/lib/sup/index.rb:122:in `add_message'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:190:in `add_new_message'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:132:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:176:in `each_message_from'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:160:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:157:in `upto'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:157:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:610:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:610:in `__pass'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:597:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:164:in `each_message_from'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:116:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:104:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:104:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:103:in `synchronize'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:103:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/modes/poll-mode.rb:15:in `poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:50:in `poll_with_sources'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:69:in `poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:570:in `method_missing'
+/home/emarinelli/sup_experimental/sup/bin/sup:332
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:76:in `reporting_thread'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:74:in `initialize'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:74:in `new'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:74:in `reporting_thread'
+/home/emarinelli/sup_experimental/sup/bin/sup:332
+
+----------
+messages: 206
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+status: unread
+sup_version: 1835048a7eaffbf1823b464f219302497080c11b
+title: undefined method `<' for nil:NilClass in index.rb:truncate_date
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue87>
+_________________________________________
+
+From tero at tilus.net  Tue Mar 30 08:42:14 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 30 Mar 2010 15:42:14 +0300
+Subject: [sup-devel] [issue86] git-style delta storage
+In-Reply-To: <1269829261.99.0.22306257269.issue86@masanjin.net>
+References: <1269829261.99.0.22306257269.issue86@masanjin.net>
+Message-ID: <1269952015-sup-624@tilus.net>
+
+anonymous, 2010-03-29 05:21:
+> Maybe this is a crazy idea, but I think it would be a well-rewarding
+> long-term project because if it's completed, Sup would be the first
+> mail client to implement it: have Sup store mail in delta storage.
+
+Storing mail in delta storage (or git repo or whatelse) is not a crazy
+idea at all.  It has quite a few benefits.  It is just that basically
+sup doesn't do mail _storage_ at all.  It only reads mailstore
+(currently only Maildir) and writes to (Xapian) index, which it mainly
+uses.
+
+I'm closing this for now, because (though it is a great idea in
+general) IMO this is currently out of the context of sup.
+
+status: resolved
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+

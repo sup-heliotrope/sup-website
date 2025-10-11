@@ -1,0 +1,329 @@
+From ruthard.baudach at web.de  Sat Jan 18 12:11:17 2014
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Sat, 18 Jan 2014 13:11:17 +0100
+Subject: [sup-devel] remove spam label
+Message-ID: <1390046982-sup-7856@prxbdc.dyndns.org>
+
+Hello supppers!
+
+I tagged some emails as spam by mistake and cannot figure out how to
+remove this tag.
+
+How do I do this?
+
+Greetings,
+
+Ruthard
+
+
+From eric.weikl at gmx.net  Sat Jan 18 13:02:10 2014
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Sat, 18 Jan 2014 14:02:10 +0100
+Subject: [sup-devel] remove spam label
+In-Reply-To: <1390046982-sup-7856@prxbdc.dyndns.org>
+References: <1390046982-sup-7856@prxbdc.dyndns.org>
+Message-ID: <1390050074-sup-2410@alderaan>
+
+Hi Ruthard,
+
+On 01/18/2014 13:11:17, Ruthard Baudach wrote:
+> I tagged some emails as spam by mistake and cannot figure out how to
+> remove this tag.
+>
+> How do I do this?
+
+I'm not sure if this is the easiest way, but it works for me:
+
+- search for spam mails by pressing F in your inbox, search for
+  "label:Spam"
+- tag the ham mail(s) by pressing t for each
+- press + to apply the next operation to all tagged mails
+- press l to label, then enter: -spam
+  (yes, 'spam' lower-case this time)
+
+That should remove the label from all tagged mails. I agree there should
+be an easier way.
+
+Hope that helps,
+Eric
+
+From matthieu.rakotojaona at gmail.com  Sat Jan 18 14:48:10 2014
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sat, 18 Jan 2014 15:48:10 +0100
+Subject: [sup-devel] remove spam label
+In-Reply-To: <1390050074-sup-2410@alderaan>
+References: <1390046982-sup-7856@prxbdc.dyndns.org>
+	<1390050074-sup-2410@alderaan>
+Message-ID: <1390056391-sup-5481@kpad>
+
+Excerpts from Eric Weikl's message of 2014-01-18 14:02:10 +0100:
+> - search for spam mails by pressing F in your inbox, search for
+>   "label:Spam"
+
+Just for information, you can search for a label directly with L in the
+inbox.
+
+-- 
+Matthieu Rakotojaona
+
+From eg at gaute.vetsj.com  Mon Jan 27 10:16:36 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 27 Jan 2014 11:16:36 +0100
+Subject: [sup-devel] ncursesw 1.4.4 released
+Message-ID: <1390817715-sup-212@qwerzila>
+
+hi,
+
+ncursesw 1.4.4 has been released. with fixes for method_missing
+now accepting a block and working examples on ruby 1.9 and 2.0.
+
+get it at rubygems: $ gem install ncursesw
+
+regards, gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140127/e0edd265/attachment.bin>
+
+From eg at gaute.vetsj.com  Mon Jan 27 10:47:48 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 27 Jan 2014 11:47:48 +0100
+Subject: [sup-devel] release 0.15.3
+Message-ID: <1390819613-sup-7922@qwerzila>
+
+hi,
+
+sup 0.15.3 has been released: various bugs have been fixed and the
+(non-working) hidden_alternates option has been removed.
+
+get it from rubygems: $ gem install sup
+
+
+cheers, gaute
+
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140127/ce928031/attachment.bin>
+
+From avtobiff at gmail.com  Tue Jan 28 01:18:35 2014
+From: avtobiff at gmail.com (Per Andersson)
+Date: Tue, 28 Jan 2014 02:18:35 +0100
+Subject: [sup-devel] Rubymail maintainership
+Message-ID: <CABYrXSSE59VMtSg+Eze0m2P1Tx0XCN3zxVO+q3oJzgPOc4XFxw@mail.gmail.com>
+
+Hi!
+
+I am the Debian maintainer for sup.
+
+Recently Sup developers adopted ncursesw-ruby (the ncursesw gem) and
+became the new upstream for that. (Instead of having a fork.)
+
+Since a few days ago the original upstream now carries the exact same
+functionality. Is there any reason for carrying a fork of this any longer?
+
+I understand that the in the future a migration away from rmail is planned.
+In the meantime, using rmail gem, could reduce complexity. Perhaps a
+similar move as with ncursesw-ruby can be made, adopting active
+maintainership? (I can volunteer for this!)
+
+As Matt states, rubymail is looking for active maintainership
+
+    https://github.com/matta/rubymail/pull/2#issuecomment-33173575
+
+
+--
+Per
+
+From eg at gaute.vetsj.com  Tue Jan 28 07:55:50 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 28 Jan 2014 08:55:50 +0100
+Subject: [sup-devel] Rubymail maintainership
+In-Reply-To: <CABYrXSSE59VMtSg+Eze0m2P1Tx0XCN3zxVO+q3oJzgPOc4XFxw@mail.gmail.com>
+References: <CABYrXSSE59VMtSg+Eze0m2P1Tx0XCN3zxVO+q3oJzgPOc4XFxw@mail.gmail.com>
+Message-ID: <1390895256-sup-521@qwerzila>
+
+Excerpts from Per Andersson's message of 2014-01-28 02:18:35 +0100:
+> Hi!
+>
+> I am the Debian maintainer for sup.
+>
+> Recently Sup developers adopted ncursesw-ruby (the ncursesw gem) and
+> became the new upstream for that. (Instead of having a fork.)
+>
+> Since a few days ago the original upstream now carries the exact same
+> functionality. Is there any reason for carrying a fork of this any longer?
+
+Where is upstream for this, I'm not sure if I am following you? The only
+active fork of ncurses-ruby (ncursesw-ruby) that I can find is ours -
+which is now known as 'ncursesw' in gem world (ncursesw-sup has been
+removed).
+
+> I understand that the in the future a migration away from rmail is planned.
+> In the meantime, using rmail gem, could reduce complexity. Perhaps a
+> similar move as with ncursesw-ruby can be made, adopting active
+> maintainership? (I can volunteer for this!)
+>
+> As Matt states, rubymail is looking for active maintainership
+>
+>     https://github.com/matta/rubymail/pull/2#issuecomment-33173575
+>
+
+If you are up for it, that would be good, we might as well push directly
+to RMail (and drop rmail-sup). I suggest you contact Matt and we migrate
+the rmail-sup repoistory in sup-heliotrope (at github) to use the rmail
+namespace. If he wants, we could also just move his repository to the
+sup-heliotrope organization.
+
+Please also make sure that the other maintainers of sup are
+owners of the rmail gem so that it is not all dependant on one person.
+
+Cheers, Gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140128/6aaf0ce4/attachment.bin>
+
+From avtobiff at gmail.com  Tue Jan 28 21:21:48 2014
+From: avtobiff at gmail.com (Per Andersson)
+Date: Tue, 28 Jan 2014 22:21:48 +0100
+Subject: [sup-devel] Rubymail maintainership
+In-Reply-To: <1390895256-sup-521@qwerzila>
+References: <CABYrXSSE59VMtSg+Eze0m2P1Tx0XCN3zxVO+q3oJzgPOc4XFxw@mail.gmail.com>
+	<1390895256-sup-521@qwerzila>
+Message-ID: <CABYrXSRPLdBt4ba2H1qCV83-AaP4_fj0Md4QWgS_Fe58B-02UA@mail.gmail.com>
+
+On Tue, Jan 28, 2014 at 8:55 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> Excerpts from Per Andersson's message of 2014-01-28 02:18:35 +0100:
+>> Hi!
+>>
+>> I am the Debian maintainer for sup.
+>>
+>> Recently Sup developers adopted ncursesw-ruby (the ncursesw gem) and
+>> became the new upstream for that. (Instead of having a fork.)
+>>
+>> Since a few days ago the original upstream now carries the exact same
+>> functionality. Is there any reason for carrying a fork of this any longer?
+>
+> Where is upstream for this, I'm not sure if I am following you? The only
+> active fork of ncurses-ruby (ncursesw-ruby) that I can find is ours -
+> which is now known as 'ncursesw' in gem world (ncursesw-sup has been
+> removed).
+
+It was late when I wrote this. What I mean, but did not manage to put in
+writing, is that the rmail-sup gem carries the same functionality. And my
+suggestion was that we adopt active maintainership of rmail.
+
+Sorry for the total confusion, I was tired...
+
+
+>> I understand that the in the future a migration away from rmail is planned.
+>> In the meantime, using rmail gem, could reduce complexity. Perhaps a
+>> similar move as with ncursesw-ruby can be made, adopting active
+>> maintainership? (I can volunteer for this!)
+>>
+>> As Matt states, rubymail is looking for active maintainership
+>>
+>>     https://github.com/matta/rubymail/pull/2#issuecomment-33173575
+>>
+>
+> If you are up for it, that would be good, we might as well push directly
+> to RMail (and drop rmail-sup). I suggest you contact Matt and we migrate
+> the rmail-sup repoistory in sup-heliotrope (at github) to use the rmail
+> namespace. If he wants, we could also just move his repository to the
+> sup-heliotrope organization.
+
+I'll contact Matt and ask!
+
+
+> Please also make sure that the other maintainers of sup are
+> owners of the rmail gem so that it is not all dependant on one person.
+
+Absolutely!
+
+
+Best,
+Per
+
+From eg at gaute.vetsj.com  Wed Jan 29 08:59:20 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 29 Jan 2014 09:59:20 +0100
+Subject: [sup-devel] Rubymail maintainership
+In-Reply-To: <CABYrXSRPLdBt4ba2H1qCV83-AaP4_fj0Md4QWgS_Fe58B-02UA@mail.gmail.com>
+References: <CABYrXSSE59VMtSg+Eze0m2P1Tx0XCN3zxVO+q3oJzgPOc4XFxw@mail.gmail.com>
+	<1390895256-sup-521@qwerzila>
+	<CABYrXSRPLdBt4ba2H1qCV83-AaP4_fj0Md4QWgS_Fe58B-02UA@mail.gmail.com>
+Message-ID: <1390985761-sup-8931@qwerzila>
+
+Excerpts from Per Andersson's message of 2014-01-28 22:21:48 +0100:
+> On Tue, Jan 28, 2014 at 8:55 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> > Excerpts from Per Andersson's message of 2014-01-28 02:18:35 +0100:
+> >> Hi!
+> >>
+> >> I am the Debian maintainer for sup.
+> >>
+> >> Recently Sup developers adopted ncursesw-ruby (the ncursesw gem) and
+> >> became the new upstream for that. (Instead of having a fork.)
+> >>
+> >> Since a few days ago the original upstream now carries the exact same
+> >> functionality. Is there any reason for carrying a fork of this any longer?
+> >
+> > Where is upstream for this, I'm not sure if I am following you? The only
+> > active fork of ncurses-ruby (ncursesw-ruby) that I can find is ours -
+> > which is now known as 'ncursesw' in gem world (ncursesw-sup has been
+> > removed).
+>
+> It was late when I wrote this. What I mean, but did not manage to put in
+> writing, is that the rmail-sup gem carries the same functionality. And my
+> suggestion was that we adopt active maintainership of rmail.
+>
+> Sorry for the total confusion, I was tired...
+>
+> >> I understand that the in the future a migration away from rmail is planned.
+> >> In the meantime, using rmail gem, could reduce complexity. Perhaps a
+> >> similar move as with ncursesw-ruby can be made, adopting active
+> >> maintainership? (I can volunteer for this!)
+> >>
+> >> As Matt states, rubymail is looking for active maintainership
+> >>
+> >>     https://github.com/matta/rubymail/pull/2#issuecomment-33173575
+> >>
+> >
+> > If you are up for it, that would be good, we might as well push directly
+> > to RMail (and drop rmail-sup). I suggest you contact Matt and we migrate
+> > the rmail-sup repoistory in sup-heliotrope (at github) to use the rmail
+> > namespace. If he wants, we could also just move his repository to the
+> > sup-heliotrope organization.
+>
+> I'll contact Matt and ask!
+>
+> > Please also make sure that the other maintainers of sup are
+> > owners of the rmail gem so that it is not all dependant on one person.
+>
+> Absolutely!
+
+Sounds good! If Matt agrees to make us maintainers, but wants to retain
+the original repo, we can just rename the rmail-sup repo to rubymail
+and revert the gemspec changes.
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140129/efaa15c0/attachment.bin>
+

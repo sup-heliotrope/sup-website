@@ -1,0 +1,3257 @@
+From wmorgan-sup at masanjin.net  Sat Mar  1 15:37:35 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 01 Mar 2008 12:37:35 -0800
+Subject: [sup-talk] [PATCH] shell commands are now run in a child process
+In-Reply-To: <1645600603.20080229224209@rice.edu>
+References: <1203961671-sup-8158@south> <1645600603.20080229224209@rice.edu>
+Message-ID: <1204401464-sup-9155@south>
+
+Reformatted excerpts from Christopher Warrington's message of 2008-02-29:
+> I've been getting more of these when playing with offlineimap. I
+> submitted a bug upstream:
+> http://ferret.davebalmain.com/trac/ticket/343
+
+And it looks like Dave is back maintaining Ferret, so this might
+actually get addressed. That's great.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Mar  2 13:08:58 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Mar 2008 10:08:58 -0800
+Subject: [sup-talk] [PATCH] First draft of attachment processing for
+	more gmail style searches
+In-Reply-To: <1204232994-sup-628@tomsk>
+References: <1203972458-sup-5906@tomsk> <1204220051-sup-129@south>
+	<1204232994-sup-628@tomsk>
+Message-ID: <1204479552-sup-4100@south>
+
+Reformatted excerpts from Marcus Williams's message of 2008-02-28:
+> The only thing I'm a little wary of is the join() I do of the
+> attachment filenames for the index (like labels). This means that
+> ferret doesnt actually know the difference between two files called
+> file1 and file2 and a single file called "file1 file2". Not sure it
+> matters that much for this usage though.
+
+The answer here is to escape the spaces and to use a Ferret custom
+analyzer for this field in the index, one that will split only on
+non-escaped spaces.
+
+Something like this (needs testing):
+
+  irb(main):055:0> a = Ferret::Analysis::RegExpAnalyzer.new /([^\s\\]|(\\\s))+/, false
+  => #<Ferret::Analysis::RegExpAnalyzer:0xb79740fc>
+  irb(main):056:0> t = a.token_stream :potato, "one\\ two three\\ four"=> #<Ferret::Analysis::TokenStream:0xb79705d8>
+  irb(main):057:0> t.next
+  => token["one\ two":0:8:1]
+  irb(main):058:0> t.next
+  => token["three\ four":9:20:1]
+
+Then assign that analyzer to the :attachments field in index.rb circa
+line 37, just like I do for :subject and :body.
+
+You'll have to make sure to do the escaping properly both on user input
+at query time, and at storage time to the index.
+
+> Also I dont repopulate the attachments attribute on the message object
+> and I couldnt figure out quite how you do it for labels (through the
+> initialise?). 
+
+Not quite sure what you mean here, but the answer might be: index.rb
+line 371 is where we build a Message object from an index entry, and
+you'll need to pass in an :attachments attribute (and handle it within
+Message#initialize).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From chrisw at rice.edu  Mon Mar  3 02:07:55 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Mon, 03 Mar 2008 01:07:55 -0600
+Subject: [sup-talk] Maildir source with one message
+Message-ID: <1204528063-sup-7345@chris-tablet>
+
+In playing with offline IMAP and Maildir sources (much faster than a native IMAP source and it can be used offline!), I noticed an odd bug.
+
+If there is only one message in a Maildir source, neither sup not
+sup-sync can see this message. Adding another message makes both
+visible messages visible.
+
+--- here begins speculation ---
+
+I *THINK* that this has to do with the definitions Source.start_offset
+and Source.end_offset. As I understand it, they should define a range
+of message ids [start_offset, end_offset).
+
+Now, when start_offset = end_offset--as is the case when there is only
+one message, bad things happen. As I understand the math:
+(a,a) = {}
+[a,a) = {} *our case
+(a,a] = {}
+[a,a] = {a.
+
+Changing maildir.rb:126 from:
+    @ids.last
+to
+    @ids.last + 1
+appears to have fixed the problem without ill-effect.
+
+Simple inspection of imap.rp leads be to believe that it will have the
+same problem.
+
+A mbox source will have the same problem iff the mbox is empty.
+
+--- here ends speculation ---
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+From chrisw at rice.edu  Mon Mar  3 02:42:53 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Mon, 03 Mar 2008 01:42:53 -0600
+Subject: [sup-talk] new in next: faster saving and bigger indexes
+In-Reply-To: <1204219351-sup-3340@south>
+References: <1203871982-sup-7942@south> <1204138450-sup-1391@chris-tablet>
+	<1204219351-sup-3340@south>
+Message-ID: <1204530080-sup-987@chris-tablet>
+
+Excerpts from William Morgan's message of Thu Feb 28 11:23:29 -0600 2008:
+>> Now, we have offline(-ish) mode for IMAP. Horray! I can do e-mail
+>> on the plane.
+> You could always have used offlineimap. :)
+
+Wow! That's an amazing program! I'm using it now to read and write
+e-mail using sup at 30,000 feet (and much quicker than IMAP, too!).
+
+(Message sent at a paltry 200 feet...)
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+From chrisw at rice.edu  Mon Mar  3 03:00:33 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Mon,  3 Mar 2008 02:00:33 -0600
+Subject: [sup-talk] [PATCH] fixed off-by-one error in imap.rb and maildir.rb
+In-Reply-To: <1204528063-sup-7345@chris-tablet>
+References: <1204528063-sup-7345@chris-tablet>
+Message-ID: <1204531233-2092-1-git-send-email-chrisw@rice.edu>
+
+The end_offset reported by imap and maildir sources was incorrect if there was
+only one message in the source. Since end_offset is exclusive, we must add one to
+the last known id to get include all valid message ids in the range.
+---
+ lib/sup/imap.rb    |    2 +-
+ lib/sup/maildir.rb |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/imap.rb b/lib/sup/imap.rb
+index e785597..1d36976 100644
+--- a/lib/sup/imap.rb
++++ b/lib/sup/imap.rb
+@@ -176,7 +176,7 @@ class IMAP < Source
+ 
+   def end_offset
+     unsynchronized_scan_mailbox
+-    @ids.last
++    @ids.last + 1
+   end
+   synchronized :end_offset
+ 
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 5c9600d..584e657 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -123,7 +123,7 @@ class Maildir < Source
+ 
+   def end_offset
+     scan_mailbox :rescan => true
+-    @ids.last
++    @ids.last + 1
+   end
+ 
+   def pct_done; 100.0 * (@ids.index(cur_offset) || 0).to_f / (@ids.length - 1).to_f; end
+-- 
+1.5.3.7
+
+
+From chrisw at rice.edu  Mon Mar  3 03:01:20 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Mon,  3 Mar 2008 02:01:20 -0600
+Subject: [sup-talk] [PATCH] updated text and keybinding in
+	label-search-results-mode
+Message-ID: <1204531280-4048-1-git-send-email-chrisw@rice.edu>
+
+The text in label-search-results-mode now matches that of search-results-mode.
+---
+ lib/sup/modes/label-search-results-mode.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/label-search-results-mode.rb b/lib/sup/modes/label-search-results-mode.rb
+index af6831c..bca51d4 100644
+--- a/lib/sup/modes/label-search-results-mode.rb
++++ b/lib/sup/modes/label-search-results-mode.rb
+@@ -10,12 +10,12 @@ class LabelSearchResultsMode < ThreadIndexMode
+   end
+ 
+   register_keymap do |k|
+-    k.add :refine_search, "Refine search", '.'
++    k.add :refine_search, "Refine search", '|'
+   end
+ 
+   def refine_search
+     label_query = @labels.size > 1 ? "(#{@labels.join('||')})" : @labels.first
+-    query = BufferManager.ask :search, "query: ", "+label:#{label_query} "
++    query = BufferManager.ask :search, "refine query: ", "+label:#{label_query} "
+     return unless query && query !~ /^\s*$/
+     SearchResultsMode.spawn_from_query query
+   end
+-- 
+1.5.3.7
+
+
+From chrisw at rice.edu  Mon Mar  3 04:33:15 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Mon, 03 Mar 2008 03:33:15 -0600
+Subject: [sup-talk] Newline Issues
+Message-ID: <1204536487-sup-9413@chris-tablet>
+
+Now, I'm running into newline issues.
+
+When I use offlineimap under Cgywin, the messages are delivered with
+CRLF. Sup cannot parse these: it thinks that the body is empty. I know
+that sup is seeing the entire message. If I press H, I see all of the
+message.
+
+Shouldn't sup handle CRLF delimited messages? As I understand RFC822,
+all headers should be terminated with CRLF.
+
+Failing that, is anyone well versed enough with offlineimap or python
+to tell me how to get it to deliver with LF instead of CRLF?
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+From marcus-sup at bar-coded.net  Wed Mar  5 05:01:14 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 05 Mar 2008 10:01:14 +0000
+Subject: [sup-talk] [PATCH] First draft of attachment processing for
+	more gmail style searches
+In-Reply-To: <1204479552-sup-4100@south>
+References: <1203972458-sup-5906@tomsk> <1204220051-sup-129@south>
+	<1204232994-sup-628@tomsk> <1204479552-sup-4100@south>
+Message-ID: <1204711082-sup-3541@tomsk>
+
+On 2.3.2008, William Morgan wrote:
+> The answer here is to escape the spaces and to use a Ferret custom
+> analyzer for this field in the index, one that will split only on
+> non-escaped spaces.
+[snip]
+
+Ah, right. Should be easy enough (sup-sync here we come)
+
+> Not quite sure what you mean here, but the answer might be: index.rb
+> line 371 is where we build a Message object from an index entry, and
+> you'll need to pass in an :attachments attribute (and handle it within
+> Message#initialize).
+
+Ok thats what I figured in the end.
+
+ANother question - how do I get sent/drafts to get the attachment
+labels? They dont seem to get set up when I attach a file to a
+message. Should I just be adding/deleting them in the methods that
+deal with adding/deleting attachments in reply mode?
+
+Thanks
+
+Marcus
+
+From marcus-sup at bar-coded.net  Wed Mar  5 05:11:13 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Wed, 05 Mar 2008 10:11:13 +0000
+Subject: [sup-talk] [PATCH] Fix for icon title in gnome terminal (possibly
+	others)
+Message-ID: <1204711708-sup-3638@tomsk>
+
+The escape code used for terminal titles works mostly but it doesnt set
+the icon title as well [1], which is useful when minimised. This patch makes
+the escape code set both window and icon title so the task bar updates
+correctly in the gnome terminal (and probably others).
+
+[1] http://rtfm.etla.org/xterm/ctlseq.html (see Operating System Controls)
+---
+ lib/sup/buffer.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index d40a626..978e104 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -263,7 +263,7 @@ EOS
+         get_status_and_title @focus_buf # must be called outside of the ncurses lock
+       end
+ 
+-    print "\033]2;#{title}\07" if title && @in_x
++    print "\033]0;#{title}\07" if title && @in_x
+ 
+     Ncurses.mutex.lock unless opts[:sync] == false
+ 
+-- 
+1.5.4.1
+
+
+From rodkoch at gmail.com  Thu Mar  6 18:21:18 2008
+From: rodkoch at gmail.com (rodneyk)
+Date: Thu, 6 Mar 2008 15:21:18 -0800 (PST)
+Subject: [sup-talk]  How to search for and mass tag thousands of emails?
+Message-ID: <15885391.post@talk.nabble.com>
+
+
+Hi,
+I just started using sup, after years of muttng I must say I like it a lot!
+I have a giant inbox mbox with thousands of emails which I want to
+starting using in sup. I can easily search and tag to categorize them all,
+however, I can only tag the current screen full of search results. Is there
+a way to tag all the search results, and not just the results on screen?
+
+Being able to import existing mail and quickly organize is probably
+something
+most new users will need to do. I also checked out sup from the git repo,
+and can run
+devel/console, so if this mass tagging can only be done manually, I can do
+it, as I'm
+pretty proficient with ruby.
+
+--Rodney
+-- 
+View this message in context: http://www.nabble.com/How-to-search-for-and-mass-tag-thousands-of-emails--tp15885391p15885391.html
+Sent from the SUP Talk mailing list archive at Nabble.com.
+
+
+From manish at gslab.com  Fri Mar  7 02:15:09 2008
+From: manish at gslab.com (Manish Sapariya)
+Date: Fri, 07 Mar 2008 12:45:09 +0530
+Subject: [sup-talk] How to search for and mass tag thousands of emails?
+In-Reply-To: <15885391.post@talk.nabble.com>
+References: <15885391.post@talk.nabble.com>
+Message-ID: <1204874020-sup-2295@alioth.gs-lab.com>
+
+I did it by writing before-add-message.rb hook and resyncing all
+messages. The before-add-message hook allows you to add delete
+labels before it indexes the message.
+
+Hope this helps.
+Regards,
+Manish
+
+Excerpts from rodneyk's message of Fri Mar 07 04:51:18 +0530 2008:
+> 
+> Hi,
+> I just started using sup, after years of muttng I must say I like it a lot!
+> I have a giant inbox mbox with thousands of emails which I want to
+> starting using in sup. I can easily search and tag to categorize them all,
+> however, I can only tag the current screen full of search results. Is there
+> a way to tag all the search results, and not just the results on screen?
+> 
+> Being able to import existing mail and quickly organize is probably
+> something
+> most new users will need to do. I also checked out sup from the git repo,
+> and can run
+> devel/console, so if this mass tagging can only be done manually, I can do
+> it, as I'm
+> pretty proficient with ruby.
+> 
+> --Rodney
+
+-- 
+
+From wmorgan-sup at masanjin.net  Fri Mar  7 10:52:40 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 07 Mar 2008 07:52:40 -0800
+Subject: [sup-talk] How to search for and mass tag thousands of emails?
+In-Reply-To: <15885391.post@talk.nabble.com>
+References: <15885391.post@talk.nabble.com>
+Message-ID: <1204904692-sup-7926@south>
+
+Reformatted excerpts from rodneyk's message of 2008-03-06:
+> I have a giant inbox mbox with thousands of emails which I want to
+> starting using in sup. I can easily search and tag to categorize them
+> all, however, I can only tag the current screen full of search
+> results. Is there a way to tag all the search results, and not just
+> the results on screen?
+
+You could do it through the GUI, but that probably won't scale well.
+A better approach is to use the before-add-hook as Manish said, or to
+use the development console to modify the index directly.
+
+Feed devel/console.sh something like (untested):
+
+  Index.index.search_each("potato") do |id, score|
+    m = Index.build_message(id)
+    puts "[#{id}] [#{m.from}] [#{m.subj}]"
+    m.add_label :potato
+    m.save! Index
+  end
+
+But there's not really much of a point to labeling the results of a
+(simple) search. Labels are good for things that are hard to search for;
+for everything else, just trust in the search!
+
+> Being able to import existing mail and quickly organize is probably
+> something most new users will need to do.
+
+Sup supports auto-labeling folders out of the box, which I think is the
+most common transition case.
+
+> I also checked out sup from the git repo, and can run devel/console,
+> so if this mass tagging can only be done manually, I can do it, as I'm
+> pretty proficient with ruby.
+
+The big advantaage of the git repo (the next branch, at least) right now
+is that adding labels to a message is much faster.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Mar  8 17:02:06 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 08 Mar 2008 14:02:06 -0800
+Subject: [sup-talk] [PATCH] First draft of attachment processing for
+	more gmail style searches
+In-Reply-To: <1204711082-sup-3541@tomsk>
+References: <1203972458-sup-5906@tomsk> <1204220051-sup-129@south>
+	<1204232994-sup-628@tomsk> <1204479552-sup-4100@south>
+	<1204711082-sup-3541@tomsk>
+Message-ID: <1205013484-sup-7653@south>
+
+Reformatted excerpts from Marcus Williams's message of 2008-03-05:
+> ANother question - how do I get sent/drafts to get the attachment
+> labels? They dont seem to get set up when I attach a file to a
+> message. Should I just be adding/deleting them in the methods that
+> deal with adding/deleting attachments in reply mode?
+
+Once the message is sent, SentManager.write_sent_message will call
+PollManager.add_messages_from, which in turn calls the index.rb code you
+tweaked to build the message object that's actually used outside of
+edit-message-mode. 
+
+I've just merged the topic branch that actually make SentManager work
+this way down to master (gotta love it when the same changes fix two
+different problems!), so if you rebase now, you should be good to go.
+
+Sorry for the general delay in replying. I've been coding up a little
+distributed issue tracker that I think will help me manage Sup a little
+better... or at least ensure I don't forget people's suggestions.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jh at chabran.fr  Sun Mar  9 09:28:21 2008
+From: jh at chabran.fr (Jean-Hadrien CHABRAN)
+Date: Sun, 9 Mar 2008 14:28:21 +0100
+Subject: [sup-talk] startup crash
+Message-ID: <345330030803090628u2ac33bfcn3b8ab30da6b16be3@mail.gmail.com>
+
+Hello,
+
+I just discovered sup, and I wanted to give it a try, but sup-config /
+sup crash on startup, without any useful informations ( for me )  to
+discover why.
+
+Some informations :
+
+uname -a : Linux Gradius 2.6.24-gentoo-r2 #3 SMP Wed Feb 20 17:39:36
+CET 2008 i686 Intel(R) Pentium(R) 4 CPU 2.60GHz GenuineIntel GNU/Linux
+
+ruby : ruby 1.8.6 (2007-12-03 patchlevel 113) [i686-linux]
+
+using sup v0.4, installed with "gem i sup"
+
+backtrace :
+
+jh at gradius $ sup-config
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:7:in
+`initialize': no name for account (ArgumentError)
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:44:in `new'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:44:in
+`add_account'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:26:in
+`initialize'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup.rb:98:in `new'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup.rb:98:in `start'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.4/bin/sup-config:153
+        from /usr/bin/sup-config:16:in `load'
+        from /usr/bin/sup-config:16
+
+tested on my three gentoo boxes, got same results :(
+
+-- 
+Jean-Hadrien Chabran
+
+From jh at chabran.fr  Sun Mar  9 10:45:34 2008
+From: jh at chabran.fr (Jean-Hadrien CHABRAN)
+Date: Sun, 9 Mar 2008 15:45:34 +0100
+Subject: [sup-talk] startup crash
+In-Reply-To: <345330030803090628u2ac33bfcn3b8ab30da6b16be3@mail.gmail.com>
+References: <345330030803090628u2ac33bfcn3b8ab30da6b16be3@mail.gmail.com>
+Message-ID: <345330030803090745p1f0c6a14if40f95da893c07c0@mail.gmail.com>
+
+I just solved the problem on my FreeBSD 6.3, by installing
+ruby18-iconv-1.8.6.111,1.
+
+On my gentoo boxes, iconv seems to be correctly installed
+/usr/lib64/ruby/1.8/x86_64-linux/iconv.so, but this is now a
+distribution issue.
+
+But I'm still curious, why this dependency problem is showing itself
+in a such odd way ?
+
+On 3/9/08, Jean-Hadrien CHABRAN <jh at chabran.fr> wrote:
+> Hello,
+>
+>  I just discovered sup, and I wanted to give it a try, but sup-config /
+>  sup crash on startup, without any useful informations ( for me )  to
+>  discover why.
+---- 8< --- 8< -------------------------------------------------------------------
+>
+
+
+-- 
+Jean-Hadrien Chabran
+Maitre-Oeuvre SEP EFREI
+Reponsable Tutorat-L
+
+From wmorgan-sup at masanjin.net  Sun Mar  9 13:44:07 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Mar 2008 10:44:07 -0700
+Subject: [sup-talk] startup crash
+In-Reply-To: <345330030803090745p1f0c6a14if40f95da893c07c0@mail.gmail.com>
+References: <345330030803090628u2ac33bfcn3b8ab30da6b16be3@mail.gmail.com>
+	<345330030803090745p1f0c6a14if40f95da893c07c0@mail.gmail.com>
+Message-ID: <1205082815-sup-7754@south>
+
+Reformatted excerpts from Jean-Hadrien CHABRAN's message of 2008-03-09:
+> But I'm still curious, why this dependency problem is showing itself
+> in a such odd way ?
+
+Not sure. Sup generates the default name value using:
+
+  require 'etc'
+  Etc.getpwnam(ENV["USER"]).gecos.split(/,/).first
+
+What does that evaluate to on your system?
+
+Now that actually could evaluate to nil for a variety of reasons, so
+I've fixed the logic to avoid the crash if so. But I'm not sure why it
+would be nil due to iconv not being installed.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Mar 10 04:11:17 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 10 Mar 2008 09:11:17 +0100
+Subject: [sup-talk] [PATCH] Sort contacts when saving them.
+Message-ID: <12051366771380-git-send-email-nicolas.pouillard@gmail.com>
+
+This makes sup behave more nicely with versionning.
+---
+ lib/sup/contact.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/contact.rb b/lib/sup/contact.rb
+index 8050c06..b0c272e 100644
+--- a/lib/sup/contact.rb
++++ b/lib/sup/contact.rb
+@@ -51,7 +51,7 @@ class ContactManager
+ 
+   def save
+     File.open(@fn, "w") do |f|
+-      @p2a.each do |p, a|
++      @p2a.sort_by { |(p, a)| [p.full_address, a] }.each do |(p, a)|
+         f.puts "#{a || ''}: #{p.full_address}"
+       end
+     end
+-- 
+1.5.3.1.109.gacd69
+
+
+From DMack at Tickets.com  Mon Mar 10 10:01:14 2008
+From: DMack at Tickets.com (Mack, Daemian)
+Date: Mon, 10 Mar 2008 10:01:14 -0400
+Subject: [sup-talk] startup crash
+In-Reply-To: <20080310134823.GA24401@lenin>
+Message-ID: <61B99676296C5044A1A088C0D0EA1BA801B3C342@syr2k3mail>
+
+> > But I'm still curious, why this dependency problem is showing itself
+
+> > in a such odd way ?
+> 
+> Not sure. Sup generates the default name value using:
+> 
+>   require 'etc'
+>   Etc.getpwnam(ENV["USER"]).gecos.split(/,/).first
+> 
+> What does that evaluate to on your system?
+> 
+> Now that actually could evaluate to nil for a variety of 
+> reasons, so I've fixed the logic to avoid the crash if so. 
+> But I'm not sure why it would be nil due to iconv not being installed.
+
+I was getting the 'no name for account' message recently too, when
+setting up a test sup instance to play with the indexing, and wondered
+if it might be related to gecos info. 
+
+I've tried the test snippet above on three boxes (Debian Etch, Debian
+Sarge, Ubuntu 7.10), and it returns the current username when run under
+an existing user account. If I add a test user, and run the snippet as
+that user, it returns nil. This is true for all three boxes. I
+eventually got around it by hardcoding a dummy account name in
+account.rb, as I haven't had time to Do The Right Thing and figure out
+why ENV["USER"] isn't getting set for new accounts.
+
+Thanks for sup, incidentally! I'm experimenting with using it to manage
+a huge influx of business emails that Outlook makes somewhat annoying.
+
+
+
+DJFM
+--
+Daemian Mack
+Configuration Management
+Tickets.com
+344 W Genesee St
+Syracuse NY, 13202
+315.479.6663 x476
+AIM: daemianmack
+ 
+
+From wmorgan-sup at masanjin.net  Mon Mar 10 13:12:45 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 10 Mar 2008 10:12:45 -0700
+Subject: [sup-talk] startup crash
+In-Reply-To: <61B99676296C5044A1A088C0D0EA1BA801B3C342@syr2k3mail>
+References: <61B99676296C5044A1A088C0D0EA1BA801B3C342@syr2k3mail>
+Message-ID: <1205168755-sup-7027@south>
+
+Excerpts from Mack, Daemian's message of Mon Mar 10 07:01:14 -0700 2008:
+> This is true for all three boxes. I eventually got around it by
+> hardcoding a dummy account name in account.rb, as I haven't had time
+> to Do The Right Thing and figure out why ENV["USER"] isn't getting set
+> for new accounts.
+
+Is it really ENV["USER"], or is it the gecos entry being empty?
+
+At any rate, I think this should also be fixed in the newest git.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alexandra at walford.id.au  Tue Mar 11 00:45:43 2008
+From: alexandra at walford.id.au (Alexandra Walford)
+Date: Tue, 11 Mar 2008 14:45:43 +1000
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+Message-ID: <1205210652-sup-1364@amethyst>
+
+Hi all,
+
+I am getting frequent sup crashes with "wrong id called on nil" (using the
+latest git master), when thread_by_subject is true.
+
+The crash generally happens when the thread index is being built as a result of
+a search, or when opening the inbox (which is really just another sort of
+search).
+
+I have managed to narrow down one particular crash to two messages sent to the
+sup-talk list.  If I set up a new maildir containing only those two messages
+and a new sup config, accepting all sup-config defaults and changing
+thread_by_subject to true, then I can reproduce the crash reliably.  The second
+message References: the first message, although the subjects are dissimilar.
+
+I have attached the two messages, a transcript of my test case session
+(including backtrace), and sup-exception-log.txt.  I am not yet familiar enough
+with sup or ruby to offer a decent patch; my current fix just hides any thread
+which will cause a crash, on line 208 of lib/sup/modes/thread-index-mode.rb in
+git master, which is a hopeless workaround really.
+
+Thanks,
+
+Alexandra
+
+-- 
+alexandra at walford.id.au
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: message1.txt
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20080311/3d1a1cb1/attachment.txt 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: message2.txt
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20080311/3d1a1cb1/attachment-0001.txt 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: sup-exception-log.txt
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20080311/3d1a1cb1/attachment-0002.txt 
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: sup-test-case.txt
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20080311/3d1a1cb1/attachment-0003.txt 
+
+From chrisw at rice.edu  Tue Mar 11 03:06:08 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Tue, 11 Mar 2008 02:06:08 -0500
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <1205210652-sup-1364@amethyst>
+References: <1205210652-sup-1364@amethyst>
+Message-ID: <521619824.20080311020608@rice.edu>
+
+
+Alexandra Walford @ 2008-3-10 11:45:43 PM
+"[sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id  called on nil"" <mid:1205210652-sup-1364 at amethyst>
+
+> I have managed to narrow down one particular crash to two messages
+> sent to the sup-talk list. If I set up a new maildir containing only
+> those two messages and a new sup config, accepting all sup-config
+> defaults and changing thread_by_subject to true, then I can
+> reproduce the crash reliably. The second message References: the
+> first message, although the subjects are dissimilar.
+
+Sorry! :-)
+
+The first message was created with sup. The second with git's
+send-email command. I've not looked at them closely, but the messages
+may be malformed.
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+"The next best thing to being clever is being able to quote someone
+who is."
+-Mary Poole
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 183 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20080311/3ee207f6/attachment.bin 
+
+From sup-talk at gurski.org  Tue Mar 11 20:51:46 2008
+From: sup-talk at gurski.org (Michael Gurski)
+Date: Tue, 11 Mar 2008 20:51:46 -0400
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <521619824.20080311020608@rice.edu>
+References: <1205210652-sup-1364@amethyst> <521619824.20080311020608@rice.edu>
+Message-ID: <1205282947-sup-6038@ln>
+
+Excerpts from Christopher Warrington's message of Tue Mar 11 03:06:08 -0400 2008:
+> 
+> Alexandra Walford @ 2008-3-10 11:45:43 PM
+> "[sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id  called on
+> nil"" <mid:1205210652-sup-1364 at amethyst>
+> 
+> > I have managed to narrow down one particular crash to two messages
+> > sent to the sup-talk list. If I set up a new maildir containing only
+> > those two messages and a new sup config, accepting all sup-config
+> > defaults and changing thread_by_subject to true, then I can
+> > reproduce the crash reliably. The second message References: the
+> > first message, although the subjects are dissimilar.
+> 
+> Sorry! :-)
+> 
+> The first message was created with sup. The second with git's
+> send-email command. I've not looked at them closely, but the messages
+> may be malformed.
+> 
+
+Interestingly, the crashes I was seeing with the same error seem to
+have disappeared now that I've disabled thread_by_subject as well.
+Once I get past the huge amount of backlog in mail that I have (who'd
+have thought getting married would eat into my copious free time?),
+I'll rerun sup and try to get the debugging output from the patch that
+I applied to create a sendme.txt when this happens.
+
+Mike
+
+
+-- 
+Michael A. Gurski (opt. [first].)[last]@pobox.com  http://www.pobox.com/~[last]
+1024R/39B5BADD PGP: 34 93 A9 94 B1 59 48 B7  17 57 1E 4E 62 56 45 70
+1024D/1166213E GPG: 628F 37A4 62AF 1475 45DB  AD81 ADC9 E606 1166 213E
+4096R/C0B4F04B GPG: 5B3E 75D7 43CF CF34 4042  7788 1DCE B5EE C0B4 F04B
+Views expressed by the host do not reflect the staff, management or sponsors.
+
+
+From marcus-sup at bar-coded.net  Thu Mar 13 06:38:57 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Thu, 13 Mar 2008 10:38:57 +0000
+Subject: [sup-talk] Switching from IMAP to offlineimap and maintaining status
+Message-ID: <1205404558-sup-1495@tomsk>
+
+Hi -
+
+Having switched to offlineimap at work using sup I want to make the
+switch for my out-of-work accounts. Finally had enough of IMAP speed.
+Is there any way to maintain my sup status (starred/spam/etc) when I
+make the switch? I know I can dump the status of the db, but if I
+switch sources is this dump going to be of any use?
+
+Thanks
+
+Marcus
+
+From johnbent at lanl.gov  Thu Mar 13 12:06:30 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 13 Mar 2008 10:06:30 -0600
+Subject: [sup-talk] forwarded messages
+Message-ID: <1205424317-sup-1180@tangerine.lanl.gov>
+
+Whenever I forward a message, it appears as a new thread.  I always then tag
+it and the original and merge them.  Is there a way to make this happen
+automagically?  Should that rather be the default behavior?
+
+Thanks,
+
+John
+
+From mml at pobox.com  Fri Mar 14 11:01:41 2008
+From: mml at pobox.com (Matt Liggett)
+Date: Fri, 14 Mar 2008 11:01:41 -0400
+Subject: [sup-talk] viewing threads oldest-first
+Message-ID: <1205506459-sup-9596@chain.local>
+
+Forgive me; I'm just getting started with sup and I'm trying to get
+the hang of it, but I have not looked at the source yet, beyond a
+cursory glance.
+
+In every mailer I've used before my gmail days, I always viewed my
+email oldest first, especially in any inboxen.  Is there a config
+option (I don't see a keyboard shortcut) to do this?
+
+As I write this, I realize that oldest-first might mean different
+things in a threaded view.  Is that the oldest first message in the
+thread, or the oldest last message?  Do I generally want inbox threads
+sorted by unread messages (that is, ordering by oldest unread message
+in each thread)?  I'm not sure I know the answer to either question,
+but I'm sure I'd like to be able to try all the choices.
+
+I will try to start digging in to the code in the next few days,
+because I am interested in contributing and making this better, not
+least of all for myself.  In the meantime, can anyone give me a
+pointer as to where in the code I might start digging regarding such a
+feature?
+
+FWIW, I was a long time mutt user but switched to gmail for search and
+tagging.  I missed a lot of things, and I generally felt less able to
+deal with large numbers of email conversations on a daily basis, but I
+lived with it because "just archive and search" (and to a lesser
+extent, tagging) was killer.
+
+I tried mutt+mairix for awhile, but it was kludgy and slow.  sup looks
+like it might be the best of both worlds, enabling me to deal with a
+large volume of mail and still giving me the tagging and search that I
+love from gmail.  Thanks, William!
+
+-- 
+Matt Liggett <mml at pobox.com>                          http://mml.name/
+
+From wmorgan-sup at masanjin.net  Fri Mar 14 14:43:21 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Mar 2008 11:43:21 -0700
+Subject: [sup-talk] Switching from IMAP to offlineimap and maintaining
+	status
+In-Reply-To: <1205404558-sup-1495@tomsk>
+References: <1205404558-sup-1495@tomsk>
+Message-ID: <1205520043-sup-2321@south>
+
+Reformatted excerpts from Marcus Williams's message of 2008-03-13:
+> Is there any way to maintain my sup status (starred/spam/etc) when I
+> make the switch? I know I can dump the status of the db, but if I
+> switch sources is this dump going to be of any use?
+
+The dump should do that for you, since it's keyed directly off of
+message id.
+
+There might be a way to do this without needing to rescan the messages,
+but it'll only be useful if the messages have been reindexed since the
+speedy-index stuff has been in. LMK if that's the case.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Mar 14 14:51:31 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Mar 2008 11:51:31 -0700
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <1205210652-sup-1364@amethyst>
+References: <1205210652-sup-1364@amethyst>
+Message-ID: <1205520291-sup-7442@south>
+
+Reformatted excerpts from Alexandra Walford's message of 2008-03-10:
+> I am getting frequent sup crashes with "wrong id called on nil" (using
+> the latest git master), when thread_by_subject is true.
+
+The thread_by_subject stuff is broken and I have a patch to fix it, I
+just haven't merged it in yet. I'll try and do this soon. In the mean
+time, as you've discovered, turning off thread_by_subj is the
+workaround.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Mar 14 14:30:58 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Mar 2008 11:30:58 -0700
+Subject: [sup-talk] viewing threads oldest-first
+In-Reply-To: <1205506459-sup-9596@chain.local>
+References: <1205506459-sup-9596@chain.local>
+Message-ID: <1205517246-sup-9385@south>
+
+Reformatted excerpts from Matt Liggett's message of 2008-03-14:
+> In every mailer I've used before my gmail days, I always viewed my
+> email oldest first, especially in any inboxen.  Is there a config
+> option (I don't see a keyboard shortcut) to do this?
+
+There's no option for this. I don't think it makes quite as much sense
+in a world where mailboxes can be arbitrarily large (a Sup mailbox is a
+search result across your entire set of email) and where loading is
+fairly slow.
+
+But there's no technical reason why this couldn't happen, and other
+people have asked for it before, so I'd be willing to add it.
+
+> As I write this, I realize that oldest-first might mean different
+> things in a threaded view.  Is that the oldest first message in the
+> thread, or the oldest last message?
+
+Currently a thread's timestamp is the timestamp of the most recent
+message in it, and I would be loathe to change that.
+
+> Do I generally want inbox threads sorted by unread messages (that is,
+> ordering by oldest unread message in each thread)? 
+
+That would be interesting, but unfortunately is not feasible in Sup. The
+index currently knows nothing about threads, just individual messages,
+so we can only sort by properties of messages, not by properties of
+threads.
+
+The way we build a threadset now is we search for messages which meet
+some search criterea, then we build a thread for each message.
+
+> In the meantime, can anyone give me a pointer as to where in the code
+> I might start digging regarding such a feature?
+
+Normally I would want a hook, but since there are really only two
+options that are technically feasible now, I would add a config variable
+called "sort_oldest_first" or something like that.  It will follow a
+very similar codepath to thread_by_subj (so grep for that): it should be
+initialized in sup.rb for new configurations, passed into a ThreadSet
+constructor from ThreadIndexMode#initialize_threads, and passed into
+Index#each_id_by_date, where it will change the query we send to Ferret.
+Finally, ThreadIndexMode#update (which handles the UI component of
+sorting) has got to respect this variable.
+
+> I tried mutt+mairix for awhile, but it was kludgy and slow.  sup looks
+> like it might be the best of both worlds, enabling me to deal with a
+> large volume of mail and still giving me the tagging and search that I
+> love from gmail.
+
+Yep, you're my target audience. :)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Mar 14 14:40:32 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Mar 2008 11:40:32 -0700
+Subject: [sup-talk] forwarded messages
+In-Reply-To: <1205424317-sup-1180@tangerine.lanl.gov>
+References: <1205424317-sup-1180@tangerine.lanl.gov>
+Message-ID: <1205519620-sup-1897@south>
+
+Reformatted excerpts from John Bent's message of 2008-03-13:
+> Whenever I forward a message, it appears as a new thread.  I always
+> then tag it and the original and merge them.  Is there a way to make
+> this happen automagically?  Should that rather be the default
+> behavior?
+
+I've thought about having this be the default behavior because I often
+do that as well. There are two ways it could go: actually add a
+References: header (or a in-reply-to?), which would be pretty
+nonstandard, I think, or just do it in the index itself.
+
+The dirty secret of the thread joining (which I've just realized now) is
+that the joins won't be preserved if you reindex those messages. I need
+to add another blob of information somewhere to preserve that stuff.  If
+I added the header to the outgoing message, the threading would be
+preserved, of course...
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alexandra at walford.id.au  Fri Mar 14 18:28:39 2008
+From: alexandra at walford.id.au (Alexandra Walford)
+Date: Sat, 15 Mar 2008 08:28:39 +1000
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <1205520291-sup-7442@south>
+References: <1205210652-sup-1364@amethyst> <1205520291-sup-7442@south>
+Message-ID: <1205533710-sup-2188@amethyst>
+
+Excerpts from William Morgan's message of Sat Mar 15 04:51:31 +1000 2008:
+> The thread_by_subject stuff is broken and I have a patch to fix it, I
+> just haven't merged it in yet. I'll try and do this soon. In the mean
+> time, as you've discovered, turning off thread_by_subj is the
+> workaround.
+
+Sounds good!  Thanks :)
+
+-- 
+alexandra at walford.id.au
+
+From wmorgan-sup at masanjin.net  Mon Mar 17 12:37:41 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 17 Mar 2008 09:37:41 -0700
+Subject: [sup-talk] Crash on startup, "wrong id called on nil"
+In-Reply-To: <1203172019-sup-1133@south>
+References: <20080207172725.GA9157@gurski.org> <1203172019-sup-1133@south>
+Message-ID: <1205771845-sup-9353@south>
+
+Reformatted excerpts from William Morgan's message of 2008-02-16:
+> Reformatted excerpts from Michael Gurski's message of 2008-02-07:
+> > It's been a while since I launched sup, and updating today from
+> > master, I get a crash on startup:
+> > 
+> > --- RuntimeError from thread: load threads for thread-index-mode wrong
+> > id called on nil
+> 
+> Hm, this is a bit tricky. It looks like on of the thread invariants I
+> maintain is actually a variant.
+
+I think this should be fixed at this point.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Mar 17 12:41:55 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 17 Mar 2008 09:41:55 -0700
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <1205520291-sup-7442@south>
+References: <1205210652-sup-1364@amethyst> <1205520291-sup-7442@south>
+Message-ID: <1205771997-sup-226@south>
+
+Reformatted excerpts from William Morgan's message of 2008-03-14:
+> The thread_by_subject stuff is broken and I have a patch to fix it, I
+> just haven't merged it in yet. I'll try and do this soon.
+
+Ok, I've merged the changes into next. Enable thread-by-subject and see
+what happens.
+
+If you're still seeing messages with "Re: " subjects in separate
+threads, try reindexing those messages.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kendall at clarkparsia.com  Mon Mar 17 12:50:38 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Mon, 17 Mar 2008 12:50:38 -0400
+Subject: [sup-talk] Kill thread doesn't seem to work
+Message-ID: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+
+Wm., et. al.,
+
+I'm using v0.4 on Fedora and when I &-mark a thread to kill it, I'm
+expecting that new replies to that thread will *not* come back to my
+inbox view. Except, that they do come back, and I'm puzzled as to
+whether this is a bug, an artifact of my setup, etc. I looked through
+sup-talk archives, but didn't see anything about this issue.
+
+I have a single source (imaps://...) being fed to sup; I sup-sync
+every morning from a cron job, and, otherwise, everything "just
+works".
+
+Any pointers or requests for further info would be great. And, FWIW,
+other than this issue, I love-love-love sup! Thx!!
+
+-- 
+Cheers,
+Kendall
+
+From alexandra at walford.id.au  Tue Mar 18 08:35:24 2008
+From: alexandra at walford.id.au (Alexandra Walford)
+Date: Tue, 18 Mar 2008 22:35:24 +1000
+Subject: [sup-talk] [Crash] "thread_by_subject: true" leads to "wrong id
+	called on nil"
+In-Reply-To: <1205771997-sup-226@south>
+References: <1205210652-sup-1364@amethyst> <1205520291-sup-7442@south>
+	<1205771997-sup-226@south>
+Message-ID: <1205843716-sup-9243@amethyst>
+
+Excerpts from William Morgan's message of Tue Mar 18 02:41:55 +1000 2008:
+> Ok, I've merged the changes into next. Enable thread-by-subject and see
+> what happens.
+
+Nice, I'll give it a go :)
+
+-- 
+alexandra at walford.id.au
+
+From wmorgan-sup at masanjin.net  Tue Mar 18 22:16:02 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 18 Mar 2008 19:16:02 -0700
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+Message-ID: <1205892920-sup-9762@south>
+
+Reformatted excerpts from Kendall Grant Clark's message of 2008-03-17:
+> I'm using v0.4 on Fedora and when I &-mark a thread to kill it, I'm
+> expecting that new replies to that thread will *not* come back to my
+> inbox view. Except, that they do come back, and I'm puzzled as to
+> whether this is a bug, an artifact of my setup, etc. I looked through
+> sup-talk archives, but didn't see anything about this issue.
+
+This should work. Can you try against git next? There have been a couple
+commits that probably affected this.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kendall at clarkparsia.com  Wed Mar 19 09:59:14 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Wed, 19 Mar 2008 09:59:14 -0400
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205892920-sup-9762@south>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+Message-ID: <1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+
+Excerpts from William Morgan's message of Tue Mar 18 22:16:02 -0400 2008:
+> Reformatted excerpts from Kendall Grant Clark's message of 2008-03-17:
+> > I'm using v0.4 on Fedora and when I &-mark a thread to kill it, I'm
+> > expecting that new replies to that thread will *not* come back to my
+> > inbox view. Except, that they do come back, and I'm puzzled as to
+> > whether this is a bug, an artifact of my setup, etc. I looked through
+> > sup-talk archives, but didn't see anything about this issue.
+> 
+> This should work. Can you try against git next? There have been a couple
+> commits that probably affected this.
+
+I'm a Python programmer, only marginally a Ruby src code reader... Is
+there some kind of sandbox I can use to test the git next version,
+w/out borking my existing (and working, except for this one issue) sup
+install?
+
+-- 
+Cheers,
+Kendall
+
+From johnbent at lanl.gov  Wed Mar 19 10:51:29 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 19 Mar 2008 08:51:29 -0600
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+Message-ID: <1205937908-sup-4264@tangerine.lanl.gov>
+
+Excerpts from Kendall Grant Clark's message of Wed Mar 19 07:59:14 -0600 2008:
+> I'm a Python programmer, only marginally a Ruby src code reader... Is
+> there some kind of sandbox I can use to test the git next version,
+> w/out borking my existing (and working, except for this one issue) sup
+> install?
+> 
+So this is from: http://sup.rubyforge.org/wiki/wiki.pl?Contributing
+I set this up previously, so I'm not positive about the initial setup
+syntax but the rest of it is definitely correct:
+
+# initial setup
+git clone git://repo.or.cz/sup.git 
+git branch --track next origin/next
+git checkout next
+
+# getting current, building, running local copy
+git pull
+rake gem
+ruby -I lib -w bin/sup
+
+This will then use a local next version w/out affecting your existing sup
+install.  If you then decide you want to fully install the next version:
+sudo gem install pkg/sup-999.gem
+
+John
+
+From johnbent at lanl.gov  Wed Mar 19 11:03:39 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 19 Mar 2008 09:03:39 -0600
+Subject: [sup-talk] update contact, compose new mail => crash
+Message-ID: <1205938994-sup-2758@tangerine.lanl.gov>
+
+If I am reading an email, hit 'i' to capture a contact, hit 'x' to
+get back to my inbox, hit 'c' to compose a new email, sup (next) crashes.
+Exception log contents:
+
+--- NoMethodError from thread: main
+undefined method `<=>' for nil:NilClass
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:494:in `sort'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:494:in `ask_for_contacts'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:497:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:497:in `method_missing'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/compose-mode.rb:23:in `spawn_nicely'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/bin/sup:274
+/opt/local/bin/sup:16:in `load'
+/opt/local/bin/sup:16
+
+From kendall at clarkparsia.com  Wed Mar 19 11:17:07 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Wed, 19 Mar 2008 11:17:07 -0400
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205937908-sup-4264@tangerine.lanl.gov>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+	<1205937908-sup-4264@tangerine.lanl.gov>
+Message-ID: <1205939782-sup-1932@k-desktop.int.clarkparsia.com>
+
+Excerpts from John Bent's message of Wed Mar 19 10:51:29 -0400 2008:
+
+> So this is from: http://sup.rubyforge.org/wiki/wiki.pl?Contributing
+
+Doh. Sorry, I should have rechecked the wiki for this.
+
+> I set this up previously, so I'm not positive about the initial setup
+> syntax but the rest of it is definitely correct:
+
+It worked for me; thx! Testing now. :>
+
+-- 
+Cheers,
+Kendall
+
+From kendall at clarkparsia.com  Wed Mar 19 11:20:37 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Wed, 19 Mar 2008 11:20:37 -0400
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205892920-sup-9762@south>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+Message-ID: <1205939956-sup-9857@k-desktop.int.clarkparsia.com>
+
+Excerpts from William Morgan's message of Tue Mar 18 22:16:02 -0400 2008:
+> This should work. Can you try against git next? There have been a couple
+> commits that probably affected this.
+
+Doesn't work for me w/ git next either. I asked a coworker to send me
+a message, I replied. Then I killed the thread. He replied to my
+reply, and it popped right up in my INBOX with the +killed tag on it.
+
+-- 
+Cheers,
+Kendall
+
+From patroclo7 at gmail.com  Wed Mar 19 11:24:10 2008
+From: patroclo7 at gmail.com (Giorgio Lando)
+Date: Wed, 19 Mar 2008 16:24:10 +0100
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205939956-sup-9857@k-desktop.int.clarkparsia.com>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205939956-sup-9857@k-desktop.int.clarkparsia.com>
+Message-ID: <1205940116-sup-6578@clarabella.clarabella>
+
+Excerpts from Kendall Grant Clark's message of Wed Mar 19 16:20:37 +0100 2008:
+> Doesn't work for me w/ git next either. I asked a coworker to send me
+> a message, I replied. Then I killed the thread. He replied to my
+> reply, and it popped right up in my INBOX with the +killed tag on it.
+
+I confirm, at some point killed threads stopped
+working for me (they are back in the INBOX when a new message is
+received). Both git next and git master have this problem for me.
+
+-- 
+Giorgio Lando <patroclo7 at gmail dot com>
+
+From wmorgan-sup at masanjin.net  Wed Mar 19 12:20:50 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Mar 2008 09:20:50 -0700
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+Message-ID: <1205943578-sup-2011@south>
+
+Reformatted excerpts from Kendall Grant Clark's message of 2008-03-19:
+> I'm a Python programmer, only marginally a Ruby src code reader... Is
+> there some kind of sandbox I can use to test the git next version,
+> w/out borking my existing (and working, except for this one issue) sup
+> install?
+
+Once you have git next in a directory somewhere (top part of
+http://sup.rubyforge.org/wiki/wiki.pl?Contributing), the HACKING file
+has instructions on how to run it locally. Please let me know if
+anything is unclear in either...
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kendall at clarkparsia.com  Wed Mar 19 12:45:25 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Wed, 19 Mar 2008 12:45:25 -0400
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205943578-sup-2011@south>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205935094-sup-6162@k-desktop.int.clarkparsia.com>
+	<1205943578-sup-2011@south>
+Message-ID: <1205945088-sup-5986@k-desktop.int.clarkparsia.com>
+
+Excerpts from William Morgan's message of Wed Mar 19 12:20:50 -0400 2008:
+
+> Once you have git next in a directory somewhere (top part of
+> http://sup.rubyforge.org/wiki/wiki.pl?Contributing), the HACKING file
+> has instructions on how to run it locally. Please let me know if
+> anything is unclear in either...
+
+Yes, I ran git next version and it still doesn't handle +killed tagged
+threads correctly; that is, they show up in searches, which I expect,
+but new messages in the thread also cause the thread to reappear in
+INBOX. (FWIW, this test thread is tagged: +/INBOX +inbox +killed
++sent.)
+
+
+-- 
+Cheers,
+Kendall
+
+From wmorgan-sup at masanjin.net  Wed Mar 19 15:23:02 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Mar 2008 12:23:02 -0700
+Subject: [sup-talk] Kill thread doesn't seem to work
+In-Reply-To: <1205940116-sup-6578@clarabella.clarabella>
+References: <1205772559-sup-6593@k-desktop.int.clarkparsia.com>
+	<1205892920-sup-9762@south>
+	<1205939956-sup-9857@k-desktop.int.clarkparsia.com>
+	<1205940116-sup-6578@clarabella.clarabella>
+Message-ID: <1205954571-sup-5093@south>
+
+Reformatted excerpts from Giorgio Lando's message of 2008-03-19:
+> I confirm, at some point killed threads stopped working for me (they
+> are back in the INBOX when a new message is received). Both git next
+> and git master have this problem for me.
+
+Ok, I'll take a look.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kendall at clarkparsia.com  Thu Mar 20 10:58:59 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Thu, 20 Mar 2008 10:58:59 -0400
+Subject: [sup-talk] File saving wart...
+Message-ID: <1206024540-sup-8048@k-desktop.int.clarkparsia.com>
+
+I lazily haven't looked in sup-talk archives to see if this has been
+reported, and I can't find a bug/ticket tracking thing to check
+there...
+
+When saving an attachment (or message, for that matter) the built-in
+filesystem navigator thingie has this annoying wart where it will
+expand "~/" when you tab, but if you just give "~/" in the path to
+save to, it doesn't do an expansion and complains that there's no such
+directory or file.
+
+This is a minor wart, not really a bug, so not a big deal, but it is a
+daily annoyance, since I always remember that "~/" works but I never
+seem to remember that it only works for tab expansion, but not for
+direct saving.
+
+-- 
+Cheers,
+Kendall
+
+From johnbent at lanl.gov  Thu Mar 20 15:05:03 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 20 Mar 2008 13:05:03 -0600
+Subject: [sup-talk] manually merging threads not persistent in next
+Message-ID: <1206039801-sup-1759@tangerine.lanl.gov>
+
+I'm running next and I've got ":thread_by_subject: true" in my config.
+I've noticed that manually merging threads works in my current session but
+is not persistent across a quit and restart (i.e. they reappear as separate
+threads).  Has anyone else noticed this?
+
+Thanks,
+
+John
+
+From rodkoch at gmail.com  Thu Mar 20 14:57:55 2008
+From: rodkoch at gmail.com (rodneyk)
+Date: Thu, 20 Mar 2008 11:57:55 -0700 (PDT)
+Subject: [sup-talk] Support for non-black background in transparent
+ terminals?
+Message-ID: <16186298.post@talk.nabble.com>
+
+
+Hi,
+I was wondering if it's possible to re-configure the black background to be
+another color,
+or even work with a transparent terminal? I checked the Colormap in bin/sup
+but there's nothing
+related to the background.
+
+Also, regarding the Colormap, if I wanted to change the inbox color for the
+'date' and 'from' fields,
+which item handles that? I'm not really sure what most of the items in the
+Colormap do.
+
+Thanks,
+--Rodney
+-- 
+View this message in context: http://www.nabble.com/Support-for-non-black-background-in-transparent-terminals--tp16186298p16186298.html
+Sent from the SUP Talk mailing list archive at Nabble.com.
+
+
+From johnbent at lanl.gov  Thu Mar 20 15:24:08 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 20 Mar 2008 13:24:08 -0600
+Subject: [sup-talk] default domain name
+Message-ID: <1206040874-sup-2650@tangerine.lanl.gov>
+
+My apologies if this is not a sup question.  But I feel like this used to
+work in pine ... My putmail config has server = server1.lanl.gov which 
+works for sending mail.  However, if I just send to an address without
+a domain attached (e.g. to johnbent instead of to johnbent at lanl.gov), then 
+I get a bounce from server1.lanl.gov saying "there is no 
+johnbent at server1.lanl.gov."  Is there some way to config sup (or the rest of
+my email infrastructure) to teach it a particular default email address?
+
+Thanks,
+
+John
+
+From johnbent at lanl.gov  Thu Mar 20 18:37:42 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 20 Mar 2008 16:37:42 -0600
+Subject: [sup-talk] can't remove draft label
+In-Reply-To: <1202013739-sup-550@south>
+References: <1201716067-sup-3586@tangerine.lanl.gov>
+	<1201754138-sup-7276@chris-tablet>
+	<1201759596-sup-4274@tangerine.lanl.gov> <1202013739-sup-550@south>
+Message-ID: <1206052546-sup-3667@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Sat Feb 02 21:44:41 -0700 2008:
+> I'm not sure why that label would be there, but you can perform some
+> index surgery to remove it.
+> 
+> $ sh devel/console.sh 
+> irb(main):001:0>
+> r=Index.ferret.search("message_id:1201759596-sup-4274 at tangerine.lanl.gov")
+> => #<struct Ferret::Search::TopDocs total_hits=1, hits=[#<struct
+> Ferret::Search::Hit doc=92571, score=10.82630443573>],
+> max_score=10.82630443573, searcher=#<Ferret::Search::Searcher:0xb740dff0>>
+> irb(main):002:0> id=r.hits.first.doc
+> => 92571
+> irb(main):003:0> m = Index.build_message id
+> [...]
+> irb(main):004:0> m.remove_label :draft
+> => true
+> irb(main):005:0> m.save Index
+> => false
+> irb(main):006:0> exit
+> 
+Two months later and I finally did this... :)  It worked great.  The only
+slight problem was that somehow all 25 messages in that thread were falsely
+labeled so I had to repeat the above 25 times.  Although I did eventually
+realize that the console accepted semicolons so I combined them into a 
+single line and then just did arrow up 25 times so it was pretty fast.
+
+Thanks!
+
+John
+
+From marcus-sup at bar-coded.net  Sun Mar 23 17:13:58 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Sun, 23 Mar 2008 21:13:58 +0000
+Subject: [sup-talk] [PATCH] First draft of attachment processing for
+	more gmail style searches
+In-Reply-To: <1205013484-sup-7653@south>
+References: <1203972458-sup-5906@tomsk> <1204220051-sup-129@south>
+	<1204232994-sup-628@tomsk> <1204479552-sup-4100@south>
+	<1204711082-sup-3541@tomsk> <1205013484-sup-7653@south>
+Message-ID: <1206306720-sup-2563@tomsk>
+
+On 8.3.2008, William Morgan wrote:
+> Sorry for the general delay in replying. I've been coding up a little
+> distributed issue tracker that I think will help me manage Sup a little
+> better... or at least ensure I don't forget people's suggestions.
+
+Mmmmm - I'm on the lookout for a decent issue tracker :) Any more info?
+
+Marcus
+
+From 5srmspw02 at sneakemail.com  Wed Mar 26 01:57:05 2008
+From: 5srmspw02 at sneakemail.com (Guarded Identity)
+Date: Wed, 26 Mar 2008 00:57:05 -0500
+Subject: [sup-talk] New User Questions
+In-Reply-To: <1199944172-sup-660@south>
+References: <29393-78803@sneakemail.com> <1199944172-sup-660@south>
+Message-ID: <13352-37236@sneakemail.com>
+
+Hi,
+
+I've been using Sup for a few months now, read up a little more on Ruby, and
+thought I might be in more of a position to respond to this thread.
+
+Excerpts from William Morgan's message of Thu Jan 10 00:34:03 -0600 2008:
+> Excerpts from Guarded Identity's message of Tue Jan 08 19:39:18 -0800 2008:
+
+> > Will migration of maildir mail from new/ to cur/ necessitate an execution
+> > of sup-sync?
+>
+> Hm. I don't think so. As long as the mtime and size of the file are
+> preserved (which I believe they are during a move) you should be ok.
+
+I was thinking about the algorithm for calculating the message's unique
+"source_info" for Maildir mail (mtime appended to filesize).  I know altering
+the backend might really be something you don't want to support, so maybe I'm
+voicing a moot concern.  It's just that sometimes I get annoyed at people
+sending me mail with large attachments (especially at work where I just can't
+control this kind of thing too well).  In the past, I'd use mutt to purge mail
+of their large attachments.
+
+However, I guess if I do this en mass, I loose my labeling of these messages
+when I do a sup-sync because the message's source_info changes, right?, but
+have you considered using a message's "Message-Id" header as part of the
+source_info?  I'm thinking you might have.  For the most part, this should be
+pretty unique, right?  I know the Message-Id is sometimes missing, but we can
+default to the old source_id if things are really wacky (which should be
+rarely, right?).  The only reason I could think you wouldn't use the Message-Id
+is because maybe it's less efficient to open up a message than look at it's
+file stats.  Or maybe there's another reason?
+
+> > I had done this before, actually, but I noticed that Sup indexing was
+> > slowed down quite a bit (rss2email and mailing lists generate a lot of new
+> > mail).
+>
+> If that's true, then it must be due to IMAP transmission costs. I'm
+> certainly willing to believe that pulling a message from IMAP is
+> significantly slower than a disk read.
+
+I was thinking about this too.  Is there anything we can do to pull down
+headers first to fill the index (backgrounding the indexing)?  Maybe that might
+make the delay with IMAP less of a nuisance?
+
+However, I won't harp on this too much.  Because I wasn't comfortable
+synchronizing (say with Unison) sup Ferret indexes across hosts, I'm ssh'ing
+into the machine with the index and using "maildir" sources.  But this
+unfortunately causes me a problem with viewing graphical attachments because X
+forwarding is really slow.  So for now I'm saving attachments and scp'ing them
+over.  I'm not sure there's much anyone can do about any of this.
+
+> > I would really like to have time-based auto-expiry (excluding starred or
+> > special-labeled items) for some of my mail (primarily mailing lists and rss
+> > feeds). With mboxes, I guess I could do some "deleted"-labeling with a Ruby
+> > script followed by a call to sup-sync-back.
+>
+> That sounds like the right approach.
+>
+> > 6. What are my scripting options for mail expiry with Maildirs?  The search
+> > to get the message objects is pretty straight forward.  How much further
+> > work is it to delete the message from the index and to get a filename of
+> > the message to delete from the maildir?
+>
+> Trivial, although the filename/IMAP id require minor API changes to expose
+> those functions. But with a working sup-sync-back that applies to all source
+> types, you won't have to do anything other than inject :deleted labels
+> everywhere and simply call sup-sync-back.
+
+Okay,
+
+So I've been using a helper script that does some things to help me manage my
+Maildir mail (all other source types are ignored).  My primary idea was to have
+a script to expire mail, but allowing me to save threads labeled "starred" or
+"save".  Eventually I added in a function to manipulate labels.  Unlike
+sup-tweak-labels, this script gathers it's pool of messages from the index
+using a Ferret query (Chronic allowed) rather than using source URIs.
+
+I got around some of the encapsulation inherent in the API by just brute force
+breaking encapsulation (which Ruby makes kind of ridiculously easy it seems).
+
+I've attached the script, and would like to see any feedback if people have
+some.  In particular, I'm eager to know of any concerns people have with the
+approach or defects people catch.  I'm still pretty new to Ruby, so if I did
+anything flat out stupid with the language, please let me know.
+
+By the way, I was thinking that there seems to be a good deal of healthy
+participation in this list.  Does anybody see any value to hanging out in #sup
+on Freenode?  Sometimes it's just nice to have an IRC forum.
+
+-Sukant
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-tweak-maildir
+Type: application/octet-stream
+Size: 6652 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20080326/cef1c568/attachment.obj 
+
+From wmorgan-sup at masanjin.net  Wed Mar 26 12:04:10 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Mar 2008 09:04:10 -0700
+Subject: [sup-talk] [PATCH] fixed off-by-one error in imap.rb and
+	maildir.rb
+In-Reply-To: <1204531233-2092-1-git-send-email-chrisw@rice.edu>
+References: <1204528063-sup-7345@chris-tablet>
+	<1204531233-2092-1-git-send-email-chrisw@rice.edu>
+Message-ID: <1206547432-sup-4074@south>
+
+Reformatted excerpts from Christopher Warrington's message of 2008-03-03:
+> The end_offset reported by imap and maildir sources was incorrect if
+> there was only one message in the source. Since end_offset is
+> exclusive, we must add one to the last known id to get include all
+> valid message ids in the range.
+
+Precisely so. Applied. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 26 12:07:20 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Mar 2008 09:07:20 -0700
+Subject: [sup-talk] [PATCH] updated text and keybinding in
+	label-search-results-mode
+In-Reply-To: <1204531280-4048-1-git-send-email-chrisw@rice.edu>
+References: <1204531280-4048-1-git-send-email-chrisw@rice.edu>
+Message-ID: <1206547632-sup-4441@south>
+
+Reformatted excerpts from Christopher Warrington's message of 2008-03-03:
+> The text in label-search-results-mode now matches that of search-results-mode.
+
+Applied, thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 26 12:11:49 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Mar 2008 09:11:49 -0700
+Subject: [sup-talk] [PATCH] Fix for icon title in gnome terminal
+	(possibly others)
+In-Reply-To: <1204711708-sup-3638@tomsk>
+References: <1204711708-sup-3638@tomsk>
+Message-ID: <1206547886-sup-1106@south>
+
+Reformatted excerpts from Marcus Williams's message of 2008-03-05:
+> The escape code used for terminal titles works mostly but it doesnt
+> set the icon title as well [1], which is useful when minimised. This
+> patch makes the escape code set both window and icon title so the task
+> bar updates correctly in the gnome terminal (and probably others).
+
+Reworked slightly (to avoid duplicating the conditional) and applied.
+Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 26 12:13:53 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Mar 2008 09:13:53 -0700
+Subject: [sup-talk] [PATCH] Sort contacts when saving them.
+In-Reply-To: <12051366771380-git-send-email-nicolas.pouillard@gmail.com>
+References: <12051366771380-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1206548025-sup-37@south>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-03-10:
+> This makes sup behave more nicely with versionning.
+
+Applied. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Mar 26 12:40:24 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Mar 2008 09:40:24 -0700
+Subject: [sup-talk] Newline Issues
+In-Reply-To: <1204536487-sup-9413@chris-tablet>
+References: <1204536487-sup-9413@chris-tablet>
+Message-ID: <1206549226-sup-8056@south>
+
+Reformatted excerpts from Christopher Warrington's message of 2008-03-03:
+> When I use offlineimap under Cgywin, the messages are delivered with
+> CRLF. Sup cannot parse these: it thinks that the body is empty. I know
+> that sup is seeing the entire message. If I press H, I see all of the
+> message.
+
+I've finally had a chance to look into this. I've just patched Sup to
+handle carriage returns in mbox files, but things are still broken
+because of RubyMail.
+
+It looks like there's an outstanding RubyMail patch here:
+
+http://rubyforge.org/tracker/index.php?func=detail&aid=2821&group_id=446&atid=1756
+
+If you apply that and get the latest git, I think things should work.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From cjs at weisshuhn.de  Thu Mar 27 00:49:02 2008
+From: cjs at weisshuhn.de (Carsten =?iso-8859-1?Q?Sch=F6lzki?=)
+Date: Thu, 27 Mar 2008 05:49:02 +0100
+Subject: [sup-talk] ISO 8859-15 at the header
+Message-ID: <20080327044901.GA12106@weisshuhn.de>
+
+Hi,
+
+I started trying sup today and it seems to be wonderful for me. Till
+now I'm a mutt user for over 10 years - but know I found a reason to
+change...
+
+But there is a little problem with the header-encoding. Seems, that
+sup doesn't de- or encode ISO 8859-15 correct.
+
+There are no problems with the body or with ISO 8859-1 in the
+header.
+
+Did I messed up some settings or is this bug?
+
+I'm using sup v0.4 on MacOS X 10.5.2. - encoding in mutt works fine.
+
+
+Thanks, Carsten
+
+From marc.hartstein at alum.vassar.edu  Thu Mar 27 20:22:09 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Thu, 27 Mar 2008 20:22:09 -0400
+Subject: [sup-talk] New User Questions
+Message-ID: <1206662265-sup-7439@cabinet>
+
+Sorry if any of this has been discussed elsewhere.  I've read the docs
+on the website, skimmed the wiki, and skimmed the mailing list archives
+for the past few months, but I could easily have missed something.
+
+First, I ran into the same problem discussed in the thread "startup
+crash" started on 2008-03-09.  (I'm also running Gentoo and installed
+the latest from portage)  I poked around the source a bit, and it
+seems that when AccountManager.initialize is called out of
+Redwood::start (sup line 113), the code to set up the default
+configuration (lib/sup.rb, starts at line 166) has *not* been called, so
+the $config object is empty.
+
+Just in case the information helps; I'm not a Ruby person (yet), and I
+didn't poke around enough to be clear on how it's supposed to be
+working.
+
+2. sup is pretty cool.  I'm particularly intrigued by this tag (sorry,
+label) concept.
+
+3. Is there an IRC channel?  It would be nice to be able to lurk and
+drop questions if anybody happens to be around.
+
+4. I use maildir.  Is there any way sup can mark messages as read (and,
+perhaps more importantly, no longer new) once I've read them and hit
+'$'?  I can deal with mutt being confused (I know sup doesn't play well
+with others anyway), but it's really confusing my mail monitor, and
+that's bugging me.
+
+5. Can sup be set to automatically poll local sources for new messages
+every n seconds?  Mutt does this, and it's nice not having to tell it
+that I know there are new messages and it should go find them.
+
+6. Mutt can pass text/html attachments through an external program and
+display the result in its internal pager.  Is there a way to get sup to
+do the equivalent?
+
+7. How does sup choose the email address to use as "From" when replying
+to an email?  It's definitely choosing the wrong thing in my setup.  My
+primary address forwards to gmail, sup is configured with the primary as
+my :email:, but whenever I hit reply it sets "From" to be my gmail
+address.  I'd like it to be whatever alternate of mine is in To/CC if
+any, and my primary address otherwise.
+
+8. Is there any way to specify custom keybindings in a configuration
+file, or would it require hacking the source?
+
+8.1 I'd really like a one-touch reply-all like I had in mutt.
+
+9. Is there a way to default to making all messages PGP-signed?
+
+10. Is there (planned) a compose-hook?  I'd like to be able to switch to
+sign-and-encrypt when I have a public key for every recipient.
+
+Thanks for the cool project.  I'll probably have more "I miss this
+feature from mutt" thoughts in the future, at least if I don't go
+running back.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20080327/ca129127/attachment.bin 
+
+From marcus-sup at bar-coded.net  Fri Mar 28 06:33:45 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Fri, 28 Mar 2008 10:33:45 +0000
+Subject: [sup-talk] New User Questions
+In-Reply-To: <1206662265-sup-7439@cabinet>
+References: <1206662265-sup-7439@cabinet>
+Message-ID: <1206699001-sup-9770@tomsk>
+
+On 28.3.2008, Marc Hartstein wrote:
+> 3. Is there an IRC channel?  It would be nice to be able to lurk and
+> drop questions if anybody happens to be around.
+
+Someone has suggested #sup on freenode but no takers so far. I'd
+probably lurk on a channel if we can agree on one :)
+
+> 4. I use maildir.  Is there any way sup can mark messages as read (and,
+> perhaps more importantly, no longer new) once I've read them and hit
+> '$'?  I can deal with mutt being confused (I know sup doesn't play well
+> with others anyway), but it's really confusing my mail monitor, and
+> that's bugging me.
+
+Technically not (although you could probably write a hook to do this).
+However, you could change the way your monitor works if you're using
+sup locally. See the before/after poll hooks [1]
+
+> 5. Can sup be set to automatically poll local sources for new messages
+> every n seconds?  Mutt does this, and it's nice not having to tell it
+> that I know there are new messages and it should go find them.
+
+It should do already. I dont know offhand what the delay is though.
+
+> 6. Mutt can pass text/html attachments through an external program and
+> display the result in its internal pager.  Is there a way to get sup to
+> do the equivalent?
+
+Theres more than one way to do this. Via a hook for auto-demangling
+(mime-decode.rb) [1] and via the pipe attachment/message keypress '|'
+in thread view mode. Basically if you want to view an attachment put
+your cursor line over the attachment line and hit '|'. sup will pipe
+the attachment to what ever command line you type in here. html2text
+works well (as does antiword for word docs). If your cursor is in the
+message somewhere other than an attachment line it will pipe the raw
+message to the command.
+
+> 7. How does sup choose the email address to use as "From" when replying
+> to an email?  It's definitely choosing the wrong thing in my setup.  My
+> primary address forwards to gmail, sup is configured with the primary as
+> my :email:, but whenever I hit reply it sets "From" to be my gmail
+> address.  I'd like it to be whatever alternate of mine is in To/CC if
+> any, and my primary address otherwise.
+
+The :alternates: setting is probably what you want here. I think you
+should just have to add your gmail address as an alternate in your
+default account. At least this is how I think it should work!
+Basically the alternate emails list tell sup you receive email at this
+account as these addresses as well, but that you reply using the
+default :email: setting.
+
+You may also be interested in the :regexen: list - this allows you to
+setup mail extensions (like marcus-sup that I use) and get sup to
+reply using the extension.
+
+> 8. Is there any way to specify custom keybindings in a configuration
+> file, or would it require hacking the source?
+
+Hack the source afaik
+
+> 8.1 I'd really like a one-touch reply-all like I had in mutt.
+
+I'm about to submit a patch for this.
+
+> 9. Is there a way to default to making all messages PGP-signed?
+
+I dont think so at the moment (again, it wouldnt be hard to add)
+
+> 10. Is there (planned) a compose-hook?  I'd like to be able to
+> switch to sign-and-encrypt when I have a public key for every
+> recipient.
+
+Theres certainly a before-edit hook, which you may be able to do
+things like this in. I havnt played with the pgp stuff yet so someone
+else probably knows more here.
+
+HTH 
+
+Marcus
+
+[1] http://sup.rubyforge.org/wiki/wiki.pl?Hooks
+
+From vasudeva at linkswarm.com  Fri Mar 28 07:24:47 2008
+From: vasudeva at linkswarm.com (vasudeva)
+Date: Fri, 28 Mar 2008 07:24:47 -0400
+Subject: [sup-talk] New User Questions
+In-Reply-To: <1206699001-sup-9770@tomsk>
+References: <1206662265-sup-7439@cabinet> <1206699001-sup-9770@tomsk>
+Message-ID: <1206703335-sup-6607@lenin>
+
+Excerpts from Marcus Williams's message of Fri Mar 28 06:33:45 -0400 2008:
+> On 28.3.2008, Marc Hartstein wrote:
+> > 3. Is there an IRC channel?  It would be nice to be able to lurk and
+> > drop questions if anybody happens to be around.
+> 
+> Someone has suggested #sup on freenode but no takers so far. I'd
+> probably lurk on a channel if we can agree on one :)
+
+Actually, there are a couple of us lurking there now. Come on in.
+
+
+
+
+-- 
+linkswarm.com :: Collaborative Insolence
+vasudeva.linkswarm.com/gallery :: For The Faint of Heart
+
+
+From 5srmspw02 at sneakemail.com  Fri Mar 28 11:54:11 2008
+From: 5srmspw02 at sneakemail.com (Guarded Identity)
+Date: Fri, 28 Mar 2008 10:54:11 -0500
+Subject: [sup-talk] Wiki updates, more people on #sup
+Message-ID: <18635-64358@sneakemail.com>
+
+Hey everyone,
+
+So now we've got five people lurking in #sup on Freenode (only two of us are
+quasi-active, though).  I was going to post some of my recent configurations
+for Sup to the mailing list, but then vasudeva noted the Wiki was
+under-utilized, so I made two new pages there [1,2].  One thing to note about
+these configurations are that I'm relying on other tools to solve problems
+rather than asking William to "improve" Sup.  However, regarding [2], I guess I
+wish that contact tab-complete could be customizable (say to hook into ldbdq).
+I'm completely fine with the solution in [1] as-is, though.
+
+[1] http://sup.rubyforge.org/wiki/wiki.pl?WebBrowserIntegration
+[2] http://sup.rubyforge.org/wiki/wiki.pl?LbdbIntegration
+
+Regards,
+Sukant
+
+From marc.hartstein at alum.vassar.edu  Fri Mar 28 13:23:29 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Fri, 28 Mar 2008 13:23:29 -0400
+Subject: [sup-talk] New User Questions
+In-Reply-To: <1206699001-sup-9770@tomsk>
+References: <1206662265-sup-7439@cabinet> <1206699001-sup-9770@tomsk>
+Message-ID: <1206724477-sup-3121@cabinet>
+
+Excerpts from Marcus Williams's message of Fri Mar 28 06:33:45 -0400 2008:
+> On 28.3.2008, Marc Hartstein wrote:
+> 
+> > 5. Can sup be set to automatically poll local sources for new messages
+> > every n seconds?  Mutt does this, and it's nice not having to tell it
+> > that I know there are new messages and it should go find them.
+> 
+> It should do already. I dont know offhand what the delay is though.
+
+So it does, I think it's just less frequent than I'm accustomed to.
+This should probably go on the list of things which should eventually be
+configurable.
+
+> > 6. Mutt can pass text/html attachments through an external program and
+> > display the result in its internal pager.  Is there a way to get sup to
+> > do the equivalent?
+> 
+> Theres more than one way to do this. Via a hook for auto-demangling
+> (mime-decode.rb)
+
+Thanks, that's exactly what I was looking for.  And should be nicely
+extensible if I ever want.
+
+> and via the pipe attachment/message keypress '|' in thread view mode.
+> Basically if you want to view an attachment put your cursor line over
+> the attachment line and hit '|'. sup will pipe the attachment to what
+> ever command line you type in here.
+
+Probably too much effort unless it can consult mailcap or something and
+fill in an appropriate default.  I wonder how difficult that would be to
+add....
+
+> > 7. How does sup choose the email address to use as "From" when replying
+> > to an email?  It's definitely choosing the wrong thing in my setup.  My
+> > primary address forwards to gmail, sup is configured with the primary as
+> > my :email:, but whenever I hit reply it sets "From" to be my gmail
+> > address.  I'd like it to be whatever alternate of mine is in To/CC if
+> > any, and my primary address otherwise.
+> 
+> The :alternates: setting is probably what you want here. I think you
+> should just have to add your gmail address as an alternate in your
+> default account. At least this is how I think it should work!
+> Basically the alternate emails list tell sup you receive email at this
+> account as these addresses as well, but that you reply using the
+> default :email: setting.
+
+Nope.  The gmail address is an alternate, the primary is the :email:, it
+tries to reply with the gmail address.  But only sometimes.  I still
+haven't figured out what's causing it.
+
+> You may also be interested in the :regexen: list - this allows you to
+> setup mail extensions (like marcus-sup that I use) and get sup to
+> reply using the extension.
+
+I'll look into this, thanks.
+
+> > 8. Is there any way to specify custom keybindings in a configuration
+> > file, or would it require hacking the source?
+> 
+> Hack the source afaik
+
+Feh, hope that's on the planned features list.
+
+> > 9. Is there a way to default to making all messages PGP-signed?
+> 
+> I dont think so at the moment (again, it wouldnt be hard to add)
+
+Should probably be a config setting.
+
+> Theres certainly a before-edit hook, which you may be able to do
+> things like this in. I havnt played with the pgp stuff yet so someone
+> else probably knows more here.
+
+That one's definitely not on the wiki.  I'll have to track down the
+canonical list of available hooks...
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20080328/7a51264e/attachment.bin 
+
+From marcus-sup at bar-coded.net  Fri Mar 28 15:51:18 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Fri, 28 Mar 2008 19:51:18 +0000
+Subject: [sup-talk] New User Questions
+In-Reply-To: <1206724477-sup-3121@cabinet>
+References: <1206662265-sup-7439@cabinet> <1206699001-sup-9770@tomsk>
+	<1206724477-sup-3121@cabinet>
+Message-ID: <1206733867-sup-2930@tomsk>
+
+On 28.3.2008, Marc Hartstein wrote:
+> > Theres certainly a before-edit hook, which you may be able to do
+> > things like this in. I havnt played with the pgp stuff yet so someone
+> > else probably knows more here.
+> 
+> That one's definitely not on the wiki.  I'll have to track down the
+> canonical list of available hooks...
+
+sup --list-hooks
+
+:)
+
+Marcus
+
+From marc.hartstein at alum.vassar.edu  Fri Mar 28 16:21:19 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Fri, 28 Mar 2008 16:21:19 -0400
+Subject: [sup-talk] Crash
+Message-ID: <1206735524-sup-1255@cabinet>
+
+Attached is the exception log as requested.
+
+Sequence of events:
+
+$ sup-add -l looney maildir:/home/magus/.maildir/looney
+
+$ sup
+
+L looney while the index counter is still incrementing in the status
+line.
+
+Search page appears, a couple of lines get added (I think), then crash.
+
+Hope it helps.
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: sup-exception-log.txt
+Url: http://rubyforge.org/pipermail/sup-talk/attachments/20080328/78d42c7c/attachment-0001.txt 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20080328/78d42c7c/attachment-0001.bin 
+
+From martindemello at gmail.com  Fri Mar 28 18:13:26 2008
+From: martindemello at gmail.com (Martin DeMello)
+Date: Fri, 28 Mar 2008 15:13:26 -0700
+Subject: [sup-talk] sup crashes on startup
+Message-ID: <f93a6bcc0803281513s429f3a3bw485c63e5d9cce818@mail.gmail.com>
+
+--- ArgumentError from thread: main
+no name for account
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:7:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:44:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:44:in `add_account'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup/account.rb:26:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup.rb:98:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/lib/sup.rb:98:in `start'
+/usr/lib/ruby/gems/1.8/gems/sup-0.4/bin/sup:113
+/usr/bin/sup:16:in `load'
+/usr/bin/sup:16
+
+From sup-talk at gurski.org  Fri Mar 28 23:03:56 2008
+From: sup-talk at gurski.org (Michael Gurski)
+Date: Fri, 28 Mar 2008 23:03:56 -0400
+Subject: [sup-talk] crash while sup is sitting idle
+Message-ID: <20080329030356.GA8459@gurski.org>
+
+After a 28+ hour sup-sync -a -o, on git head, sup sitting idle crashed
+with the following error:
+
+--- Ferret::StateError from thread: load threads for thread-index-mode
+State Error occured at <except.c>:93 in xraise
+Error occured in index.c:4150 - sr_get_lazy_doc
+        Document 69 has already been deleted
+
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:238:in `synchronize'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:413:in `[]'
+./lib/sup/index.rb:228:in `each_id_by_date'
+./lib/sup/index.rb:228:in `each'
+./lib/sup/index.rb:228:in `each_id_by_date'
+./lib/sup/thread.rb:326:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:507:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:491:in
+`load_n_threads_background'
+./lib/sup.rb:60:in `reporting_thread'
+./lib/sup.rb:58:in `initialize'
+./lib/sup.rb:58:in `new'
+./lib/sup.rb:58:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:490:in
+`load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:560:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+./lib/sup/modes/thread-index-mode.rb:70:in `initialize'
+./lib/sup/modes/line-cursor-mode.rb:177:in `call'
+./lib/sup/modes/line-cursor-mode.rb:177:in `call_load_more_callbacks'
+./lib/sup/modes/line-cursor-mode.rb:177:in `each'
+./lib/sup/modes/line-cursor-mode.rb:177:in `call_load_more_callbacks'
+./lib/sup/modes/line-cursor-mode.rb:80:in `cursor_down'
+./lib/sup/mode.rb:49:in `send'
+./lib/sup/mode.rb:49:in `handle_input'
+./lib/sup/buffer.rb:231:in `handle_input'
+bin/sup:223
+--- SystemExit from thread: main
+State Error occured at <except.c>:93 in xraise
+Error occured in index.c:4150 - sr_get_lazy_doc
+        Document 69 has already been deleted
+
+./lib/sup.rb:64:in `select'
+./lib/sup/buffer.rb:31:in `nonblocking_getch'
+bin/sup:217
+
+-- 
+Michael A. Gurski (opt. [first].)[last]@pobox.com  http://www.pobox.com/~[last]
+1024R/39B5BADD PGP: 34 93 A9 94 B1 59 48 B7  17 57 1E 4E 62 56 45 70
+1024D/1166213E GPG: 628F 37A4 62AF 1475 45DB  AD81 ADC9 E606 1166 213E
+4096R/C0B4F04B GPG: 5B3E 75D7 43CF CF34 4042  7788 1DCE B5EE C0B4 F04B
+Views expressed by the host do not reflect the staff, management or sponsors.
+
+
+From chrisw at rice.edu  Sat Mar 29 03:57:51 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sat, 29 Mar 2008 02:57:51 -0500
+Subject: [sup-talk] [PATCH] polling is now done per source
+In-Reply-To: <1206724477-sup-3121@cabinet>
+References: <1206724477-sup-3121@cabinet>
+Message-ID: <1206777471-1360-1-git-send-email-chrisw@rice.edu>
+
+Each source has a poll_interval property. This property is used to
+determine whether the source should be polled. The user can still for a
+poll of all sources.
+---
+ bin/sup                    |    4 +-
+ bin/sup-add                |   12 ++-
+ lib/sup.rb                 |    4 +-
+ lib/sup/imap.rb            |    6 +-
+ lib/sup/maildir.rb         |    6 +-
+ lib/sup/mbox/loader.rb     |    4 +-
+ lib/sup/modes/poll-mode.rb |    4 +-
+ lib/sup/poll.rb            |  211 +++++++++++++++++++++++++++++++++-----------
+ lib/sup/source.rb          |    8 +-
+ 9 files changed, 189 insertions(+), 70 deletions(-)
+ mode change 100755 => 100644 lib/sup/buffer.rb
+
+diff --git a/bin/sup b/bin/sup
+index 84fd77c..86a2d9f 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -197,7 +197,7 @@ begin
+     end
+   end unless $opts[:no_initial_poll]
+   
+-  imode.load_threads :num => ibuf.content_height, :when_done => lambda { reporting_thread("poll after loading inbox") { sleep 1; PollManager.poll } unless $opts[:no_threads] || $opts[:no_initial_poll] }
++  imode.load_threads :num => ibuf.content_height, :when_done => lambda { reporting_thread("poll after loading inbox") { sleep 1; PollManager.auto_poll } unless $opts[:no_threads] || $opts[:no_initial_poll] }
+ 
+   if $opts[:compose]
+     ComposeMode.spawn_nicely :to_default => $opts[:compose]
+@@ -263,7 +263,7 @@ begin
+     when :compose
+       ComposeMode.spawn_nicely
+     when :poll
+-      reporting_thread("user-invoked poll") { PollManager.poll }
++      reporting_thread("user-invoked poll") { PollManager.forced_poll }
+     when :recall_draft
+       case Index.num_results_for :label => :draft
+       when 0
+diff --git a/bin/sup-add b/bin/sup-add
+index 50bbb29..88705e1 100644
+--- a/bin/sup-add
++++ b/bin/sup-add
+@@ -39,6 +39,7 @@ EOS
+   opt :unusual, "Do not automatically poll these sources for new messages."
+   opt :labels, "A comma-separated set of labels to apply to all messages from this source", :type => String
+   opt :force_new, "Create a new account for this source, even if one already exists."
++  opt :poll_interval, "The interval (in seconds) between new message polls. The default is #{Redwood::DEFAULT_POLL_INTERVAL}.", :type => :int
+ end
+ 
+ Trollop::die "require one or more sources" if ARGV.empty?
+@@ -84,6 +85,9 @@ index.lock_or_die
+ begin
+   index.load_sources
+ 
++  Trollop::die "The poll interval must be a positive integer." if $opts[:poll_interval] <= 0
++  poll_interval = $opts[:poll_interval] || Redwood::DEFAULT_POLL_INTERVAL
++
+   ARGV.each do |uri|
+     labels = $opts[:labels] ? $opts[:labels].split(/\s*,\s*/).uniq : []
+ 
+@@ -100,14 +104,14 @@ begin
+         say "For SSH connections, if you will use public key authentication, you may leave the username and password blank."
+         say ""
+         username, password = get_login_info uri, index.sources
+-        Redwood::MBox::SSHLoader.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::MBox::SSHLoader.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "imap", "imaps"
+         username, password = get_login_info uri, index.sources
+-        Redwood::IMAP.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::IMAP.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "maildir"
+-        Redwood::Maildir.new uri, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::Maildir.new uri, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "mbox"
+-        Redwood::MBox::Loader.new uri, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::MBox::Loader.new uri, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when nil
+         Trollop::die "Sources must be specified with an URI"
+       else
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 1946f3c..c27a4bc 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -50,6 +50,8 @@ module Redwood
+   YAML_DOMAIN = "masanjin.net"
+   YAML_DATE = "2006-10-01"
+ 
++  DEFAULT_POLL_INTERVAL = 300
++
+ ## record exceptions thrown in threads nicely
+   def reporting_thread name
+     if $opts[:no_threads]
+@@ -72,7 +74,7 @@ module Redwood
+   def save_yaml_obj object, fn, safe=false
+     if safe
+       safe_fn = "#{File.dirname fn}/safe_#{File.basename fn}"
+-      mode = File.stat(fn) if File.exists? fn
++      mode = File.stat(fn).mode if File.exists? fn
+       File.open(safe_fn, "w", mode) { |f| f.puts object.to_yaml }
+       FileUtils.mv safe_fn, fn
+     else
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+old mode 100755
+new mode 100644
+diff --git a/lib/sup/imap.rb b/lib/sup/imap.rb
+index 1d36976..8b58cba 100644
+--- a/lib/sup/imap.rb
++++ b/lib/sup/imap.rb
+@@ -51,13 +51,13 @@ class IMAP < Source
+ 
+   attr_accessor :username, :password
+   yaml_properties :uri, :username, :password, :cur_offset, :usual,
+-                  :archived, :id, :labels
++                  :archived, :id, :poll_interval, :labels
+ 
+-  def initialize uri, username, password, last_idate=nil, usual=true, archived=false, id=nil, labels=[]
++  def initialize uri, username, password, last_idate=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
+     raise ArgumentError, "username and password must be specified" unless username && password
+     raise ArgumentError, "not an imap uri" unless uri =~ %r!imaps?://!
+ 
+-    super uri, last_idate, usual, archived, id
++    super uri, last_idate, usual, archived, id, [poll_interval, SCAN_INTERVAL].max
+ 
+     @parsed_uri = URI(uri)
+     @username = username
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 584e657..ef71e0b 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -12,9 +12,9 @@ class Maildir < Source
+   SCAN_INTERVAL = 30 # seconds
+ 
+   ## remind me never to use inheritance again.
+-  yaml_properties :uri, :cur_offset, :usual, :archived, :id, :labels
+-  def initialize uri, last_date=nil, usual=true, archived=false, id=nil, labels=[]
+-    super uri, last_date, usual, archived, id
++  yaml_properties :uri, :cur_offset, :usual, :archived, :id, :poll_interval, :labels
++  def initialize uri, last_date=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
++    super uri, last_date, usual, archived, id, [poll_interval, SCAN_INTERVAL].max
+     uri = URI(Source.expand_filesystem_uri(uri))
+ 
+     raise ArgumentError, "not a maildir URI" unless uri.scheme == "maildir"
+diff --git a/lib/sup/mbox/loader.rb b/lib/sup/mbox/loader.rb
+index 7fe9129..44317d5 100644
+--- a/lib/sup/mbox/loader.rb
++++ b/lib/sup/mbox/loader.rb
+@@ -9,7 +9,7 @@ class Loader < Source
+   attr_accessor :labels
+ 
+   ## uri_or_fp is horrific. need to refactor.
+-  def initialize uri_or_fp, start_offset=nil, usual=true, archived=false, id=nil, labels=[]
++  def initialize uri_or_fp, start_offset=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
+     @mutex = Mutex.new
+     @labels = ((labels || []) - LabelManager::RESERVED_LABELS).uniq.freeze
+ 
+@@ -26,7 +26,7 @@ class Loader < Source
+       @path = uri_or_fp.path
+     end
+ 
+-    super uri_or_fp, start_offset, usual, archived, id
++    super uri_or_fp, start_offset, usual, archived, id, poll_interval
+   end
+ 
+   def file_path; @path end
+diff --git a/lib/sup/modes/poll-mode.rb b/lib/sup/modes/poll-mode.rb
+index 5849f3e..5521cdc 100644
+--- a/lib/sup/modes/poll-mode.rb
++++ b/lib/sup/modes/poll-mode.rb
+@@ -10,11 +10,11 @@ class PollMode < LogMode
+     self << s + "\n"
+   end
+ 
+-  def poll
++  def poll sources
+     puts unless @new
+     @new = false
+     puts "Poll started at #{Time.now}"
+-    PollManager.do_poll { |s| puts s }
++    PollManager.do_poll_sources(sources) { |s| puts s }
+   end
+ end
+ 
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index d32c893..01db8e2 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -12,13 +12,22 @@ Variables:
+ EOS
+ 
+   HookManager.register "before-poll", <<EOS
++Executes immediately before any poll for new messages commences.
++Variables:
++                 accts: an array of source URIs that will be polled
++EOS
++
++  HookManager.register "before-acct-poll", <<EOS
+ Executes immediately before a poll for new messages commences.
+-No variables.
++Variables:
++                  acct: the URI of the account being polled
+ EOS
+ 
+-  HookManager.register "after-poll", <<EOS
+-Executes immediately after a poll for new messages completes.
++  HookManager.register "after-acct-poll", <<EOS
++Executes immediately after a poll for new messages completes. The statistics are
++only for the account specified.
+ Variables:
++                  acct: the URI of the account being polled
+                    num: the total number of new messages added in this poll
+              num_inbox: the number of new messages added in this poll which
+                         appear in the inbox (i.e. were not auto-archived).
+@@ -28,14 +37,25 @@ num_inbox_total_unread: the total number of unread messages in the inbox
+                         only those messages appearing in the inbox
+ EOS
+ 
+-  DELAY = 300
++  HookManager.register "after-poll", <<EOS
++Executes immediately after any poll for new messages completes. The statistics
++are for all sources polled.
++Variables:
++                 accts: an array of source URIs that were polled
++                   num: the total number of new messages added in this poll
++             num_inbox: the number of new messages added in this poll which
++                        appear in the inbox (i.e. were not auto-archived).
++num_inbox_total_unread: the total number of unread messages in the inbox
++         from_and_subj: an array of (from email address, subject) pairs
++   from_and_subj_inbox: an array of (from email address, subject) pairs for
++                        only those messages appearing in the inbox
++EOS
+ 
+   def initialize
+     @mutex = Mutex.new
+     @thread = nil
+-    @last_poll = nil
+     @polling = false
+-    
++
+     self.class.i_am_the_instance self
+   end
+ 
+@@ -44,47 +64,113 @@ EOS
+     b
+   end
+ 
+-  def poll
++  def start
++    ## Periodically calls auto_poll, effectively automatically polling
++    ## in the background.
++    ##
++    ## auto_poll is called more frequently than the smallest poll
++    ## interval. auto_poll is not guaranteed to be called in multiples
++    ## of poll intervals. I.e., don't rely on auto_poll to be called
++    ## every x seconds: when auto_poll is called assume an
++    ## indeterminate amount of time has passed.
++    @min_poll_interval = Index.usual_sources.collect{|s| s.poll_interval}.select{|pi| !pi.nil?}.min || Redwood::DEFAULT_POLL_INTERVAL
++
++    Redwood::log "Background poll interval is #{@min_poll_interval} seconds."
++
++    @thread = Redwood::reporting_thread("periodic poll") do
++      while true
++        Redwood::log "Sleeping for #{@min_poll_interval / 2} seconds."
++
++        sleep @min_poll_interval / 2
++        auto_poll
++      end
++    end
++  end
++
++  def stop
++    @thread.kill if @thread
++    @thread = nil
++  end
++
++  def auto_poll
++    ## This method is called by the thread spawned in start. It
++    ## collects the sources that should be polled
++    ## (source.poll_interval has expired or the source has never been
++    ## polled) and polls them.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++
++    sources_to_poll = []
++    @mutex.synchronize do # William, do we need to synchronize here?
++      begin
++        sources_to_poll = Index.usual_sources.select do |source|
++          begin
++            source.last_poll.nil? || (Time.now - source.last_poll) >= source.poll_interval
++          end
++        end
++      end
++    end
++
++    poll_sources sources_to_poll
++  end
++
++  def forced_poll
++    ## This method is called when the user explicitly requests a poll.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++    poll_sources Index.usual_sources
++  end
++
++  def poll_sources sources
++    ## Polls the given sources. Clients of PollManager should call
++    ## this method, not do_poll_sources or poll_source. (Well, only
++    ## PollMode should call do_poll_sources)
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
+     return if @polling
+     @polling = true
+-    HookManager.run "before-poll"
++
++    source_uris = sources.map{|s| s.uri}
++
++    HookManager.run "before-acct-poll", :accts => source_uris
+ 
+     BufferManager.flash "Polling for new messages..."
+-    num, numi, from_and_subj, from_and_subj_inbox = buffer.mode.poll
++    num, numi, from_subj, from_subj_inbox = buffer.mode.poll sources
+     if num > 0
+       BufferManager.flash "Loaded #{num.pluralize 'new message'}, #{numi} to inbox." 
+     else
+       BufferManager.flash "No new messages." 
+     end
+ 
+-    HookManager.run "after-poll", :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
++    HookManager.run "after-poll", :accts => source_uris, :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+ 
+     @polling = false
+-    [num, numi]
+-  end
+-
+-  def start
+-    @thread = Redwood::reporting_thread("periodic poll") do
+-      while true
+-        sleep DELAY / 2
+-        poll if @last_poll.nil? || (Time.now - @last_poll) >= DELAY
+-      end
+-    end
++    [num, numi, from_subj, from_subj_inbox]
+   end
+ 
+-  def stop
+-    @thread.kill if @thread
+-    @thread = nil
+-  end
++  def do_poll_sources sources, &block
++    ## Polls each source, keeping track of vital statistics (number
++    ## loaded, name/e-mail pairs, &c.) about the poll results.
++    ##
++    ## We need explicit access to the block so that we can pass it to
++    ## poll_source.
++    ##
++    ## Returns an array [total # of new messages, total # of new
++    ## messages to inbox, all new message subject/name array pairs,
++    ## all subject/name array pairs loaded to inbox]
+ 
+-  def do_poll
+     total_num = total_numi = 0
+-    from_and_subj = []
+-    from_and_subj_inbox = []
++    total_from_and_subj = []
++    total_from_and_subj_inbox = []
+ 
+     @mutex.synchronize do
+-      Index.usual_sources.each do |source|
+-#        yield "source #{source} is done? #{source.done?} (cur_offset #{source.cur_offset} >= #{source.end_offset})"
++      sources.each do |source|
+         begin
+           yield "Loading from #{source}... " unless source.done? || source.has_errors?
+         rescue SourceError => e
+@@ -93,32 +179,57 @@ EOS
+           next
+         end
+ 
+-        num = 0
+-        numi = 0
+-        add_messages_from source do |m, offset, entry|
+-          ## always preserve the labels on disk.
+-          m.labels = entry[:label].split(/\s+/).map { |x| x.intern } if entry
+-          yield "Found message at #{offset} with labels {#{m.labels * ', '}}"
+-          unless entry
+-            num += 1
+-            from_and_subj << [m.from.longname, m.subj]
+-            if m.has_label?(:inbox) && ([:spam, :deleted, :killed] & m.labels).empty?
+-              from_and_subj_inbox << [m.from.longname, m.subj]
+-              numi += 1 
+-            end
+-          end
+-          m
+-        end
+-        yield "Found #{num} messages, #{numi} to inbox." unless num == 0
++        HookManager.run "before-acct-poll", :acct => source.uri
++
++        BufferManager.flash "Polling #{source.uri} for new messages..."
++        num, numi, from_and_subj, from_and_subj_inbox = poll_source source, &block
++
+         total_num += num
+         total_numi += numi
++        total_from_and_subj += from_and_subj
++        total_from_and_subj_inbox += from_and_subj_inbox
++
++        HookManager.run "after-acct-poll", :acct => source.uri, :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+       end
++    end
++
++    [total_num, total_numi, total_from_and_subj, total_from_and_subj_inbox]
++  end
+ 
+-      yield "Done polling; loaded #{total_num} new messages total"
+-      @last_poll = Time.now
+-      @polling = false
++  def poll_source source
++    ## Polls the given source for new messages.
++    ##
++    ## @mutex must be held before calling! See do_poll_sources.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++
++    num = 0
++    numi = 0
++    from_and_subj = []
++    from_and_subj_inbox = []
++
++    add_messages_from source do |m, offset, entry|
++      ## always preserve the labels on disk.
++      m.labels = entry[:label].split(/\s+/).map { |x| x.intern } if entry
++      yield "Found message at #{offset} with labels {#{m.labels * ', '}}"
++      unless entry
++        num += 1
++        from_and_subj << [m.from.longname, m.subj]
++        if m.has_label?(:inbox) && ([:spam, :deleted, :killed] & m.labels).empty?
++          from_and_subj_inbox << [m.from.longname, m.subj]
++          numi += 1
++        end
++      end
++      m
+     end
+-    [total_num, total_numi, from_and_subj, from_and_subj_inbox]
++
++    yield "For source #{source.uri}, found #{num} messages, #{numi} to inbox." unless num == 0
++
++    source.last_poll = Time.now
++
++    [num, numi, from_and_subj, from_and_subj_inbox]
+   end
+ 
+   ## this is the main mechanism for adding new messages to the
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 6510aae..fd8d381 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -62,10 +62,10 @@ class Source
+   ## dirty? means cur_offset has changed, so the source info needs to
+   ## be re-saved to sources.yaml.
+   bool_reader :usual, :archived, :dirty
+-  attr_reader :uri, :cur_offset
+-  attr_accessor :id
++  attr_reader :uri, :cur_offset, :poll_interval
++  attr_accessor :id, :last_poll
+ 
+-  def initialize uri, initial_offset=nil, usual=true, archived=false, id=nil
++  def initialize uri, initial_offset=nil, usual=true, archived=false, id=nil, poll_interval=nil
+     raise ArgumentError, "id must be an integer: #{id.inspect}" unless id.is_a? Fixnum if id
+ 
+     @uri = uri
+@@ -73,6 +73,8 @@ class Source
+     @usual = usual
+     @archived = archived
+     @id = id
++    @poll_interval = poll_interval || Redwood::DEFAULT_POLL_INTERVAL #seconds
++    @last_poll = nil
+     @dirty = false
+   end
+ 
+-- 
+1.5.4
+
+
+From chrisw at rice.edu  Sat Mar 29 05:59:31 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sat, 29 Mar 2008 04:59:31 -0500
+Subject: [sup-talk] [PATCH] polling is now done per source
+In-Reply-To: <1206777471-1360-1-git-send-email-chrisw@rice.edu>
+References: <1206724477-sup-3121@cabinet>
+	<1206777471-1360-1-git-send-email-chrisw@rice.edu>
+Message-ID: <1206784680-sup-3052@chris-tablet>
+
+Excerpts from Christopher Warrington's message of Sat Mar 29 02:57:51 -0500 2008:
+> Each source has a poll_interval property. This property is used to
+> determine whether the source should be polled. The user can still
+> for a poll of all sources.
+
+There is a bug in this patch. Watch this space for an updated patch.
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+From chrisw at rice.edu  Sat Mar 29 06:02:31 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sat, 29 Mar 2008 05:02:31 -0500
+Subject: [sup-talk] Newline Issues
+In-Reply-To: <1206549226-sup-8056@south>
+References: <1204536487-sup-9413@chris-tablet> <1206549226-sup-8056@south>
+Message-ID: <1206784905-sup-8496@chris-tablet>
+
+Excerpts from William Morgan's message of Wed Mar 26 11:40:24 -0500 2008:
+> Reformatted excerpts from Christopher Warrington's message of 2008-03-03:
+> > When I use offlineimap under Cgywin, the messages are delivered with
+> > CRLF. Sup cannot parse these: it thinks that the body is empty. I know
+> > that sup is seeing the entire message. If I press H, I see all of the
+> > message.
+> 
+> I've finally had a chance to look into this. I've just patched Sup to
+> handle carriage returns in mbox files, but things are still broken
+> because of RubyMail.
+> 
+> It looks like there's an outstanding RubyMail patch here:
+> 
+> http://rubyforge.org/tracker/index.php?func=detail&aid=2821&group_id=446&atid=17
+> 56
+> 
+> If you apply that and get the latest git, I think things should work.
+
+That appears to have done it. All is well in Cygwin land, for now.
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+
+From chrisw at rice.edu  Sat Mar 29 06:32:05 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sat, 29 Mar 2008 05:32:05 -0500
+Subject: [sup-talk] [PATCH] polling is now done per source
+In-Reply-To: <1206784680-sup-3052@chris-tablet>
+References: <1206784680-sup-3052@chris-tablet>
+Message-ID: <1206786725-5456-1-git-send-email-chrisw@rice.edu>
+
+Each source has a poll_interval property. This property is used to
+determine whether the source should be polled. The user can still for a
+poll of all sources.
+---
+ bin/sup                    |    4 +-
+ bin/sup-add                |   12 ++-
+ lib/sup.rb                 |    4 +-
+ lib/sup/imap.rb            |    6 +-
+ lib/sup/maildir.rb         |    6 +-
+ lib/sup/mbox/loader.rb     |    4 +-
+ lib/sup/modes/poll-mode.rb |    4 +-
+ lib/sup/poll.rb            |  211 +++++++++++++++++++++++++++++++++-----------
+ lib/sup/source.rb          |    8 +-
+ 9 files changed, 189 insertions(+), 70 deletions(-)
+ mode change 100755 => 100644 lib/sup/buffer.rb
+
+diff --git a/bin/sup b/bin/sup
+index 84fd77c..86a2d9f 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -197,7 +197,7 @@ begin
+     end
+   end unless $opts[:no_initial_poll]
+   
+-  imode.load_threads :num => ibuf.content_height, :when_done => lambda { reporting_thread("poll after loading inbox") { sleep 1; PollManager.poll } unless $opts[:no_threads] || $opts[:no_initial_poll] }
++  imode.load_threads :num => ibuf.content_height, :when_done => lambda { reporting_thread("poll after loading inbox") { sleep 1; PollManager.auto_poll } unless $opts[:no_threads] || $opts[:no_initial_poll] }
+ 
+   if $opts[:compose]
+     ComposeMode.spawn_nicely :to_default => $opts[:compose]
+@@ -263,7 +263,7 @@ begin
+     when :compose
+       ComposeMode.spawn_nicely
+     when :poll
+-      reporting_thread("user-invoked poll") { PollManager.poll }
++      reporting_thread("user-invoked poll") { PollManager.forced_poll }
+     when :recall_draft
+       case Index.num_results_for :label => :draft
+       when 0
+diff --git a/bin/sup-add b/bin/sup-add
+index 50bbb29..88705e1 100644
+--- a/bin/sup-add
++++ b/bin/sup-add
+@@ -39,6 +39,7 @@ EOS
+   opt :unusual, "Do not automatically poll these sources for new messages."
+   opt :labels, "A comma-separated set of labels to apply to all messages from this source", :type => String
+   opt :force_new, "Create a new account for this source, even if one already exists."
++  opt :poll_interval, "The interval (in seconds) between new message polls. The default is #{Redwood::DEFAULT_POLL_INTERVAL}.", :type => :int
+ end
+ 
+ Trollop::die "require one or more sources" if ARGV.empty?
+@@ -84,6 +85,9 @@ index.lock_or_die
+ begin
+   index.load_sources
+ 
++  Trollop::die "The poll interval must be a positive integer." if $opts[:poll_interval] <= 0
++  poll_interval = $opts[:poll_interval] || Redwood::DEFAULT_POLL_INTERVAL
++
+   ARGV.each do |uri|
+     labels = $opts[:labels] ? $opts[:labels].split(/\s*,\s*/).uniq : []
+ 
+@@ -100,14 +104,14 @@ begin
+         say "For SSH connections, if you will use public key authentication, you may leave the username and password blank."
+         say ""
+         username, password = get_login_info uri, index.sources
+-        Redwood::MBox::SSHLoader.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::MBox::SSHLoader.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "imap", "imaps"
+         username, password = get_login_info uri, index.sources
+-        Redwood::IMAP.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::IMAP.new uri, username, password, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "maildir"
+-        Redwood::Maildir.new uri, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::Maildir.new uri, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when "mbox"
+-        Redwood::MBox::Loader.new uri, nil, !$opts[:unusual], $opts[:archive], nil, labels
++        Redwood::MBox::Loader.new uri, nil, !$opts[:unusual], $opts[:archive], nil, poll_interval, labels
+       when nil
+         Trollop::die "Sources must be specified with an URI"
+       else
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 1946f3c..c27a4bc 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -50,6 +50,8 @@ module Redwood
+   YAML_DOMAIN = "masanjin.net"
+   YAML_DATE = "2006-10-01"
+ 
++  DEFAULT_POLL_INTERVAL = 300
++
+ ## record exceptions thrown in threads nicely
+   def reporting_thread name
+     if $opts[:no_threads]
+@@ -72,7 +74,7 @@ module Redwood
+   def save_yaml_obj object, fn, safe=false
+     if safe
+       safe_fn = "#{File.dirname fn}/safe_#{File.basename fn}"
+-      mode = File.stat(fn) if File.exists? fn
++      mode = File.stat(fn).mode if File.exists? fn
+       File.open(safe_fn, "w", mode) { |f| f.puts object.to_yaml }
+       FileUtils.mv safe_fn, fn
+     else
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+old mode 100755
+new mode 100644
+diff --git a/lib/sup/imap.rb b/lib/sup/imap.rb
+index 1d36976..8b58cba 100644
+--- a/lib/sup/imap.rb
++++ b/lib/sup/imap.rb
+@@ -51,13 +51,13 @@ class IMAP < Source
+ 
+   attr_accessor :username, :password
+   yaml_properties :uri, :username, :password, :cur_offset, :usual,
+-                  :archived, :id, :labels
++                  :archived, :id, :poll_interval, :labels
+ 
+-  def initialize uri, username, password, last_idate=nil, usual=true, archived=false, id=nil, labels=[]
++  def initialize uri, username, password, last_idate=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
+     raise ArgumentError, "username and password must be specified" unless username && password
+     raise ArgumentError, "not an imap uri" unless uri =~ %r!imaps?://!
+ 
+-    super uri, last_idate, usual, archived, id
++    super uri, last_idate, usual, archived, id, [poll_interval, SCAN_INTERVAL].max
+ 
+     @parsed_uri = URI(uri)
+     @username = username
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 584e657..ef71e0b 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -12,9 +12,9 @@ class Maildir < Source
+   SCAN_INTERVAL = 30 # seconds
+ 
+   ## remind me never to use inheritance again.
+-  yaml_properties :uri, :cur_offset, :usual, :archived, :id, :labels
+-  def initialize uri, last_date=nil, usual=true, archived=false, id=nil, labels=[]
+-    super uri, last_date, usual, archived, id
++  yaml_properties :uri, :cur_offset, :usual, :archived, :id, :poll_interval, :labels
++  def initialize uri, last_date=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
++    super uri, last_date, usual, archived, id, [poll_interval, SCAN_INTERVAL].max
+     uri = URI(Source.expand_filesystem_uri(uri))
+ 
+     raise ArgumentError, "not a maildir URI" unless uri.scheme == "maildir"
+diff --git a/lib/sup/mbox/loader.rb b/lib/sup/mbox/loader.rb
+index 7fe9129..44317d5 100644
+--- a/lib/sup/mbox/loader.rb
++++ b/lib/sup/mbox/loader.rb
+@@ -9,7 +9,7 @@ class Loader < Source
+   attr_accessor :labels
+ 
+   ## uri_or_fp is horrific. need to refactor.
+-  def initialize uri_or_fp, start_offset=nil, usual=true, archived=false, id=nil, labels=[]
++  def initialize uri_or_fp, start_offset=nil, usual=true, archived=false, id=nil, poll_interval=nil, labels=[]
+     @mutex = Mutex.new
+     @labels = ((labels || []) - LabelManager::RESERVED_LABELS).uniq.freeze
+ 
+@@ -26,7 +26,7 @@ class Loader < Source
+       @path = uri_or_fp.path
+     end
+ 
+-    super uri_or_fp, start_offset, usual, archived, id
++    super uri_or_fp, start_offset, usual, archived, id, poll_interval
+   end
+ 
+   def file_path; @path end
+diff --git a/lib/sup/modes/poll-mode.rb b/lib/sup/modes/poll-mode.rb
+index 5849f3e..5521cdc 100644
+--- a/lib/sup/modes/poll-mode.rb
++++ b/lib/sup/modes/poll-mode.rb
+@@ -10,11 +10,11 @@ class PollMode < LogMode
+     self << s + "\n"
+   end
+ 
+-  def poll
++  def poll sources
+     puts unless @new
+     @new = false
+     puts "Poll started at #{Time.now}"
+-    PollManager.do_poll { |s| puts s }
++    PollManager.do_poll_sources(sources) { |s| puts s }
+   end
+ end
+ 
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index d32c893..1ff8014 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -12,13 +12,22 @@ Variables:
+ EOS
+ 
+   HookManager.register "before-poll", <<EOS
++Executes immediately before any poll for new messages commences.
++Variables:
++                 accts: an array of source URIs that will be polled
++EOS
++
++  HookManager.register "before-acct-poll", <<EOS
+ Executes immediately before a poll for new messages commences.
+-No variables.
++Variables:
++                  acct: the URI of the account being polled
+ EOS
+ 
+-  HookManager.register "after-poll", <<EOS
+-Executes immediately after a poll for new messages completes.
++  HookManager.register "after-acct-poll", <<EOS
++Executes immediately after a poll for new messages completes. The statistics are
++only for the account specified.
+ Variables:
++                  acct: the URI of the account being polled
+                    num: the total number of new messages added in this poll
+              num_inbox: the number of new messages added in this poll which
+                         appear in the inbox (i.e. were not auto-archived).
+@@ -28,14 +37,25 @@ num_inbox_total_unread: the total number of unread messages in the inbox
+                         only those messages appearing in the inbox
+ EOS
+ 
+-  DELAY = 300
++  HookManager.register "after-poll", <<EOS
++Executes immediately after any poll for new messages completes. The statistics
++are for all sources polled.
++Variables:
++                 accts: an array of source URIs that were polled
++                   num: the total number of new messages added in this poll
++             num_inbox: the number of new messages added in this poll which
++                        appear in the inbox (i.e. were not auto-archived).
++num_inbox_total_unread: the total number of unread messages in the inbox
++         from_and_subj: an array of (from email address, subject) pairs
++   from_and_subj_inbox: an array of (from email address, subject) pairs for
++                        only those messages appearing in the inbox
++EOS
+ 
+   def initialize
+     @mutex = Mutex.new
+     @thread = nil
+-    @last_poll = nil
+     @polling = false
+-    
++
+     self.class.i_am_the_instance self
+   end
+ 
+@@ -44,47 +64,113 @@ EOS
+     b
+   end
+ 
+-  def poll
++  def start
++    ## Periodically calls auto_poll, effectively automatically polling
++    ## in the background.
++    ##
++    ## auto_poll is called more frequently than the smallest poll
++    ## interval. auto_poll is not guaranteed to be called in multiples
++    ## of poll intervals. I.e., don't rely on auto_poll to be called
++    ## every x seconds: when auto_poll is called assume an
++    ## indeterminate amount of time has passed.
++    @min_poll_interval = Index.usual_sources.collect{|s| s.poll_interval}.select{|pi| !pi.nil?}.min || Redwood::DEFAULT_POLL_INTERVAL
++
++    Redwood::log "Background poll interval is #{@min_poll_interval} seconds."
++
++    @thread = Redwood::reporting_thread("periodic poll") do
++      while true
++        Redwood::log "Sleeping for #{@min_poll_interval / 2} seconds."
++
++        sleep @min_poll_interval / 2
++        auto_poll
++      end
++    end
++  end
++
++  def stop
++    @thread.kill if @thread
++    @thread = nil
++  end
++
++  def auto_poll
++    ## This method is called by the thread spawned in start. It
++    ## collects the sources that should be polled
++    ## (source.poll_interval has expired or the source has never been
++    ## polled) and polls them.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++
++    sources_to_poll = []
++    @mutex.synchronize do # William, do we need to synchronize here?
++      begin
++        sources_to_poll = Index.usual_sources.select do |source|
++          begin
++            source.last_poll.nil? || (Time.now - source.last_poll) >= source.poll_interval
++          end
++        end
++      end
++    end
++
++    poll_sources sources_to_poll
++  end
++
++  def forced_poll
++    ## This method is called when the user explicitly requests a poll.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++    poll_sources Index.usual_sources
++  end
++
++  def poll_sources sources
++    ## Polls the given sources. Clients of PollManager should call
++    ## this method, not do_poll_sources or poll_source. (Well, only
++    ## PollMode should call do_poll_sources)
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
+     return if @polling
+     @polling = true
+-    HookManager.run "before-poll"
++
++    source_uris = sources.map{|s| s.uri}
++
++    HookManager.run "before-acct-poll", :accts => source_uris
+ 
+     BufferManager.flash "Polling for new messages..."
+-    num, numi, from_and_subj, from_and_subj_inbox = buffer.mode.poll
++    num, numi, from_subj, from_subj_inbox = buffer.mode.poll sources
+     if num > 0
+       BufferManager.flash "Loaded #{num.pluralize 'new message'}, #{numi} to inbox." 
+     else
+       BufferManager.flash "No new messages." 
+     end
+ 
+-    HookManager.run "after-poll", :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
++    HookManager.run "after-poll", :accts => source_uris, :num => num, :num_inbox => numi, :from_and_subj => from_subj, :from_and_subj_inbox => from_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+ 
+     @polling = false
+-    [num, numi]
+-  end
+-
+-  def start
+-    @thread = Redwood::reporting_thread("periodic poll") do
+-      while true
+-        sleep DELAY / 2
+-        poll if @last_poll.nil? || (Time.now - @last_poll) >= DELAY
+-      end
+-    end
++    [num, numi, from_subj, from_subj_inbox]
+   end
+ 
+-  def stop
+-    @thread.kill if @thread
+-    @thread = nil
+-  end
++  def do_poll_sources sources, &block
++    ## Polls each source, keeping track of vital statistics (number
++    ## loaded, name/e-mail pairs, &c.) about the poll results.
++    ##
++    ## We need explicit access to the block so that we can pass it to
++    ## poll_source.
++    ##
++    ## Returns an array [total # of new messages, total # of new
++    ## messages to inbox, all new message subject/name array pairs,
++    ## all subject/name array pairs loaded to inbox]
+ 
+-  def do_poll
+     total_num = total_numi = 0
+-    from_and_subj = []
+-    from_and_subj_inbox = []
++    total_from_and_subj = []
++    total_from_and_subj_inbox = []
+ 
+     @mutex.synchronize do
+-      Index.usual_sources.each do |source|
+-#        yield "source #{source} is done? #{source.done?} (cur_offset #{source.cur_offset} >= #{source.end_offset})"
++      sources.each do |source|
+         begin
+           yield "Loading from #{source}... " unless source.done? || source.has_errors?
+         rescue SourceError => e
+@@ -93,32 +179,57 @@ EOS
+           next
+         end
+ 
+-        num = 0
+-        numi = 0
+-        add_messages_from source do |m, offset, entry|
+-          ## always preserve the labels on disk.
+-          m.labels = entry[:label].split(/\s+/).map { |x| x.intern } if entry
+-          yield "Found message at #{offset} with labels {#{m.labels * ', '}}"
+-          unless entry
+-            num += 1
+-            from_and_subj << [m.from.longname, m.subj]
+-            if m.has_label?(:inbox) && ([:spam, :deleted, :killed] & m.labels).empty?
+-              from_and_subj_inbox << [m.from.longname, m.subj]
+-              numi += 1 
+-            end
+-          end
+-          m
+-        end
+-        yield "Found #{num} messages, #{numi} to inbox." unless num == 0
++        HookManager.run "before-acct-poll", :acct => source.uri
++
++        BufferManager.flash "Polling #{source.uri} for new messages..."
++        num, numi, from_and_subj, from_and_subj_inbox = poll_source source, &block
++
+         total_num += num
+         total_numi += numi
++        total_from_and_subj += from_and_subj
++        total_from_and_subj_inbox += from_and_subj_inbox
++
++        HookManager.run "after-acct-poll", :acct => source.uri, :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+       end
++    end
++
++    [total_num, total_numi, total_from_and_subj, total_from_and_subj_inbox]
++  end
+ 
+-      yield "Done polling; loaded #{total_num} new messages total"
+-      @last_poll = Time.now
+-      @polling = false
++  def poll_source source
++    ## Polls the given source for new messages.
++    ##
++    ## @mutex must be held before calling! See do_poll_sources.
++    ##
++    ## Returns an array [# of new messages, # of new messages to
++    ## inbox, new message subject/name array pairs, subject/name array
++    ## pairs loaded to inbox]
++
++    num = 0
++    numi = 0
++    from_and_subj = []
++    from_and_subj_inbox = []
++
++    add_messages_from source do |m, offset, entry|
++      ## always preserve the labels on disk.
++      m.labels = entry[:label].split(/\s+/).map { |x| x.intern } if entry
++      yield "Found message at #{offset} with labels {#{m.labels * ', '}}"
++      unless entry
++        num += 1
++        from_and_subj << [m.from.longname, m.subj]
++        if m.has_label?(:inbox) && ([:spam, :deleted, :killed] & m.labels).empty?
++          from_and_subj_inbox << [m.from.longname, m.subj]
++          numi += 1
++        end
++      end
++      m
+     end
+-    [total_num, total_numi, from_and_subj, from_and_subj_inbox]
++
++    yield "For source #{source.uri}, found #{num} messages, #{numi} to inbox." unless num == 0
++
++    source.last_poll = Time.now
++
++    [num, numi, from_and_subj, from_and_subj_inbox]
+   end
+ 
+   ## this is the main mechanism for adding new messages to the
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 6510aae..fd8d381 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -62,10 +62,10 @@ class Source
+   ## dirty? means cur_offset has changed, so the source info needs to
+   ## be re-saved to sources.yaml.
+   bool_reader :usual, :archived, :dirty
+-  attr_reader :uri, :cur_offset
+-  attr_accessor :id
++  attr_reader :uri, :cur_offset, :poll_interval
++  attr_accessor :id, :last_poll
+ 
+-  def initialize uri, initial_offset=nil, usual=true, archived=false, id=nil
++  def initialize uri, initial_offset=nil, usual=true, archived=false, id=nil, poll_interval=nil
+     raise ArgumentError, "id must be an integer: #{id.inspect}" unless id.is_a? Fixnum if id
+ 
+     @uri = uri
+@@ -73,6 +73,8 @@ class Source
+     @usual = usual
+     @archived = archived
+     @id = id
++    @poll_interval = poll_interval || Redwood::DEFAULT_POLL_INTERVAL #seconds
++    @last_poll = nil
+     @dirty = false
+   end
+ 
+-- 
+1.5.4
+
+
+From 5srmspw02 at sneakemail.com  Sat Mar 29 12:41:14 2008
+From: 5srmspw02 at sneakemail.com (Guarded Identity)
+Date: Sat, 29 Mar 2008 11:41:14 -0500
+Subject: [sup-talk] Different Key Bindings (was: New User Questions)
+In-Reply-To: <1206699001-sup-9770@tomsk>
+References: <1206662265-sup-7439@cabinet> <1206699001-sup-9770@tomsk>
+Message-ID: <27382-65971@sneakemail.com>
+
+Excerpts from Marcus Williams marcus-sup-at-bar-coded.net |Sup_Talk|'s message of Fri Mar 28 05:33:45
+> > 8. Is there any way to specify custom keybindings in a configuration
+> > file, or would it require hacking the source?
+>
+> Hack the source afaik
+
+I know I'd /definitely/ be interested in this kind of thing.  For the most
+part, I'm really happy with current key bindings, but there's a few that bug
+me.  For instance.  I wish 'l' and 'L' were reversed.  My rationale is that I
+don't like the unshifted characters to do persistent things (just in-case I hit
+the wrong key).  Maybe it's just me, but I hit 'l' sometimes, briefly believe
+that Sup is hung, and then realize that I'm editing labels, and then Ctrl-G'd
+out before accidentally committing the junk labels.
+
+-Sukant
+
+From chrisw at rice.edu  Sat Mar 29 23:15:37 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sat, 29 Mar 2008 22:15:37 -0500
+Subject: [sup-talk] [PATCH] polling is now done per source
+In-Reply-To: <1206786725-5456-1-git-send-email-chrisw@rice.edu>
+References: <1206784680-sup-3052@chris-tablet>
+	<1206786725-5456-1-git-send-email-chrisw@rice.edu>
+Message-ID: <1206846791-sup-7998@chris-tablet>
+
+Excerpts from Christopher Warrington's message of Sat Mar 29 05:32:05 -0500 2008:
+> Each source has a poll_interval property. This property is used to
+> determine whether the source should be polled. The user can still
+> for a poll of all sources.
+
+This is the fixed patch. I've been running it all day now with Maildir
+sources and it seems to be working. I'd love some feedback, especially
+from those who use mbox or IMAP.
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+

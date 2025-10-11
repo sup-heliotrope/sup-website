@@ -1,0 +1,98 @@
+From david.froger.ml at gmail.com  Sun May 27 20:56:32 2012
+From: david.froger.ml at gmail.com (David Froger)
+Date: Sun, 27 May 2012 22:56:32 +0200
+Subject: [sup-devel] helioptrop/turnsol or sup
+Message-ID: <CANe92jcLjQxs-AwiAiPRaiQoR3YMzRsyrgnnFCW4gA0oh6e8cw@mail.gmail.com>
+
+Hi,
+
+I'm wondering what is recommanded today for a user, sup or turnsol/heliotrop?
+
+Is sup still maintained ? (wiki vandalized, 0.13 not released).
+
+Is there something one can do to prevent wiki vandalization? (someone
+had spoken about git gollum).
+
+I've tried turnsol/heliotrop. Really great, as sup was.
+I've had some issue with utf-8 (ruby 1.8.7), but I think it can be
+solved with ruby 1.9.3.
+
+I'm also wondering what's the search syntax for turnsol? Are these
+syntax possible, like with sup:
+before:today, on:today, after:yesterday, after:(2 days ago), during:february
+
+I've also had a look to notmuch, it looks active but not powerfull as sup.
+Especially, I didn't find a notmuch frontend that suit to me, and the
+syntax for time range
+ $(date +%s -d 2009-10-01)..$(date +%s) is really not convenient.
+
+Best,
+David
+
+From wmorgan-sup at masanjin.net  Tue May 29 03:51:53 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 May 2012 20:51:53 -0700
+Subject: [sup-devel]  helioptrop/turnsol or sup
+In-Reply-To: <CANe92jcLjQxs-AwiAiPRaiQoR3YMzRsyrgnnFCW4gA0oh6e8cw@mail.gmail.com>
+References: <CANe92jcLjQxs-AwiAiPRaiQoR3YMzRsyrgnnFCW4gA0oh6e8cw@mail.gmail.com>
+Message-ID: <1338263304-turnsole-70458@typhon>
+
+Excerpts from David Froger's message of 2012-05-27 13:56:32 -0700:
+> I'm wondering what is recommanded today for a user, sup or turnsol/heliotrop?
+
+Probably heliotrope/turnsole. Sup is essentially unmaintained at this
+point (I'm not working on it, and the anointed maintainers are MIA).
+Heliotrope is nominally under active development, though I haven't had
+much time for it over the past few months.
+
+> I've tried turnsol/heliotrop. Really great, as sup was.
+> I've had some issue with utf-8 (ruby 1.8.7), but I think it can be
+> solved with ruby 1.9.3.
+
+Feel free to file a bug on the github issue tracker. There are certain
+things we can't quite accomplish in 1.8, but I'd like to get as close as
+possible.
+
+> I'm also wondering what's the search syntax for turnsol? Are these
+> syntax possible, like with sup:
+> before:today, on:today, after:yesterday, after:(2 days ago), during:february
+
+Unfortunately not. You can file a feature request with Whistlepig, but
+I can tell you now there are many other things I would like to focus on
+first.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Wed May 30 20:35:46 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 30 May 2012 22:35:46 +0200
+Subject: [sup-devel] Documentation of the heliotrope API
+Message-ID: <CAMiZLn2ESrDxTFhfzLAH36-7gJy7oy6uCWAxKYxHD5M1A9Pe_A@mail.gmail.com>
+
+Hello everyone,
+
+While browsing the interwebs, I realized that many people are also
+tired of the cumbersomeness of the IMAP protocol, and a few of them
+has started some work on implementing what they would love to see. For
+instance, you can find a thread talking about it in [0] which links to
+a few other thoughts. What is interesting is that many people have the
+same approach to use JSON-over-HTTP in a RESTful manner. I think each
+of these implementations' problem is the same: they lack visibility to
+gather improvements.
+
+Seeing this, I thought that to give Heliotrope a little more
+visibility, we should improve the documentation a little bit. I have
+started [1] by the first step: the API. Feel free to comment back on
+this, or fork/edit the pages yourself.
+
+
+Cheers,
+
+-- 
+Matthieu RAKOTOJAONA
+
+
+[0] http://blog.gaborcselle.com/2010/02/how-to-replace-imap.html
+[1] https://github.com/rakoo/heliotrope/wiki/A-brief-overview-of-the-heliotrope-api
+

@@ -1,0 +1,337 @@
+From damien.leone at fensalir.fr  Sat May  1 06:09:23 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sat, 01 May 2010 12:09:23 +0200
+Subject: [sup-talk] Multiple accounts handling
+Message-ID: <1272708559-sup-108@windir>
+
+Hello, world.
+
+I have been using sup (git-next version) for weeks and I'm quite happy
+with it (I switched from mutt).
+
+I got answers to most of my questions by searching the sup-talk
+archives but I have still some stuff to ask you people, sorry if it
+has been already answered.
+
+My main issue is about selecting the proper account when I compose a
+new mail, most informations I read was about filtering the "to:" field
+in the "before-edit" hook to set up the "from:" field, but I use to
+send mails to various recipients using different accounts.
+
+Is there a way to get an "Account" horizontal selector in the edit
+screen just like the "Reply to" and "Crypto" ones? That would be
+perfect to select our account regardless of the "to:" field.
+
+Also, how can I tag all threads corresponding to a specific criterion
+in the current buffer? I would like something like hitting 'g' then
+write something like "is:unread" to, for instance, mark all results as
+read using '='. It works if I hit 'F' then type "is:unread" (which is
+the same as hitting 'U') but I want to do it only on the current
+buffer, not all my tags.
+
+The idea behind this is to have a keybinding that would mark all
+unread threads of a specific tag as read (like macros in mutt).
+
+That's all for now. :)
+
+Thanks!
+Cheers,
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From sup at equaeghe.nospammail.net  Sat May  1 13:12:17 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Sat, 1 May 2010 13:12:17 -0400 (EDT)
+Subject: [sup-talk] Multiple accounts handling
+In-Reply-To: <1272708559-sup-108@windir>
+References: <1272708559-sup-108@windir>
+Message-ID: <alpine.DEB.2.00.1005011255160.7655@flfbcjrt>
+
+On Sat, 1 May 2010, Damien Leone wrote:
+>
+> My main issue is about selecting the proper account when I compose a
+> new mail, most informations I read was about filtering the "to:" field
+> in the "before-edit" hook to set up the "from:" field, but I use to
+> send mails to various recipients using different accounts.
+>
+> Is there a way to get an "Account" horizontal selector in the edit
+> screen just like the "Reply to" and "Crypto" ones? That would be
+> perfect to select our account regardless of the "to:" field.
+
+Other ways of looking at it:
+
+* create a 'personalities' feature that would override the To:-logic when 
+activated and use the selected personality.
+
+* a way of specifying the From: as is currently done with the To: and Cc: 
+headers, using nicks and tab-completion from addresses in the contact 
+list, which would be useful as well in situations where one wants to send 
+mail with a from that includes multiple addresses (yes, this is useful 
+sometimes, best in combination with the non-self adresses added to Bcc).
+
+
+Best,
+
+Erik
+
+From rgh at topikality.com  Fri May  7 21:25:04 2010
+From: rgh at topikality.com (Richard Heycock)
+Date: Sat, 08 May 2010 11:25:04 +1000
+Subject: [sup-talk] keybindings
+Message-ID: <1273281441-sup-4869@roughage.com.au>
+
+Hi,
+
+I recently converted my keyboard layout to Colemak and have been
+remapping my hljk keys back to the same physical position on the
+keyboard for most of my applications but I'm really struggling with sup.
+
+I can see that I need to add them to the keybindings.rb hook and I can
+see that I have access to modes & global_keymap but I just cannot work
+out what to actually do with them! 
+
+Can someone at give me some pointers?
+
+I'm running version 0.11 with ruby 1.9.1-p376
+
+rgh
+-- 
+Richard Heycock
+
+http://topikality.com
+
++61 (0) 410 646 369
+[e]:  rgh at topikality.com
+[im]: rgh at topikality.com
+
+From lbolla at gmail.com  Mon May 24 04:12:19 2010
+From: lbolla at gmail.com (Lorenzo Bolla)
+Date: Mon, 24 May 2010 09:12:19 +0100
+Subject: [sup-talk] sup crash
+Message-ID: <AANLkTilwBnXAI1n657QVFg9tzdtB6Gdo_W0asmcnv0wC@mail.gmail.com>
+
+sup crashed with the exception below.
+I was polling for new messages (loads...) and replying to an e-mail at the
+same time.
+
+here is the exception:
+
+--- ArgumentError from thread: poll after loading inbox
+:13634 is out of range [0..13633] for IndexReader#[]
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/1.8/ferret/index.rb:413:in `[]'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:257:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:256:in `build_message'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:236:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/thread.rb:343:in `call'
+/usr/lib/ruby/1.8/sup/thread.rb:343:in `load_thread_for_message'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:249:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:249:in `each'
+/usr/lib/ruby/1.8/sup/ferret_index.rb:249:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/thread.rb:341:in `load_thread_for_message'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:696:in `add_or_unhide'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:694:in `synchronize'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:694:in `add_or_unhide'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:188:in
+`handle_added_update'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `send'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `relay'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `each'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `relay'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/1.8/sup/poll.rb:166:in `add_new_message'
+/usr/lib/ruby/1.8/sup/poll.rb:109:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:151:in `each_message_from'
+/usr/lib/ruby/1.8/sup/imap.rb:197:in `each'
+/usr/lib/ruby/1.8/sup/imap.rb:185:in `upto'
+/usr/lib/ruby/1.8/sup/imap.rb:185:in `each'
+/usr/lib/ruby/1.8/sup/util.rb:560:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/1.8/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/1.8/sup/poll.rb:139:in `each_message_from'
+/usr/lib/ruby/1.8/sup/poll.rb:93:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:81:in `each'
+/usr/lib/ruby/1.8/sup/poll.rb:81:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:80:in `synchronize'
+/usr/lib/ruby/1.8/sup/poll.rb:80:in `do_poll'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:520:in `method_missing'
+/usr/bin/sup-mail:195
+/usr/lib/ruby/1.8/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:74:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:74:in `new'
+/usr/lib/ruby/1.8/sup.rb:74:in `reporting_thread'
+/usr/bin/sup-mail:195
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:669:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:669:in
+`__unprotected_load_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:610:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:610:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:74:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:74:in `new'
+/usr/lib/ruby/1.8/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:608:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:679:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/bin/sup-mail:195
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100524/a8ba4593/attachment-0001.html>
+
+From pi+sup at pihost.us  Tue May 25 15:03:25 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Tue, 25 May 2010 12:03:25 -0700
+Subject: [sup-talk] sup crash
+In-Reply-To: <AANLkTilwBnXAI1n657QVFg9tzdtB6Gdo_W0asmcnv0wC@mail.gmail.com>
+References: <AANLkTilwBnXAI1n657QVFg9tzdtB6Gdo_W0asmcnv0wC@mail.gmail.com>
+Message-ID: <1274814143-sup-8100@home.mrtheplague.net>
+
+Excerpts from Lorenzo Bolla's message of Mon May 24 01:12:19 -0700 2010:
+> sup crashed with the exception below.
+> I was polling for new messages (loads...) and replying to an e-mail at the
+> same time.
+> 
+> here is the exception:
+> 
+> --- ArgumentError from thread: poll after loading inbox
+> :13634 is out of range [0..13633] for IndexReader#[]
+> /usr/lib/ruby/1.8/ferret/index.rb:421:in `[]'
+
+The ferret index is deprecated. Try using the Xapian index.
+
+From gregor at hoffleit.de  Thu May 27 05:38:59 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 27 May 2010 11:38:59 +0200
+Subject: [sup-talk] Search syntax: "from:*@gmail.com" doesn't work?
+Message-ID: <1274952982-sup-977@sam.mediasupervision.de>
+
+The wiki lists a few search examples:
+http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail
+
+But, most wildcard searches (e.g. "from:@gmail.com") don't seem to work
+for me. I'm running the next branch.
+
+Is the information in the wiki outdated?
+
+How would I search for all mails from a specific domain?
+
+Regards,
+    Gregor
+
+From johnbent at lanl.gov  Thu May 27 09:42:01 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 27 May 2010 07:42:01 -0600
+Subject: [sup-talk] Search syntax: "from:*@gmail.com" doesn't work?
+In-Reply-To: <1274952982-sup-977@sam.mediasupervision.de>
+References: <1274952982-sup-977@sam.mediasupervision.de>
+Message-ID: <1274967691-sup-3930@guava.lanl.gov>
+
+Excerpts from Gregor Hoffleit's message of Thu May 27 03:38:59 -0600 2010:
+> The wiki lists a few search examples:
+> http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail
+> 
+> But, most wildcard searches (e.g. "from:@gmail.com") don't seem to work
+> for me. I'm running the next branch.
+> 
+from:*@gmail.com works for me.  Note the '*' wildcard character.
+-- 
+Thanks,
+
+John 
+
+From gregor at hoffleit.de  Thu May 27 10:56:09 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 27 May 2010 16:56:09 +0200
+Subject: [sup-talk] Search syntax: "from:*@gmail.com" doesn't work?
+In-Reply-To: <1274967691-sup-3930@guava.lanl.gov>
+References: <1274952982-sup-977@sam.mediasupervision.de>
+	<1274967691-sup-3930@guava.lanl.gov>
+Message-ID: <1274971595-sup-6975@sam.mediasupervision.de>
+
+* John Bent <johnbent at lanl.gov> [Do Mai 27 15:42:01 +0200 2010]
+> Excerpts from Gregor Hoffleit's message of Thu May 27 03:38:59 -0600 2010:
+> > The wiki lists a few search examples:
+> > http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail
+> > 
+> > But, most wildcard searches (e.g. "from:@gmail.com") don't seem to work
+> > for me. I'm running the next branch.
+> > 
+> from:*@gmail.com works for me.  Note the '*' wildcard character.
+
+Strange. from:*@gmail.com gives me no results. Although it should match
+zillions of mails in my mailbox.
+
+The dot wildchard doesn't work as well:
+
+    from:johnbent at lanl.gov  returns a dozen hits
+    from:*@lanl.gov	    returns zero
+    from:@lanl.gov	    returns zero
+    from:jo.nbent at lanl.gov  returns zero
+    from:jo?nbent at lanl.gov  returns zero
+
+I'm a bit puzzled. 
+
+This is with a current next checkout, on a Debian etch with ruby 1.8.7
+and Xapian 1.0.20 (from backports.org).
+
+    Gregor
+
+From shreyankg at gmail.com  Fri May 28 05:06:56 2010
+From: shreyankg at gmail.com (shreyankg at gmail.com)
+Date: Fri, 28 May 2010 14:36:56 +0530
+Subject: [sup-talk] Blank inputs from stdin
+Message-ID: <AANLkTimeG1OdT-8uBwVAAObSMiDcRLOxMlTCX9hNw0pJ@mail.gmail.com>
+
+Hi,
+
+I tried searching but it would not work.
+When I try composing a new mail, I get blank to and subject fields in
+my editor, even though I an entering the email and subject.
+I tried using the console, but whatever I type, gets read as blank.
+
+Any idea what might be going wrong? I am using sup 0.10.
+
+-- 
+Peace and Love,
+Shreyank Gupta
+Blog: http://allsortsofshrink.blogspot.com
+
+From sup at equaeghe.nospammail.net  Mon May 31 22:42:49 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 31 May 2010 22:42:49 -0400
+Subject: [sup-talk] error when sending mail
+Message-ID: <1275360058-sup-177@sysopweg>
+
+Hi,
+
+
+When sending mail, I get this warning:
+
+WARNING: Problem sending mail: File or folder does not exist - <path/to/maildir/sent/folder>/tmp/1275359009.7145703845.sysopweg:2,S
+
+However, the mail was sent (and did arrive), but it was not saved as a 
+sent messages in my sent-mail maildir folder (which is totally empty).
+
+Any ideas about how to solve/diagnose this?
+
+
+TIA,
+
+Erik
+

@@ -1,0 +1,848 @@
+From adam at lazur.org  Thu Sep  2 16:49:24 2010
+From: adam at lazur.org (adam lazur)
+Date: Thu,  2 Sep 2010 13:49:24 -0700
+Subject: [sup-devel] [PATCH] wrap quoted text according to wrap preferences
+Message-ID: <1283460564-18287-1-git-send-email-adam@lazur.org>
+
+From: adam lazur <laz at facebook.com>
+
+Wrap expanded sections of quoted text at a column boundary, just like
+sup already does for unquoted text. I split the existing wrapper code
+into a utility function.
+---
+ lib/sup/modes/thread-view-mode.rb |   27 ++++++++++++++++-----------
+ 1 files changed, 16 insertions(+), 11 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 088529b..f648f8b 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -841,6 +841,19 @@ private
+     p.longname + (ContactManager.is_aliased_contact?(p) ? " (#{ContactManager.alias_for p})" : "")
+   end
+ 
++  def maybe_wrap_text lines
++    if @wrap
++      config_width = $config[:wrap_width]
++      if config_width and config_width != 0
++        width = [config_width, buffer.content_width].min
++      else
++        width = buffer.content_width
++      end
++      lines = lines.map { |l| l.chomp.wrap width }.flatten
++    end
++    return lines
++  end
++
+   ## todo: check arguments on this overly complex function
+   def chunk_to_lines chunk, state, start, depth, parent=nil, color=nil, star_color=nil
+     prefix = " " * INDENT_SPACES * depth
+@@ -856,23 +869,15 @@ private
+     else
+       raise "Bad chunk: #{chunk.inspect}" unless chunk.respond_to?(:inlineable?) ## debugging
+       if chunk.inlineable?
+-        lines = chunk.lines
+-        if @wrap
+-          config_width = $config[:wrap_width]
+-          if config_width and config_width != 0
+-            width = [config_width, buffer.content_width].min
+-          else
+-            width = buffer.content_width
+-          end
+-          lines = lines.map { |l| l.chomp.wrap width }.flatten
+-        end
++        lines = maybe_wrap_text(chunk.lines)
+         lines.map { |line| [[chunk.color, "#{prefix}#{line}"]] }
+       elsif chunk.expandable?
+         case state
+         when :closed
+           [[[chunk.patina_color, "#{prefix}+ #{chunk.patina_text}"]]]
+         when :open
+-          [[[chunk.patina_color, "#{prefix}- #{chunk.patina_text}"]]] + chunk.lines.map { |line| [[chunk.color, "#{prefix}#{line}"]] }
++          lines = maybe_wrap_text(chunk.lines)
++          [[[chunk.patina_color, "#{prefix}- #{chunk.patina_text}"]]] + lines.map { |line| [[chunk.color, "#{prefix}#{line}"]] }
+         end
+       else
+         [[[chunk.patina_color, "#{prefix}x #{chunk.patina_text}"]]]
+-- 
+1.7.2.1
+
+
+From viroteck at viroteck.net  Sat Sep  4 06:40:18 2010
+From: viroteck at viroteck.net (Robin Burchell)
+Date: Sat, 04 Sep 2010 20:40:18 +1000
+Subject: [sup-devel] [PATCH] wrap quoted text according to wrap
+	preferences
+In-Reply-To: <1283460564-18287-1-git-send-email-adam@lazur.org>
+References: <1283460564-18287-1-git-send-email-adam@lazur.org>
+Message-ID: <1283596689-sup-5333@virgin>
+
+Hi Adam,
+
+Excerpts from adam lazur's message of Fri Sep 03 06:49:24 +1000 2010:
+> From: adam lazur <laz at facebook.com>
+> 
+> Wrap expanded sections of quoted text at a column boundary, just like
+> sup already does for unquoted text. I split the existing wrapper code
+> into a utility function.
+
+Thanks for this. Fixes an annoyance that I really didn't like. I've applied it
+to my tree at http://github.com/rburchell/sup/ and so far, so good.
+
+I'll let you know if I see any breakage.
+
+--
+Robin Burchell
+http://rburchell.com
+
+From eg at gaute.vetsj.com  Thu Sep  9 08:02:17 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 09 Sep 2010 14:02:17 +0200
+Subject: [sup-devel] [PATCH] utf-8 script encoding
+In-Reply-To: <1266066673-sup-5419@mithink>
+References: <1262533823-sup-5348@dolk>
+	<1262534836-29113-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262535218-sup-9718@dolk> <1264250655-sup-3062@masanjin.net>
+	<1266066673-sup-5419@mithink>
+Message-ID: <1284033605-sup-442@dolk>
+
+Excerpts from Michael Hamann's message of 2010-02-13 14:51:53 +0100:
+> Hi,
+> 
+> Excerpts from William Morgan's message of 2010-01-23 13:44:39 +0100:
+> > Reformatted excerpts from Gaute Hope's message of 2010-01-03:
+> > > No. Tab completion fails, and sending fails, I can add names with
+> > > UTF-8 chars to the recipient list, but it fails with the last attached
+> > > exception. This is the same behaviour as earlier.
+> > 
+> > That's weird, I would've expected this to help. What's the alternative,
+> > adding "u" to the end of every regexp?
+> 
+> Has there been any progress on this subject? This is imho a quite annoying bug
+> as it makes me regularly recover mails from the buffer of screen when having
+> written a reply to a message with a subject containing utf-8 chars without
+> noticing that.
+> 
+> Sorry if this should have been fixed already, I'm currently using git next and
+> there the problem still exists.
+> 
+
+I put target.force_encoding 'UTF-8' on the tab completion of contacts
+and labels and that seems to have fixed the issue 36 on Ruby 1.9. See
+attached patch; or:
+http://gitorious.org/sup/gautehs-mainline/commit/c78e53f13b493afe2ce13c8f312068fe042cd126
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Force-UTF-8-on-label-and-contact-completion.patch
+Type: application/octet-stream
+Size: 1448 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100909/fc45a122/attachment.obj>
+
+From ezyang at MIT.EDU  Thu Sep  9 12:55:25 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 09 Sep 2010 12:55:25 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1282085130-sup-6401@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+	<1281979317-sup-3846@midna.zekjur.net> <1281979589-sup-7759@ezyang>
+	<1282085130-sup-6401@midna.zekjur.net>
+Message-ID: <1284051078-sup-224@ezyang>
+
+Excerpts from Michael Stapelberg's message of Tue Aug 17 18:46:32 -0400 2010:
+> Interesting. I gzipped it (to make sure it does not get touched in any way on
+> its way to you) and attached it to this mail.
+
+I finally got around to looking at your message, and as expected, it appears
+that there is no trailing END PGP MESSAGE block, which is why my patch breaks
+your behavior (it claims there is no valid PGP block.)
+
+Regardless of what the PGP standard says, I suppose it's good practice
+to be liberal in what we accept.  So the correct change might be to
+keep the existing semantics of between (documenting carefully what happens
+if the ending line is not present) and then fixing the code that relies
+on the bogus invariant.
+
+This also resolves Kevin Riggle?s issue.
+
+Cheers,
+Edward
+
+From kevinr at free-dissociation.com  Thu Sep  9 15:08:45 2010
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Thu, 09 Sep 2010 15:08:45 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1282085130-sup-6401@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+	<1281979317-sup-3846@midna.zekjur.net> <1281979589-sup-7759@ezyang>
+	<1282085130-sup-6401@midna.zekjur.net>
+Message-ID: <1284059161-sup-3369@black-opal.free-dissociation.com>
+
+Excerpts from Michael Stapelberg's message of Tue Aug 17 18:46:32 -0400 2010:
+> Hi Edward,
+> 
+> Excerpts from Edward Z. Yang's message of 2010-08-16 21:55:32 +0200:
+> > Fascinatingly enough, I cannot find it in either my inbox or my spam filter. (Dun dun dun.)
+> > Maybe you should send it as an attachment.
+> Interesting. I gzipped it (to make sure it does not get touched in any way on
+> its way to you) and attached it to this mail.
+> 
+These days GMail, at least, will look inside your gzipped attachments and will 
+block attachments containing binaries.  Now, if you'd PGP-encrypted it.....
+
+- Kevin
+--
+Kevin Riggle (kevinr at free-dissociation.com) 
+http://free-dissociation.com
+
+From michael at content-space.de  Sat Sep  4 17:51:46 2010
+From: michael at content-space.de (Michael Hamann)
+Date: Sat,  4 Sep 2010 23:51:46 +0200
+Subject: [sup-devel] [PATCH] Fixed inline gpg crash when the end marker is
+	missing
+In-Reply-To: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+References: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+Message-ID: <1283637106-18801-1-git-send-email-michael@content-space.de>
+
+lines.between() does not check if the end marker actually exists, but
+later it is assumed the marker exists. This change introduces a check
+for the end marker and doesn't decrypt messages in which the end marker
+is missing. This is a fix for
+http://rubyforge.org/pipermail/sup-talk/2010-August/004209.html
+---
+ lib/sup/message.rb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 9f488af..69669bd 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -559,7 +559,8 @@ private
+     end
+ 
+     gpg = lines.between(GPG_START, GPG_END)
+-    if !gpg.empty?
++    # between does not check if GPG_END actually exists
++    if !gpg.empty? && !lines.index(GPG_END).nil?
+       msg = RMail::Message.new
+       msg.body = gpg.join("\n")
+ 
+-- 
+1.7.2.2
+
+
+From ezyang at MIT.EDU  Sat Sep 11 12:42:50 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 11 Sep 2010 12:42:50 -0400
+Subject: [sup-devel] [PATCH] Fixed inline gpg crash when the end marker
+	is missing
+In-Reply-To: <1283637106-18801-1-git-send-email-michael@content-space.de>
+References: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+	<1283637106-18801-1-git-send-email-michael@content-space.de>
+Message-ID: <1284223201-sup-8199@ezyang>
+
+Excerpts from Michael Hamann's message of Sat Sep 04 17:51:46 -0400 2010:
+> lines.between() does not check if the end marker actually exists, but
+> later it is assumed the marker exists. This change introduces a check
+> for the end marker and doesn't decrypt messages in which the end marker
+> is missing. This is a fix for
+> http://rubyforge.org/pipermail/sup-talk/2010-August/004209.html
+
+Hello Michael,
+
+It may be desirable to assume an implicit end marker at the end
+of a message if it does not exist, to deal with certain malformed
+PGP messages that were also complained about on this list.
+
+Cheers,
+Edward
+
+From gaudenz at soziologie.ch  Wed Sep 15 13:56:26 2010
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Wed, 15 Sep 2010 19:56:26 +0200
+Subject: [sup-devel] [PATCH] prefer To and Cc adresses of accounts on reply
+Message-ID: <1284573363-sup-9875@meteor.durcheinandertal.local>
+
+If a message was sent (To or Cc header) to an address which corresponds
+to an account prefer this account over the account corresponding to the
+address in recipient_email.
+
+This solves the problem that the wrong reply from address is chosen on
+mails which are sent to an account which is forwarded to another account.
+---
+ lib/sup/modes/reply-mode.rb |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index bbac922..d80f35b 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -65,18 +65,15 @@ EOS
+     ## if we have a value from a hook, use it.
+     from = if hook_reply_from
+       hook_reply_from
+-    ## otherwise, if the original email had an envelope-to header, try and use
+-    ## it, and look up the corresponding name form the list of accounts.
+-    ##
++    ## otherwise, try and find an account somewhere in the list of to's
++    ## and cc's and look up the corresponding name form the list of accounts.
++    ## if this does not succeed use the recipient_email (=envelope-to) instead.
+     ## this is for the case where mail is received from a mailing lists (so the
+     ## To: is the list id itself). if the user subscribes via a particular
+     ## alias, we want to use that alias in the reply.
+-    elsif @m.recipient_email && (a = AccountManager.account_for(@m.recipient_email))
+-      Person.new a.name, @m.recipient_email
+-    ## otherwise, try and find an account somewhere in the list of to's
+-    ## and cc's.
+-    elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+-      b
++    elsif(b = (@m.to.collect {|t| t.email} + @m.cc.collect {|c| c.email} + [@m.recipient_email] ).find { |p| AccountManager.is_account_email? p })
++      a = AccountManager.account_for(b)
++      Person.new a.name, b
+     ## if all else fails, use the default
+     else
+       AccountManager.default_account
+--
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 828 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100915/bb96e0bd/attachment.bin>
+
+From eg at gaute.vetsj.com  Fri Sep 17 06:54:00 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 17 Sep 2010 12:54:00 +0200
+Subject: [sup-devel] [PATCH] utf-8 script encoding
+In-Reply-To: <1284033605-sup-442@dolk>
+References: <1262533823-sup-5348@dolk>
+	<1262534836-29113-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262535218-sup-9718@dolk> <1264250655-sup-3062@masanjin.net>
+	<1266066673-sup-5419@mithink> <1284033605-sup-442@dolk>
+Message-ID: <1284720809-sup-6508@dolk>
+
+Excerpts from Gaute Hope's message of 2010-09-09 14:02:17 +0200:
+> I put target.force_encoding 'UTF-8' on the tab completion of contacts
+> and labels and that seems to have fixed the issue 36 on Ruby 1.9. See
+> attached patch; or:
+> http://gitorious.org/sup/gautehs-mainline/commit/c78e53f13b493afe2ce13c8f312068fe042cd126
+
+Also force encoding on label search completion: 
+http://gitorious.org/~gauteh/sup/gautehs-mainline/commit/009cda0e379950726c5234a8949e636194bf13e3
+
+There's still an error if you try to complete multiple unicode
+recipients, probably because one of the strings are not Unicode.
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Also-force-encoding-on-label-search-completion.patch
+Type: application/octet-stream
+Size: 739 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100917/71c22c5e/attachment.obj>
+
+From eg at gaute.vetsj.com  Thu Sep 23 06:37:34 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 23 Sep 2010 12:37:34 +0200
+Subject: [sup-devel] [PATCH] Update status on jump on line in
+	line-cursor-mode
+Message-ID: <1285238213-sup-3935@dolk>
+
+The line number isn't updated in the status field when you jump to the
+end or beginning, or do page up or down before the next redraw is done.
+
+Updating the status manually in set_cursor_pos.
+---
+ lib/sup/modes/line-cursor-mode.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/modes/line-cursor-mode.rb b/lib/sup/modes/line-cursor-mode.rb
+index 1bd4ed1..1cae994 100644
+--- a/lib/sup/modes/line-cursor-mode.rb
++++ b/lib/sup/modes/line-cursor-mode.rb
+@@ -66,6 +66,7 @@ protected
+     return if @curpos == p
+     @curpos = p.clamp @cursor_top, lines
+     buffer.mark_dirty
++    set_status
+   end
+ 
+   ## override search behavior to be cursor-based. this is a stupid
+-- 
+1.7.3
+
+From eg at gaute.vetsj.com  Thu Sep 23 07:50:23 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 23 Sep 2010 13:50:23 +0200
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267111506-sup-1389@peer.zerties.org>
+References: <1267109223-sup-351@masanjin.net>
+	<1267111506-sup-1389@peer.zerties.org>
+Message-ID: <1285241702-sup-3344@dolk>
+
+Excerpts from Christian Dietrich's message of 2010-02-25 16:32:39 +0100:
+> Excerpts from William Morgan's message of Thu Feb 25 15:51:55 +0100 2010:
+> > But if someone wants to take the ball and be an official maintainer, I
+> > will give you my blessing and the power to gem push new releases. You
+> > don't even have to maintain my current crazy branching scheme!
+>
+> Hi,
+> i haven't contributed much to sup yet (except one patch, that wasn't
+> applied) but i thinks its a really great mailer, that is it worth to
+> be activly continued.
+>
+> In the last half year i made the experience that it is easier for
+> the single programmer (pusher) if he isn't the only one who is
+> allowed to push the upstream repository. Because there you have
+> always the possibility to say: Hm, i don't have the time in the next
+> 3 weeks or so, but there is somebody else, who does merging/patching
+> and bugfixing. Perhaps it isn't that bad to give push right to a
+> group of people, who activly developed sup in the past.
+
+Hi,
+
+First; thanks to both William and Rich for the great work on sup. I'm
+using it full time now since I don't-really-know-anymore, there are
+occasional bugs and more than a few problems with ruby 1.9 - but things
+are starting to get along. Awesome work!
+
+I just want to support the point of Christian Dietrich of perhaps adding
+another maintainer/committer to be able to take some of the load when
+Rich might be busy or gone for a while. I agree that it can be
+de-motivating to contribute when you see the patches pile up, I imagine
+it must be harder to go through the backlog as well. Still think Rich is
+the man for the job thou, so he's the boss!
+
+Best regards, Gaute
+
+From alvherre at alvh.no-ip.org  Thu Sep 23 13:46:31 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Thu, 23 Sep 2010 13:46:31 -0400
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1285241702-sup-3344@dolk>
+References: <1267109223-sup-351@masanjin.net>
+	<1267111506-sup-1389@peer.zerties.org> <1285241702-sup-3344@dolk>
+Message-ID: <1285263695-sup-3656@alvh.no-ip.org>
+
+Excerpts from Gaute Hope's message of jue sep 23 07:50:23 -0400 2010:
+
+> First; thanks to both William and Rich for the great work on sup. I'm
+> using it full time now since I don't-really-know-anymore, there are
+> occasional bugs and more than a few problems with ruby 1.9 - but things
+> are starting to get along. Awesome work!
+
+Seconded!
+
+> I just want to support the point of Christian Dietrich of perhaps adding
+> another maintainer/committer to be able to take some of the load when
+> Rich might be busy or gone for a while. I agree that it can be
+> de-motivating to contribute when you see the patches pile up, I imagine
+> it must be harder to go through the backlog as well. Still think Rich is
+> the man for the job thou, so he's the boss!
+
+I just want to add that it's a bit discouraging to see that the master
+branch doesn't move a bit for a long time.  So it would be very good for
+morale of us poor users to have someone else pushing patches, even if
+it's just the minor bugfixes that we see pop up on the mailing lists.
+
+(I don't have a lot to offer myself in term of patches, but I do have a
+couple of very minor fixes sitting in my private tree just because it
+seems rather pointless to send them along right now.)
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From sup-bugs at masanjin.net  Wed Sep 29 08:22:48 2010
+From: sup-bugs at masanjin.net (Sascha Silbe)
+Date: Wed, 29 Sep 2010 12:22:48 +0000
+Subject: [sup-devel] [issue122] editing labels in thread view mode messes up
+	labels of all	messages in thread, even after undo
+In-Reply-To: <1285762968.52.0.37349243868.issue122@masanjin.net>
+Message-ID: <1285762968.52.0.37349243868.issue122@masanjin.net>
+
+
+New submission from Sascha Silbe <sascha-web-masanjin.net-sup-bugs at silbe.org>:
+
+When changing labels in thread view mode (and probably also in thread index / inbox mode), labels for _all_ messages of the thread are set to be exactly the same. Apart from not being what the user expects, it also messes up special labels like :attachment.
+Even worse, the undo block also sets the labels of all messages to the union of the previous labels, thereby not(completely) undoing the effect.
+
+At the very least, undo should work properly and only labels that have actually been added or removed by the user should be touched. This would preserve the state of both the special labels and any source-specific labels that were not explicitly changed by the user.
+
+I would also expect edit_labels to only apply to the current message in thread view mode. If you disagree, please consider adding an edit_message_labels keybinding. This would especially be useful for managing "todo lists".
+
+----------
+messages: 288
+nosy: sascha_silbe
+priority: bug
+ruby_version: 1.8.x
+status: unread
+sup_version: git master (45c3433)
+title: editing labels in thread view mode messes up labels of all messages in thread, even after undo
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue122>
+_________________________________________
+
+From sascha-pgp at silbe.org  Wed Sep 29 10:13:00 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Wed, 29 Sep 2010 16:13:00 +0200
+Subject: [sup-devel] [PATCH] add sendmail hook
+Message-ID: <1285769580-15705-1-git-send-email-sascha-pgp@silbe.org>
+
+Add a hook that is run in place of the sendmail command. This allows
+last-minute adjustments including sending a separate copy to each recipient
+and setting the envelope sender, i.e. VERP (variable envelope return path).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/modes/edit-message-mode.rb |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
+
+I've been using this for about three months now for setting the envelope
+sender to the subscription address, allowing me to use a different address
+in the From: header and doing crossposts even if though I use a separate
+subscription address for each mailing list.
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index bba07b5..d80ff9b 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -58,6 +58,18 @@ Return value:
+      none
+ EOS
+
++  HookManager.register "sendmail", <<EOS
++Sends the given mail. If this hook doesn't exist, the sendmail command
++configured for the account is used.
++The message will be saved after this hook is run, so any modification to it
++will be recorded.
++Variables:
++    message: RMail::Message instance of the mail to send
++    account: Account instance matching the From address
++Return value:
++     True if mail has been sent successfully, false otherwise.
++EOS
++
+   attr_reader :status
+   attr_accessor :body, :header
+   bool_reader :edited
+@@ -341,8 +353,17 @@ protected
+     begin
+       date = Time.now
+       m = build_message date
+-      IO.popen(acct.sendmail, "w") { |p| p.puts m }
+-      raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}" unless $? == 0
++
++      if HookManager.enabled? "sendmail"
++	if not HookManager.run "sendmail", :message => m, :account => acct
++          warn "Sendmail hook was not successful"
++          return false
++	end
++      else
++        IO.popen(acct.sendmail, "w") { |p| p.puts m }
++        raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}" unless $? == 0
++      end
++
+       SentManager.write_sent_message(date, from_email) { |f| f.puts sanitize_body(m.to_s) }
+       BufferManager.kill_buffer buffer
+       BufferManager.flash "Message sent!"
+--
+1.7.1
+
+
+From sascha-pgp at silbe.org  Wed Sep 29 10:16:02 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Wed, 29 Sep 2010 16:16:02 +0200
+Subject: [sup-devel] [PATCH] fix handling of multiple label: terms in search
+Message-ID: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+
+By default Xapian will join query terms with the same prefix with OR instead
+of AND, so searching for multiple labels doesn't return the expected results.
+By making use of a parameter to add_boolean_prefix (added in Xapian 1.2) we
+can tell Xapian to use OR only for the search terms that are guaranteed to be
+unique.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/index.rb |   74 +++++++++++++++++++++++++++---------------------------
+ 1 files changed, 37 insertions(+), 37 deletions(-)
+
+Tested on Debian Squeeze with Ruby 1.8.7.302 and Xapian 1.2.3.
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 9273f18..a72bec6 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -419,8 +419,8 @@ EOS
+     qp.stemming_strategy = Xapian::QueryParser::STEM_SOME
+     qp.default_op = Xapian::Query::OP_AND
+     qp.add_valuerangeprocessor(Xapian::NumberValueRangeProcessor.new(DATE_VALUENO, 'date:', true))
+-    NORMAL_PREFIX.each { |k,vs| vs.each { |v| qp.add_prefix k, v } }
+-    BOOLEAN_PREFIX.each { |k,vs| vs.each { |v| qp.add_boolean_prefix k, v } }
++    NORMAL_PREFIX.each { |k,info| info[:prefix].each { |v| qp.add_prefix k, v } }
++    BOOLEAN_PREFIX.each { |k,info| info[:prefix].each { |v| qp.add_boolean_prefix k, v, info[:exclusive] } }
+
+     begin
+       xapian_query = qp.parse_query(subs, Xapian::QueryParser::FLAG_PHRASE|Xapian::QueryParser::FLAG_BOOLEAN|Xapian::QueryParser::FLAG_LOVEHATE|Xapian::QueryParser::FLAG_WILDCARD)
+@@ -471,31 +471,31 @@ EOS
+
+   # Stemmed
+   NORMAL_PREFIX = {
+-    'subject' => 'S',
+-    'body' => 'B',
+-    'from_name' => 'FN',
+-    'to_name' => 'TN',
+-    'name' => %w(FN TN),
+-    'attachment' => 'A',
+-    'email_text' => 'E',
+-    '' => %w(S B FN TN A E),
++    'subject' => {:prefix => 'S', :exclusive => false},
++    'body' => {:prefix => 'B', :exclusive => false},
++    'from_name' => {:prefix => 'FN', :exclusive => false},
++    'to_name' => {:prefix => 'TN', :exclusive => false},
++    'name' => {:prefix => %w(FN TN), :exclusive => false},
++    'attachment' => {:prefix => 'A', :exclusive => false},
++    'email_text' => {:prefix => 'E', :exclusive => false},
++    '' => {:prefix => %w(S B FN TN A E), :exclusive => false},
+   }
+
+   # Unstemmed
+   BOOLEAN_PREFIX = {
+-    'type' => 'K',
+-    'from_email' => 'FE',
+-    'to_email' => 'TE',
+-    'email' => %w(FE TE),
+-    'date' => 'D',
+-    'label' => 'L',
+-    'source_id' => 'I',
+-    'attachment_extension' => 'O',
+-    'msgid' => 'Q',
+-    'id' => 'Q',
+-    'thread' => 'H',
+-    'ref' => 'R',
+-    'location' => 'J',
++    'type' => {:prefix => 'K', :exclusive => true},
++    'from_email' => {:prefix => 'FE', :exclusive => false},
++    'to_email' => {:prefix => 'TE', :exclusive => false},
++    'email' => {:prefix => %w(FE TE), :exclusive => false},
++    'date' => {:prefix => 'D', :exclusive => true},
++    'label' => {:prefix => 'L', :exclusive => false},
++    'source_id' => {:prefix => 'I', :exclusive => true},
++    'attachment_extension' => {:prefix => 'O', :exclusive => false},
++    'msgid' => {:prefix => 'Q', :exclusive => true},
++    'id' => {:prefix => 'Q', :exclusive => true},
++    'thread' => {:prefix => 'H', :exclusive => false},
++    'ref' => {:prefix => 'R', :exclusive => false},
++    'location' => {:prefix => 'J', :exclusive => false},
+   }
+
+   PREFIX = NORMAL_PREFIX.merge BOOLEAN_PREFIX
+@@ -661,8 +661,8 @@ EOS
+     # Person names are indexed with several prefixes
+     person_termer = lambda do |d|
+       lambda do |p|
+-        doc.index_text p.name, PREFIX["#{d}_name"] if p.name
+-        doc.index_text p.email, PREFIX['email_text']
++        doc.index_text p.name, PREFIX["#{d}_name"][:prefix] if p.name
++        doc.index_text p.email, PREFIX['email_text'][:prefix]
+         doc.add_term mkterm(:email, d, p.email)
+       end
+     end
+@@ -673,9 +673,9 @@ EOS
+     # Full text search content
+     subject_text = m.indexable_subject
+     body_text = m.indexable_body
+-    doc.index_text subject_text, PREFIX['subject']
+-    doc.index_text body_text, PREFIX['body']
+-    m.attachments.each { |a| doc.index_text a, PREFIX['attachment'] }
++    doc.index_text subject_text, PREFIX['subject'][:prefix]
++    doc.index_text body_text, PREFIX['body'][:prefix]
++    m.attachments.each { |a| doc.index_text a, PREFIX['attachment'][:prefix] }
+
+     # Miscellaneous terms
+     doc.add_term mkterm(:date, m.date) if m.date
+@@ -753,25 +753,25 @@ EOS
+   def mkterm type, *args
+     case type
+     when :label
+-      PREFIX['label'] + args[0].to_s.downcase
++      PREFIX['label'][:prefix] + args[0].to_s.downcase
+     when :type
+-      PREFIX['type'] + args[0].to_s.downcase
++      PREFIX['type'][:prefix] + args[0].to_s.downcase
+     when :date
+-      PREFIX['date'] + args[0].getutc.strftime("%Y%m%d%H%M%S")
++      PREFIX['date'][:prefix] + args[0].getutc.strftime("%Y%m%d%H%M%S")
+     when :email
+       case args[0]
+-      when :from then PREFIX['from_email']
+-      when :to then PREFIX['to_email']
++      when :from then PREFIX['from_email'][:prefix]
++      when :to then PREFIX['to_email'][:prefix]
+       else raise "Invalid email term type #{args[0]}"
+       end + args[1].to_s.downcase
+     when :source_id
+-      PREFIX['source_id'] + args[0].to_s.downcase
++      PREFIX['source_id'][:prefix] + args[0].to_s.downcase
+     when :location
+-      PREFIX['location'] + [args[0]].pack('n') + args[1].to_s
++      PREFIX['location'][:prefix] + [args[0]].pack('n') + args[1].to_s
+     when :attachment_extension
+-      PREFIX['attachment_extension'] + args[0].to_s.downcase
++      PREFIX['attachment_extension'][:prefix] + args[0].to_s.downcase
+     when :msgid, :ref, :thread
+-      PREFIX[type.to_s] + args[0][0...(MAX_TERM_LENGTH-1)]
++      PREFIX[type.to_s][:prefix] + args[0][0...(MAX_TERM_LENGTH-1)]
+     else
+       raise "Invalid term type #{type}"
+     end
+--
+1.7.1
+
+
+From sascha-pgp at silbe.org  Wed Sep 29 10:16:15 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Wed, 29 Sep 2010 16:16:15 +0200
+Subject: [sup-devel] [PATCH] fix searching for non-lowercase labels
+Message-ID: <1285769775-15914-1-git-send-email-sascha-pgp@silbe.org>
+
+Case is preserved when marshalling labels (stored as document data), but label
+terms are stored lowercase. build_xapian_query uses mkterm and thus already
+converts labels to lowercase when searching. parse_query accepts a Xapian
+query string from the user and needs to explicitly convert labels to
+lowercase, which it now does.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/index.rb |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index a72bec6..f90d0d9 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -346,6 +346,12 @@ EOS
+       end
+     end
+ 
++    ## labels are stored lower-case in the index
++    subs = subs.gsub(/\blabel:(\S+)\b/) do
++      label = $1
++      "label:#{label.downcase}"
++    end
++
+     ## if we see a label:deleted or a label:spam term anywhere in the query
+     ## string, we set the extra load_spam or load_deleted options to true.
+     ## bizarre? well, because the query allows arbitrary parenthesized boolean
+-- 
+1.7.1
+
+
+From ezyang at MIT.EDU  Wed Sep 29 11:27:14 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 29 Sep 2010 11:27:14 -0400
+Subject: [sup-devel] [PATCH] fix handling of multiple label: terms in
+	search
+In-Reply-To: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1285774021-sup-2553@ezyang>
+
+Excerpts from Sascha Silbe's message of Wed Sep 29 10:16:02 -0400 2010:
+> By default Xapian will join query terms with the same prefix with OR instead
+> of AND, so searching for multiple labels doesn't return the expected results.
+> By making use of a parameter to add_boolean_prefix (added in Xapian 1.2) we
+> can tell Xapian to use OR only for the search terms that are guaranteed to be
+> unique.
+
+This is great, I'd love to see this go into mainline.
+
+Cheers,
+Edward
+
+From bwalton at artsci.utoronto.ca  Wed Sep 29 20:56:53 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 29 Sep 2010 20:56:53 -0400
+Subject: [sup-devel] [PATCH] add sendmail hook
+In-Reply-To: <1285769580-15705-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769580-15705-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1285808187-sup-7819@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Wed Sep 29 10:13:00 -0400 2010:
+
+> Add a hook that is run in place of the sendmail command. This allows
+> last-minute adjustments including sending a separate copy to each
+> recipient and setting the envelope sender, i.e. VERP (variable
+> envelope return path).
+
++1 for this.  The patch looks sane although I didn't actually test it.
+-Ben
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From ezyang at MIT.EDU  Thu Sep 30 15:19:38 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 30 Sep 2010 15:19:38 -0400
+Subject: [sup-devel] Exception
+Message-ID: <1285874266-sup-5868@ezyang>
+
+I got the following exception
+
+/home/ezyang/Dev/sup/lib/sup/index.rb:537:in `find_docid'
+/home/ezyang/Dev/sup/lib/sup/index.rb:542:in `find_doc'
+/home/ezyang/Dev/sup/lib/sup/index.rb:552:in `get_entry'
+/home/ezyang/Dev/sup/lib/sup/index.rb:195:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/home/ezyang/Dev/sup/lib/sup/index.rb:561:in `synchronize'
+/home/ezyang/Dev/sup/lib/sup/index.rb:195:in `build_message'
+/home/ezyang/Dev/sup/lib/sup/index.rb:150
+/home/ezyang/Dev/sup/lib/sup/index.rb:230:in `call'
+/home/ezyang/Dev/sup/lib/sup/index.rb:230:in `load_contacts'
+/home/ezyang/Dev/sup/lib/sup/index.rb:150:in `each_id_by_date'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each_id'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each'
+/home/ezyang/Dev/sup/lib/sup/index.rb:245:in `each_id'
+/home/ezyang/Dev/sup/lib/sup/index.rb:150:in `each_id_by_date'
+/home/ezyang/Dev/sup/lib/sup/index.rb:228:in `load_contacts'
+/home/ezyang/Dev/sup/lib/sup/util.rb:596:in `send'
+/home/ezyang/Dev/sup/lib/sup/util.rb:596:in `method_missing'
+/home/ezyang/Dev/sup/lib/sup/buffer.rb:548:in `ask_for_contacts'
+/home/ezyang/Dev/sup/lib/sup/util.rb:596:in `send'
+/home/ezyang/Dev/sup/lib/sup/util.rb:596:in `method_missing'
+/home/ezyang/Dev/sup/lib/sup/modes/compose-mode.rb:25:in `spawn_nicely'
+/home/ezyang/Dev/sup/bin/sup:311
+
+Caused by this failed assertion:
+
+  def find_docid id
+    docids = term_docids(mkterm(:msgid,id))
+    fail unless docids.size <= 1
+    docids.first
+  end
+
+So I guess my index is corrupted in some weird way (probably I managed
+to create two mails with the same docid). I've worked around it by commenting
+out the assert, but any idea how to fix my index?
+
+Edward
+

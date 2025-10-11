@@ -1,0 +1,618 @@
+From dmishd at gmail.com  Sat Oct  1 08:50:56 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 1 Oct 2011 13:50:56 +0100
+Subject: [sup-talk] Help - sup is garbling characters and chopping off
+ the ends of lines
+In-Reply-To: <1317409808-sup-8470@os.Home>
+References: <CAE2xRkEMW67qdoFtN0oLp_ULv1vAtWzwJ+69BRX3tkzznobz0Q@mail.gmail.com>
+	<CAOxvSbdEuzhx7HsryCyvGSGn9h4W-jZ14MHdvR=23SvNDh+sZg@mail.gmail.com>
+	<1317406494-sup-2375@os.Home>
+	<CAOxvSbdS5fJEaXEYNivC83ws3VGFBuvdHWXRFnRFS45Lsg1v+g@mail.gmail.com>
+	<1317409808-sup-8470@os.Home>
+Message-ID: <CAOxvSbcUazUWFnH9pobLAtpt2NihuZYTdqnaPRoeASoPVpnNQA@mail.gmail.com>
+
+On 30 September 2011 20:10, Colin Yates <colin.yates at gmail.com> wrote:
+> ?gem1.9.1 install ?ncursesw
+> Building native extensions. ?This could take a while...
+> ERROR: ?Error installing ncursesw:
+> ? ? ? ?ERROR: Failed to build gem native extension.
+>
+> /usr/bin/ruby1.9.1 extconf.rb
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... no
+> checking for ncurses/curses.h... no
+> checking for curses.h... no
+> *** extconf.rb failed ***
+
+This means you don't have the development library of ncurses
+installed, so you need to do:
+
+sudo aptitude install libncurses5-dev libncursesw5-dev
+
+(From http://sup.rubyforge.org/wiki/wiki.pl?Debian/Ubuntu_Hints )
+
+Hamish
+
+From hollunder at lavabit.com  Wed Oct  5 15:18:49 2011
+From: hollunder at lavabit.com (Philipp)
+Date: Wed, 05 Oct 2011 21:18:49 +0200
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+Message-ID: <1317841994-sup-3161@eris>
+
+Hi there,
+I sometimes need to write mails in German and need to attach some files
+to those mails. I also tend to send mails before attaching the files.
+I have the 'mentioned "attachment" but it's missing'-option enabled, but
+it doesn't help me in German mails. 
+
+All I'd need is a way to add the word 'Anhang' to that mechanism. Can
+you tell me where to do this? I tried a web search and looked through
+some source files but couldn't find the right place so far.
+
+Regards,
+Philipp
+
+
+From bwalton at artsci.utoronto.ca  Wed Oct  5 20:00:00 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 05 Oct 2011 20:00:00 -0400
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317841994-sup-3161@eris>
+References: <1317841994-sup-3161@eris>
+Message-ID: <1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philipp's message of Wed Oct 05 15:18:49 -0400 2011:
+
+Hi Philipp,
+
+> All I'd need is a way to add the word 'Anhang' to that mechanism. Can
+> you tell me where to do this? I tried a web search and looked through
+> some source files but couldn't find the right place so far.
+
+You want to write a 'mentions-attachments' hook.  You'll get the
+variables header, and body.  Scan the body for whatever terms you
+want/need and return true/false as desired.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From hollunder at lavabit.com  Thu Oct  6 03:04:27 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 06 Oct 2011 09:04:27 +0200
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+References: <1317841994-sup-3161@eris>
+	<1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1317884224-sup-31@eris>
+
+Excerpts from Ben Walton's message of 2011-10-06 02:00:00 +0200:
+> Excerpts from Philipp's message of Wed Oct 05 15:18:49 -0400 2011:
+> 
+> Hi Philipp,
+> 
+> > All I'd need is a way to add the word 'Anhang' to that mechanism. Can
+> > you tell me where to do this? I tried a web search and looked through
+> > some source files but couldn't find the right place so far.
+> 
+> You want to write a 'mentions-attachments' hook.  You'll get the
+> variables header, and body.  Scan the body for whatever terms you
+> want/need and return true/false as desired.
+> 
+> HTH.
+> -Ben
+
+Thanks,
+but sup does this already, it should be possible to add this single Word
+in the appropriate place and be done with this. After all, ruby is an
+interpreted language. The sup releases are infrequent, if another one
+follows at all, and thus modifying a file is no problem. I don't have
+the time to dig deep enough into ruby and sup either. I see that
+http://sup.rubyforge.org/wiki/wiki.pl?Hooks lists such a hook but sadly
+no example.
+Guess I can live without that.
+
+
+From tero at tilus.net  Thu Oct  6 08:17:30 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 06 Oct 2011 15:17:30 +0300
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317884224-sup-31@eris>
+References: <1317841994-sup-3161@eris>
+	<1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+	<1317884224-sup-31@eris>
+Message-ID: <1317903242-sup-784@tilus.net>
+
+Philipp ?berbacher, 2011-10-06 10:04:
+> the time to dig deep enough into ruby and sup either. I see that
+> http://sup.rubyforge.org/wiki/wiki.pl?Hooks lists such a hook but sadly
+> no example.
+
+Oh my!  Need to fix it.  My ~/.sup/hooks/mentions-attachments looks like
+
+body.any? { |l| l =~ /^[^>]/ && l =~ /\b(attach|liite|liittee|ohessa|oheise|oheist)[^ ]*\b/i }
+
+Not pretty but works.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Thu Oct  6 08:55:07 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 06 Oct 2011 08:55:07 -0400
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317884224-sup-31@eris>
+References: <1317841994-sup-3161@eris>
+	<1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+	<1317884224-sup-31@eris>
+Message-ID: <1317905615-sup-8302@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philipp ?berbacher's message of Thu Oct 06 03:04:27 -0400 2011:
+
+> but sup does this already, it should be possible to add this single Word
+> in the appropriate place and be done with this. After all, ruby is
+> an
+
+Sure, lib/sup/modes/edit-message-mode.rb on line 473 (my version of
+sup is fairly old, but this should be close).
+
+The hook is cleaner, but if you want to hack it in directly, that's
+where you'd do it.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From hollunder at lavabit.com  Thu Oct  6 09:33:29 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 06 Oct 2011 15:33:29 +0200
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317903242-sup-784@tilus.net>
+References: <1317841994-sup-3161@eris>
+	<1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+	<1317884224-sup-31@eris> <1317903242-sup-784@tilus.net>
+Message-ID: <1317907930-sup-3325@eris>
+
+Excerpts from Tero Tilus's message of 2011-10-06 14:17:30 +0200:
+> Philipp ?berbacher, 2011-10-06 10:04:
+> > the time to dig deep enough into ruby and sup either. I see that
+> > http://sup.rubyforge.org/wiki/wiki.pl?Hooks lists such a hook but sadly
+> > no example.
+> 
+> Oh my!  Need to fix it.  My ~/.sup/hooks/mentions-attachments looks like
+> 
+> body.any? { |l| l =~ /^[^>]/ && l =~ /\b(attach|liite|liittee|ohessa|oheise|oheist)[^ ]*\b/i }
+> 
+> Not pretty but works.
+
+Thanks, this works. I don't understand what this line is doing but it
+looks very similar in the source and this line is simply easier to hack
+for me, so I go with this solution.
+
+Thanks for sharing,
+Philipp
+
+
+From hollunder at lavabit.com  Thu Oct  6 09:34:53 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 06 Oct 2011 15:34:53 +0200
+Subject: [sup-talk] Adding string to 'missing attachment detection'
+In-Reply-To: <1317905615-sup-8302@pinkfloyd.chass.utoronto.ca>
+References: <1317841994-sup-3161@eris>
+	<1317859138-sup-1659@pinkfloyd.chass.utoronto.ca>
+	<1317884224-sup-31@eris>
+	<1317905615-sup-8302@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1317908015-sup-657@eris>
+
+Excerpts from Ben Walton's message of 2011-10-06 14:55:07 +0200:
+> Excerpts from Philipp ?berbacher's message of Thu Oct 06 03:04:27 -0400 2011:
+> 
+> > but sup does this already, it should be possible to add this single Word
+> > in the appropriate place and be done with this. After all, ruby is
+> > an
+> 
+> Sure, lib/sup/modes/edit-message-mode.rb on line 473 (my version of
+> sup is fairly old, but this should be close).
+> 
+> The hook is cleaner, but if you want to hack it in directly, that's
+> where you'd do it.
+> 
+> Thanks
+> -Ben
+> --
+> Ben Walton
+> Systems Programmer - CHASS
+> University of Toronto
+> C:416.407.5610 | W:416.978.4302
+
+Thanks,
+I looked it up, it looks similar to the suggested hook line, but the
+hook line was easier to modify without risking to mess stuff up.
+Thanks for your help.
+
+Regards,
+Philipp
+
+
+From witsquash at lavabit.com  Fri Oct  7 23:50:07 2011
+From: witsquash at lavabit.com (Martin Miller)
+Date: Fri, 07 Oct 2011 22:50:07 -0500
+Subject: [sup-talk] Adding maildir folder with a space
+Message-ID: <1318045500-sup-149@boots>
+
+Hi I'm trying to add a source folder that has a space in the name, but I can't
+find the right way escape the space in my URI. Currently I have this in my
+sources.yaml and it's not working:
+
+   - !masanjin.net,2006-10-01/Redwood/Maildir
+   uri: maildir:/home/marty/lavabit/Acct%20Dtls
+   usual: true
+   archived: false
+   id: 7
+   labels:
+   - register
+
+This is the error I get in the log:
+WARNING: problem getting messages from maildir:/home/marty/lavabit/Acct%20Dtls:
+/home/marty/lavabit/Acct%20Dtls/cur not a directory 
+
+Is it possible to use a folder name with a space?
+
+Martin
+-- 
+Martin Miller
+witsquash.com
+
+
+From dmishd at gmail.com  Sat Oct  8 07:48:15 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 8 Oct 2011 12:48:15 +0100
+Subject: [sup-talk] Adding maildir folder with a space
+In-Reply-To: <1318045500-sup-149@boots>
+References: <1318045500-sup-149@boots>
+Message-ID: <CAOxvSbfeZUfzQ5hzfJdawHwt0T5QFLd1YfAU_Qq8bg4vnZ91WQ@mail.gmail.com>
+
+> find the right way escape the space in my URI.
+
+The URI is a file path in this case, so the usual way of putting a
+space in is to put a backslash in front of the space. So for
+sources.yaml you could do:
+
+uri: maildir:/home/marty/lavabit/Acct\ Dtls
+
+Hamish
+
+From witsquash at lavabit.com  Sat Oct  8 13:14:34 2011
+From: witsquash at lavabit.com (Martin Miller)
+Date: Sat, 08 Oct 2011 12:14:34 -0500
+Subject: [sup-talk] Adding maildir folder with a space
+In-Reply-To: <CAOxvSbfeZUfzQ5hzfJdawHwt0T5QFLd1YfAU_Qq8bg4vnZ91WQ@mail.gmail.com>
+References: <1318045500-sup-149@boots>
+	<CAOxvSbfeZUfzQ5hzfJdawHwt0T5QFLd1YfAU_Qq8bg4vnZ91WQ@mail.gmail.com>
+Message-ID: <1318093920-sup-7623@boots>
+
+> The URI is a file path in this case, so the usual way of putting a
+> space in is to put a backslash in front of the space. So for
+> sources.yaml you could do:
+> 
+> uri: maildir:/home/marty/lavabit/Acct\ Dtls
+
+I should have mentioned that I tried that before. The error looks like this:
+--- URI::InvalidURIError from thread: main
+bad URI(is not URI?): maildir:/home/marty/lavabit/Acct\ Dtls
+/usr/lib/ruby/1.9.1/uri/common.rb:156:in `split'
+/usr/lib/ruby/1.9.1/uri/common.rb:174:in `parse'
+/usr/lib/ruby/1.9.1/uri/common.rb:628:in `parse'
+/usr/lib/ruby/1.9.1/uri/common.rb:854:in `URI'
+
+-- 
+Martin Miller
+witsquash.com
+
+
+From eg at gaute.vetsj.com  Sat Oct  8 13:53:55 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 08 Oct 2011 19:53:55 +0200
+Subject: [sup-talk] Adding maildir folder with a space
+In-Reply-To: <1318093920-sup-7623@boots>
+References: <1318045500-sup-149@boots>
+	<CAOxvSbfeZUfzQ5hzfJdawHwt0T5QFLd1YfAU_Qq8bg4vnZ91WQ@mail.gmail.com>
+	<1318093920-sup-7623@boots>
+Message-ID: <1318096369-sup-9918@qwerzila>
+
+Excerpts from Martin Miller's message of 2011-10-08 19:14:34 +0200:
+> > The URI is a file path in this case, so the usual way of putting a
+> > space in is to put a backslash in front of the space. So for
+> > sources.yaml you could do:
+> > 
+> > uri: maildir:/home/marty/lavabit/Acct\ Dtls
+> 
+> I should have mentioned that I tried that before. The error looks like this:
+> --- URI::InvalidURIError from thread: main
+> bad URI(is not URI?): maildir:/home/marty/lavabit/Acct\ Dtls
+> /usr/lib/ruby/1.9.1/uri/common.rb:156:in `split'
+> /usr/lib/ruby/1.9.1/uri/common.rb:174:in `parse'
+> /usr/lib/ruby/1.9.1/uri/common.rb:628:in `parse'
+> /usr/lib/ruby/1.9.1/uri/common.rb:854:in `URI'
+> 
+
+Don't you need to have three slashes: maildir:///path/to/dir
+
+- Gaute
+
+From witsquash at lavabit.com  Sun Oct  9 19:52:37 2011
+From: witsquash at lavabit.com (Martin Miller)
+Date: Sun, 09 Oct 2011 18:52:37 -0500
+Subject: [sup-talk] External address books
+Message-ID: <1318202891-sup-755@boots>
+
+I've nearly got sup setup just they way I want. GPG's getting there,
+messages are being labeled.
+
+I found a hook in the mailing list archive to use abook for address
+auto-completion, which was a big help with my migration.
+
+I'm using text files with addresses for auto-labeling, there's a family
+file, friends file, work file, etc.
+
+It'd be nice if I could export Contacts out of sup either into abook, or
+into a text file. Is there anything out there that can assist in doing
+that?
+
+Thanks
+-- 
+Martin Miller
+witsquash.com
+
+From jim at gonzul.net  Sun Oct  9 23:36:45 2011
+From: jim at gonzul.net (Jim Cheetham)
+Date: Mon, 10 Oct 2011 16:36:45 +1300
+Subject: [sup-talk] mis-identified signature block in message body
+Message-ID: <CA+2knquF3sVRcetVB7OuQaCURPMLw8_WveFx-kDYBpfJti_9Lg@mail.gmail.com>
+
+I have a set of emails that contain a chunk of text at the end that
+seems very much like a signature block :- it is in fact a formatted
+list of things from a DB query.
+
+sup identified this as a signature, and displays it folded by default.
+It isn't very difficult to just press 'o' to display the content, but
+it would be nicer if I could prevent it from happening in the first
+place.
+
+Is there a hook that would allow me to intercept the message display,
+and make my own decision about these?
+
+-jim
+
+From stl at koffein.net  Mon Oct 10 00:38:49 2011
+From: stl at koffein.net (Steven Lawrance)
+Date: Mon, 10 Oct 2011 14:38:49 +1000
+Subject: [sup-talk] mis-identified signature block in message body
+In-Reply-To: <CA+2knquF3sVRcetVB7OuQaCURPMLw8_WveFx-kDYBpfJti_9Lg@mail.gmail.com>
+References: <CA+2knquF3sVRcetVB7OuQaCURPMLw8_WveFx-kDYBpfJti_9Lg@mail.gmail.com>
+Message-ID: <1318221253-sup-6406@soma.koffein.net>
+
+Excerpts from Jim Cheetham's message of Mon Oct 10 13:36:45 +1000 2011:
+> I have a set of emails that contain a chunk of text at the end that
+> seems very much like a signature block :- it is in fact a formatted
+> list of things from a DB query.
+> 
+> Is there a hook that would allow me to intercept the message display,
+> and make my own decision about these?
+
+There's no hook but FWIW I have run into the same issue but with
+Bugzilla mails.  I just tweaked the matching in message.rb to check
+for a "real" signature marker after a match:
+
+http://gitorious.org/~stl/sup/stl-sup/commit/48b397f2a82d32992eb6d48e845762200c4c5fd0
+
+It's not the perfect solution, but it works for me.
+
+cheers,
+-- 
+Steven Lawrance
+stl at koffein.net
+
+From dmishd at gmail.com  Sun Oct 16 08:09:41 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 16 Oct 2011 13:09:41 +0100
+Subject: [sup-talk] Preparing for sup 0.13
+Message-ID: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+
+I've merged the next branch into master in preparation for releasing
+sup 0.13. So this is a call for people to try it out and report any
+problems they have before we push it out the door. For basic details
+about running from git see
+http://sup.rubyforge.org/wiki/wiki.pl?Running_From_Git
+
+The major changes since sup 0.12 are:
+
+* crypto stuff rewritten to use the gpgme library, leading to smoother
+operations with encrypted email.
+* add an option for whether sent mail is archived
+* added an account selector when composing email for those who have
+multiple possible from addresses
+* added an asynchronous edit mode - this allows you to carry on using
+sup while composing a message in an external editor
+
+along with various bug fixes large and small.
+
+I'm hoping we can push out 0.13 in November.
+
+Hamish
+
+From marka at pobox.com  Tue Oct 18 09:46:27 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 18 Oct 2011 09:46:27 -0400
+Subject: [sup-talk] Preparing for sup 0.13
+In-Reply-To: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+Message-ID: <1318945224-sup-126@bloovis.org>
+
+Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> * added an asynchronous edit mode - this allows you to carry on using
+> sup while composing a message in an external editor
+
+I'm not having much luck with this feature.  I was able to write an
+async-edit hook that spawned my editor in a separate gnome-terminal
+window.  But when I exited async-edit mode, sup started responding to
+keystrokes weirdly.  I tried to discard the message I had just
+composed using 'x', so sup asked if I wanted to discard the message,
+and when I hit 'y', it sent the message instead of discarding it.
+After that, sup behaved as if every other keystroke was being
+discarded, and I had to quit and restart.
+
+Other than that, things look good.
+
+From dmishd at gmail.com  Tue Oct 18 13:58:40 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 18 Oct 2011 18:58:40 +0100
+Subject: [sup-talk] Preparing for sup 0.13
+In-Reply-To: <1318945224-sup-126@bloovis.org>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+	<1318945224-sup-126@bloovis.org>
+Message-ID: <CAOxvSbchWGomtdFSv1yATD1=PvQ0zHZjfrdYx1uJk7RgTqb=CA@mail.gmail.com>
+
+On 18 October 2011 14:46, Mark Alexander <marka at pobox.com> wrote:
+> Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+>> * added an asynchronous edit mode - this allows you to carry on using
+>> sup while composing a message in an external editor
+>
+> I'm not having much luck with this feature. ?I was able to write an
+> async-edit hook that spawned my editor in a separate gnome-terminal
+> window. ?But when I exited async-edit mode, sup started responding to
+> keystrokes weirdly. ?I tried to discard the message I had just
+> composed using 'x', so sup asked if I wanted to discard the message,
+> and when I hit 'y', it sent the message instead of discarding it.
+> After that, sup behaved as if every other keystroke was being
+> discarded, and I had to quit and restart.
+
+Could you email me your hook so I can check if there is anything in it
+that might cause trouble? I've used the mode myself a bit and not hit
+that issue.
+
+I guess it's not really a regression as the feature didn't exist in
+sup 0.12, but would still be good to sort it out ...
+
+Hamish
+
+From marka at pobox.com  Wed Oct 19 10:31:29 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 19 Oct 2011 10:31:29 -0400
+Subject: [sup-talk] Preparing for sup 0.13
+In-Reply-To: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+Message-ID: <1319034152-sup-5416@bloovis.org>
+
+Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> * added an account selector when composing email for those who have
+> multiple possible from addresses
+
+I'm having a problem with this feature, too.
+
+I have two main email accounts, one for personal email and one for
+work email.  My before-edit.rb hook figures out which account to use
+as the sender (the "From" header) by looking at the recipients (the
+"To" header).  This worked with sup 0.12, but with 0.13 the sender is
+changed back to the default as soon as I exit the editor.
+
+I see that Sascha Silbe said something about this seven months ago:
+
+> This one would possibly break my workflow. My From address is chosen in
+> the before-edit hook based on the set of recipients. Since you only
+> call before-edit once with headers_full as headers, whatever From
+> address gets chosen for the initial reply mode will "stick".
+
+Here's the sanitized before-edit.rb hook, in case that helps:
+
+unless header["In-reply-to"]
+  if header["To"] =~ /widgets/
+    to = header["To"]
+    info "Sending as widgets, to = #{to}"
+    header["From"] = "Mark Alexander <marka at widgets.com>"
+  else
+    to = header["To"]
+    info "Sending as pobox, to = #{to}"
+    header["From"] = "Mark Alexander <marka at pobox.com>"
+  end
+end
+
+From marka at pobox.com  Thu Oct 20 09:18:01 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 20 Oct 2011 09:18:01 -0400
+Subject: [sup-talk] Preparing for sup 0.13
+In-Reply-To: <1319034152-sup-5416@bloovis.org>
+References: <CAOxvSbcBz11N1Ac_fr970dPRqDv=e89xzicZoLbH+zTSJTEpcg@mail.gmail.com>
+	<1319034152-sup-5416@bloovis.org>
+Message-ID: <1319116525-sup-839@bloovis.org>
+
+Excerpts from Mark Alexander's message of Wed Oct 19 10:31:29 -0400 2011:
+> Excerpts from Hamish D's message of Sun Oct 16 08:09:41 -0400 2011:
+> > * added an account selector when composing email for those who have
+> > multiple possible from addresses
+> 
+> I'm having a problem with this feature, too.
+> 
+> I have two main email accounts, one for personal email and one for
+> work email.  My before-edit.rb hook figures out which account to use
+> as the sender (the "From" header) by looking at the recipients (the
+> "To" header).  This worked with sup 0.12, but with 0.13 the sender is
+> changed back to the default as soon as I exit the editor.
+
+I'm trying out the attached fix, and so far it seems to work.
+it simply moves the calling of the before-edit hook before
+the creation of the account selector.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: before-edit.patch
+Type: application/octet-stream
+Size: 877 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20111020/5c9b47e7/attachment.obj>
+
+From felix.kaiser at fxkr.net  Sat Oct 29 16:16:39 2011
+From: felix.kaiser at fxkr.net (Felix Kaiser)
+Date: Sat, 29 Oct 2011 22:16:39 +0200
+Subject: [sup-talk] A few questions
+Message-ID: <4eac5f25.8dcfe30a.51f0.1df8@mx.google.com>
+
+Hi,
+
+first of all, a big thanks to everyone who contributed to sup: it is pretty awesome.
+
+I have a few questions though:
+
+1. How can I trigger a new-email notification only when a personal email
+   (as in: marked with ">" in the thread list view) has been received?
+   Unfortunately the after-poll hook doesnt get the actual message objects.
+
+   (I think it would be best if the parameters of the after-poll hook
+   were changed to include the message object and if some of the logic
+   in Message.do_poll was extracted into a Message.for_me? method.
+   Comments?)
+
+2. How can I change the background color of the cursor line?
+   Its grey right now with light foreground colors, basically unreadable,
+   but in the screenshots on sup.rubyforge.org its cyan. *want*.
+
+3. How can I run before-add-message.rb over all messages in the index?
+
+Oh and just in case you haven't noticed: your bugtracker is down.
+
+Cheers
+Felix
+
+
+-- 
+

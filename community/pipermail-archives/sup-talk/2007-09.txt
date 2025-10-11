@@ -1,0 +1,3121 @@
+From wmorgan-sup at masanjin.net  Sat Sep  1 02:28:55 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 31 Aug 2007 23:28:55 -0700
+Subject: [sup-talk] new in svn: mime-type hook
+In-Reply-To: <1188586680-sup-8783@mona>
+References: <1188360667-sup-3717@south> <1188586680-sup-8783@mona>
+Message-ID: <1188628101-sup-5592@south>
+
+Excerpts from jeff.covey's message of Fri Aug 31 12:02:44 -0700 2007:
+> in the process of making this, did something go wrong with sup's
+> decoding of ordinary messages?  i'm seeing a lot of messages with
+> equals marks at the ends of lines, like:
+
+Whoops, yes. SVN up and see if that fixes it.
+
+-- 
+_____________________________________________________________________________
+|                                                                           |
+|        |                          \ | /                          |        |
+|        |\                          \|/                          /|        |
+|  |XXXXX||>>>>>>>>>>>>>>>>>>>>>>>  ((*))  <<<<<<<<<<<<<<<<<<<<<<<||XXXXX|  |
+|        |/                          /|\                          \|        |
+|        |                          / | \                          |        |
+|                                                                           |
+| Death Star                                                                |
+| War Lord of the Sup                              wmorgan-sup at masanjin.net |
+|___________________________________________________________________________|
+
+From magnus at therning.org  Sat Sep  1 19:47:03 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sun, 02 Sep 2007 00:47:03 +0100
+Subject: [sup-talk] Hooks?
+Message-ID: <1188690036-sup-8770@tatooine>
+
+There seems to be extended support for inserting hooks in sup.  However,
+any sort of hint as to how to add a hook is missing.  I assume they have
+to be written in Ruby, they should probably live in ~/.sup/hooks.
+Beyond that it's a little difficult for someone who's never read Ruby
+source before to figure things out.  Can anyone offer any example on how
+to implement a hook?
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+As we enjoy great advantages from the inventions of others we should
+be glad of an opportunity to serve others by any invention of
+ours, and this we should do freely and generously.
+     -- Benjamin Franklin
+
+From wmorgan-sup at masanjin.net  Sun Sep  2 02:28:52 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 01 Sep 2007 23:28:52 -0700
+Subject: [sup-talk] Hooks?
+In-Reply-To: <1188690036-sup-8770@tatooine>
+References: <1188690036-sup-8770@tatooine>
+Message-ID: <1188714270-sup-4582@south>
+
+Excerpts from Magnus Therning's message of Sat Sep 01 16:47:03 -0700 2007:
+> There seems to be extended support for inserting hooks in sup.
+> However, any sort of hint as to how to add a hook is missing.  I
+> assume they have to be written in Ruby, they should probably live in
+> ~/.sup/hooks.
+
+Hooks were added just a couple SVN revisions ago so documentation isn't
+great. Running sup -l will give you a list of possible hooks and their
+corresponding locations on disk. Here's my current set of hooks (and if
+you search the list archives I've posted a couple more examples):
+
+$ head .sup/hooks/*.rb
+==> .sup/hooks/before-poll.rb <==
+if (@last_fetchmail_time || Time.at(0)) < Time.now - 60
+  say "Running fetchmail..."
+  system "fetchmail >& /dev/null"
+  say "Done running fetchmail."
+end
+@last_fetchmail_time = Time.now
+
+
+==> .sup/hooks/mime-decode.rb <==
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} '#{filename}'`
+  end
+end
+
+==> .sup/hooks/signature.rb <==
+"William <#{from_email}>"
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sun Sep  2 07:31:45 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 02 Sep 2007 07:31:45 -0400
+Subject: [sup-talk] new in svn: mime-type hook
+In-Reply-To: <1188628101-sup-5592@south>
+References: <1188360667-sup-3717@south> <1188586680-sup-8783@mona>
+	<1188628101-sup-5592@south>
+Message-ID: <1188732653-sup-3553@mona>
+
+Excerpts from William Morgan's message of Sat Sep 01 02:28:55 -0400 2007:
+
+> > in the process of making this, did something go wrong with sup's
+> > decoding of ordinary messages?  i'm seeing a lot of messages with equals
+> > marks at the ends of lines
+> 
+> Whoops, yes. SVN up and see if that fixes it.
+
+yes, seems to be fine now.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Sun Sep  2 19:03:29 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Sep 2007 16:03:29 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <20070831171234.GD8312@die.therning.org>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+Message-ID: <1188773706-sup-1502@south>
+
+Excerpts from Magnus Therning's message of Fri Aug 31 10:12:34 -0700 2007:
+> On Fri, Aug 31, 2007 at 08:31:04 -0700, William Morgan wrote:
+> >By default ~/.signature should be appended to email (not in the
+> >editor, but in Sup's review screen immediate post editing). If it's
+> >not, it's probably that ~/.sup/config.yaml is pointing to a different
+> >file.
+> 
+> Ah, that's slightly confusing behaviour especially after being used to
+> mutt.  I think I can adapt though :-)
+
+The signature selection algorithm is tied to Sup's multiple account
+support: the signature file Sup uses is based on the From: address you
+select. You can get the simpler mutt-style behavior by specifying
+:edit_signature: true in config.yaml, which always takes the signature
+of the default account and dumps it into the editor, or you can now
+specify more complicated behavior now with the signature hook.
+
+> >Yep, I plan to have first-order GPG support (i.e. not just in the
+> >hooks system.) Not for the next release, but possibly the one after.
+> >The time is nigh.
+> 
+> Is anyone working on it already?
+
+There were patches submitted by I think Christian Lee a while ago, but
+they never made it into the svn, mostly because I was waiting for
+multiple account support to stabilize a bit. Which it now pretty much
+has.
+
+> Given this I want to control where sent mails end up so that I can
+> access those mails from all those locations.
+
+Sup stores its sent mail in ~/.sup/sent.mbox by default. I'm not opposed
+to making that filename configurable, but the quickest fix might be just
+to make that a symlink to the actual destination file.
+
+> This makes me think of another little detail, it seems sup's idea of
+> what's read and what's new isn't based on the maildir notion of what's
+> read and what's new (i.e. sup doesn't move mail from /new to /cur when
+> it's read and doesn't recognise that mail in /cur is read).
+
+Yeah, Sup doesn't sync back any state changes to the original sources.
+The Sup philosophy has been to treat the sources as dumb, which means
+Sup doesn't play well with others. I won't turn aside patches which do
+sync back (partial) message state to the sources, but I'm not planning
+on implementing that stuff myself.
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Mon Sep  3 08:33:48 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 03 Sep 2007 08:33:48 -0400
+Subject: [sup-talk] saving sent mail to places other than the default
+In-Reply-To: <20070831171234.GD8312@die.therning.org>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+Message-ID: <1188822120-sup-9376@mona>
+
+Excerpts from Magnus Therning's message of Fri Aug 31 13:12:34 -0400 2007:
+
+> > >  - support for choosing where to save sent messages
+> > 
+> > This I'm a little curious about. Why do you care where they live on
+> > disk, as long as they show up in the index?
+> 
+> I have a fairly extensive configuration of procmail for sorting mails
+
+i also want my sent mail sorted by procmail instead of stored in ~/.sup, so
+i run it through "formail -s procmail".  below is the script i run at the
+end of the day to empty ~/.sup/sent.mbox and file the messages with
+procmail; you might try something similar, perhaps by cron if it's on your
+friend's machine.
+
+
+#------------------------------------------------------
+#!/bin/sh
+
+ruby='ruby -I lib -w'
+
+cd ~/tmp/sup/trunk
+
+tmpfile=~/tmp/sup-sent/sup-sent-`/bin/date +%F-%T`.mbox
+
+mv ~/.sup/sent.mbox $tmpfile
+touch ~/.sup/sent.mbox
+
+echo "processing messages..."
+formail -s procmail < $tmpfile
+
+$ruby bin/sup-sync --changed sup://sent 
+
+echo "original sup sent mbox in $tmpfile"
+
+#------------------------------------------------------
+
+
+this assumes that the resulting destinations for sent messages are checked
+by sup in its poll for new messages, so they show up in sup's index again.
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Mon Sep  3 08:40:52 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 03 Sep 2007 08:40:52 -0400
+Subject: [sup-talk] new in svn: signature generation hook
+In-Reply-To: <1188576459-sup-2368@south>
+References: <1188576459-sup-2368@south>
+Message-ID: <1188823194-sup-29@mona>
+
+Excerpts from William Morgan's message of Fri Aug 31 12:09:10 -0400 2007:
+
+> Check out my new awesome sig.
+
+my eyes!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From magnus at therning.org  Wed Sep  5 03:48:03 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Wed, 05 Sep 2007 08:48:03 +0100
+Subject: [sup-talk] on sup
+In-Reply-To: <1188773706-sup-1502@south>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south>
+Message-ID: <1188977552-sup-60@tatooine>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Excerpts from William Morgan's message of Mon Sep 03 00:03:29 +0100 2007:
+> Excerpts from Magnus Therning's message of Fri Aug 31 10:12:34 -0700 2007:
+> > On Fri, Aug 31, 2007 at 08:31:04 -0700, William Morgan wrote:
+> > >By default ~/.signature should be appended to email (not in the
+> > >editor, but in Sup's review screen immediate post editing). If it's
+> > >not, it's probably that ~/.sup/config.yaml is pointing to a different
+> > >file.
+> > 
+> > Ah, that's slightly confusing behaviour especially after being used to
+> > mutt.  I think I can adapt though :-)
+> 
+> The signature selection algorithm is tied to Sup's multiple account
+> support: the signature file Sup uses is based on the From: address you
+> select. You can get the simpler mutt-style behavior by specifying
+> :edit_signature: true in config.yaml, which always takes the signature
+> of the default account and dumps it into the editor, or you can now
+> specify more complicated behavior now with the signature hook.
+
+Ah, cool.  That all makes sense.  I think I like the flow of things as
+they are.
+
+> > >Yep, I plan to have first-order GPG support (i.e. not just in the
+> > >hooks system.) Not for the next release, but possibly the one
+> > >after.  The time is nigh.
+> > 
+> > Is anyone working on it already?
+> 
+> There were patches submitted by I think Christian Lee a while ago, but
+> they never made it into the svn, mostly because I was waiting for
+> multiple account support to stabilize a bit. Which it now pretty much
+> has.
+
+I wouldn't mind to be a beta-tester for that.  Let me know if you merge
+it, or share the changes in another branch or something.
+
+After thinking a little about this I think it's the receiving of
+encrypted/signed emails that's cumbersome to deal with at the moment.
+If I'm not completely daft it seems like sending is infinitely flexible
+through the hooks system.
+
+> > This makes me think of another little detail, it seems sup's idea of
+> > what's read and what's new isn't based on the maildir notion of
+> > what's read and what's new (i.e. sup doesn't move mail from /new to
+> > /cur when it's read and doesn't recognise that mail in /cur is
+> > read).
+> 
+> Yeah, Sup doesn't sync back any state changes to the original sources.
+> The Sup philosophy has been to treat the sources as dumb, which means
+> Sup doesn't play well with others. I won't turn aside patches which do
+> sync back (partial) message state to the sources, but I'm not planning
+> on implementing that stuff myself.
+
+I'll see if I can't get my head around this red-corundum language you're
+using and take a stab at adding this.  ;-)
+
+One more question, is there anything "site specific" in the state data
+sup maintains?  Would I run into problem if I use rsync/unison to
+synchronise sup's state to several machines?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFG3l8kiMWTaatN+6QRAmP1AJ9ynvIgglFT4z1ku8LyjfeIoNOxoQCffjey
+bnjeItGmOKF/TOVTIBtWmF8=
+=zyyx
+-----END PGP SIGNATURE-----
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+
+From wmorgan-sup at masanjin.net  Wed Sep  5 11:27:14 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Sep 2007 08:27:14 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <1188977552-sup-60@tatooine>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+Message-ID: <1189005324-sup-9685@south>
+
+Excerpts from Magnus Therning's message of Wed Sep 05 00:48:03 -0700 2007:
+> After thinking a little about this I think it's the receiving of
+> encrypted/signed emails that's cumbersome to deal with at the moment.
+> If I'm not completely daft it seems like sending is infinitely
+> flexible through the hooks system.
+
+The hooks would be an option, but I'm actually planning to stick it in
+the code directly. What I'm thinking is that decoding will just hide the
+attachment and display a little message at the top of the message saying
+"signature verified", or a big nasty message if not. For encoding, I
+would like to have some nice way of choosing sign/sign&encrypt/nothing
+on a per-message basis, but I'm not sure what the best UI for that is. I
+was originally thinking something like the reply-mode options, but then
+how would the two interact? I could also make each option correspond to
+various keyboard combinations, but that seems a little obtuse. I don't
+really like the mutt-style prompt at the bottom on the screen (the
+"minibuffer", as I style it).
+
+> One more question, is there anything "site specific" in the state data
+> sup maintains?  Would I run into problem if I use rsync/unison to
+> synchronise sup's state to several machines?
+
+Sup uses sources.yaml to map between integer source ids (which are
+stored in the index) and the source URIs, which for mbox files are
+absolute pathnames. So if you're using local mbox files and the paths
+differ between machines, you'll have to tweak sources.yaml to reflect
+that. If the source URIs are the same, then as long as sources.yaml is
+synchronized along with the ferret/ directory, you should be fine.
+
+Beyond that, Sup uses Ferret to store all state, so if the different
+sites have different architecture, it's going to be up to Ferret as to
+whether the indexes are portable. I'm not sure of the answer on this
+one.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Sep  5 17:55:38 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Sep 2007 14:55:38 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <1188977552-sup-60@tatooine>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+Message-ID: <1189029109-sup-7643@south>
+
+Excerpts from Magnus Therning's message of Wed Sep 05 00:48:03 -0700 2007:
+> > Yeah, Sup doesn't sync back any state changes to the original
+> > sources.  The Sup philosophy has been to treat the sources as dumb,
+> > which means Sup doesn't play well with others. I won't turn aside
+> > patches which do sync back (partial) message state to the sources,
+> > but I'm not planning on implementing that stuff myself.
+> 
+> I'll see if I can't get my head around this red-corundum language
+> you're using and take a stab at adding this.  ;-)
+
+What little Sup currently does in the way of pushing state information
+back into sources, it does through sup-sync-back, which is meant to push
+a batch of state changes back to one or more sources in one go. Right
+now that's restricted to deleting messages marked as deleted or spam
+from mbox sources, but it would be the natural place to push the
+new/read state back as well, at least if you were happy with batch
+operation.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Thu Sep  6 02:50:33 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 06 Sep 2007 07:50:33 +0100
+Subject: [sup-talk] on sup
+In-Reply-To: <1189029109-sup-7643@south>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+	<1189029109-sup-7643@south>
+Message-ID: <1189060693-sup-3576@tatooine>
+
+Excerpts from William Morgan's message of Wed Sep 05 22:55:38 +0100 2007:
+[..]
+> What little Sup currently does in the way of pushing state information
+> back into sources, it does through sup-sync-back, which is meant to
+> push a batch of state changes back to one or more sources in one go.
+> Right now that's restricted to deleting messages marked as deleted or
+> spam from mbox sources, but it would be the natural place to push the
+> new/read state back as well, at least if you were happy with batch
+> operation.
+
+I'm more than happy with batch operations.  I suspect that doing this
+outside of sup proper also keeps the main program itself a little
+simpler.
+
+I did look at the sup-sync-back tool and noticed that it performs some
+mbox operations on its own.  Operations that I feel really belong in the
+mbox source class itself.  I feel sup-sync-back would become simpler if
+polymorphism was put to use a bit more.  So, do you have any
+philosophical problems with a `delete` method being added to the
+sources?  (It would probably be followed by a `mark_as_read` in the
+future.)
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+
+From magnus at therning.org  Thu Sep  6 03:02:27 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 06 Sep 2007 08:02:27 +0100
+Subject: [sup-talk] on sup
+In-Reply-To: <1189005324-sup-9685@south>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+	<1189005324-sup-9685@south>
+Message-ID: <1189061510-sup-5845@tatooine>
+
+Excerpts from William Morgan's message of Wed Sep 05 16:27:14 +0100 2007:
+> Excerpts from Magnus Therning's message of Wed Sep 05 00:48:03 -0700 2007:
+> > After thinking a little about this I think it's the receiving of
+> > encrypted/signed emails that's cumbersome to deal with at the
+> > moment.  If I'm not completely daft it seems like sending is
+> > infinitely flexible through the hooks system.
+> 
+> The hooks would be an option, but I'm actually planning to stick it in
+> the code directly. What I'm thinking is that decoding will just hide
+> the attachment and display a little message at the top of the message
+> saying "signature verified", or a big nasty message if not. For
+> encoding, I would like to have some nice way of choosing
+> sign/sign&encrypt/nothing on a per-message basis, but I'm not sure
+> what the best UI for that is. I was originally thinking something like
+> the reply-mode options, but then how would the two interact? I could
+> also make each option correspond to various keyboard combinations, but
+> that seems a little obtuse. I don't really like the mutt-style prompt
+> at the bottom on the screen (the "minibuffer", as I style it).
+
+Yes, the UI will be hard to get right on this.  What about adding an
+extra screen with extra options for sending (encryption/signing might
+only be one set of options that are needed).  That would push the
+problem to being one of making sure that good, fairly powerful default
+behaviours are in place.  These are the default behaviours I'd like to
+see:
+
+ - Don't sign, don't encrypt
+ - Sign all out-going messages, don't encrypt
+ - Sign all replies to signed messages, don't encrypt
+ - Sign all replies to signed messages, encrypt replies to encrypted
+   messages
+ - Sign all out-going messages, encrypt all messages to recipients with
+   a known public key
+
+I hope that covers more usage so that visiting that extra screen won't
+be necessary in most cases.
+
+Making sure that it all works on emails with multiple recipients
+shouldn't be too difficult.  (Signing isn't a problem, and encryption
+only happens if _all_ recipients have a known public key.)
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+
+From magnus at therning.org  Thu Sep  6 03:19:20 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 06 Sep 2007 08:19:20 +0100
+Subject: [sup-talk] Error in contact list
+Message-ID: <1189063072-sup-1724@tatooine>
+
+Bringing up the contact list and pressing enter on an item results in
+the following:
+
+The problem was: 'undefined method `edit' for #<Redwood::ComposeMode:0x2b2ff1688b38>' (error type NoMethodError)
+A backtrace follows:
+/home/magnus/devo/tmp/sup/sup/lib/sup/modes/contact-list-mode.rb:70:in `multi_select': undefined method `edit' for #<Redwood::ComposeMode:0x2b2ff1688b38> (NoMethodError)
+        from /home/magnus/devo/tmp/sup/sup/lib/sup/modes/contact-list-mode.rb:76:in `select'
+        from /home/magnus/devo/tmp/sup/sup/lib/sup/mode.rb:52:in `send'
+        from /home/magnus/devo/tmp/sup/sup/lib/sup/mode.rb:52:in `handle_input'
+        from /home/magnus/devo/tmp/sup/sup/lib/sup/buffer.rb:193:in `handle_input'
+        from /home/magnus/devo/tmp/sup/sup/bin/sup:192
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+
+From magnus at therning.org  Thu Sep  6 03:21:59 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 06 Sep 2007 08:21:59 +0100
+Subject: [sup-talk] Two small fixes
+Message-ID: <1189063161-sup-9162@tatooine>
+
+Yesterday I ran into some warnings when using sup from SVN:
+
+=== modified file 'lib/sup/message.rb'
+--- lib/sup/message.rb  2007-09-01 06:29:01 +0000
++++ lib/sup/message.rb  2007-09-05 18:04:48 +0000
+@@ -55,6 +55,7 @@
+       @raw_content = encoded_content.decode
+       charset = encoded_content.charset
+ 
++      @lines = ""
+       if @content_type =~ /^text\/plain\b/
+         @lines = Message.convert_from(@raw_content, charset).split("\n")
+       else
+
+=== modified file 'lib/sup/textfield.rb'
+--- lib/sup/textfield.rb        2007-08-06 00:05:54 +0000
++++ lib/sup/textfield.rb        2007-09-05 18:10:35 +0000
+@@ -46,6 +46,7 @@
+   def position_cursor
+     @w.attrset Colormap.color_for(:none)
+     @w.mvaddstr @y, 0, @question
++    @value = ""
+     Ncurses.curs_set 1
+     Ncurses::Form.form_driver @form, Ncurses::Form::REQ_END_FIELD
+     Ncurses::Form.form_driver @form, Ncurses::Form::REQ_NEXT_CHAR if @value && @value =~ / $/ # fucking RETARDED!!!!
+
+
+The fixes are probably not the right ones, but they did make sup shut up about
+undefined members.
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+
+From magnus at therning.org  Fri Sep  7 03:37:21 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 7 Sep 2007 08:37:21 +0100
+Subject: [sup-talk] Tilde in maildir/mbox paths
+Message-ID: <20070907073721.GA10465@die.therning.org>
+
+I find it useful to be able to stick '~' in paths so here's an attempt
+at a patch that allows a source with the URI maildir:~/mail/in.
+
+Two comments:
+
+ 1. I didn't really know where to stick expand_uri so it's duplicated in
+    Maildir and Mbox.  This is far from ideal.  Please tell me where it
+    belongs.
+
+ 2. Parsing URIs of the form maildir://~/mail/in seems to be
+    problematic:
+
+      irb(main):001:0> require 'uri'
+      => true
+      irb(main):002:0> URI('maildir://~/mail/in')
+      URI::InvalidURIError: the scheme maildir does not accept registry part: ~ (or bad hostname?)
+              from /usr/lib/ruby/1.8/uri/generic.rb:195:in `initialize'
+              from /usr/lib/ruby/1.8/uri/common.rb:492:in `new'
+              from /usr/lib/ruby/1.8/uri/common.rb:492:in `parse'
+              from /usr/lib/ruby/1.8/uri/common.rb:608:in `URI'
+              from (irb):2
+              from :0
+
+    I don't know how to get around this so I changed the help text for
+    sup-add.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+As we enjoy great advantages from the inventions of others we should
+be glad of an opportunity to serve others by any invention of
+ours, and this we should do freely and generously.
+     -- Benjamin Franklin
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_514-1.diff
+Type: text/x-diff
+Size: 2454 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070907/6f68e559/attachment.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070907/6f68e559/attachment-0001.bin 
+
+From magnus at therning.org  Fri Sep  7 14:47:59 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 07 Sep 2007 19:47:59 +0100
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <20070907092109.GB23285@die.therning.org>
+References: <20070907073721.GA10465@die.therning.org>
+	<20070907092109.GB23285@die.therning.org>
+Message-ID: <1189190787-sup-1919@tatooine>
+
+Excerpts from Magnus Therning's message of Fri Sep 07 10:21:09 +0100 2007:
+> On Fri, Sep 07, 2007 at 08:37:21 +0100, Magnus Therning wrote:
+> >I find it useful to be able to stick '~' in paths so here's an attempt
+> >at a patch that allows a source with the URI maildir:~/mail/in.
+> >
+> >Two comments:
+> >
+> > 1. I didn't really know where to stick expand_uri so it's duplicated in
+> >    Maildir and Mbox.  This is far from ideal.  Please tell me where it
+> >    belongs.
+> 
+> An obvious place would of course be the parent class Source.  For some
+> strange reason that didn't enter my mind while I was hacking on this.
+
+A modified patch is attached.
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+What if I don't want to obey the laws? Do they throw me in jail with
+the other bad monads?
+     -- Daveman
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_514-2.diff
+Type: application/octet-stream
+Size: 2273 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070907/4d16512d/attachment.obj 
+
+From jeff.covey at pobox.com  Fri Sep  7 14:52:22 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 07 Sep 2007 14:52:22 -0400
+Subject: [sup-talk] an enormously long time to save a message
+Message-ID: <1189190953-sup-2994@mona>
+
+i received a message with 8mb of text.  i tried to save it to a file, and
+sup took the load on my computer past 10.  i gave it five minutes of
+grinding my hard drive, then killed it.  i opened the source in mutt, and it
+saved it in about half a second.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From magnus at therning.org  Sun Sep  9 18:40:34 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sun, 9 Sep 2007 23:40:34 +0100
+Subject: [sup-talk] Minor maildir change
+Message-ID: <20070909224034.GA3540@die.therning.org>
+
+I thought it was a little strange the file_path on Maildir objects
+returned `nil` so I changed that to return the path of the maildir.
+
+I am somewhat puzzled by the labels one receives from Maildir::each,
+it's the default labels for the source rather than the labels of the
+actual message.  Especially confusing was the choice to label something
+'unread' if it's filename doesn't contains an 'R'.  IIRC 'R' means that
+the email has been replied to, it would have been more correct to mark
+it unread if it doesn't contain an 'S' (as in seen).  However, it seems
+silly to take any of this into consideration when sup doesn't deal with
+maildirs "properly" anyway.  I've removed that strangeness, at least
+until a full maildir implementation makes it into sup.
+
+/M
+
+=== modified file 'lib/sup/maildir.rb'
+--- lib/sup/maildir.rb	2007-09-09 22:27:27 +0000
++++ lib/sup/maildir.rb	2007-09-09 22:29:52 +0000
+@@ -27,6 +27,7 @@
+     @mutex = Mutex.new
+   end
+ 
++  def file_path; @dir end
+   def self.suggest_labels_for path; [] end
+ 
+   def check
+@@ -93,7 +94,7 @@
+     start.upto(@ids.length - 1) do |i|         
+       id = @ids[i]
+       self.cur_offset = id
+-      yield id, @labels + (@ids_to_fns[id] =~ /,.*R.*$/ ? [] : [:unread])
++      yield id, @labels
+     end
+   end
+ 
+
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070909/3ea679f1/attachment-0001.bin 
+
+From wmorgan-sup at masanjin.net  Tue Sep 11 15:34:05 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 Sep 2007 12:34:05 -0700
+Subject: [sup-talk] an enormously long time to save a message
+In-Reply-To: <1189190953-sup-2994@mona>
+References: <1189190953-sup-2994@mona>
+Message-ID: <1189539108-sup-741@south>
+
+Excerpts from jeff.covey's message of Fri Sep 07 11:52:22 -0700 2007:
+> i received a message with 8mb of text.  i tried to save it to a file,
+> and sup took the load on my computer past 10.  i gave it five minutes
+> of grinding my hard drive, then killed it.  i opened the source in
+> mutt, and it saved it in about half a second.
+
+I think I've sped this up. Untested, of course. And note that Sup will
+never be anywhere as fast as Mutt, at least until I start using
+RubyInline to drop in some C code. :)
+
+In particular saving large attachments worries me, because who knows
+what RubyMail is doing...
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Sep 11 15:34:32 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 Sep 2007 12:34:32 -0700
+Subject: [sup-talk] Error in contact list
+In-Reply-To: <1189063072-sup-1724@tatooine>
+References: <1189063072-sup-1724@tatooine>
+Message-ID: <1189539254-sup-6133@south>
+
+Excerpts from Magnus Therning's message of Thu Sep 06 00:19:20 -0700 2007:
+> Bringing up the contact list and pressing enter on an item results in
+> the following:
+> 
+> The problem was: 'undefined method `edit' for #<Redwood::ComposeMode:0x2b2ff1688b38>' (error type NoMethodError)
+
+Fixed!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Sep 11 16:48:55 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 Sep 2007 13:48:55 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <1189060693-sup-3576@tatooine>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+	<1189029109-sup-7643@south> <1189060693-sup-3576@tatooine>
+Message-ID: <1189543040-sup-8299@south>
+
+Excerpts from Magnus Therning's message of Wed Sep 05 23:50:33 -0700 2007:
+> I did look at the sup-sync-back tool and noticed that it performs some
+> mbox operations on its own.  Operations that I feel really belong in
+> the mbox source class itself.  I feel sup-sync-back would become
+> simpler if polymorphism was put to use a bit more.  So, do you have
+> any philosophical problems with a `delete` method being added to the
+> sources?  (It would probably be followed by a `mark_as_read` in the
+> future.)
+
+I don't have a philosophical problem with that, certainly.  Sup-sync-
+back was written in that way because I was fleshing out a lot half-baked
+ideas about how things should work at the time, and it will definitely
+be necessary to move that code to Mbox::loader before it can support
+other source types.
+
+In order to support batch operations, I think there should be two
+methods per source, really: #delete and #write_deletes_to_disk (or
+whatever), with the semantics that #delete may or may not do something
+but you're guaranteed that deletions have happened after a call to
+#write_deletes_to_disk. Then Maildir, IMAP, etc can delete immediately,
+and mbox can defer (presumably building up an array of offset to be
+deleted, and then doing the batch deletion as it does currently.)
+
+(There are actually a couple other things that need to happen to
+ mbox---it shouldn't keep the file pointers open all the time, it should
+ wrap deletion and new message scanning with a call to dotlockfile, and
+ the bizarre division of labor between loader, sshloader, and the source
+ superclass has become a classic example of how not to use inheritance.
+ Luckily, none of those things really affect this issue.)
+
+What do you think?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Sep 11 18:08:34 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 Sep 2007 15:08:34 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <1189061510-sup-5845@tatooine>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+	<1189005324-sup-9685@south> <1189061510-sup-5845@tatooine>
+Message-ID: <1189548034-sup-2005@south>
+
+Excerpts from Magnus Therning's message of Thu Sep 06 00:02:27 -0700 2007:
+> These are the default behaviours I'd like to see:
+> 
+>  - Don't sign, don't encrypt
+>  - Sign all out-going messages, don't encrypt
+>  - Sign all replies to signed messages, don't encrypt
+>  - Sign all replies to signed messages, encrypt replies to encrypted
+>    messages
+>  - Sign all out-going messages, encrypt all messages to recipients with
+>    a known public key
+
+I think you've convinced me to hold off any an UI changes and just have
+a set of behaviors for signing and encryption, configurable in
+config.yaml, that are sophisticated enough to minimize the need for
+per-message actions. That should be pretty easy to do.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Tue Sep 11 19:04:15 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Wed, 12 Sep 2007 00:04:15 +0100
+Subject: [sup-talk] on sup
+In-Reply-To: <1189548034-sup-2005@south>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+	<20070831171234.GD8312@die.therning.org>
+	<1188773706-sup-1502@south> <1188977552-sup-60@tatooine>
+	<1189005324-sup-9685@south> <1189061510-sup-5845@tatooine>
+	<1189548034-sup-2005@south>
+Message-ID: <20070911230415.GB3448@die.therning.org>
+
+On Tue, Sep 11, 2007 at 15:08:34 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Thu Sep 06 00:02:27 -0700 2007:
+>> These are the default behaviours I'd like to see:
+>> 
+>>  - Don't sign, don't encrypt
+>>  - Sign all out-going messages, don't encrypt
+>>  - Sign all replies to signed messages, don't encrypt
+>>  - Sign all replies to signed messages, encrypt replies to encrypted
+>>    messages
+>>  - Sign all out-going messages, encrypt all messages to recipients with
+>>    a known public key
+>
+>I think you've convinced me to hold off any an UI changes and just have
+>a set of behaviors for signing and encryption, configurable in
+>config.yaml, that are sophisticated enough to minimize the need for
+>per-message actions. That should be pretty easy to do.
+
+Now I know this might not be a very user friendly idea and probably not
+ideal for the long run.  It might be a good first step to simply have a
+hook like this:
+
+ crypto_hook sender, recipient, reply_to_signed?, reply_to_encrypted? ->
+ dosign, doencrypt
+
+(Apply your mad Ruby skills to make it Ruby-esque, but you get the idea.)
+
+That'd buy you some time to come to a conclusion, while still making sup
+a lot more useful for early adopters (like me :-).
+
+/M
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070912/91e2358f/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Tue Sep 11 19:28:53 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 Sep 2007 16:28:53 -0700
+Subject: [sup-talk] Two small fixes
+In-Reply-To: <1189063161-sup-9162@tatooine>
+References: <1189063161-sup-9162@tatooine>
+Message-ID: <1189553292-sup-3297@south>
+
+Excerpts from Magnus Therning's message of Thu Sep 06 00:21:59 -0700 2007:
+> Yesterday I ran into some warnings when using sup from SVN:
+
+Fixed, thanks! How did you get the warnings to pop up? I only
+occasionally see warnings for an instant before curses takes over the
+screen...
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Wed Sep 12 03:06:25 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Wed, 12 Sep 2007 08:06:25 +0100
+Subject: [sup-talk] Two small fixes
+In-Reply-To: <1189553292-sup-3297@south>
+References: <1189063161-sup-9162@tatooine> <1189553292-sup-3297@south>
+Message-ID: <20070912070625.GB3345@die.therning.org>
+
+On Tue, Sep 11, 2007 at 16:28:53 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Thu Sep 06 00:21:59 -0700 2007:
+>> Yesterday I ran into some warnings when using sup from SVN:
+>
+>Fixed, thanks! How did you get the warnings to pop up? I only
+>occasionally see warnings for an instant before curses takes over the
+>screen...
+
+I'm not sure why the warnings linger long enough for me to catch them.
+Could be my choice of terminal (ROXTerm)?
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070912/6124205c/attachment.bin 
+
+From jeff.covey at pobox.com  Wed Sep 12 23:38:39 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 12 Sep 2007 23:38:39 -0400
+Subject: [sup-talk] draft files aren't deleted when a draft message is
+	deleted in the inbox
+Message-ID: <1189654538-sup-114@mona>
+
+this may be part of my draft problem:
+
+i postponed a message and decided later not to finish it.  it was in my
+inbox with a "draft" label.  i hit "d", and it disappeared from the inbox,
+but ~/.sup/drafts/0 is still there with its contents.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From itaylor at uark.edu  Thu Sep 13 02:15:04 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Thu, 13 Sep 2007 01:15:04 -0500
+Subject: [sup-talk] tab completion
+Message-ID: <1189663813-sup-4803@zap>
+
+In svn, what fields are currently supposed to be tab-completed?  After
+hitting 'm' to compose a message, tab completions don't work in the to:
+prompt. After glancing at the code, it seemed that their is completion
+code for that.
+
+Is it possible I'm missing something from my configs?
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From magnus at therning.org  Thu Sep 13 06:15:19 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 13 Sep 2007 11:15:19 +0100
+Subject: [sup-talk] More maildir
+Message-ID: <20070913101519.GA22606@die.therning.org>
+
+I've attached a patch that adds methods that'll make it easier for sup
+to play nice with other MUAs when using maildir for storage.
+
+Here are some questions:
+
+ - What's my Ruby like?  (I hadn't even looked at Ruby just 2 weeks ago
+   so please tell me if I'm doing strange things.)
+
+ - The methods names are maildir-centric, any suggestions for better
+   ones?
+
+ - The maildir state (the flags) are related to some sup labels
+   ('trashed' is 'deleted' and '!seen' is 'unread').  Is it important to
+   keep them in sync?  (My thinking is no, at least not automatically.
+   The maildir state could be used when finding new mail during sync to
+   set the initial labels.  It would also be nice if state/labels on
+   known messages would sync--I think "read in either => read" and
+   "trashed in either => trashed" is good enough.)
+
+Next steps:
+
+ 1. Basically revert the change to Maildir::each I made in another
+    email.  Re-implement it using the methods I introduced here.
+ 2. Implement Maildir::delete
+ 3. Move the delete method in sup-sync-back into MBox::Loader and modify
+    sup-sync-back.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_522.patch
+Type: text/x-diff
+Size: 2076 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/f0b09067/attachment-0002.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/f0b09067/attachment-0003.bin 
+
+From magnus at therning.org  Thu Sep 13 11:56:20 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 13 Sep 2007 16:56:20 +0100
+Subject: [sup-talk] More maildir
+In-Reply-To: <20070913101519.GA22606@die.therning.org>
+References: <20070913101519.GA22606@die.therning.org>
+Message-ID: <20070913155620.GH22606@die.therning.org>
+
+On Thu, Sep 13, 2007 at 11:15:19 +0100, Magnus Therning wrote:
+>I've attached a patch that adds methods that'll make it easier for sup
+>to play nice with other MUAs when using maildir for storage.
+
+The original patch did some silly things to get the filename of a
+message.  Here's another patch that cleans that up a bit.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+Failure is not an option. It comes bundled with the software.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_522-2.patch
+Type: text/x-diff
+Size: 783 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/cec8a05d/attachment-0002.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/cec8a05d/attachment-0003.bin 
+
+From magnus at therning.org  Thu Sep 13 11:45:18 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Thu, 13 Sep 2007 16:45:18 +0100
+Subject: [sup-talk] More maildir
+In-Reply-To: <20070913101519.GA22606@die.therning.org>
+References: <20070913101519.GA22606@die.therning.org>
+Message-ID: <20070913154518.GF22606@die.therning.org>
+
+On Thu, Sep 13, 2007 at 11:15:19 +0100, Magnus Therning wrote:
+>I've attached a patch that adds methods that'll make it easier for sup
+>to play nice with other MUAs when using maildir for storage.
+>
+>Here are some questions:
+>
+> - What's my Ruby like?  (I hadn't even looked at Ruby just 2 weeks ago
+>   so please tell me if I'm doing strange things.)
+>
+> - The methods names are maildir-centric, any suggestions for better
+>   ones?
+>
+> - The maildir state (the flags) are related to some sup labels
+>   ('trashed' is 'deleted' and '!seen' is 'unread').  Is it important to
+>   keep them in sync?  (My thinking is no, at least not automatically.
+>   The maildir state could be used when finding new mail during sync to
+>   set the initial labels.  It would also be nice if state/labels on
+>   known messages would sync--I think "read in either => read" and
+>   "trashed in either => trashed" is good enough.)
+>
+>Next steps:
+>
+> 1. Basically revert the change to Maildir::each I made in another
+>    email.  Re-implement it using the methods I introduced here.
+> 2. Implement Maildir::delete
+> 3. Move the delete method in sup-sync-back into MBox::Loader and modify
+>    sup-sync-back.
+
+Patch that uses the new improved maildir methods to add initial labels.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+Some operating systems are called 'user friendly', Linux however is
+'expert friendly'.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_522-1.patch
+Type: text/x-diff
+Size: 387 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/041a088b/attachment.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070913/041a088b/attachment-0001.bin 
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 21:34:49 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 18:34:49 -0700
+Subject: [sup-talk] draft files aren't deleted when a draft message is
+	deleted in the inbox
+In-Reply-To: <1189654538-sup-114@mona>
+References: <1189654538-sup-114@mona>
+Message-ID: <1189733596-sup-2790@south>
+
+Excerpts from jeff.covey's message of Wed Sep 12 20:38:39 -0700 2007:
+> i postponed a message and decided later not to finish it.  it was in
+> my inbox with a "draft" label.  i hit "d", and it disappeared from the
+> inbox, but ~/.sup/drafts/0 is still there with its contents.
+
+Interesting. Are there weird permissions on that directory, that would
+otherwise preclude you from deleting a file?
+
+Can you apply this diagnostic patch and post the "XX" log messages,
+please?
+
+Index: lib/sup/draft.rb
+===================================================================
+--- lib/sup/draft.rb    (revision 566)
++++ lib/sup/draft.rb    (working copy)
+@@ -35,7 +35,19 @@
+     raise ArgumentError, "can't find entry for draft: #{mid.inspect}" unless entry
+     raise ArgumentError, "not a draft: source id #{entry[:source_id].inspect}, should be #{DraftManager.source_id.inspect} for #{mid.inspect} / docno #{docid}" unless entry[:source_id].to_i == DraftManager.source_id
+     Index.drop_entry docid
+-    File.delete @source.fn_for_offset(entry[:source_info])
++
++    fn = @source.fn_for_offset(entry[:source_info])
++    Redwood::log "XX about to delete: #{fn}"
++    rv = 
++      begin
++        File.delete fn
++      rescue Exception => e
++        Redwood::log "XX exception (e.class): #{e.message}"
++        nil
++      end
++    Redwood::log "XX deletion had return value #{rv.inspect}"
++    Redwood::log "XX file still there? #{File.exists? fn}"
++
+     UpdateManager.relay self, :delete, mid
+   end
+ end
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 21:40:20 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 18:40:20 -0700
+Subject: [sup-talk] tab completion
+In-Reply-To: <1189663813-sup-4803@zap>
+References: <1189663813-sup-4803@zap>
+Message-ID: <1189733895-sup-2965@south>
+
+Excerpts from Ian Taylor's message of Wed Sep 12 23:15:04 -0700 2007:
+> In svn, what fields are currently supposed to be tab-completed?  After
+> hitting 'm' to compose a message, tab completions don't work in the
+> to: prompt. After glancing at the code, it seemed that their is
+> completion code for that.
+
+The "To:" prompt is tab-completed. It only completes the addresses
+you've given aliases to (your "contact list"). Is it possible that set
+is empty? You can view your contact list in ~/.sup/contacts.txt.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 21:51:08 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 18:51:08 -0700
+Subject: [sup-talk] tab completion
+In-Reply-To: <1189733895-sup-2965@south>
+References: <1189663813-sup-4803@zap> <1189733895-sup-2965@south>
+Message-ID: <1189734417-sup-8426@south>
+
+Excerpts from William Morgan's message of Thu Sep 13 18:40:20 -0700 2007:
+> The "To:" prompt is tab-completed. It only completes the addresses
+> you've given aliases to (your "contact list"). Is it possible that set
+> is empty? You can view your contact list in ~/.sup/contacts.txt.
+
+I've just committed a change that also loads in the email addresses of
+the 10 most recent correspondents for tab completion, so you should get
+something now even with an empty contact list.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 22:45:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 19:45:56 -0700
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <20070907073721.GA10465@die.therning.org>
+References: <20070907073721.GA10465@die.therning.org>
+Message-ID: <1189737312-sup-2958@south>
+
+Hi Magnus,
+
+Excerpts from Magnus Therning's message of Fri Sep 07 00:37:21 -0700 2007:
+> I find it useful to be able to stick '~' in paths so here's an attempt
+> at a patch that allows a source with the URI maildir:~/mail/in.
+
+Thanks for the patch! What about modifying this slightly so that the
+~-expansion is done at the string level instead of the URI level, in a
+method called Source#expand_filesystem_uri or something. Then Maildir
+and MBox::Loader sticks the output of that method into URI.
+
+I think that change will solve two problems: it will make clear that the
+expansion method is filesystem-specific (i.e. even though the method is
+in Source, only filesystem sources want to call it), and it will allow
+us to support URIs the "right way", without the weird #opaque stuff and
+without dropping all mbox:// and maildir:// URLs. What do you think?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 23:33:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 20:33:04 -0700
+Subject: [sup-talk] Minor maildir change
+In-Reply-To: <20070909224034.GA3540@die.therning.org>
+References: <20070909224034.GA3540@die.therning.org>
+Message-ID: <1189740088-sup-6296@south>
+
+Excerpts from Magnus Therning's message of Sun Sep 09 15:40:34 -0700 2007:
+> I thought it was a little strange the file_path on Maildir objects
+> returned `nil` so I changed that to return the path of the maildir.
+
+Applied, thanks. #file_path is only used by sup-sync-back so I hadn't
+bothered to implemented it.
+
+> I am somewhat puzzled by the labels one receives from Maildir::each,
+> it's the default labels for the source rather than the labels of the
+> actual message.
+
+It's supposed to be both sets of labels unioned together. The source
+defines any user labels the user wants to automatically apply to new
+messages (kind of a primitive filtering), and we mix these in with the
+labels that carry over the read/unread state, etc.
+
+> Especially confusing was the choice to label something 'unread' if
+> it's filename doesn't contains an 'R'.  IIRC 'R' means that the email
+> has been replied to, it would have been more correct to mark it unread
+> if it doesn't contain an 'S' (as in seen).
+
+Yep, this was a bug.
+
+> However, it seems silly to take any of this into consideration when
+> sup doesn't deal with maildirs "properly" anyway.  I've removed that
+> strangeness, at least until a full maildir implementation makes it
+> into sup.
+
+Hey, as far as Sup is concerned, a source is just a dumb bucket that
+occasionally produces a new messages. So in that sense, Maildir is dealt
+with "properly". (Sup-sync-back only exists because of the unfortunate
+habit of Sup users of wanting to using other email clients alongside
+it.) :)
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Sep 13 23:42:15 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 Sep 2007 20:42:15 -0700
+Subject: [sup-talk] More maildir
+In-Reply-To: <20070913101519.GA22606@die.therning.org>
+References: <20070913101519.GA22606@die.therning.org>
+Message-ID: <1189740804-sup-800@south>
+
+Excerpts from Magnus Therning's message of Thu Sep 13 03:15:19 -0700 2007:
+> I've attached a patch that adds methods that'll make it easier for sup
+> to play nice with other MUAs when using maildir for storage.
+
+Applied! I merged in the several patches you sent into one revision. "svn
+diff -r572:573" should give it to you.
+
+I no longer use Maildir so it's up to you to test it. :)
+
+>  - What's my Ruby like?  (I hadn't even looked at Ruby just 2 weeks
+>  ago so please tell me if I'm doing strange things.)
+
+It's great. I made one or two minor tweaks but that's it. (For example,
+x = y || 3 instead of x = y ? y : 3).
+
+>  - The methods names are maildir-centric, any suggestions for better
+>    ones?
+
+Seems fine to me. The only thing that's going to be globally called is
+some kind of delete method.
+
+>  - The maildir state (the flags) are related to some sup labels
+>    ('trashed' is 'deleted' and '!seen' is 'unread').  Is it important to
+>    keep them in sync?  (My thinking is no, at least not automatically.
+>    The maildir state could be used when finding new mail during sync to
+>    set the initial labels.  It would also be nice if state/labels on
+>    known messages would sync--I think "read in either => read" and
+>    "trashed in either => trashed" is good enough.)
+
+This is basically right. Sup interacts with sources in two ways: getting
+a new message, and during sup-sync-back, and in both places should
+synchronize read/unread and deleted/undeleted flags. (Actually
+sup-sync-back doesn't even do read/unread for mbox yet.) Other flags are
+left alone, except we kindly allow you to delete spam messages as well.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Fri Sep 14 17:38:23 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 14 Sep 2007 22:38:23 +0100
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <1189737312-sup-2958@south>
+References: <20070907073721.GA10465@die.therning.org>
+	<1189737312-sup-2958@south>
+Message-ID: <20070914213823.GA3321@die.therning.org>
+
+On Thu, Sep 13, 2007 at 19:45:56 -0700, William Morgan wrote:
+>Hi Magnus,
+>
+>Excerpts from Magnus Therning's message of Fri Sep 07 00:37:21 -0700 2007:
+>> I find it useful to be able to stick '~' in paths so here's an attempt
+>> at a patch that allows a source with the URI maildir:~/mail/in.
+>
+>Thanks for the patch! What about modifying this slightly so that the
+>~-expansion is done at the string level instead of the URI level, in a
+>method called Source#expand_filesystem_uri or something. Then Maildir
+>and MBox::Loader sticks the output of that method into URI.
+>
+>I think that change will solve two problems: it will make clear that
+>the expansion method is filesystem-specific (i.e. even though the
+>method is in Source, only filesystem sources want to call it), and it
+>will allow us to support URIs the "right way", without the weird
+>#opaque stuff and without dropping all mbox:// and maildir:// URLs.
+>What do you think?
+
+File.expand_path requires the tilde to be at the start of its argument,
+so that prompted the strange #opaque stuff.  I made some changes and
+stuck a modified patch in the attachment.  Let me know what you think.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070914/f67d4866/attachment.bin 
+
+From magnus at therning.org  Fri Sep 14 18:44:26 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 14 Sep 2007 23:44:26 +0100
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <20070914213823.GA3321@die.therning.org>
+References: <20070907073721.GA10465@die.therning.org>
+	<1189737312-sup-2958@south>
+	<20070914213823.GA3321@die.therning.org>
+Message-ID: <20070914224426.GA4460@die.therning.org>
+
+On Fri, Sep 14, 2007 at 22:38:23 +0100, Magnus Therning wrote:
+>On Thu, Sep 13, 2007 at 19:45:56 -0700, William Morgan wrote:
+>>Hi Magnus,
+>>
+>>Excerpts from Magnus Therning's message of Fri Sep 07 00:37:21 -0700 2007:
+>>> I find it useful to be able to stick '~' in paths so here's an attempt
+>>> at a patch that allows a source with the URI maildir:~/mail/in.
+>>
+>>Thanks for the patch! What about modifying this slightly so that the
+>>~-expansion is done at the string level instead of the URI level, in a
+>>method called Source#expand_filesystem_uri or something. Then Maildir
+>>and MBox::Loader sticks the output of that method into URI.
+>>
+>>I think that change will solve two problems: it will make clear that
+>>the expansion method is filesystem-specific (i.e. even though the
+>>method is in Source, only filesystem sources want to call it), and it
+>>will allow us to support URIs the "right way", without the weird
+>>#opaque stuff and without dropping all mbox:// and maildir:// URLs.
+>>What do you think?
+>
+>File.expand_path requires the tilde to be at the start of its argument,
+>so that prompted the strange #opaque stuff.  I made some changes and
+>stuck a modified patch in the attachment.  Let me know what you think.
+
+This time with the attachment...
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+Of course I laugh at my own jokes. You can't trust strangers.
+     -- Phyllis Diller
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_529-1.diff
+Type: text/x-diff
+Size: 1444 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070914/79e8f0e8/attachment-0002.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070914/79e8f0e8/attachment-0003.bin 
+
+From wmorgan-sup at masanjin.net  Fri Sep 14 23:41:28 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Sep 2007 20:41:28 -0700
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <20070914224426.GA4460@die.therning.org>
+References: <20070907073721.GA10465@die.therning.org>
+	<1189737312-sup-2958@south>
+	<20070914213823.GA3321@die.therning.org>
+	<20070914224426.GA4460@die.therning.org>
+Message-ID: <1189827595-sup-6610@south>
+
+Excerpts from Magnus Therning's message of Fri Sep 14 15:44:26 -0700 2007:
+> This time with the attachment...
+
+Time to turn on :confirm_no_attachments!
+
+I've applied your patch, with a couple changes. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Sep 15 01:55:43 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 14 Sep 2007 22:55:43 -0700
+Subject: [sup-talk] new in svn: gpg signature verification
+Message-ID: <1189834628-sup-6238@south>
+
+Still highly experimental, but if you have gpg or pgp in your path, you
+should now see a notice at the top of each signed message saying that
+the signature was good, bad, or unknown. Please let me know how this
+works, particularly if it claims a signature is bad when it actually
+isn't. (Figuring out exactly how to format the signed payload such that
+gpg/pgp accepts it has been non-trivial.)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Sat Sep 15 06:19:16 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sat, 15 Sep 2007 11:19:16 +0100
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <1189827595-sup-6610@south>
+References: <20070907073721.GA10465@die.therning.org>
+	<1189737312-sup-2958@south>
+	<20070914213823.GA3321@die.therning.org>
+	<20070914224426.GA4460@die.therning.org>
+	<1189827595-sup-6610@south>
+Message-ID: <20070915101916.GA3361@die.therning.org>
+
+On Fri, Sep 14, 2007 at 20:41:28 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Fri Sep 14 15:44:26 -0700 2007:
+>> This time with the attachment...
+>
+>Time to turn on :confirm_no_attachments!
+>
+>I've applied your patch, with a couple changes. Thanks!
+
+I really should have found String::gsub myself.  I was just so confused
+by the existence of String::replace and what it does...
+
+One thing though.  You've moved the expansion of tilde so that the
+expanded URI is passed to Source and it ends up in .sup/sources.yaml.
+My intention was to have the tilde unexpanded in .sup/sources.yaml.
+This would allow sharing of sup configuration between different
+accounts, as long as the locations of mail boxes are the same relative
+to the home directory.
+
+The reason is again my own mail set-up.  Mutt takes paths to mail boxes
+and expands tilde.  This allows me to have identical Mutt configurations
+on machines where I have different login names (at some places I don't
+have the luxury of getting to choose my own login, e.g. at work).
+
+I've attached a patch that moves the expansion back to the sub-classes
+again.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_537-1.patch
+Type: text/x-diff
+Size: 1595 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070915/ea163096/attachment.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070915/ea163096/attachment-0001.bin 
+
+From magnus at therning.org  Sat Sep 15 06:35:42 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sat, 15 Sep 2007 11:35:42 +0100
+Subject: [sup-talk] new in svn: gpg signature verification
+In-Reply-To: <1189834628-sup-6238@south>
+References: <1189834628-sup-6238@south>
+Message-ID: <20070915103542.GB3361@die.therning.org>
+
+On Fri, Sep 14, 2007 at 22:55:43 -0700, William Morgan wrote:
+>Still highly experimental, but if you have gpg or pgp in your path, you
+>should now see a notice at the top of each signed message saying that
+>the signature was good, bad, or unknown. Please let me know how this
+>works, particularly if it claims a signature is bad when it actually
+>isn't. (Figuring out exactly how to format the signed payload such that
+>gpg/pgp accepts it has been non-trivial.)
+
+Seems to work like a charm :-)
+
+Once signing of message is added I can start reading _and_ writing mail
+in sup.  And when it has support for encrypted emails (sending &
+receiving) then mutt is history!
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070915/3087d189/attachment.bin 
+
+From magnus at therning.org  Sat Sep 15 14:12:53 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sat, 15 Sep 2007 19:12:53 +0100
+Subject: [sup-talk] Love your commenting style, mate!
+Message-ID: <20070915181253.GA3416@die.therning.org>
+
+Just have to say I _love_ the comment at the top of imap.rb.  Don't know
+if you have any experience of standardisation processes but I've never
+heard of any that doesn't defy logic.
+
+Out of curiosity, what brand of imap server is it you have at your
+disposal?  (So I can stay away from it.)
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070915/30b8770a/attachment.bin 
+
+From jeff.covey at pobox.com  Sun Sep 16 08:46:33 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 16 Sep 2007 08:46:33 -0400
+Subject: [sup-talk] freshmeat article
+Message-ID: <1189946695-sup-3343@mona>
+
+i wrote an article about sup for freshmeat; you can see it here:
+
+http://freshmeat.net/articles/view/2824/
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Sun Sep 16 14:12:55 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 16 Sep 2007 11:12:55 -0700
+Subject: [sup-talk] freshmeat article
+In-Reply-To: <1189946695-sup-3343@mona>
+References: <1189946695-sup-3343@mona>
+Message-ID: <1189966261-sup-2991@south>
+
+Excerpts from jeff.covey's message of Sun Sep 16 05:46:33 -0700 2007:
+> i wrote an article about sup for freshmeat; you can see it here:
+> 
+> http://freshmeat.net/articles/view/2824/
+
+Jeff, that's a great article. Thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Sun Sep 16 14:19:36 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Sun, 16 Sep 2007 19:19:36 +0100
+Subject: [sup-talk] Minor maildir change
+In-Reply-To: <1189740088-sup-6296@south>
+References: <20070909224034.GA3540@die.therning.org>
+	<1189740088-sup-6296@south>
+Message-ID: <20070916181936.GA5332@die.therning.org>
+
+On Thu, Sep 13, 2007 at 20:33:04 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Sun Sep 09 15:40:34 -0700 2007:
+[..]
+>> I am somewhat puzzled by the labels one receives from Maildir::each,
+>> it's the default labels for the source rather than the labels of the
+>> actual message.
+>
+>It's supposed to be both sets of labels unioned together. The source
+>defines any user labels the user wants to automatically apply to new
+>messages (kind of a primitive filtering), and we mix these in with the
+>labels that carry over the read/unread state, etc.
+
+This is still confusing to me.
+
+It's also a little strange that after a message is read it doesn't
+necessarily end up with the correct set of labels.  Instead one has to
+go to the index to get the proper set.
+
+Another strange thing was that when using PollManager::add_messages_from
+all my emails ended up being unread (according to the labels in the
+message).  I tracked that down to it using the value of a header
+("Status") to see whether a mail was read or not.  Is that something
+that's used for mboxes?  (I've attached a patch that removes the code.)
+
+This adds up to some smelliness IMHO.  I've done some thinking and I
+think I'd like something like this:
+
+ - A source has some default labels (including :archive).
+
+ - A message is always loaded from a source so it'll get its labels from
+   the source iff it's a new message.  If it's a known message it'll
+   take its labels from the database.
+
+ - Make all sets of labels actual sets.
+
+Would this fit with the way the rest of sup works?
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-lblfix.diff
+Type: text/x-diff
+Size: 561 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070916/6f2933e7/attachment.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070916/6f2933e7/attachment-0001.bin 
+
+From wmorgan-sup at masanjin.net  Sun Sep 16 14:42:22 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 16 Sep 2007 11:42:22 -0700
+Subject: [sup-talk] Love your commenting style, mate!
+In-Reply-To: <20070915181253.GA3416@die.therning.org>
+References: <20070915181253.GA3416@die.therning.org>
+Message-ID: <1189967752-sup-6095@south>
+
+Excerpts from Magnus Therning's message of Sat Sep 15 11:12:53 -0700 2007:
+> Just have to say I _love_ the comment at the top of imap.rb.  Don't
+> know if you have any experience of standardisation processes but I've
+> never heard of any that doesn't defy logic.
+
+Thanks! I wrote that in a pretty frustrated state (obviously) and
+rereading it, I don't think IMAP is quite as terrible as I make it out
+to be. Though it certainly smacks of design-by-committee, and one also
+gets the distinct impression the committee was composed of people who
+would be writing servers, not clients.
+
+> Out of curiosity, what brand of imap server is it you have at your
+> disposal?  (So I can stay away from it.)
+
+The uidvalidity thing was an issue with some version of the UW imap
+server I was receiving mail on, and the spurious flag response thing was
+some version of Binc that Brian was connecting to. Of course both
+servers do perfectly valid things as far as the spec is concerned.
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kevin.mark at verizon.net  Sun Sep 16 23:26:44 2007
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Sun, 16 Sep 2007 23:26:44 -0400
+Subject: [sup-talk] unable to sup-sync (new install)
+Message-ID: <20070917032644.GD27677@horacrux>
+
+Hi Sup folks,
+I'm using:
+Ubuntu gutsy
+Sup 0.1
+ruby 1.8, 1.9
+
+Tried to install sup with errors.
+
+I later did this:
+
+sudo aptitude install libncurses5-dev ruby1.8-dev rake libopenssl-ruby
+
+and then was able to:
+
+sudo gem install sup -y
+
+To run 'sup', I needed to add 'export PATH=/var/lib/gems/1.8/bin:"${PATH}"' to .bashrc
+
+When I used 'sup-config' it failed on 'sup-sync'.
+I tried 'sup-sync' by itself with these errors:
+
+[Sun Sep 16 23:23:08 -0400 2007] locking /home/kevin/.sup/lock...
+[Sun Sep 16 23:23:08 -0400 2007] loading index...
+[Sun Sep 16 23:23:08 -0400 2007] loaded index of 0 messages
+Scanning sup://drafts...
+Scanned 0, added 0, updated 0 messages from sup://drafts.
+Scanning maildir:/home/kevin/Maildir...
+[Sun Sep 16 23:23:08 -0400 2007] saving index and sources...
+[Sun Sep 16 23:23:08 -0400 2007] unlocking /home/kevin/.sup/lock...
+/var/lib/gems/1.8/gems/sup-0.1/lib/sup/source.rb:80:in `done?': undefined method `>=' for nil:NilClass (NoMethodError)
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/util.rb:437:in `send'
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/util.rb:437:in `__pass'
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/util.rb:426:in `method_missing'
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/poll.rb:99:in `add_messages_from'
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/util.rb:401:in `send'
+        from /var/lib/gems/1.8/gems/sup-0.1/lib/sup/util.rb:401:in `method_missing'
+        from /var/lib/gems/1.8/gems/sup-0.1/bin/sup-sync:133
+        from /var/lib/gems/1.8/gems/sup-0.1/bin/sup-sync:128:in `each'
+        from /var/lib/gems/1.8/gems/sup-0.1/bin/sup-sync:128
+        from /var/lib/gems/1.8/bin/sup-sync:16:in `load'
+        from /var/lib/gems/1.8/bin/sup-sync:16
+
+My home directory is '/home/kevin'
+My Maildir is '/home/kevin/Maildir'
+Any hints to fix this?
+-Kev
+-- 
+|  .''`.  == Debian GNU/Linux == |       my web site:           |
+| : :' :      The  Universal     |mysite.verizon.net/kevin.mark/|
+| `. `'      Operating System    | go to counter.li.org and     |
+|   `-    http://www.debian.org/ |    be counted! #238656       |
+|  my keyserver: subkeys.pgp.net |     my NPO: cfsg.org         |
+|join the new debian-community.org to help Debian!              |
+|_______  Unless I ask to be CCd, assume I am subscribed _______|
+
+From wmorgan-sup at masanjin.net  Mon Sep 17 13:12:15 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 17 Sep 2007 10:12:15 -0700
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <20070917032644.GD27677@horacrux>
+References: <20070917032644.GD27677@horacrux>
+Message-ID: <1190048921-sup-8612@south>
+
+Excerpts from Kevin Mark's message of Sun Sep 16 20:26:44 -0700 2007:
+> sudo gem install sup -y
+> 
+> To run 'sup', I needed to add 'export PATH=/var/lib/gems/1.8/bin:"${PATH}"' to
+> .bashrc
+
+This is a symptom of how Ubuntu deals with gems. Unfortunately there's
+not a lot I can do about it from my end.
+
+> /var/lib/gems/1.8/gems/sup-0.1/lib/sup/source.rb:80:in `done?': undefined method `>=' for nil:NilClass (NoMethodError)
+
+Is your maildir empty? If so, this is lousy programming on my part.
+Sorry! If a maildir has no messages, Sup dies in this horrific way. I've
+just committed a patch to SVN to fix this. You can either pull down the
+SVN head, or just add a message to your maildir directory. :)
+
+If the maildir isn't empty, then I need to think of another reason why
+this would happen.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Sep 17 13:30:02 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 17 Sep 2007 10:30:02 -0700
+Subject: [sup-talk] Tilde in maildir/mbox paths
+In-Reply-To: <20070915101916.GA3361@die.therning.org>
+References: <20070907073721.GA10465@die.therning.org>
+	<1189737312-sup-2958@south>
+	<20070914213823.GA3321@die.therning.org>
+	<20070914224426.GA4460@die.therning.org>
+	<1189827595-sup-6610@south>
+	<20070915101916.GA3361@die.therning.org>
+Message-ID: <1190050189-sup-8357@south>
+
+Excerpts from Magnus Therning's message of Sat Sep 15 03:19:16 -0700 2007:
+> I've attached a patch that moves the expansion back to the sub-classes
+> again.
+
+Applied, thanks!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kevin.mark at verizon.net  Mon Sep 17 14:07:10 2007
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Mon, 17 Sep 2007 14:07:10 -0400
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <1190048921-sup-8612@south>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+Message-ID: <20070917180710.GI27677@horacrux>
+
+On Mon, Sep 17, 2007 at 10:12:15AM -0700, William Morgan wrote:
+> Excerpts from Kevin Mark's message of Sun Sep 16 20:26:44 -0700 2007:
+> > sudo gem install sup -y
+> > 
+> > To run 'sup', I needed to add 'export PATH=/var/lib/gems/1.8/bin:"${PATH}"' to
+> > .bashrc
+> 
+> This is a symptom of how Ubuntu deals with gems. Unfortunately there's
+> not a lot I can do about it from my end.
+
+That sounds like what I expected, as I think Debian, more or less
+upstream,  may have a similar 'gem' status, although I have not checked.
+
+> 
+> > /var/lib/gems/1.8/gems/sup-0.1/lib/sup/source.rb:80:in `done?': undefined method `>=' for nil:NilClass (NoMethodError)
+> 
+> Is your maildir empty? 
+
+No.
+
+> If so, this is lousy programming on my part.  Sorry! If a maildir has
+> no messages, Sup dies in this horrific way.  I've just committed a
+> patch to SVN to fix this. You can either pull down the SVN head, or
+> just add a message to your maildir directory. :)
+
+Hmm. No, my maildir has more than a GB. It includes a few subdirectories
+of gziped mbox. And most of the maildir mail boxes start with '.', as in
+'~/Maildir/.floss.sup_talk/'
+
+> 
+> If the maildir isn't empty, then I need to think of another reason why
+> this would happen.
+
+Here is a sample:
+/home/kevin/Maildir/.people.cothrige
+/home/kevin/Maildir/.people.cothrige/cur
+/home/kevin/Maildir/.people.cothrige/new
+/home/kevin/Maildir/.people.cothrige/tmp
+/home/kevin/Maildir/.people.dallas_a_clement
+/home/kevin/Maildir/.people.dallas_a_clement/cur
+/home/kevin/Maildir/.people.dallas_a_clement/new
+/home/kevin/Maildir/.people.dallas_a_clement/tmp
+/home/kevin/Maildir/.people.dana_spiegel
+/home/kevin/Maildir/.people.dana_spiegel/cur
+/home/kevin/Maildir/.people.dana_spiegel/new
+/home/kevin/Maildir/.people.dana_spiegel/tmp
+/home/kevin/Maildir/.people.david_weinehall
+/home/kevin/Maildir/.people.david_weinehall/cur
+/home/kevin/Maildir/.people.david_weinehall/new
+/home/kevin/Maildir/.people.david_weinehall/tmp
+/home/kevin/Maildir/.people.enrico_zini
+
+I just have one thought as to the error:
+there are many mail directories and some of them are empty. I archive
+them every month. So '/home/kevin/Maildir/.david_weinehall/*' does not
+have any messages.
+
+I just thought of a second issue. In sup-config, you ask to define each
+individual mailbox. What I did in the program 'mairix' is to define a
+group of mail boxes with some kind of 'glob' so that I can say
+'maildir/...' and mean all maildir's in that subdirectory.
+
+cheers,
+Kev
+
+-- 
+|  .''`.  == Debian GNU/Linux == |       my web site:           |
+| : :' :      The  Universal     |mysite.verizon.net/kevin.mark/|
+| `. `'      Operating System    | go to counter.li.org and     |
+|   `-    http://www.debian.org/ |    be counted! #238656       |
+|  my keyserver: subkeys.pgp.net |     my NPO: cfsg.org         |
+|join the new debian-community.org to help Debian!              |
+|_______  Unless I ask to be CCd, assume I am subscribed _______|
+
+From wmorgan-sup at masanjin.net  Mon Sep 17 14:59:40 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 17 Sep 2007 11:59:40 -0700
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <20070917180710.GI27677@horacrux>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070917180710.GI27677@horacrux>
+Message-ID: <1190055410-sup-4972@south>
+
+Excerpts from Kevin Mark's message of Mon Sep 17 11:07:10 -0700 2007:
+> Here is a sample:
+> /home/kevin/Maildir/.people.cothrige
+> /home/kevin/Maildir/.people.cothrige/cur
+> /home/kevin/Maildir/.people.cothrige/new
+> /home/kevin/Maildir/.people.cothrige/tmp
+> /home/kevin/Maildir/.people.enrico_zini
+
+Ah, maildir folders. I will have to write some code to support this.
+Sorry!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Mon Sep 17 06:55:18 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Mon, 17 Sep 2007 11:55:18 +0100
+Subject: [sup-talk] More maildir
+In-Reply-To: <1189740804-sup-800@south>
+References: <20070913101519.GA22606@die.therning.org>
+	<1189740804-sup-800@south>
+Message-ID: <20070917105518.GB3564@die.therning.org>
+
+On Thu, Sep 13, 2007 at 20:42:15 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Thu Sep 13 03:15:19 -0700 2007:
+>> I've attached a patch that adds methods that'll make it easier for sup
+>> to play nice with other MUAs when using maildir for storage.
+>
+>Applied! I merged in the several patches you sent into one revision. "svn
+>diff -r572:573" should give it to you.
+>
+>I no longer use Maildir so it's up to you to test it. :)
+
+No worries.  However, if there were unit tests... ;-)
+
+I've attached another small patch that equates maildir's concept of a
+flagged message with sup's concept of a starred message.  Seems like an
+obvious thing that didn't hit me until walking to work this morning...
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_starred-1.diff
+Type: text/x-diff
+Size: 488 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070917/19bba085/attachment.bin 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070917/19bba085/attachment-0001.bin 
+
+From kevin.mark at verizon.net  Tue Sep 18 02:26:53 2007
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Tue, 18 Sep 2007 02:26:53 -0400
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <1190055410-sup-4972@south>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070917180710.GI27677@horacrux> <1190055410-sup-4972@south>
+Message-ID: <20070918062653.GB22902@horacrux>
+
+On Mon, Sep 17, 2007 at 11:59:40AM -0700, William Morgan wrote:
+> Excerpts from Kevin Mark's message of Mon Sep 17 11:07:10 -0700 2007:
+> > Here is a sample:
+> > /home/kevin/Maildir/.people.cothrige
+> > /home/kevin/Maildir/.people.cothrige/cur
+> > /home/kevin/Maildir/.people.cothrige/new
+> > /home/kevin/Maildir/.people.cothrige/tmp
+> > /home/kevin/Maildir/.people.enrico_zini
+> 
+> Ah, maildir folders. I will have to write some code to support this.
+> Sorry!
+
+I made some progress on understanding what the config files wanted. I
+added a single maildir and that worked. So until I create a small script
+to 'find /home/kevin/Maildir/ -type d| create_sup_config', I will add a
+few folders. With mutt I have a script that, upon startup, generates
+what maildirs it sees:
+mailboxes `echo -n "+ "; cd ~/Maildir; for mb in $(find .|grep "/new/" |rev|cut -d/ -f3-|rev|sort|uniq); do echo -n "+'$mb' "; done`
+
+One more thing, is there a way to read one message and go to the next
+one. In mutt, when you read one message, you can hit 'space' at the
+bottom of a message and then proceed to the next.
+
+The only thing I need to research is how to set up my 'mail sending'
+config. On mutt, I did nothing to set it up with exim on ubuntu/debian.
+So I can't send yet.
+
+Keep up the good work! So far, I think this is going in an interesting
+direction and I'm waiting to see where its going to end up.
+-K
+-- 
+|  .''`.  == Debian GNU/Linux == |       my web site:           |
+| : :' :      The  Universal     |mysite.verizon.net/kevin.mark/|
+| `. `'      Operating System    | go to counter.li.org and     |
+|   `-    http://www.debian.org/ |    be counted! #238656       |
+|  my keyserver: subkeys.pgp.net |     my NPO: cfsg.org         |
+|join the new debian-community.org to help Debian!              |
+|_______  Unless I ask to be CCd, assume I am subscribed _______|
+
+From magnus at therning.org  Tue Sep 18 02:27:23 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Tue, 18 Sep 2007 07:27:23 +0100
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <20070917180710.GI27677@horacrux>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070917180710.GI27677@horacrux>
+Message-ID: <20070918062723.GA3384@die.therning.org>
+
+On Mon, Sep 17, 2007 at 14:07:10 -0400, Kevin Mark wrote:
+[..]
+>I just thought of a second issue. In sup-config, you ask to define each
+>individual mailbox. What I did in the program 'mairix' is to define a
+>group of mail boxes with some kind of 'glob' so that I can say
+>'maildir/...' and mean all maildir's in that subdirectory.
+
+If support for maildir++ is added (that's the extension to maildir that
+allows sub-folders) then it would make sense to just add
+maildir:~/Maildir and have all sub folders added as well.
+
+For the time being I would suggest not configuring any mailboxes in
+sup-config.  Use sup-add instead and you'll have access to all the
+globbing your shell supports.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070918/c3d88829/attachment.bin 
+
+From magnus at therning.org  Tue Sep 18 02:38:52 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Tue, 18 Sep 2007 07:38:52 +0100
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <1190048921-sup-8612@south>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+Message-ID: <20070918063852.GB3384@die.therning.org>
+
+On Mon, Sep 17, 2007 at 10:12:15 -0700, William Morgan wrote:
+>Excerpts from Kevin Mark's message of Sun Sep 16 20:26:44 -0700 2007:
+>> sudo gem install sup -y
+>> 
+>> To run 'sup', I needed to add 'export
+>> PATH=/var/lib/gems/1.8/bin:"${PATH}"' to .bashrc
+>
+>This is a symptom of how Ubuntu deals with gems. Unfortunately there's
+>not a lot I can do about it from my end.
+
+There is one thing you _can_ do--make sup easy to package by providing a
+setup.rb or install.rb for installation.
+
+Ruby gems and Python eggs seem to suffer from the same problem; they
+don't just deal with packaging but also with versioning and they do it
+in a way that makes packaging in Linux distros difficult.
+
+See http://pkg-ruby-extras.alioth.debian.org/rubygems.html for Debian's
+position on gems.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070918/4facb50f/attachment.bin 
+
+From kevin.mark at verizon.net  Tue Sep 18 02:54:57 2007
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Tue, 18 Sep 2007 02:54:57 -0400
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <20070918063852.GB3384@die.therning.org>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070918063852.GB3384@die.therning.org>
+Message-ID: <20070918065457.GF22902@horacrux>
+
+On Tue, Sep 18, 2007 at 07:38:52AM +0100, Magnus Therning wrote:
+> On Mon, Sep 17, 2007 at 10:12:15 -0700, William Morgan wrote:
+> >Excerpts from Kevin Mark's message of Sun Sep 16 20:26:44 -0700 2007:
+> >> sudo gem install sup -y
+> >> 
+> >> To run 'sup', I needed to add 'export
+> >> PATH=/var/lib/gems/1.8/bin:"${PATH}"' to .bashrc
+> >
+> >This is a symptom of how Ubuntu deals with gems. Unfortunately there's
+> >not a lot I can do about it from my end.
+> 
+> There is one thing you _can_ do--make sup easy to package by providing a
+> setup.rb or install.rb for installation.
+> 
+> Ruby gems and Python eggs seem to suffer from the same problem; they
+> don't just deal with packaging but also with versioning and they do it
+> in a way that makes packaging in Linux distros difficult.
+> 
+> See http://pkg-ruby-extras.alioth.debian.org/rubygems.html for Debian's
+> position on gems.
+> 
+> /M
+If my understanding is correct, these 'gems' thingies are packages which
+are outside of the perview of dpkg or other packaging system. Which
+means it would be great if someone found a way for their status to be
+communicated to the packaging system?
+
+-- 
+|  .''`.  == Debian GNU/Linux == |       my web site:           |
+| : :' :      The  Universal     |mysite.verizon.net/kevin.mark/|
+| `. `'      Operating System    | go to counter.li.org and     |
+|   `-    http://www.debian.org/ |    be counted! #238656       |
+|  my keyserver: subkeys.pgp.net |     my NPO: cfsg.org         |
+|join the new debian-community.org to help Debian!              |
+|_______  Unless I ask to be CCd, assume I am subscribed _______|
+
+From wmorgan-sup at masanjin.net  Tue Sep 18 19:18:59 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 18 Sep 2007 16:18:59 -0700
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <20070918062723.GA3384@die.therning.org>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070917180710.GI27677@horacrux>
+	<20070918062723.GA3384@die.therning.org>
+Message-ID: <1190157448-sup-1522@south>
+
+Excerpts from Magnus Therning's message of Mon Sep 17 23:27:23 -0700 2007:
+> If support for maildir++ is added (that's the extension to maildir
+> that allows sub-folders) then it would make sense to just add
+> maildir:~/Maildir and have all sub folders added as well.
+
+I've received a similar request for IMAP (add all folders at once). In
+the mean time, as you point out, you can sup-add each Maildir folder
+individually and take advantage of shell globbing to do it one command
+if desired. I'm content to leave it at that for the near future and not
+invest time in explicit Maildir++ support.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kevin.mark at verizon.net  Tue Sep 18 21:39:16 2007
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Tue, 18 Sep 2007 21:39:16 -0400
+Subject: [sup-talk] unable to sup-sync (new install)
+In-Reply-To: <1190157448-sup-1522@south>
+References: <20070917032644.GD27677@horacrux> <1190048921-sup-8612@south>
+	<20070917180710.GI27677@horacrux>
+	<20070918062723.GA3384@die.therning.org>
+	<1190157448-sup-1522@south>
+Message-ID: <20070919013916.GG22902@horacrux>
+
+On Tue, Sep 18, 2007 at 04:18:59PM -0700, William Morgan wrote:
+> Excerpts from Magnus Therning's message of Mon Sep 17 23:27:23 -0700 2007:
+> > If support for maildir++ is added (that's the extension to maildir
+> > that allows sub-folders) then it would make sense to just add
+> > maildir:~/Maildir and have all sub folders added as well.
+> 
+> I've received a similar request for IMAP (add all folders at once). In
+> the mean time, as you point out, you can sup-add each Maildir folder
+> individually and take advantage of shell globbing to do it one command
+> if desired. I'm content to leave it at that for the near future and not
+> invest time in explicit Maildir++ support.
+> 
+> -- 
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+I used this to add my maildir:
+======================================
+find ~/Maildir -type d|grep "/cur$"|rev|cut -d"/" -f2-|rev|grep -vi mfolder|while read line; do
+        N=$(ls $line/cur/|wc -l)
+	#find the number of messages
+	#only add if non-zero (otherwise error?)
+        if [ "$N" != "0" ]; then
+                sup-add maildir:$line/;
+        fi
+done
+======================================
+sup-add noted duplicates, which is good.
+-K
+-- 
+|  .''`.  == Debian GNU/Linux == |       my web site:           |
+| : :' :      The  Universal     |mysite.verizon.net/kevin.mark/|
+| `. `'      Operating System    | go to counter.li.org and     |
+|   `-    http://www.debian.org/ |    be counted! #238656       |
+|  my keyserver: subkeys.pgp.net |     my NPO: cfsg.org         |
+|join the new debian-community.org to help Debian!              |
+|_______  Unless I ask to be CCd, assume I am subscribed _______|
+
+From jtang at tchpc.tcd.ie  Wed Sep 19 08:36:16 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Wed, 19 Sep 2007 13:36:16 +0100
+Subject: [sup-talk] problems with rubymail on an initial sup-add/sync
+Message-ID: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+
+Hi,
+
+I've just installed 0.1 of sup with the current stable version of ruby via gems.
+
+i've just tried adding some of my mbox's and this seems to happen...
+
+
+Scanning mbox:///u1/trhpc/jtang/Mail/system.rancid...
+Scanned 0, added 0, updated 0 messages from mbox:///u1/trhpc/jtang/Mail/system.rancid.
+Scanning sup://drafts...
+Scanned 0, added 0, updated 0 messages from sup://drafts.
+Scanning mbox:///u1/trhpc/jtang/Mail/system.RequestTracker...
+## 2300 (61.25%) read; 0:01:00 elapsed; 0:00:37 remaining
+[Wed Sep 19 13:32:59 +0100 2007] problem getting messages from mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason, RubyMail was unable to parse this message.
+[Wed Sep 19 13:32:59 +0100 2007] problem getting messages from mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason, RubyMail was unable to parse this message.
+
+is there anyway of turning on more debugging to see whats causing the problem...?
+
+i tried using -v on the commandline as well but it doesnt seem to say anything...
+
+
+Thanks,
+Jimmy
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From wmorgan-sup at masanjin.net  Wed Sep 19 10:41:12 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Sep 2007 07:41:12 -0700
+Subject: [sup-talk] problems with rubymail on an initial sup-add/sync
+In-Reply-To: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+References: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+Message-ID: <1190212675-sup-5699@south>
+
+Excerpts from Jimmy Tang's message of Wed Sep 19 05:36:16 -0700 2007:
+> [Wed Sep 19 13:32:59 +0100 2007] problem getting messages from mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason, RubyMail was unable to parse this message.
+
+Interesting. I've never seen that triggered, to date. Congratulations!
+Basically this means I asked RubyMail to parse the message, and RubyMail
+gave up. 
+
+> is there anyway of turning on more debugging to see whats causing the
+> problem...?
+
+Unfortunately no. The best I can offer is the following patch against
+0.1, which will print out the message ids. You can then grep the mbox
+for those and see if there's anything weird about the messages. I'm
+guessing the MIME is screwed up in such a way that RubyMail chokes.
+
+I'm interested in figuring out why this happens.
+
+--- cut here ---
+--- lib/sup/message.rb  (revision 503)
++++ lib/sup/message.rb  (working copy)
+@@ -320,7 +320,7 @@
+         $1
+       end
+ 
+-    m.body && body = m.decode or raise MessageFormatError, "For some bizarre reason, RubyMail was unable to parse this message."
++    m.body && body = m.decode or raise MessageFormatError, "For some bizarre reason, RubyMail was unable to parse this message (#{m.header['message-id']})."
+ 
+     if charset
+       begin
+--- cut here ---
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Sep 19 11:59:58 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Sep 2007 08:59:58 -0700
+Subject: [sup-talk] Minor maildir change
+In-Reply-To: <20070916181936.GA5332@die.therning.org>
+References: <20070909224034.GA3540@die.therning.org>
+	<1189740088-sup-6296@south>
+	<20070916181936.GA5332@die.therning.org>
+Message-ID: <1190216731-sup-3428@south>
+
+Excerpts from Magnus Therning's message of Sun Sep 16 11:19:36 -0700 2007:
+> It's also a little strange that after a message is read it doesn't
+> necessarily end up with the correct set of labels.  Instead one has to
+> go to the index to get the proper set.
+
+What do you mean? For a new, unseen message, the initial set of label is
+uniquely determined by the source's default labels, unioned with
+whatever state (read/unread, flagged, etc) we carry over from the
+source. This is what Source#each does.
+
+Now sup-sync has some complicated behavior that does involve the labels
+on the index, but that has to do with situations where the message
+already exists in the index, or the message state exists in a dumpfile
+somewhere, and you're resolving the two potentially different label
+sets.
+
+> Another strange thing was that when using
+> PollManager::add_messages_from all my emails ended up being unread
+> (according to the labels in the message).  I tracked that down to it
+> using the value of a header ("Status") to see whether a mail was read
+> or not.  Is that something that's used for mboxes?  (I've attached a
+> patch that removes the code.)
+
+That is a hack to avoid having the mbox code read the header twice, one
+for the labels and again for the actual header contents.  Since I'm
+planning on reworking mbox anyways (to avoid keeping the file pointer
+always open, and to clean up the interface between loader and
+ssh-loader), so I'll try and think of a better way to do this. There
+might not be.
+
+In the mean time, I'll remove the second half of that statement, which
+should make everyone happy.
+
+>  - A source has some default labels (including :archive).
+> 
+>  - A message is always loaded from a source so it'll get its labels from
+>    the source iff it's a new message. If it's a known message it'll
+>    take its labels from the database.
+> 
+>  - Make all sets of labels actual sets.
+
+Not sure what you mean by "actual sets", but I think this is pretty much
+the way Sup works now.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Sep 19 12:02:06 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Sep 2007 09:02:06 -0700
+Subject: [sup-talk] More maildir
+In-Reply-To: <20070917105518.GB3564@die.therning.org>
+References: <20070913101519.GA22606@die.therning.org>
+	<1189740804-sup-800@south> <20070917105518.GB3564@die.therning.org>
+Message-ID: <1190217703-sup-3960@south>
+
+Excerpts from Magnus Therning's message of Mon Sep 17 03:55:18 -0700 2007:
+> No worries.  However, if there were unit tests... ;-)
+
+Patches accepted! :)
+
+> I've attached another small patch that equates maildir's concept of a
+> flagged message with sup's concept of a starred message.
+
+Applied, thanks.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Wed Sep 19 18:02:00 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Wed, 19 Sep 2007 23:02:00 +0100
+Subject: [sup-talk] Minor maildir change
+In-Reply-To: <1190216731-sup-3428@south>
+References: <20070909224034.GA3540@die.therning.org>
+	<1189740088-sup-6296@south>
+	<20070916181936.GA5332@die.therning.org>
+	<1190216731-sup-3428@south>
+Message-ID: <20070919220200.GA3436@die.therning.org>
+
+On Wed, Sep 19, 2007 at 08:59:58 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Sun Sep 16 11:19:36 -0700 2007:
+>> It's also a little strange that after a message is read it doesn't
+>> necessarily end up with the correct set of labels.  Instead one has to
+>> go to the index to get the proper set.
+>
+>What do you mean? For a new, unseen message, the initial set of label
+>is uniquely determined by the source's default labels, unioned with
+>whatever state (read/unread, flagged, etc) we carry over from the
+>source. This is what Source#each does.
+
+Yes, but once it's known Source#each still get labels off the state and
+default flags from the source.  The same goes for
+PollManager#add_messages_from, where the messages will have different
+labels compared to the entry.  Here's code that hopefully highlight
+what I mean:
+
+  #!/usr/bin/env ruby
+  
+  require "uri"
+  require "sup"
+  
+  Redwood::start
+  index = Redwood::Index.new
+  index.load
+  
+  index.sources.each { |src|
+      if "maildir" == URI(src.uri).scheme
+          src.reset!
+  
+          Redwood::PollManager.add_messages_from(src) { |m, offset, entry|
+              puts "#{offset} -"
+              puts "\t#{m.labels.join(' ')}"
+              puts "\t#{entry[:label]}"
+              nil
+          }
+      end
+  }
+
+The output on a maildir source I use for some testing is:
+
+  [Wed Sep 19 22:55:02 +0100 2007] loading index...
+  [Wed Sep 19 22:55:02 +0100 2007] loaded index of 3 messages
+  11755314090094973 -
+          sup-test unread deleted inbox
+          sup-test
+  11765622040003515 -
+          sup-test unread inbox
+          sup-test deleted
+  11776152050016455 -
+          sup-test inbox unread
+          sup-test unread
+
+What's gotten from the source is useful for an unseen message, but why
+not mark known messages with the labels from the index?
+
+>> Another strange thing was that when using
+>> PollManager::add_messages_from all my emails ended up being unread
+>> (according to the labels in the message).  I tracked that down to it
+>> using the value of a header ("Status") to see whether a mail was read
+>> or not.  Is that something that's used for mboxes?  (I've attached a
+>> patch that removes the code.)
+>
+>That is a hack to avoid having the mbox code read the header twice, one
+>for the labels and again for the actual header contents.  Since I'm
+>planning on reworking mbox anyways (to avoid keeping the file pointer
+>always open, and to clean up the interface between loader and
+>ssh-loader), so I'll try and think of a better way to do this. There
+>might not be.
+>
+>In the mean time, I'll remove the second half of that statement, which
+>should make everyone happy.
+
+Excellent.
+
+[..]
+>>  - Make all sets of labels actual sets.
+>
+>Not sure what you mean by "actual sets", but I think this is pretty
+>much the way Sup works now.
+
+What I mean is the type set gotten from "require 'set'" :)  Currently
+labels are lists, not sets.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070919/8103ec01/attachment.bin 
+
+From jtang at tchpc.tcd.ie  Wed Sep 19 18:44:56 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Wed, 19 Sep 2007 23:44:56 +0100
+Subject: [sup-talk] problems with rubymail on an initial sup-add/sync
+In-Reply-To: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+References: <sfid-H20070919-141338-+042.23-1@vual.tchpc.tcd.ie>
+	<20070919123616.GA24149@vual.tchpc.tcd.ie>
+Message-ID: <1190241733-sup-1342@vual.tchpc.tcd.ie>
+
+Hi again
+
+replying to my own mail, i eventually figured out why the previous problem was failing (corrupt mbox's)
+but now, this is happening after starting up sup for about 5mins as it scans my mboxes
+
+23:32:23 jtang at vual ~ $ sup
+/u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/buffer.rb:32: warning: already initialized constant KEY_ENTER
+/u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/buffer.rb:33: warning: already initialized constant KEY_CANCEL
+[Wed Sep 19 23:32:25 +0100 2007] locking /u1/trhpc/jtang/.sup/lock...
+[Wed Sep 19 23:32:25 +0100 2007] loading index...
+[Wed Sep 19 23:32:25 +0100 2007] loaded index of 65133 messages
+[Wed Sep 19 23:32:25 +0100 2007] starting curses
+[Wed Sep 19 23:41:20 +0100 2007] stopped cursing
+[Wed Sep 19 23:41:20 +0100 2007] oh crap, an exception
+[Wed Sep 19 23:41:20 +0100 2007] unlocking /u1/trhpc/jtang/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'just added message <200610312309.38117.rj200@  but couldn't find it in a search' (error type RuntimeError)
+A backtrace follows:
+/u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/index.rb:187:in `sync_message': just added message <200610312309.38117.rj200@  but couldn't find it in a search (RuntimeError)
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/util.rb:401:in `send'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/util.rb:401:in `method_missing'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/poll.rb:122:in `add_messages_from'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/source.rb:93:in `each'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/util.rb:437:in `send'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/util.rb:437:in `__pass'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/util.rb:426:in `method_missing'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/poll.rb:101:in `add_messages_from'
+         ... 26 levels...
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/thread-index-mode.rb:394:in `load_threads'
+        from /u1/trhpc/jtang/local/ruby/lib/ruby/gems/1.8/gems/sup-0.1/bin/sup:173
+        from /u1/trhpc/jtang/local/ruby/bin/sup:16:in `load'
+        from /u1/trhpc/jtang/local/ruby/bin/sup:16
+
+
+Thanks,
+Jimmy
+
+Excerpts from Jimmy Tang's message of Wed Sep 19 13:36:16 +0100 2007:
+> Hi,
+> 
+> I've just installed 0.1 of sup with the current stable version of ruby via gems.
+> 
+> i've just tried adding some of my mbox's and this seems to happen...
+> 
+> 
+> Scanning mbox:///u1/trhpc/jtang/Mail/system.rancid...
+> Scanned 0, added 0, updated 0 messages from
+> mbox:///u1/trhpc/jtang/Mail/system.rancid.
+> Scanning sup://drafts...
+> Scanned 0, added 0, updated 0 messages from sup://drafts.
+> Scanning mbox:///u1/trhpc/jtang/Mail/system.RequestTracker...
+> ## 2300 (61.25%) read; 0:01:00 elapsed; 0:00:37 remaining
+> [Wed Sep 19 13:32:59 +0100 2007] problem getting messages from
+> mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason,
+> RubyMail was unable to parse this message.
+> [Wed Sep 19 13:32:59 +0100 2007] problem getting messages from
+> mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason,
+> RubyMail was unable to parse this message.
+> 
+> is there anyway of turning on more debugging to see whats causing the
+> problem...?
+> 
+> i tried using -v on the commandline as well but it doesnt seem to say
+> anything...
+> 
+> 
+> Thanks,
+> Jimmy
+> 
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From jtang at tchpc.tcd.ie  Thu Sep 20 10:31:09 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Thu, 20 Sep 2007 15:31:09 +0100
+Subject: [sup-talk] problems with rubymail on an initial sup-add/sync
+In-Reply-To: <1190212675-sup-5699@south>
+References: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+	<sfid-H20070919-154233-+013.70-1@vual.tchpc.tcd.ie>
+	<1190212675-sup-5699@south>
+Message-ID: <1190298293-sup-7853@vual.tchpc.tcd.ie>
+
+Hi William,
+
+Excerpts from William Morgan's message of Wed Sep 19 15:41:12 +0100 2007:
+> Excerpts from Jimmy Tang's message of Wed Sep 19 05:36:16 -0700 2007:
+> > [Wed Sep 19 13:32:59 +0100 2007] problem getting messages from mbox:///u1/trhpc/jtang/Mail/system.RequestTracker: For some bizarre reason, RubyMail was unable to parse this message.
+> 
+> Interesting. I've never seen that triggered, to date. Congratulations!
+> Basically this means I asked RubyMail to parse the message, and RubyMail
+> gave up. 
+> 
+
+not too sure whats wrong with that mail box, i eventually found the
+offending mails and *cough* just deleted them *cough* they are just old
+archives that I have that i wanted indexed.
+
+> > is there anyway of turning on more debugging to see whats causing the
+> > problem...?
+> 
+> Unfortunately no. The best I can offer is the following patch against
+> 0.1, which will print out the message ids. You can then grep the mbox
+> for those and see if there's anything weird about the messages. I'm
+> guessing the MIME is screwed up in such a way that RubyMail chokes.
+> 
+> I'm interested in figuring out why this happens.
+
+Thanks for the small patch, if i come across it again, i will save the
+email and send it on to you to figure out whats broken. In hindsight I
+should have kept some samples before deleting things.
+
+on a slightly off topic on sup, i've eventually got sup working
+relatively well with my archives of mail. and i quite like it :), I have
+one question about the overall list of the inbox-box mode. Is there any
+way of say doing an "all mails" mode? or is there a magic query that will
+let me list *all* of my mails much like how gmail has the "all mails"
+list where it shows "all mails except spam and trash" ?
+
+
+Thanks,
+Jimmy.
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From wmorgan-sup at masanjin.net  Thu Sep 20 11:24:45 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 20 Sep 2007 08:24:45 -0700
+Subject: [sup-talk] problems with rubymail on an initial sup-add/sync
+In-Reply-To: <1190298293-sup-7853@vual.tchpc.tcd.ie>
+References: <20070919123616.GA24149@vual.tchpc.tcd.ie>
+	<sfid-H20070919-154233-+013.70-1@vual.tchpc.tcd.ie>
+	<1190212675-sup-5699@south> <1190298293-sup-7853@vual.tchpc.tcd.ie>
+Message-ID: <1190301501-sup-9904@south>
+
+Excerpts from Jimmy Tang's message of Thu Sep 20 07:31:09 -0700 2007:
+> not too sure whats wrong with that mail box, i eventually found the
+> offending mails and *cough* just deleted them *cough* they are just
+> old archives that I have that i wanted indexed.
+
+That last batch of errors looks like more corrupted email, but I could
+be wrong. If it works now, it works.
+
+> Is there any way of say doing an "all mails" mode? or is there a magic
+> query that will let me list *all* of my mails much like how gmail has
+> the "all mails" list where it shows "all mails except spam and trash"
+> ?
+
+Yes, search for "*".
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Fri Sep 21 13:14:25 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Fri, 21 Sep 2007 13:14:25 -0400
+Subject: [sup-talk] new messages don't seem to have NEW status
+Message-ID: <1190394617-sup-276@zap>
+
+I'm not sure when this started happening (maybe under a week), but any
+new message I receive isn't being marked as unread or new.
+
+I disabled all my hooks to ensure that this wasn't the problem, but no
+luck.
+
+Is this the case for anyone else? I'm using latest from svn.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Fri Sep 21 14:52:39 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 21 Sep 2007 11:52:39 -0700
+Subject: [sup-talk] new messages don't seem to have NEW status
+In-Reply-To: <1190394617-sup-276@zap>
+References: <1190394617-sup-276@zap>
+Message-ID: <1190400702-sup-195@south>
+
+Excerpts from Ian Taylor's message of Fri Sep 21 10:14:25 -0700 2007:
+> I'm not sure when this started happening (maybe under a week), but any
+> new message I receive isn't being marked as unread or new.
+
+There was a bug with this behavior for mbox introduced in r598 that was
+fixed in r590. Are you sure you're at r590?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Sat Sep 22 03:02:23 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Sat, 22 Sep 2007 03:02:23 -0400
+Subject: [sup-talk] new messages don't seem to have NEW status
+In-Reply-To: <1190400702-sup-195@south>
+References: <1190394617-sup-276@zap> <1190400702-sup-195@south>
+Message-ID: <1190444489-sup-7495@zap>
+
+Excerpts from William Morgan's message of Fri Sep 21 14:52:39 -0400 2007:
+> Excerpts from Ian Taylor's message of Fri Sep 21 10:14:25 -0700 2007:
+> > I'm not sure when this started happening (maybe under a week), but any
+> > new message I receive isn't being marked as unread or new.
+> 
+> There was a bug with this behavior for mbox introduced in r598 that was
+> fixed in r590. Are you sure you're at r590?
+> 
+
+Yeah, I'm r590 and it's the imap accounts, not mbox that seem to have
+the problem.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From jtang at tchpc.tcd.ie  Sun Sep 23 06:04:08 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Sun, 23 Sep 2007 11:04:08 +0100
+Subject: [sup-talk] the contact list / automatic mapping of names to
+	addresses
+Message-ID: <1190541163-sup-6583@vual.tchpc.tcd.ie>
+
+Hi All,
+
+I've a question (well feature request), it may be a quirk or bug in
+sup. I'll try and describe the problem as best I can.
+
+We use a thing called "Request Tracker" here in work, what generally happens is
+
+1. user sends an email to a mail alias/system address say for example
+	
+	info at my.domain.com
+
+2. the user then gets an automated confirmation that the message is
+logged in our system, and everyone in the info at my.domain.com group gets
+a copy of the email, but it is no longer from the original user anymore,
+now all the mails are "from" the tracking system
+
+and all correspondence is handled via this ticketing system which uses 
+message id's and magic words and addresses in the headers.
+
+3. now when i load up sup, I think the first mail i read before the
+people list is built, it grabs the name from it. Then all subsequent
+mails i get (and also the archives) from the ticketing system has the
+wrong names in the inbox mode and in the threaded mode when reading,
+this gets a little confusing when reading these mails.
+
+
+i'd assuming it would be difficult to map the correct names to the correct
+mails in systems similar to the above? would it be possible to just
+"turn off" this particular feature for a given set of email addresses?
+
+or is this already fixed and known and i've just missed what I need to
+do to work around it?
+
+Thanks,
+Jimmy
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From wmorgan-sup at masanjin.net  Sun Sep 23 22:16:35 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 23 Sep 2007 19:16:35 -0700
+Subject: [sup-talk] new messages don't seem to have NEW status
+In-Reply-To: <1190444489-sup-7495@zap>
+References: <1190394617-sup-276@zap> <1190400702-sup-195@south>
+	<1190444489-sup-7495@zap>
+Message-ID: <1190600081-sup-619@south>
+
+Excerpts from Ian Taylor's message of Sat Sep 22 00:02:23 -0700 2007:
+> Yeah, I'm r590 and it's the imap accounts, not mbox that seem to have
+> the problem.
+
+This was another bug introduced by that same revision. If you SVN
+update, things should be fixed. I'm finally doing IMAP flags the "right
+way", at least in that Sup understands \Seen, \Deleted and \Flagged IMAP
+flags and translates them to the Sup equivalent at import time.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Sep 23 22:29:35 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 23 Sep 2007 19:29:35 -0700
+Subject: [sup-talk] Minor maildir change
+In-Reply-To: <20070919220200.GA3436@die.therning.org>
+References: <20070909224034.GA3540@die.therning.org>
+	<1189740088-sup-6296@south>
+	<20070916181936.GA5332@die.therning.org>
+	<1190216731-sup-3428@south>
+	<20070919220200.GA3436@die.therning.org>
+Message-ID: <1190600285-sup-4801@south>
+
+Excerpts from Magnus Therning's message of Wed Sep 19 15:02:00 -0700 2007:
+> What's gotten from the source is useful for an unseen message, but why
+> not mark known messages with the labels from the index?
+
+If your question is, why does Source#add_messages_from yield what it
+does, the answer is because all consumers either need the source labels
+(for polling) or need both (for syncing---check out sup-sync for the
+gory details). Thread-view-mode and all its decendents (inbox-mode, etc)
+all talk directly to the index and don't use that method at all.
+
+> >>  - Make all sets of labels actual sets.
+> >
+> >Not sure what you mean by "actual sets", but I think this is pretty
+> >much the way Sup works now.
+> 
+> What I mean is the type set gotten from "require 'set'" :)  Currently
+> labels are lists, not sets.
+
+Honestly, I don't see a real advantage to retrofitting that class onto
+things. It doesn't appeal to my Ruby instincts. :)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Sep 23 22:37:16 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 23 Sep 2007 19:37:16 -0700
+Subject: [sup-talk] the contact list / automatic mapping of names to
+	addresses
+In-Reply-To: <1190541163-sup-6583@vual.tchpc.tcd.ie>
+References: <1190541163-sup-6583@vual.tchpc.tcd.ie>
+Message-ID: <1190600992-sup-3735@south>
+
+Excerpts from Jimmy Tang's message of Sun Sep 23 03:04:08 -0700 2007:
+> i'd assuming it would be difficult to map the correct names to the
+> correct mails in systems similar to the above? would it be possible to
+> just "turn off" this particular feature for a given set of email
+> addresses?
+
+It's not documented anywhere, but the contact list takes priority over
+the address->name mapping gleaned from email. So, you can add the
+address to your contact list and then manually edit ~/.sup/contacts.txt
+and force it to the right name. That should fix it for that address.
+
+This is a frequent problem, and that's a pretty roundabout solution, so
+maybe a setting in config.yaml for addresses to ignore would be better.
+I'm trying not to bloat Sup with too many configuration options, though,
+so I'm waffling on this.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jtang at tchpc.tcd.ie  Mon Sep 24 03:09:37 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Mon, 24 Sep 2007 08:09:37 +0100
+Subject: [sup-talk] the contact list / automatic mapping of names to
+	addresses
+In-Reply-To: <1190600992-sup-3735@south>
+References: <1190541163-sup-6583@vual.tchpc.tcd.ie>
+	<sfid-H20070924-033931-+016.46-1@vual.tchpc.tcd.ie>
+	<1190600992-sup-3735@south>
+Message-ID: <1190617627-sup-6425@vual.tchpc.tcd.ie>
+
+Excerpts from William Morgan's message of Mon Sep 24 03:37:16 +0100 2007:
+> 
+> It's not documented anywhere, but the contact list takes priority over
+> the address->name mapping gleaned from email. So, you can add the
+> address to your contact list and then manually edit ~/.sup/contacts.txt
+> and force it to the right name. That should fix it for that address.
+
+this will do fine, thanks again. the first email is usually tagged with names.
+
+> 
+> This is a frequent problem, and that's a pretty roundabout solution, so
+> maybe a setting in config.yaml for addresses to ignore would be better.
+> I'm trying not to bloat Sup with too many configuration options, though,
+> so I'm waffling on this.
+> 
+
+if i know ruby i'd poke at it for you :)
+
+Thanks,
+Jimmy
+
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From jtang at tchpc.tcd.ie  Tue Sep 25 06:27:18 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Tue, 25 Sep 2007 11:27:18 +0100
+Subject: [sup-talk] problem with labels...
+Message-ID: <1190715365-sup-7656@vual.tchpc.tcd.ie>
+
+Hi All,
+
+I think i've found a bug in 0.1 of sup with labels, it seems to be in
+the tip of the repository as well.
+
+if i do
+
+	for i in $(ls system.*); do echo sup-add -l $i -a mbox://`pwd`/$i; done
+
+to add all my mailboxes, where one of the mbox files is...
+
+	system.RequestTracker
+
+the labelling seems to break when I lists all the with the mode "L" 
+
+
+so instead of getting following when i hit "L" 
+
+
+inbox
+lists.sup
+lists.namd-l
+system.RequestTracker
+system.amanda
+system.cron
+
+
+I get
+
+inbox
+lists.sup
+lists.namd-l
+system.amanda
+system.cron
+
+and the labels starting at system.amanda gets offset by one. sup doesnt
+seem to like capitalised letters in the labels.
+
+
+Thanks,
+Jimmy
+
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+
+From wmorgan-sup at masanjin.net  Wed Sep 26 20:47:51 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Sep 2007 17:47:51 -0700
+Subject: [sup-talk] problem with labels...
+In-Reply-To: <1190715365-sup-7656@vual.tchpc.tcd.ie>
+References: <1190715365-sup-7656@vual.tchpc.tcd.ie>
+Message-ID: <1190853809-sup-2942@south>
+
+Excerpts from Jimmy Tang's message of Tue Sep 25 03:27:18 -0700 2007:
+> and the labels starting at system.amanda gets offset by one. sup doesnt
+> seem to like capitalised letters in the labels.
+
+Weird. This works for me. Specifically, I added a source with label
+"system.RequestTracker", and another with label "system.amanda". The
+label list shows them both, and pressing enter works fine.
+
+The tab completion is broken and tries to downcase them, but the label
+list should work. Can you try and pare this down to a reproducible test
+case?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jtang at tchpc.tcd.ie  Thu Sep 27 06:27:23 2007
+From: jtang at tchpc.tcd.ie (Jimmy Tang)
+Date: Thu, 27 Sep 2007 11:27:23 +0100
+Subject: [sup-talk] problem with labels...
+In-Reply-To: <1190853809-sup-2942@south>
+References: <1190715365-sup-7656@vual.tchpc.tcd.ie>
+	<sfid-H20070927-014918-+012.51-1@vual.tchpc.tcd.ie>
+	<1190853809-sup-2942@south>
+Message-ID: <1190888538-sup-1554@vual.tchpc.tcd.ie>
+
+Hi William,
+
+Excerpts from William Morgan's message of Thu Sep 27 01:47:51 +0100 2007:
+> 
+> Weird. This works for me. Specifically, I added a source with label
+> "system.RequestTracker", and another with label "system.amanda". The
+> label list shows them both, and pressing enter works fine.
+> 
+> The tab completion is broken and tries to downcase them, but the label
+> list should work. Can you try and pare this down to a reproducible test
+> case?
+> 
+
+i have a test case with some sample mails that has failed on the machine
+i use sup on (on a daily basis) and also on my own desktop machine.
+
+mailserver:
+	rh9
+	sup 0.1 and installed from the current version of ruby and rubygems
+
+mydesktop
+	ubuntu feisty fawn
+	sup 0.1 and installed from the current version of ruby and rubygems
+	from the repositorys
+
+both installs of sup just uses all the latest suggested libs.
+
+i was too sure on what you wanted for a reproducible test case, so i just 
+put a small shell script of the commands and order of commands that causes
+it to fail for me together. I'll send you the tarball in a seperate mail.
+
+Thanks,
+Jimmy
+
+-- 
+Jimmy Tang
+Trinity Centre for High Performance Computing,
+Lloyd Building, Trinity College Dublin, Dublin 2, Ireland.
+http://www.tchpc.tcd.ie/ | http://www.tchpc.tcd.ie/~jtang
+

@@ -1,0 +1,865 @@
+From michael+sup at stapelberg.de  Thu Mar  1 11:58:24 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 01 Mar 2012 12:58:24 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] GPG signature verification
+Message-ID: <1330602132-sup-2087@stapelberg.de>
+
+Hi,
+
+Before I can actually switch to Heliotrope/Turnsole, I need to have GPG working
+properly. I tried implementing GPG signature verification first, and got it
+nearly working, but before I go down the rabbit hole too far, I decided to ask
+a few questions here first:
+
+1) In ChunkParser#chunks_for_message, the message object has multiple parts,
+   which in turn are just hashes. At least in my tests, the first part usually
+   has a "content" entry, but the second part doesn?t. Therefore, I need to
+   request it from heliotrope. Should I introduce a new class for that or am I
+   missing an existing class which I can use for that? Chunk::Attachment has
+   very similar functionality with its content method.
+
+2) For verification, I need the not-decoded MIME part, but heliotrope decodes
+   MIME parts. Thus, I always get a bad signature. How should we fix this? Not
+   decode MIME in heliotrope, but in turnsole? Decode MIME in both? Make
+   turnsole get the raw message, too, for GPG (roundtrip alert!)?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Thu Mar  1 12:02:30 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 01 Mar 2012 13:02:30 +0100
+Subject: [sup-devel] [Turnsole] Lack of a test suite
+Message-ID: <1330603277-sup-7642@stapelberg.de>
+
+Hi,
+
+I find it weird that there is no testsuite for turnsole. Are there any plans
+for that? Or are you ok with somebody just starting something and then
+iterating from there?
+
+Best regards,
+Michael
+
+From triumhiz at yandex.ru  Thu Mar  1 15:17:01 2012
+From: triumhiz at yandex.ru (Serge Z)
+Date: Thu, 01 Mar 2012 19:17:01 +0400
+Subject: [sup-devel] [heliotrope] crashes while importing
+Message-ID: <20120301151701.23555.84803@localhost>
+
+
+I am newb to ruby. Could it really be a bug in ruby or its heliotrope problem?
+It's fresh 'git clone', empty database before importing.
+Thanks
+
+```
+$ ruby -Ilib bin/heliotrope-import -d Mail/ -a ~/Mail
+/usr/lib64/ruby/site_ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv will be deprecated in the future, use String#encode instead.
+Loading mail source...
+; scanning 1 directories...
+; found 8822 messages
+; reading in dates...
+; sorting...
+; sorted 8389 messages with dates
+Adding mail...
+; scanned 1, indexed 1, skipped 0 bad and 0 seen messages in 11.5s = 0.1 m/s
+/home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701: [BUG] Bus Error
+ruby 1.9.3p125 (2012-02-16 revision 34643) [x86_64-linux]
+
+-- Control frame information -----------------------------------------------
+c:0011 p:---- s:0092 b:0092 l:000091 d:000091 CFUNC  :put
+c:0010 p:0072 s:0087 b:0086 l:000085 d:000085 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701
+c:0009 p:0129 s:0081 b:0081 l:000080 d:000080 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:640
+c:0008 p:0238 s:0072 b:0072 l:000071 d:000071 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:122
+c:0007 p:0194 s:0055 b:0055 l:001c58 d:000054 BLOCK  bin/heliotrope-import:117
+c:0006 p:0188 s:0042 b:0042 l:000025 d:000041 BLOCK  /home/shoutt/src/heliotrope/lib/heliotrope/message-adder.rb:57
+c:0005 p:0064 s:0031 b:0031 l:000030 d:000030 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/maildir-walker.rb:28
+c:0004 p:0211 s:0026 b:0026 l:000025 d:000025 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/message-adder.rb:42
+c:0003 p:0529 s:0015 b:0015 l:001c58 d:000e60 EVAL   bin/heliotrope-import:99
+c:0002 p:---- s:0004 b:0004 l:000003 d:000003 FINISH
+c:0001 p:0000 s:0002 b:0002 l:001c58 d:001c58 TOP   
+
+-- Ruby level backtrace information ----------------------------------------
+bin/heliotrope-import:99:in `<main>'
+/home/shoutt/src/heliotrope/lib/heliotrope/message-adder.rb:42:in `each_message'
+/home/shoutt/src/heliotrope/lib/heliotrope/maildir-walker.rb:28:in `each_message'
+/home/shoutt/src/heliotrope/lib/heliotrope/message-adder.rb:57:in `block in each_message'
+bin/heliotrope-import:117:in `block in <main>'
+/home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:122:in `add_message'
+/home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:640:in `write_messageinfo!'
+/home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701:in `write_hash'
+/home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701:in `put'
+
+-- C level backtrace information -------------------------------------------
+/usr/lib64/libruby19.so.1.9(+0x158fa9) [0x7f08a57abfa9]
+/usr/lib64/libruby19.so.1.9(+0x5b1de) [0x7f08a56ae1de]
+/usr/lib64/libruby19.so.1.9(rb_bug+0xb9) [0x7f08a56aeab9]
+/usr/lib64/libruby19.so.1.9(+0xf8eb3) [0x7f08a574beb3]
+/lib64/libc.so.6(+0x35a40) [0x7f08a52fea40]
+/lib64/libc.so.6(+0x11ec57) [0x7f08a53e7c57]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(+0x36aa2) [0x7f08a15ddaa2]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer18EmitPhysicalRecordENS0_10RecordTypeEPKcm+0xe0) [0x7f08a15c9a20]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer9AddRecordERKNS_5SliceE+0x92) [0x7f08a15c9b82]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl5WriteERKNS_12WriteOptionsEPNS_10WriteBatchE+0x15f) [0x7f08a15be47f]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(_ZN7leveldb2DB3PutERKNS_12WriteOptionsERKNS_5SliceES6_+0x5a) [0x7f08a15be83a]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl3PutERKNS_12WriteOptionsERKNS_5SliceES6_+0x9) [0x7f08a15be889]
+/home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so(+0x14bdc) [0x7f08a15bbbdc]
+/usr/lib64/libruby19.so.1.9(+0x152fd1) [0x7f08a57a5fd1]
+/usr/lib64/libruby19.so.1.9(+0x148895) [0x7f08a579b895]
+/usr/lib64/libruby19.so.1.9(+0x14e6a4) [0x7f08a57a16a4]
+/usr/lib64/libruby19.so.1.9(rb_iseq_eval_main+0xb0) [0x7f08a57a8bd0]
+/usr/lib64/libruby19.so.1.9(+0x5efe2) [0x7f08a56b1fe2]
+/usr/lib64/libruby19.so.1.9(ruby_exec_node+0x1e) [0x7f08a56b24de]
+/usr/lib64/libruby19.so.1.9(ruby_run_node+0x1f) [0x7f08a56b3f5f]
+ruby() [0x400a1c]
+/lib64/libc.so.6(__libc_start_main+0xfe) [0x7f08a52eb09e]
+ruby() [0x400909]
+
+-- Other runtime information -----------------------------------------------
+
+* Loaded script: bin/heliotrope-import
+
+* Loaded features:
+
+    0 enumerator.so
+    1 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/encdb.so
+    2 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+    3 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/defaults.rb
+    4 /usr/lib64/ruby/1.9.1/x86_64-linux/rbconfig.rb
+    5 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/deprecate.rb
+    6 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/exceptions.rb
+    7 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/defaults/operating_system.rb
+    8 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/custom_require.rb
+    9 /usr/lib64/ruby/site_ruby/1.9.1/rubygems.rb
+   10 /usr/lib64/ruby/site_ruby/1.9.1/auto_gem.rb
+   11 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/version.rb
+   12 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/requirement.rb
+   13 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/platform.rb
+   14 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/specification.rb
+   15 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/path_support.rb
+   16 /usr/lib64/ruby/site_ruby/1.9.1/rubygems/dependency.rb
+   17 /usr/lib64/ruby/1.9.1/x86_64-linux/date_core.so
+   18 /usr/lib64/ruby/1.9.1/date/format.rb
+   19 /usr/lib64/ruby/1.9.1/date.rb
+   20 /usr/lib64/ruby/gems/1.9.1/gems/trollop-1.16.2/lib/trollop.rb
+   21 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/version.rb
+   22 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/common.rb
+   23 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+   24 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+   25 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+   26 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+   27 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/parser.so
+   28 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/generator.so
+   29 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext.rb
+   30 /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json.rb
+   31 /home/shoutt/src/heliotrope/lib/heliotrope/message-adder.rb
+   32 /usr/lib64/ruby/1.9.1/x86_64-linux/iconv.so
+   33 /home/shoutt/src/heliotrope/lib/heliotrope/decoder.rb
+   34 /home/shoutt/src/heliotrope/lib/heliotrope/person.rb
+   35 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/address.rb
+   36 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/utils.rb
+   37 /usr/lib64/ruby/1.9.1/x86_64-linux/digest.so
+   38 /usr/lib64/ruby/1.9.1/digest.rb
+   39 /usr/lib64/ruby/1.9.1/x86_64-linux/digest/md5.so
+   40 /usr/lib64/ruby/1.9.1/time.rb
+   41 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/header.rb
+   42 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/mailbox.rb
+   43 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/message.rb
+   44 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser/pushbackreader.rb
+   45 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser/multipart.rb
+   46 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb
+   47 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/serialize.rb
+   48 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/mailbox/mboxreader.rb
+   49 /home/shoutt/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail.rb
+   50 /usr/lib64/ruby/1.9.1/timeout.rb
+   51 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/util/memoizable.rb
+   52 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/simple.rb
+   53 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/irregular.rb
+   54 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/common.rb
+   55 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/rfc.rb
+   56 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/cldr.rb
+   57 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag/posix.rb
+   58 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/tag.rb
+   59 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/taglist.rb
+   60 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/version.rb
+   61 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale.rb
+   62 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/driver/env.rb
+   63 /usr/lib64/ruby/gems/1.9.1/gems/locale-2.0.5/lib/locale/driver/posix.rb
+   64 /home/shoutt/src/heliotrope/lib/heliotrope/message.rb
+   65 /home/shoutt/src/heliotrope/lib/heliotrope/mbox-splitter.rb
+   66 /usr/lib64/ruby/1.9.1/x86_64-linux/socket.so
+   67 /usr/lib64/ruby/1.9.1/socket.rb
+   68 /usr/lib64/ruby/1.9.1/thread.rb
+   69 /usr/lib64/ruby/1.9.1/monitor.rb
+   70 /usr/lib64/ruby/1.9.1/x86_64-linux/strscan.so
+   71 /usr/lib64/ruby/1.9.1/x86_64-linux/openssl.so
+   72 /usr/lib64/ruby/1.9.1/openssl/bn.rb
+   73 /usr/lib64/ruby/1.9.1/openssl/cipher.rb
+   74 /usr/lib64/ruby/1.9.1/x86_64-linux/stringio.so
+   75 /usr/lib64/ruby/1.9.1/openssl/config.rb
+   76 /usr/lib64/ruby/1.9.1/openssl/digest.rb
+   77 /usr/lib64/ruby/1.9.1/openssl/buffering.rb
+   78 /usr/lib64/ruby/1.9.1/x86_64-linux/fcntl.so
+   79 /usr/lib64/ruby/1.9.1/openssl/ssl-internal.rb
+   80 /usr/lib64/ruby/1.9.1/openssl/x509-internal.rb
+   81 /usr/lib64/ruby/1.9.1/openssl.rb
+   82 /usr/lib64/ruby/1.9.1/net/imap.rb
+   83 /home/shoutt/src/heliotrope/lib/heliotrope/imap-dumper.rb
+   84 /home/shoutt/src/heliotrope/lib/heliotrope/gmail-dumper.rb
+   85 /home/shoutt/src/heliotrope/lib/heliotrope/maildir-walker.rb
+   86 /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepigc.so
+   87 /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepig.rb
+   88 /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so
+   89 /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb.rb
+   90 /usr/lib64/ruby/1.9.1/set.rb
+   91 /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb
+   92 /usr/lib64/ruby/1.9.1/x86_64-linux/zlib.so
+   93 /home/shoutt/src/heliotrope/lib/heliotrope/zmbox.rb
+   94 /home/shoutt/src/heliotrope/lib/heliotrope/query.rb
+   95 /usr/lib64/ruby/1.9.1/x86_64-linux/etc.so
+   96 /usr/lib64/ruby/1.9.1/fileutils.rb
+   97 /home/shoutt/src/heliotrope/lib/heliotrope/hooks.rb
+   98 /home/shoutt/src/heliotrope/lib/heliotrope.rb
+   99 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/koi8_r.so
+  100 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+  101 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/iso2022.so
+  102 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/japanese_euc.so
+  103 /usr/lib64/ruby/1.9.1/x86_64-linux/enc/euc_jp.so
+
+* Process memory map:
+
+00400000-00401000 r-xp 00000000 08:02 10116671                           /usr/bin/ruby19
+00600000-00601000 r--p 00000000 08:02 10116671                           /usr/bin/ruby19
+00601000-00602000 rw-p 00001000 08:02 10116671                           /usr/bin/ruby19
+023f0000-037bd000 rw-p 00000000 00:00 0                                  [heap]
+7f08a0114000-7f08a0216000 rw-p 00000000 00:00 0 
+7f08a0216000-7f08a0218000 r-xp 00000000 08:02 10116722                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/euc_jp.so
+7f08a0218000-7f08a0417000 ---p 00002000 08:02 10116722                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/euc_jp.so
+7f08a0417000-7f08a0418000 r--p 00001000 08:02 10116722                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/euc_jp.so
+7f08a0418000-7f08a0419000 rw-p 00002000 08:02 10116722                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/euc_jp.so
+7f08a0419000-7f08a0453000 r-xp 00000000 08:02 10116709                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/japanese_euc.so
+7f08a0453000-7f08a0652000 ---p 0003a000 08:02 10116709                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/japanese_euc.so
+7f08a0652000-7f08a0653000 r--p 00039000 08:02 10116709                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/japanese_euc.so
+7f08a0653000-7f08a0654000 rw-p 0003a000 08:02 10116709                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/japanese_euc.so
+7f08a0654000-7f08a0656000 r-xp 00000000 08:02 10116695                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/iso2022.so
+7f08a0656000-7f08a0856000 ---p 00002000 08:02 10116695                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/iso2022.so
+7f08a0856000-7f08a0857000 r--p 00002000 08:02 10116695                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/iso2022.so
+7f08a0857000-7f08a0858000 rw-p 00003000 08:02 10116695                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/iso2022.so
+7f08a0858000-7f08a086e000 r-xp 00000000 08:02 10116701                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+7f08a086e000-7f08a0a6d000 ---p 00016000 08:02 10116701                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+7f08a0a6d000-7f08a0a72000 r--p 00015000 08:02 10116701                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+7f08a0a72000-7f08a0a73000 rw-p 0001a000 08:02 10116701                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+7f08a0a73000-7f08a0a75000 r-xp 00000000 08:02 10116856                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/koi8_r.so
+7f08a0a75000-7f08a0c74000 ---p 00002000 08:02 10116856                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/koi8_r.so
+7f08a0c74000-7f08a0c75000 r--p 00001000 08:02 10116856                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/koi8_r.so
+7f08a0c75000-7f08a0c76000 rw-p 00002000 08:02 10116856                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/koi8_r.so
+7f08a0c76000-7f08a0c79000 r-xp 00000000 08:02 10116942                   /usr/lib64/ruby/1.9.1/x86_64-linux/etc.so
+7f08a0c79000-7f08a0e78000 ---p 00003000 08:02 10116942                   /usr/lib64/ruby/1.9.1/x86_64-linux/etc.so
+7f08a0e78000-7f08a0e79000 r--p 00002000 08:02 10116942                   /usr/lib64/ruby/1.9.1/x86_64-linux/etc.so
+7f08a0e79000-7f08a0e7a000 rw-p 00003000 08:02 10116942                   /usr/lib64/ruby/1.9.1/x86_64-linux/etc.so
+7f08a0e7a000-7f08a0e87000 r-xp 00000000 08:02 10116948                   /usr/lib64/ruby/1.9.1/x86_64-linux/zlib.so
+7f08a0e87000-7f08a1086000 ---p 0000d000 08:02 10116948                   /usr/lib64/ruby/1.9.1/x86_64-linux/zlib.so
+7f08a1086000-7f08a1087000 r--p 0000c000 08:02 10116948                   /usr/lib64/ruby/1.9.1/x86_64-linux/zlib.so
+7f08a1087000-7f08a1088000 rw-p 0000d000 08:02 10116948                   /usr/lib64/ruby/1.9.1/x86_64-linux/zlib.so
+7f08a1088000-7f08a109d000 r-xp 00000000 08:02 5384332                    /lib64/libgcc_s.so.1
+7f08a109d000-7f08a129c000 ---p 00015000 08:02 5384332                    /lib64/libgcc_s.so.1
+7f08a129c000-7f08a129d000 r--p 00014000 08:02 5384332                    /lib64/libgcc_s.so.1
+7f08a129d000-7f08a129e000 rw-p 00015000 08:02 5384332                    /lib64/libgcc_s.so.1
+7f08a129e000-7f08a1389000 r-xp 00000000 08:02 9999881                    /usr/lib64/gcc/x86_64-pc-linux-gnu/4.5.3/libstdc++.so.6.0.14
+7f08a1389000-7f08a1588000 ---p 000eb000 08:02 9999881                    /usr/lib64/gcc/x86_64-pc-linux-gnu/4.5.3/libstdc++.so.6.0.14
+7f08a1588000-7f08a1590000 r--p 000ea000 08:02 9999881                    /usr/lib64/gcc/x86_64-pc-linux-gnu/4.5.3/libstdc++.so.6.0.14
+7f08a1590000-7f08a1592000 rw-p 000f2000 08:02 9999881                    /usr/lib64/gcc/x86_64-pc-linux-gnu/4.5.3/libstdc++.so.6.0.14
+7f08a1592000-7f08a15a7000 rw-p 00000000 00:00 0 
+7f08a15a7000-7f08a15ec000 r-xp 00000000 08:02 5650798                    /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so
+7f08a15ec000-7f08a17eb000 ---p 00045000 08:02 5650798                    /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so
+7f08a17eb000-7f08a17ed000 r--p 00044000 08:02 5650798                    /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so
+7f08a17ed000-7f08a17ee000 rw-p 00046000 08:02 5650798                    /home/shoutt/.gem/ruby/1.9.1/gems/leveldb-ruby-0.10/lib/leveldb/leveldb.so
+7f08a17ee000-7f08a180c000 r-xp 00000000 08:02 5650485                    /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepigc.so
+7f08a180c000-7f08a1a0b000 ---p 0001e000 08:02 5650485                    /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepigc.so
+7f08a1a0b000-7f08a1a0c000 r--p 0001d000 08:02 5650485                    /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepigc.so
+7f08a1a0c000-7f08a1a0d000 rw-p 0001e000 08:02 5650485                    /home/shoutt/.gem/ruby/1.9.1/gems/whistlepig-0.7/lib/whistlepigc.so
+7f08a1a0d000-7f08a1a0e000 r-xp 00000000 08:02 10116950                   /usr/lib64/ruby/1.9.1/x86_64-linux/fcntl.so
+7f08a1a0e000-7f08a1c0d000 ---p 00001000 08:02 10116950                   /usr/lib64/ruby/1.9.1/x86_64-linux/fcntl.so
+7f08a1c0d000-7f08a1c0e000 r--p 00000000 08:02 10116950                   /usr/lib64/ruby/1.9.1/x86_64-linux/fcntl.so
+7f08a1c0e000-7f08a1c0f000 rw-p 00001000 08:02 10116950                   /usr/lib64/ruby/1.9.1/x86_64-linux/fcntl.so
+7f08a1c0f000-7f08a1c15000 r-xp 00000000 08:02 10116953                   /usr/lib64/ruby/1.9.1/x86_64-linux/stringio.so
+7f08a1c15000-7f08a1e14000 ---p 00006000 08:02 10116953                   /usr/lib64/ruby/1.9.1/x86_64-linux/stringio.so
+7f08a1e14000-7f08a1e15000 r--p 00005000 08:02 10116953                   /usr/lib64/ruby/1.9.1/x86_64-linux/stringio.so
+7f08a1e15000-7f08a1e16000 rw-p 00006000 08:02 10116953                   /usr/lib64/ruby/1.9.1/x86_64-linux/stringio.so
+7f08a1e16000-7f08a1e6b000 r-xp 00000000 08:02 9868828                    /usr/lib64/libssl.so.1.0.0
+7f08a1e6b000-7f08a206b000 ---p 00055000 08:02 9868828                    /usr/lib64/libssl.so.1.0.0
+7f08a206b000-7f08a206e000 r--p 00055000 08:02 9868828                    /usr/lib64/libssl.so.1.0.0
+7f08a206e000-7f08a2073000 rw-p 00058000 08:02 9868828                    /usr/lib64/libssl.so.1.0.0
+7f08a2073000-7f08a20c0000 r-xp 00000000 08:02 10116937                   /usr/lib64/ruby/1.9.1/x86_64-linux/openssl.so
+7f08a20c0000-7f08a22c0000 ---p 0004d000 08:02 10116937                   /usr/lib64/ruby/1.9.1/x86_64-linux/openssl.so
+7f08a22c0000-7f08a22c1000 r--p 0004d000 08:02 10116937                   /usr/lib64/ruby/1.9.1/x86_64-linux/openssl.so
+7f08a22c1000-7f08a22c3000 rw-p 0004e000 08:02 10116937                   /usr/lib64/ruby/1.9.1/x86_64-linux/openssl.so
+7f08a22c3000-7f08a22c4000 rw-p 00000000 00:00 0 
+7f08a22c4000-7f08a22c9000 r-xp 00000000 08:02 10116677                   /usr/lib64/ruby/1.9.1/x86_64-linux/strscan.so
+7f08a22c9000-7f08a24c8000 ---p 00005000 08:02 10116677                   /usr/lib64/ruby/1.9.1/x86_64-linux/strscan.so
+7f08a24c8000-7f08a24c9000 r--p 00004000 08:02 10116677                   /usr/lib64/ruby/1.9.1/x86_64-linux/strscan.so
+7f08a24c9000-7f08a24ca000 rw-p 00005000 08:02 10116677                   /usr/lib64/ruby/1.9.1/x86_64-linux/strscan.so
+7f08a24ca000-7f08a24ec000 r-xp 00000000 08:02 10116939                   /usr/lib64/ruby/1.9.1/x86_64-linux/socket.so
+7f08a24ec000-7f08a26ec000 ---p 00022000 08:02 10116939                   /usr/lib64/ruby/1.9.1/x86_64-linux/socket.so
+7f08a26ec000-7f08a26ed000 r--p 00022000 08:02 10116939                   /usr/lib64/ruby/1.9.1/x86_64-linux/socket.so
+7f08a26ed000-7f08a26ee000 rw-p 00023000 08:02 10116939                   /usr/lib64/ruby/1.9.1/x86_64-linux/socket.so
+7f08a26ee000-7f08a26f1000 r-xp 00000000 08:02 10116678                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest.so
+7f08a26f1000-7f08a28f0000 ---p 00003000 08:02 10116678                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest.so
+7f08a28f0000-7f08a28f1000 r--p 00002000 08:02 10116678                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest.so
+7f08a28f1000-7f08a28f2000 rw-p 00003000 08:02 10116678                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest.so
+7f08a28f2000-7f08a2908000 r-xp 00000000 08:02 9860452                    /lib64/libz.so.1.2.5
+7f08a2908000-7f08a2b08000 ---p 00016000 08:02 9860452                    /lib64/libz.so.1.2.5
+7f08a2b08000-7f08a2b09000 r--p 00016000 08:02 9860452                    /lib64/libz.so.1.2.5
+7f08a2b09000-7f08a2b0a000 rw-p 00017000 08:02 9860452                    /lib64/libz.so.1.2.5
+7f08a2b0a000-7f08a2c92000 r-xp 00000000 08:02 9868825                    /usr/lib64/libcrypto.so.1.0.0
+7f08a2c92000-7f08a2e92000 ---p 00188000 08:02 9868825                    /usr/lib64/libcrypto.so.1.0.0
+7f08a2e92000-7f08a2eab000 r--p 00188000 08:02 9868825                    /usr/lib64/libcrypto.so.1.0.0
+7f08a2eab000-7f08a2eb5000 rw-p 001a1000 08:02 9868825                    /usr/lib64/libcrypto.so.1.0.0
+7f08a2eb5000-7f08a2eb9000 rw-p 00000000 00:00 0 
+7f08a2eb9000-7f08a2eba000 r-xp 00000000 08:02 10116931                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest/md5.so
+7f08a2eba000-7f08a30b9000 ---p 00001000 08:02 10116931                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest/md5.so
+7f08a30b9000-7f08a30ba000 r--p 00000000 08:02 10116931                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest/md5.so
+7f08a30ba000-7f08a30bb000 rw-p 00001000 08:02 10116931                   /usr/lib64/ruby/1.9.1/x86_64-linux/digest/md5.so
+7f08a30bb000-7f08a30c1000 r-xp 00000000 08:02 10116938                   /usr/lib64/ruby/1.9.1/x86_64-linux/iconv.so
+7f08a30c1000-7f08a32c0000 ---p 00006000 08:02 10116938                   /usr/lib64/ruby/1.9.1/x86_64-linux/iconv.so
+7f08a32c0000-7f08a32c1000 r--p 00005000 08:02 10116938                   /usr/lib64/ruby/1.9.1/x86_64-linux/iconv.so
+7f08a32c1000-7f08a32c2000 rw-p 00006000 08:02 10116938                   /usr/lib64/ruby/1.9.1/x86_64-linux/iconv.so
+7f08a32c2000-7f08a32ca000 r-xp 00000000 08:02 10111974                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/generator.so
+7f08a32ca000-7f08a34c9000 ---p 00008000 08:02 10111974                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/generator.so
+7f08a34c9000-7f08a34ca000 r--p 00007000 08:02 10111974                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/generator.so
+7f08a34ca000-7f08a34cb000 rw-p 00008000 08:02 10111974                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/generator.so
+7f08a34cb000-7f08a34cc000 r-xp 00000000 08:02 10116718                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+7f08a34cc000-7f08a36cb000 ---p 00001000 08:02 10116718                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+7f08a36cb000-7f08a36cc000 r--p 00000000 08:02 10116718                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+7f08a36cc000-7f08a36cd000 rw-p 00001000 08:02 10116718                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+7f08a36cd000-7f08a36ce000 r-xp 00000000 08:02 10116685                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+7f08a36ce000-7f08a38cd000 ---p 00001000 08:02 10116685                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+7f08a38cd000-7f08a38ce000 r--p 00000000 08:02 10116685                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+7f08a38ce000-7f08a38cf000 rw-p 00001000 08:02 10116685                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+7f08a38cf000-7f08a38d0000 r-xp 00000000 08:02 10116717                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+7f08a38d0000-7f08a3ad0000 ---p 00001000 08:02 10116717                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+7f08a3ad0000-7f08a3ad1000 r--p 00001000 08:02 10116717                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+7f08a3ad1000-7f08a3ad2000 rw-p 00002000 08:02 10116717                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+7f08a3ad2000-7f08a3ad3000 r-xp 00000000 08:02 10116693                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+7f08a3ad3000-7f08a3cd3000 ---p 00001000 08:02 10116693                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+7f08a3cd3000-7f08a3cd4000 r--p 00001000 08:02 10116693                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+7f08a3cd4000-7f08a3cd5000 rw-p 00002000 08:02 10116693                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+7f08a3cd5000-7f08a3cdb000 r-xp 00000000 08:02 10111937                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/parser.so
+7f08a3cdb000-7f08a3eda000 ---p 00006000 08:02 10111937                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/parser.so
+7f08a3eda000-7f08a3edb000 r--p 00005000 08:02 10111937                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/parser.so
+7f08a3edb000-7f08a3edc000 rw-p 00006000 08:02 10111937                   /usr/lib64/ruby/gems/1.9.1/gems/json-1.6.4/lib/json/ext/parser.so
+7f08a3edc000-7f08a3f0a000 r-xp 00000000 08:02 10116957                   /usr/lib64/ruby/1.9.1/x86_64-linux/date_core.so
+7f08a3f0a000-7f08a410a000 ---p 0002e000 08:02 10116957                   /usr/lib64/ruby/1.9.1/x86_64-linux/date_core.so
+7f08a410a000-7f08a410b000 r--p 0002e000 08:02 10116957                   /usr/lib64/ruby/1.9.1/x86_64-linux/date_core.so
+7f08a410b000-7f08a410c000 rw-p 0002f000 08:02 10116957                   /usr/lib64/ruby/1.9.1/x86_64-linux/date_core.so
+7f08a410c000-7f08a410d000 rw-p 00000000 00:00 0 
+7f08a410d000-7f08a410f000 r-xp 00000000 08:02 10116707                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+7f08a410f000-7f08a430f000 ---p 00002000 08:02 10116707                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+7f08a430f000-7f08a4310000 r--p 00002000 08:02 10116707                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+7f08a4310000-7f08a4311000 rw-p 00003000 08:02 10116707                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+7f08a4311000-7f08a4313000 r-xp 00000000 08:02 10116719                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/encdb.so
+7f08a4313000-7f08a4512000 ---p 00002000 08:02 10116719                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/encdb.so
+7f08a4512000-7f08a4513000 r--p 00001000 08:02 10116719                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/encdb.so
+7f08a4513000-7f08a4514000 rw-p 00002000 08:02 10116719                   /usr/lib64/ruby/1.9.1/x86_64-linux/enc/encdb.so
+7f08a4514000-7f08a47e6000 r--p 00000000 08:02 11535215                   /usr/lib64/locale/locale-archive
+7f08a47e6000-7f08a4867000 r-xp 00000000 08:02 10748905                   /lib64/libm-2.13.so
+7f08a4867000-7f08a4a66000 ---p 00081000 08:02 10748905                   /lib64/libm-2.13.so
+7f08a4a66000-7f08a4a67000 r--p 00080000 08:02 10748905                   /lib64/libm-2.13.so
+7f08a4a67000-7f08a4a68000 rw-p 00081000 08:02 10748905                   /lib64/libm-2.13.so
+7f08a4a68000-7f08a4a70000 r-xp 00000000 08:02 10748910                   /lib64/libcrypt-2.13.so
+7f08a4a70000-7f08a4c6f000 ---p 00008000 08:02 10748910                   /lib64/libcrypt-2.13.so
+7f08a4c6f000-7f08a4c70000 r--p 00007000 08:02 10748910                   /lib64/libcrypt-2.13.so
+7f08a4c70000-7f08a4c71000 rw-p 00008000 08:02 10748910                   /lib64/libcrypt-2.13.so
+7f08a4c71000-7f08a4c9f000 rw-p 00000000 00:00 0 
+7f08a4c9f000-7f08a4ca1000 r-xp 00000000 08:02 10748898                   /lib64/libdl-2.13.so
+7f08a4ca1000-7f08a4ea1000 ---p 00002000 08:02 10748898                   /lib64/libdl-2.13.so
+7f08a4ea1000-7f08a4ea2000 r--p 00002000 08:02 10748898                   /lib64/libdl-2.13.so
+7f08a4ea2000-7f08a4ea3000 rw-p 00003000 08:02 10748898                   /lib64/libdl-2.13.so
+7f08a4ea3000-7f08a4eab000 r-xp 00000000 08:02 10748511                   /lib64/librt-2.13.so
+7f08a4eab000-7f08a50aa000 ---p 00008000 08:02 10748511                   /lib64/librt-2.13.so
+7f08a50aa000-7f08a50ab000 r--p 00007000 08:02 10748511                   /lib64/librt-2.13.so
+7f08a50ab000-7f08a50ac000 rw-p 00008000 08:02 10748511                   /lib64/librt-2.13.so
+7f08a50ac000-7f08a50c4000 r-xp 00000000 08:02 10748896                   /lib64/libpthread-2.13.so
+7f08a50c4000-7f08a52c3000 ---p 00018000 08:02 10748896                   /lib64/libpthread-2.13.so
+7f08a52c3000-7f08a52c4000 r--p 00017000 08:02 10748896                   /lib64/libpthread-2.13.so
+7f08a52c4000-7f08a52c5000 rw-p 00018000 08:02 10748896                   /lib64/libpthread-2.13.so
+7f08a52c5000-7f08a52c9000 rw-p 00000000 00:00 0 
+7f08a52c9000-7f08a544a000 r-xp 00000000 08:02 10748900                   /lib64/libc-2.13.so
+7f08a544a000-7f08a5649000 ---p 00181000 08:02 10748900                   /lib64/libc-2.13.so
+7f08a5649000-7f08a564d000 r--p 00180000 08:02 10748900                   /lib64/libc-2.13.so
+7f08a564d000-7f08a564e000 rw-p 00184000 08:02 10748900                   /lib64/libc-2.13.so
+7f08a564e000-7f08a5653000 rw-p 00000000 00:00 0 
+7f08a5653000-7f08a5847000 r-xp 00000000 08:02 10116958                   /usr/lib64/libruby19.so.1.9.1
+7f08a5847000-7f08a5a46000 ---p 001f4000 08:02 10116958                   /usr/lib64/libruby19.so.1.9.1
+7f08a5a46000-7f08a5a4b000 r--p 001f3000 08:02 10116958                   /usr/lib64/libruby19.so.1.9.1
+7f08a5a4b000-7f08a5a4f000 rw-p 001f8000 08:02 10116958                   /usr/lib64/libruby19.so.1.9.1
+7f08a5a4f000-7f08a5a6b000 rw-p 00000000 00:00 0 
+7f08a5a6b000-7f08a5a8a000 r-xp 00000000 08:02 10748907                   /lib64/ld-2.13.so
+7f08a5acb000-7f08a5acc000 ---p 00000000 00:00 0 
+7f08a5acc000-7f08a5b4c000 rw-p 00000000 00:00 0 
+7f08a5b4c000-7f08a5b4e000 rw-s 00000000 08:02 5898246                    /home/shoutt/src/heliotrope/Mail/index/whistlepig0.sp
+7f08a5b4e000-7f08a5b50000 rw-s 00000000 08:02 5898251                    /home/shoutt/src/heliotrope/Mail/index/whistlepig0.th
+7f08a5b50000-7f08a5b60000 rw-s 00000000 08:02 5898248                    /home/shoutt/src/heliotrope/Mail/store/000003.log
+7f08a5b60000-7f08a5b61000 rw-s 00000000 08:02 5898253                    /home/shoutt/src/heliotrope/Mail/index/whistlepig0.lb
+7f08a5b62000-7f08a5b64000 rw-s 00000000 08:02 5898252                    /home/shoutt/src/heliotrope/Mail/index/whistlepig0.pr
+7f08a5b65000-7f08a5c6c000 rw-p 00000000 00:00 0 
+7f08a5c6d000-7f08a5c6e000 rw-s 00000000 08:02 5898247                    /home/shoutt/src/heliotrope/Mail/index/whistlepig0.sh_
+7f08a5c6e000-7f08a5c7e000 rw-s 00000000 08:02 5898249                    /home/shoutt/src/heliotrope/Mail/store/MANIFEST-000002
+7f08a5c7e000-7f08a5c85000 r--s 00000000 08:02 11536212                   /usr/lib64/gconv/gconv-modules.cache
+7f08a5c85000-7f08a5c86000 ---p 00000000 00:00 0 
+7f08a5c86000-7f08a5c8a000 rw-p 00000000 00:00 0 
+7f08a5c8a000-7f08a5c8b000 r--p 0001f000 08:02 10748907                   /lib64/ld-2.13.so
+7f08a5c8b000-7f08a5c8c000 rw-p 00020000 08:02 10748907                   /lib64/ld-2.13.so
+7f08a5c8c000-7f08a5c8d000 rw-p 00000000 00:00 0 
+7fff10348000-7fff10369000 rw-p 00000000 00:00 0                          [stack]
+7fff10376000-7fff10377000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+
+[NOTE]
+You may have encountered a bug in the Ruby interpreter or extension libraries.
+Bug reports are welcome.
+For details: http://www.ruby-lang.org/bugreport.html
+
+Aborted
+```
+
+From wmorgan at masanjin.net  Mon Mar  5 22:08:30 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Mon, 05 Mar 2012 14:08:30 -0800
+Subject: [sup-devel]  [heliotrope] crashes while importing
+In-Reply-To: <20120301151701.23555.84803@localhost>
+References: <20120301151701.23555.84803@localhost>
+Message-ID: <1330985181-sup-8598@typhon>
+
+Hi Serge,
+
+Excerpts from Serge Z's message of 2012-03-01 07:17:01 -0800:
+> /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701: [BUG] Bus Error
+> ruby 1.9.3p125 (2012-02-16 revision 34643) [x86_64-linux]
+> 
+> -- Control frame information -----------------------------------------------
+> c:0011 p:---- s:0092 b:0092 l:000091 d:000091 CFUNC  :put
+> c:0010 p:0072 s:0087 b:0086 l:000085 d:000085 METHOD /home/shoutt/src/heliotrope/lib/heliotrope/meta-index.rb:701
+
+This looks like a problem in the Leveldb bindings. Is this by any chance
+on OS X Lion? If not, what platform are you running on?
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan at masanjin.net  Mon Mar  5 22:16:59 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Mon, 05 Mar 2012 14:16:59 -0800
+Subject: [sup-devel]  [Turnsole] Lack of a test suite
+In-Reply-To: <1330603277-sup-7642@stapelberg.de>
+References: <1330603277-sup-7642@stapelberg.de>
+Message-ID: <1330985317-sup-8037@typhon>
+
+Excerpts from Michael Stapelberg's message of 2012-03-01 04:02:30 -0800:
+> I find it weird that there is no testsuite for turnsole. Are there any
+> plans for that? Or are you ok with somebody just starting something
+> and then iterating from there?
+
+I'm not planning on adding one (I'd rather spend my limited time adding
+features, or hardening heliotrope), but I wouldn't object to you adding
+something.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan at masanjin.net  Mon Mar  5 22:45:20 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Mon, 05 Mar 2012 14:45:20 -0800
+Subject: [sup-devel]  [Heliotrope/Turnsole] GPG signature verification
+In-Reply-To: <1330602132-sup-2087@stapelberg.de>
+References: <1330602132-sup-2087@stapelberg.de>
+Message-ID: <1330986580-sup-6892@typhon>
+
+Excerpts from Michael Stapelberg's message of 2012-03-01 03:58:24 -0800:
+> I tried implementing GPG signature verification first, and got it
+> nearly working
+
+Awesome!
+
+> 1) In ChunkParser#chunks_for_message, the message object has multiple
+> parts, which in turn are just hashes. At least in my tests, the first
+> part usually has a "content" entry, but the second part doesn?t.
+
+As background, these message parts are pre-digested things sent by
+Heliotrope as a way of displaying messages without needing to download
+all the attachments. They are based on MIME parts but undergo a lossy
+transformation. The basic rule right now is that text parts include the
+content by default, and non-text parts do not (and so require a separate
+download).
+
+> Therefore, I need to request it from heliotrope. Should I introduce a
+> new class for that or am I missing an existing class which I can use
+> for that?
+
+I think introducing a new chunk class is the right approach.
+
+> 2) For verification, I need the not-decoded MIME part, but heliotrope
+> decodes MIME parts. Thus, I always get a bad signature. How should we
+> fix this? Not decode MIME in heliotrope, but in turnsole? Decode MIME
+> in both? Make turnsole get the raw message, too, for GPG (roundtrip
+> alert!)?
+
+I think you will need to get the entire raw message and MIME decode it
+in turnsole.
+
+BTW, you can look at Sup for a lot of relevant code. There is a
+CryptoNotice class in message-chunks.rb, and an inline_gpg_to_chunks
+method in message.rb. The structure is pretty similar to what you
+see in Turnsole (although not, of course, identical).
+
+Good luck!
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan at masanjin.net  Mon Mar  5 22:57:34 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Mon, 05 Mar 2012 14:57:34 -0800
+Subject: [sup-devel] [Heliotrope] search for cyrillic terms does not work
+In-Reply-To: <20120229104413.1197.73225@localhost>
+References: <20120224054318.8144.49786@localhost>
+	<1330152007-turnsole-69593@terminus-est>
+	<20120229104413.1197.73225@localhost>
+Message-ID: <1330988069-sup-4187@typhon>
+
+Excerpts from Serge Z's message of 2012-02-29 02:44:13 -0800:
+> Does whistlepig have any tool for manual managing its indexes?
+> Or do I have to code in either ruby or C to do that?
+
+Yeah, if you check it out separately and build it, you can run
+something like:
+
+  whistlepig$ make dump
+  whistlepig$ ./dump <heliotrope store dir>/index/whistlepig|less
+
+And then if you search for some Cyrillic text, that should at least
+tell you the tokenization in the index.
+-- 
+William <wmorgan at masanjin.net>
+
+From michael+sup at stapelberg.de  Mon Mar 12 18:24:06 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 12 Mar 2012 19:24:06 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] RMail's parsing leads to
+	SystemStackError
+Message-ID: <1331576353-sup-6200@stapelberg.de>
+
+Hi,
+
+while working on the GPG signature verification, I noticed that RMail?s MIME
+parsing sucks, at least with Ruby 1.9.3:
+
+When encountering a boundary, such as "--=_libri-22937-1314886853-0001-2--",
+RMail turns that into a regular expression which matches any amount of
+characters or the whole thing, that looks like this:
+
+\-(?:\-(?:=(?:_(?:l(?:i(?:b(?:r(?:i(?:\-(?:2(?:2(?:9(?:3(?:7(?:\-(?:1(?:3(?:1(?:4(?:8(?:8(?:6(?:8(?:5(?:3(?:\-(?:0(?:0(?:0(?:1(?:\-(?:2|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)|\z)
+
+Running this regular expression leads to a SystemStackError. What is an
+appropriate way to handle this? As far as I understand, RMail is unmaintained.
+And we wanted to switch away from it. Should we monkey-patch?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Mon Mar 12 18:28:44 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 12 Mar 2012 19:28:44 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+Message-ID: <1331576656-sup-947@stapelberg.de>
+
+Hi,
+
+At https://github.com/mstap/turnsole/commits/gpg-signed, you can find an
+experimental branch which implements GPG signature verification. This should
+work for PGP/MIME multipart/mixed, multipart/signed and PGP/INLINE. You also
+need the changes of https://github.com/wmorgan/heliotrope/pull/42 in your
+heliotrope for this to work.
+
+GPG decryption is not working at all yet. Also, depending on your messages, you
+might need to patch RMail (see my previous mail):
+
+lib/rmail/parser/multipart.rb:211
+  #s = PushbackReader.maybe_contains_re("--" + boundary)
+  s = Regexp.quote("--" + boundary)
+
+If you notice any problems, please report them.
+
+Best regards,
+Michael
+
+PS: I?m not quite sure how to make Heliotrope pick up the "signed" label for
+messages which are already indexed. The code now recognizes more signed
+variants. Ideas?
+
+From nicolas.pouillard at gmail.com  Wed Mar 14 13:13:46 2012
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 14 Mar 2012 14:13:46 +0100
+Subject: [sup-devel]  [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1331576656-sup-947@stapelberg.de>
+References: <1331576656-sup-947@stapelberg.de>
+Message-ID: <1331730629-turnsole-56443@ss>
+
+Excerpts from Michael Stapelberg's message of 2012-03-12 19:28:44 +0100:
+> Hi,
+Hi,
+
+> At https://github.com/mstap/turnsole/commits/gpg-signed, you can find an
+> experimental branch which implements GPG signature verification. This should
+> work for PGP/MIME multipart/mixed, multipart/signed and PGP/INLINE. You also
+> need the changes of https://github.com/wmorgan/heliotrope/pull/42 in your
+> heliotrope for this to work.
+> 
+> GPG decryption is not working at all yet. Also, depending on your messages, you
+> might need to patch RMail (see my previous mail):
+> 
+> lib/rmail/parser/multipart.rb:211
+>   #s = PushbackReader.maybe_contains_re("--" + boundary)
+>   s = Regexp.quote("--" + boundary)
+> 
+> If you notice any problems, please report them.
+
+Is there some missing file for getting CryptoManager? I get this:
+
+.../lib/turnsole/modes/edit-message-mode.rb:106:in `initialize':
+  uninitialized constant Turnsole::EditMessageMode::CryptoManager (NameError)
+
+From michael+sup at stapelberg.de  Wed Mar 14 13:31:04 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 14 Mar 2012 14:31:04 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1331730629-turnsole-56443@ss>
+References: <1331576656-sup-947@stapelberg.de> <1331730629-turnsole-56443@ss>
+Message-ID: <1331731839-sup-502@stapelberg.de>
+
+Hi Nicolas,
+
+Excerpts from Nicolas Pouillard's message of 2012-03-14 14:13:46 +0100:
+> Is there some missing file for getting CryptoManager? I get this:
+> 
+> .../lib/turnsole/modes/edit-message-mode.rb:106:in `initialize':
+>   uninitialized constant Turnsole::EditMessageMode::CryptoManager (NameError)
+No, this code is just not yet fixed for turnsole.
+
+Best regards,
+Michael
+
+From nicolas.pouillard at gmail.com  Wed Mar 14 13:38:43 2012
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 14 Mar 2012 14:38:43 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1331731839-sup-502@stapelberg.de>
+References: <1331576656-sup-947@stapelberg.de> <1331730629-turnsole-56443@ss>
+	<1331731839-sup-502@stapelberg.de>
+Message-ID: <1331732250-turnsole-41628@ss>
+
+Excerpts from Michael Stapelberg's message of 2012-03-14 14:31:04 +0100:
+> Hi Nicolas,
+> 
+> Excerpts from Nicolas Pouillard's message of 2012-03-14 14:13:46 +0100:
+> > Is there some missing file for getting CryptoManager? I get this:
+> > 
+> > .../lib/turnsole/modes/edit-message-mode.rb:106:in `initialize':
+> >   uninitialized constant Turnsole::EditMessageMode::CryptoManager (NameError)
+> No, this code is just not yet fixed for turnsole.
+
+So there is no way to compose any message when merging your branch?
+
+From michael+sup at stapelberg.de  Wed Mar 14 13:55:55 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 14 Mar 2012 14:55:55 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1331732250-turnsole-41628@ss>
+References: <1331576656-sup-947@stapelberg.de> <1331730629-turnsole-56443@ss>
+	<1331731839-sup-502@stapelberg.de> <1331732250-turnsole-41628@ss>
+Message-ID: <1331733289-sup-7680@stapelberg.de>
+
+Hi Nicolas,
+
+Excerpts from Nicolas Pouillard's message of 2012-03-14 14:38:43 +0100:
+> So there is no way to compose any message when merging your branch?
+That might be true. To be honest, I don?t compose messages in heliotrope yet,
+otherwise, I won?t have them in sup (my fallback). Yes, the situation sucks big
+time.
+
+Best regards,
+Michael
+
+From wmorgan-sup at masanjin.net  Thu Mar 15 04:55:59 2012
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Mar 2012 21:55:59 -0700
+Subject: [sup-devel] heliotrope: please upgrade whistlepig and leveldb-ruby
+Message-ID: <1331786907-turnsole-34128@terminus-est>
+
+If you are tracking heliotrope master, please upgrade to whistlepig 0.9.1
+and leveldb-ruby 0.14. A `gem install leveldb-ruby whistlepig` should
+be sufficient.
+
+If you then run heliotrope-add-contacts, you should get tab-completion
+of contacts. (Finally!) I'm still playing around with how this works,
+so there are some obvious issues, but it will at least prevent you
+from memorizing email addresses.
+
+New messages automatically go through the contact extraction process and
+so you shouldn't have to run that command ever again. At least until the
+inevitable complaints make me redo how it works.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From michael+sup at stapelberg.de  Sun Mar 18 22:45:52 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 18 Mar 2012 23:45:52 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1331733289-sup-7680@stapelberg.de>
+References: <1331576656-sup-947@stapelberg.de> <1331730629-turnsole-56443@ss>
+	<1331731839-sup-502@stapelberg.de> <1331732250-turnsole-41628@ss>
+	<1331733289-sup-7680@stapelberg.de>
+Message-ID: <1332110718-sup-6603@stapelberg.de>
+
+Hi Nicolas,
+
+Excerpts from Michael Stapelberg's message of 2012-03-14 14:55:55 +0100:
+> > So there is no way to compose any message when merging your branch?
+> That might be true. To be honest, I don?t compose messages in heliotrope yet,
+> otherwise, I won?t have them in sup (my fallback). Yes, the situation sucks big
+> time.
+This is fixed now with commit https://github.com/mstap/turnsole/commit/2817026
+
+Best regards,
+Michael
+
+From nicolas.pouillard at gmail.com  Mon Mar 19 07:53:47 2012
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 19 Mar 2012 08:53:47 +0100
+Subject: [sup-devel] [Turnsole] Experimental GPG signature verification
+In-Reply-To: <1332110718-sup-6603@stapelberg.de>
+References: <1331576656-sup-947@stapelberg.de> <1331730629-turnsole-56443@ss>
+	<1331731839-sup-502@stapelberg.de> <1331732250-turnsole-41628@ss>
+	<1331733289-sup-7680@stapelberg.de>
+	<1332110718-sup-6603@stapelberg.de>
+Message-ID: <1332143572-turnsole-54114@ss>
+
+Excerpts from Michael Stapelberg's message of 2012-03-18 23:45:52 +0100:
+> Hi Nicolas,
+> 
+> Excerpts from Michael Stapelberg's message of 2012-03-14 14:55:55 +0100:
+> > > So there is no way to compose any message when merging your branch?
+> > That might be true. To be honest, I don?t compose messages in heliotrope yet,
+> > otherwise, I won?t have them in sup (my fallback). Yes, the situation sucks big
+> > time.
+> This is fixed now with commit https://github.com/mstap/turnsole/commit/2817026
+
+Thanks!
+
+From matthieu.rakotojaona at gmail.com  Fri Mar 23 19:17:59 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 23 Mar 2012 20:17:59 +0100
+Subject: [sup-devel] [Heliotrope/Turnsole] RMail's parsing leads to
+	SystemStackError
+In-Reply-To: <1331576353-sup-6200@stapelberg.de>
+References: <1331576353-sup-6200@stapelberg.de>
+Message-ID: <CAMiZLn0c3FG5g+e9t9t1nFCrfo_d0LG-oj0Or1DJsva3jTEQBg@mail.gmail.com>
+
+On Mon, Mar 12, 2012 at 7:24 PM, Michael Stapelberg
+<michael+sup at stapelberg.de> wrote:
+> As far as I understand, RMail is unmaintained.
+> And we wanted to switch away from it. Should we monkey-patch?
+>
+> Best regards,
+> Michael
+
+A little old, but I started moving message.rb from RMail to Mail gem
+(https://github.com/mikel/mail). My tree is at
+https://github.com/rakoo/heliotrope/tree/mail_gem
+
+Unfortunately I don't have a lot of messages to test all the features,
+especially MIME-related ones. I'd also love to have a test suite, so
+maybe it could be time to gather some example messages with tricky
+traps ?
+
+
+-- 
+Matthieu RAKOTOJAONA
+
+From matthieu.rakotojaona at gmail.com  Mon Mar 26 23:18:06 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 27 Mar 2012 01:18:06 +0200
+Subject: [sup-devel] Filtering rules
+Message-ID: <CAMiZLn2_xGr2tqTeH8JhZ3RRBY1WrNYTgF+8jxZAn1ZFvAowrg@mail.gmail.com>
+
+Hello everyone,
+
+I have been working on a filtering rules system for heliotrope.
+Basically, I wanted to have something that can apply some rules to my
+messages, so that I could rearrange my mails' labels/state
+automatically at any given time, much like what notmuch does (speaking
+of which : it's sad that common goals in building an efficient mail
+system are so much separated by divergences in code).
+
+I preferred to use an "after-add" strategy, as opposed to a
+"before-add", for multiple reasons :
+
+- In a "after-add", messages are already indexed; a search for a
+matching criteria is easily done with mechanisms from whistlepig
+(which was built for the job). In a "before-add", you would have to
+search for your criterias manually
+- If you put bad labels/state before adding the message to the store,
+you have to search for it manually and apply the good ones
+- In case of a bulk import, a bulk labelling is practical.
+
+So I worked on a possible template for rules that is very simple. It's
+pure yaml, and looks like this :
+
+-  to:"sup" subject:"Filtering rules" :
+     labels: "+sup"
+-  to:"me at domain.com" body:"Enlarge your" :
+     state: "+spam"
+-  from:"facebook" :
+     state: "-unread"
+
+Again, it's very simple, but I believe it is quite readable and can do
+most of the things one would want. You can have find more (documented)
+examples at the previous link.
+
+So I created a filter.rb script, in the heliotrope folder, on my
+public repo (https://github.com/rakoo/heliotrope/tree/filter). Here's
+how you use it :
+
+  ruby filter.rb --dir /path/to/heliotrope/data/dir --check
+/path/to/rules/files.yml
+
+And it will print you what are the offending threads. I didn't put the
+changes back to the store yet for testing purposes (it's just a puts
+of the non-matching threads), but it's just a :dry_run opt away.
+Plus, state are to be considered differently than labels: they are
+per-message, not per-threads.
+
+Bonus : I guess most of us use Gmail and Gmail's filters. The same
+script can take your gmail filters and output a valid yaml rules file
+for you! You just have to export your rules by hand (it's a Lab
+feature) to a local file, and run :
+
+  ruby filter.rb --dir /path/to/heliotrope/data/dir --import
+/path/to/gmail/filters/file.xml
+
+I have to work around a few quirks, but you can post-edit the
+generated file easily to get a usable rules file.
+There's a way to get your rules automagically from Google servers, but
+it is reserved to Google Apps users. If you're a simple user, you must
+use the export function.
+
+I'm working on the other way around (heliotrope -> Gmail), but Gmail's
+import/export rules are XML-the-verbose.
+
+Please enjoy this  !
+
+Totally unrelated : I happen to have some negative thread_ids. Is it
+an expected behaviour ?
+
+-- 
+Matthieu RAKOTOJAONA
+

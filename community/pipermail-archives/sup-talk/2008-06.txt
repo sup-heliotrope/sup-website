@@ -1,0 +1,1432 @@
+From gabriel.landais at gmail.com  Sun Jun  1 13:26:48 2008
+From: gabriel.landais at gmail.com (Gabriel Landais)
+Date: Sun, 1 Jun 2008 19:26:48 +0200
+Subject: [sup-talk] [bug] NoMemoryError on huge mbox
+Message-ID: <188c71690806011026u55851e39k2dd982dae28621d@mail.gmail.com>
+
+Hi,
+ I'm not able to load my Thunderbird mbox into sup. Added my Inbox
+mbox with sup-add/sup-config :
+
+-------------------------------------------------
+[glandais at server:~/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com]
+$ /var/lib/gems/1.8/gems/sup-0.5/bin/sup-config
+[Sun Jun 01 19:14:24 +0200 2008] using character set encoding "UTF-8"
+[Sun Jun 01 19:14:24 +0200 2008] optional 'chronic' library not found
+(run 'gem install chronic' to install)
+/var/lib/gems/1.8/gems/highline-1.4.0/lib/highline/system_extensions.rb:125:
+warning: Insecure world writable dir /opt/java in PATH, mode 040777
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/crypto.rb:18: warning: Insecure
+world writable dir /opt/java in PATH, mode 040777
+[Sun Jun 01 19:14:25 +0200 2008] crypto: detected gpg binary in /usr/bin/gpg
+Howdy neighbor! This here's sup-config, ready to help you jack in to
+the next generation of digital cyberspace: the text-based email
+program. Get ready to be the envy of everyone in your internets
+with your amazing keyboarding skills! Jump from email to email with
+nary a click of the mouse!
+
+Just answer these simple questions and you'll be on your way.
+
+What's your name? (enter for "Gabriel Landais"):
+What's your (primary) email address? (enter for "glandais at codelutin.com"):
+Ok, your header will look like this:
+  From: Gabriel Landais <glandais at codelutin.com>
+
+Do you have any alternate email addresses that also receive email?
+If so, enter them now, separated by spaces.
+Alternate email addresses:
+What file contains your signature? (enter for "/home/glandais/.signature"):
+What editor would you like to use? (enter for "nano"):
+Ok, I've saved you up a nice lil' /home/glandais/.sup/config.yaml.
+
+Now, we'll tell Sup where to find all your email.
+Current sources:
+* mbox:/home/glandais/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com/Inbox
+* sup://drafts
+* sup://sent
+
+1. Add a new source.
+2. Done adding sources!
+Your wish? 2
+
+Ok. The final step is to import all your messages into the Sup index.
+Depending on how many messages are in the sources, this could take
+quite a while.
+
+Run sup-sync to import all messages now? (enter for "n"): y
+Ok, trying to run "/var/lib/gems/1.8/gems/sup-0.5/bin/sup-sync --all-sources"...
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup-config:225: warning: Insecure
+world writable dir /opt/java in PATH, mode 040777
+[Sun Jun 01 19:14:37 +0200 2008] using character set encoding "UTF-8"
+[Sun Jun 01 19:14:37 +0200 2008] optional 'chronic' library not found
+(run 'gem install chronic' to install)
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/crypto.rb:18: warning: Insecure
+world writable dir /opt/java in PATH, mode 040777
+[Sun Jun 01 19:14:37 +0200 2008] crypto: detected gpg binary in /usr/bin/gpg
+[Sun Jun 01 19:14:37 +0200 2008] locking /home/glandais/.sup/lock...
+[Sun Jun 01 19:14:37 +0200 2008] loading index...
+[Sun Jun 01 19:14:37 +0200 2008] loaded index of 0 messages
+Scanning mbox:/home/glandais/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com/Inbox...
+[Sun Jun 01 19:17:40 +0200 2008] unlocking /home/glandais/.sup/lock...
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:60:in
+`load_header': failed to allocate memory (NoMemoryError)
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:56:in
+`synchronize'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:56:in
+`load_header'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `send'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `__pass'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:523:in
+`method_missing'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/message.rb:62:in
+`initialize'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:151:in `new'
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:151:in
+`add_messages_from'
+         ... 6 levels...
+        from /var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in
+`method_missing'
+        from /var/lib/gems/1.8/gems/sup-0.5/bin/sup-sync:136
+        from /var/lib/gems/1.8/gems/sup-0.5/bin/sup-sync:131:in `each'
+        from /var/lib/gems/1.8/gems/sup-0.5/bin/sup-sync:131
+Rats, that failed. You may have to do it manually.
+Try again? (enter for "n"): n
+[Sun Jun 01 19:17:47 +0200 2008] loading index...
+[Sun Jun 01 19:17:47 +0200 2008] loaded index of 0 messages
+
+Okee doke, you've got yourself an index of 0 messages. Looks
+like you're ready to jack in to cyberspace there, cowboy.
+
+Just one last command:
+
+  /var/lib/gems/1.8/gems/sup-0.5/bin/sup
+
+Have fun!
+-------------------------------------------------
+
+It uses all my RAM then crash. Same when sup is run :
+
+-------------------------------------------------
+[glandais at server:~/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com]
+$ /var/lib/gems/1.8/gems/sup-0.5/bin/sup
+[Sun Jun 01 19:18:37 +0200 2008] using character set encoding "UTF-8"
+[Sun Jun 01 19:18:38 +0200 2008] optional 'chronic' library not found
+(run 'gem install chronic' to install)
+[Sun Jun 01 19:18:38 +0200 2008] locking /home/glandais/.sup/lock...
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/crypto.rb:18: warning: Insecure
+world writable dir /opt/java in PATH, mode 040777
+[Sun Jun 01 19:18:38 +0200 2008] crypto: detected gpg binary in /usr/bin/gpg
+[Sun Jun 01 19:18:38 +0200 2008] loading index...
+[Sun Jun 01 19:18:38 +0200 2008] loaded index of 0 messages
+[Sun Jun 01 19:18:38 +0200 2008] starting curses
+[Sun Jun 01 19:21:47 +0200 2008] stopped cursing
+[Sun Jun 01 19:21:47 +0200 2008] oh crap, an exception
+[Sun Jun 01 19:21:47 +0200 2008] unlocking /home/glandais/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of sup-exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMemoryError from thread: poll after loading inbox
+failed to allocate memory
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:60:in `load_header'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:56:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/mbox/loader.rb:56:in `load_header'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `send'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:523:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/message.rb:62:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:151:in `new'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:151:in `add_messages_from'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/source.rb:98:in `each'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `send'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:534:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:523:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:141:in `add_messages_from'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:98:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:86:in `each'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:86:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:85:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:85:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in `send'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/poll-mode.rb:17:in `poll'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/poll.rb:53:in `poll'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in `send'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:210
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:60:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `new'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:210
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:536:in `call'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:536:in
+`__unprotected_load_threads'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:478:in `call'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:478:in
+`load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:60:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `new'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:476:in
+`load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:546:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:210
+--- SystemExit from thread: main
+failed to allocate memory
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:64:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:226
+-------------------------------------------------
+
+Thanks
+
+Gabriel
+
+From wmorgan-sup at masanjin.net  Mon Jun  2 22:18:42 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 02 Jun 2008 19:18:42 -0700
+Subject: [sup-talk] [PATCH] sup color customization
+In-Reply-To: <1211751572-sup-9094@Hel>
+References: <1211751572-sup-9094@Hel>
+Message-ID: <1212459482-sup-7402@entry>
+
+Hi Lionel,
+
+This looks great. But I think the patch was corrupted, somewhere around
+these lines. Can you please resend?
+
+Reformatted excerpts from Lionel Ott's message of 2008-05-25:
+> +    :starred_patina => { :fg => "yellow", :bg => "green", :attrs => ["bold"] },
+> +    :alternate_starrte_colormap
+>    end
+>  
+>    def add sym, fg, bg, attr=nil, opts={}
+> @@ -108,6 +149,43 @@ class Colormap
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun  2 22:34:04 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 02 Jun 2008 19:34:04 -0700
+Subject: [sup-talk] [bug] NoMemoryError on huge mbox
+In-Reply-To: <188c71690806011026u55851e39k2dd982dae28621d@mail.gmail.com>
+References: <188c71690806011026u55851e39k2dd982dae28621d@mail.gmail.com>
+Message-ID: <1212460371-sup-5830@entry>
+
+Reformatted excerpts from Gabriel Landais's message of 2008-06-01:
+>  I'm not able to load my Thunderbird mbox into sup. Added my Inbox
+> mbox with sup-add/sup-config :
+
+Interesting. This error seems to occur during a string construction.
+Others have reported weird problems with Thunderbird mbox files before,
+and I now suspect there's something screwy about their mbox format.
+Like, they use \r instead of \n for linebreaks. Which wouldn't make any
+fucking sense at all, but who knows.
+
+Can you post the output of a 
+
+  ruby -e 'p File.open("Inbox").read(1000)'
+
+so we can take a look at what these guys are doing? (Or whatever
+Thunderbird file you want instead of "Inbox".)
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From white.magic at gmx.de  Tue Jun  3 03:30:52 2008
+From: white.magic at gmx.de (Lionel Ott)
+Date: Tue, 03 Jun 2008 09:30:52 +0200
+Subject: [sup-talk] [PATCH] sup color customization
+In-Reply-To: <1212459482-sup-7402@entry>
+References: <1211751572-sup-9094@Hel> <1212459482-sup-7402@entry>
+Message-ID: <1212478040-sup-3426@Hel>
+
+Excerpts from William Morgan's message of Tue Jun 03 04:18:42 +0200 2008:
+> This looks great. But I think the patch was corrupted, somewhere around
+> these lines. Can you please resend?
+> 
+> Reformatted excerpts from Lionel Ott's message of 2008-05-25:
+> > +    :starred_patina => { :fg => "yellow", :bg => "green", :attrs => ["bold"] },
+> > +    :alternate_starrte_colormap
+> >    end
+> >  
+> >    def add sym, fg, bg, attr=nil, opts={}
+> > @@ -108,6 +149,43 @@ class Colormap
+
+Sure I'll attach it this time hopefully it won't break this way.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-sup-color-customization.patch
+Type: application/octet-stream
+Size: 9511 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080603/365d6692/attachment.obj>
+
+From gabriel.landais at gmail.com  Tue Jun  3 04:09:24 2008
+From: gabriel.landais at gmail.com (Gabriel Landais)
+Date: Tue, 3 Jun 2008 10:09:24 +0200
+Subject: [sup-talk] [bug] NoMemoryError on huge mbox
+In-Reply-To: <1212460371-sup-5830@entry>
+References: <188c71690806011026u55851e39k2dd982dae28621d@mail.gmail.com>
+	<1212460371-sup-5830@entry>
+Message-ID: <188c71690806030109u23997504w93195ebc7efd22fa@mail.gmail.com>
+
+On Tue, Jun 3, 2008 at 4:34 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Gabriel Landais's message of 2008-06-01:
+>>  I'm not able to load my Thunderbird mbox into sup. Added my Inbox
+>> mbox with sup-add/sup-config :
+>
+> Interesting. This error seems to occur during a string construction.
+> Others have reported weird problems with Thunderbird mbox files before,
+> and I now suspect there's something screwy about their mbox format.
+> Like, they use \r instead of \n for linebreaks. Which wouldn't make any
+> fucking sense at all, but who knows.
+>
+> Can you post the output of a
+>
+>  ruby -e 'p File.open("Inbox").read(1000)'
+>
+> so we can take a look at what these guys are doing? (Or whatever
+> Thunderbird file you want instead of "Inbox".)
+>
+
+Here it is (for 10, same thing for 100 000!) :
+
+[glandais at server:~/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com]
+$ ruby -e 'p File.open("Inbox").read(10)'
+"\000\000\000\000\000\000\000\000\000\000"
+
+Perhaps I just shouldn't use that mbox. I never understood how
+messages are saved in these directories. My folder looks like that :
+
+[glandais at server:~/.mozilla-thunderbird/4v86e51w.default/Mail] $ durep
+[ /home/glandais/.mozilla-thunderbird/4v86e51w.default/Mail/  520.3M ]
+ 276.2M [%%%%%%%%%%%%%%%               ]  1  53.08% Local Folders/
+     252.9M [%%%%%%%%%%%%%%%%%%%%%%%%%%%   ]  5  91.59% Inbox.sbd/
+          207.8M [%%%%%%%%%%%%%%%%%%%%%%%%      ]  5  82.16% Listes.sbd/
+               202.2M [%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ]  0  97.30% cl.sbd/
+                 5.5M [                              ]  0   2.63%
+decathlon.sbd/
+                60.0K [                              ]  0   0.03% le.sbd/
+                36.0K [                              ] 14   0.02% [FILES]
+                28.0K [                              ]  1   0.01% bricks.sbd/
+                     12.0K [%%%%%%%%%%%%                  ]  0
+42.86% tapestry.sbd/
+                      8.0K [%%%%%%%%                      ]  4  28.57% [FILES]
+                12.0K [                              ]  0   0.01% lucene.sbd/
+           31.3M [%%%                           ] 16  12.36% [FILES]
+            7.1M [                              ]  0   2.81% Projets.sbd/
+            4.5M [                              ]  0   1.77% formations.sbd/
+            2.1M [                              ]  0   0.84%
+simexplorer-si.sbd/
+          124.0K [                              ]  0   0.05% sandra.sbd/
+      23.2M [%%                            ] 15   8.41% [FILES]
+ 244.1M [%%%%%%%%%%%%%%                ]  0  46.92% pops.codelutin.com/
+
+It was just to give a try to Sup on Thunderbird, I'll try another mbox.
+
+Thanks
+
+Gabriel
+
+From benjamin.kircher at gmail.com  Tue Jun  3 07:05:46 2008
+From: benjamin.kircher at gmail.com (Benjamin Kircher)
+Date: Tue, 3 Jun 2008 13:05:46 +0200
+Subject: [sup-talk] Sup won't start after upgrade to ruby 1.8.7
+Message-ID: <73bc18b90806030405w5d345b38p3f40542c870a5626@mail.gmail.com>
+
+Hi there,
+
+
+got an exception, which is attached. I'm running the git master branch on a
+Debian sid box. Today ruby and libncurses5 got updated and Sup won't start
+anymore.
+
+Please let me know if I can provide more information.
+
+
+Benjamin
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080603/90330e6f/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080603/90330e6f/attachment.txt>
+
+From bdwalton at gmail.com  Tue Jun  3 20:39:05 2008
+From: bdwalton at gmail.com (Ben Walton)
+Date: Tue, 3 Jun 2008 20:39:05 -0400
+Subject: [sup-talk] [PATCH] maildir speedups
+In-Reply-To: <1212164782-sup-103@entry>
+References: <f96e0240804301150w5e07823cuf3b16fc7dffa759e@mail.gmail.com>
+	<1211254100-sup-9575@south>
+	<f96e0240805200924u1c991392oe36de853e208bab8@mail.gmail.com>
+	<f96e0240805201808k4bcf9947j45779b751a9abb66@mail.gmail.com>
+	<1211682829-sup-9284@south> <1212028646-sup-7356@spooky.local>
+	<f96e0240805290634x7575c75fsd7d147491d42e6ad@mail.gmail.com>
+	<1212164782-sup-103@entry>
+Message-ID: <f96e0240806031739p1ff0a45cw8a0af05c29f60103@mail.gmail.com>
+
+Ok, I took Grant's suggestion and just dropped the cleanup of the id
+-> filename mapping hash.
+
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+When one person suffers from a delusion, it is called insanity. When
+many people suffer from a delusion it is called Religion.
+Robert M. Pirsig, Zen and the Art of Motorcycle Maintenance
+
+---------------------------------------------------------------------------------------------------------------------------
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0005-maildir-cpu-usage-regression-fix.patch
+Type: text/x-diff
+Size: 1048 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080603/adff285d/attachment-0001.bin>
+
+From wmorgan-sup at masanjin.net  Tue Jun  3 22:27:12 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jun 2008 19:27:12 -0700
+Subject: [sup-talk] [PATCH] sup color customization
+In-Reply-To: <1212478040-sup-3426@Hel>
+References: <1211751572-sup-9094@Hel> <1212459482-sup-7402@entry>
+	<1212478040-sup-3426@Hel>
+Message-ID: <1212546258-sup-4914@entry>
+
+Reformatted excerpts from Lionel Ott's message of 2008-06-03:
+> Sure I'll attach it this time hopefully it won't break this way.
+
+Ok great. I've merged this into next. I tweaked it a little bit. In
+particular:
+
+1. I removed top-level "colors:" from colors.yaml.
+2. Single attributes can now be specified in one line without the array
+   syntax.
+
+So the following is a valid ~/.sup/colors.yaml:
+
+  :label:
+    :fg: green
+    :bg: black
+    :attrs: bold
+
+Enjoy!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun  3 22:42:36 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jun 2008 19:42:36 -0700
+Subject: [sup-talk] [bug] NoMemoryError on huge mbox
+In-Reply-To: <188c71690806030109u23997504w93195ebc7efd22fa@mail.gmail.com>
+References: <188c71690806011026u55851e39k2dd982dae28621d@mail.gmail.com>
+	<1212460371-sup-5830@entry>
+	<188c71690806030109u23997504w93195ebc7efd22fa@mail.gmail.com>
+Message-ID: <1212547299-sup-1634@entry>
+
+Reformatted excerpts from Gabriel Landais's message of 2008-06-03:
+> Here it is (for 10, same thing for 100 000!) :
+> 
+> [glandais at server:~/.mozilla-thunderbird/4v86e51w.default/Mail/pops.codelutin.com
+> ]
+> $ ruby -e 'p File.open("Inbox").read(10)'
+> "\000\000\000\000\000\000\000\000\000\000"
+
+Ok, well, you can't really fault Sup for that one! It's just reading
+until it gets a newline. :)
+
+Still, why would Thunderbird produce a file full of zeros?
+
+> Perhaps I just shouldn't use that mbox. I never understood how
+> messages are saved in these directories.
+
+Here's what the Thunderbird FAQ claims:
+
+  Your mail files are inside your profile (see the Profile Folder), in
+  the Mail and (if you use IMAP) ImapMail folders. Each mail folder
+  (Inbox, Sent, etc.) is stored as two files ? one with no extension
+  (e.g. INBOX), which is the mail file itself (in "mbox" format), and
+  one with an .msf extension (e.g. INBOX.msf), which is the index (Mail
+  Summary File) to the mail file. Tell the other program to import mail
+  from the file with no extension.
+
+  http://www.mozilla.org/support/thunderbird/faq
+
+Which implies to me that Inbox was the correct file. But apparently not.
+Are there any other files that look like normal mbox files?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun  3 22:49:02 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jun 2008 19:49:02 -0700
+Subject: [sup-talk] [PATCH] maildir speedups
+In-Reply-To: <f96e0240806031739p1ff0a45cw8a0af05c29f60103@mail.gmail.com>
+References: <f96e0240804301150w5e07823cuf3b16fc7dffa759e@mail.gmail.com>
+	<1211254100-sup-9575@south>
+	<f96e0240805200924u1c991392oe36de853e208bab8@mail.gmail.com>
+	<f96e0240805201808k4bcf9947j45779b751a9abb66@mail.gmail.com>
+	<1211682829-sup-9284@south> <1212028646-sup-7356@spooky.local>
+	<f96e0240805290634x7575c75fsd7d147491d42e6ad@mail.gmail.com>
+	<1212164782-sup-103@entry>
+	<f96e0240806031739p1ff0a45cw8a0af05c29f60103@mail.gmail.com>
+Message-ID: <1212547727-sup-7221@entry>
+
+Reformatted excerpts from Ben Walton's message of 2008-06-03:
+> Ok, I took Grant's suggestion and just dropped the cleanup of the id
+> -> filename mapping hash.
+
+Merged right in. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun  3 22:57:58 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jun 2008 19:57:58 -0700
+Subject: [sup-talk] Sup won't start after upgrade to ruby 1.8.7
+In-Reply-To: <73bc18b90806030405w5d345b38p3f40542c870a5626@mail.gmail.com>
+References: <73bc18b90806030405w5d345b38p3f40542c870a5626@mail.gmail.com>
+Message-ID: <1212548156-sup-6578@entry>
+
+Reformatted excerpts from Benjamin Kircher's message of 2008-06-03:
+> got an exception, which is attached. I'm running the git master branch
+> on a Debian sid box. Today ruby and libncurses5 got updated and Sup
+> won't start anymore.
+
+Gah. This doesn't even make any sense:
+
+> --- ArgumentError from thread: main
+> wrong number of arguments (2 for 1)
+> /home/benjamin/projects/sup/lib/sup/index.rb:422:in `respond_to?'
+> /home/benjamin/projects/sup/lib/sup/index.rb:422:in `flatten'
+
+There's no call to respond_to? in there.
+
+I guess I should download 1.8.7 and see what they've done. Maybe Hash.[]
+has changed?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun  3 23:05:53 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jun 2008 20:05:53 -0700
+Subject: [sup-talk] [PATCH] adding a reply-to hook for setting the
+	default reply-to mode
+In-Reply-To: <1212248837-sup-4199@archie>
+References: <1212248837-sup-4199@archie>
+Message-ID: <1212548710-sup-5523@entry>
+
+Merged in to next. Thanks!
+
+Reformatted excerpts from its.jeff.balogh's message of 2008-05-31:
+> Trying again, hopefully the docs are better now.  If there's a better
+> way to pretty-print the array, I'd be glad to know it.
+
+You could use REPLY_TYPES.inspect.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From fedzor at gmail.com  Wed Jun  4 14:26:17 2008
+From: fedzor at gmail.com (fedzor)
+Date: Wed, 4 Jun 2008 14:26:17 -0400
+Subject: [sup-talk]  Checking for unexpected types
+Message-ID: <2747A2E5-4957-45B5-AC5F-605A3196F874@gmail.com>
+
+Yes, this could very well turn into a "dynamic vs. static" debate,  
+but I don't want it to.
+
+--- SystemExit from thread: main
+undefined method `each' for false:FalseClass
+/Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:64:in  
+`select'
+/Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/buffer.rb: 
+31:in `nonblocking_getch'
+/Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:227
+/Users/ari/local/lib/ruby/gems/1.8/bin/sup:19:in `load'
+/Users/ari/local/lib/ruby/gems/1.8/bin/sup:19
+
+I get way too many of these. Maybe it's because I'm using gmail and  
+it just gets sooooooo many hits that some get lost, but I'm tired of  
+it. I want to switch over to sup full-time, but I can't because it  
+crashes often, when I scroll down too much or when it tries to load a  
+lot of emails.
+
+So... Is this some other problem, or should I go through and add a  
+bunch of "unless type === Something" throughout the code?
+
+Option two.... Add NilClass#coerce
+
+Is it worth doing this? I'm going to fix this either way, so the  
+question is.... Which will impact performance the least? Ruby is  
+interpreted so I don't have to worry about screwing up branch  
+prediction, but I'm worried about method calls.
+
+Mr. Morgan, any advice for which path I should take?
+
+Thanks,
+-------------------------------------------------------|
+~ Ari
+".. NOT INTENDED FOR USE IN ... NUCLEAR FACILITIES, AIRCRAFT  
+NAVIGATION ... LIFE SUPPORT MACHINES" - iTunes EULA
+
+
+From wmorgan-sup at masanjin.net  Wed Jun  4 15:12:39 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 04 Jun 2008 12:12:39 -0700
+Subject: [sup-talk] Checking for unexpected types
+In-Reply-To: <2747A2E5-4957-45B5-AC5F-605A3196F874@gmail.com>
+References: <2747A2E5-4957-45B5-AC5F-605A3196F874@gmail.com>
+Message-ID: <1212605536-sup-2572@entry>
+
+Reformatted excerpts from fedzor's message of 2008-06-04:
+> --- SystemExit from thread: main
+> undefined method `each' for false:FalseClass
+> /Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:64:in  
+> `select'
+> /Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/buffer.rb: 
+> 31:in `nonblocking_getch'
+> /Users/ari/local//lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:227
+> /Users/ari/local/lib/ruby/gems/1.8/bin/sup:19:in `load'
+> /Users/ari/local/lib/ruby/gems/1.8/bin/sup:19
+> 
+> I get way too many of these. Maybe it's because I'm using gmail and
+> it just gets sooooooo many hits that some get lost, but I'm tired of
+> it. I want to switch over to sup full-time, but I can't because it
+> crashes often, when I scroll down too much or when it tries to load a
+> lot of emails.
+
+Interesting. Sup rarely crashes for me any more, and I make it work
+pretty hard. I don't use IMAP, so that might be the difference. (Pretty
+much everyone seems to have problems with the Ruby IMAP library.)
+
+I don't think typechecking is the right way to handle this. Typically a
+NME is a symptom of something else being wrong (like NPEs in Java), so
+fixing that is just symptomatic medicine.
+
+The backtrace above doesn't make any sense. 'Undefined method' generates
+a NoMethodError, not a SystemExit, and there's no select method in
+sup.rb. This is a sign that something weird is happening with threads
+and exception handling.
+
+So, if you can make this happen consistently, then I would recommend
+trying to track down the source(s) of the problem. Is it just one line?
+Or is it really a systematic problem throughout Sup?
+
+Things to try:
+ - apply commit 7f2af9ac8bc70ff41b0dc64eccd068118abe19f2, which I've
+   just merged into master and next. This requires fastthread, and adds
+   some synchronization around the exception handling. I've attached the
+   patch for your convenience, though I'm not sure if it will apply
+   cleanly to 0.5. This might help produce intelligence backtraces.
+
+ - Run sup with -n (which turns off threading) and see if you can get a
+   real backtrace for the above error.
+
+ - Use offlineimap and see if you can still induce the exceptions.
+-- 
+William <wmorgan-sup at masanjin.net>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-exception-cleanup-synchronize-access-and-require-f.patch
+Type: application/octet-stream
+Size: 3228 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080604/d946b7d4/attachment.obj>
+
+From white.magic at gmx.de  Thu Jun  5 16:13:26 2008
+From: white.magic at gmx.de (Lionel Ott)
+Date: Thu, 05 Jun 2008 22:13:26 +0200
+Subject: [sup-talk] [PATCH] sup color customization
+In-Reply-To: <1212546258-sup-4914@entry>
+References: <1211751572-sup-9094@Hel> <1212459482-sup-7402@entry>
+	<1212478040-sup-3426@Hel> <1212546258-sup-4914@entry>
+Message-ID: <1212696570-sup-2700@Hel>
+
+Excerpts from William Morgan's message of Wed Jun 04 04:27:12 +0200 2008:
+> Reformatted excerpts from Lionel Ott's message of 2008-06-03:
+> > Sure I'll attach it this time hopefully it won't break this way.
+> 
+> Ok great. I've merged this into next. I tweaked it a little bit. In
+> particular:
+> 
+> 1. I removed top-level "colors:" from colors.yaml.
+> 2. Single attributes can now be specified in one line without the array
+>    syntax.
+> 
+> So the following is a valid ~/.sup/colors.yaml:
+> 
+>   :label:
+>     :fg: green
+>     :bg: black
+>     :attrs: bold
+> 
+> Enjoy!
+
+Cool, I also pondered whether I should remove the colors: thing from the
+config file but decided to leave it in because I couldn't decide between
+leaving it in and taking it out :-)
+The single attribute change is good, I didn't think too much about
+streamlining the config.
+
+From zkriner at gmail.com  Wed Jun 11 12:21:15 2008
+From: zkriner at gmail.com (zak kriner)
+Date: Wed, 11 Jun 2008 12:21:15 -0400
+Subject: [sup-talk] Sup won't start after upgrade to ruby 1.8.7
+In-Reply-To: <1212548156-sup-6578@entry>
+References: <73bc18b90806030405w5d345b38p3f40542c870a5626@mail.gmail.com>
+	<1212548156-sup-6578@entry>
+Message-ID: <ed09dda40806110921x436ebb92l79710cd486e5761@mail.gmail.com>
+
+After googling around, looks like ruby 1.8.7 includes an optional
+argument to change the Array.flatten depth
+<http://www.rubyinside.com/ruby-187-released-912.html>. The default
+behavior looks like it should be the same as 1.8.6, but I get the same
+error as Benjamin. Patch below restores something similar to the old
+behavior, which get things up and running again on my setup
+(debian/sid).
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index ceaf0b8..37c26b0 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -399,6 +399,20 @@ class Array
+
+   def to_boolean_h; Hash[*map { |x| [x, true] }.flatten]; end
+
++  if RUBY_VERSION == '1.8.7'
++    def flatten
++      ret = []
++      self.each do |o|
++        if o.is_a?(Array)
++          ret.push(*(o.flatten))
++        else
++          ret << o
++        end
++      end
++      ret
++    end
++  end
++
+   def last= e; self[-1] = e end
+   def nonempty?; !empty? end
+ end
+
+
+On Tue, Jun 3, 2008 at 10:57 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+>
+> Reformatted excerpts from Benjamin Kircher's message of 2008-06-03:
+> > got an exception, which is attached. I'm running the git master branch
+> > on a Debian sid box. Today ruby and libncurses5 got updated and Sup
+> > won't start anymore.
+>
+> Gah. This doesn't even make any sense:
+>
+> > --- ArgumentError from thread: main
+> > wrong number of arguments (2 for 1)
+> > /home/benjamin/projects/sup/lib/sup/index.rb:422:in `respond_to?'
+> > /home/benjamin/projects/sup/lib/sup/index.rb:422:in `flatten'
+>
+> There's no call to respond_to? in there.
+>
+> I guess I should download 1.8.7 and see what they've done. Maybe Hash.[]
+> has changed?
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From bburky at bburky.com  Wed Jun 11 21:47:26 2008
+From: bburky at bburky.com (Blake Burkhart)
+Date: Wed, 11 Jun 2008 20:47:26 -0500
+Subject: [sup-talk] Comments from a new user and a question about spam
+Message-ID: <1213235070-sup-7881@ellipsis.bburky.com>
+
+First, I'd like to say that sup is great. I realized that it would be good to
+use a console email client would be simpler, less complicated, and just seemed
+cool a while back. However, I chose to try out mutt and it became a lot more
+complicated instead. Sup however, is fantastic. Not to complicated, all the
+features you need and still fairly simple to use.
+
+However, I can't find an easy way to deal with spam using sup. Before, I was
+moving any spam to a separate IMAP folder on the server and had a script running
+with cron that sent the entire spam folder to spamassassin's Bayesian training 
+program, sa-learn, so it could learn it was spam. Afterwards, it moved the 
+contents of the spam folder to the trash folder.
+
+Now, the script still runs and sup doesn't seem to have too much of a problem
+with email disappearing from it's mailbox other than needing to run "sup-sync
+--changed" on the spam mailbox. However, I now have no way to send any new
+messages to the IMAP spam folder so they are taught to the Bayesian filter
+because sup simply adds the spam label to messages to mark them as spam.
+
+I was wondering if there was anyway a ruby script could search for any messages
+with the spam label, get the filenames of the messages, move the messages to
+the other folder, run offlineimap to sync them over, and then run "sup-sync
+--changed" on the spam mailbox. However, I'm currently stil teaching my self
+ruby (for the purpose of learning Ruby on Rails) and I have no idea if there's
+anyway to access the files from inside sup.
+
+Of course if there's any easier way to move the messages with the spam label
+that would be nice too.
+
+Thanks
+-- 
+Blake Burkhart
+
+From marc.hartstein at alum.vassar.edu  Thu Jun 12 12:05:46 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Thu, 12 Jun 2008 12:05:46 -0400
+Subject: [sup-talk] [PATCH] add reply-from hook for user-defined handling of
+	default from in replies
+In-Reply-To: <1209484583-sup-8823@south>
+References: <1209484583-sup-8823@south>
+Message-ID: <1213286746-24268-1-git-send-email-marc.hartstein@alum.vassar.edu>
+
+The reply-from hook can now be used to process headers in a different manner
+than the default for purposes of generating a default From: header when
+replying to an email.
+---
+ lib/sup/modes/reply-mode.rb |   23 ++++++++++++++++++++++-
+ 1 files changed, 22 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index e7b2929..d6a7dc6 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -19,6 +19,16 @@ Return value:
+   A string containing the text of the quote line (can be multi-line)
+ EOS
+ 
++  HookManager.register "reply-from", <<EOS
++Selects a default address for the From: header of a new reply.
++Variables:
++  message: a message object representing the message being replied to
++    (useful values include message.recipient_email, message.to, and message.cc)
++Return value:
++  A Person to be used as the default for the From: header, or nil to use the
++  default behavior.
++EOS
++
+   def initialize message
+     @m = message
+ 
+@@ -29,8 +39,19 @@ EOS
+ 
+     ## first, determine the address at which we received this email. this will
+     ## become our From: address in the reply.
++    hook_reply_from = HookManager.run "reply-from", :message => @m
++
++    ## sanity check that selection is a Person (or we'll fail below)
++    ## don't check that it's an Account, though; assume they know what they're doing.
++    if hook_reply_from && !(hook_reply_from.is_a? Person)
++        Redwood::log "reply-from returned non-Person, using default from."
++        hook_reply_from = nil
++    end
++
+     from =
+-      if @m.recipient_email && AccountManager.is_account_email?(@m.recipient_email)
++      if hook_reply_from
++        hook_reply_from
++      elsif @m.recipient_email && AccountManager.is_account_email?(@m.recipient_email)
+         PersonManager.person_for(@m.recipient_email)
+       elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+         b
+-- 
+1.5.3.7
+
+
+From marc.hartstein at alum.vassar.edu  Thu Jun 12 12:12:35 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Thu, 12 Jun 2008 12:12:35 -0400
+Subject: [sup-talk] [PATCH] add reply-from hook for user-defined
+	handling of default from in replies
+In-Reply-To: <1213286746-24268-1-git-send-email-marc.hartstein@alum.vassar.edu>
+References: <1209484583-sup-8823@south>
+	<1213286746-24268-1-git-send-email-marc.hartstein@alum.vassar.edu>
+Message-ID: <1213286886-sup-3009@cabinet>
+
+Excerpts from Marc Hartstein's message of Thu Jun 12 12:05:46 -0400 2008:
+> The reply-from hook can now be used to process headers in a different manner
+> than the default for purposes of generating a default From: header when
+> replying to an email.
+
+Note that this patch is against master; it requires a bit of (trivial)
+handholding to apply to next, as patch cannot figure out how to apply it
+with the excellent reply-to patch in place.
+
+I decided to check that the return value is a Person (else later code
+would fail), but not to confirm that it's actually a registered Account
+-- if someone wants to do something weird like that, I'll assume they
+meant to.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080612/5f4b8fce/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Thu Jun 12 15:35:16 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 12 Jun 2008 12:35:16 -0700
+Subject: [sup-talk] Comments from a new user and a question about spam
+In-Reply-To: <1213235070-sup-7881@ellipsis.bburky.com>
+References: <1213235070-sup-7881@ellipsis.bburky.com>
+Message-ID: <1213298358-sup-5660@entry>
+
+Reformatted excerpts from Blake Burkhart's message of 2008-06-11:
+> I was wondering if there was anyway a ruby script could search for any
+> messages with the spam label, get the filenames of the messages, move
+> the messages to the other folder, run offlineimap to sync them over,
+> and then run "sup-sync --changed" on the spam mailbox. However, I'm
+> currently stil teaching my self ruby (for the purpose of learning Ruby
+> on Rails) and I have no idea if there's anyway to access the files
+> from inside sup.
+
+There's a tool call sup-sync-back which can remove spam-labeled messages
+from an mbox file, which is the or less what you want. Extending it to
+work with Maildir has been on the todo list a long time. I've added that
+as an  official ditz issue:
+
+http://sup.rubyforge.org/ditz/issue-57668c69d0190d6e849309834d4ad1d215efa779.html
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bburky at bburky.com  Sun Jun 15 18:18:13 2008
+From: bburky at bburky.com (Blake Burkhart)
+Date: Sun, 15 Jun 2008 17:18:13 -0500
+Subject: [sup-talk] Comments from a new user and a question about spam
+In-Reply-To: <1213298358-sup-5660@entry>
+References: <1213235070-sup-7881@ellipsis.bburky.com>
+	<1213298358-sup-5660@entry>
+Message-ID: <1213567855-sup-4722@ellipsis.bburky.com>
+
+Excerpts from William Morgan's message of Thu Jun 12 14:35:16 -0500 2008:
+> There's a tool call sup-sync-back which can remove spam-labeled messages
+> from an mbox file, which is the or less what you want.
+
+Wow, I completely missed that particular program when I was looking for a way to
+move the spam. The name "sup-sync-back" isn't the most descriptive name for what
+it does though. Yeah that's exactly what I'm looking for. If its move option worked
+on maildirs that would work perfectly.
+
+> Extending it to work with Maildir has been on the todo list a long time.
+
+Yeah, that would be nice. I don't hardly know ruby (yet) so I won't offer to help,
+but that's great.
+-- 
+Blake Burkhart
+
+From bdwalton at gmail.com  Tue Jun 17 15:02:59 2008
+From: bdwalton at gmail.com (Ben Walton)
+Date: Tue, 17 Jun 2008 15:02:59 -0400
+Subject: [sup-talk] [PATCH] filter-person hook
+Message-ID: <f96e0240806171202v64296c26s54b7c7386ed95dee@mail.gmail.com>
+
+Hi All,
+
+After being a little frustrated with the PersonManager machinery and
+what it did to mail from our ticketing system, I decided to go in a
+rip out that code (as William mentioned might be worthwhile some time
+back).  I did this but wasn't thrilled with the result...all threads
+in the index are initially displayed without the 'proper' names on
+them.  In most cases, the PersonManager code was doing the right thing
+(at least in my view) and I like the functionality overall.
+
+In light of this I decided to add a hook instead that lets the user
+determine on the fly whether or not to cache display names in the
+PersonManager.  The attached patch adds the filter-person hook to
+accomplish this.  The hook is passed a person object and should return
+a boolean value.  A true value indicates that the person object for
+the specific piece of mail should be returned, thus giving sup the
+name attached to the individual piece of mail.  False indicates that
+the 'best' name as cached by PersonManager will be used.  I've been
+running this patch for about a week and am happy with it.  A colleague
+has also been using it.
+
+I hope you'll find it useful as well.  I think it's a "best of both
+worlds" type approach!
+
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+When one person suffers from a delusion, it is called insanity. When
+many people suffer from a delusion it is called Religion.
+Robert M. Pirsig, Zen and the Art of Motorcycle Maintenance
+
+---------------------------------------------------------------------------------------------------------------------------
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Added-filter-person-hook.patch
+Type: text/x-diff
+Size: 2560 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080617/e858d40f/attachment.bin>
+
+From decklin at red-bean.com  Wed Jun 18 16:25:56 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Wed, 18 Jun 2008 16:25:56 -0400
+Subject: [sup-talk] [PATCH] respond_to? needs include_private argument
+Message-ID: <1213819628-sup-7961@jobim>
+
+Sup started mysteriously bailing out on me today after an apt-get
+update with stuff like this:
+
+--- ArgumentError from thread: main
+wrong number of arguments (2 for 1)
+/usr/lib/ruby/1.8/sup/index.rb:424:in `respond_to?'
+/usr/lib/ruby/1.8/sup/index.rb:424:in `flatten'
+/usr/lib/ruby/1.8/sup/index.rb:424:in `load_sources'
+/usr/lib/ruby/1.8/sup/index.rb:108:in `load'
+/usr/lib/ruby/1.8/sup/util.rb:497:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:497:in `method_missing'
+/usr/bin/sup:122
+
+I did some digging and it seems like when Array#flatten, in attempting
+to figure out if it can flatten some list element recursively, sends
+it :respond_to? with both arguments -- I didn't even know there was a
+second one (defaults to false; see docs). But this only happened recently
+or something.
+
+Here's somewhere else this came up:
+http://www.ruby-forum.com/topic/154938
+
+So, the fix is exactly the same. Should work fine on old Ruby as well.
+Weep for our poor one-liner methods; they just weren't cut out for this
+harsh world...
+
+Also: Hi everyone. I am the future Debian maintainer of sup.
+
+---
+ lib/sup/util.rb |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index ceaf0b8..9909022 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -108,7 +108,9 @@ class Module
+   def defer_all_other_method_calls_to obj
+     class_eval %{
+       def method_missing meth, *a, &b; @#{obj}.send meth, *a, &b; end
+-      def respond_to? meth; @#{obj}.respond_to?(meth); end
++      def respond_to?(m, include_private = false)
++        @#{obj}.respond_to?(m, include_private)
++      end
+     }
+   end
+ end
+@@ -527,7 +529,9 @@ class Recoverable
+   def to_yaml x; __pass :to_yaml, x; end
+   def is_a? c; @o.is_a? c; end
+ 
+-  def respond_to? m; @o.respond_to? m end
++  def respond_to?(m, include_private=false)
++    @o.respond_to?(m, include_private)
++  end
+ 
+   def __pass m, *a, &b
+     begin
+-- 
+1.5.5.3
+
+
+-- 
+Decklin Foster <dfoster at wjh.harvard.edu>
+1208 William James Hall - Affective Neuroscience Lab
+806 WJH, Social Neuroscience and Psychopathology Lab
+Home: decklin at red-bean.com / Mobile: +1 860 978 4848
+
+From rgh at roughage.com.au  Wed Jun 18 18:21:06 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Thu, 19 Jun 2008 08:21:06 +1000
+Subject: [sup-talk] [PATCH] respond_to? needs include_private argument
+In-Reply-To: <1213819628-sup-7961@jobim>
+References: <1213819628-sup-7961@jobim>
+Message-ID: <1213827628-sup-9329@wrasse>
+
+Are you using ruby 1.8.7? I found this.
+
+rgh
+
+Excerpts from Decklin Foster's message of Thu Jun 19 06:25:56 +1000 2008:
+> Sup started mysteriously bailing out on me today after an apt-get
+> update with stuff like this:
+> 
+> --- ArgumentError from thread: main
+> wrong number of arguments (2 for 1)
+> /usr/lib/ruby/1.8/sup/index.rb:424:in `respond_to?'
+> /usr/lib/ruby/1.8/sup/index.rb:424:in `flatten'
+> /usr/lib/ruby/1.8/sup/index.rb:424:in `load_sources'
+> /usr/lib/ruby/1.8/sup/index.rb:108:in `load'
+> /usr/lib/ruby/1.8/sup/util.rb:497:in `send'
+> /usr/lib/ruby/1.8/sup/util.rb:497:in `method_missing'
+> /usr/bin/sup:122
+> 
+> I did some digging and it seems like when Array#flatten, in attempting
+> to figure out if it can flatten some list element recursively, sends
+> it :respond_to? with both arguments -- I didn't even know there was a
+> second one (defaults to false; see docs). But this only happened recently
+> or something.
+> 
+> Here's somewhere else this came up:
+> http://www.ruby-forum.com/topic/154938
+> 
+> So, the fix is exactly the same. Should work fine on old Ruby as well.
+> Weep for our poor one-liner methods; they just weren't cut out for this
+> harsh world...
+> 
+> Also: Hi everyone. I am the future Debian maintainer of sup.
+> 
+> ---
+>  lib/sup/util.rb |    8 ++++++--
+>  1 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+> index ceaf0b8..9909022 100644
+> --- a/lib/sup/util.rb
+> +++ b/lib/sup/util.rb
+> @@ -108,7 +108,9 @@ class Module
+>    def defer_all_other_method_calls_to obj
+>      class_eval %{
+>        def method_missing meth, *a, &b; @#{obj}.send meth, *a, &b; end
+> -      def respond_to? meth; @#{obj}.respond_to?(meth); end
+> +      def respond_to?(m, include_private = false)
+> +        @#{obj}.respond_to?(m, include_private)
+> +      end
+>      }
+>    end
+>  end
+> @@ -527,7 +529,9 @@ class Recoverable
+>    def to_yaml x; __pass :to_yaml, x; end
+>    def is_a? c; @o.is_a? c; end
+>  
+> -  def respond_to? m; @o.respond_to? m end
+> +  def respond_to?(m, include_private=false)
+> +    @o.respond_to?(m, include_private)
+> +  end
+>  
+>    def __pass m, *a, &b
+>      begin
+
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+
+From rgh at roughage.com.au  Wed Jun 18 20:35:45 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Thu, 19 Jun 2008 10:35:45 +1000
+Subject: [sup-talk] [PATCH] respond_to? needs include_private argument
+In-Reply-To: <1213827628-sup-9329@wrasse>
+References: <1213819628-sup-7961@jobim> <1213827628-sup-9329@wrasse>
+Message-ID: <1213835687-sup-9093@wrasse>
+
+Please disregard my last. I really mustn't reply to emails before my morning
+coffee!
+
+rgh
+
+<snip>
+
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+
+From jof at thejof.com  Wed Jun 18 08:00:23 2008
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Wed, 18 Jun 2008 05:00:23 -0700
+Subject: [sup-talk] sup crashes while performing general searches
+Message-ID: <20080618120023.GA18676@sfo.thejof.com>
+
+Hi,
+
+I'm mailing the list as prompted to do so by the cute crash banner.
+
+I'm just trying sup out for the first several times, and I've added a single Maildir source in my local home directory.
+
+I find that when doing a general search ("\") that returns more than 5 results or so, sup crashes.
+
+For example, when I do a general search for "banana", I get two messages in my inbox just fine. However, if I perform a search for "hello" (should be ~80 results), sup crashes with the attached error.
+
+--jonathan
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+invalid source 2
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/index.rb:362:in `build_message'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/index.rb:261:in `each_id_by_date'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/thread.rb:330:in `call'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/thread.rb:330:in `load_n_threads'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/index.rb:261:in `each_id_by_date'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/index.rb:261:in `each'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/index.rb:261:in `each_id_by_date'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/thread.rb:326:in `load_n_threads'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:493:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:477:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:60:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `new'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:476:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/thread-index-mode.rb:546:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/modes/search-results-mode.rb:34:in `spawn_from_query'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:262
+/var/lib/gems/1.8/bin/sup:18:in `load'
+/var/lib/gems/1.8/bin/sup:18
+--- SystemExit from thread: main
+invalid source 2
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup.rb:64:in `select'
+/var/lib/gems/1.8/gems/sup-0.5/lib/sup/buffer.rb:31:in `nonblocking_getch'
+/var/lib/gems/1.8/gems/sup-0.5/bin/sup:227
+/var/lib/gems/1.8/bin/sup:18:in `load'
+/var/lib/gems/1.8/bin/sup:18
+
+From wmorgan-sup at masanjin.net  Thu Jun 19 13:46:02 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jun 2008 10:46:02 -0700
+Subject: [sup-talk] [PATCH] filter-person hook
+In-Reply-To: <f96e0240806171202v64296c26s54b7c7386ed95dee@mail.gmail.com>
+References: <f96e0240806171202v64296c26s54b7c7386ed95dee@mail.gmail.com>
+Message-ID: <1213897545-sup-4363@entry>
+
+Reformatted excerpts from Ben Walton's message of 2008-06-17:
+> I hope you'll find it useful as well.  I think it's a "best of both
+> worlds" type approach!
+
+Sounds like a good compromise. I'll take a look at it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jun 19 13:55:11 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jun 2008 10:55:11 -0700
+Subject: [sup-talk] [PATCH] respond_to? needs include_private argument
+In-Reply-To: <1213819628-sup-7961@jobim>
+References: <1213819628-sup-7961@jobim>
+Message-ID: <1213898052-sup-423@entry>
+
+Reformatted excerpts from Decklin Foster's message of 2008-06-18:
+> I did some digging and it seems like when Array#flatten, in attempting
+> to figure out if it can flatten some list element recursively, sends
+> it :respond_to? with both arguments -- I didn't even know there was a
+> second one (defaults to false; see docs). But this only happened recently
+> or something.
+
+That makes sense. Either the second argument, or the fact that
+Array#flatten uses both arguments, is what's changed in 1.8.7.
+
+I've merged the patch directly into master.
+
+> Also: Hi everyone. I am the future Debian maintainer of sup.
+
+Whoo!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jun 19 13:56:12 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jun 2008 10:56:12 -0700
+Subject: [sup-talk] [PATCH] add reply-from hook for user-defined
+	handling of default from in replies
+In-Reply-To: <1213286886-sup-3009@cabinet>
+References: <1209484583-sup-8823@south>
+	<1213286746-24268-1-git-send-email-marc.hartstein@alum.vassar.edu>
+	<1213286886-sup-3009@cabinet>
+Message-ID: <1213898133-sup-8961@entry>
+
+Reformatted excerpts from marc.hartstein's message of 2008-06-12:
+> Excerpts from Marc Hartstein's message of Thu Jun 12 12:05:46 -0400 2008:
+> > The reply-from hook can now be used to process headers in a different manner
+> > than the default for purposes of generating a default From: header when
+> > replying to an email.
+
+In next. Thanks!
+
+> I decided to check that the return value is a Person (else later code
+> would fail), but not to confirm that it's actually a registered
+> Account -- if someone wants to do something weird like that, I'll
+> assume they meant to.
+
+I think that makes sense.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Jun 20 11:42:27 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 20 Jun 2008 08:42:27 -0700
+Subject: [sup-talk] sup crashes while performing general searches
+In-Reply-To: <20080618120023.GA18676@sfo.thejof.com>
+References: <20080618120023.GA18676@sfo.thejof.com>
+Message-ID: <1213976320-sup-9842@entry>
+
+Hi Jonathan,
+
+Reformatted excerpts from Jonathan Lassoff's message of 2008-06-18:
+> --- RuntimeError from thread: load threads for thread-index-mode
+> invalid source 2
+
+It looks like there's a source referenced in your index file that didn't
+appear in your sources.yaml. Did you manually edit your list of sources,
+or somehow otherwise create this situation? Deleting a source from the
+list may also do this.
+
+The quick answer is to regenerate your index from scratch; then
+everything should be synced up with your sources.yaml file. Something
+like:
+   rm -rf ~/.sup/ferret
+   sup-sync --all-sources
+
+Of course that may take some time, depending on how much email you have.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From guillaume.quintard at gmail.com  Sat Jun 21 18:05:58 2008
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Sat, 21 Jun 2008 15:05:58 -0700
+Subject: [sup-talk] Can't even run sup anymore
+Message-ID: <1e5fdab70806211505p5146fd10le45d8853ec5ca31c@mail.gmail.com>
+
+Here's the trace:
+
+shivan at altis:~/sup$ sup
+[Sat Jun 21 15:05:12 -0700 2008] using character set encoding "UTF-8"
+[Sat Jun 21 15:05:12 -0700 2008] locking /home/shivan/.sup/lock...
+[Sat Jun 21 15:05:12 -0700 2008] crypto: detected gpg binary in /usr/bin/gpg
+[Sat Jun 21 15:05:12 -0700 2008] loading index...
+[Sat Jun 21 15:05:12 -0700 2008] stopped cursing
+[Sat Jun 21 15:05:12 -0700 2008] oh crap, an exception
+[Sat Jun 21 15:05:12 -0700 2008] unlocking /home/shivan/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of ~/.sup/exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- IOError from thread: main
+IO Error occured at <except.c>:93 in xraise
+Error occured in index.c:901 - sis_find_segments_file
+	Error reading the segment infos. Store listing was
+
+
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:736:in `initialize'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:736:in `new'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:736:in
+`ensure_reader_open'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:591:in `size'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/var/lib/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:590:in `size'
+./lib/sup/index.rb:140:in `load_index'
+./lib/sup/index.rb:109:in `load'
+./lib/sup/util.rb:499:in `send'
+./lib/sup/util.rb:499:in `method_missing'
+bin/sup:122
+
+
+-- 
+Guillaume
+
+From wmorgan-sup at masanjin.net  Sat Jun 21 22:36:18 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 21 Jun 2008 19:36:18 -0700
+Subject: [sup-talk] Can't even run sup anymore
+In-Reply-To: <1e5fdab70806211505p5146fd10le45d8853ec5ca31c@mail.gmail.com>
+References: <1e5fdab70806211505p5146fd10le45d8853ec5ca31c@mail.gmail.com>
+Message-ID: <1214101954-sup-8941@entry>
+
+Reformatted excerpts from guillaume.quintard's message of 2008-06-21:
+> IO Error occured at <except.c>:93 in xraise
+> Error occured in index.c:901 - sis_find_segments_file
+>     Error reading the segment infos. Store listing was
+
+This is the classic Sup+ferret error. No one really knows what the heck
+is going on, although there's a guess it has to do with open files:
+  http://ferret.davebalmain.com/trac/ticket/279
+
+I've had success before with sup-sync --optimize. You can try that.
+Otherwise, it's rebuild the index and bug Dave Balmain...
+
+I am working on something where flags are backed up to a BDB store on
+disk, which is yet more disk space consumed by Su, but at least means
+that if Ferret barfs you don't lose all your message flags. Of course,
+that doesn't help you right now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From guillaume.quintard at enst-bretagne.fr  Sun Jun 22 14:16:19 2008
+From: guillaume.quintard at enst-bretagne.fr (Guillaume Quintard)
+Date: Sun, 22 Jun 2008 11:16:19 -0700
+Subject: [sup-talk] Can't even run sup anymore
+In-Reply-To: <1214101954-sup-8941@entry>
+References: <1e5fdab70806211505p5146fd10le45d8853ec5ca31c@mail.gmail.com>
+	<1214101954-sup-8941@entry>
+Message-ID: <1e5fdab70806221116j6f8fecbeg89806fb997321609@mail.gmail.com>
+
+On Sat, Jun 21, 2008 at 7:36 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> I am working on something where flags are backed up to a BDB store on
+> disk, which is yet more disk space consumed by Su, but at least means
+> that if Ferret barfs you don't lose all your message flags. Of course,
+> that doesn't help you right now.
+
+grrrrr, bad ferret, bad.
+
+Thank you.
+
+-- 
+Guillaume
+
+From wmorgan-sup at masanjin.net  Thu Jun 26 00:18:40 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Jun 2008 21:18:40 -0700
+Subject: [sup-talk] rethinking sup
+Message-ID: <1214453905-sup-149@entry>
+
+Hi guys,
+
+I've been making an effort to blog more. Here are some recent thoughts
+on Sup and its future:
+
+  http://all-thing.net/2008/06/rethinking-sup.html
+
+If you've previously subscribed to my RSS feed, it changed locations
+when I stopped hosting my own blog, so you'll have to update it to:
+
+  http://all-thing.net/feeds/posts/default
+-- 
+William <wmorgan-sup at masanjin.net>
+

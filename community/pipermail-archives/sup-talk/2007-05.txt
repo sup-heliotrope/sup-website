@@ -1,0 +1,954 @@
+From wmorgan-sup at masanjin.net  Sun May 13 23:31:37 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 13 May 2007 20:31:37 -0700
+Subject: [sup-talk] test
+Message-ID: <1179113482-sup-5314@south>
+
+test!
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed May 16 13:44:51 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 16 May 2007 13:44:51 -0400
+Subject: [sup-talk] sup wishlist
+Message-ID: <20070516174451.GA3387@mona.jeffcovey.net>
+
+william,
+
+thanks again for all the work on sup!  i'm looking forward to trying it on
+my actual mail once a system for physically deleting sup-deleted messages is
+in place.
+
+in the meantime, i checked out the todo list, and am glad to see so many of
+my wishes already there!  :)  just to add some ideas, here are a few things
+i would miss from mutt:
+
+- the ability to pipe a message to a process.
+
+  i often use this, for example, to run a message through urlview to get a
+  list of urls to launch in a browser.
+
+- an equivalent to mutt's display_filter.
+
+  i like to have messages run through my own filter before they're displayed
+  on the screen.  i think sup's method of collapsing comments and signatures
+  works beautifully, but it can't catch everything.  for example, i like to
+  remove the ads at the bottoms of yahoo! group posts and ridiculously long
+  signatures about "this message was sent by an employee of yada yada and
+  was intended for foo foo, if it was sent to you in error, please blah blah
+  blah".
+
+- gpg support would be nice someday.  :)
+
+again, best wishes for your work.  i think it has terrific potential.
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070516/aa747200/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Wed May 16 15:36:22 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 16 May 2007 12:36:22 -0700
+Subject: [sup-talk] sup wishlist
+In-Reply-To: <20070516174451.GA3387@mona.jeffcovey.net>
+References: <20070516174451.GA3387@mona.jeffcovey.net>
+Message-ID: <1179344168-sup-5879@south>
+
+Hi Jeff,
+
+Excerpts from jeff covey's message of Wed May 16 10:44:51 -0700 2007:
+> thanks again for all the work on sup!
+
+You're welcome, and thanks for the positive comments. Keeps me
+motivated. :)
+
+> just to add some ideas, here are a few things i would miss from mutt:
+> 
+> - the ability to pipe a message to a process.
+
+Sounds good. Should be pretty easy to do.
+
+> - an equivalent to mutt's display_filter.
+> 
+>   i like to have messages run through my own filter before they're displayed
+>   on the screen.  i think sup's method of collapsing comments and signatures
+>   works beautifully, but it can't catch everything.  for example, i like to
+>   remove the ads at the bottoms of yahoo! group posts and ridiculously long
+>   signatures about "this message was sent by an employee of yada yada and
+>   was intended for foo foo, if it was sent to you in error, please blah blah
+>   blah".
+
+This should'nt be hard to do either, but the question is whether we
+should just improve the signature detection in Sup. Do you use this for
+other things?
+
+> - gpg support would be nice someday.  :)
+
+Someone is actually working on this right now!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup at chrislee.dhs.org  Thu May 17 17:24:11 2007
+From: sup at chrislee.dhs.org (Chris Lee)
+Date: Thu, 17 May 2007 17:24:11 -0400
+Subject: [sup-talk] GPG Support
+Message-ID: <D55C81AD71647428E7B489B6@Sumatra.local>
+
+Jeff,
+
+GPG support is coming along nicely right now. There are some shortcomings 
+my speedy implementation that I need feedback on.
+
+1. If all email addresses of an email have keys, then, and only then, do I 
+encrypt the email
+  - this means if you have highly sensitive info, and you miskey an 
+address, whoops it goes out unencrypted
+  * I need a way to know if the user want to encrypt and/or sign an email 
+and then alert him/her if I don't have all the required keys.
+2. I don't sign any email right now :(
+3. There is no mechanism to lookup keys from keyservers (e.g., --recv-key)
+  * We'll probably need a separate Manager to handle this
+4. The sources.yaml file is pgp encrypted now.  However, it'd be nice to 
+extend protections to non-pgp users.  Should I use openssl to encrypt the 
+config file and then have the pgp password(s) in there?
+5. I only use one GPG private key, which is not tied to the sending address 
+(it's specified in config.yaml).  This should be easy to fix if I store all 
+the passphrases in an encrypted file.
+  * Do you need this feature?
+6. You'll have to encrypt your sources.yaml file manually before the first 
+time you launch sup with pgp support.
+  * add :gpgkey: to config.yaml
+ :accounts:
+  :default:
+    :name: Chris Lee
+    :signature: /Users/chris/.signature
+    :sendmail: /usr/local/bin/esmtp -t
+    :email: 3v1l at n0spz.net
+    :alternates: []
+    :gpgkey: 14E44DBF
+  * gpg -a -e -r yourself sources.yaml
+  * cp sources.yaml.asc sources.yaml
+  * rm sources.yaml.bak
+
+  * is there a better way to do this transition?
+7. This totally breaks sup-add, sup-sync, and anything else that reads 
+sources.yaml right now
+  * this should also be easy to fix
+
+Chris
+
+
+From jeff.covey at pobox.com  Fri May 18 09:39:09 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 18 May 2007 09:39:09 -0400
+Subject: [sup-talk] sup wishlist
+In-Reply-To: <1179344168-sup-5879@south>
+References: <20070516174451.GA3387@mona.jeffcovey.net>
+	<1179344168-sup-5879@south>
+Message-ID: <20070518133908.GA1759@mona.jeffcovey.net>
+
+on Wed, May 16, 2007 at 12:36:22PM -0700%, William Morgan said:
+
+> > - an equivalent to mutt's display_filter.
+>
+> This should'nt be hard to do either, but the question is whether we should
+> just improve the signature detection in Sup. 
+
+no, there's no way to make the signature detection handle all the arbitrary
+problems that people present in their messages.  some of them just have to
+be handled manually on a case-by-case basis.  for example, one of the
+regular posters on one mailing list i read considers this a valid signature
+(and doesn't demarcate it with "-- "):
+
+> ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  VISTA SOFTWARE, DESIGNED TO RESTRICT WHAT YOU CAN DO.  www.badvista.org
+> +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> "They that can give up essential liberty to obtain a little temporary
+> safety deserve Neither liberty nor safety",    Benjamin Franklin
+> -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+>    ASCII Ribbon Campaign. . . . . . . . . . . . accessBob
+>    .NO HTML/PDF/RTF/MIME in e-mail. . . . . . . accessys at smartnospam.net
+>    .NO MSWord docs in e-mail . . . .. . . . . . Access Systems, engineers
+>    .NO attachments in e-mail, .*LINUX powered*. access is a civil right
+> *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#
+> THIS message and any attachments are CONFIDENTIAL and may be
+> privileged.  They are intended ONLY for the individual or entity named
+
+no poor regexp should be taxed with handling things like this.
+
+> Do you use this for other things?
+
+i do assorted minor cleanup and generally remove things i don't need to see.
+i'll attach the script i use, based on one from a friend.
+
+i don't know what other people do with it, but i imagine some people format
+messages with par and otherwise make other people's mail look like what they
+would want to send themselves.
+
+i find it a very useful feature for limiting what's displayed on the screen
+to just the meaningful information.  for a thread-based display like sup's,
+i think it would be doubly useful when dealing with screens full of replies.
+i wouldn't want to scroll past bob's signature again and again.
+
+> > - gpg support would be nice someday.  :)
+> 
+> Someone is actually working on this right now!
+
+awesome!  :)
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: display_filter.sh
+Type: application/x-sh
+Size: 3000 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070518/01d411d9/attachment.sh 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070518/01d411d9/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Sun May 20 19:44:33 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 20 May 2007 16:44:33 -0700
+Subject: [sup-talk] sup wishlist
+In-Reply-To: <20070518133908.GA1759@mona.jeffcovey.net>
+References: <20070516174451.GA3387@mona.jeffcovey.net>
+	<1179344168-sup-5879@south>
+	<20070518133908.GA1759@mona.jeffcovey.net>
+Message-ID: <1179704605-sup-2319@south>
+
+Excerpts from jeff covey's message of Fri May 18 06:39:09 -0700 2007:
+> no, there's no way to make the signature detection handle all the arbitrary
+> problems that people present in their messages.  some of them just have to
+> be handled manually on a case-by-case basis.  for example, one of the
+> regular posters on one mailing list i read considers this a valid signature
+> (and doesn't demarcate it with "-- "):
+
+Ok. Clearly you have a lot of special-purpose filtering which wouldn't
+make sense to have in Sup. To the extent that Sup can catch general
+cases, I'd like to do that there, but I certainly don't have any
+problems with an external display_filter-type functionality.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun May 20 19:55:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 20 May 2007 16:55:56 -0700
+Subject: [sup-talk] some new features in SVN head
+Message-ID: <1179704745-sup-2076@south>
+
+1. When viewing attachments, if the external MIME command fails, Sup
+   will now display it inline as text. I have no idea what kind of
+   tragic things happen when you try to do this with a binary file.
+   Probably ncurses will burn a whole in your screen.
+
+   (As an aside, if anyone knows how to properly launch applications on
+   OS X by MIME type, please tell me.)
+
+2. There's a new configuration option determining whether messages with
+   the same subject are grouped together in a thread, even if they don't
+   explicitly reference each other in the In-Reply-To or References
+   headers. This is useful if you get lots of mail from broken MUAs
+   which don't properly set those headers.
+
+   By default this is OFF. Previously it was ON and not configurable.
+   Turning if off speeds things up, because Sup will do additional
+   Ferret queries to find messages with the same subject that occur
+   in the recent past, which basically doubles the number of queries.
+
+   The upshot is that index loading should be faster next time you svn
+   update, until you explicitly turn this functionality back on.
+
+3. I've added a batch deletion tool, bin/sup-sync-back, which will
+   delete (or move) messages from a source which are marked as deleted
+   or spam in the Sup index. This currently only works with mbox
+   sources.
+  
+   Please be careful and make a backup before playing with this. It
+   works for me, but it's not thoroughly tested and is the first time
+   Sup has ever done anything destructive with your mail.
+
+   Currently you have to also run sup-sync --changed afterwards.
+
+Comments, bug reports, etc. are welcome.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 21 12:24:07 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 May 2007 09:24:07 -0700
+Subject: [sup-talk] also new in svn: thread autoloading
+Message-ID: <1179764581-sup-3679@south>
+
+When you scroll down beyond the boundaries of what's already there, new
+threads should be autoloaded from the index for you. No more need to
+press 'M'. Testing appreciated!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From brian at lorf.org  Wed May 23 04:49:58 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 03:49:58 -0500
+Subject: [sup-talk] multiple accounts
+Message-ID: <1179909888-sup-1320@doses>
+
+What should config.yaml look like for multiple accounts? I have several
+accounts that use different SMTP relays. My plan is to do stuff like
+:sendmail: /usr/bin/nbsmtp -c /home/brian/.nbsmtp_brian_lorf_org
+in each account, but I don't understand how to make sup use any account
+other than :default:.
+
+How do I tell sup to use a certain account when I compose a new message?
+
+
+From brian at lorf.org  Wed May 23 04:44:19 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 03:44:19 -0500
+Subject: [sup-talk] also new in svn: thread autoloading
+In-Reply-To: <1179764581-sup-3679@south>
+References: <1179764581-sup-3679@south>
+Message-ID: <1179909502-sup-4328@doses>
+
+Excerpts from William Morgan's message of Mon May 21 11:24:07 -0500 2007:
+> When you scroll down beyond the boundaries of what's already there, new
+> threads should be autoloaded from the index for you. No more need to
+> press 'M'. Testing appreciated!
+
+Thanks. It seems to work pretty well, but I think I'm seeing a related
+bug.
+
+When new mail comes in, sup says, for instance, "Loaded 2 new messages,
+2 to inbox," but no new threads appear. To make them appear, I j down
+past the last visible entry in the threads list. Then the new threads
+show up near the top.
+
+
+From brian at lorf.org  Wed May 23 04:55:44 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 03:55:44 -0500
+Subject: [sup-talk] vim as :editor:
+Message-ID: <1179910229-sup-1018@doses>
+
+In config.yaml, I'm using
+:editor: /usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'
+to get vim to do some nice syntax highlighting.
+
+I have the English spellchecking stuff for vim installed.
+
+Thought somebody might find it useful. If you're doing something else
+neat with vim, please post about it. Thanks.
+
+
+From brian at lorf.org  Wed May 23 05:12:14 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 04:12:14 -0500
+Subject: [sup-talk] IMAP and sent mail
+Message-ID: <1179910936-sup-8291@doses>
+
+I'm confused what to do about existing mail in my IMAP Sent folders.
+
+Right now, sup thinks there are holes in my threads, because it can't
+find my responses. They're in my Sent folders, and I didn't add the Sent
+folders as sources. Should I? If I did, and continued to use sup, would
+they ever change again? It seems as if they wouldn't.
+
+I could move all the sent mail into INBOX, but that seems wrong because
+then I'd have stuff I sent sitting in my inbox. Also, I don't know if
+they'd get the "sent" label.
+
+What's a good sup/IMAP strategy?
+
+
+From brian at lorf.org  Wed May 23 05:23:33 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 04:23:33 -0500
+Subject: [sup-talk] searching on subject
+Message-ID: <1179911900-sup-1786@doses>
+
+/subject:sup-talk
+finds fewer messages than
+/subject:\[sup-talk\]
+even though "sup-talk" is definitely in the subject lines of the
+messages found by the second search.
+
+I thought it was a little unintuitive.
+
+
+From brian at lorf.org  Wed May 23 05:34:52 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 04:34:52 -0500
+Subject: [sup-talk] saved searches
+Message-ID: <1179912225-sup-166@doses>
+
+I'd like it a lot if searches could be saved and search results could be
+automatically updated as new mail arrives.
+
+That is, I'd like to be able to save a search called "sup-talk" with
+query to:sup-talk at rubyforge.org. That saved search would look like a
+sup-talk folder. It'd be just like the usual search results, only new
+mails matching its query would become visible in it automatically. I
+guess a new screen would be needed to show the saved searches and the
+number of unread messages in each.
+
+I think Opera's M2 is a little like that.
+
+
+From wmorgan-sup at masanjin.net  Wed May 23 13:44:12 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 May 2007 10:44:12 -0700
+Subject: [sup-talk] IMAP and sent mail
+In-Reply-To: <1179910936-sup-8291@doses>
+References: <1179910936-sup-8291@doses>
+Message-ID: <1179941865-sup-8024@south>
+
+Excerpts from Brian's message of Wed May 23 02:12:14 -0700 2007:
+> Right now, sup thinks there are holes in my threads, because it can't
+> find my responses. They're in my Sent folders, and I didn't add the Sent
+> folders as sources. Should I?
+
+Yes.
+
+> If I did, and continued to use sup, would they ever change again? It
+> seems as if they wouldn't.
+
+Sup wouldn't alter them. If you used another client and added messages
+to that folder, then Sup would index the new messages the next time you
+ran it.
+
+Unfortunately right now Sup won't add a sent label to those messages.  I
+plan to fix that (by allowing you to attach arbitrary labels to sources,
+which are applied to all new messages from those sources) in the near
+future.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 23 13:59:18 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 May 2007 10:59:18 -0700
+Subject: [sup-talk] vim as :editor:
+In-Reply-To: <1179910229-sup-1018@doses>
+References: <1179910229-sup-1018@doses>
+Message-ID: <1179942334-sup-6097@south>
+
+Excerpts from Brian's message of Wed May 23 01:55:44 -0700 2007:
+> In config.yaml, I'm using
+> :editor: /usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'
+> to get vim to do some nice syntax highlighting.
+
+That's great! Thanks. Using it right now, and I've set it as the default
+in the absence of an $EDITOR.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 23 14:01:12 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 May 2007 11:01:12 -0700
+Subject: [sup-talk] also new in svn: thread autoloading
+In-Reply-To: <1179909502-sup-4328@doses>
+References: <1179764581-sup-3679@south> <1179909502-sup-4328@doses>
+Message-ID: <1179943192-sup-6790@south>
+
+Excerpts from Brian's message of Wed May 23 01:44:19 -0700 2007:
+> When new mail comes in, sup says, for instance, "Loaded 2 new
+> messages, 2 to inbox," but no new threads appear. To make them appear,
+> I j down past the last visible entry in the threads list. Then the new
+> threads show up near the top.
+
+This was the case for a while but I thought I fixed it a couple
+revisions ago. Does it still happen upon svn update?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From brian at lorf.org  Wed May 23 17:13:57 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 23 May 2007 16:13:57 -0500
+Subject: [sup-talk] also new in svn: thread autoloading
+In-Reply-To: <1179943192-sup-6790@south>
+References: <1179764581-sup-3679@south> <1179909502-sup-4328@doses>
+	<1179943192-sup-6790@south>
+Message-ID: <1179954811-sup-7860@doses>
+
+Excerpts from William Morgan's message of Wed May 23 13:01:12 -0500 2007:
+> Excerpts from Brian's message of Wed May 23 01:44:19 -0700 2007:
+> > When new mail comes in, sup says, for instance, "Loaded 2 new
+> > messages, 2 to inbox," but no new threads appear. To make them appear,
+> > I j down past the last visible entry in the threads list. Then the new
+> > threads show up near the top.
+> 
+> This was the case for a while but I thought I fixed it a couple
+> revisions ago. Does it still happen upon svn update?
+
+No. I think it's OK now. I guess I wasn't quite up to date. Thanks.
+
+
+From brian at lorf.org  Fri May 25 23:31:39 2007
+From: brian at lorf.org (Brian)
+Date: Fri, 25 May 2007 22:31:39 -0500
+Subject: [sup-talk] new mail notification hook
+Message-ID: <1180149989-sup-4780@doses>
+
+I'd like it if there were a global or per-account setting in config.yaml
+specifying a program to run when new mail arrives.
+
+I usually use some OSD stuff like this:
+#!/bin/sh
+figlet -w 160 -f banner3 'MAIL' | osd_cat \
+    -p bottom \
+    -A right \
+    -d 6 \
+    -l 10 \
+    -c \#61a199 \
+&
+
+So I get a nice big MAIL in my lower right hand corner for a few
+seconds.
+
+
+From jeff.covey at pobox.com  Sun May 27 15:33:13 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 27 May 2007 15:33:13 -0400
+Subject: [sup-talk] vim as :editor:
+In-Reply-To: <1179910229-sup-1018@doses>
+References: <1179910229-sup-1018@doses>
+Message-ID: <20070527193313.GA4859@mona.jeffcovey.net>
+
+on Wed, May 23, 2007 at 03:55:44AM -0500%, Brian said:
+
+> In config.yaml, I'm using
+> :editor: /usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'
+
+i'm using what i had in ~/.muttrc:
+
+vim -X -c 'set fo=tcrq' -c 'set tw=76'
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070527/4e4ab4d7/attachment.bin 
+
+From jeff.covey at pobox.com  Sun May 27 15:50:13 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 27 May 2007 15:50:13 -0400
+Subject: [sup-talk] how to avoid adding labels based on source names
+Message-ID: <20070527195013.GB4859@mona.jeffcovey.net>
+
+i haven't been quiet this week because i forgot about sup, but because i've
+been preparing for it.  :)
+
+i took part of my first week of post-spring-commitments time to tackle a
+two-year old project, going through 10+ years of email, deleting the truly
+unnecessary, and letting formail+procmail sort the rest by sender (or
+listid) and date instead of my arbitrary organizing system.
+
+so i'm taking part of the resulting archive to test the latest svn commit of
+sup, and my first question is:
+
+how do i stop sup-sync from adding a label to each message based on the name
+of its source?
+
+i have over 10,000 mbox files to add to sup's index.  the labeling feature
+will be useless to me if i have to search for my labels (not to mention
+"Draft", "Starred", etc.) among all those sup-sync added.
+
+thanks!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070527/90093bcd/attachment.bin 
+
+From jeff.covey at pobox.com  Sun May 27 15:56:10 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 27 May 2007 15:56:10 -0400
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <1180149989-sup-4780@doses>
+References: <1180149989-sup-4780@doses>
+Message-ID: <20070527195610.GA25182@mona.jeffcovey.net>
+
+on Fri, May 25, 2007 at 10:31:39PM -0500%, Brian said:
+
+> I'd like it if there were a global or per-account setting in config.yaml
+> specifying a program to run when new mail arrives.
+
+is this something that really needs to be in sup?  there are plenty of biff
+programs that could do this independently.
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070527/6bc771df/attachment.bin 
+
+From jeff.covey at pobox.com  Sun May 27 16:21:05 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 27 May 2007 16:21:05 -0400
+Subject: [sup-talk] sup-sync-back not deleting messages
+Message-ID: <20070527202105.GA10521@mona.jeffcovey.net>
+
+sup-sync-back isn't deleting messages for me; i'm getting this:
+
+[Sun May 27 16:14:25 -0400 2007] loading index...
+[Sun May 27 16:14:25 -0400 2007] loaded index of 916 messages
+Scanning mbox:///home/jeff/tmp/sup-test/umbclinux.lists.umbc.edu-2007-01...
+Scanned 119, deleted 69, moved 0 messages from mbox:///home/jeff/tmp/sup-test/umbclinux.lists.umbc.edu-2007-01.
+bin/sup-sync-back:106: undefined method `flush' for nil:NilClass (NoMethodError)
+	from bin/sup-sync-back:63:in `each'
+	from bin/sup-sync-back:63
+
+just to be sure i understand what i should be doing, i'm sitting in the
+sup/trunk directory and calling sup-sync-back as:
+
+ruby -I lib -w bin/sup-sync-back --delete-deleted mbox://[filename]
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070527/596cd5b6/attachment-0001.bin 
+
+From brian at lorf.org  Sun May 27 22:32:36 2007
+From: brian at lorf.org (Brian)
+Date: Sun, 27 May 2007 21:32:36 -0500
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <20070527195610.GA25182@mona.jeffcovey.net>
+References: <1180149989-sup-4780@doses>
+	<20070527195610.GA25182@mona.jeffcovey.net>
+Message-ID: <1180319474-sup-513@doses>
+
+Excerpts from jeff covey's message of Sun May 27 14:56:10 -0500 2007:
+> is this something that really needs to be in sup?  there are plenty of biff
+> programs that could do this independently.
+
+Well, I don't know how anything like biff could detect that I have
+unread mail in some IMAP folder. All my accounts are IMAP.
+
+It'd just be another YAML option you could leave unset if you didn't
+like it.
+
+
+From wmorgan-sup at masanjin.net  Sun May 27 22:55:19 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 May 2007 19:55:19 -0700
+Subject: [sup-talk] sup-sync-back not deleting messages
+In-Reply-To: <20070527202105.GA10521@mona.jeffcovey.net>
+References: <20070527202105.GA10521@mona.jeffcovey.net>
+Message-ID: <1180320840-sup-2297@south>
+
+Excerpts from jeff covey's message of Sun May 27 13:21:05 -0700 2007:
+> sup-sync-back isn't deleting messages for me; i'm getting this:
+
+Sorry, I messed up. Please svn update and try again.
+
+> sup/trunk directory and calling sup-sync-back as:
+> 
+> ruby -I lib -w bin/sup-sync-back --delete-deleted mbox://[filename]
+
+That's exactly right.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun May 27 23:15:55 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 May 2007 20:15:55 -0700
+Subject: [sup-talk] multiple accounts
+In-Reply-To: <1179909888-sup-1320@doses>
+References: <1179909888-sup-1320@doses>
+Message-ID: <1180321628-sup-8630@south>
+
+Excerpts from Brian's message of Wed May 23 01:49:58 -0700 2007:
+> What should config.yaml look like for multiple accounts? I have
+> several accounts that use different SMTP relays. My plan is to do
+> stuff like :sendmail: /usr/bin/nbsmtp -c
+> /home/brian/.nbsmtp_brian_lorf_org in each account, but I don't
+> understand how to make sup use any account other than :default:.
+
+So the status of the multiple account stuff is that I started at one
+point, but never got very far, and so basically none of it works, and
+stuff that I added after that point (like the ability to send mail) I
+just threw at the top level.
+
+But multiple account support is certainly on my todo list. I would like
+to be able to specify at least the signature, from line, and sendmail or
+SMTP configuration on a per-account basis, and I would like to be able
+to explicitly choose the from address on a per-email basis, with
+defaults based on the recipient.
+
+Currently this is of fairly high priority for me, so expect it to happen
+soonish.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun May 27 23:33:44 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 May 2007 20:33:44 -0700
+Subject: [sup-talk] searching on subject
+In-Reply-To: <1179911900-sup-1786@doses>
+References: <1179911900-sup-1786@doses>
+Message-ID: <1180323050-sup-174@south>
+
+Excerpts from Brian's message of Wed May 23 02:23:33 -0700 2007:
+> /subject:sup-talk
+> finds fewer messages than
+> /subject:\[sup-talk\]
+> even though "sup-talk" is definitely in the subject lines of the
+> messages found by the second search.
+> 
+> I thought it was a little unintuitive.
+
+Yeah, this is unnecessarily weird.
+
+I've changed this in SVN. It will take effect immediately for new
+messages; to apply it to old messages you'll have to run sup-sync -a
+(and wait while every single message is re-indexed).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 28 00:04:49 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 May 2007 21:04:49 -0700
+Subject: [sup-talk] saved searches
+In-Reply-To: <1179912225-sup-166@doses>
+References: <1179912225-sup-166@doses>
+Message-ID: <1180323246-sup-4545@south>
+
+Excerpts from Brian's message of Wed May 23 02:34:52 -0700 2007:
+> I'd like it a lot if searches could be saved and search results could
+> be automatically updated as new mail arrives.
+
+This is a good idea, and saving searches and reusing them will be easy.
+Unfortunately it will be tricky to have search results updated
+automatically (at least in the general case where they can involve
+subject or body text) because it will require some way of determining
+whether an in-memory message matches a Ferret query, which Ferret may or
+may not support. I'll look into it. I would like to have this feature,
+and in the worst case you will have to manually refresh.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon May 28 00:12:05 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 27 May 2007 21:12:05 -0700
+Subject: [sup-talk] how to avoid adding labels based on source names
+In-Reply-To: <20070527195013.GB4859@mona.jeffcovey.net>
+References: <20070527195013.GB4859@mona.jeffcovey.net>
+Message-ID: <1180325255-sup-6791@south>
+
+Excerpts from jeff covey's message of Sun May 27 12:50:13 -0700 2007:
+> how do i stop sup-sync from adding a label to each message based on
+> the name of its source?
+
+There is currently no way to do this. This is my top priority change at
+the moment. I'm going to make the auto-added labels be a per-source
+field in sources.yaml, and remove the current magic that generates them
+without giving you a choice in the matter.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Mon May 28 06:32:00 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 28 May 2007 06:32:00 -0400
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <1180319474-sup-513@doses>
+References: <1180149989-sup-4780@doses>
+	<20070527195610.GA25182@mona.jeffcovey.net>
+	<1180319474-sup-513@doses>
+Message-ID: <20070528103200.GA32323@mona.jeffcovey.net>
+
+on Sun, May 27, 2007 at 09:32:36PM -0500%, Brian said:
+
+> I don't know how anything like biff could detect that I have unread mail
+> in some IMAP folder. 
+
+http://www.google.com/search?&q=imap%20biff
+
+http://www.linuxlinks.com/Software/Internet/Mail/Notification/
+, in particular, links to 14 biff programs with imap support.
+
+sincerely,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070528/5fd86154/attachment.bin 
+
+From jeff.covey at pobox.com  Mon May 28 06:35:49 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 28 May 2007 06:35:49 -0400
+Subject: [sup-talk] sup-sync-back not deleting messages
+In-Reply-To: <1180320840-sup-2297@south>
+References: <20070527202105.GA10521@mona.jeffcovey.net>
+	<1180320840-sup-2297@south>
+Message-ID: <20070528103548.GB32323@mona.jeffcovey.net>
+
+on Sun, May 27, 2007 at 07:55:19PM -0700%, William Morgan said:
+
+> > sup-sync-back isn't deleting messages for me
+> 
+> Sorry, I messed up. Please svn update and try again.
+
+great; it's working now.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 229 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070528/a8711aae/attachment.bin 
+
+From brian at lorf.org  Mon May 28 06:51:35 2007
+From: brian at lorf.org (Brian)
+Date: Mon, 28 May 2007 05:51:35 -0500
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <20070528103200.GA32323@mona.jeffcovey.net>
+References: <1180149989-sup-4780@doses>
+	<20070527195610.GA25182@mona.jeffcovey.net>
+	<1180319474-sup-513@doses>
+	<20070528103200.GA32323@mona.jeffcovey.net>
+Message-ID: <1180349123-sup-988@doses>
+
+Excerpts from jeff covey's message of Mon May 28 05:32:00 -0500 2007:
+> on Sun, May 27, 2007 at 09:32:36PM -0500%, Brian said:
+> 
+> > I don't know how anything like biff could detect that I have unread mail
+> > in some IMAP folder. 
+> 
+> http://www.google.com/search?&q=imap%20biff
+> 
+> http://www.linuxlinks.com/Software/Internet/Mail/Notification/
+> , in particular, links to 14 biff programs with imap support.
+
+I didn't defend my feature request very well. Yeah, some other program
+could also poll all my sources. But then half the time I'd get the
+notification and then be looking at a sup with no new mail, because *it*
+hadn't gotten around to polling and seeing the new mail yet.
+
+I'm a minimalist and hate bloat. This feature request is like maybe 5
+extra lines. This exact feature has been useful in other MUAs like
+Sylpheed and Claws. It would be easy to ignore. It wouldn't slow down
+anything by any meaningful amount.
+
+
+From wmorgan-sup at masanjin.net  Wed May 30 03:11:59 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 30 May 2007 00:11:59 -0700
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <1180349123-sup-988@doses>
+References: <1180149989-sup-4780@doses>
+	<20070527195610.GA25182@mona.jeffcovey.net>
+	<1180319474-sup-513@doses>
+	<20070528103200.GA32323@mona.jeffcovey.net>
+	<1180349123-sup-988@doses>
+Message-ID: <1180508946-sup-2933@south>
+
+Excerpts from Brian's message of Mon May 28 03:51:35 -0700 2007:
+> I'm a minimalist and hate bloat. This feature request is like maybe 5
+> extra lines. This exact feature has been useful in other MUAs like
+> Sylpheed and Claws. It would be easy to ignore. It wouldn't slow down
+> anything by any meaningful amount.
+
+I've been thinking about writing a (simple) general framework for
+hooking user-written Ruby code onto Sup events. You could then trivially
+use that to accomplish this by calling system(...). What do you think?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From brian at lorf.org  Wed May 30 03:27:11 2007
+From: brian at lorf.org (Brian)
+Date: Wed, 30 May 2007 02:27:11 -0500
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <1180508946-sup-2933@south>
+References: <1180149989-sup-4780@doses>
+	<20070527195610.GA25182@mona.jeffcovey.net>
+	<1180319474-sup-513@doses>
+	<20070528103200.GA32323@mona.jeffcovey.net>
+	<1180349123-sup-988@doses> <1180508946-sup-2933@south>
+Message-ID: <1180509997-sup-405@doses>
+
+Excerpts from William Morgan's message of Wed May 30 02:11:59 -0500 2007:
+> I've been thinking about writing a (simple) general framework for
+> hooking user-written Ruby code onto Sup events. You could then trivially
+> use that to accomplish this by calling system(...). What do you think?
+
+That'd be great.
+
+

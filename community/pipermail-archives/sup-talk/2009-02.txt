@@ -1,0 +1,1935 @@
+From simon.raven at gmail.com  Sun Feb  1 17:26:23 2009
+From: simon.raven at gmail.com (Simon Raven)
+Date: Sun, 1 Feb 2009 17:26:23 -0500
+Subject: [sup-talk] sup-mail crash
+Message-ID: <20090201222618.GA6346@acahkos.kisikew.org>
+
+
+attached is the exception log
+
+
+-- 
+"A mouse is a device used to point at the xterm you want to type in"
+                -- A.S.R.
+-------------- next part --------------
+--- IOError from thread: load threads for thread-index-mode
+IO Error occured at <except.c>:93 in xraise
+Error occured in fs_store.c:293 - fsi_seek_i
+	seeking pos 377228: <Bad file descriptor>
+
+/usr/lib/ruby/1.8/sup/index.rb:362:in `default'
+/usr/lib/ruby/1.8/sup/index.rb:362:in `[]'
+/usr/lib/ruby/1.8/sup/index.rb:362:in `build_message'
+/usr/lib/ruby/1.8/sup/index.rb:342:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/thread.rb:341:in `call'
+/usr/lib/ruby/1.8/sup/thread.rb:341:in `load_thread_for_message'
+/usr/lib/ruby/1.8/sup/index.rb:354:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/index.rb:354:in `each'
+/usr/lib/ruby/1.8/sup/index.rb:354:in `each_message_in_thread_for'
+/usr/lib/ruby/1.8/sup/thread.rb:339:in `load_thread_for_message'
+/usr/lib/ruby/1.8/sup/thread.rb:331:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/index.rb:263:in `each_id_by_date'
+/usr/lib/ruby/1.8/sup/index.rb:263:in `each'
+/usr/lib/ruby/1.8/sup/index.rb:263:in `each_id_by_date'
+/usr/lib/ruby/1.8/sup/thread.rb:326:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+/usr/lib/ruby/1.8/sup.rb:84:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:82:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:82:in `new'
+/usr/lib/ruby/1.8/sup.rb:82:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:76:in `initialize'
+/usr/lib/ruby/1.8/sup/modes/line-cursor-mode.rb:177:in `call'
+/usr/lib/ruby/1.8/sup/modes/line-cursor-mode.rb:177:in `call_load_more_callbacks'
+/usr/lib/ruby/1.8/sup/modes/line-cursor-mode.rb:177:in `each'
+/usr/lib/ruby/1.8/sup/modes/line-cursor-mode.rb:177:in `call_load_more_callbacks'
+/usr/lib/ruby/1.8/sup/modes/line-cursor-mode.rb:137:in `page_down'
+/usr/lib/ruby/1.8/sup/mode.rb:49:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:49:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:240:in `handle_input'
+/usr/bin/sup-mail:187
+
+From tpo2 at sourcepole.ch  Mon Feb  9 17:41:46 2009
+From: tpo2 at sourcepole.ch (Tomas Pospisek Mailing Lists)
+Date: Mon, 09 Feb 2009 23:41:46 +0100
+Subject: [sup-talk] sup-mail crash
+In-Reply-To: <20090201222618.GA6346@acahkos.kisikew.org>
+Message-ID: <zcSrlYwa.1234219306.5754650.tpo2@mail>
+
+
+Search the ML archives. This looks similar to other crash reports and
+might be the same issue.
+*t
+
+On 2/6/2009, "Simon Raven" <simon.raven at gmail.com> wrote:
+
+>attached is the exception log
+> ...
+> IO Error occured at <except.c>:93 in xraise
+> Error occured in fs_store.c:293 - fsi_seek_i
+>	seeking pos 377228: <Bad file descriptor>
+
+From wmorgan-sup at masanjin.net  Mon Feb  9 18:09:37 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 09 Feb 2009 15:09:37 -0800
+Subject: [sup-talk] sup-mail crash
+In-Reply-To: <zcSrlYwa.1234219306.5754650.tpo2@mail>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail>
+Message-ID: <1234220954-sup-3688@entry>
+
+Reformatted excerpts from Tomas Pospisek Mailing Lists's message of 2009-02-09:
+> Search the ML archives. This looks similar to other crash reports and
+> might be the same issue.
+
+In particular I'm pretty sure this is fixed in git, which I'll be
+releasing "any day now".
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marcus-sup at bar-coded.net  Tue Feb 10 07:28:08 2009
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Tue, 10 Feb 2009 12:28:08 +0000
+Subject: [sup-talk] sup-mail crash
+In-Reply-To: <1234220954-sup-3688@entry>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail> <1234220954-sup-3688@entry>
+Message-ID: <1234268739-sup-5896@tomsk>
+
+On 9.2.2009, William Morgan wrote:
+> In particular I'm pretty sure this is fixed in git, which I'll be
+> releasing "any day now".
+
+I've not been able to track sup git on my work machine for a while
+because something introduced between 0.6 and latest head has borked
+the mbox code. I get an odd hash error about the hash changing whilst
+being read or something. Not sure how to track down what causes it
+though.
+
+I can probably update and get stack trace if its any use.
+
+Marcus
+
+From tpo2 at sourcepole.ch  Wed Feb 11 18:05:46 2009
+From: tpo2 at sourcepole.ch (Tomas Pospisek Mailing Lists)
+Date: Thu, 12 Feb 2009 00:05:46 +0100
+Subject: [sup-talk] sup-mail crash
+In-Reply-To: <1234220954-sup-3688@entry>
+Message-ID: <VsjZMWsy.1234393546.2578350.tpo2@mail>
+
+
+On 2/10/2009, "William Morgan" <wmorgan-sup at masanjin.net> wrote:
+
+>Reformatted excerpts from Tomas Pospisek Mailing Lists's message of 2009-02-09:
+>> Search the ML archives. This looks similar to other crash reports and
+>> might be the same issue.
+>
+>In particular I'm pretty sure this is fixed in git, which I'll be
+>releasing "any day now".
+
+Wow. That would be fantastic. I quite liked sup, but it wasn't stable.
+And being stable at runtime is about the number #1 feature for any SW
+for me.
+*t, waiting the day X
+
+From wmorgan-sup at masanjin.net  Thu Feb 12 16:58:20 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 12 Feb 2009 13:58:20 -0800
+Subject: [sup-talk] sup-mail crash
+In-Reply-To: <1234268739-sup-5896@tomsk>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail>
+	<1234220954-sup-3688@entry> <1234268739-sup-5896@tomsk>
+Message-ID: <1234475856-sup-8907@entry>
+
+Reformatted excerpts from Marcus Williams's message of 2009-02-10:
+> I can probably update and get stack trace if its any use.
+
+Yeah, I'd be interested in this. There are definite mbox problems but I
+don't think they are new ones, and they don't involve anything with
+hashes AFAIK.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rick.tessner at gmail.com  Thu Feb 12 17:21:27 2009
+From: rick.tessner at gmail.com (Rick Tessner)
+Date: Thu, 12 Feb 2009 14:21:27 -0800
+Subject: [sup-talk] [PATCH] sup-mail crash
+In-Reply-To: <1234475856-sup-8907@entry>
+References: <20090201222618.GA6346@acahkos.kisikew.org>
+	<zcSrlYwa.1234219306.5754650.tpo2@mail> <1234220954-sup-3688@entry>
+	<1234268739-sup-5896@tomsk>  <1234475856-sup-8907@entry>
+Message-ID: <1234477287.6877.10.camel@onnadayr.ca>
+
+On Thu, 2009-02-12 at 13:58 -0800, William Morgan wrote:
+> Reformatted excerpts from Marcus Williams's message of 2009-02-10:
+> > I can probably update and get stack trace if its any use.
+> 
+> Yeah, I'd be interested in this. There are definite mbox problems but I
+> don't think they are new ones, and they don't involve anything with
+> hashes AFAIK.
+
+Resending since it looks like I only replied to wmorgan originally ...
+
+I've had this problem occassionally about a "hash modified during
+iteration" and I use maildir rather than mbox.
+
+Attached is a patch to fix that problem.
+
+-- 
+Rick
+rick.tessner at gmail.com
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fixed-bug-where-exception-would-be-raised-about-hash.patch
+Type: application/mbox
+Size: 973 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090212/1b62cf21/attachment.bin>
+
+From stipim at rpi.edu  Mon Feb 16 01:44:54 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:44:54 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160644.n1G6isMF003158@rmtacc26-la.rcs.rpi.edu>
+
+>From 9b863d8c86226b3d148e56060092556e2b13a5df Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:39:50 -0500
+Subject: [PATCH] Added UndoManager class
+
+The UndoManager keeps a list of lambdas that undo actions. It's designed to be used by keypress hooks. It is initialized in the main sup thread along with UpdateManager, etc.
+---
+ lib/sup.rb                         |    2 +
+ lib/sup/modes/thread-index-mode.rb |    6 +++++
+ lib/sup/undo.rb                    |   42 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+), 0 deletions(-)
+ create mode 100644 lib/sup/undo.rb
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 93369a5..eda673b 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -125,6 +125,7 @@ module Redwood
+     Redwood::PollManager.new
+     Redwood::SuicideManager.new Redwood::SUICIDE_FN
+     Redwood::CryptoManager.new
++    Redwood::UndoManager.new
+   end
+ 
+   def finish
+@@ -281,6 +282,7 @@ require "sup/tagger"
+ require "sup/draft"
+ require "sup/poll"
+ require "sup/crypto"
++require "sup/undo"
+ require "sup/horizontal-selector"
+ require "sup/modes/line-cursor-mode"
+ require "sup/modes/help-mode"
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 4de4613..ee30284 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -44,6 +44,7 @@ EOS
+     k.add :tag_matching, "Tag matching threads", 'g'
+     k.add :apply_to_tagged, "Apply next command to all tagged threads", ';'
+     k.add :join_threads, "Force tagged threads to be joined into the same thread", '#'
++    k.add :undo, "Undo the previous action", 'u'
+   end
+ 
+   def initialize hidden_labels=[], load_thread_opts={}
+@@ -83,6 +84,7 @@ EOS
+ 
+   def reload
+     drop_all_threads
++    UndoManager.clear
+     BufferManager.draw_screen
+     load_threads :num => buffer.content_height
+   end
+@@ -208,6 +210,10 @@ EOS
+     add_or_unhide m
+   end
+ 
++  def undo
++    UndoManager.undo
++  end
++
+   def update
+     @mutex.synchronize do
+       ## let's see you do THIS in python
+diff --git a/lib/sup/undo.rb b/lib/sup/undo.rb
+new file mode 100644
+index 0000000..250433d
+--- /dev/null
++++ b/lib/sup/undo.rb
+@@ -0,0 +1,42 @@
++module Redwood
++
++## Implements a single undo list for the Sup instance
++##
++## The basic idea is to keep a list of lambdas to undo
++## things. When an action is called (such as 'archive'),
++## a lambda is registered with UndoManager that will
++## undo the archival action
++
++class UndoManager
++  include Singleton
++
++  def initialize
++    @@actionlist = []
++    self.class.i_am_the_instance self
++  end
++
++  def register desc, actions
++    actions = [actions] unless actions.is_a?Array
++    raise StandardError, "when would I need to undo 'nothing?'" unless actions.length > 0
++    Redwood::log "registering #{actions.length} actions: #{desc}"
++    @@actionlist.push({:desc => desc, :actions => actions})
++  end
++
++  def undo
++    unless @@actionlist.length == 0 then
++      actionset = @@actionlist.pop
++      Redwood::log "undoing #{actionset[:desc]}..."
++      actionset[:actions].each{|action|
++        action.call
++      }
++      BufferManager.flash "undid #{actionset[:desc]}"
++    else
++      BufferManager.flash "nothing more to undo"
++    end
++  end
++
++  def clear
++    @@actionlist = []
++  end
++end
++end
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:00 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:00 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6j0j7003164@rmtacc26-la.rcs.rpi.edu>
+
+>From 61a256d09ec8091e5ab44cc4e0e5c9c24c81a4cf Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:40:39 -0500
+Subject: [PATCH] Added undo for archive
+
+---
+ lib/sup/modes/inbox-mode.rb        |   35 +++++++++++++++++++++++++++++++++++
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++++--
+ 2 files changed, 54 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/inbox-mode.rb b/lib/sup/modes/inbox-mode.rb
+index 559892d..21eb9ac 100644
+--- a/lib/sup/modes/inbox-mode.rb
++++ b/lib/sup/modes/inbox-mode.rb
+@@ -26,12 +26,28 @@ class InboxMode < ThreadIndexMode
+ 
+   def archive
+     return unless cursor_thread
++    thread = cursor_thread # to make sure lambda only knows about 'old' cursor_thread
++
++    undo = lambda {
++      thread.apply_label :inbox
++      add_or_unhide thread.first
++    }
++    UndoManager.register("archiving thread #{thread.first.id}", undo)
++
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+     regen_text
+   end
+ 
+   def multi_archive threads
++    undo = threads.map {|t|
++             lambda{
++               t.apply_label :inbox
++               add_or_unhide t.first
++             }}
++    UndoManager.register("archiving #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text} )
++
+     threads.each do |t|
+       t.remove_label :inbox
+       hide_thread t
+@@ -41,6 +57,15 @@ class InboxMode < ThreadIndexMode
+ 
+   def read_and_archive
+     return unless cursor_thread
++    thread = cursor_thread # to make sure lambda only knows about 'old' cursor_thread
++
++    undo = lambda {
++      thread.apply_label :inbox
++      thread.apply_label :unread
++      add_or_unhide thread.first
++    }
++    UndoManager.register("reading and archiving thread ", undo)
++
+     cursor_thread.remove_label :unread
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+@@ -48,6 +73,16 @@ class InboxMode < ThreadIndexMode
+   end
+ 
+   def multi_read_and_archive threads
++    undo = threads.map {|t|
++      lambda {
++        t.apply_label :inbox
++        t.apply_label :unread
++        add_or_unhide t.first
++      }
++    }
++    UndoManager.register("reading and archiving #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
++
+     threads.each do |t|
+       t.remove_label :unread
+       t.remove_label :inbox
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index ee30284..120acad 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -259,13 +259,27 @@ EOS
+   end
+ 
+   def actually_toggle_archived t
++    thread = t
++    pos = curpos
+     if t.has_label? :inbox
+       t.remove_label :inbox
++      undo = lambda {
++        thread.apply_label :inbox
++        update_text_for_line pos
++        UpdateManager.relay self,:unarchived, thread.first
++      }
+       UpdateManager.relay self, :archived, t.first
+     else
+       t.apply_label :inbox
++      undo = lambda {
++        thread.remove_label :inbox
++        update_text_for_line pos
++        UpdateManager.relay self, :unarchived, thread.first
++      }
+       UpdateManager.relay self, :unarchived, t.first
+     end
++
++    return undo
+   end
+ 
+   def actually_toggle_spammed t
+@@ -290,12 +304,15 @@ EOS
+ 
+   def toggle_archived 
+     t = cursor_thread or return
+-    actually_toggle_archived t
++    undo = [actually_toggle_archived(t), lambda {self.update_text_for_line curpos}]
++    UndoManager.register("deleting/undeleting thread #{t.first.id}",undo)
+     update_text_for_line curpos
+   end
+ 
+   def multi_toggle_archived threads
+-    threads.each { |t| actually_toggle_archived t }
++    undo = threads.map { |t| actually_toggle_archived t}
++    UndoManager.register("deleting/undeleting #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {self.regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:04 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:04 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6j4hf003172@rmtacc26-la.rcs.rpi.edu>
+
+>From e42299ce17ed7c12989d0c8a6dea2ed100921e4a Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:03:57 -0500
+Subject: [PATCH] Added undo for starring
+
+---
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++++--
+ 1 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 120acad..62fdb85 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -237,24 +237,41 @@ EOS
+   end
+ 
+   def actually_toggle_starred t
++    thread = t # cargo cult programming
++    pos = curpos
+     if t.has_label? :starred # if ANY message has a star
++      undo = lambda {
++        thread.first.add_label :starred
++        update_text_for_line pos
++        UpdateManager.relay self, :starred, thread.first
++      }
+       t.remove_label :starred # remove from all
+       UpdateManager.relay self, :unstarred, t.first
+     else
++      undo = lambda {
++        thread.remove_label :starred
++        update_text_for_line pos
++        UpdateManager.relay self, :unstarred, thread.first
++      }
+       t.first.add_label :starred # add only to first
+       UpdateManager.relay self, :starred, t.first
+     end
++
++    return undo
+   end  
+ 
+   def toggle_starred 
+     t = cursor_thread or return
+-    actually_toggle_starred t
++    undo = actually_toggle_starred t
++    UndoManager.register("starring/unstarring thread #{t.first.id}",undo)
+     update_text_for_line curpos
+     cursor_down
+   end
+ 
+   def multi_toggle_starred threads
+-    threads.each { |t| actually_toggle_starred t }
++    undo = threads.map { |t| actually_toggle_starred t }
++    UndoManager.register("starring/unstarring #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo)
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:08 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:08 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6j8o5003178@rmtacc26-la.rcs.rpi.edu>
+
+>From 31bb0fd8f6e701107ce79ad2dbd9d42da4635742 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:06:36 -0500
+Subject: [PATCH] Added undo for spam
+
+---
+ lib/sup/modes/thread-index-mode.rb |   22 ++++++++++++++++++----
+ 1 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 62fdb85..1e02b5b 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -300,13 +300,28 @@ EOS
+   end
+ 
+   def actually_toggle_spammed t
++    thread = t
+     if t.has_label? :spam
++      undo = lambda {
++        thread.apply_label :spam
++        self.hide_thread thread
++        UpdateManager.relay self,:spammed, thread.first
++      }
+       t.remove_label :spam
++      add_or_unhide t.first
+       UpdateManager.relay self, :unspammed, t.first
+     else
++      undo = lambda {
++        thread.remove_label :spam
++        add_or_unhide thread.first
++        UpdateManager.relay self,:unspammed, thread.first
++      }
+       t.apply_label :spam
++      hide_thread t
+       UpdateManager.relay self, :spammed, t.first
+     end
++
++    return undo
+   end
+ 
+   def actually_toggle_deleted t
+@@ -390,10 +405,9 @@ EOS
+   ## see deleted or spam emails, and when you undelete or unspam them
+   ## you also want them to disappear immediately.
+   def multi_toggle_spam threads
+-    threads.each do |t|
+-      actually_toggle_spammed t
+-      hide_thread t 
+-    end
++    undo = threads.map{ |t| actually_toggle_spammed t}
++    UndoManager.register("marking/unmarking #{threads.size} #{threads.size.pluralize 'thread'} as spam",
++                         undo <<  lambda {self.regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:13 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:13 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6jDOn003184@rmtacc26-la.rcs.rpi.edu>
+
+>From d1b5ff3d022e0e6aeabf410b0778fd11a5449ed0 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:08:03 -0500
+Subject: [PATCH] Added undo for thread deletion
+
+---
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 1e02b5b..ae7c299 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -326,12 +326,26 @@ EOS
+ 
+   def actually_toggle_deleted t
+     if t.has_label? :deleted
++      undo = lambda {
++        t.apply_label :deleted
++        hide_thread t
++        UpdateManager.relay self, :deleted, t.first
++      }
+       t.remove_label :deleted
++      add_or_unhide t.first
+       UpdateManager.relay self, :undeleted, t.first
+     else
++      undo = lambda {
++        t.remove_label :deleted
++        add_or_unhide t.first
++        UpdateManager.relay self, :undeleted, t.first
++      }
+       t.apply_label :deleted
++  hide_thread t
+       UpdateManager.relay self, :deleted, t.first
+     end
++
++    return undo
+   end
+ 
+   def toggle_archived 
+@@ -418,10 +432,9 @@ EOS
+ 
+   ## see comment for multi_toggle_spam
+   def multi_toggle_deleted threads
+-    threads.each do |t|
+-      actually_toggle_deleted t
+-      hide_thread t 
+-    end
++    undo = threads.map{ |t| actually_toggle_deleted t}
++    UndoManager.register("deleting/undeleting #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:43 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:43 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6jhQK003190@rmtacc26-la.rcs.rpi.edu>
+
+>From 9a5ac47e979de8030756b88d4e52b6d8a289a25a Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:10:32 -0500
+Subject: [PATCH] Added undo for delete thread
+
+---
+ lib/sup/modes/thread-index-mode.rb |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index ae7c299..159839d 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -443,11 +443,18 @@ EOS
+     multi_kill [t]
+   end
+ 
++  ## m-m-m-m-MULTI-KILL
+   def multi_kill threads
+-    threads.each do |t|
++    undo = threads.map do |t|
+       t.apply_label :killed
+       hide_thread t
++      thread = t
++      lambda { thread.remove_label :killed
++        add_or_unhide thread.first
++      }
+     end
++    UndoManager.register("killing #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
+     regen_text
+     BufferManager.flash "#{threads.size.pluralize 'Thread'} killed."
+   end
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:47 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:47 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6jlqS003196@rmtacc26-la.rcs.rpi.edu>
+
+>From 1fd41c30189db832abb54f1cda416d0aa624e028 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:11:28 -0500
+Subject: [PATCH] Added undo for label edit
+
+---
+ lib/sup/modes/thread-index-mode.rb |   27 +++++++++++++++++++++++++--
+ 1 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 159839d..f28302b 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -509,6 +509,10 @@ EOS
+   def edit_labels
+     thread = cursor_thread or return
+     speciall = (@hidden_labels + LabelManager::RESERVED_LABELS).uniq
++
++    old_labels = thread.labels
++    pos = curpos
++
+     keepl, modifyl = thread.labels.partition { |t| speciall.member? t }
+ 
+     user_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", modifyl, @hidden_labels
+@@ -517,6 +521,15 @@ EOS
+     thread.labels = keepl + user_labels
+     user_labels.each { |l| LabelManager << l }
+     update_text_for_line curpos
++
++    undo = lambda{
++      thread.labels = old_labels
++      update_text_for_line pos
++      UpdateManager.relay self, :labeled, thread.first
++    }
++
++    UndoManager.register("labeling thread #{thread.first.id}", undo)
++
+     UpdateManager.relay self, :labeled, thread.first
+   end
+ 
+@@ -526,8 +539,18 @@ EOS
+     
+     hl = user_labels.select { |l| @hidden_labels.member? l }
+     if hl.empty?
+-      threads.each { |t| user_labels.each { |l| t.apply_label l } }
+-      user_labels.each { |l| LabelManager << l }
++      undo = threads.map { |t| old_labels = t.labels
++        user_labels.each { |l| t.apply_label l }
++        ## UpdateManager or some other regresh mechanism?
++        UpdateManager.relay self, :labeled, t.first
++        lambda {
++          t.labels = old_labels
++          UpdateManager.relay self, :labeled, t.first
++        }
++      }
++    user_labels.each { |l| LabelManager << l }
++    UndoManager.register("labeling #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda { regen_text})
+     else
+       BufferManager.flash "'#{hl}' is a reserved label!"
+     end
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:45:51 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:45:51 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160645.n1G6jpBe003202@rmtacc26-la.rcs.rpi.edu>
+
+>From e7abf80a590aa2f2de35343fceecea9deae41193 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:11:46 -0500
+Subject: [PATCH] Changed README to reflect addition of undo
+
+---
+ README.txt |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/README.txt b/README.txt
+index 1b2b516..05349d7 100644
+--- a/README.txt
++++ b/README.txt
+@@ -80,7 +80,7 @@ Current limitations which will be fixed:
+ - Unix-centrism in MIME attachment handling and in sendmail
+   invocation.
+ 
+-- Several obvious missing features, like undo, filters / saved
++- Several obvious missing features, like filters / saved
+   searches, message annotations, etc.
+ 
+ == SYNOPSYS:
+-- 
+1.5.3
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxM4003065@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxC7003062@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:21:50 2009
+From: stipim at rpi.edu (Mike Stipicevic)
+Date: Mon, 16 Feb 2009 01:21:50 -0500
+Subject: [sup-talk] undo
+Message-ID: <1234764952-sup-604@rmtacc25-lb.rcs.rpi.edu>
+
+Hey,
+
+I've added basic undo for sup-the-client. It's mostly centered around labelling (including archiving, spam, etc). It currently does not handle thread-joining, contacts or anything outside of the thread/inbox view.
+
+I wasn't sure how to organize my patches, so I apologize if I've split them, into too many.
+
+Thanks,
+- Mike
+-- 
+Mike Stipicevic
+RPI EE/CSYS Class of '09
+
+stipim at rpi.edu
+mstipicevic at ieee.org
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxRO003067@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxxJ003055@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxGV003071@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxBe003074@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxMd003053@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:25:59 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:25:59 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160625.n1G6PxLo003059@rmtacc26-la.rcs.rpi.edu>
+
+
+From stipim at rpi.edu  Mon Feb 16 01:27:00 2009
+From: stipim at rpi.edu (Michael John Stipicevic)
+Date: Mon, 16 Feb 2009 01:27:00 -0500
+Subject: [sup-talk] (no subject)
+Message-ID: <200902160627.n1G6R0ZG003126@rmtacc26-la.rcs.rpi.edu>
+
+>From 9b863d8c86226b3d148e56060092556e2b13a5df Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:39:50 -0500
+Subject: [PATCH] Added UndoManager class
+
+The UndoManager keeps a list of lambdas that undo actions. It's designed to be used by keypress hooks. It is initialized in the main sup thread along with UpdateManager, etc.
+---
+ lib/sup.rb                         |    2 +
+ lib/sup/modes/thread-index-mode.rb |    6 +++++
+ lib/sup/undo.rb                    |   42 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+), 0 deletions(-)
+ create mode 100644 lib/sup/undo.rb
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 93369a5..eda673b 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -125,6 +125,7 @@ module Redwood
+     Redwood::PollManager.new
+     Redwood::SuicideManager.new Redwood::SUICIDE_FN
+     Redwood::CryptoManager.new
++    Redwood::UndoManager.new
+   end
+ 
+   def finish
+@@ -281,6 +282,7 @@ require "sup/tagger"
+ require "sup/draft"
+ require "sup/poll"
+ require "sup/crypto"
++require "sup/undo"
+ require "sup/horizontal-selector"
+ require "sup/modes/line-cursor-mode"
+ require "sup/modes/help-mode"
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 4de4613..ee30284 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -44,6 +44,7 @@ EOS
+     k.add :tag_matching, "Tag matching threads", 'g'
+     k.add :apply_to_tagged, "Apply next command to all tagged threads", ';'
+     k.add :join_threads, "Force tagged threads to be joined into the same thread", '#'
++    k.add :undo, "Undo the previous action", 'u'
+   end
+ 
+   def initialize hidden_labels=[], load_thread_opts={}
+@@ -83,6 +84,7 @@ EOS
+ 
+   def reload
+     drop_all_threads
++    UndoManager.clear
+     BufferManager.draw_screen
+     load_threads :num => buffer.content_height
+   end
+@@ -208,6 +210,10 @@ EOS
+     add_or_unhide m
+   end
+ 
++  def undo
++    UndoManager.undo
++  end
++
+   def update
+     @mutex.synchronize do
+       ## let's see you do THIS in python
+diff --git a/lib/sup/undo.rb b/lib/sup/undo.rb
+new file mode 100644
+index 0000000..250433d
+--- /dev/null
++++ b/lib/sup/undo.rb
+@@ -0,0 +1,42 @@
++module Redwood
++
++## Implements a single undo list for the Sup instance
++##
++## The basic idea is to keep a list of lambdas to undo
++## things. When an action is called (such as 'archive'),
++## a lambda is registered with UndoManager that will
++## undo the archival action
++
++class UndoManager
++  include Singleton
++
++  def initialize
++    @@actionlist = []
++    self.class.i_am_the_instance self
++  end
++
++  def register desc, actions
++    actions = [actions] unless actions.is_a?Array
++    raise StandardError, "when would I need to undo 'nothing?'" unless actions.length > 0
++    Redwood::log "registering #{actions.length} actions: #{desc}"
++    @@actionlist.push({:desc => desc, :actions => actions})
++  end
++
++  def undo
++    unless @@actionlist.length == 0 then
++      actionset = @@actionlist.pop
++      Redwood::log "undoing #{actionset[:desc]}..."
++      actionset[:actions].each{|action|
++        action.call
++      }
++      BufferManager.flash "undid #{actionset[:desc]}"
++    else
++      BufferManager.flash "nothing more to undo"
++    end
++  end
++
++  def clear
++    @@actionlist = []
++  end
++end
++end
+-- 
+1.5.3
+
+>From 61a256d09ec8091e5ab44cc4e0e5c9c24c81a4cf Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:40:39 -0500
+Subject: [PATCH] Added undo for archive
+
+---
+ lib/sup/modes/inbox-mode.rb        |   35 +++++++++++++++++++++++++++++++++++
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++++--
+ 2 files changed, 54 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/inbox-mode.rb b/lib/sup/modes/inbox-mode.rb
+index 559892d..21eb9ac 100644
+--- a/lib/sup/modes/inbox-mode.rb
++++ b/lib/sup/modes/inbox-mode.rb
+@@ -26,12 +26,28 @@ class InboxMode < ThreadIndexMode
+ 
+   def archive
+     return unless cursor_thread
++    thread = cursor_thread # to make sure lambda only knows about 'old' cursor_thread
++
++    undo = lambda {
++      thread.apply_label :inbox
++      add_or_unhide thread.first
++    }
++    UndoManager.register("archiving thread #{thread.first.id}", undo)
++
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+     regen_text
+   end
+ 
+   def multi_archive threads
++    undo = threads.map {|t|
++             lambda{
++               t.apply_label :inbox
++               add_or_unhide t.first
++             }}
++    UndoManager.register("archiving #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text} )
++
+     threads.each do |t|
+       t.remove_label :inbox
+       hide_thread t
+@@ -41,6 +57,15 @@ class InboxMode < ThreadIndexMode
+ 
+   def read_and_archive
+     return unless cursor_thread
++    thread = cursor_thread # to make sure lambda only knows about 'old' cursor_thread
++
++    undo = lambda {
++      thread.apply_label :inbox
++      thread.apply_label :unread
++      add_or_unhide thread.first
++    }
++    UndoManager.register("reading and archiving thread ", undo)
++
+     cursor_thread.remove_label :unread
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+@@ -48,6 +73,16 @@ class InboxMode < ThreadIndexMode
+   end
+ 
+   def multi_read_and_archive threads
++    undo = threads.map {|t|
++      lambda {
++        t.apply_label :inbox
++        t.apply_label :unread
++        add_or_unhide t.first
++      }
++    }
++    UndoManager.register("reading and archiving #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
++
+     threads.each do |t|
+       t.remove_label :unread
+       t.remove_label :inbox
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index ee30284..120acad 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -259,13 +259,27 @@ EOS
+   end
+ 
+   def actually_toggle_archived t
++    thread = t
++    pos = curpos
+     if t.has_label? :inbox
+       t.remove_label :inbox
++      undo = lambda {
++        thread.apply_label :inbox
++        update_text_for_line pos
++        UpdateManager.relay self,:unarchived, thread.first
++      }
+       UpdateManager.relay self, :archived, t.first
+     else
+       t.apply_label :inbox
++      undo = lambda {
++        thread.remove_label :inbox
++        update_text_for_line pos
++        UpdateManager.relay self, :unarchived, thread.first
++      }
+       UpdateManager.relay self, :unarchived, t.first
+     end
++
++    return undo
+   end
+ 
+   def actually_toggle_spammed t
+@@ -290,12 +304,15 @@ EOS
+ 
+   def toggle_archived 
+     t = cursor_thread or return
+-    actually_toggle_archived t
++    undo = [actually_toggle_archived(t), lambda {self.update_text_for_line curpos}]
++    UndoManager.register("deleting/undeleting thread #{t.first.id}",undo)
+     update_text_for_line curpos
+   end
+ 
+   def multi_toggle_archived threads
+-    threads.each { |t| actually_toggle_archived t }
++    undo = threads.map { |t| actually_toggle_archived t}
++    UndoManager.register("deleting/undeleting #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {self.regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+>From e42299ce17ed7c12989d0c8a6dea2ed100921e4a Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:03:57 -0500
+Subject: [PATCH] Added undo for starring
+
+---
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++++--
+ 1 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 120acad..62fdb85 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -237,24 +237,41 @@ EOS
+   end
+ 
+   def actually_toggle_starred t
++    thread = t # cargo cult programming
++    pos = curpos
+     if t.has_label? :starred # if ANY message has a star
++      undo = lambda {
++        thread.first.add_label :starred
++        update_text_for_line pos
++        UpdateManager.relay self, :starred, thread.first
++      }
+       t.remove_label :starred # remove from all
+       UpdateManager.relay self, :unstarred, t.first
+     else
++      undo = lambda {
++        thread.remove_label :starred
++        update_text_for_line pos
++        UpdateManager.relay self, :unstarred, thread.first
++      }
+       t.first.add_label :starred # add only to first
+       UpdateManager.relay self, :starred, t.first
+     end
++
++    return undo
+   end  
+ 
+   def toggle_starred 
+     t = cursor_thread or return
+-    actually_toggle_starred t
++    undo = actually_toggle_starred t
++    UndoManager.register("starring/unstarring thread #{t.first.id}",undo)
+     update_text_for_line curpos
+     cursor_down
+   end
+ 
+   def multi_toggle_starred threads
+-    threads.each { |t| actually_toggle_starred t }
++    undo = threads.map { |t| actually_toggle_starred t }
++    UndoManager.register("starring/unstarring #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo)
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+>From 31bb0fd8f6e701107ce79ad2dbd9d42da4635742 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:06:36 -0500
+Subject: [PATCH] Added undo for spam
+
+---
+ lib/sup/modes/thread-index-mode.rb |   22 ++++++++++++++++++----
+ 1 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 62fdb85..1e02b5b 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -300,13 +300,28 @@ EOS
+   end
+ 
+   def actually_toggle_spammed t
++    thread = t
+     if t.has_label? :spam
++      undo = lambda {
++        thread.apply_label :spam
++        self.hide_thread thread
++        UpdateManager.relay self,:spammed, thread.first
++      }
+       t.remove_label :spam
++      add_or_unhide t.first
+       UpdateManager.relay self, :unspammed, t.first
+     else
++      undo = lambda {
++        thread.remove_label :spam
++        add_or_unhide thread.first
++        UpdateManager.relay self,:unspammed, thread.first
++      }
+       t.apply_label :spam
++      hide_thread t
+       UpdateManager.relay self, :spammed, t.first
+     end
++
++    return undo
+   end
+ 
+   def actually_toggle_deleted t
+@@ -390,10 +405,9 @@ EOS
+   ## see deleted or spam emails, and when you undelete or unspam them
+   ## you also want them to disappear immediately.
+   def multi_toggle_spam threads
+-    threads.each do |t|
+-      actually_toggle_spammed t
+-      hide_thread t 
+-    end
++    undo = threads.map{ |t| actually_toggle_spammed t}
++    UndoManager.register("marking/unmarking #{threads.size} #{threads.size.pluralize 'thread'} as spam",
++                         undo <<  lambda {self.regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+>From d1b5ff3d022e0e6aeabf410b0778fd11a5449ed0 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:08:03 -0500
+Subject: [PATCH] Added undo for thread deletion
+
+---
+ lib/sup/modes/thread-index-mode.rb |   21 +++++++++++++++++----
+ 1 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 1e02b5b..ae7c299 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -326,12 +326,26 @@ EOS
+ 
+   def actually_toggle_deleted t
+     if t.has_label? :deleted
++      undo = lambda {
++        t.apply_label :deleted
++        hide_thread t
++        UpdateManager.relay self, :deleted, t.first
++      }
+       t.remove_label :deleted
++      add_or_unhide t.first
+       UpdateManager.relay self, :undeleted, t.first
+     else
++      undo = lambda {
++        t.remove_label :deleted
++        add_or_unhide t.first
++        UpdateManager.relay self, :undeleted, t.first
++      }
+       t.apply_label :deleted
++  hide_thread t
+       UpdateManager.relay self, :deleted, t.first
+     end
++
++    return undo
+   end
+ 
+   def toggle_archived 
+@@ -418,10 +432,9 @@ EOS
+ 
+   ## see comment for multi_toggle_spam
+   def multi_toggle_deleted threads
+-    threads.each do |t|
+-      actually_toggle_deleted t
+-      hide_thread t 
+-    end
++    undo = threads.map{ |t| actually_toggle_deleted t}
++    UndoManager.register("deleting/undeleting #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
+     regen_text
+   end
+ 
+-- 
+1.5.3
+
+>From 9a5ac47e979de8030756b88d4e52b6d8a289a25a Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:10:32 -0500
+Subject: [PATCH] Added undo for delete thread
+
+---
+ lib/sup/modes/thread-index-mode.rb |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index ae7c299..159839d 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -443,11 +443,18 @@ EOS
+     multi_kill [t]
+   end
+ 
++  ## m-m-m-m-MULTI-KILL
+   def multi_kill threads
+-    threads.each do |t|
++    undo = threads.map do |t|
+       t.apply_label :killed
+       hide_thread t
++      thread = t
++      lambda { thread.remove_label :killed
++        add_or_unhide thread.first
++      }
+     end
++    UndoManager.register("killing #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda {regen_text})
+     regen_text
+     BufferManager.flash "#{threads.size.pluralize 'Thread'} killed."
+   end
+-- 
+1.5.3
+
+>From 1fd41c30189db832abb54f1cda416d0aa624e028 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:11:28 -0500
+Subject: [PATCH] Added undo for label edit
+
+---
+ lib/sup/modes/thread-index-mode.rb |   27 +++++++++++++++++++++++++--
+ 1 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 159839d..f28302b 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -509,6 +509,10 @@ EOS
+   def edit_labels
+     thread = cursor_thread or return
+     speciall = (@hidden_labels + LabelManager::RESERVED_LABELS).uniq
++
++    old_labels = thread.labels
++    pos = curpos
++
+     keepl, modifyl = thread.labels.partition { |t| speciall.member? t }
+ 
+     user_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", modifyl, @hidden_labels
+@@ -517,6 +521,15 @@ EOS
+     thread.labels = keepl + user_labels
+     user_labels.each { |l| LabelManager << l }
+     update_text_for_line curpos
++
++    undo = lambda{
++      thread.labels = old_labels
++      update_text_for_line pos
++      UpdateManager.relay self, :labeled, thread.first
++    }
++
++    UndoManager.register("labeling thread #{thread.first.id}", undo)
++
+     UpdateManager.relay self, :labeled, thread.first
+   end
+ 
+@@ -526,8 +539,18 @@ EOS
+     
+     hl = user_labels.select { |l| @hidden_labels.member? l }
+     if hl.empty?
+-      threads.each { |t| user_labels.each { |l| t.apply_label l } }
+-      user_labels.each { |l| LabelManager << l }
++      undo = threads.map { |t| old_labels = t.labels
++        user_labels.each { |l| t.apply_label l }
++        ## UpdateManager or some other regresh mechanism?
++        UpdateManager.relay self, :labeled, t.first
++        lambda {
++          t.labels = old_labels
++          UpdateManager.relay self, :labeled, t.first
++        }
++      }
++    user_labels.each { |l| LabelManager << l }
++    UndoManager.register("labeling #{threads.size} #{threads.size.pluralize 'thread'}",
++                         undo << lambda { regen_text})
+     else
+       BufferManager.flash "'#{hl}' is a reserved label!"
+     end
+-- 
+1.5.3
+
+>From e7abf80a590aa2f2de35343fceecea9deae41193 Mon Sep 17 00:00:00 2001
+From: Mike Stipicevic <stipim at rpi.edu>
+Date: Mon, 16 Feb 2009 00:11:46 -0500
+Subject: [PATCH] Changed README to reflect addition of undo
+
+---
+ README.txt |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/README.txt b/README.txt
+index 1b2b516..05349d7 100644
+--- a/README.txt
++++ b/README.txt
+@@ -80,7 +80,7 @@ Current limitations which will be fixed:
+ - Unix-centrism in MIME attachment handling and in sendmail
+   invocation.
+ 
+-- Several obvious missing features, like undo, filters / saved
++- Several obvious missing features, like filters / saved
+   searches, message annotations, etc.
+ 
+ == SYNOPSYS:
+-- 
+1.5.3
+
+
+From ismith at MIT.EDU  Mon Feb 16 03:53:48 2009
+From: ismith at MIT.EDU (Ian Smith)
+Date: Mon, 16 Feb 2009 03:53:48 -0500
+Subject: [sup-talk] (no subject)
+In-Reply-To: <200902160625.n1G6PxM4003065@rmtacc26-la.rcs.rpi.edu>
+References: <200902160625.n1G6PxM4003065@rmtacc26-la.rcs.rpi.edu>
+Message-ID: <1234774373-sup-1128@zo>
+
+Hey,
+
+I've gotten a whole bunch of these empty messages from you/sup-talk
+over the past few hours.  Any idea what they are, or how you can
+suppress them?
+
+Ian
+
+Excerpts from Michael John Stipicevic's message of Mon Feb 16 01:25:59 -0500 2009:
+> 
+
+From wmorgan-sup at masanjin.net  Mon Feb 16 09:08:42 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 16 Feb 2009 06:08:42 -0800
+Subject: [sup-talk] (no subject)
+In-Reply-To: <1234774373-sup-1128@zo>
+References: <200902160625.n1G6PxM4003065@rmtacc26-la.rcs.rpi.edu>
+	<1234774373-sup-1128@zo>
+Message-ID: <1234793192-sup-4522@entry>
+
+Reformatted excerpts from Ian Smith's message of 2009-02-16:
+> I've gotten a whole bunch of these empty messages from you/sup-talk
+> over the past few hours.  Any idea what they are, or how you can
+> suppress them?
+
+Some of them seem to have included patches. Don't suppress those!
+
+Looks kinda like a session with git-send-email gone tragically awry.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From stipim at rpi.edu  Mon Feb 16 09:42:25 2009
+From: stipim at rpi.edu (Mike Stipicevic)
+Date: Mon, 16 Feb 2009 09:42:25 -0500
+Subject: [sup-talk] (no subject)
+In-Reply-To: <1234793192-sup-4522@entry>
+References: <200902160625.n1G6PxM4003065@rmtacc26-la.rcs.rpi.edu>
+	<1234774373-sup-1128@zo> <1234793192-sup-4522@entry>
+Message-ID: <1234795198-sup-1379@rmtacc26-la.rcs.rpi.edu>
+
+Excerpts from William Morgan's message of Mon Feb 16 09:08:42 -0500 2009:
+> Reformatted excerpts from Ian Smith's message of 2009-02-16:
+> > I've gotten a whole bunch of these empty messages from you/sup-talk
+> > over the past few hours.  Any idea what they are, or how you can
+> > suppress them?
+> 
+> Some of them seem to have included patches. Don't suppress those!
+> 
+> Looks kinda like a session with git-send-email gone tragically awry.
+
+This is indeed the case. There should be 8 patches in total, they all implement basic undo functionality for sup. Sorry for the mess!
+
+- Mike
+-- 
+Mike Stipicevic
+RPI EE/CSYS Class of '09
+
+stipim at rpi.edu
+mstipicevic at ieee.org
+
+From wmorgan-sup at masanjin.net  Thu Feb 19 15:14:27 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Feb 2009 12:14:27 -0800
+Subject: [sup-talk] undo
+In-Reply-To: <1234764952-sup-604@rmtacc25-lb.rcs.rpi.edu>
+References: <1234764952-sup-604@rmtacc25-lb.rcs.rpi.edu>
+Message-ID: <1235074446-sup-453@entry>
+
+Reformatted excerpts from Michael John Stipicevic's message of 2009-02-15:
+> I've added basic undo for sup-the-client. It's mostly centered around
+> labelling (including archiving, spam, etc). It currently does not
+> handle thread-joining, contacts or anything outside of the
+> thread/inbox view.
+
+Thanks, I'll take a look!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wirtwolff at gmail.com  Fri Feb 20 10:14:45 2009
+From: wirtwolff at gmail.com (Wirt Wolff)
+Date: Fri, 20 Feb 2009 08:14:45 -0700
+Subject: [sup-talk] Send draft crash with mainline
+Message-ID: <1235142347-sup-5940@chigamba>
+
+AFAICT this crash was had two drafts in a thread, deleted one, edited
+and sent the other. Didn't notice when the crash happened unfortunately,
+since left right after `y'. Exception log attached.
+
+The deleted draft did not get deleted, but just did so successfully.
+
+I must say this is the only problem I've had since using sup rather
+extensively for a month or so. Well, aside from encoding, which hasn't
+been important enough for me to apply fixes discussed various places.
+
+(To counter the "why on earth would you use an alpha email client?" people.) ;-]
+-- 
+wmw
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090220/1053e4bf/attachment-0001.txt>
+
+From wirtwolff at gmail.com  Fri Feb 20 10:46:52 2009
+From: wirtwolff at gmail.com (Wirt Wolff)
+Date: Fri, 20 Feb 2009 08:46:52 -0700
+Subject: [sup-talk] Send draft crash with mainline
+In-Reply-To: <1235142347-sup-5940@chigamba>
+References: <1235142347-sup-5940@chigamba>
+Message-ID: <1235144668-sup-917@chigamba>
+
+Excerpts from Wirt Wolff's message of Fri Feb 20 08:14:45 -0700 2009:
+> AFAICT this crash was had two drafts in a thread, deleted one, edited
+> and sent the other. Didn't notice when the crash happened unfortunately,
+> since left right after `y'. Exception log attached.
+> 
+> The deleted draft did not get deleted, but just did so successfully.
+
+Ah, this seems to be related to deleting a draft viewed from 'L' Draft
+search results, then select draft, edit, save and quit editor, 'x' and
+choose "yes, delete" ~~> crash. Doing the same from inbox doesn't crash.
+
+-- 
+wmw
+
+From jace42 at gmail.com  Sun Feb 22 21:02:33 2009
+From: jace42 at gmail.com (Jacob Certain)
+Date: Sun, 22 Feb 2009 18:02:33 -0800
+Subject: [sup-talk] Exception log
+Message-ID: <20090223020231.GA7969@daedalus>
+
+Got an exception, probably my fault : )
+
+I ran sup, it worked. I closed sup. I edited my sources.yaml file. Old, then new copies are below. Next run of sup crashed. Attached is the exception log sup asked me to send y'all.
+
+Lemme know if I can be of more help.
+
+jake at daedalus:~/.sup$ cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=8.10
+DISTRIB_CODENAME=intrepid
+DISTRIB_DESCRIPTION="Ubuntu 8.10"
+
+jake at daedalus:~/.sup$ uname -a
+Linux daedalus 2.6.27-11-generic #1 SMP Thu Jan 29 19:24:39 UTC 2009 i686 GNU/Linux
+
+jake at daedalus:~/.sup$ sup --version
+[Sun Feb 22 17:57:19 -0800 2009] using character set encoding "UTF-8"
+[Sun Feb 22 17:57:19 -0800 2009] optional 'chronic' library not found
+(run 'gem install chronic' to install)
+sup v0.6
+
+
+  1 ---
+  2 - !masanjin.net,2006-10-01/Redwood/MBox/Loader
+  3   uri: mbox:/home/jake/mbox
+  4   cur_offset: 133901
+  5   usual: true
+  6   archived: true
+  7   id: 1
+  8   labels:
+  9   - system
+ 10 - !masanjin.net,2006-10-01/Redwood/IMAP
+ 11   uri: imaps://imap.gmail.com:993/INBOX
+ 12   username: jace42
+ 13   password: ****************
+ 14   cur_offset: 12336959040043986
+ 15   usual: true
+ 16   archived: false
+ 17   id: 2
+ 18   labels:
+ 19   - gmail
+ 20 - !masanjin.net,2006-10-01/Redwood/IMAP
+ 21   uri: imaps://imap.gmail.com:993/wotd
+ 22   username: jace42
+ 23   password: ***********
+ 24   cur_offset: 12336424920007821
+ 25   usual: true
+ 26   archived: false
+ 27   id: 3
+ 28   labels:
+ 29   - wotd
+ 30 - !masanjin.net,2006-10-01/Redwood/SentLoader
+ 31   cur_offset: 0
+ 32 - !masanjin.net,2006-10-01/Redwood/DraftLoader
+ 33   cur_offset: 0
+
+
+
+
+---
+- !masanjin.net,2006-10-01/Redwood/MBox/Loader
+  uri: mbox:/home/jake/mbox
+  cur_offset: 133901
+  usual: true
+  archived: true
+  id: 1
+  labels:
+  - system
+j
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+invalid source 2
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:364:in `build_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:326:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup:166
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From jace42 at gmail.com  Sun Feb 22 21:14:30 2009
+From: jace42 at gmail.com (Jacob Certain)
+Date: Sun, 22 Feb 2009 18:14:30 -0800
+Subject: [sup-talk] Exception log
+In-Reply-To: <20090223020231.GA7969@daedalus>
+References: <20090223020231.GA7969@daedalus>
+Message-ID: <20090223021429.GA8993@daedalus>
+
+Damnation. I've gone and been an idiot, and deleted my ~/.sup folder.
+I know.. should've just renamed it. I tried wiping out the sources.yaml
+file again before configuring sup at all, but sup still starts and exits
+fine.
+
+jake
+
+
+On Sun, Feb 22, 2009 at 06:02:31PM -0800, Jacob Certain wrote:
+> Got an exception, probably my fault : )
+> 
+> I ran sup, it worked. I closed sup. I edited my sources.yaml file. Old, then new copies are below. Next run of sup crashed. Attached is the exception log sup asked me to send y'all.
+> 
+> Lemme know if I can be of more help.
+> 
+> jake at daedalus:~/.sup$ cat /etc/lsb-release
+> DISTRIB_ID=Ubuntu
+> DISTRIB_RELEASE=8.10
+> DISTRIB_CODENAME=intrepid
+> DISTRIB_DESCRIPTION="Ubuntu 8.10"
+> 
+> jake at daedalus:~/.sup$ uname -a
+> Linux daedalus 2.6.27-11-generic #1 SMP Thu Jan 29 19:24:39 UTC 2009 i686 GNU/Linux
+> 
+> jake at daedalus:~/.sup$ sup --version
+> [Sun Feb 22 17:57:19 -0800 2009] using character set encoding "UTF-8"
+> [Sun Feb 22 17:57:19 -0800 2009] optional 'chronic' library not found
+> (run 'gem install chronic' to install)
+> sup v0.6
+> 
+> 
+>   1 ---
+>   2 - !masanjin.net,2006-10-01/Redwood/MBox/Loader
+>   3   uri: mbox:/home/jake/mbox
+>   4   cur_offset: 133901
+>   5   usual: true
+>   6   archived: true
+>   7   id: 1
+>   8   labels:
+>   9   - system
+>  10 - !masanjin.net,2006-10-01/Redwood/IMAP
+>  11   uri: imaps://imap.gmail.com:993/INBOX
+>  12   username: jace42
+>  13   password: ****************
+>  14   cur_offset: 12336959040043986
+>  15   usual: true
+>  16   archived: false
+>  17   id: 2
+>  18   labels:
+>  19   - gmail
+>  20 - !masanjin.net,2006-10-01/Redwood/IMAP
+>  21   uri: imaps://imap.gmail.com:993/wotd
+>  22   username: jace42
+>  23   password: ***********
+>  24   cur_offset: 12336424920007821
+>  25   usual: true
+>  26   archived: false
+>  27   id: 3
+>  28   labels:
+>  29   - wotd
+>  30 - !masanjin.net,2006-10-01/Redwood/SentLoader
+>  31   cur_offset: 0
+>  32 - !masanjin.net,2006-10-01/Redwood/DraftLoader
+>  33   cur_offset: 0
+> 
+> 
+> 
+> 
+> ---
+> - !masanjin.net,2006-10-01/Redwood/MBox/Loader
+>   uri: mbox:/home/jake/mbox
+>   cur_offset: 133901
+>   usual: true
+>   archived: true
+>   id: 1
+>   labels:
+>   - system
+> j
+
+> --- RuntimeError from thread: load threads for thread-index-mode
+> invalid source 2
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:364:in `build_message'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `call'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `load_n_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:326:in `load_n_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+> (eval):12:in `load_n_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `new'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `reporting_thread'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+> (eval):12:in `load_threads'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup:166
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19
+
+
+From jace42 at gmail.com  Mon Feb 23 13:47:14 2009
+From: jace42 at gmail.com (Jacob Certain)
+Date: Mon, 23 Feb 2009 10:47:14 -0800
+Subject: [sup-talk] Exception log
+In-Reply-To: <20090223021429.GA8993@daedalus>
+References: <20090223020231.GA7969@daedalus> <20090223021429.GA8993@daedalus>
+Message-ID: <20090223184712.GA8957@daedalus>
+
+Right, so, I can reproduce.
+
+1. Delete ~/.sup folder
+2. Start and close sup successfully
+3. Run through sup-config add sup-add adding a mailbox (I used a local mbox for my system account)
+4. Delete the mailbox entry in ~/.sup/sources.yaml
+
+-OR-
+
+4. rm ~/.sup/sources.yaml*
+
+Merely deleting the last two masanjin sent & draft lines in the file is fine.
+
+I guess I'm expecting sup to cope better a) a sources.yaml file without a mailbox; b) no sources.yaml file.
+
+Anyway, hope this helps!
+
+jake
+
+On Sun, Feb 22, 2009 at 06:14:29PM -0800, Jacob Certain wrote:
+> Damnation. I've gone and been an idiot, and deleted my ~/.sup folder.
+> I know.. should've just renamed it. I tried wiping out the sources.yaml
+> file again before configuring sup at all, but sup still starts and exits
+> fine.
+> 
+> jake
+> 
+> 
+> On Sun, Feb 22, 2009 at 06:02:31PM -0800, Jacob Certain wrote:
+> > Got an exception, probably my fault : )
+> > 
+> > I ran sup, it worked. I closed sup. I edited my sources.yaml file. Old, then new copies are below. Next run of sup crashed. Attached is the exception log sup asked me to send y'all.
+> > 
+> > Lemme know if I can be of more help.
+> > 
+> > jake at daedalus:~/.sup$ cat /etc/lsb-release
+> > DISTRIB_ID=Ubuntu
+> > DISTRIB_RELEASE=8.10
+> > DISTRIB_CODENAME=intrepid
+> > DISTRIB_DESCRIPTION="Ubuntu 8.10"
+> > 
+> > jake at daedalus:~/.sup$ uname -a
+> > Linux daedalus 2.6.27-11-generic #1 SMP Thu Jan 29 19:24:39 UTC 2009 i686 GNU/Linux
+> > 
+> > jake at daedalus:~/.sup$ sup --version
+> > [Sun Feb 22 17:57:19 -0800 2009] using character set encoding "UTF-8"
+> > [Sun Feb 22 17:57:19 -0800 2009] optional 'chronic' library not found
+> > (run 'gem install chronic' to install)
+> > sup v0.6
+> > 
+> > 
+> >   1 ---
+> >   2 - !masanjin.net,2006-10-01/Redwood/MBox/Loader
+> >   3   uri: mbox:/home/jake/mbox
+> >   4   cur_offset: 133901
+> >   5   usual: true
+> >   6   archived: true
+> >   7   id: 1
+> >   8   labels:
+> >   9   - system
+> >  10 - !masanjin.net,2006-10-01/Redwood/IMAP
+> >  11   uri: imaps://imap.gmail.com:993/INBOX
+> >  12   username: jace42
+> >  13   password: ****************
+> >  14   cur_offset: 12336959040043986
+> >  15   usual: true
+> >  16   archived: false
+> >  17   id: 2
+> >  18   labels:
+> >  19   - gmail
+> >  20 - !masanjin.net,2006-10-01/Redwood/IMAP
+> >  21   uri: imaps://imap.gmail.com:993/wotd
+> >  22   username: jace42
+> >  23   password: ***********
+> >  24   cur_offset: 12336424920007821
+> >  25   usual: true
+> >  26   archived: false
+> >  27   id: 3
+> >  28   labels:
+> >  29   - wotd
+> >  30 - !masanjin.net,2006-10-01/Redwood/SentLoader
+> >  31   cur_offset: 0
+> >  32 - !masanjin.net,2006-10-01/Redwood/DraftLoader
+> >  33   cur_offset: 0
+> > 
+> > 
+> > 
+> > 
+> > ---
+> > - !masanjin.net,2006-10-01/Redwood/MBox/Loader
+> >   uri: mbox:/home/jake/mbox
+> >   cur_offset: 133901
+> >   usual: true
+> >   archived: true
+> >   id: 1
+> >   labels:
+> >   - system
+> > j
+> 
+> > --- RuntimeError from thread: load threads for thread-index-mode
+> > invalid source 2
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:364:in `build_message'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `call'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:330:in `load_n_threads'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/index.rb:263:in `each_id_by_date'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/thread.rb:326:in `load_n_threads'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+> > (eval):12:in `load_n_threads'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `new'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `reporting_thread'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+> > (eval):12:in `load_threads'
+> > /usr/lib/ruby/gems/1.8/gems/sup-0.6/bin/sup:166
+> > /usr/bin/sup:19:in `load'
+> > /usr/bin/sup:19
+> 
+
+From gutnik at gmail.com  Thu Feb 26 12:33:30 2009
+From: gutnik at gmail.com (Vadim Gutnik)
+Date: Thu, 26 Feb 2009 09:33:30 -0800
+Subject: [sup-talk] New user questions...
+Message-ID: <c46e347b0902260933qafa051bp185bd8339a6f10a0@mail.gmail.com>
+
+I built sup on my ubuntu system as described on the wiki; no problems,
+though I'll likely switch to the packaged
+version as it becomes available.
+
+I tried using mbox format, ran into the From: bug (I think -- out of a
+couple thousand emails, maybe a dozen
+forwarded messages were split from their emails; still, this isn't
+tolerable. Is there a plan to make sup
+recognize email breaks at least as well as mutt does?), so I'm using
+mdir format, which doesn't suffer from it.
+
+Two specific questions, though:
+
+1) I use getmail to get my POP3SSL mail and put it into mdir format.
+Usually, when getmail tells me it found
+a message, I go to my running sup process and press "P" for it to pick
+up the mail, and sup shows the new message.
+Sometimes (maybe 5-10% of the time?) sup does not find the new message
+until I quit and restart it. Known problem?
+Is there anything I can do to help debug it?
+
+2) At least once or twice I've hit "d" by habit (and mistake). Is
+there a way to search for "deleted" messages? I could
+just rebuild the index from scratch and reapply labels if I had to,
+but ...there must be an easier way, right?
+
+Thanks.
+
+   Vadim
+

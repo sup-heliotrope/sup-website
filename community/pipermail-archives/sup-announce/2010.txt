@@ -1,0 +1,45 @@
+From wmorgan-sup at masanjin.net  Sun Jan 24 09:44:50 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 24 Jan 2010 09:44:50 -0500
+Subject: [Sup-announce] [ANN] Sup 0.10 released
+Message-ID: <1264344055-sup-3295@masanjin.net>
+
+I'm pleased to announce the release of Sup 0.10. This version is
+frickin' awesome because not only do we have Ruby 1.9 support, the
+Xapian backend is now the default!  The next version will discard Ferret
+like a used rag.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+The Xapian backend is now the default. Convert your old, crash-prone
+Ferret index to Xapian by running sup-convert-ferret-index.
+
+Using a Ferret backend will produce a deprecation notice, and will not be
+supported in 0.11.
+
+Many thanks to Rich Lane for Xapian and Ruby 1.9 work.
+
+Excitement in 0.10:
+
+* Make Xapian backend the default, and add deprecation notice to Ferret indexes.
+* Now Ruby 1.9 compatible (Xapian backend only).
+* Changes are now saved automatically to the index. Pressing "$" now just
+  forces a flush of Xapian indexes, which can minimize quit time.
+* Fix problem with replying to Google Groups messages.
+* Allow toggling of line wrap. Useful for long URLs.
+* Multiple attachments can be added at once by specifying a wildcard.
+* New command to save all attachments at once.
+* As always, many bugfixes and tweaks.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+

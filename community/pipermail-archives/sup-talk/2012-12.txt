@@ -1,0 +1,78 @@
+From ezyang at MIT.EDU  Sat Dec  1 23:35:44 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 01 Dec 2012 15:35:44 -0800
+Subject: [sup-talk] Who needs Heliotrope when you've got backwards label
+	synchronization
+Message-ID: <1354404870-sup-6839@javelin>
+
+I've finally cleaned up and "released" the patchset that I
+use on a regular basis on top of Sup.  It is described here:
+
+    http://blog.ezyang.com/2012/12/maildir-synchronizing-sup/
+
+Cheers,
+Edward
+
+From sdothum at gmail.com  Sun Dec  2 00:00:50 2012
+From: sdothum at gmail.com (Steven Hum)
+Date: Sat, 01 Dec 2012 19:00:50 -0500
+Subject: [sup-talk] Who needs Heliotrope when you've got backwards label
+	synchronization
+In-Reply-To: <1354404870-sup-6839@javelin>
+References: <1354404870-sup-6839@javelin>
+Message-ID: <1354406275-sup-6416@luna>
+
+Thank you, Edward! I certainly was not expecting this, so soon!
+
+I am going to check out your new patchset immediately!
+
+Steven
+
+Excerpts from Edward Z. Yang's message of 2012-12-01 18:35:44 -0500:
+> I've finally cleaned up and "released" the patchset that I
+> use on a regular basis on top of Sup.  It is described here:
+> 
+>     http://blog.ezyang.com/2012/12/maildir-synchronizing-sup/
+> 
+> Cheers,
+> Edward
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From ezyang at MIT.EDU  Sun Dec  2 00:03:43 2012
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 01 Dec 2012 16:03:43 -0800
+Subject: [sup-talk] Who needs Heliotrope when you've got backwards label
+	synchronization
+In-Reply-To: <1354406275-sup-6416@luna>
+References: <1354404870-sup-6839@javelin> <1354406275-sup-6416@luna>
+Message-ID: <1354406581-sup-9134@javelin>
+
+There are not that many changes from what used to be there; I mostly
+cleaned up some code, reordered some patches, removed some hacks, and
+fixed the "replies resurrect themselves" bug which was bugging me.
+
+Edward
+
+Excerpts from Steven Hum's message of Sat Dec 01 16:00:50 -0800 2012:
+> Thank you, Edward! I certainly was not expecting this, so soon!
+> 
+> I am going to check out your new patchset immediately!
+> 
+> Steven
+> 
+> Excerpts from Edward Z. Yang's message of 2012-12-01 18:35:44 -0500:
+> > I've finally cleaned up and "released" the patchset that I
+> > use on a regular basis on top of Sup.  It is described here:
+> > 
+> >     http://blog.ezyang.com/2012/12/maildir-synchronizing-sup/
+> > 
+> > Cheers,
+> > Edward
+

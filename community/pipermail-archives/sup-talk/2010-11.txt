@@ -1,0 +1,1595 @@
+From cjparsons1 at yahoo.co.uk  Thu Nov  4 10:22:02 2010
+From: cjparsons1 at yahoo.co.uk (Chris Parsons)
+Date: Thu, 04 Nov 2010 14:22:02 +0000
+Subject: [sup-talk] Killed threads reappearing in inbox
+Message-ID: <1288879799-sup-5465@chris-eee>
+
+I'm running a relatively recent git branch of master
+
+> git log
+commit 60573298a2258c101a85b3de8121f73d7aec2d51
+Author: Michael Hamann <michael at content-space.de>
+Date:   Fri Oct 8 10:03:36 2010 -0400
+
+If a mail arrives and I press "&" to kill the thread then it
+disappears from my inbox. If I do a search for killed messages it
+shows up.
+
+If another mail arrives in the same thread then it shows up in my
+inbox, including the "killed" tag (as attachment).
+
+Is there something I'm doing wrong?
+
+Chris
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: killed_in_inbox.png
+Type: image/png
+Size: 8766 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101104/3dbeecff/attachment.png>
+
+From michael+sup at stapelberg.de  Sat Nov  6 09:29:48 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 06 Nov 2010 14:29:48 +0100
+Subject: [sup-talk] Killed threads reappearing in inbox
+In-Reply-To: <1288879799-sup-5465@chris-eee>
+References: <1288879799-sup-5465@chris-eee>
+Message-ID: <1289050088-sup-8173@midna.zekjur.net>
+
+Hi Chris,
+
+Excerpts from Chris Parsons's message of 2010-11-04 15:22:02 +0100:
+> If another mail arrives in the same thread then it shows up in my
+> inbox, including the "killed" tag (as attachment).
+Can you try updating to the latest version, which includes the following patch?
+http://rubyforge.org/pipermail/sup-devel/2010-October/000780.html
+
+If the problem still happens, can you please forward me the message with which
+you have that problem? (gzip it before to make sure it doesn?t get modified in
+any way)
+
+Best regards,
+Michael
+
+From mnjagadeesh at gmail.com  Mon Nov  8 10:45:16 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Mon, 8 Nov 2010 21:15:16 +0530
+Subject: [sup-talk] How to install sup on gentoo?
+Message-ID: <AANLkTi=Pvv27TS7oC=8RU6Lz9NAi5w0zD1PWZVRzmLYt@mail.gmail.com>
+
+Hi,
+
+This is indeed Gentoo question but for curiosity I am asking, how to
+install sup on gentoo? I have installed using gem but imap support is
+missing on sup 0.11. On Linux mint I am using sup 0.10.2 which is
+working fine. But sometimes it throws exception, but after restart it
+works fine.
+
+May I know why Sup 0.11 does not have imap support?
+
+-- 
+Many Thanks
+Jagadeesh N.Malakannavar
+GSM: +91 9448471968
+H 81?? L 66?
+
+From michael+sup at stapelberg.de  Mon Nov  8 12:48:48 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 08 Nov 2010 18:48:48 +0100
+Subject: [sup-talk] How to install sup on gentoo?
+In-Reply-To: <AANLkTi=Pvv27TS7oC=8RU6Lz9NAi5w0zD1PWZVRzmLYt@mail.gmail.com>
+References: <AANLkTi=Pvv27TS7oC=8RU6Lz9NAi5w0zD1PWZVRzmLYt@mail.gmail.com>
+Message-ID: <1289238466-sup-7050@midna.zekjur.net>
+
+Hi Jagadeesh,
+
+Excerpts from Jagadeesh N. Malakannavar's message of 2010-11-08 16:45:16 +0100:
+> May I know why Sup 0.11 does not have imap support?
+imap support was removed because it did not work properly and to facilitate the
+process of rewriting the source mechanism (using maildir as single source).
+Instead of an imap source, use offlineimap + maildir - it?s a lot faster!
+
+Best regards,
+Michael
+
+From hollunder at lavabit.com  Mon Nov  8 13:20:32 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Mon, 08 Nov 2010 19:20:32 +0100
+Subject: [sup-talk] How to install sup on gentoo?
+In-Reply-To: <1289238466-sup-7050@midna.zekjur.net>
+References: <AANLkTi=Pvv27TS7oC=8RU6Lz9NAi5w0zD1PWZVRzmLYt@mail.gmail.com>
+	<1289238466-sup-7050@midna.zekjur.net>
+Message-ID: <1289240405-sup-4176@eris>
+
+Excerpts from Michael Stapelberg's message of 2010-11-08 18:48:48 +0100:
+> Hi Jagadeesh,
+> 
+> Excerpts from Jagadeesh N. Malakannavar's message of 2010-11-08 16:45:16 +0100:
+> > May I know why Sup 0.11 does not have imap support?
+> imap support was removed because it did not work properly and to facilitate the
+> process of rewriting the source mechanism (using maildir as single source).
+> Instead of an imap source, use offlineimap + maildir - it?s a lot faster!
+> 
+> Best regards,
+> Michael
+
+offlineimap seems to be unmaintained though..
+it works, mostly, for now
+
+
+From mnjagadeesh at gmail.com  Wed Nov 10 01:48:39 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 10 Nov 2010 12:18:39 +0530
+Subject: [sup-talk] strange chars in email body
+Message-ID: <AANLkTik-iKeM5yiHEKdujUesQ0Frpuq7ycFQBB+CZ0ov@mail.gmail.com>
+
+Hi,
+
+I am seeing strange characters like
+
+
+M-b~@~S
+M-b~@~Y    [for donM-b~@~Yt]
+
+In the email body. I am using
+
+$  sup -v
+sup vgit
+
+$ echo $LANG
+en_US.utf8
+
+Am I setting anything wrong?
+
+
+-- J <http://www.google.com>agadeesh
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101110/16fb6b28/attachment.html>
+
+From mnjagadeesh at gmail.com  Wed Nov 10 02:23:19 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 10 Nov 2010 12:53:19 +0530
+Subject: [sup-talk] Number of news in title?
+Message-ID: <AANLkTin=FXt3XESsjGMFJ_udXtUT2Dy2TTWasJkOk1Sj@mail.gmail.com>
+
+Hi,
+
+Is there any way to have number of new emails in the title of the window? I
+am using rxvt-unicode.
+This will be very helpful feature.
+
+Thanks
+Jagadeesh
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101110/7ae277ec/attachment-0001.html>
+
+From aidecoe at aidecoe.name  Wed Nov 10 04:54:08 2010
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Wed, 10 Nov 2010 10:54:08 +0100
+Subject: [sup-talk] strange chars in email body
+In-Reply-To: <AANLkTik-iKeM5yiHEKdujUesQ0Frpuq7ycFQBB+CZ0ov@mail.gmail.com>
+References: <AANLkTik-iKeM5yiHEKdujUesQ0Frpuq7ycFQBB+CZ0ov@mail.gmail.com>
+Message-ID: <1289382791-sup-6828@ittemni>
+
+Hi,
+
+Excerpts from Jagadeesh N. Malakannavar's message of Wed Nov 10 07:48:39 +0100 2010:
+> I am seeing strange characters like
+> 
+> 
+> M-b~@~S
+> M-b~@~Y    [for donM-b~@~Yt]
+> 
+> In the email body. I am using
+> 
+> $  sup -v
+> sup vgit
+> 
+> $ echo $LANG
+> en_US.utf8
+> 
+> Am I setting anything wrong?
+
+Have you installed ncursesw gem?
+--
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101110/54ffe4dd/attachment.bin>
+
+From shadowfirebird at gmail.com  Wed Nov 10 07:07:40 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Wed, 10 Nov 2010 12:07:40 +0000
+Subject: [sup-talk] Errors installing ncursesw
+Message-ID: <1289390629-sup-7999@blake>
+
+Given the other thread on how ncursesw cures those odd character strings, I've revisited this myself and I wonder if I could get suggestions.
+
+>>>>
+user at computer:$ sudo gem install ncursesw
+Building native extensions.  This could take a while...
+ERROR:  Error installing ncursesw:
+	ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.8 extconf.rb
+checking for unistd.h... yes
+checking for locale.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncursesw... no
+checking for wmove() in -lpdcurses... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+<<<<
+
+Can anyone tell me where mkmf.log will be?  Not in the directory where I ran gem install.
+
+I'm on Ubuntu 9.04 -- is that the problem?
+
+-- 
+It is easier for a camel to pass through the eye of a needle if it is
+lightly greased.
+		-- Kehlog Albran, "The Profit"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101110/d757cae0/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Wed Nov 10 10:06:07 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 10 Nov 2010 10:06:07 -0500
+Subject: [sup-talk] Number of news in title?
+In-Reply-To: <AANLkTin=FXt3XESsjGMFJ_udXtUT2Dy2TTWasJkOk1Sj@mail.gmail.com>
+References: <AANLkTin=FXt3XESsjGMFJ_udXtUT2Dy2TTWasJkOk1Sj@mail.gmail.com>
+Message-ID: <1289401553-sup-7900@masanjin.net>
+
+Reformatted excerpts from Jagadeesh N. Malakannavar's message of 2010-11-10:
+> Is there any way to have number of new emails in the title of the
+> window? I am using rxvt-unicode.  This will be very helpful feature.
+
+Check out the terminal-title-text hook.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 10 10:04:15 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 10 Nov 2010 10:04:15 -0500
+Subject: [sup-talk] Errors installing ncursesw
+In-Reply-To: <1289390629-sup-7999@blake>
+References: <1289390629-sup-7999@blake>
+Message-ID: <1289401337-sup-2208@masanjin.net>
+
+Reformatted excerpts from Shadowfirebird's message of 2010-11-10:
+> /usr/bin/ruby1.8 extconf.rb
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+> *** extconf.rb failed ***
+> Could not create Makefile due to some reason, probably lack of
+> necessary libraries and/or headers.  Check the mkmf.log file for more
+> details.  You may need configuration options.
+> <<<<
+> 
+> Can anyone tell me where mkmf.log will be?  Not in the directory where
+> I ran gem install.
+
+I'm not sure where mkmf.log is (I think newer versions of Rubygems are
+better about telling you) but the above messages are the clue that you
+need to apt-get install libncursesw-dev or something like it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Wed Nov 10 10:46:53 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 10 Nov 2010 10:46:53 -0500
+Subject: [sup-talk] Errors installing ncursesw
+In-Reply-To: <1289390629-sup-7999@blake>
+References: <1289390629-sup-7999@blake>
+Message-ID: <1289403600-sup-5733@r61>
+
+Excerpts from Shadowfirebird's message of Wed Nov 10 07:07:40 -0500 2010:
+> Can anyone tell me where mkmf.log will be?  Not in the directory where I ran gem install.
+
+If you run 'gem env' you'll see something like this:
+
+  ...
+  - GEM PATHS:
+     - /var/lib/gems/1.8
+  ...
+
+Then in that directory you'll see a directory called 'gems' that will
+contain the source directories for the various gems.  mkmf.log should
+be in the directory containing the failing gem.  If you look at the
+log, there will often be a clue pointing to a missing header file or
+library.  To fix this, you'll typically have to install some kind of
+development library.  For example, on Ubuntu, if you're getting
+failures installing the ncursesw gem, you'll probably have to install
+the libncursesw5-dev package.  You can find a list of candidate
+packages by doing 'aptitude search ncursesw'.
+
+From mnjagadeesh at gmail.com  Wed Nov 10 11:52:07 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 10 Nov 2010 22:22:07 +0530
+Subject: [sup-talk] sup compatible issue
+Message-ID: <AANLkTinGQoeJ5BzrBEsMbe+DXcih2JEFWquGjnFkUPnM@mail.gmail.com>
+
+Hi,
+
+Couple days back I upgraded sup 0.10.2 to sup vgit.
+I noticed that ~/.sup/hooks are not in effect with sup vgit.
+
+Is it known issue?
+
+Thanks
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101110/18a49413/attachment.html>
+
+From michael+sup at stapelberg.de  Wed Nov 10 12:57:52 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 10 Nov 2010 18:57:52 +0100
+Subject: [sup-talk] sup compatible issue
+In-Reply-To: <AANLkTinGQoeJ5BzrBEsMbe+DXcih2JEFWquGjnFkUPnM@mail.gmail.com>
+References: <AANLkTinGQoeJ5BzrBEsMbe+DXcih2JEFWquGjnFkUPnM@mail.gmail.com>
+Message-ID: <1289411836-sup-724@midna.zekjur.net>
+
+Hi Jagadeesh,
+
+Excerpts from Jagadeesh N. Malakannavar's message of 2010-11-10 17:52:07 +0100:
+> Couple days back I upgraded sup 0.10.2 to sup vgit.
+With vgit, do you mean the latest git version of the mainline branch?
+
+> I noticed that ~/.sup/hooks are not in effect with sup vgit.
+> Is it known issue?
+No, I use the git version with hooks, it works fine.
+
+Best regards,
+Michael
+
+From hollunder at lavabit.com  Wed Nov 10 15:43:31 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Wed, 10 Nov 2010 21:43:31 +0100
+Subject: [sup-talk] strange chars in email body
+In-Reply-To: <1289382791-sup-6828@ittemni>
+References: <AANLkTik-iKeM5yiHEKdujUesQ0Frpuq7ycFQBB+CZ0ov@mail.gmail.com>
+	<1289382791-sup-6828@ittemni>
+Message-ID: <1289421693-sup-3466@eris>
+
+Excerpts from Amadeusz ?o?nowski's message of 2010-11-10 10:54:08 +0100:
+> Hi,
+> 
+> Excerpts from Jagadeesh N. Malakannavar's message of Wed Nov 10 07:48:39 +0100 2010:
+> > I am seeing strange characters like
+> > 
+> > 
+> > M-b~@~S
+> > M-b~@~Y    [for donM-b~@~Yt]
+> > 
+> > In the email body. I am using
+> > 
+> > $  sup -v
+> > sup vgit
+> > 
+> > $ echo $LANG
+> > en_US.utf8
+> > 
+> > Am I setting anything wrong?
+> 
+> Have you installed ncursesw gem?
+
+I'm not the original poster, run sup 0.11, have ncursesw installed and
+see stuff like that also all the time. Most of the time in mails from
+German windows (probably outlook) users.
+
+
+From mnjagadeesh at gmail.com  Thu Nov 11 22:47:34 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Fri, 12 Nov 2010 09:17:34 +0530
+Subject: [sup-talk] sup integration LDAP?
+Message-ID: <AANLkTi=0A7HzF4O8ypwPJ5Y6Xy6ddYAzXon8ar47yTvU@mail.gmail.com>
+
+Hi,
+May I know hot to integrate sup with LDAP? OR I need to populate
+contacts.txt using separate script?
+
+Thanks
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101112/687785c2/attachment.html>
+
+From tero at tilus.net  Fri Nov 12 04:13:34 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 12 Nov 2010 11:13:34 +0200
+Subject: [sup-talk] sup integration LDAP?
+In-Reply-To: <AANLkTi=0A7HzF4O8ypwPJ5Y6Xy6ddYAzXon8ar47yTvU@mail.gmail.com>
+References: <AANLkTi=0A7HzF4O8ypwPJ5Y6Xy6ddYAzXon8ar47yTvU@mail.gmail.com>
+Message-ID: <1289552495-sup-8604@tilus.net>
+
+Jagadeesh N. Malakannavar, 2010-11-12 05:47:
+> May I know hot to integrate sup with LDAP?
+
+Sup has extra-contact-addresses hook you can use to integrate sup to
+external directories, e.g. LDAP.  From `sup -l`
+
+...
+extra-contact-addresses
+-----------------------
+File: ~/.sup/hooks/extra-contact-addresses.rb
+A list of extra addresses to propose for tab completion, etc. when the
+user is entering an email address. Can be plain email addresses or can
+be full "User Name <email at domain.tld>" entries.
+
+Variables: none
+Return value: an array of email address strings.
+...
+
+There are integration instructions in sup wiki for two different
+approaches: either use lbdbq to query LDAP on demand (up to date) or
+directly read lbdb cache (fast).
+
+http://sup.rubyforge.org/wiki/wiki.pl?LbdbIntegration
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From vallentin at icsi.berkeley.edu  Sun Nov 14 19:49:31 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Sun, 14 Nov 2010 16:49:31 -0800
+Subject: [sup-talk] (no subject)
+Message-ID: <20101115004931.GD34938@icsi.berkeley.edu>
+
+I am a Mutt user interested in switching to Sup. One thing that is not
+clear to me is how to find new unread messages that skipped the inbox.
+Coming from the world of mail folders, I can monitor each folder for
+unread messages and switch to it when I see that a new one has arrived.
+Often, a buffy tool (or the Mutt sidebar) can be used to display the
+various folders with their new message counts. How would that mindset
+translate to Sup? Would I have to regularly query all (or a just a
+subset of) labels to get an idea whether label X "received" a new
+message?
+
+  Matthias
+
+From bwalton at artsci.utoronto.ca  Sun Nov 14 20:46:13 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 14 Nov 2010 20:46:13 -0500
+Subject: [sup-talk] (no subject)
+In-Reply-To: <20101115004931.GD34938@icsi.berkeley.edu>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+Message-ID: <1289785548-sup-7693@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Matthias Vallentin's message of Sun Nov 14 19:49:31 -0500 2010:
+
+Hi Matthias,
+
+The query: is:unread
+should work for you.  This is such a common action that the key U is
+bound to run this query.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From ezyang at MIT.EDU  Sun Nov 14 20:42:42 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 14 Nov 2010 20:42:42 -0500
+Subject: [sup-talk] (no subject)
+In-Reply-To: <20101115004931.GD34938@icsi.berkeley.edu>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+Message-ID: <1289785328-sup-6895@ezyang>
+
+Excerpts from Matthias Vallentin's message of Sun Nov 14 19:49:31 -0500 2010:
+> I am a Mutt user interested in switching to Sup. One thing that is not
+> clear to me is how to find new unread messages that skipped the inbox.
+> Coming from the world of mail folders, I can monitor each folder for
+> unread messages and switch to it when I see that a new one has arrived.
+> Often, a buffy tool (or the Mutt sidebar) can be used to display the
+> various folders with their new message counts. How would that mindset
+> translate to Sup? Would I have to regularly query all (or a just a
+> subset of) labels to get an idea whether label X "received" a new
+> message?
+
+I use the keybinding 'U', which performs the is:unread search.
+
+Cheers,
+Edward
+
+From matiasaguirre at gmail.com  Sun Nov 14 20:50:57 2010
+From: matiasaguirre at gmail.com (Matias Aguirre)
+Date: Sun, 14 Nov 2010 23:50:57 -0200
+Subject: [sup-talk] (no subject)
+In-Reply-To: <20101115004931.GD34938@icsi.berkeley.edu>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+Message-ID: <1289785794-sup-2712@mintaka>
+
+There's a unread folder you can check, just type shift+l to get the
+folder listing and it will be there.
+
+Mat?as
+
+Excerpts from Matthias Vallentin's message of Sun Nov 14 22:49:31 -0200 2010:
+> I am a Mutt user interested in switching to Sup. One thing that is not
+> clear to me is how to find new unread messages that skipped the inbox.
+> Coming from the world of mail folders, I can monitor each folder for
+> unread messages and switch to it when I see that a new one has arrived.
+> Often, a buffy tool (or the Mutt sidebar) can be used to display the
+> various folders with their new message counts. How would that mindset
+> translate to Sup? Would I have to regularly query all (or a just a
+> subset of) labels to get an idea whether label X "received" a new
+> message?
+> 
+>   Matthias
+--
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From vallentin at ICSI.Berkeley.EDU  Mon Nov 15 01:57:37 2010
+From: vallentin at ICSI.Berkeley.EDU (Matthias Vallentin)
+Date: Sun, 14 Nov 2010 22:57:37 -0800
+Subject: [sup-talk] (no subject)
+In-Reply-To: <1289785328-sup-6895@ezyang>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+	<1289785328-sup-6895@ezyang>
+Message-ID: <20101115065737.GT34938@icsi.berkeley.edu>
+
+> I use the keybinding 'U', which performs the is:unread search.
+
+Without having tested it, the is:unread search seems to return a stream
+of unread messages, each of which can have arbitrary labels and is not
+necessarily ordered. Is there functionality that also displays unread
+counts per label? My chief interest is to find out how easy it is to
+obtain a one-shot, big-picture summary of unread mail.
+
+   Matthias
+
+From helgedt at tihlde.org  Mon Nov 15 03:06:12 2010
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Mon, 15 Nov 2010 09:06:12 +0100
+Subject: [sup-talk] (no subject)
+In-Reply-To: <20101115065737.GT34938@icsi.berkeley.edu>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+	<1289785328-sup-6895@ezyang>
+	<20101115065737.GT34938@icsi.berkeley.edu>
+Message-ID: <1289808190-sup-7457@colargol.tihlde.org>
+
+Excerpts from Matthias Vallentin's message of Mon Nov 15 07:57:37 +0100 2010:
+> Without having tested it, the is:unread search seems to return a stream
+> of unread messages, each of which can have arbitrary labels and is not
+> necessarily ordered. Is there functionality that also displays unread
+> counts per label? My chief interest is to find out how easy it is to
+> obtain a one-shot, big-picture summary of unread mail.
+
+"L" and then enter (don't search for anything) gives you a list of lables,
+including the unread count (although it does not order it by # unread). Is that
+what you're after?
+
+-- 
+77660
+
+From brian at microcomaustralia.com.au  Mon Nov 15 17:14:23 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Tue, 16 Nov 2010 09:14:23 +1100
+Subject: [sup-talk] searching buffer
+Message-ID: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+
+Hello,
+
+When viewing a message, I can use "/text" to search for the first
+instance of "text" in the buffer.
+
+How do I repeat this and find the 2nd or even 3rd instance of "text"?
+
+Thanks
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From brian at microcomaustralia.com.au  Mon Nov 15 18:58:54 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Tue, 16 Nov 2010 10:58:54 +1100
+Subject: [sup-talk] searching buffer
+In-Reply-To: <AANLkTik7-jqHqu+CSBeFXxVvBOdcytTJPisAGGwbkHbS@mail.gmail.com>
+References: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+	<AANLkTik7-jqHqu+CSBeFXxVvBOdcytTJPisAGGwbkHbS@mail.gmail.com>
+Message-ID: <AANLkTi=N-Rbe9smXbmGaycDyAB49VKi4PV85=q4YoDG-@mail.gmail.com>
+
+On 16 November 2010 10:54, Hamish D <dmishd at gmail.com> wrote:
+> Press enter to end the search, then press 'n' to go through subsequent
+> matches.
+
+Doesn't work. Instead of going to the next search results, it hides
+the results of the last search.
+
+Furthermore, the help on my system says n has a different function:
+
+       n : Jump to next open message
+
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From blakes.85 at gmail.com  Mon Nov 15 19:16:10 2010
+From: blakes.85 at gmail.com (Blake Sweeney)
+Date: Mon, 15 Nov 2010 19:16:10 -0500
+Subject: [sup-talk] searching buffer
+In-Reply-To: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+References: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+Message-ID: <1289866508-sup-6130@prefontaine.local>
+
+Excerpts from Brian May's message of Mon Nov 15 17:14:23 -0500 2010:
+> When viewing a message, I can use "/text" to search for the first
+> instance of "text" in the buffer.
+> 
+> How do I repeat this and find the 2nd or even 3rd instance of "text"?
+
+I use 'n'.
+
+
+Blake
+
+From groups at hjdivad.com  Tue Nov 16 11:40:01 2010
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Tue, 16 Nov 2010 08:40:01 -0800
+Subject: [sup-talk] searching buffer
+In-Reply-To: <AANLkTi=N-Rbe9smXbmGaycDyAB49VKi4PV85=q4YoDG-@mail.gmail.com>
+References: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+	<AANLkTik7-jqHqu+CSBeFXxVvBOdcytTJPisAGGwbkHbS@mail.gmail.com>
+	<AANLkTi=N-Rbe9smXbmGaycDyAB49VKi4PV85=q4YoDG-@mail.gmail.com>
+Message-ID: <1289925383-sup-9748@nyx.local>
+
+Excerpts from Brian May's message of Mon Nov 15 15:58:54 -0800 2010:
+> On 16 November 2010 10:54, Hamish D <dmishd at gmail.com> wrote:
+> > Press enter to end the search, then press 'n' to go through subsequent
+> > matches.
+> 
+> Doesn't work. Instead of going to the next search results, it hides
+> the results of the last search.
+
+You might want to retry with all of the messages open.  The search feature seems
+to really only search the buffer, and not the ?collapsed? text (e.g. message
+body text in a closed message).  The same applies to hitting ?n? to advance to
+the next search result.
+
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From brian at microcomaustralia.com.au  Tue Nov 16 17:30:09 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Wed, 17 Nov 2010 09:30:09 +1100
+Subject: [sup-talk] searching buffer
+In-Reply-To: <1289925383-sup-9748@nyx.local>
+References: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+	<AANLkTik7-jqHqu+CSBeFXxVvBOdcytTJPisAGGwbkHbS@mail.gmail.com>
+	<AANLkTi=N-Rbe9smXbmGaycDyAB49VKi4PV85=q4YoDG-@mail.gmail.com>
+	<1289925383-sup-9748@nyx.local>
+Message-ID: <AANLkTi=+SiM33JgeBpMHc=0Tm9zv4Ckw0dHt_SwMFDuf@mail.gmail.com>
+
+On 17 November 2010 03:40, David J. Hamilton <groups at hjdivad.com> wrote:
+> You might want to retry with all of the messages open. ?The search feature seems
+> to really only search the buffer, and not the ?collapsed? text (e.g. message
+> body text in a closed message). ?The same applies to hitting ?n? to advance to
+> the next search result.
+
+Yes, tried that.
+
+Like I said, 'n' hides all the existing search results.
+
+'n' would appear to map to the "Jump to next open message" function,
+not the "find next search result" function.
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From groups at hjdivad.com  Tue Nov 16 23:38:54 2010
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Tue, 16 Nov 2010 20:38:54 -0800
+Subject: [sup-talk] searching buffer
+In-Reply-To: <AANLkTi=+SiM33JgeBpMHc=0Tm9zv4Ckw0dHt_SwMFDuf@mail.gmail.com>
+References: <AANLkTimMvv0QuTGAn0UAX7NJOu-f3eD8o8Qe=C18yVLn@mail.gmail.com>
+	<AANLkTik7-jqHqu+CSBeFXxVvBOdcytTJPisAGGwbkHbS@mail.gmail.com>
+	<AANLkTi=N-Rbe9smXbmGaycDyAB49VKi4PV85=q4YoDG-@mail.gmail.com>
+	<1289925383-sup-9748@nyx.local>
+	<AANLkTi=+SiM33JgeBpMHc=0Tm9zv4Ckw0dHt_SwMFDuf@mail.gmail.com>
+Message-ID: <1289968347-sup-5996@nyx.local>
+
+Excerpts from Brian May's message of Tue Nov 16 14:30:09 -0800 2010:
+> On 17 November 2010 03:40, David J. Hamilton <groups at hjdivad.com> wrote:
+> > You might want to retry with all of the messages open. ?The search feature seems
+> > to really only search the buffer, and not the ?collapsed? text (e.g. message
+> > body text in a closed message). ?The same applies to hitting ?n? to advance to
+> > the next search result.
+> 
+> Yes, tried that.
+> 
+> Like I said, 'n' hides all the existing search results.
+
+In that case, my local copy of sup (v0.11 on ruby 1.8.7) is just behaving
+differently from yours for some reason.  If I search for text using ?/?,
+subsequently hitting ?n? moves to the next instance.  However, if I hit
+something like ?j? or ?k? then the search is unhighlighted and ?n? switches back
+to its ?Jump to next open message? function.
+
+The only other thing I can think of is that when I run a search in a buffer that has
+no results, ?n? never changes from its ?Jump to next open message? function.
+
+
+In any case, if somebody more knowledgeable than me gets to your question,
+hopefully they can shed some light on how one can do a search (in a thread
+buffer) of an entire thread's content, and not merely the content of the open
+messages.
+
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From shadowfirebird at gmail.com  Thu Nov 18 07:34:42 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 18 Nov 2010 12:34:42 +0000
+Subject: [sup-talk] Sup not sending mail body!
+Message-ID: <1290083492-sup-3720@blake>
+
+
+Hi,
+
+I've got a problem where I'm finding that Sup has sent my mail without the actual mail body.  
+
+Unfortunately it's intermittent.  You can see the results here: https://groups.google.com/group/ruby-talk-google/browse_thread/thread/3e8a776b0e5c063c?hl=en 
+
+Anyone got any ideas?
+
+(Ubuntu 9.04; Sup 0.11.)
+
+-- 
+"Most people would like to be delivered from
+ temptation but would like it to keep in touch."
+		-- Robert Orben
+
+From shadowfirebird at gmail.com  Fri Nov 19 04:57:51 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 19 Nov 2010 09:57:51 +0000
+Subject: [sup-talk] Sup not sending mail body!
+In-Reply-To: <1290083492-sup-3720@blake>
+References: <1290083492-sup-3720@blake>
+Message-ID: <AANLkTimyQBMeq_JiH0UpPFpEsAebpvF8YDuoOJAuNsq2@mail.gmail.com>
+
+(Replying to myself.)
+
+It appears my mail message made it to my gmail account (which I am using for
+SMTP send), but not to the ruby-talk mailing list.   Could there be
+something about the way sup does headers that is confusing ruby-talk?
+
+I'm going to cross-post this to ruby-talk, too.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101119/fc753b3d/attachment.html>
+
+From vallentin at icsi.berkeley.edu  Sat Nov 20 14:04:54 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Sat, 20 Nov 2010 11:04:54 -0800
+Subject: [sup-talk] (no subject)
+In-Reply-To: <1289808190-sup-7457@colargol.tihlde.org>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+	<1289785328-sup-6895@ezyang>
+	<20101115065737.GT34938@icsi.berkeley.edu>
+	<1289808190-sup-7457@colargol.tihlde.org>
+Message-ID: <20101120190454.GR34938@icsi.berkeley.edu>
+
+> "L" and then enter (don't search for anything) gives you a list of lables,
+> including the unread count (although it does not order it by # unread). Is that
+> what you're after?
+
+Yes, that is what I am looking for. How easy is it to script/export this
+view? Say I have an external application that simply displays unread
+counts per label. Ideally, each time the view (i.e., unread count of
+all labels) changes, some trigger fires and reports the new data.
+
+   Matthias
+
+From tero at tilus.net  Sat Nov 20 20:10:44 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 21 Nov 2010 03:10:44 +0200
+Subject: [sup-talk] (no subject)
+In-Reply-To: <20101120190454.GR34938@icsi.berkeley.edu>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+	<1289785328-sup-6895@ezyang>
+	<20101115065737.GT34938@icsi.berkeley.edu>
+	<1289808190-sup-7457@colargol.tihlde.org>
+	<20101120190454.GR34938@icsi.berkeley.edu>
+Message-ID: <1290301315-sup-1796@tilus.net>
+
+Matthias Vallentin, 2010-11-20 21:04:
+> Ideally, each time the view (i.e., unread count of all labels)
+> changes, some trigger fires and reports the new data.
+
+Sup has quite a few hooks waiting for your Ruby code.  See `sup
+--list-hooks`.  In this case you might want to take a closer look at
+after-poll and before-add-message.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From vallentin at icsi.berkeley.edu  Sat Nov 20 20:51:46 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Sat, 20 Nov 2010 17:51:46 -0800
+Subject: [sup-talk] (no subject)
+In-Reply-To: <1290301315-sup-1796@tilus.net>
+References: <20101115004931.GD34938@icsi.berkeley.edu>
+	<1289785328-sup-6895@ezyang>
+	<20101115065737.GT34938@icsi.berkeley.edu>
+	<1289808190-sup-7457@colargol.tihlde.org>
+	<20101120190454.GR34938@icsi.berkeley.edu>
+	<1290301315-sup-1796@tilus.net>
+Message-ID: <20101121015146.GC29873@icsi.berkeley.edu>
+
+> Sup has quite a few hooks waiting for your Ruby code.  See `sup
+> --list-hooks`.  In this case you might want to take a closer look at
+> after-poll and before-add-message.
+
+Excellent, I am looking forward to delving deeper into Sup.
+
+Thanks for the detailed information,
+
+   Matthias
+
+From brian at microcomaustralia.com.au  Sun Nov 21 21:17:10 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Mon, 22 Nov 2010 13:17:10 +1100
+Subject: [sup-talk] sup not finding old messages
+Message-ID: <AANLkTi=2Zs-r=WiORde01vXQdb2ZXrpau5Qs4fh0HXK6@mail.gmail.com>
+
+Hello,
+
+On my system sup doesn't seem to be finding emails prior to Jan 2010
+any more. Emails that I know are there.
+
+Any ideas?
+
+Thanks
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From mariano.mara at gmail.com  Tue Nov 23 08:23:38 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Tue, 23 Nov 2010 10:23:38 -0300
+Subject: [sup-talk] Warning with mainline version
+Message-ID: <1290518444-sup-4196@kafka>
+
+Hi. I downloaded git mainline version after using 0.11 for a long time. 
+I'm getting the following warning every time the before poll hook is
+executed:
+.sup/hooks/before-poll.rb:2: warning: method redefined; discarding old
+offlineimap_run
+
+This is waht I have in before-poll.rb:
+# http://sup.rubyforge.org/wiki/wiki.pl?Hooks
+def offlineimap_run()
+  cmd = "offlineimap -o -l ~/.offlineimap.log"
+  `#{cmd} 2>&1`
+end
+
+if (@last_fetch || Time.at(0)) < Time.now - 120 
+  say "Running offlineimap..."
+  log offlineimap_run()
+  say "Finished offlineimap."
+end
+@last_fetch = Time.now
+
+I'm really bad with ruby, can somebody help me to get rid of this
+warning?
+
+TIA,
+Mariano
+
+From neeb at kpvn.de  Wed Nov 24 12:54:29 2010
+From: neeb at kpvn.de (Moritz Neeb)
+Date: Wed, 24 Nov 2010 18:54:29 +0100
+Subject: [sup-talk] ncursesw encoding
+Message-ID: <4CED5155.3080502@kpvn.de>
+
+Hello everyone,
+
+
+William Morgan wrote:
+[sup-talk] System encoding versus messages encoding
+Tue Apr 22 19:18:00 EDT 2008
+> The good news is that I've just made it slightly simpler, at least if
+> you're running from git. I've published an "ncursesw" branch that
+> contains a hacked ncurses-0.9.1 and a dirty script to install it into
+> your ../lib/ directory. If you use that AND you run from git next,
+> you'll see wide characters. It works!
+> 
+> So, just a "few" "simple" commands:
+> $ git branch --track ncursesw origin/ncursesw
+> $ git checkout ncursesw
+> $ cd ncurses-0.9.1/
+> $ ./run-this-for-sup.sh 
+> $ cd ..
+> $ git checkout next
+> $ ruby -Ilib bin/sup
+> 
+> ... and you should see wide characters, assuming your terminal is
+> capable. If make dies, you probably need to install some kind of
+> ncursesw development library. On my Debian system it's
+> a package called libncursesw5-dev.
+
+
+Is the suggested approach up to date? I am not really into git stuff, 
+but I think the "next" repository is not in a state, that the commands 
+below have the same effect than they had two years ago. Can you help me, 
+to get this working? Is there another approach to get the 
+message-encoding correctly displayed?
+
+--
+Moritz Neeb
+
+From tero at tilus.net  Wed Nov 24 14:09:44 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 24 Nov 2010 21:09:44 +0200
+Subject: [sup-talk] ncursesw encoding
+In-Reply-To: <4CED5155.3080502@kpvn.de>
+References: <4CED5155.3080502@kpvn.de>
+Message-ID: <1290625650-sup-8253@tilus.net>
+
+Moritz Neeb, 2010-11-24 19:54:
+> Is there another approach to get the 
+> message-encoding correctly displayed?
+
+Did you try installing ncursesw gem?
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From neeb at kpvn.de  Thu Nov 25 06:51:27 2010
+From: neeb at kpvn.de (Moritz Neeb)
+Date: Thu, 25 Nov 2010 12:51:27 +0100
+Subject: [sup-talk] ncursesw encoding
+In-Reply-To: <1290625650-sup-8253@tilus.net>
+References: <4CED5155.3080502@kpvn.de> <1290625650-sup-8253@tilus.net>
+Message-ID: <4CEE4DBF.7030600@kpvn.de>
+
+
+
+Tero Tilus wrote:
+> Moritz Neeb, 2010-11-24 19:54:
+>> Is there another approach to get the 
+>> message-encoding correctly displayed?
+> 
+> Did you try installing ncursesw gem?
+
+Yes, I installed it via 'gem install ncursesw', but it is not detected 
+by sup: "No 'ncursesw' gem detected ..."
+
+btw: I installed sup as a debian package, not as gem. Could this be a 
+problem?
+
+--
+Moritz Neeb
+
+From tero at tilus.net  Thu Nov 25 08:50:21 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 25 Nov 2010 15:50:21 +0200
+Subject: [sup-talk] ncursesw encoding
+In-Reply-To: <4CEE4DBF.7030600@kpvn.de>
+References: <4CED5155.3080502@kpvn.de> <1290625650-sup-8253@tilus.net>
+	<4CEE4DBF.7030600@kpvn.de>
+Message-ID: <1290692520-sup-6531@tilus.net>
+
+Moritz Neeb, 2010-11-25 13:51:
+> I installed sup as a debian package, not as gem. Could this be a 
+> problem?
+
+I don't know.  Though I wouldn't be surprised if it turns out to be.
+Rubygems and Dpkg provide essentially the same service (package and
+dependency management) and are (afaik) not aware of each other.  As a
+result they do not play together at all.  Usually there are no
+collisions but ymmv.
+
+On Debian derivatives my route of least gray hair has been to install
+Rubygems from sources using defaults and as much of the Ruby stuff
+from gems as possible.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rthrd at web.de  Sat Nov 27 12:05:45 2010
+From: rthrd at web.de (Ruthard Baudach)
+Date: Sat, 27 Nov 2010 18:05:45 +0100
+Subject: [sup-talk] sup crashes on sending emails
+Message-ID: <op.vmt9rvsvdfrxor@ruthard-mini>
+
+I've installed sup 0.11 using rubygem and ruby 1.8.
+
+sup crashes whenever I send an email, exception.log shows:
+
+
+--- TypeError from thread: main
+can't convert nil into String
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mbox/loader.rb:117:in  
+`exists?'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mbox/loader.rb:117:in  
+`store_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/util.rb:610:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/util.rb:610:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/util.rb:597:in  
+`method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/sent.rb:28:in  
+`write_sent_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in  
+`method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/edit-message-mode.rb:346:in  
+`send_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/resume-mode.rb:37:in  
+`send_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-view-mode.rb:428:in  
+`send_draft'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in  
+`handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:279
+/usr/bin/sup-mail:19:in `load'
+/usr/bin/sup-mail:19
+
+
+I've found this on http://masanjin.net/sup-bugs/ marked as "solved", but  
+could not find any hints how to solve this problem.
+
+Ruthard
+
+
+
+-- 
+Erstellt mit Operas revolution?rem E-Mail-Modul: http://www.opera.com/mail/
+
+From lurkos.usenet at gmail.com  Sat Nov 27 13:17:46 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Sat, 27 Nov 2010 19:17:46 +0100
+Subject: [sup-talk] IMAP, labels, editors
+Message-ID: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+
+Hello all!
+
+It's quite a long time ago since I started to look for an e-mail
+client with features like Gmail, and it seems that *sup* fulfill these
+requirements.
+First of all I would like to great all the contributors for their work.
+However I have a couple of questions to better understand how *sup* works.
+
+I've read in the latest History file that IMAP support is deprecated.
+Are you going to drop it? I mainly use IMAP to read my e-mail boxes,
+because I need to deal with them from different workstations (say:
+home, office, laptop, etc.).
+For this reason the local Maildir approach won't work for me.
+
+Are the labels stored in a local database or also stored as flags via IMAP?
+Of course the second choice would be much more beneficial for people
+using e-mail from different locations.
+What happens if a new message is added to the mail spool from another
+source? Does *sup-sync* preserve labels already associated?
+
+Is it possible to _delete_ a message via IMAP (say: mark as \Deleted
+and then Expunge, using IMAP terminology)? According to your FAQ, it
+seems that only mbox spools support a real delete process.
+
+About message composition, do you have any recommended editor, given
+the fact that I never used a lot Vi nor Emacs?
+
+Thank for your help!
+
+-- 
+Lurkos
+
+From adam at alloy-d.net  Sat Nov 27 14:02:51 2010
+From: adam at alloy-d.net (Adam Lloyd)
+Date: Sat, 27 Nov 2010 14:02:51 -0500
+Subject: [sup-talk] sup crashes on sending emails
+In-Reply-To: <op.vmt9rvsvdfrxor@ruthard-mini>
+References: <op.vmt9rvsvdfrxor@ruthard-mini>
+Message-ID: <1290883976-sup-4600@nagato.alloy-d.net>
+
+Excerpts from Ruthard Baudach's message of 2010-11-27 12:05:45 -0500:
+> I've installed sup 0.11 using rubygem and ruby 1.8.
+> 
+> sup crashes whenever I send an email, exception.log shows:
+> 
+> 
+> --- TypeError from thread: main
+> can't convert nil into String
+> /usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mbox/loader.rb:117:in  
+> `exists?'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mbox/loader.rb:117:in  
+> `store_message'
+
+*snip*
+
+> I've found this on http://masanjin.net/sup-bugs/ marked as "solved", but  
+> could not find any hints how to solve this problem.
+
+The problem is that store_message tries to access @filename, which was
+presumably removed at some point in favor of @path.
+
+Just replacing @filename with @path in lines 117 and 118 of the file
+mentioned in the trace will fix it.  It is also fixed in git.
+
+-Adam
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101127/b19c34af/attachment.bin>
+
+From damien.leone at fensalir.fr  Sat Nov 27 15:26:43 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sat, 27 Nov 2010 21:26:43 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+Message-ID: <1290889043-sup-6470@mailer>
+
+Hi,
+
+Excerpts from Lurkos's message of sam. nov. 27 19:17:46 +0100 2010:
+> I've read in the latest History file that IMAP support is deprecated.
+> Are you going to drop it? I mainly use IMAP to read my e-mail boxes,
+> because I need to deal with them from different workstations (say:
+> home, office, laptop, etc.).
+> For this reason the local Maildir approach won't work for me.
+
+You can use offlineimap to fetch e-mails from your IMAP server and
+save them as Maildir that are then added in sup. By setting your hooks
+properly you can automatically call offlineimap before polling (see
+the wiki).
+
+> Are the labels stored in a local database or also stored as flags via IMAP?
+> Of course the second choice would be much more beneficial for people
+> using e-mail from different locations.
+> What happens if a new message is added to the mail spool from another
+> source? Does *sup-sync* preserve labels already associated?
+
+Everything is stored locally, sup does not modify the Maildir sources
+but there is a maildir-sync branch that allows you to keep
+synchronized in both directions between your IMAP server and your sup
+database. This is still under development though.
+
+> Is it possible to _delete_ a message via IMAP (say: mark as \Deleted
+> and then Expunge, using IMAP terminology)? According to your FAQ, it
+> seems that only mbox spools support a real delete process.
+
+Same as above.
+
+> About message composition, do you have any recommended editor, given
+> the fact that I never used a lot Vi nor Emacs?
+
+I use emacs with post-mode.
+
+Cheers,
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From moritz+sup at wzff.de  Sat Nov 27 15:57:27 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sat, 27 Nov 2010 21:57:27 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <1290889043-sup-6470@mailer>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer> Hi, 
+Message-ID: <1290890855-sup-3282@niflheimr>
+
+Excerpts from Damien Leone's message of Sat Nov 27 21:26:43 +0100 2010:
+> > I've read in the latest History file that IMAP support is deprecated.
+> > Are you going to drop it? I mainly use IMAP to read my e-mail boxes,
+> > because I need to deal with them from different workstations (say:
+> > home, office, laptop, etc.).
+> > For this reason the local Maildir approach won't work for me.
+> 
+> You can use offlineimap to fetch e-mails from your IMAP server and
+> save them as Maildir that are then added in sup. By setting your hooks
+> properly you can automatically call offlineimap before polling (see
+> the wiki).
+
+Alternatives to offlineimap to store mail in mbox/maildir include getmail
+(which is what I use) and fetchmail.
+
+> > About message composition, do you have any recommended editor, given
+> > the fact that I never used a lot Vi nor Emacs?
+> 
+> I use emacs with post-mode.
+
+sup's keybindings are modeled largely after mutt's, and not really modeled
+after neither vim nor emacs, so you don't have any benefits in learning
+how to use sup if you already know how to use vim/emacs (or vice versa).
+sup has a setting where you can change your preferred editor. As far as I
+remember, the tool that initially writes the configuration (`sup-config')
+defaults to vim.
+Personally, I use vim with mail-syntax-hilighting.
+
+Best regards,
+
+Moritz
+
+From lurkos.usenet at gmail.com  Sat Nov 27 18:34:55 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Sun, 28 Nov 2010 00:34:55 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <1290890855-sup-3282@niflheimr>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer> <1290890855-sup-3282@niflheimr>
+Message-ID: <AANLkTinMxU2J=t4LP=Tp-d-BeXVaQ1kNc2yGXOzgorpx@mail.gmail.com>
+
+On Sat, Nov 27, 2010 at 9:57 PM, Moritz Wilhelmy <moritz+sup at wzff.de> wrote:
+>>> I've read in the latest History file that IMAP support is deprecated.
+>>> Are you going to drop it? I mainly use IMAP to read my e-mail boxes,
+>>> because I need to deal with them from different workstations (say:
+>>> home, office, laptop, etc.).
+>>> For this reason the local Maildir approach won't work for me.
+>>
+>> You can use offlineimap to fetch e-mails from your IMAP server and
+>> save them as Maildir that are then added in sup. By setting your hooks
+>> properly you can automatically call offlineimap before polling (see
+>> the wiki).
+>
+> Alternatives to offlineimap to store mail in mbox/maildir include getmail
+> (which is what I use) and fetchmail.
+
+The main drawback of this approach is that you have to copy all your
+mailbox in every location.
+This mean several GiB for me.
+That's why I would prefer to keep everything on the IMAP server (and
+periodically backup it in a single computer).
+
+>>> About message composition, do you have any recommended editor, given
+>>> the fact that I never used a lot Vi nor Emacs?
+>>
+>> I use emacs with post-mode.
+>
+> sup's keybindings are modeled largely after mutt's, and not really modeled
+> after neither vim nor emacs, so you don't have any benefits in learning
+> how to use sup if you already know how to use vim/emacs (or vice versa).
+> sup has a setting where you can change your preferred editor. As far as I
+> remember, the tool that initially writes the configuration (`sup-config')
+> defaults to vim.
+> Personally, I use vim with mail-syntax-hilighting.
+
+That's true: *sup* initially selects vim as default mail editor.
+I never had before special requirements for text editor and therefore
+gedit was enough.
+Do you think is worth spending time to learn a text-based editor even
+for writing e-mails?
+
+Cheers,
+
+-- 
+Lurkos
+
+From lurkos.usenet at gmail.com  Sat Nov 27 20:27:14 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Sun, 28 Nov 2010 02:27:14 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <1290889043-sup-6470@mailer>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+Message-ID: <AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+
+On Sat, Nov 27, 2010 at 9:26 PM, Damien Leone <damien.leone at fensalir.fr> wrote:
+>> I've read in the latest History file that IMAP support is deprecated.
+>> Are you going to drop it? I mainly use IMAP to read my e-mail boxes,
+>> because I need to deal with them from different workstations (say:
+>> home, office, laptop, etc.).
+>> For this reason the local Maildir approach won't work for me.
+>
+> You can use offlineimap to fetch e-mails from your IMAP server and
+> save them as Maildir that are then added in sup. By setting your hooks
+> properly you can automatically call offlineimap before polling (see
+> the wiki).
+>
+>> Are the labels stored in a local database or also stored as flags via IMAP?
+>> Of course the second choice would be much more beneficial for people
+>> using e-mail from different locations.
+>> What happens if a new message is added to the mail spool from another
+>> source? Does *sup-sync* preserve labels already associated?
+>
+> Everything is stored locally, sup does not modify the Maildir sources
+> but there is a maildir-sync branch that allows you to keep
+> synchronized in both directions between your IMAP server and your sup
+> database. This is still under development though.
+
+This seems really interesting... and possibly a indication that the
+IMAP support would not be dropped.
+
+Thanks for your answers.
+
+Cheers,
+
+-- 
+Lurkos
+
+From damien.leone at fensalir.fr  Sun Nov 28 04:21:12 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 28 Nov 2010 10:21:12 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+Message-ID: <1290935803-sup-8547@mailer>
+
+Excerpts from Lurkos's message of dim. nov. 28 02:27:14 +0100 2010:
+> This seems really interesting... and possibly a indication that the
+> IMAP support would not be dropped.
+
+What I meant exactly is that with this branch sup modifies your
+Maildir sources, and by using offlineimap you can reflect them to the
+remote IMAP server. AFAIK sup will not reintegrate IMAP support, I
+think the main reason is because of the poor and slow IMAP support in
+the ruby libraries.
+
+Indeed you have to download all your e-mails but since I use sup only
+on one machine this is not very annoying plus it allows me to backup
+my e-mails and access them *offline*.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From lurkos.usenet at gmail.com  Sun Nov 28 09:05:32 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Sun, 28 Nov 2010 15:05:32 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <1290935803-sup-8547@mailer>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+	<1290935803-sup-8547@mailer>
+Message-ID: <AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+
+On Sun, Nov 28, 2010 at 10:21 AM, Damien Leone <damien.leone at fensalir.fr> wrote:
+>> This seems really interesting... and possibly a indication that the
+>> IMAP support would not be dropped.
+>
+> What I meant exactly is that with this branch sup modifies your
+> Maildir sources, and by using offlineimap you can reflect them to the
+> remote IMAP server.
+
+Thanks for explaining.
+Yesterday I spent a couple of hours to search for more details about
+*sup*, *notmuch* and *offlineimap*.
+What I still have not completely understood is how *sup* is going to
+store label information inside Maildir sources.
+According to this message
+(http://lists.madduck.net/pipermail/mailtags/2007-August/msg00016.html),
+IMAP tags would not be perfect (even if probably the best solution in
+my opinion).
+Another problem is that is not completely clear if *offlineimap* would
+sync also these "special" tags.
+
+> AFAIK sup will not reintegrate IMAP support, I
+> think the main reason is because of the poor and slow IMAP support in
+> the ruby libraries.
+
+If ruby libraries don't support some feature that you need, it would
+be reasonable to drop IMAP support.
+However if the only problem is the speed, I would keep it, at least for now.
+
+> Indeed you have to download all your e-mails but since I use sup only
+> on one machine this is not very annoying plus it allows me to backup
+> my e-mails and access them *offline*.
+
+Therefore the only possible solution seems to have a personal server
+running 24/7 and using *sup* via *ssh*.
+
+Cheers,
+
+-- 
+Lurkos
+
+From damien.leone at fensalir.fr  Sun Nov 28 09:50:15 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 28 Nov 2010 15:50:15 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+	<1290935803-sup-8547@mailer>
+	<AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+Message-ID: <1290955366-sup-9628@mailer>
+
+Excerpts from Lurkos's message of dim. nov. 28 15:05:32 +0100 2010:
+> Thanks for explaining.
+> Yesterday I spent a couple of hours to search for more details about
+> *sup*, *notmuch* and *offlineimap*.
+> What I still have not completely understood is how *sup* is going to
+> store label information inside Maildir sources.
+> According to this message
+> (http://lists.madduck.net/pipermail/mailtags/2007-August/msg00016.html),
+> IMAP tags would not be perfect (even if probably the best solution in
+> my opinion).
+> Another problem is that is not completely clear if *offlineimap* would
+> sync also these "special" tags.
+
+Currently everything is stored in the xapian database that stays local
+to sup. On the maildir-sync branch, only the following flags are
+exported [0].
+
+That means that you have two sets of labels, the ones on the IMAP
+server and the others in sup. Usually offlineimap will create a
+Maildir source per IMAP label (at least with gmail) so it is easy to
+add them separately in sup and auto-apply rules for each (such as
+apply a label, archive messages from this source, etc.) so it is not
+too painful.
+
+> Therefore the only possible solution seems to have a personal server
+> running 24/7 and using *sup* via *ssh*.
+
+Yep, that's my case.
+
+[0] : http://cr.yp.to/proto/maildir.html
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From lurkos.usenet at gmail.com  Mon Nov 29 13:59:28 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Mon, 29 Nov 2010 18:59:28 +0000 (UTC)
+Subject: [sup-talk] IMAP, labels, editors
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+	<1290935803-sup-8547@mailer>
+	<AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+	<1290955366-sup-9628@mailer>
+Message-ID: <63f0d2ea234ebf04fe1fb894d9ad2dee.XPN@L622243018051.user.x-privat.org>
+
+*Damien Leone* wrote:
+
+>> Thanks for explaining.
+>> Yesterday I spent a couple of hours to search for more details about
+>> *sup*, *notmuch* and *offlineimap*.
+>> What I still have not completely understood is how *sup* is going to
+>> store label information inside Maildir sources.
+>> According to this message
+>> (http://lists.madduck.net/pipermail/mailtags/2007-August/msg00016.html),
+>> IMAP tags would not be perfect (even if probably the best solution in
+>> my opinion).
+>> Another problem is that is not completely clear if *offlineimap* would
+>> sync also these "special" tags.
+>
+> Currently everything is stored in the xapian database that stays local
+> to sup. On the maildir-sync branch, only the following flags are
+> exported [0].
+
+| Flag "F" (flagged): user-defined flag; toggled at user discretion.
+I have not completely understood what can be stored inside this special
+user-defined flag.
+
+Here (http://wiki.dovecot.org/MailboxFormat/Maildir#IMAP_keywords) I
+found a non-standard way to implement some flags, but I don't how if
+offlineimap would support it.
+
+> That means that you have two sets of labels, the ones on the IMAP
+> server and the others in sup. Usually offlineimap will create a
+> Maildir source per IMAP label (at least with gmail) so it is easy to
+> add them separately in sup and auto-apply rules for each (such as
+> apply a label, archive messages from this source, etc.) so it is not
+> too painful.
+>
+>> Therefore the only possible solution seems to have a personal server
+>> running 24/7 and using *sup* via *ssh*.
+>
+> Yep, that's my case.
+
+Unfornately it doesn't apply to me, also because I have a standard ADSL
+home connection.
+
+> [0] : http://cr.yp.to/proto/maildir.html
+
+-- 
+Lurkos
+
+
+
+From damien.leone at fensalir.fr  Mon Nov 29 15:08:33 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 29 Nov 2010 21:08:33 +0100
+Subject: [sup-talk] IMAP, labels, editors
+In-Reply-To: <63f0d2ea234ebf04fe1fb894d9ad2dee.XPN@L622243018051.user.x-privat.org>
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+	<1290935803-sup-8547@mailer>
+	<AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+	<1290955366-sup-9628@mailer>
+	<63f0d2ea234ebf04fe1fb894d9ad2dee.XPN@L622243018051.user.x-privat.org>
+Message-ID: <1291061030-sup-7886@mailer>
+
+Hi,
+
+Excerpts from Lurkos's message of lun. nov. 29 19:59:28 +0100 2010:
+> I have not completely understood what can be stored inside this special
+> user-defined flag.
+
+I have always seen this one used as the "starred" / "favourite" flag.
+
+> Unfornately it doesn't apply to me, also because I have a standard ADSL
+> home connection.
+
+Same for me but since I'm the only user on the machine and that's
+perfectly fine. ^^ Just a matter of taste. I use a pogo-plug running
+Debian, very low energy consumption (ARM CPU) and enough performances
+for my tasks (reading mails, ssh, accessing my stuff, etc.).
+
+Cheers,
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From lurkos.usenet at gmail.com  Mon Nov 29 21:36:24 2010
+From: lurkos.usenet at gmail.com (Lurkos)
+Date: Tue, 30 Nov 2010 02:36:24 +0000 (UTC)
+Subject: [sup-talk] IMAP, labels, editors
+References: <AANLkTikQbNR_uTW8Gt8VExq9Bt2YwB=u3k4edcvL8wb_@mail.gmail.com>
+	<1290889043-sup-6470@mailer>
+	<AANLkTin8ai-RZvURxAQmJ-98esNFOMwR0mWvm5ftsHP6@mail.gmail.com>
+	<1290935803-sup-8547@mailer>
+	<AANLkTin9ocMjDFfH=p30=_sm1DBOVM2RJw=mDCRGm5iR@mail.gmail.com>
+	<1290955366-sup-9628@mailer>
+	<63f0d2ea234ebf04fe1fb894d9ad2dee.XPN@L622243018051.user.x-privat.org>
+	<1291061030-sup-7886@mailer>
+Message-ID: <b98aa2d9e57d76a087e1b7700fc29ca2.XPN@L622243018051.user.x-privat.org>
+
+*Damien Leone* wrote:
+
+>> I have not completely understood what can be stored inside this special
+>> user-defined flag.
+>
+> I have always seen this one used as the "starred" / "favourite" flag.
+
+OK.
+
+>> Unfornately it doesn't apply to me, also because I have a standard ADSL
+>> home connection.
+>
+> Same for me but since I'm the only user on the machine and that's
+> perfectly fine. ^^ Just a matter of taste. I use a pogo-plug running
+> Debian, very low energy consumption (ARM CPU) and enough performances
+> for my tasks (reading mails, ssh, accessing my stuff, etc.).
+
+Like SheevaPlug? Seems really interesting!
+
+-- 
+Lurkos
+
+
+

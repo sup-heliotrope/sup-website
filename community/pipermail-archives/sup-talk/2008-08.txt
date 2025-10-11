@@ -1,0 +1,1582 @@
+From wmorgan-sup at masanjin.net  Fri Aug  1 16:45:35 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 01 Aug 2008 13:45:35 -0700
+Subject: [sup-talk] colors in 0.6
+In-Reply-To: <1217545348-sup-5151@wrasse>
+References: <1217545348-sup-5151@wrasse>
+Message-ID: <1217623461-sup-3156@entry>
+
+Reformatted excerpts from Richard Heycock's message of 2008-07-31:
+>     :colors:
+>       :index_new:
+>         :bg: yellow
+> 
+>       <snip>
+> 
+> But it still comes up the default colour scheme.
+> 
+> I know the file is being read (using strace) so I'm guessing it's a
+> problem with the yaml. Any ideas?
+
+You just need to remove the :colors: line. It's expecting something
+like:
+
+  ---
+  :index_new:
+    :bg: yellow
+
+HTH,
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kramert at informatik.uni-freiburg.de  Sun Aug  3 19:17:28 2008
+From: kramert at informatik.uni-freiburg.de (Thorsten Kramer)
+Date: Mon, 04 Aug 2008 01:17:28 +0200
+Subject: [sup-talk] Beginner questions
+Message-ID: <1217805086-sup-749@pluto>
+
+Hi,
+
+recently I switched from mutt to sup. Everything works fine besides some
+minor issues:
+
+1) Unfortunately, the gpg integration doesn't work. If I want to sign my mails,
+sup complains about: 'Problem sending mail: gpg: gpg-agent is not available in
+this session' Any tipps to avoid this? With mutt, gpg works fine.
+
+2) I've configured several accounts for sending mail. How can I switch
+between them in the mail-compose view? Is changing the from address the
+only way?
+
+3) In mutt you can define macros. E.g. you press F2 and the
+selected mail is moved from its maildir to a spam mbox. Is this
+possible with sup?
+
+Thanks!
+
+From wmorgan-sup at masanjin.net  Sun Aug  3 21:41:54 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Aug 2008 18:41:54 -0700
+Subject: [sup-talk] Beginner questions
+In-Reply-To: <1217805086-sup-749@pluto>
+References: <1217805086-sup-749@pluto>
+Message-ID: <1217813913-sup-4564@entry>
+
+Hi Thorsten,
+
+Reformatted excerpts from Thorsten Kramer's message of 2008-08-03:
+> recently I switched from mutt to sup.
+
+Welcome!
+
+> 1) Unfortunately, the gpg integration doesn't work. If I want to sign
+> my mails, sup complains about: 'Problem sending mail: gpg: gpg-agent
+> is not available in this session' Any tipps to avoid this? With mutt,
+> gpg works fine.
+
+At least right now, the only way to run Sup with GPG is to use
+gpg-agent. Sup doesn't ask for your password, store it, expire it, etc.
+So you'll need to start gpg-agent in the background, and then gpg should
+automatically trigger it to ask you for your password.
+
+The one problem with this so far is that the curses version of gpg-agent
+doesn't interact well with Sup. If you're using the X version, you'll be
+fine.
+
+> 2) I've configured several accounts for sending mail. How can I switch
+> between them in the mail-compose view? Is changing the from address
+> the only way?
+
+Yes, that's the only way. (So far!)
+
+> 3) In mutt you can define macros. E.g. you press F2 and the selected
+> mail is moved from its maildir to a spam mbox. Is this possible with
+> sup?
+
+No. I would like to have this at some point, and I don't think it would
+be terribly hard, but right now even the keybindings are not
+configurable.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Aug  4 00:08:18 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Aug 2008 21:08:18 -0700
+Subject: [sup-talk] [ANN] Sup 0.6 Released
+Message-ID: <1217822888-sup-2959@entry>
+
+Sup version 0.6 has been released!
+
+* <http://sup.rubyforge.org>
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Sup makes it easy to:
+- Handle massive amounts of email.
+
+- Mix email from different sources: mbox files (even across different
+  machines), Maildir directories, IMAP folders, POP accounts, and
+  GMail accounts.
+
+- Instantaneously search over your entire email collection. Search
+  over body text, or use a query language to combine search
+  predicates in any way.
+
+- Handle multiple accounts. Replying to email sent to a particular
+  account will use the correct SMTP server, signature, and from
+  address.
+
+- Add custom code to handle certain types of messages or to handle
+  certain types of text within messages.
+
+- Organize email with user-defined labels, automatically track
+  recent contacts, and much more!
+
+The goal of Sup is to become the email client of choice for nerds
+everywhere.
+
+Changes:
+
+## 0.6 / 2008-08-04
+* new hooks: mark-as-spam, reply-to, reply-from
+* configurable colors. finally!
+* many bugfixes
+* more vi keys added, and 'q' now asks before quitting
+* attachment markers (little @ signs!) in thread-index-mode
+* maildir speedups
+* attachment name searchability
+* archive-and-mark-read command in inbox-mode
+
+* <http://sup.rubyforge.org>
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From cj.fleck at gmail.com  Mon Aug  4 11:05:28 2008
+From: cj.fleck at gmail.com (CJ Fleck)
+Date: Mon, 4 Aug 2008 11:05:28 -0400
+Subject: [sup-talk] Sending mail
+Message-ID: <12258ab10808040805q39aabf26lb7711dee88f2527b@mail.gmail.com>
+
+I'm trying out sup v 0.6, and I'm stuck when I go to send mail.  I use
+msmtp and '/usr/bin/msmtp --account=foo me at someaddress.com < filename'
+works from the command line.  In my config.yaml, I have a ':sendmail:
+/usr/bin/msmtp --account=foo -t'.
+
+The problem arises, when I compose the mail, and I go to exit the
+editor, it brings me to the "Crypto" buffer.  I choose none, and it
+immediately goes back to the editor.  This is a cycle I cannot break.
+Am I missing something here?  How do I send the mail?
+
+CJ
+
+From wmorgan-sup at masanjin.net  Mon Aug  4 11:31:14 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 04 Aug 2008 08:31:14 -0700
+Subject: [sup-talk] Sending mail
+In-Reply-To: <12258ab10808040805q39aabf26lb7711dee88f2527b@mail.gmail.com>
+References: <12258ab10808040805q39aabf26lb7711dee88f2527b@mail.gmail.com>
+Message-ID: <1217863726-sup-1263@entry>
+
+Reformatted excerpts from CJ Fleck's message of 2008-08-04:
+> The problem arises, when I compose the mail, and I go to exit the
+> editor, it brings me to the "Crypto" buffer.  I choose none, and it
+> immediately goes back to the editor.  This is a cycle I cannot break.
+> Am I missing something here?  How do I send the mail?
+
+This might just be a UI issue. I think what you're calling the "crypto
+buffer" is the reply composition buffer. Pressing enter dumps you into
+the editor, and exiting the editor brings you back there. You can move
+the row cursor with the up and down arrows, and you can press 'y' to
+actually send the email. Weird, perhaps, but that's part of the mutt
+legacy, and one day Sup will have configurable keymaps.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marc.hartstein at alum.vassar.edu  Mon Aug  4 11:25:08 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Mon, 04 Aug 2008 11:25:08 -0400
+Subject: [sup-talk] Sending mail
+In-Reply-To: <12258ab10808040805q39aabf26lb7711dee88f2527b@mail.gmail.com>
+References: <12258ab10808040805q39aabf26lb7711dee88f2527b@mail.gmail.com>
+Message-ID: <1217863372-sup-8273@cabinet>
+
+Excerpts from CJ Fleck's message of Mon Aug 04 11:05:28 -0400 2008:
+> The problem arises, when I compose the mail, and I go to exit the
+> editor, it brings me to the "Crypto" buffer.  I choose none, and it
+> immediately goes back to the editor.  This is a cycle I cannot break.
+> Am I missing something here?  How do I send the mail?
+
+Unless it's changed from 'next' as of a couple of months ago to 0.6:
+
+Press <y> to send mail (like in mutt); <Enter> edits the message.  I've
+also found that slightly confusing at times, because you're manipulating
+something which looks like a menu, so you expect <Enter> to do the
+"obvious" thing and confirm (sending).
+
+If it has change, press <?> on that screen to see the key bindings.
+
+From kramert at informatik.uni-freiburg.de  Tue Aug  5 17:52:25 2008
+From: kramert at informatik.uni-freiburg.de (Thorsten Kramer)
+Date: Tue, 05 Aug 2008 23:52:25 +0200
+Subject: [sup-talk] Beginner questions
+In-Reply-To: <1217813913-sup-4564@entry>
+References: <1217805086-sup-749@pluto> <1217813913-sup-4564@entry>
+Message-ID: <1217972659-sup-8094@pluto>
+
+Hi William,
+
+Excerpts from William Morgan's message of Mon Aug 04 03:41:54 +0200 2008:
+
+> The one problem with this so far is that the curses version of gpg-agent
+> doesn't interact well with Sup. If you're using the X version, you'll be
+> fine.
+
+Well, it's strange. Sometimes the gpg-agent reacts, sometimes the
+running daemon isn't recognized. Anyway, it's definitely a problem
+caused by my gpg installation, not by sup.
+
+> No. I would like to have this at some point, and I don't think it would
+> be terribly hard, but right now even the keybindings are not
+> configurable.
+
+OK. Then the mark-as-spam hook will probably do for me.
+
+
+Best regards,
+Thorsten
+
+From kendall at clarkparsia.com  Tue Aug  5 18:57:57 2008
+From: kendall at clarkparsia.com (Kendall Grant Clark)
+Date: Tue, 05 Aug 2008 18:57:57 -0400
+Subject: [sup-talk] sup doesn't like '[Gmail]' in maildir URI
+Message-ID: <1217976772-sup-7788@k-desktop.int.clarkparsia.com>
+
+Folks,
+
+I just switched email to Gmail; so far, so good. I use offlineimap to grab
+[Gmail] and INBOX; but when I add a maildir URI with sup-add that includes
+the path component '[Gmail]', it bitches about illegal URI.
+
+So I encoded the '[' and ']' characters -- would be nice if sup-add offered to
+do that automagically -- but then sup-add bitches about ~/path/%5BGmail%5D/cur
+not being a director, when of course it *is* a directory... Leads me to
+believe there's still something wrong with the encoded [Gmail] bit, since
+~/path/INBOX works fine.
+
+Has anyone else seen and solved this problem? I'm using sup 0.6, which is
+otherwise excellent.
+
+Cheers,
+Kendall Clark
+
+From its.jeff.balogh at gmail.com  Tue Aug  5 19:17:12 2008
+From: its.jeff.balogh at gmail.com (Jeff Balogh)
+Date: Tue, 05 Aug 2008 19:17:12 -0400
+Subject: [sup-talk] sup doesn't like '[Gmail]' in maildir URI
+In-Reply-To: <1217976772-sup-7788@k-desktop.int.clarkparsia.com>
+References: <1217976772-sup-7788@k-desktop.int.clarkparsia.com>
+Message-ID: <1217977678-sup-288@archie>
+
+Kendall Grant Clark wrote:
+> Folks,
+> 
+> I just switched email to Gmail; so far, so good. I use offlineimap to grab
+> [Gmail] and INBOX; but when I add a maildir URI with sup-add that includes
+> the path component '[Gmail]', it bitches about illegal URI.
+> 
+> So I encoded the '[' and ']' characters -- would be nice if sup-add offered to
+> do that automagically -- but then sup-add bitches about ~/path/%5BGmail%5D/cur
+> not being a director, when of course it *is* a directory... Leads me to
+> believe there's still something wrong with the encoded [Gmail] bit, since
+> ~/path/INBOX works fine.
+> 
+> Has anyone else seen and solved this problem? I'm using sup 0.6, which is
+> otherwise excellent.
+
+For Gmail, you probably want to just grab the 'All Mail' folder.  All your mail
+goes there (imagine that!), so tracking INBOX is unnecessary.  Especially since
+sup will complain if you ever clear out the inbox.
+
+To get around the URI problem, I use `nametrans` in ~/.offlineimaprc to clean up
+the folder names:
+
+nametrans = lambda s: s.replace('[','').replace(']','').replace(' ', '_')
+
+In English, remove brackets and turn spaces into underscores.
+
+Cheers,
+jeff
+
+From daniel.neubacher at xing.com  Wed Aug  6 08:24:01 2008
+From: daniel.neubacher at xing.com (Daniel Neubacher)
+Date: Wed, 06 Aug 2008 14:24:01 +0200
+Subject: [sup-talk] safe index in the after-poll.rb ?
+Message-ID: <1218025176-sup-6853@daniel-laptop>
+
+Hello there,
+i've build me a after-poll hook to display the unread mail count in my
+window manager:
+system ("echo 0 widget_tell mystatusbar mails text
+\\|#{num_inbox_total_unread}\\| | awesome-client")
+
+This is working, but only when the index is safed. When i read some
+mails and do not safe the index the count doesnt give me the right
+amount of unread mails back. So is there a way to save the index
+automaticly after polling my mails ?
+
+thanks in advance
+Daniel Neubacher
+
+From kendall at clarkparsia.com  Wed Aug  6 09:38:49 2008
+From: kendall at clarkparsia.com (Kendall Clark)
+Date: Wed, 6 Aug 2008 09:38:49 -0400
+Subject: [sup-talk] sup doesn't like '[Gmail]' in maildir URI
+In-Reply-To: <1217977678-sup-288@archie>
+References: <1217976772-sup-7788@k-desktop.int.clarkparsia.com>
+	<1217977678-sup-288@archie>
+Message-ID: <1fc9c2ff0808060638x3eea84beud71186f79488dbe8@mail.gmail.com>
+
+On Tue, Aug 5, 2008 at 7:17 PM, Jeff Balogh <its.jeff.balogh at gmail.com> wrote:
+> For Gmail, you probably want to just grab the 'All Mail' folder.  All your mail
+> goes there (imagine that!), so tracking INBOX is unnecessary.  Especially since
+> sup will complain if you ever clear out the inbox.
+>
+> To get around the URI problem, I use `nametrans` in ~/.offlineimaprc to clean up
+> the folder names:
+>
+> nametrans = lambda s: s.replace('[','').replace(']','').replace(' ', '_')
+>
+> In English, remove brackets and turn spaces into underscores.
+
+Thanks, Jeff -- both suggestions worked nicely.
+
+Cheers,
+Kendall
+
+From johnbent at lanl.gov  Wed Aug  6 10:12:41 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 06 Aug 2008 08:12:41 -0600
+Subject: [sup-talk] two sup crashes
+Message-ID: <1218031573-sup-325@tangerine.lanl.gov>
+
+I was sending an email and sup crashed.  I restarted, resent the email,
+and then it crashed again right after I archived some emails, saved the
+index and tried to refresh my screen.  Both errors are below and seem to
+be related.
+
+--- EOFError from thread: main
+End-of-File Error occured at <except.c>:93 in xraise
+Error occured in compound_io.c:137 - cmpdi_read_i
+    Tried to read past end of file. File length is <1> and tried to read
+to <162169>
+
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/draft.rb:38:in
+`default'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/draft.rb:38:in `[]'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/draft.rb:38:in
+`discard'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:499:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:499:in
+`method_missing'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/resume-mode.rb:36:in
+`send_message'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in
+`handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:240:in
+`handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/bin/sup:189
+/opt/local/bin/sup:16:in `load'
+/opt/local/bin/sup:16
+
+
+
+--- IOError from thread: load threads for thread-index-mode
+IO Error occured at <except.c>:93 in xraise
+Error occured in fs_store.c:293 - fsi_seek_i
+	seeking pos 162482: <Bad file descriptor>
+
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:362:in `default'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:362:in `[]'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:362:in `build_message'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:263:in `each_id_by_date'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/thread.rb:330:in `call'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/thread.rb:330:in `load_n_threads'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:263:in `each_id_by_date'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:263:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:263:in `each_id_by_date'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/thread.rb:326:in `load_n_threads'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:85:in `reporting_thread'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `initialize'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `new'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `reporting_thread'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:87:in `reload'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in `handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:240:in `handle_input'
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/bin/sup:189
+/opt/local/bin/sup:16:in `load'
+/opt/local/bin/sup:16
+
+From wmorgan-sup at masanjin.net  Wed Aug  6 14:23:59 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 06 Aug 2008 11:23:59 -0700
+Subject: [sup-talk] two sup crashes
+In-Reply-To: <1218031573-sup-325@tangerine.lanl.gov>
+References: <1218031573-sup-325@tangerine.lanl.gov>
+Message-ID: <1218046971-sup-1407@entry>
+
+Reformatted excerpts from John Bent's message of 2008-08-06:
+> I was sending an email and sup crashed.  I restarted, resent the
+> email, and then it crashed again right after I archived some emails,
+> saved the index and tried to refresh my screen.  Both errors are below
+> and seem to be related.
+
+Do the same actions work if you restart Sup?
+
+These are both Ferret index corruption errors, which means I can either
+debug Ferret, or rewrite Sup to not use it. (I've chosen the latter.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Thu Aug  7 09:33:12 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 07 Aug 2008 07:33:12 -0600
+Subject: [sup-talk] two sup crashes
+In-Reply-To: <1218046971-sup-1407@entry>
+References: <1218031573-sup-325@tangerine.lanl.gov> <1218046971-sup-1407@entry>
+Message-ID: <1218115911-sup-8006@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Wed Aug 06 12:23:59 -0600 2008:
+> Reformatted excerpts from John Bent's message of 2008-08-06:
+> > I was sending an email and sup crashed.  I restarted, resent the
+> > email, and then it crashed again right after I archived some emails,
+> > saved the index and tried to refresh my screen.  Both errors are below
+> > and seem to be related.
+> 
+> Do the same actions work if you restart Sup?
+> 
+Yeah it does.
+
+> These are both Ferret index corruption errors, which means I can either
+> debug Ferret, or rewrite Sup to not use it. (I've chosen the latter.)
+>
+Oh, that's a relief actually.  I also sometimes get what I recognize as
+Ferret errors and ignore them since I know you're moving away from it.
+I just somehow didn't recognize these.
+
+From marcus-sup at bar-coded.net  Thu Aug  7 10:24:07 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Thu, 07 Aug 2008 15:24:07 +0100
+Subject: [sup-talk] ThreadSet question
+Message-ID: <1218118769-sup-1369@tomsk>
+
+Hi -
+
+I'm trying to get a set of threads back from a search (messing with a
+web interface to sup - will send a patch once its up and running if
+anyone is interested) but I cant get it to sort the threads in date
+order as it does in the sup console. As far as I can see it should
+just do it but for some reason it doesnt. 
+
+If I'm calling load_n_threads directly what do I have to do to get the
+threads in date order?
+
+Thanks
+
+Marcus
+
+From wmorgan-sup at masanjin.net  Thu Aug  7 11:18:10 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Aug 2008 08:18:10 -0700
+Subject: [sup-talk] two sup crashes
+In-Reply-To: <1218115911-sup-8006@tangerine.lanl.gov>
+References: <1218031573-sup-325@tangerine.lanl.gov> <1218046971-sup-1407@entry>
+	<1218115911-sup-8006@tangerine.lanl.gov>
+Message-ID: <1218122247-sup-300@entry>
+
+Reformatted excerpts from John Bent's message of 2008-08-07:
+> Excerpts from William Morgan's message of Wed Aug 06 12:23:59 -0600 2008:
+> > Do the same actions work if you restart Sup?
+> > 
+> Yeah it does.
+
+Then consider yourself lucky!
+
+And do a sup-dump just in case.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Aug  7 11:24:11 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 07 Aug 2008 08:24:11 -0700
+Subject: [sup-talk] ThreadSet question
+In-Reply-To: <1218118769-sup-1369@tomsk>
+References: <1218118769-sup-1369@tomsk>
+Message-ID: <1218122471-sup-9206@entry>
+
+Reformatted excerpts from Marcus Williams's message of 2008-08-07:
+> I'm trying to get a set of threads back from a search (messing with a
+> web interface to sup - will send a patch once its up and running if
+> anyone is interested) 
+
+Cool!
+
+> If I'm calling load_n_threads directly what do I have to do to get the
+> threads in date order?
+
+I explicitly sort them by date before display. See ThreadIndexMode#update.
+Once they're loaded I pull them out of @ts.threads and into @threads,
+and sort them.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marcus-sup at bar-coded.net  Thu Aug  7 16:18:03 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Thu, 07 Aug 2008 21:18:03 +0100
+Subject: [sup-talk] ThreadSet question
+In-Reply-To: <1218122471-sup-9206@entry>
+References: <1218118769-sup-1369@tomsk> <1218122471-sup-9206@entry>
+Message-ID: <1218140167-sup-3154@tomsk>
+
+On 7.8.2008, William Morgan wrote:
+> > If I'm calling load_n_threads directly what do I have to do to get the
+> > threads in date order?
+> 
+> I explicitly sort them by date before display. See ThreadIndexMode#update.
+> Once they're loaded I pull them out of @ts.threads and into @threads,
+> and sort them.
+
+Ah, that explains it :) ... and now I have sorted threads. Bit more
+work and this might actually be useful!
+
+Marcus
+
+From cj.fleck at gmail.com  Fri Aug  8 09:38:47 2008
+From: cj.fleck at gmail.com (CJ Fleck)
+Date: Fri, 08 Aug 2008 09:38:47 -0400
+Subject: [sup-talk] Crash when browsing search results
+Message-ID: <1218202655-sup-110@archie>
+
+I did a basic search over all messages, and as I moved the "cursor"
+down so it would load unseen threads, it crashed.  See attached...
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: sup-exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080808/1bc1d5ed/attachment.txt>
+
+From nicolas.pouillard at gmail.com  Sun Aug 10 05:53:04 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 10 Aug 2008 11:53:04 +0200
+Subject: [sup-talk] Sup Backtrace While Polling
+Message-ID: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+
+Hi all,
+
+Today sup stopped working for me. Indeed while sup is polling I get
+the attached backtrace. I have no idea about the reason but suspect
+that some email is ill formatted and I will try to find it by editing
+my mbox.
+
+To edit my mbox I would like to use mutt, however I don't know how to
+go to newer emails, currently that's older first and I have a 950MB
+mbox so don't want to scroll...
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080810/7aba198c/attachment-0001.txt>
+
+From wmorgan-sup at masanjin.net  Sun Aug 10 14:31:17 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 10 Aug 2008 11:31:17 -0700
+Subject: [sup-talk] Sup Backtrace While Polling
+In-Reply-To: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+References: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+Message-ID: <1218393032-sup-3985@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-08-10:
+> --- TypeError from thread: poll after loading inbox
+> can't modify frozen string
+> /opt/local/lib/ruby/gems/1.8/gems/rmail-0.17/lib/rmail/parser/multipart.rb:159:in `[]='
+
+Try changing line 159 of multipart.rb to:
+        chunk = chunk[0..start]
+
+RMail hasn't been updated since like Ruby 1.8.2.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Sun Aug 10 15:43:09 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 10 Aug 2008 21:43:09 +0200
+Subject: [sup-talk] Sup Backtrace While Polling
+In-Reply-To: <1218393032-sup-3985@entry>
+References: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+	<1218393032-sup-3985@entry>
+Message-ID: <1218397192-sup-4246@ausone.local>
+
+Excerpts from William Morgan's message of Sun Aug 10 20:31:17 +0200 2008:
+> Reformatted excerpts from nicolas.pouillard's message of 2008-08-10:
+> > --- TypeError from thread: poll after loading inbox
+> > can't modify frozen string
+> > /opt/local/lib/ruby/gems/1.8/gems/rmail-0.17/lib/rmail/parser/multipart.rb:159:in `[]='
+> 
+> Try changing line 159 of multipart.rb to:
+>         chunk = chunk[0..start]
+
+Many thanks!!! I'm back to sup!
+
+> RMail hasn't been updated since like Ruby 1.8.2.
+
+That's sad. Is RMail active again?
+
+Otherwise sup should really consider having a personal version of it.
+
+BTW another question, how can I split my mbox file and sync sup again?
+
+Cheers,
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080810/a7013445/attachment.bin>
+
+From marcus-sup at bar-coded.net  Sun Aug 10 16:36:00 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Sun, 10 Aug 2008 21:36:00 +0100
+Subject: [sup-talk] Sup Backtrace While Polling
+In-Reply-To: <1218397192-sup-4246@ausone.local>
+References: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+	<1218393032-sup-3985@entry> <1218397192-sup-4246@ausone.local>
+Message-ID: <1218400279-sup-8057@tomsk>
+
+On 10.8.2008, Nicolas Pouillard wrote:
+> BTW another question, how can I split my mbox file and sync sup again?
+
+Use ruby and rmail ;)
+
+... actually I'm not joking I just split a 600mb mbox with rmail into
+month-year archives and it worked really well. Use the
+RMail::Mailbox.parse_mbox method to parse you file into raw messages
+and then you can use RMail::Parser.read(raw).header.date to give you
+something you can turn into a date/month string.
+
+Use sup-dump before you split, and then restore from that after you
+set up all the mboxes as your new sources with sup-add.
+
+HTH
+
+Marcus
+
+From alec at thened.net  Sun Aug 10 19:53:52 2008
+From: alec at thened.net (Alec Berryman)
+Date: Sun, 10 Aug 2008 19:53:52 -0400
+Subject: [sup-talk] Initial import does not preserve read/unread status
+Message-ID: <20080810235352.GA20706@thened.net>
+
+The new user guide says about sup-add:
+
+"You can also specify --read to mark all imported messages as read; the
+default is to preserve the read/unread status from the source."
+
+When I imported a new maildir source with a mix of read and unread
+messages (in the cur or new subfolder, respectively), all of the
+messages were marked unread.  Is the documentation wrong or is this a
+bug?  I hope it's a bug.
+
+From alec at thened.net  Sun Aug 10 20:13:24 2008
+From: alec at thened.net (Alec Berryman)
+Date: Sun, 10 Aug 2008 20:13:24 -0400
+Subject: [sup-talk] Initial import does not preserve read/unread status
+In-Reply-To: <20080810235352.GA20706@thened.net>
+References: <20080810235352.GA20706@thened.net>
+Message-ID: <20080811001324.GA24661@thened.net>
+
+Alec Berryman on 2008-08-10 19:53:52 -0400:
+
+> The new user guide says about sup-add:
+>
+> "You can also specify --read to mark all imported messages as read; the
+> default is to preserve the read/unread status from the source."
+>
+> When I imported a new maildir source with a mix of read and unread
+> messages (in the cur or new subfolder, respectively), all of the
+> messages were marked unread.  Is the documentation wrong or is this a
+> bug?  I hope it's a bug.
+
+On second thought, that was a horrible bug report.
+
+I'm using sup-0.6 from gems.  I haven't done anything fancy; I just ran
+'gem install sup', and it appears all my gem packages are up to date.  I
+configured sup by running sup-config, entering my name and address,
+taking the other defaults, and then not adding any sources.  I added one
+source later using `sup-add maildir:/path/to/maildir'.  Mutt and manual
+inspection of the maildir shows most of the messages being read, but sup
+shows all of them unread.  The behavior does not change if I remove
+~/.sup and run the same sequence of commands except for adding a
+sup-sync between running sup-add and sup.
+
+From wmorgan-sup at masanjin.net  Tue Aug 12 23:14:09 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Aug 2008 20:14:09 -0700
+Subject: [sup-talk] Initial import does not preserve read/unread status
+In-Reply-To: <20080810235352.GA20706@thened.net>
+References: <20080810235352.GA20706@thened.net>
+Message-ID: <1218597196-sup-3699@entry>
+
+Reformatted excerpts from Alec Berryman's message of 2008-08-10:
+> When I imported a new maildir source with a mix of read and unread
+> messages (in the cur or new subfolder, respectively), all of the
+> messages were marked unread.  Is the documentation wrong or is this a
+> bug?  I hope it's a bug.
+
+Weird. Can you provide some sample filenames for read and unread
+messages? (Since that's how Maildir keeps state---it might be there's
+some naming variant that Sup doesn't know about.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Aug 12 23:15:51 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Aug 2008 20:15:51 -0700
+Subject: [sup-talk] Sup Backtrace While Polling
+In-Reply-To: <1218400279-sup-8057@tomsk>
+References: <cd67f63a0808100253i7d3703adt61ce1c83dad1ab80@mail.gmail.com>
+	<1218393032-sup-3985@entry> <1218397192-sup-4246@ausone.local>
+	<1218400279-sup-8057@tomsk>
+Message-ID: <1218597311-sup-7061@entry>
+
+Reformatted excerpts from Marcus Williams's message of 2008-08-10:
+> On 10.8.2008, Nicolas Pouillard wrote:
+> > BTW another question, how can I split my mbox file and sync sup
+> > again?
+> 
+> Use ruby and rmail ;)
+[snip]
+> Use sup-dump before you split, and then restore from that after you
+> set up all the mboxes as your new sources with sup-add.
+
+Yep, this is pretty much what I would recommend too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Aug 12 23:22:41 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 12 Aug 2008 20:22:41 -0700
+Subject: [sup-talk] safe index in the after-poll.rb ?
+In-Reply-To: <1218025176-sup-6853@daniel-laptop>
+References: <1218025176-sup-6853@daniel-laptop>
+Message-ID: <1218597645-sup-7784@entry>
+
+Reformatted excerpts from Daniel Neubacher's message of 2008-08-06:
+> This is working, but only when the index is safed. When i read some
+> mails and do not safe the index the count doesnt give me the right
+> amount of unread mails back. So is there a way to save the index
+> automaticly after polling my mails ?
+
+Let's see... this is untested, but in your after-poll hook you
+could try something like:
+
+  BufferManager.buffers.each { |name, b| b.save if b.is_a? ThreadIndexMode }
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alec at thened.net  Sun Aug 17 14:59:15 2008
+From: alec at thened.net (Alec Berryman)
+Date: Sun, 17 Aug 2008 14:59:15 -0400
+Subject: [sup-talk] Initial import does not preserve read/unread status
+In-Reply-To: <1218597196-sup-3699@entry>
+References: <20080810235352.GA20706@thened.net> <1218597196-sup-3699@entry>
+Message-ID: <20080817185915.GA17717@thened.net>
+
+William Morgan on 2008-08-12 20:14:09 -0700:
+
+> Reformatted excerpts from Alec Berryman's message of 2008-08-10:
+> > When I imported a new maildir source with a mix of read and unread
+> > messages (in the cur or new subfolder, respectively), all of the
+> > messages were marked unread.  Is the documentation wrong or is this a
+> > bug?  I hope it's a bug.
+>
+> Weird. Can you provide some sample filenames for read and unread
+> messages? (Since that's how Maildir keeps state---it might be there's
+> some naming variant that Sup doesn't know about.)
+
+Sure (ls -R output; maildir attached; samples from sup-talk):
+
+sup-does-not-import-read-messages-as-read/:
+cur/
+new/
+tmp/
+
+sup-does-not-import-read-messages-as-read/cur:
+1218394528_0.8381.barry,U=23205,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+1218397749_0.16026.barry,U=23207,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+1218405160_1.1978.barry,U=23211,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+1218413059_0.23982.barry,U=23215,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,RS
+1218413717_1.26111.barry,U=23216,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+1218626652_4.3870.barry,U=23368,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+1218626652_5.3870.barry,U=23369,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe:2,S
+
+sup-does-not-import-read-messages-as-read/new:
+1218626652_2.3870.barry,U=23366,FMD5=d25c71bb54a5e1f674c1d0df91b0b4fe
+
+sup-does-not-import-read-messages-as-read/tmp:
+
+
+When I import this folder with sup, I see all messages marked as new,
+but I only expect to see 1.  The maildir names are generated by
+offlineimap.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-does-not-import-read-messages-as-read.tar.bz2
+Type: application/octet-stream
+Size: 6635 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080817/485a2391/attachment-0001.obj>
+
+From manish at gslab.com  Tue Aug 19 08:13:02 2008
+From: manish at gslab.com (Manish Sapariya)
+Date: Tue, 19 Aug 2008 17:43:02 +0530
+Subject: [sup-talk] fetching imap sub folder
+Message-ID: <48AAB8CE.9060701@gslab.com>
+
+Hi,
+I want to fetch one subfolder on my IMAP server. Thunderbird
+has following hierarchy
+
+  INBOX
+     ->mail
+         ->supmails (This folder have the mails that I want to fetch 
+using sup.)
+
+
+I tried following combinations for specifying the source
+
+imaps://padma.gslab.com/Inbox/mail/supsource/
+imaps://padma.gslab.com/Inbox/mail/supsource
+imaps://padma.gslab.com//Inbox//mail//supsource
+
+none worked as expected and sup reports.
+
+~
+Source: imaps://padma.gslab.com/Inbox/mail/supsource/
+  Error: While communicating with IMAP server (type
+         Net::IMAP::NoResponseError): "Mailbox does not exist, or must be
+         subscribed to."
+~
+
+Any ideas?
+
+By the way, when I was running this with my existing sup configuration,
+I could not figure out and there was no indication. When I created new
+sup directory and specified this source as the only source I could get
+this error message. I looked into the log but I could not see the error.
+Did I missed anything?
+
+Thanks and Regards,
+Manish
+
+From steve at patter.mine.nu  Tue Aug 19 09:03:05 2008
+From: steve at patter.mine.nu (Stephen Patterson)
+Date: Tue, 19 Aug 2008 14:03:05 +0100
+Subject: [sup-talk] fetching imap sub folder
+In-Reply-To: <48AAB8CE.9060701@gslab.com>
+References: <48AAB8CE.9060701@gslab.com>
+Message-ID: <20080819130304.GA15109@patter.mine.nu>
+
+On 19 Aug 08, Manish Sapariya (manish at gslab.com) wrote:
+> Hi,
+> I want to fetch one subfolder on my IMAP server. Thunderbird
+> has following hierarchy
+
+> I tried following combinations for specifying the source
+>
+> imaps://padma.gslab.com/Inbox/mail/supsource/
+> imaps://padma.gslab.com/Inbox/mail/supsource
+> imaps://padma.gslab.com//Inbox//mail//supsource
+
+try the following (the syntax I use with a Dovecot IMAP server).
+imaps://padma.gslab.com/Inbox.mail.supsource
+
+
+-- 
+Stephen Patterson :: steve at patter.me.uk :: http://patter.mine.nu/
+GPG: B416F0DE :: Jabber: patter at jabber.earth.li 
+"Don't be silly, Minnie. Who'd be walking round these cliffs with a gas oven?"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080819/4e94aff6/attachment.bin>
+
+From manish at gslab.com  Tue Aug 19 09:19:21 2008
+From: manish at gslab.com (Manish Sapariya)
+Date: Tue, 19 Aug 2008 18:49:21 +0530
+Subject: [sup-talk] fetching imap sub folder
+In-Reply-To: <20080819130304.GA15109@patter.mine.nu>
+References: <48AAB8CE.9060701@gslab.com>
+	<20080819130304.GA15109@patter.mine.nu>
+Message-ID: <48AAC859.1040709@gslab.com>
+
+Thanks,
+that was it.
+:-)
+Manish
+
+Stephen Patterson wrote:
+> On 19 Aug 08, Manish Sapariya (manish at gslab.com) wrote:
+>> Hi,
+>> I want to fetch one subfolder on my IMAP server. Thunderbird
+>> has following hierarchy
+> 
+>> I tried following combinations for specifying the source
+>>
+>> imaps://padma.gslab.com/Inbox/mail/supsource/
+>> imaps://padma.gslab.com/Inbox/mail/supsource
+>> imaps://padma.gslab.com//Inbox//mail//supsource
+> 
+> try the following (the syntax I use with a Dovecot IMAP server).
+> imaps://padma.gslab.com/Inbox.mail.supsource
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From bdwalton at gmail.com  Fri Aug 22 18:23:02 2008
+From: bdwalton at gmail.com (Ben Walton)
+Date: Fri, 22 Aug 2008 18:23:02 -0400
+Subject: [sup-talk] split threads?
+Message-ID: <f96e0240808221523k7b273a78p969e5e3029abb57d@mail.gmail.com>
+
+Hi All,
+
+I was wondering what other people think about an option to split
+threads apart (in a similar way to how they can be joined).  A use
+case: people that find an old email to a certain address and use it to
+compose a reply (after clearing the subject).  This sees a (decent)
+mail client insert the References and In-Reply-To headers, etc from
+the original thread.  Sup happily uses these to insert this new
+message/thread into an old one.
+
+Do others run into this too?
+
+Thanks
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+When one person suffers from a delusion, it is called insanity. When
+many people suffer from a delusion it is called Religion.
+Robert M. Pirsig, Zen and the Art of Motorcycle Maintenance
+
+---------------------------------------------------------------------------------------------------------------------------
+
+From barton.schaefer at gmail.com  Sat Aug 23 19:15:12 2008
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Sat, 23 Aug 2008 16:15:12 -0700
+Subject: [sup-talk] Some comments on sup-0.6
+Message-ID: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+
+"The goal of Sup is to become the email client of choice for nerds everywhere."
+
+I encountered sup a few days ago via a link on Justin Mason's blog,
+and it sounded interesting enough to try it out.  There are quite a
+few things about it that I like, but there are a few things about it
+that currently are just plain show-stoppers.  None of them is
+irreparable, but IMO taken together they almost disqualify it from
+being called an "email client" at this time.
+
+First the good stuff:  I entirely approve of the choices of ideas to
+borrow from gmail, and the addition of being able to mark and coalesce
+threads is something I wish gmail would borrow back.  The key bindings
+weren't too hard to figure out (and probably would have been easier if
+I'd used mutt more in the past).  The expanding/collapsing views of
+threads and quoted messages work nicely most of the time.  I could
+immediately see how sup could help me clean up the mess some of my
+mail stores have become, to find and conceal old stuff without
+completely losing track of it and prioritize important stuff.  Great
+work.
+
+(At the same time, that last is what seems to be lacking in
+follow-through.  See below.)
+
+One suggestion for an improvement on the gmail interface:  Consider
+introducing a hierarchy syntax in labels.   E.g., if I've got a label
+for "restaurants" I might create a label "restaurants/lunch" that
+means "first search for anything tagged restaraurants and then narrow
+by searching for anything also tagged lunch".  In any UI that shows a
+list of the labels, collapse the heirarchy so that I don't have to see
+both "restaurants" and "restaurants/lunch" at the same time.  This
+creates an interface familiar to users who are accustomed to having
+folders arranged hierarchically, without changing the search model
+that ultimately locates the referenced messages.
+
+(Is it possible to search for messages based on which source they came from?)
+
+Next some nits or minor problems, in no particular order ...
+
+The default color scheme is pretty terrible.  (I did mention there'd be "nits".)
+
+When I widened my terminal window to try to see more of the preview
+text on the thread screen, sup didn't pick up on the size change.
+
+There's either no on-screen help for how one builds up a search
+expression, or it's simply too hard to find that help, and in
+particular it wasn't obvious how one searches for all messages having
+a certain label (I was expecting maybe something like gmail's
+label:Xyz syntax).
+
+It should be possible to create search that matches a label without
+finding other messages that happen to contain the same word (maybe it
+is possible and I just haven't figure out how yet).
+
+I happened to encounter a case of new mail arriving while I was using
+sup, wherein a colleague had replied to a message by editing the
+Subject such that his entire reply was there and the message body was
+empty.  Sup collapsed this into the thread and hid his new subject
+behind the original subject.  I had to bail out and switch over to
+alpine to figure out why he'd sent a seemingly empty message.
+
+OK, now the show stoppers.
+
+I have a LOT of IMAP folders (conservatively, hundreds), many of them
+in a shared hierarchy not under my control; sup's interface would be
+the perfect way to get a handle on these, but it would take me way too
+long to add them one by one as separate URL sources.  At the moment
+sup might be described as phenomenal cosmic power in an itty-bitty
+living space.
+
+If you're going to have any hope of becoming the choice of nerds
+everywhere, you've got address the "play well with others" problem, at
+the very least with the IMAP INBOX, if not with other mailboxes.
+Forcing me to exit from sup and do a complete re-index whenever a
+message disappears is just not going to fly, particularly for a
+protocol that provides so many tools for keeping in sync.  I know,
+this doesn't fit with the "never delete anything, just stop looking at
+it" model that sup wants to present, but in the real world even nerds
+can't store things in their inbox forever, and for it to really be THE
+email client of choice, I want to keep sup running for weeks at a time
+and never have a reason to leave the interface (except maybe to escape
+to a web browser or to drop into my editor when composing mail).
+
+By the same token, sup needs to be able to push deletion marks back up
+to the IMAP server and purge the mailbox.  Even if you violate the
+IMAP usage model by implementing delete as some kind of move-to-trash
+operation, so that sup can keep indexing the trash, there has to be a
+way for the user to manage the size of his inbox without switching to
+some other means of accessing the server.  And to really take
+advantage of sup's ability to search and classify to clean up my messy
+mail store, I need a way to permanently throw away all the spam and
+duplicate messages that have accumulated in the odd procmail-created
+corners of my folder space.  It's even fine if the only way to do this
+is through IMAP or the like; sup does not need to incorporate the
+mechanics of local mailbox management.
+
+That's about it for impressions from a few hours of experimentation.
+I think sup shows great promise and I've joined the mailing list to
+keep track of its progress.  Congratulations on what you've got so
+far, and I look forward to seeing more.
+
+From luis at tieguy.org  Sat Aug 23 19:20:22 2008
+From: luis at tieguy.org (Luis Villa)
+Date: Sat, 23 Aug 2008 19:20:22 -0400
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+Message-ID: <2cb10c440808231620k57396f1bw8547db09dded6abf@mail.gmail.com>
+
+Possibly of interest, Bart:
+http://all-thing.net/2008/06/rethinking-sup.html
+http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+Luis (who isn't actually using sup, for many of the reasons you
+listed, but remains a fascinated lurker)
+
+On Sat, Aug 23, 2008 at 7:15 PM, Bart Schaefer
+<barton.schaefer at gmail.com> wrote:
+> "The goal of Sup is to become the email client of choice for nerds everywhere."
+>
+> I encountered sup a few days ago via a link on Justin Mason's blog,
+> and it sounded interesting enough to try it out.  There are quite a
+> few things about it that I like, but there are a few things about it
+> that currently are just plain show-stoppers.  None of them is
+> irreparable, but IMO taken together they almost disqualify it from
+> being called an "email client" at this time.
+>
+> First the good stuff:  I entirely approve of the choices of ideas to
+> borrow from gmail, and the addition of being able to mark and coalesce
+> threads is something I wish gmail would borrow back.  The key bindings
+> weren't too hard to figure out (and probably would have been easier if
+> I'd used mutt more in the past).  The expanding/collapsing views of
+> threads and quoted messages work nicely most of the time.  I could
+> immediately see how sup could help me clean up the mess some of my
+> mail stores have become, to find and conceal old stuff without
+> completely losing track of it and prioritize important stuff.  Great
+> work.
+>
+> (At the same time, that last is what seems to be lacking in
+> follow-through.  See below.)
+>
+> One suggestion for an improvement on the gmail interface:  Consider
+> introducing a hierarchy syntax in labels.   E.g., if I've got a label
+> for "restaurants" I might create a label "restaurants/lunch" that
+> means "first search for anything tagged restaraurants and then narrow
+> by searching for anything also tagged lunch".  In any UI that shows a
+> list of the labels, collapse the heirarchy so that I don't have to see
+> both "restaurants" and "restaurants/lunch" at the same time.  This
+> creates an interface familiar to users who are accustomed to having
+> folders arranged hierarchically, without changing the search model
+> that ultimately locates the referenced messages.
+>
+> (Is it possible to search for messages based on which source they came from?)
+>
+> Next some nits or minor problems, in no particular order ...
+>
+> The default color scheme is pretty terrible.  (I did mention there'd be "nits".)
+>
+> When I widened my terminal window to try to see more of the preview
+> text on the thread screen, sup didn't pick up on the size change.
+>
+> There's either no on-screen help for how one builds up a search
+> expression, or it's simply too hard to find that help, and in
+> particular it wasn't obvious how one searches for all messages having
+> a certain label (I was expecting maybe something like gmail's
+> label:Xyz syntax).
+>
+> It should be possible to create search that matches a label without
+> finding other messages that happen to contain the same word (maybe it
+> is possible and I just haven't figure out how yet).
+>
+> I happened to encounter a case of new mail arriving while I was using
+> sup, wherein a colleague had replied to a message by editing the
+> Subject such that his entire reply was there and the message body was
+> empty.  Sup collapsed this into the thread and hid his new subject
+> behind the original subject.  I had to bail out and switch over to
+> alpine to figure out why he'd sent a seemingly empty message.
+>
+> OK, now the show stoppers.
+>
+> I have a LOT of IMAP folders (conservatively, hundreds), many of them
+> in a shared hierarchy not under my control; sup's interface would be
+> the perfect way to get a handle on these, but it would take me way too
+> long to add them one by one as separate URL sources.  At the moment
+> sup might be described as phenomenal cosmic power in an itty-bitty
+> living space.
+>
+> If you're going to have any hope of becoming the choice of nerds
+> everywhere, you've got address the "play well with others" problem, at
+> the very least with the IMAP INBOX, if not with other mailboxes.
+> Forcing me to exit from sup and do a complete re-index whenever a
+> message disappears is just not going to fly, particularly for a
+> protocol that provides so many tools for keeping in sync.  I know,
+> this doesn't fit with the "never delete anything, just stop looking at
+> it" model that sup wants to present, but in the real world even nerds
+> can't store things in their inbox forever, and for it to really be THE
+> email client of choice, I want to keep sup running for weeks at a time
+> and never have a reason to leave the interface (except maybe to escape
+> to a web browser or to drop into my editor when composing mail).
+>
+> By the same token, sup needs to be able to push deletion marks back up
+> to the IMAP server and purge the mailbox.  Even if you violate the
+> IMAP usage model by implementing delete as some kind of move-to-trash
+> operation, so that sup can keep indexing the trash, there has to be a
+> way for the user to manage the size of his inbox without switching to
+> some other means of accessing the server.  And to really take
+> advantage of sup's ability to search and classify to clean up my messy
+> mail store, I need a way to permanently throw away all the spam and
+> duplicate messages that have accumulated in the odd procmail-created
+> corners of my folder space.  It's even fine if the only way to do this
+> is through IMAP or the like; sup does not need to incorporate the
+> mechanics of local mailbox management.
+>
+> That's about it for impressions from a few hours of experimentation.
+> I think sup shows great promise and I've joined the mailing list to
+> keep track of its progress.  Congratulations on what you've got so
+> far, and I look forward to seeing more.
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From barton.schaefer at gmail.com  Sat Aug 23 19:57:37 2008
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Sat, 23 Aug 2008 16:57:37 -0700
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <2cb10c440808231620k57396f1bw8547db09dded6abf@mail.gmail.com>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+	<2cb10c440808231620k57396f1bw8547db09dded6abf@mail.gmail.com>
+Message-ID: <6bb609560808231657m27ec05fq3418cc9ad5f4eb27@mail.gmail.com>
+
+On Sat, Aug 23, 2008 at 4:20 PM, Luis Villa <luis at tieguy.org> wrote:
+> Possibly of interest, Bart:
+> http://all-thing.net/2008/06/rethinking-sup.html
+> http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+That is of interest, thanks.  Doesn't actually invalidate very much of
+what I said, though. :-)
+
+Those blog posts are from a couple of months ago.  I could go comment
+there, or I could comment here.  Any preference?
+
+From wmorgan-sup at masanjin.net  Sun Aug 24 20:01:51 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 24 Aug 2008 17:01:51 -0700
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <6bb609560808231657m27ec05fq3418cc9ad5f4eb27@mail.gmail.com>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+	<2cb10c440808231620k57396f1bw8547db09dded6abf@mail.gmail.com>
+	<6bb609560808231657m27ec05fq3418cc9ad5f4eb27@mail.gmail.com>
+Message-ID: <1219622436-sup-327@entry>
+
+Reformatted excerpts from barton.schaefer's message of 2008-08-23:
+> Those blog posts are from a couple of months ago.  I could go comment
+> there, or I could comment here.  Any preference?
+
+Here's probably better for anything substantial. Non-threaded blog
+comments are about as crappy a discussion medium as I can imagine.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Aug 24 20:30:30 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 24 Aug 2008 17:30:30 -0700
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+Message-ID: <1219622542-sup-6624@entry>
+
+Hi Barton,
+
+Thanks for all the comments! Many of the issues you bring up are real.
+My current focus is on the backend to Sup 2.0, but in general I'm happy
+to accept patches and merge requests to fix these issues.
+
+Detailed comments inlined:
+
+Reformatted excerpts from barton.schaefer's message of 2008-08-23:
+> One suggestion for an improvement on the gmail interface:  Consider
+> introducing a hierarchy syntax in labels. E.g., if I've got a label
+> for "restaurants" I might create a label "restaurants/lunch" that
+> means "first search for anything tagged restaraurants and then narrow
+> by searching for anything also tagged lunch".
+
+Personally I don't like the idea of adding structure to labels, because
+this proposal (and others before it) are oriented at people with a lot
+of labels, and I suspect that too many labels is a symptom that you're
+doing something wrong.
+
+That said, I know I'm crazy, and I would accept a patch that made this
+an (optional!) feature. One easy way might be to make it solely a UI
+tweak to LabelSearchMode, where any labels with a "/" in them are fit
+into a pre-collapsed hierarchy instead of displayed in a big list.
+
+> (Is it possible to search for messages based on which source they came
+> from?)
+
+Technically yes, but there's not a good interface on top of it. Search
+for "source_id:X", where X is the numeric source id of the source, which
+you have look up in sources.yaml.
+
+> The default color scheme is pretty terrible.  (I did mention there'd
+> be "nits".)
+
+I like it, but maybe I'm just accustomed to it. It's configurable, and
+I'd accept patches for the default, if, say, more than one other person
+felt was better.
+
+> When I widened my terminal window to try to see more of the preview
+> text on the thread screen, sup didn't pick up on the size change.
+
+I could never get SIGWINCH to work due to a weird interaction between
+curses and Ruby threads. If you can, I'd be happy to accept a patch.
+In the meantime, you can press ^L to redraw the screen, and Sup should
+notice the change.
+
+> There's either no on-screen help for how one builds up a search
+> expression, or it's simply too hard to find that help, and in
+> particular it wasn't obvious how one searches for all messages having
+> a certain label (I was expecting maybe something like gmail's
+> label:Xyz syntax).
+
+The "label:asdf" syntax should work as you expect.
+
+I agree that better search expression help would be nice. Patches
+accepted. :)
+
+> I happened to encounter a case of new mail arriving while I was using
+> sup, wherein a colleague had replied to a message by editing the
+> Subject such that his entire reply was there and the message body was
+> empty.  Sup collapsed this into the thread and hid his new subject
+> behind the original subject.  I had to bail out and switch over to
+> alpine to figure out why he'd sent a seemingly empty message.
+
+I think that if you had expanded the header (with 'h') while in
+thread-view-mode, you would've seen the full subject.
+
+> I have a LOT of IMAP folders (conservatively, hundreds), many of them
+> in a shared hierarchy not under my control; sup's interface would be
+> the perfect way to get a handle on these, but it would take me way too
+> long to add them one by one as separate URL sources. 
+
+Agreed. This has been on the todo list for a while.
+
+> If you're going to have any hope of becoming the choice of nerds
+> everywhere, you've got address the "play well with others" problem, at
+> the very least with the IMAP INBOX, if not with other mailboxes.
+
+Actually, I'm going to be taking a very different tack in Sup 2.0, and
+not deal with IMAP at all. Sup will maintain its own document store, and
+it's going to be up to the user to insert your mail into it.
+
+I know that's probably not the answer you want. But I have no desire to
+spend the requisite years of my life dealing with with hokey IMAP
+servers, Ruby's hokey IMAP libraries, and everything in between. I've
+taken a few steps down that path, but that's been more than enough to
+recognize it as the path to madness.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Aug 24 20:38:30 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 24 Aug 2008 17:38:30 -0700
+Subject: [sup-talk] split threads?
+In-Reply-To: <f96e0240808221523k7b273a78p969e5e3029abb57d@mail.gmail.com>
+References: <f96e0240808221523k7b273a78p969e5e3029abb57d@mail.gmail.com>
+Message-ID: <1219624661-sup-6433@entry>
+
+Reformatted excerpts from Ben Walton's message of 2008-08-22:
+> Do others run into this too?
+
+All the time! I'd love to have this. I'd also love to figure out why
+thread joining doesn't work, half the time.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From barton.schaefer at gmail.com  Mon Aug 25 12:39:14 2008
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Mon, 25 Aug 2008 09:39:14 -0700
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <1219622542-sup-6624@entry>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+	<1219622542-sup-6624@entry>
+Message-ID: <6bb609560808250939u6e8d4d16ycaf25c2ad1ea9fc7@mail.gmail.com>
+
+On Sun, Aug 24, 2008 at 5:30 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Hi Barton,
+
+"Bart" is fine.  I only display it the "long way" to stop people from
+calling me "Bartholomew."
+
+> My current focus is on the backend to Sup 2.0, but in general I'm happy
+> to accept patches and merge requests to fix these issues.
+
+Unfortunately I'm not much of a ruby programmer yet.  Practically
+anything else for longer than I want to think about, but not ruby,
+though I'm looking at it.
+
+> Personally I don't like the idea of adding structure to labels, because
+> this proposal (and others before it) are oriented at people with a lot
+> of labels, and I suspect that too many labels is a symptom that you're
+> doing something wrong.
+
+It's an organizational thing.  Some people think better in hierarchy.
+And occasionally one has as a message that relates closely to a
+particular subject but doesn't mention any of the usual terms one
+would search for, so it's handy to have a way to force a connection.
+
+> That said, I know I'm crazy, and I would accept a patch that made this
+> an (optional!) feature. One easy way might be to make it solely a UI
+> tweak to LabelSearchMode, where any labels with a "/" in them are fit
+> into a pre-collapsed hierarchy instead of displayed in a big list.
+
+That's essentially what I was suggesting.
+
+> I agree that better search expression help would be nice. Patches
+> accepted. :)
+
+Does anyone other than you really know what the help should say?
+
+>> If you're going to have any hope of becoming the choice of nerds
+>> everywhere, you've got address the "play well with others" problem, at
+>> the very least with the IMAP INBOX, if not with other mailboxes.
+>
+> Actually, I'm going to be taking a very different tack in Sup 2.0, and
+> not deal with IMAP at all. Sup will maintain its own document store, and
+> it's going to be up to the user to insert your mail into it.
+
+After reading your blog posts this was the one thing I really wanted
+to comment on.
+
+I think this is a mistake.  By all means separate the document index
+from the viewer, but I'd advise against attempting to be the warehouse
+for the data.  The most important thing needed to play nicely is to
+gracefully handle the case of data going missing from the source;
+sure, you can do that by always copying the data up front, but that's
+a blunt instrument that destroys several of the other advantages of
+the current sup.
+
+My suggestion:  Separate the indexing and querying of the index from
+the sources.  Make it the responsibility of the viewer component to
+fetch the full documents from the sources and to fail gracefully when
+a query returns a document that's no longer available.  Give the
+viewer a hook so that with the appropriate plug-in, certain indexing
+updates (like spam-tagging) can be pushed back to the source at the
+same time.  (It's up to the plug-in to decide how.)
+
+If you have that, you can still use your own document source into
+which you dump everything.
+
+> I know that's probably not the answer you want. But I have no desire to
+> spend the requisite years of my life dealing with with hokey IMAP
+> servers, Ruby's hokey IMAP libraries, and everything in between.
+
+I'm not suggesting (or even encouraging) that sup become a
+full-fledged IMAP client.
+
+From marcus-sup at bar-coded.net  Mon Aug 25 16:55:40 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Mon, 25 Aug 2008 21:55:40 +0100
+Subject: [sup-talk] Some comments on sup-0.6
+In-Reply-To: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+References: <6bb609560808231615o1b7dc71eh48d192375e46cf8c@mail.gmail.com>
+Message-ID: <1219697254-sup-546@tomsk>
+
+On 24.8.2008, barton.schaefer wrote:
+> There's either no on-screen help for how one builds up a search
+> expression, or it's simply too hard to find that help, and in
+> particular it wasn't obvious how one searches for all messages having
+> a certain label (I was expecting maybe something like gmail's
+> label:Xyz syntax).
+
+Off the top of my head, some search expressions that are possible in
+sup:
+
+From/to/subject searches:
+
+from:email at domain.tld
+to:email at domain.tld
+subject:*wildcards*
+
+... wildcards are useful in from/to/cc searches as well "from:will*"
+
+Date searches:
+
+on:(16th feb)
+before:yesterday
+after:(last friday)
+during:(last week)
+
+(note that because search results are returned as threads you can get
+messages outside of your date bounds because the thread containing the
+searched message may have messages outside the bounds if that makes
+sense).
+
+Attachments:
+
+has:attachment  (attachment is a label)
+filetype:xls
+filename:thisisafilename.txt
+
+(Use brackets to specify a filename with spaces)
+
+Labels:
+
+is:read
+is:spam
+is:deleted
+has:somelabel
+label:someotherlabel
+
+Phrases are treated as searches on the body text. Combinations work
+and are treated as conjunctions/ands as far as I'm aware.
+
+Hope that helps,
+
+Marcus
+
+From steve at patter.mine.nu  Mon Aug 25 18:09:34 2008
+From: steve at patter.mine.nu (Stephen Patterson)
+Date: Mon, 25 Aug 2008 23:09:34 +0100
+Subject: [sup-talk] split threads?
+In-Reply-To: <1219624661-sup-6433@entry>
+References: <f96e0240808221523k7b273a78p969e5e3029abb57d@mail.gmail.com>
+	<1219624661-sup-6433@entry>
+Message-ID: <20080825220933.GA27491@patter.mine.nu>
+
+On 24 Aug 08, William Morgan (wmorgan-sup at masanjin.net) wrote:
+> All the time! I'd love to have this. I'd also love to figure out why
+> thread joining doesn't work, half the time.
+
+For me (ok, I'm still using sup 0.5 because debian gem won't update to
+0.6) thread joining works until you exit sup. i.e. the join-status
+isn't saved back to the message index.
+
+-- 
+Stephen Patterson :: steve at patter.me.uk :: http://patter.mine.nu/
+GPG: B416F0DE :: Jabber: patter at jabber.earth.li 
+"Don't be silly, Minnie. Who'd be walking round these cliffs with a gas oven?"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080825/9f27b9b4/attachment.bin>
+
+From bdwalton at gmail.com  Mon Aug 25 19:18:10 2008
+From: bdwalton at gmail.com (Ben Walton)
+Date: Mon, 25 Aug 2008 19:18:10 -0400
+Subject: [sup-talk] split threads?
+In-Reply-To: <20080825220933.GA27491@patter.mine.nu>
+References: <f96e0240808221523k7b273a78p969e5e3029abb57d@mail.gmail.com>
+	<1219624661-sup-6433@entry> <20080825220933.GA27491@patter.mine.nu>
+Message-ID: <f96e0240808251618y116ad5b6qf2c3141004858711@mail.gmail.com>
+
+> For me (ok, I'm still using sup 0.5 because debian gem won't update to
+> 0.6) thread joining works until you exit sup. i.e. the join-status
+> isn't saved back to the message index.
+
+Although I haven't tried joining threads since updating to 0.6, I
+experienced the same behaviour you describe.  It's not persistent, but
+it always word well during a session.
+
+-Ben
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+When one person suffers from a delusion, it is called insanity. When
+many people suffer from a delusion it is called Religion.
+Robert M. Pirsig, Zen and the Art of Motorcycle Maintenance
+
+---------------------------------------------------------------------------------------------------------------------------
+

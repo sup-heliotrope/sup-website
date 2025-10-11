@@ -1,0 +1,204 @@
+From eg at gaute.vetsj.com  Mon Mar 25 12:01:46 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 25 Mar 2013 13:01:46 +0100
+Subject: [sup-talk] Website: http://sup.rubyforge.org
+Message-ID: <51503CAA.9070604@gaute.vetsj.com>
+
+Hi list,
+
+It would be great if the website http://sup.rubyforge.org could be
+updated to reflect the github organization (given that original
+maintainers agree). Does anyone active now have access to uploading new
+gems?
+
+Regards,
+Gaute
+
+From eg at gaute.vetsj.com  Tue Mar 26 07:11:50 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 26 Mar 2013 08:11:50 +0100
+Subject: [sup-talk] Travis integration
+In-Reply-To: <sup-heliotrope/sup/pull/9/c15243758@github.com>
+References: <sup-heliotrope/sup/pull/9/c15243758@github.com>
+Message-ID: <51514A36.5040907@gaute.vetsj.com>
+
+Hi,
+
+Travis integration: I think this is a good idea, especially if we get
+more tests up and running. My biggest annoyance, charset-issues, could
+potentially greatly benefit from this. Every time something new is
+implemented or something is changed it is very easy to forget to test
+for ASCII / UTF-8 / whatever conversion/mixing and so on, it would be
+great with a general test that could be easily adapted for theses cases.
+
+@Whyme: How does your Travis integration work with the new 'test' target?
+
+What do you think about including the few files that are in the main
+repositories?
+
+- Gaute
+
+
+-------- Original Message --------
+Subject: Re: [sup] Convert use of Rake::GemPackageTask to
+Gem::PackageTask (#9)
+Date: Thu, 21 Mar 2013 08:04:54 -0700
+From: Whyme.Lyu <notifications at github.com>
+Reply-To: sup-heliotrope/sup
+<reply+i-11837079-94d5e391deb98d79554cc13e2825e2d1dcf6c79a-56827 at reply.github.com>
+To: sup-heliotrope/sup <sup at noreply.github.com>
+CC: Gaute Hope <eg at gaute.vetsj.com>
+
++1 for merging this. With this patch and #10 and #11 applied, I can do
+`rake gem` locally. And I'm about to setup Travis integration. Even if
+there're no tests, it'd be much better to just do a smoking build and
+release a usable gem soon.
+
+---
+Reply to this email directly or view it on GitHub:
+https://github.com/sup-heliotrope/sup/pull/9#issuecomment-15243758
+
+
+
+
+From 5longluna at gmail.com  Tue Mar 26 11:42:48 2013
+From: 5longluna at gmail.com (Whyme Lyu)
+Date: Tue, 26 Mar 2013 19:42:48 +0800
+Subject: [sup-talk] Travis integration
+In-Reply-To: <51514A36.5040907@gaute.vetsj.com>
+References: <sup-heliotrope/sup/pull/9/c15243758@github.com>
+	<51514A36.5040907@gaute.vetsj.com>
+Message-ID: <515189B8.9050800@gmail.com>
+
+On 03/26/2013 03:11 PM, Gaute Hope wrote:
+ > What do you think about including the few files that are in the main
+ > repositories?
+
+Continuous integration is a widely adopted best practice now. A big +1 
+from me.
+
+> @Whyme: How does your Travis integration work with the new 'test' target?
+
+Currently I'm just running `rake gem` on Travis. But it's dead easy to 
+define a custom rake task to test + package anyway. I just opened 
+https://github.com/sup-heliotrope/sup/pull/15 for this.
+
+Two little issues for now:
+
+* I'm still figuring out required dependencies to get tests running. 
+This could be done soon.
+* Pull request #12 should be merged before `rake gem` could work.
+
+-whyme
+
+From eg at gaute.vetsj.com  Tue Mar 26 22:53:12 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 26 Mar 2013 23:53:12 +0100
+Subject: [sup-talk] Travis integration
+In-Reply-To: <515189B8.9050800@gmail.com>
+References: <sup-heliotrope/sup/pull/9/c15243758@github.com>
+	<51514A36.5040907@gaute.vetsj.com> <515189B8.9050800@gmail.com>
+Message-ID: <515226D8.5080805@gaute.vetsj.com>
+
+Great. #12 is merged. When the 'test' target is ready I think we should
+merge the Travis stuff too.
+
+By the way; I have set 'develop' to be the default branch in github.
+This will make things work more seamlessly (including closing
+issues/pull request from commits and 'develop' as the default target for
+pull requests).
+
+Regards, gaute
+
+On 26. mars 2013 12:42, Whyme Lyu wrote:
+> On 03/26/2013 03:11 PM, Gaute Hope wrote:
+>> What do you think about including the few files that are in the main
+>> repositories?
+> 
+> Continuous integration is a widely adopted best practice now. A big +1
+> from me.
+> 
+>> @Whyme: How does your Travis integration work with the new 'test' target?
+> 
+> Currently I'm just running `rake gem` on Travis. But it's dead easy to
+> define a custom rake task to test + package anyway. I just opened
+> https://github.com/sup-heliotrope/sup/pull/15 for this.
+> 
+> Two little issues for now:
+> 
+> * I'm still figuring out required dependencies to get tests running.
+> This could be done soon.
+> * Pull request #12 should be merged before `rake gem` could work.
+> 
+> -whyme
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From adam.bogacki at clear.net.nz  Wed Mar 27 03:02:24 2013
+From: adam.bogacki at clear.net.nz (Adam Bogacki)
+Date: Wed, 27 Mar 2013 16:02:24 +1300
+Subject: [sup-talk] Thunderbird,
+	and a syntax error near unexpected token `"\n"'
+Message-ID: <51526140.1090102@clear.net.nz>
+
+I'm trying to add maildirs to sup, adding two tags, one for the
+Thunderbird folder and one for the name of the mail collection,
+following the example at
+http://sup.rubyforge.org/wiki/wiki.pl?ThunderbirdImport
+
+but keep getting
+
+> root at Candide03:32 PM~:~$ `ls mdirs`.split("\n").each {|dir|`ls
+> mdirs/#{dir}`.split("\n").each {|mdir| sup-add -ul
+> #{dir.downcase},#{mdir.downcase}
+> `maildir:/home/adam/.icedove/9zurob0v.default/Mail/mdirs/#{dir}/#{mdir}`}}
+>
+> bash: syntax error near unexpected token `"\n"'
+
+Can anyone point out what I am missing here ?
+
+Regards,
+
+Adam Bogacki,
+
+adam.bogacki at clear.net.nz
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130327/e5dfe0b0/attachment.html>
+
+From 5longluna at gmail.com  Wed Mar 27 03:29:26 2013
+From: 5longluna at gmail.com (Whyme Lyu)
+Date: Wed, 27 Mar 2013 11:29:26 +0800
+Subject: [sup-talk] Thunderbird,
+ and a syntax error near unexpected token `"\n"'
+In-Reply-To: <51526140.1090102@clear.net.nz>
+References: <51526140.1090102@clear.net.nz>
+Message-ID: <51526796.2070101@gmail.com>
+
+On 03/27/2013 11:02 AM, Adam Bogacki wrote:
+> http://sup.rubyforge.org/wiki/wiki.pl?ThunderbirdImport
+
+The wiki has been migrated to 
+https://github.com/sup-heliotrope/sup/wiki/Thunderbird-Import with some 
+content lost forever. But the new ThunderbirdImport page looks okay for now.
+
+>> root at Candide03:32 PM~:~$ `ls mdirs`.split("\n").each {|dir|`ls
+>> mdirs/#{dir}`.split("\n").each {|mdir| sup-add -ul
+>> #{dir.downcase},#{mdir.downcase}
+>> `maildir:/home/adam/.icedove/9zurob0v.default/Mail/mdirs/#{dir}/#{mdir}`}}
+>>
+>> bash: syntax error near unexpected token `"\n"'
+
+Looks like the wiki doesn't make it clear enough: the code is Ruby code, 
+not bash. Besides, your code is slightly different from the code on 
+Github wiki: the third pair of backticks should wrap sup-add...#{mdir} 
+instead of `maildir:...#{mdir}`.
+
+Honestly I haven't tried to import Thunderbird data yet since I'm still 
+trying to get a usable .gem package in Ruby 1.9. But hope this helps anyway.
+
+-whyme
+

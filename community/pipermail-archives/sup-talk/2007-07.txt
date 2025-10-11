@@ -1,0 +1,1660 @@
+From wmorgan-sup at masanjin.net  Tue Jul  3 17:45:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jul 2007 14:45:04 -0700
+Subject: [sup-talk] new in svn: per-account signatures
+In-Reply-To: <1181779547-sup-1059@mona>
+References: <1181696943-sup-559@south> <1181779547-sup-1059@mona>
+Message-ID: <1183499104-sup-9767@south>
+
+Excerpts from jeff.covey's message of Wed Jun 13 17:10:11 -0700 2007:
+> this seems to work well.  unfortunately, i like having the signature block
+> passed to the editor.  :)
+
+In SVN trunk now, if you specify :edit_signatures: true, you'll always
+get the default account's signature, and it will be passed to the
+editor. The default is false.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul  3 18:08:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jul 2007 15:08:04 -0700
+Subject: [sup-talk] mutt's auto_view and alternative_order
+In-Reply-To: <1181834033-sup-8054@mona>
+References: <1181834033-sup-8054@mona>
+Message-ID: <1183500484-sup-7622@south>
+
+Excerpts from jeff.covey's message of Thu Jun 14 08:32:09 -0700 2007:
+> something i'm really missing from mutt is the auto_view setting for mime
+> types.
+[snip]
+> it would be great if config.yaml let the user specify a list of mime types
+> which should have their attachments run through the .mailcap-specified
+> filters with copiousoutput tags, and have the results inserted into the text
+> of the message.  i think it might be good to keep the "mime attachment" line
+> as well, so that hitting enter on it would launch an external viewer for the
+> times you want that.
+
+Yup, I agree that this is a highly desirable thing. I'm going to try and
+handle as much of this type of thing as possible through the
+aforementioned hook system. It definitely won't happen for the next
+release, though.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Tue Jul  3 21:13:29 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 03 Jul 2007 21:13:29 -0400
+Subject: [sup-talk] new in svn: per-account signatures
+In-Reply-To: <1183499104-sup-9767@south>
+References: <1181696943-sup-559@south> <1181779547-sup-1059@mona>
+	<1183499104-sup-9767@south>
+Message-ID: <1183511439-sup-3890@mona>
+
+Excerpts from William Morgan's message of Tue Jul 03 17:45:04 -0400 2007:
+
+> In SVN trunk now, if you specify :edit_signatures: true, you'll always get
+> the default account's signature, and it will be passed to the editor.
+
+you seem to have meant ":edit_signature:" (singular), as it's working with
+that (and sup+ferret are behaving again, so i'm a supper again for as long
+as it holds).  thanks!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Tue Jul  3 22:42:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jul 2007 19:42:56 -0700
+Subject: [sup-talk] new in svn: per-account signatures
+In-Reply-To: <1183511439-sup-3890@mona>
+References: <1181696943-sup-559@south> <1181779547-sup-1059@mona>
+	<1183499104-sup-9767@south> <1183511439-sup-3890@mona>
+Message-ID: <1183516855-sup-2983@south>
+
+Excerpts from jeff.covey's message of Tue Jul 03 18:13:29 -0700 2007:
+> you seem to have meant ":edit_signature:" (singular), as it's working
+> with that
+
+Oops, yes.
+
+> (and sup+ferret are behaving again, so i'm a supper again for as long
+> as it holds).  thanks!
+
+Great, but it definitely won't last. So keep backing up. :)
+
+I've posted to ferret-talk in the meanwhile. I'll let you know what
+comes of it. If it happens again, keep a copy of the index, because a
+postmortem might be necessary.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul  3 22:55:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 Jul 2007 19:55:56 -0700
+Subject: [sup-talk] GPG Support
+In-Reply-To: <1182210252-sup-8502@mona>
+References: <D55C81AD71647428E7B489B6@Sumatra.local> <1182210252-sup-8502@mona>
+Message-ID: <1183517242-sup-3554@south>
+
+Excerpts from jeff.covey's message of Mon Jun 18 17:00:52 -0700 2007:
+> Excerpts from Chris Lee's message of Thu May 17 17:24:11 -0400 2007:
+> > The sources.yaml file is pgp encrypted now.
+> 
+> why is that?  there doesn't seem to be any sensitive information in
+> sources.yaml, and encrypting it makes it harder to deal with.
+
+For IMAP and mbox+ssh sources, the username and password is stored in
+sources.yaml. Sup is careful to create it with the right unix mode, so
+I'm not convinced of the vital necessity of this feature, but I'm not
+opposed to its very existence either.
+
+> i wouldn't bother with storing passwords/phrases and encrypting files,
+> i would just let gpg prompt people for the words/phrases as needed.
+> if they don't want to type them each time, they can use something like
+> gpg-agent.
+
+I tend to agree. I'm happy to offload as much functionality to other
+programs as possible.
+
+> i only use one key myself, but it would be nice to be able to specify a key
+> for each account under ":accounts:".
+
+Agreed.
+
+I haven't incorporated Chris's patch yet, mostly because I wanted to
+flesh out Sup's multi-account support, but now that things are better on
+that end, I do plan to revisit the issue. Chris, if you're still there,
+please don't feel like I've ignored you.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jul  4 10:07:55 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 04 Jul 2007 10:07:55 -0400
+Subject: [sup-talk] new in svn: per-account signatures
+In-Reply-To: <1183516855-sup-2983@south>
+References: <1181696943-sup-559@south> <1181779547-sup-1059@mona>
+	<1183499104-sup-9767@south> <1183511439-sup-3890@mona>
+	<1183516855-sup-2983@south>
+Message-ID: <1183558009-sup-2970@mona>
+
+Excerpts from William Morgan's message of Tue Jul 03 22:42:56 -0400 2007:
+
+> it definitely won't last. So keep backing up. :)
+
+in the meantime, i'm getting to remember how much faster i can process my
+mail with sup.  :)
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Fri Jul  6 14:55:49 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 06 Jul 2007 11:55:49 -0700
+Subject: [sup-talk] new in svn: attachments!
+Message-ID: <1183748022-sup-9835@south>
+
+In addition to slightly better MIME support, you can now add attachments
+
+to messages! Still TBD: save attachment selection when postponing;
+
+better error-handling, and multi-selection.
+
+
+
+Try it out and let me know what you think. Now that tab completion
+
+is enabled, I'm going to tweak a couple other things in the UI as well.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Fri Jul  6 16:20:47 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Fri, 06 Jul 2007 15:20:47 -0500
+Subject: [sup-talk] new in svn: attachments!
+In-Reply-To: <1183748022-sup-9835@south>
+References: <1183748022-sup-9835@south>
+Message-ID: <1183753190-sup-5411@zap>
+
+Excerpts from William Morgan's message of Fri Jul 06 13:55:49 -0500 2007:
+
+> In addition to slightly better MIME support, you can now add attachments
+
+> 
+
+> to messages! Still TBD: save attachment selection when postponing;
+
+> 
+
+> better error-handling, and multi-selection.
+
+> 
+
+> 
+
+> 
+
+> Try it out and let me know what you think. Now that tab completion
+
+> 
+
+> is enabled, I'm going to tweak a couple other things in the UI as well.
+
+> 
+
+
+
+I just sent a message with an attachment. When viewing that same
+
+message marked as +sent, the attachment doesn't show up. 
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Fri Jul  6 17:48:06 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 06 Jul 2007 14:48:06 -0700
+Subject: [sup-talk] new in svn: attachments!
+In-Reply-To: <1183753190-sup-5411@zap>
+References: <1183748022-sup-9835@south> <1183753190-sup-5411@zap>
+Message-ID: <1183758460-sup-6685@south>
+
+Excerpts from Ian Taylor's message of Fri Jul 06 13:20:47 -0700 2007:
+
+> I just sent a message with an attachment. When viewing that same
+
+> message marked as +sent, the attachment doesn't show up. 
+
+
+
+Fixed!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Fri Jul  6 18:16:30 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 06 Jul 2007 18:16:30 -0400
+Subject: [sup-talk] new in svn: attachments!
+In-Reply-To: <1183748022-sup-9835@south>
+References: <1183748022-sup-9835@south>
+Message-ID: <1183760137-sup-7750@mona>
+
+lest anyone have the same trouble:
+
+
+
+you need to "gem install mime-types" for this svn update.
+
+
+
+thanks,
+
+
+
+-- 
+
+jeff covey
+
+http://jeffcovey.net/
+
+
+
+From wmorgan-sup at masanjin.net  Sat Jul  7 09:17:23 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 07 Jul 2007 06:17:23 -0700
+Subject: [sup-talk] sup dying with another ferret error
+In-Reply-To: <20070630092906.GA16008@mona.jeffcovey.net>
+References: <20070630092906.GA16008@mona.jeffcovey.net>
+Message-ID: <1183814217-sup-1488@south>
+
+Excerpts from jeff.covey's message of Sat Jun 30 02:29:07 -0700 2007:
+
+> The problem was: 'IO Error occured at <except.c>:93 in xraise
+
+> Error occured in index.c:901 - sis_find_segments_file
+
+
+
+Do you have a really large index? Like, 4G?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sat Jul  7 08:17:14 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 07 Jul 2007 08:17:14 -0400
+Subject: [sup-talk] sup failing to display the text of a message
+In-Reply-To: <20070611013051.GA12580@mona.jeffcovey.net>
+References: <20070611013051.GA12580@mona.jeffcovey.net>
+Message-ID: <1183810570-sup-4651@mona>
+
+Excerpts from jeff covey's message of Sun Jun 10 21:30:51 -0400 2007:
+
+
+
+> sup's displaying the attached message as though it has no text at all; it
+
+> doesn't even show the two sections as attachments that can be viewed.
+
+
+
+with the new mime code, this is now showing as:
+
+
+
+x Attachment: sup-attachment-1183810370-1070 (multipart/mixed)
+
+
+
+thanks!
+
+
+
+-- 
+
+jeff covey
+
+http://jeffcovey.net/
+
+
+
+From jeff.covey at pobox.com  Sat Jul  7 22:32:10 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 07 Jul 2007 22:32:10 -0400
+Subject: [sup-talk] sup dying with another ferret error
+In-Reply-To: <1183814217-sup-1488@south>
+References: <20070630092906.GA16008@mona.jeffcovey.net>
+	<1183814217-sup-1488@south>
+Message-ID: <1183861808-sup-44@mona>
+
+Excerpts from William Morgan's message of Sat Jul 07 09:17:23 -0400 2007:
+
+
+
+> Do you have a really large index? Like, 4G?
+
+
+
+no, not very big:
+
+
+
+$ du -hs ~/.sup/ferret/
+
+14M	/home/jeff/.sup/ferret/
+
+
+
+thanks,
+
+
+
+-- 
+
+jeff covey
+
+http://jeffcovey.net/
+
+
+
+From jeff.covey at pobox.com  Sat Jul  7 22:59:59 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 07 Jul 2007 22:59:59 -0400
+Subject: [sup-talk] extra blank lines
+In-Reply-To: <1183861808-sup-44@mona>
+References: <20070630092906.GA16008@mona.jeffcovey.net>
+	<1183814217-sup-1488@south> <1183861808-sup-44@mona>
+Message-ID: <1183863440-sup-3959@mona>
+
+all of the messages i've sent with sup since the latest svn updates seem to
+
+be including a lot of extra blank lines.  for example:
+
+
+
+Excerpts from jeff covey's message of Sat Jul 07 22:32:10 -0400 2007:
+
+> Excerpts from William Morgan's message of Sat Jul 07 09:17:23 -0400 2007:
+
+> 
+
+> > Do you have a really large index? Like, 4G?
+
+> 
+
+> 
+
+> 
+
+> no, not very big:
+
+> 
+
+> 
+
+> 
+
+> $ du -hs ~/.sup/ferret/
+
+> 
+
+> 14M    /home/jeff/.sup/ferret/
+
+> 
+
+> 
+
+> 
+
+> thanks,
+
+> 
+
+
+
+-- 
+
+jeff covey
+
+http://jeffcovey.net/
+
+
+
+From wmorgan-sup at masanjin.net  Sun Jul  8 11:14:45 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 08 Jul 2007 08:14:45 -0700
+Subject: [sup-talk] extra blank lines
+In-Reply-To: <1183863440-sup-3959@mona>
+References: <20070630092906.GA16008@mona.jeffcovey.net>
+	<1183814217-sup-1488@south> <1183861808-sup-44@mona>
+	<1183863440-sup-3959@mona>
+Message-ID: <1183907631-sup-1423@south>
+
+Excerpts from jeff.covey's message of Sat Jul 07 19:59:59 -0700 2007:
+> all of the messages i've sent with sup since the latest svn updates
+> seem to be including a lot of extra blank lines.
+
+If these two lines are together,
+this problem should be fixed.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jul  8 11:44:22 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 08 Jul 2007 08:44:22 -0700
+Subject: [sup-talk] sup failing to display the text of a message
+In-Reply-To: <1183810570-sup-4651@mona>
+References: <20070611013051.GA12580@mona.jeffcovey.net>
+	<1183810570-sup-4651@mona>
+Message-ID: <1183908397-sup-1704@south>
+
+Excerpts from jeff.covey's message of Sat Jul 07 05:17:14 -0700 2007:
+> with the new mime code, this is now showing as:
+> x Attachment: sup-attachment-1183810370-1070 (multipart/mixed)
+
+Hm, that's still not quite what I want, though. What should happen with
+is that multipart thing shouldn't be displayed at all, and instead you
+should see two inlined, collapsable, individually-savable attachments.
+
+I've committed a change that should have this behavior. But I couldn't
+replicate your version from the original message, which is curious, so
+let me know how it looks.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Sun Jul  8 14:59:51 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sun, 08 Jul 2007 14:59:51 -0400
+Subject: [sup-talk] extra blank lines
+In-Reply-To: <1183907631-sup-1423@south>
+References: <20070630092906.GA16008@mona.jeffcovey.net>
+	<1183814217-sup-1488@south> <1183861808-sup-44@mona>
+	<1183863440-sup-3959@mona> <1183907631-sup-1423@south>
+Message-ID: <1183921167-sup-6729@mona>
+
+Excerpts from William Morgan's message of Sun Jul 08 11:14:45 -0400 2007:
+
+> If these two lines are together,
+> this problem should be fixed.
+
+looks good to me!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Mon Jul  9 10:44:54 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 09 Jul 2007 10:44:54 -0400
+Subject: [sup-talk] sup failing to display the text of a message
+In-Reply-To: <1183908397-sup-1704@south>
+References: <20070611013051.GA12580@mona.jeffcovey.net>
+	<1183810570-sup-4651@mona> <1183908397-sup-1704@south>
+Message-ID: <1183992180-sup-9883@mona>
+
+Excerpts from William Morgan's message of Sun Jul 08 11:44:22 -0400 2007:
+
+> What should happen with is that multipart thing shouldn't be displayed at
+> all, and instead you should see two inlined, collapsable,
+> individually-savable attachments.  I've committed a change that should
+> have this behavior.
+
+it still looks the same to me:
+
+http://jeffcovey.net/tmp/sup-fm_newsletter.png
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Tue Jul 10 11:45:38 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 10 Jul 2007 08:45:38 -0700
+Subject: [sup-talk] sup failing to display the text of a message
+In-Reply-To: <1183992180-sup-9883@mona>
+References: <20070611013051.GA12580@mona.jeffcovey.net>
+	<1183810570-sup-4651@mona> <1183908397-sup-1704@south>
+	<1183992180-sup-9883@mona>
+Message-ID: <1184081531-sup-3358@south>
+
+Excerpts from jeff.covey's message of Mon Jul 09 07:44:54 -0700 2007:
+> it still looks the same to me:
+> 
+> http://jeffcovey.net/tmp/sup-fm_newsletter.png
+
+Ok, I subscribed to fm-news just so I could figure out what was going on
+here. The problem is that they don't send a MIME-Version: header in the
+top-level message headers, so RubyMail doesn't interpret the email as a
+MIME message. Which is correct, strictly speaking, though of course it's
+better to follow the adage of "lenient in acceptance and strict in
+emission". If you add a MIME-Version header back in, everything works as
+it should.
+
+To further confuse the issue, the version that you attached back at the
+beginning of June apparently had its headers cleaned up by Mutt. Mutt
+clearly has more lenient message parsing than RubyMail does, if it does
+something reasonable with this message.
+
+So I could patch RubyMail (which is completely unmaintained, so I'd
+essentially have to publish the patch in parallel with Sup) to handle
+these messages, which is dubious by the RFCs but probably fine in
+practice, or I could just ignore the issue as "someone else's problem".
+Since the message content is still viewable in Sup, I'm tempted to leave
+things as is.
+
+RubyMail really needs a maintainer.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Tue Jul 10 13:40:39 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 10 Jul 2007 13:40:39 -0400
+Subject: [sup-talk] sup failing to display the text of a message
+In-Reply-To: <1184081531-sup-3358@south>
+References: <20070611013051.GA12580@mona.jeffcovey.net>
+	<1183810570-sup-4651@mona> <1183908397-sup-1704@south>
+	<1183992180-sup-9883@mona> <1184081531-sup-3358@south>
+Message-ID: <1184088645-sup-8679@mona>
+
+Excerpts from William Morgan's message of Tue Jul 10 11:45:38 -0400 2007:
+
+> So I could patch RubyMail (which is completely unmaintained, so I'd
+> essentially have to publish the patch in parallel with Sup) to handle
+> these messages, which is dubious by the RFCs but probably fine in
+> practice, or I could just ignore the issue as "someone else's problem".
+> Since the message content is still viewable in Sup, I'm tempted to leave
+> things as is.
+
+ok, thanks for checking into it!
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Tue Jul 10 14:21:57 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 10 Jul 2007 11:21:57 -0700
+Subject: [sup-talk] sup-sync-back not syncing all usual sources
+In-Reply-To: <1182126871-sup-7739@mona>
+References: <1181836972-sup-1140@mona> <1182112191-sup-9971@south>
+	<1182126871-sup-7739@mona>
+Message-ID: <1184091559-sup-1633@south>
+
+Excerpts from jeff.covey's message of Sun Jun 17 18:00:24 -0700 2007:
+> thanks, it now spits out the names of all of my usual sources and
+> moves deleted files from some, but not all of them.
+
+This I'm still not sure about and I can't replicate. a) Does it still
+happen with recent SVN, and b) are there any distinguishing features
+about which sources it moves stuff from and which it wrongly ignores?
+
+> would it make more sense for sup-sync-back to process only those
+> sources which need to be synced back (at this stage in sup-sync-back's
+> life, those which have spam/deleted messages)?
+
+Great idea. This is in SVN now.
+
+> also, at the end of running sup-sync-back without specifying a source, i get
+> this:
+> 
+> Scanning sup://sent...
+> Scanned 4, deleted 0, moved 0 messages from sup://sent.
+> [Sun Jun 17 20:32:34 -0400 2007] saving index and sources...
+> [Sun Jun 17 20:32:35 -0400 2007] unlocking /home/jeff/.sup/lock...
+> /usr/lib/ruby/1.8/fileutils.rb:505:in `rename': No such file or directory -
+> /tmp/sup-sync-back-9998.1089.0 or  (Errno::ENOENT)
+
+This should be fixed as well.
+
+Let me know how things are working for you.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jul 11 19:34:04 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 11 Jul 2007 19:34:04 -0400
+Subject: [sup-talk] sup concatenating many email addresses
+Message-ID: <1184196401-sup-4306@mona>
+
+some mail bounced, and when i went back to look in ~/.sup/sent.mbox, i found
+messages with "to:" lines like this:
+
+> From jeff.covey at pobox.com Sun Jul 08 17:14:45 -0400 2007
+> Subject: opening the zendo on upcoming saturdays
+> From: jeff covey <jeff.covey at pobox.com>
+> To: mutei doug murphy <mutei at aol.com>nate butler <n8butler at yahoo.com>Jan & Michael Prenger <jmprenger1 at comcast.net>John and/or Martha Seay <mseay at comcast.net>erichj.kuhn <erichj.kuhn at gmail.com>Robert Williams <williams.rm at comcast.net>chunyuanlee <chunyuanlee at yahoo.com>
+> Date: Sun, 08 Jul 2007 17:14:45 -0400
+> Message-Id: <1183928946-sup-7677 at mona>
+> User-Agent: Sup/0.0.8
+> Content-Disposition: inline
+> Content-Type: text/plain; charset=utf-8
+
+this had looked just fine in the reply-mode buffer when i sent it, with each
+email address on a separate line and a comma after each but the last.
+
+the problem seems to be traced back to these lines in ~/.sup/people.txt:
+
+mutei at aol.com: 1184195526 mutei doug murphy
+chunyuanlee at yahoo.com: 1184195526 mutei doug murphy <mutei at aol.com>nate butler <n8butler at yahoo.com>Jan & Michael Prenger <jmprenger1 at comcast.net>John and/or Martha Seay <mseay at comcast.net>erichj.kuhn <erichj.kuhn at gmail.com>Robert Williams <williams.rm at comcast.net>chunyuanlee
+mutei at aol.comn8butler@yahoo.comjmprenger1 at comcast.netmseay@comcast.neterichj.kuhn at gmail.comwilliams.rm@comcast.netchunyuanlee at yahoo.com: 1184195526 mutei
+"mutei at aol.comn8butler@yahoo.comjmprenger1 at comcast.netmseay@comcast.neterichj.kuhn at gmail.comwilliams.rm@comcast.netchunyuanlee"@yahoo.com: 1184195679 mutei doug murphy nate butler Jan & Michael Prenger John and/or Martha Seay erichj.kuhn Robert Williams chunyuanlee
+
+sup seems to be trying to do something clever but coming up with
+progressively worse results.  there are a couple of other lines in
+people.txt which have oddly-run-together addresses, and i can't trust sup to
+send email where it says it's sending it at the moment.  :-\
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Thu Jul 12 11:39:21 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 12 Jul 2007 08:39:21 -0700
+Subject: [sup-talk] sup concatenating many email addresses
+In-Reply-To: <1184196401-sup-4306@mona>
+References: <1184196401-sup-4306@mona>
+Message-ID: <1184254483-sup-9640@south>
+
+Excerpts from jeff.covey's message of Wed Jul 11 16:34:04 -0700 2007:
+> some mail bounced, and when i went back to look in ~/.sup/sent.mbox, i
+> found messages with "to:" lines like this:
+
+This was due to a bug in svn revisions 473--491 in which multiple To: or
+Cc: addresses would get squished together exactly in this manner. Sorry
+about that! In r473 I switched to RubyMail composing the outgoing
+message content, instead of doing it by hand, which was necessary for
+attachment support. But I screwed up the headers in this manner.
+
+> the problem seems to be traced back to these lines in
+> ~/.sup/people.txt:
+
+I think this is a symptom, not the problem itself. But you will have to
+manually clean up people.txt now. Sorry. :(
+
+Sent.mbox is an accurate reflection of whatever went out over the wire,
+so you should be able to confirm that everything works with current
+revisions by browsing it with mutt or whatever. (The same function is
+called twice, once with an open stream to the sendmail process and again
+with an file pointer to sent.mbox.) Let me know if you're still having
+this problem with recent code.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul 17 21:42:41 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 17 Jul 2007 18:42:41 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+Message-ID: <1184722934-sup-4107@south>
+
+Sup version 0.1 has been released!
+
+  http://sup.rubyforge.org
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Changes:
+
+== 0.1 / 2007-07-17
+* MIME attachment creation.
+* i18n support: character set conversion and rfc2047 header decoding.
+* Better MIME handling.
+* Multiple account support.
+* Locking and concurrent Sup process detection and killation.
+* Thread autoloading when you scroll down.
+* Batch deletion of messages marked deleted or spam from message
+  sources via sup-sync-back tool (mbox only).
+* Millions of bugfixes.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Wed Jul 18 18:21:17 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Wed, 18 Jul 2007 18:21:17 -0400
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184722934-sup-4107@south>
+References: <1184722934-sup-4107@south>
+Message-ID: <1184797247-sup-5066@mona>
+
+Excerpts from William Morgan's message of Tue Jul 17 21:42:41 -0400 2007:
+
+> Sup version 0.1 has been released!
+
+congrats!  :)
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Thu Jul 19 14:01:06 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jul 2007 11:01:06 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184797247-sup-5066@mona>
+References: <1184722934-sup-4107@south> <1184797247-sup-5066@mona>
+Message-ID: <1184867946-sup-8698@south>
+
+Excerpts from jeff.covey's message of Wed Jul 18 15:21:17 -0700 2007:
+> Excerpts from William Morgan's message of Tue Jul 17 21:42:41 -0400 2007:
+> > Sup version 0.1 has been released!
+> congrats!  :)
+
+Thanks! Here's my tentative plans for the next release:
+
+Bug fixes:
+ - Brian's inbox bug
+ - Jeff's index.c:901 bug (There's a Ferret trac item for this now.)
+
+Features:
+ - GPG support
+ - attachment forwarding
+ - maybe: tab-completion in to: and cc: for composing messages
+
+Comments? Complaints?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nevans at mdlogix.com  Thu Jul 19 14:18:58 2007
+From: nevans at mdlogix.com (nicholas a. evans)
+Date: Thu, 19 Jul 2007 14:18:58 -0400
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184867946-sup-8698@south>
+References: <1184722934-sup-4107@south> <1184797247-sup-5066@mona>
+	<1184867946-sup-8698@south>
+Message-ID: <1184869044-sup-8195@nevans-desktop>
+
+Excerpts from William Morgan's message of Thu Jul 19 14:01:06 -0400 2007:
+> Features:
+>  - GPG support
+>  - attachment forwarding
+>  - maybe: tab-completion in to: and cc: for composing messages
+> 
+> Comments? Complaints?
+
+Could we get tab completion for setting labels?  And also a keymapping to
+set labels from thread-view-mode?
+
+Thanks!
+
+
+-- 
+Nick
+
+From wmorgan-sup at masanjin.net  Thu Jul 19 14:55:45 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jul 2007 11:55:45 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184869044-sup-8195@nevans-desktop>
+References: <1184722934-sup-4107@south> <1184797247-sup-5066@mona>
+	<1184867946-sup-8698@south> <1184869044-sup-8195@nevans-desktop>
+Message-ID: <1184871329-sup-6716@south>
+
+Excerpts from nicholas a. evans's message of Thu Jul 19 11:18:58 -0700 2007:
+> Could we get tab completion for setting labels?  And also a keymapping
+> to set labels from thread-view-mode?
+
+Sure!
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From minciue at gmail.com  Thu Jul 19 14:58:49 2007
+From: minciue at gmail.com (Eugen Minciu)
+Date: Thu, 19 Jul 2007 21:58:49 +0300
+Subject: [sup-talk] [ANN] Sup 0.1 released
+Message-ID: <1184871475-sup-2598@eugen-laptop>
+
+Excerpts from nicholas a. evans's message of Thu Jul 19 21:18:58 +0300 2007:
+> Excerpts from William Morgan's message of Thu Jul 19 14:01:06 -0400 2007:
+> > Features:
+> >  - GPG support
+> >  - attachment forwarding
+> >  - maybe: tab-completion in to: and cc: for composing messages
+> > 
+> > Comments? Complaints?
+> 
+> Could we get tab completion for setting labels?  And also a keymapping to
+> set labels from thread-view-mode?
+> 
+> Thanks!
+> 
+> 
+Hi list!
+Thanks for a wonderful program William. Here are a few of my desired
+features:
+- color schemes.
+Somehow I'm not that fond of the defaults :) I know I can edit the code
+but I'd like to be able to "theme" sup.
+
+- incoming message filters
+I'd like to be able to apply filters on incoming messages: label them,
+archive some of them and so on
+
+- polling with fetchmail
+I use fetchmail and I'd like to be able to add some sort of hook before
+polling that would run fetchmail first.
+
+- moving archived articles to another mbox
+This would be very useful because it would let me run biff programs.
+
+I might be able to give you a hand (or patch) for one or two of these.
+Which ones would you like and which would be the easiest?
+
+Once again, thanks a lot,
+
+
+-- 
+Eugen Minciu.
+
+Wasting valuable time since 1985.
+
+From wmorgan-sup at masanjin.net  Thu Jul 19 16:29:30 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jul 2007 13:29:30 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184871475-sup-2598@eugen-laptop>
+References: <1184871475-sup-2598@eugen-laptop>
+Message-ID: <1184875869-sup-9220@south>
+
+Hi Eugen,
+
+Excerpts from Eugen Minciu's message of Thu Jul 19 11:58:49 -0700 2007:
+> Thanks for a wonderful program William. Here are a few of my desired
+> features:
+> - color schemes.
+
+On the todo list, along with customizable keybindings, but they're both
+pretty far down. :)
+
+> - incoming message filters
+> I'd like to be able to apply filters on incoming messages: label them,
+> archive some of them and so on
+
+The way to do this currently is to use procmail to sort mail into
+different folders, and then set labels, auto-archive/auto-read, etc. for
+each source in Sup.
+
+I realize that's not ideal (in particular, users whose mail is delivered
+to IMAP servers not under their control are left out in the cold), but I
+really really don't want to write a slow, buggy, Ruby procmail clone as
+part of Sup.
+
+Is there another option? I would really like the full power of procmail.
+
+> - polling with fetchmail
+> I use fetchmail and I'd like to be able to add some sort of hook before
+> polling that would run fetchmail first.
+
+I use fetchmail too, so I agree this would be nice. A near-term goal is
+to have a good system of user-defined hooks, and I think this would be
+the right place for that.
+
+> - moving archived articles to another mbox
+> This would be very useful because it would let me run biff programs.
+
+This could be done easily, at least in a batch fashion, with a few
+changes to sup-sync-back. I'm not sure if that's what you want. How do
+you want to use biff with this?
+
+(This reminds me that there is still a completely unresolved question of
+ how sup-sync-back should lock mboxes. It doesn't do any locking at all
+ currently, which means you should be probably very careful with it.)
+
+> I might be able to give you a hand (or patch) for one or two of these.
+> Which ones would you like and which would be the easiest?
+
+If batch moving of archived messages is useful to you, that's probably
+the easiest one to do. 
+
+Making the colors configurable wouldn't be too hard either. I'm
+imagining a yaml config file that can override the color setup in
+sup.rb. What do you think?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jul 19 16:49:28 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 19 Jul 2007 13:49:28 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+Message-ID: <1184878159-sup-2212@south>
+
+Excerpts from William Morgan's message of Thu Jul 19 13:29:30 -0700 2007:
+> I realize that's not ideal (in particular, users whose mail is delivered
+> to IMAP servers not under their control are left out in the cold), but I
+> really really don't want to write a slow, buggy, Ruby procmail clone as
+> part of Sup.
+> 
+> Is there another option? I would really like the full power of procmail.
+
+There is a way of tricking procmail into doing what I want. Sup could
+take in a list of procmail rules and corresponding label assignments,
+create a procmail configuration file that makes procmail act as a filter
+that adds an X-Sup-Labels header with the corresponding labels, run all
+new messages through procmail with that config file at poll time, and
+then parse that header to determine the labels.
+
+Pretty painful. But then you can just write some procmail rules for the
+labels you want, and it doesn't matter what source the messages come
+from (as long as you have procmail locally!).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel at electricrain.com  Mon Jul 23 13:48:09 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Mon, 23 Jul 2007 10:48:09 -0700
+Subject: [sup-talk] sup-sync & missing message-ids
+Message-ID: <20070723174809.GA6866@electricrain.com>
+
+For whatever reason, there are messages in my Maildir that don't have
+message-ids in their headers. sup-sync bitches about that rather loudly..
+would it be better to artificially construct a message-id?
+
+Also, in the playing well with others category - sup doesn't seem to handle
+the case where a message gets moved from Maildir/new/ to Maildir/cur/ if that
+folder is read via IMAP from another client.. is this fixable in sup, or part
+of the rubymail library?
+
+Thanks
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From daniel at electricrain.com  Mon Jul 23 14:31:53 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Mon, 23 Jul 2007 11:31:53 -0700
+Subject: [sup-talk] Forward as attachment?
+Message-ID: <20070723183153.GA9853@electricrain.com>
+
+Is there any way to forward an email as an rfc822 attachment currently?
+
+Thanks
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From daniel at electricrain.com  Mon Jul 23 17:03:34 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Mon, 23 Jul 2007 14:03:34 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+Message-ID: <20070723210334.GA19236@electricrain.com>
+
+If there is a maildir folder with 0 messages, sup will die:
+
+lib/sup/source.rb:80:in `done?': undefined method `>=' for nil:NilClass
+(NoMethodError)
+
+I've tried catching that in lib/sup/poll.rb, which works for sup-sync (to get
+it to "complete"), but the index isn't written out correctly, so sup proper
+thinks that folder is then out of sync.
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 12:17:28 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 09:17:28 -0700
+Subject: [sup-talk] Forward as attachment?
+In-Reply-To: <20070723183153.GA9853@electricrain.com>
+References: <20070723183153.GA9853@electricrain.com>
+Message-ID: <1185292420-sup-6934@south>
+
+Hi Dan,
+
+Excerpts from Dan Sully's message of Mon Jul 23 11:31:53 -0700 2007:
+> Is there any way to forward an email as an rfc822 attachment currently?
+
+Not currently. You can manually attach messages by saving them to disk
+and attaching them as files, but they don't get mimed as rfc822.
+This is on the immediate todo list.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 13:52:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 10:52:56 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <20070723210334.GA19236@electricrain.com>
+References: <20070723210334.GA19236@electricrain.com>
+Message-ID: <1185299474-sup-18@south>
+
+A non-text attachment was scrubbed...
+Name: a.patch
+Type: application/octet-stream
+Size: 446 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070724/711d24a5/attachment-0001.obj 
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 13:56:01 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 10:56:01 -0700
+Subject: [sup-talk] sup-sync & missing message-ids
+In-Reply-To: <20070723174809.GA6866@electricrain.com>
+References: <20070723174809.GA6866@electricrain.com>
+Message-ID: <1185299593-sup-1596@south>
+
+Excerpts from Dan Sully's message of Mon Jul 23 10:48:09 -0700 2007:
+> For whatever reason, there are messages in my Maildir that don't have
+> message-ids in their headers. sup-sync bitches about that rather
+> loudly..  would it be better to artificially construct a message-id?
+
+If this really is a prevalent thing, then yes, I'm happy to fake a
+message-id.
+
+> Also, in the playing well with others category - sup doesn't seem to
+> handle the case where a message gets moved from Maildir/new/ to
+> Maildir/cur/ if that folder is read via IMAP from another client.. is
+> this fixable in sup, or part of the rubymail library?
+
+This has nothing to do with RubyMail; Sup simply doesn't play well with
+other clients. Part of the tradeoff I made with Sup was to assume by
+default that the source never changes except through Sup. If that
+assumption fails, Sup should detect it and ask you to run sup-sync
+--changed, which should bring everything back in sync.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel at electricrain.com  Tue Jul 24 14:13:58 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Tue, 24 Jul 2007 11:13:58 -0700
+Subject: [sup-talk] sup-sync & missing message-ids
+In-Reply-To: <1185299593-sup-1596@south>
+References: <20070723174809.GA6866@electricrain.com>
+	<1185299593-sup-1596@south>
+Message-ID: <20070724181358.GA20393@electricrain.com>
+
+* William Morgan shaped the electrons to say...
+
+>> For whatever reason, there are messages in my Maildir that don't have
+>> message-ids in their headers. sup-sync bitches about that rather
+>> loudly..  would it be better to artificially construct a message-id?
+>
+>If this really is a prevalent thing, then yes, I'm happy to fake a
+>message-id.
+
+Yeah - I see it a lot. Also seeing mail with missing Date: headers. Most (but
+not all) is sent from automated systems, ie: order confirmation, etc.
+
+I've attached a patch which is working for me with message-id.. a bit of a
+hack.
+
+>This has nothing to do with RubyMail; Sup simply doesn't play well with
+>other clients. Part of the tradeoff I made with Sup was to assume by
+>default that the source never changes except through Sup. If that
+>assumption fails, Sup should detect it and ask you to run sup-sync
+>--changed, which should bring everything back in sync.
+
+Yeah.. just a little inconvient if I'm checking mail via my iPhone then have
+to sup-sync before reading when I'm back in front of a terminal. Any issues
+with running sup-sync via cron ?
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+-------------- next part --------------
+--- message.rb.orig	2007-07-23 11:16:12.000000000 -0700
++++ message.rb	2007-07-23 11:42:15.000000000 -0700
+@@ -107,7 +107,8 @@
+   def read_header header
+     header.each { |k, v| header[k.downcase] = v }
+ 
+-    %w(message-id date).each do |f|
++    #%w(message-id date).each do |f|
++    %w(date).each do |f|
+       raise MessageFormatError, "no #{f} field in header #{header.inspect} (source #@source offset #@source_info)" unless header.include? f
+       raise MessageFormatError, "nil #{f} field in header #{header.inspect} (source #@source offset #@source_info)" unless header[f]
+     end
+@@ -124,7 +125,7 @@
+     @to = PersonManager.people_for header["to"]
+     @cc = PersonManager.people_for header["cc"]
+     @bcc = PersonManager.people_for header["bcc"]
+-    @id = header["message-id"]
++    @id = header["message-id"] || header["from"].match(/\b(\S+?@\S+)\b/).captures.to_s + "." + @date.to_i.to_s
+     @refs = (header["references"] || "").gsub(/[<>]/, "").split(/\s+/).flatten
+     @replytos = (header["in-reply-to"] || "").scan(/<(.*?)>/).flatten
+     @replyto = PersonManager.person_for header["reply-to"]
+
+From daniel at electricrain.com  Tue Jul 24 14:14:17 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Tue, 24 Jul 2007 11:14:17 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <1185299474-sup-18@south>
+References: <20070723210334.GA19236@electricrain.com> <1185299474-sup-18@south>
+Message-ID: <20070724181417.GB20393@electricrain.com>
+
+* William Morgan shaped the electrons to say...
+
+>I don't have a good maildir testing setup any more. Can you try this
+>quick fix? (Going through this code again reminds me how I need to
+>rework it all...)
+
+Yep - works much better than my hack did.
+
+Thanks
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From daniel at electricrain.com  Tue Jul 24 14:26:03 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Tue, 24 Jul 2007 11:26:03 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <20070724181417.GB20393@electricrain.com>
+References: <20070723210334.GA19236@electricrain.com> <1185299474-sup-18@south>
+	<20070724181417.GB20393@electricrain.com>
+Message-ID: <20070724182603.GA22059@electricrain.com>
+
+* Dan Sully shaped the electrons to say...
+
+>Yep - works much better than my hack did.
+
+Well, not quite. sup-sync now completes, but when running sup, I get:
+
+Source: maildir:/home/daniel/mail/lists/perl/p5p/                                                                                                           
+Error: Unknown message id 0.                                                                                                                               
+Fix: sup-sync --changed maildir:/home/daniel/mail/lists/perl/p5p/         
+
+And running that does not get rid of the message.
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 18:14:59 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 15:14:59 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <20070724182603.GA22059@electricrain.com>
+References: <20070723210334.GA19236@electricrain.com> <1185299474-sup-18@south>
+	<20070724181417.GB20393@electricrain.com>
+	<20070724182603.GA22059@electricrain.com>
+Message-ID: <1185315278-sup-8521@south>
+
+A non-text attachment was scrubbed...
+Name: a.patch
+Type: application/octet-stream
+Size: 1233 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070724/25f8db5f/attachment.obj 
+
+From daniel at electricrain.com  Tue Jul 24 18:22:44 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Tue, 24 Jul 2007 15:22:44 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <1185315278-sup-8521@south>
+References: <20070723210334.GA19236@electricrain.com> <1185299474-sup-18@south>
+	<20070724181417.GB20393@electricrain.com>
+	<20070724182603.GA22059@electricrain.com>
+	<1185315278-sup-8521@south>
+Message-ID: <20070724222244.GA3483@electricrain.com>
+
+* William Morgan shaped the electrons to say...
+
+>How about this one?
+
+Better.. had to change the "check" to be "start = check"
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 20:00:21 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 17:00:21 -0700
+Subject: [sup-talk] sup errors with 0 messages in a folder
+In-Reply-To: <20070724222244.GA3483@electricrain.com>
+References: <20070723210334.GA19236@electricrain.com> <1185299474-sup-18@south>
+	<20070724181417.GB20393@electricrain.com>
+	<20070724182603.GA22059@electricrain.com>
+	<1185315278-sup-8521@south>
+	<20070724222244.GA3483@electricrain.com>
+Message-ID: <1185321598-sup-684@south>
+
+Excerpts from Dan Sully's message of Tue Jul 24 15:22:44 -0700 2007:
+> Better.. had to change the "check" to be "start = check"
+
+Good catch. Thanks. I'm going to rework these to be less horrendous in
+the near future.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 20:05:23 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 17:05:23 -0700
+Subject: [sup-talk] sup-sync & missing message-ids
+In-Reply-To: <20070724181358.GA20393@electricrain.com>
+References: <20070723174809.GA6866@electricrain.com>
+	<1185299593-sup-1596@south>
+	<20070724181358.GA20393@electricrain.com>
+Message-ID: <1185321635-sup-1576@south>
+
+Excerpts from Dan Sully's message of Tue Jul 24 11:13:58 -0700 2007:
+> I've attached a patch which is working for me with message-id.. a bit
+> of a hack.
+
+Thanks. I've committed a modification of this. (I create the message-id by
+hashing the raw header text, which hopefully this should have all the nice
+uniqueness and consistency properties a message id should have.)
+
+> Any issues with running sup-sync via cron ?
+
+Shouldn't be, though that only works if you haven't used your iphone
+between the last cron run and when you invoke sup. Unless the folder is
+really large, you might instead consider running sup-sync immediately
+before running Sup and considering it an annoying startup delay. :)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jul 24 20:31:15 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 24 Jul 2007 17:31:15 -0700
+Subject: [sup-talk] new in svn: alias expansion in searches
+Message-ID: <1185323404-sup-1108@south>
+
+Searching for to:mom, from:bob, etc. now works. You don't have to type
+out the whole email address any more.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel at electricrain.com  Wed Jul 25 11:04:11 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Wed, 25 Jul 2007 08:04:11 -0700
+Subject: [sup-talk] The 'd' key, and other suggestions
+Message-ID: <1185375587-sup-5023@zap.electricrain.com>
+
+Perhaps my fingers haven't been retrained quite yet, but two things I've
+noticed while going through my mail this morning:
+
+'D' in the inbox seems like a poor choice - I've twice now reverted my state.
+
+'d' while looking at a message doesn't have the behavior I thought it would
+(being so close to mutt in other ways), of deleting the current message and
+moving onto the next one.
+
+Also when composing a mail, I find Mutt's prompting of To & Subject very
+helpful before being dumped into the editor (below the subject line as well).
+
+Just noticed another slight bug - I just suspending this process (^Z), and
+then fg'd it - cursing is a bit wrong, it placed me back in the "Reply to
+Sender / Reply to Mail list / Reply to All' screen, instead of my editor.
+Thankfully a ^L fixed that.
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+-- 
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From daniel at electricrain.com  Wed Jul 25 11:34:29 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Wed, 25 Jul 2007 08:34:29 -0700
+Subject: [sup-talk] Unicode
+Message-ID: <1185377570-sup-5514@zap.electricrain.com>
+
+I know Unicode support in Ruby is.. lacking. But is there anything I can do to
+prevent the dreaded unicode question marks (often followed by a tilde), which
+totally destroy the curses layout. 
+
+I see that iconv is being used in sup, but I'm not sure when/why.
+
+Thanks.
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+-- 
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Wed Jul 25 13:42:38 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Jul 2007 10:42:38 -0700
+Subject: [sup-talk] Unicode
+In-Reply-To: <1185377570-sup-5514@zap.electricrain.com>
+References: <1185377570-sup-5514@zap.electricrain.com>
+Message-ID: <1185385187-sup-767@south>
+
+Excerpts from Dan Sully's message of Wed Jul 25 08:34:29 -0700 2007:
+> I know Unicode support in Ruby is.. lacking. But is there anything I
+> can do to prevent the dreaded unicode question marks (often followed
+> by a tilde), which totally destroy the curses layout. 
+
+Here's what has worked for me:
+
+1. Use gnome-terminal
+2. set LANG=en_US.UTF-8
+
+Then, somehow, magically, using ncurses to display utf8 characters just
+works. Well, I haven't tried wide characters, but accented characters
+work.
+
+> I see that iconv is being used in sup, but I'm not sure when/why.
+
+Sup uses iconv to convert messages (and individual headers) marked as
+in specific encodings to your local encoding, as determined by LC_CTYPE
+and LANG environment variables.
+
+What *doesn't* work right now is calculating the lengths of unicode
+strings, so the display is a little screwed up for characters that take
+more than one utf-8 byte. But still usable.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel at electricrain.com  Wed Jul 25 13:54:23 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Wed, 25 Jul 2007 10:54:23 -0700
+Subject: [sup-talk] Unicode
+In-Reply-To: <1185385187-sup-767@south>
+References: <1185377570-sup-5514@zap.electricrain.com>
+	<1185385187-sup-767@south>
+Message-ID: <1185385955-sup-2860@zap.electricrain.com>
+
+> Here's what has worked for me:
+> 
+> 1. Use gnome-terminal
+> 2. set LANG=en_US.UTF-8
+
+I'm using LANG, but with xterm-color (via Terminal.app to a Ubuntu box). That
+setup works fine for Mutt, fyi.
+
+I'll wait for another full wide subject line to come in, but the other ones
+have been Windows encoded quotes and the like.
+ 
+> What *doesn't* work right now is calculating the lengths of unicode
+> strings, so the display is a little screwed up for characters that take
+> more than one utf-8 byte. But still usable.
+
+Ok, that would make sense.
+
+-- 
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Wed Jul 25 14:50:47 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Jul 2007 11:50:47 -0700
+Subject: [sup-talk] Unicode
+In-Reply-To: <1185385955-sup-2860@zap.electricrain.com>
+References: <1185377570-sup-5514@zap.electricrain.com>
+	<1185385187-sup-767@south>
+	<1185385955-sup-2860@zap.electricrain.com>
+Message-ID: <1185388707-sup-1409@south>
+
+Excerpts from Dan Sully's message of Wed Jul 25 10:54:23 -0700 2007:
+> I'm using LANG, but with xterm-color (via Terminal.app to a Ubuntu
+> box). That setup works fine for Mutt, fyi.
+
+If you cat out a utf-8 file, does the terminal display the right thing?
+If so, I would think that would work for Sup... at least under my
+current mental model where ncurses doesn't do anything except put out
+raw bytes which the terminal interprets.
+
+> > What *doesn't* work right now is calculating the lengths of unicode
+> > strings, so the display is a little screwed up for characters that
+> > take more than one utf-8 byte. But still usable.
+> 
+> Ok, that would make sense.
+
+And in fact it's actually only a problem in thread-index-mode when
+someone's name is a rfc2047-encoded header. In every other case there's
+no character alignment issue. :)
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From daniel at electricrain.com  Wed Jul 25 15:00:24 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Wed, 25 Jul 2007 12:00:24 -0700
+Subject: [sup-talk] Unicode
+In-Reply-To: <1185388707-sup-1409@south>
+References: <1185377570-sup-5514@zap.electricrain.com>
+	<1185385187-sup-767@south>
+	<1185385955-sup-2860@zap.electricrain.com>
+	<1185388707-sup-1409@south>
+Message-ID: <1185389999-sup-7964@zap.electricrain.com>
+
+> If you cat out a utf-8 file, does the terminal display the right thing?
+> If so, I would think that would work for Sup... at least under my
+> current mental model where ncurses doesn't do anything except put out
+> raw bytes which the terminal interprets.
+
+Yep, it displays the right thing. I'll try and get you more data.
+
+-- 
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From daniel at electricrain.com  Wed Jul 25 15:01:47 2007
+From: daniel at electricrain.com (Dan Sully)
+Date: Wed, 25 Jul 2007 12:01:47 -0700
+Subject: [sup-talk] Yes/No Send prompt missing
+Message-ID: <1185390033-sup-7568@zap.electricrain.com>
+
+After using my $EDITOR (vim), to reply/compose a new message, I quit from it,
+and sup drops me back to where I was before. There's no Yes/No/Postpone prompt
+for sending the message. However, if I hit 'y', the message is sent.
+
+-- 
+
+-D
+--
+<dsully> please describe web 2.0 to me in 2 sentences or less.
+<jwb> you make all the content. they keep all the revenue.
+
+From wmorgan-sup at masanjin.net  Thu Jul 26 01:45:08 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Jul 2007 22:45:08 -0700
+Subject: [sup-talk] The 'd' key, and other suggestions
+In-Reply-To: <1185375587-sup-5023@zap.electricrain.com>
+References: <1185375587-sup-5023@zap.electricrain.com>
+Message-ID: <1185428082-sup-7118@south>
+
+Hi Dan,
+
+Excerpts from Dan Sully's message of Wed Jul 25 08:04:11 -0700 2007:
+> 'D' in the inbox seems like a poor choice - I've twice now reverted my
+> state.
+> 
+> 'd' while looking at a message doesn't have the behavior I thought it
+> would (being so close to mutt in other ways), of deleting the current
+> message and moving onto the next one.
+
+I can change the default mappings, but then everyone else would have to
+retrain their fingers. Maybe you could make a case for 'D'. Do other
+ex-mutt users have this problem? (In general mutt keystroke
+compatibility is not really my priority, but I do recognize my target
+audience here.)
+
+In the future keybindings will be configurable, but that's pretty far
+down on the list at the moment.
+
+> Also when composing a mail, I find Mutt's prompting of To & Subject
+> very helpful before being dumped into the editor (below the subject
+> line as well).
+
+I do plan to have Sup prompt you for To: so that you can have tab
+completion. I'm not so sure about Subject though. In general I like to
+keep stuff in the editor as much as possible because that's a far better
+place to edit text than my shitty ncurses readline emulator.
+
+Cursor positioning to below Subject: is editor-specific. With vi I
+think you can use something like -c '/^$'.
+
+> Just noticed another slight bug - I just suspending this process (^Z),
+> and then fg'd it - cursing is a bit wrong, it placed me back in the
+> "Reply to Sender / Reply to Mail list / Reply to All' screen, instead
+> of my editor.
+
+Yeah, this is a known problem and I have no idea how to fix it.  In fact
+sometimes curses is just completely crazy after a suspend and I can't
+get it to do anything sensible and have to ^C. No idea.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jul 26 01:47:22 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 25 Jul 2007 22:47:22 -0700
+Subject: [sup-talk] Yes/No Send prompt missing
+In-Reply-To: <1185390033-sup-7568@zap.electricrain.com>
+References: <1185390033-sup-7568@zap.electricrain.com>
+Message-ID: <1185428715-sup-8781@south>
+
+Excerpts from Dan Sully's message of Wed Jul 25 12:01:47 -0700 2007:
+> After using my $EDITOR (vim), to reply/compose a new message, I quit
+> from it, and sup drops me back to where I was before. There's no
+> Yes/No/Postpone prompt for sending the message. However, if I hit 'y',
+> the message is sent.
+
+Post-edit you're back in compose mode where you can attach stuff,
+postpone, discard, send, etc. The send command happens to be 'y', same
+as mutt. No yes/no prompt required.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Thu Jul 26 12:46:52 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 26 Jul 2007 12:46:52 -0400
+Subject: [sup-talk] The 'd' key, and other suggestions
+In-Reply-To: <1185428082-sup-7118@south>
+References: <1185375587-sup-5023@zap.electricrain.com>
+	<1185428082-sup-7118@south>
+Message-ID: <1185467966-sup-4811@mona>
+
+Excerpts from William Morgan's message of Thu Jul 26 01:45:08 -0400 2007:
+
+> Maybe you could make a case for 'D'. Do other ex-mutt users have this
+> problem? 
+
+i do find it awkward when i'm processing my inbox and want to delete the
+thread i'm reading and move to the next new one.  i have to hit "x", "d",
+"tab", "enter", and that adds up to an annoyance after the first twenty
+times.  it would be great if one keystroke did it all.
+
+"h" seems to be unused in thread-view-mode.  would it be a better choice for
+"toggle detailed header", with "d" triggering something like "delete the
+current thread and open the next new thread in the previous buffer"?  in
+other words, if you've done a search on "foo", opened a thread from the
+search, and hit "d", sup would delete the thread being viewed, close its
+buffer, and look for and open the next unread thread in the "foo" search
+buffer (or just go to the "foo" search buffer if there's nothing unread in
+it).  too complicated?
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From nevans at mdlogix.com  Thu Jul 26 13:45:56 2007
+From: nevans at mdlogix.com (nicholas a. evans)
+Date: Thu, 26 Jul 2007 13:45:56 -0400
+Subject: [sup-talk] The 'd' key, and other suggestions
+In-Reply-To: <1185467966-sup-4811@mona>
+References: <1185375587-sup-5023@zap.electricrain.com>
+	<1185428082-sup-7118@south> <1185467966-sup-4811@mona>
+Message-ID: <1185471532-sup-4914@nevans-desktop>
+
+Excerpts from jeff.covey's message of Thu Jul 26 12:46:52 -0400 2007:
+> Excerpts from William Morgan's message of Thu Jul 26 01:45:08 -0400 2007:
+> 
+> > Maybe you could make a case for 'D'. Do other ex-mutt users have this
+> > problem? 
+> 
+> i do find it awkward when i'm processing my inbox and want to delete the
+> thread i'm reading and move to the next new one.  i have to hit "x", "d",
+> "tab", "enter", and that adds up to an annoyance after the first twenty
+> times.  it would be great if one keystroke did it all.
+
+Since we're on the subject of keybindings, my other pet peeve: "a" versus
+"A", in thread-view-mode.  Because index-view-mode uses "a", I press that in
+thread-view-mode expecting to have the thread archived.  For some reason, I
+can never seem to remember to use "A" instead.
+
+So, I generally do: "a", "^G", "A".
+Or sometimes: "a", "^G", "x", "a".
+Or sometimes: <sit... think about it... hmmm...>, "A".
+
+Muscle memory is no good for that keybinding.  ;-)
+
+In general, if there is a command that operates on a message from index mode
+and makes sense to also operate in thread-view-mode, it would be useful if
+they had the same keybinding.
+
+-- 
+Nick
+

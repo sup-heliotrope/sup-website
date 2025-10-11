@@ -1,0 +1,118 @@
+From jim at gonzul.net  Tue May  1 05:00:14 2012
+From: jim at gonzul.net (Jim Cheetham)
+Date: Tue, 1 May 2012 17:00:14 +1200
+Subject: [sup-talk] sup dislikes gpgme on Ubuntu 12.04
+Message-ID: <CA+2knqsHzGNON8Cz1kHuRdTREy3M2omQUGkg7ATd+3m6sUQ6+Q@mail.gmail.com>
+
+The Ubuntu-packaged sup-mail crashes with :-
+
+[Tue May 01 16:51:14 +1200 2012] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/cheja23p/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `empty' for GPGME::Data:Class
+/usr/lib/ruby/1.8/sup/crypto.rb:181:in `verify'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `method_missing'
+/usr/lib/ruby/1.8/sup/message.rb:558:in `inline_gpg_to_chunks'
+/usr/lib/ruby/1.8/sup/message.rb:520:in `message_to_chunks'
+/usr/lib/ruby/1.8/sup/message.rb:259:in `load_from_source!'
+/usr/lib/ruby/1.8/sup/message.rb:328:in `build_from_source'
+/usr/lib/ruby/1.8/sup/poll.rb:158:in `poll_from'
+/usr/lib/ruby/1.8/sup/maildir.rb:106:in `poll'
+/usr/lib/ruby/1.8/sup/util.rb:615:in `each_with_index'
+/usr/lib/ruby/1.8/sup/maildir.rb:105:in `each'
+/usr/lib/ruby/1.8/sup/maildir.rb:105:in `each_with_index'
+/usr/lib/ruby/1.8/sup/maildir.rb:105:in `poll'
+/usr/lib/ruby/1.8/sup/maildir.rb:90:in `each'
+/usr/lib/ruby/1.8/sup/maildir.rb:90:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:155:in `poll_from'
+/usr/lib/ruby/1.8/sup/poll.rb:113:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:103:in `each'
+/usr/lib/ruby/1.8/sup/poll.rb:103:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:102:in `synchronize'
+/usr/lib/ruby/1.8/sup/poll.rb:102:in `do_poll'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:49:in `poll_with_sources'
+/usr/lib/ruby/1.8/sup/poll.rb:68:in `poll'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:618:in `method_missing'
+/usr/bin/sup-mail:221
+/usr/lib/ruby/1.8/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:75:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:75:in `new'
+/usr/lib/ruby/1.8/sup.rb:75:in `reporting_thread'
+/usr/bin/sup-mail:221
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:684:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:684:in
+`__unprotected_load_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:625:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:625:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:75:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:75:in `new'
+/usr/lib/ruby/1.8/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/bin/sup-mail:221
+
+https://bugs.launchpad.net/debian/+source/sup-mail/+bug/890972
+suggests that this is very likely because Ubuntu is using ruby-gpgme
+version 2.0.0-1 (the replacement for libgpgme-ruby 1.0.8-3), but the
+changelog doesn't seem to mention anything about API changes, but does
+say it was packaged with the Gem2deb infrastructure.
+
+Has anyone got any suggestions for how I can get my sup working again?
+
+(*cough* besides going to heliotrope/turnsole, which is currently
+under investigation)
+
+-jim
+
+From matthieu.rakotojaona at gmail.com  Wed May 30 20:35:46 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 30 May 2012 22:35:46 +0200
+Subject: [sup-talk] Documentation of the heliotrope API
+Message-ID: <CAMiZLn2ESrDxTFhfzLAH36-7gJy7oy6uCWAxKYxHD5M1A9Pe_A@mail.gmail.com>
+
+Hello everyone,
+
+While browsing the interwebs, I realized that many people are also
+tired of the cumbersomeness of the IMAP protocol, and a few of them
+has started some work on implementing what they would love to see. For
+instance, you can find a thread talking about it in [0] which links to
+a few other thoughts. What is interesting is that many people have the
+same approach to use JSON-over-HTTP in a RESTful manner. I think each
+of these implementations' problem is the same: they lack visibility to
+gather improvements.
+
+Seeing this, I thought that to give Heliotrope a little more
+visibility, we should improve the documentation a little bit. I have
+started [1] by the first step: the API. Feel free to comment back on
+this, or fork/edit the pages yourself.
+
+
+Cheers,
+
+-- 
+Matthieu RAKOTOJAONA
+
+
+[0] http://blog.gaborcselle.com/2010/02/how-to-replace-imap.html
+[1] https://github.com/rakoo/heliotrope/wiki/A-brief-overview-of-the-heliotrope-api
+

@@ -1,0 +1,4687 @@
+From tpo2 at sourcepole.ch  Sat Nov  1 18:13:44 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Sat, 01 Nov 2008 22:13:44 +0000
+Subject: [sup-talk] bug: reproducable Sup crash, ferret-less rewrite?
+In-Reply-To: <C5313447.2C02%chrisw@rice.edu>
+Message-ID: <J4OdBBA7.1225577624.9061510.tpo2@192.168.3.7>
+
+
+On 11/1/2008, "Christopher Warrington" <chrisw at rice.edu> wrote:
+
+>"Tomas Pospisek ML" <tpo2 at sourcepole.ch> @ 2008-10-31 6:52 PM:
+>
+>> I can not find any trace of the latter, i.e. Sup's source code
+>> repository at Gitorious [3] doesn't show any ferret amputation. Are
+>> you, William Morgan working on a Sup version that doesn't show that
+>> supposedly ferret induced crashiness? Possibly your "private" branch
+>> is not ready yet and not accessible?
+>
+>See these blog posts about "Sup: The Server!"
+>http://all-thing.net/search/label/sup
+
+Very interesting, thanks. So, while William Morgan is pursuing his
+ambitous project [1]:
+- has anybody tried to swap Ferret with any other indexer [also in [1]]?
+- has anybody tried to fix the index corruption / ferret crash bug [2]?
+*t
+
+[1] http://rubyforge.org/pipermail/sup-talk/2008-July/001593.html
+[2] http://ferret.davebalmain.com/trac/ticket/279
+
+From decklin at red-bean.com  Sun Nov  2 12:40:12 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Sun, 02 Nov 2008 12:40:12 -0500
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+Message-ID: <1225647558-sup-7206@gillespie.rupamsunyata.org>
+
+Excerpts from Decklin Foster's message of Thu Oct 30 14:42:40 -0400 2008:
+> --- EOFError from thread: main
+
+This just happened again. Should I put it into ditz or something? (I feel
+exceedingly lame, but I don't have time to debug it today either.)
+
+-- 
+things change.
+decklin at red-bean.com
+
+From wmorgan-sup at masanjin.net  Sun Nov  2 13:30:54 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Nov 2008 10:30:54 -0800
+Subject: [sup-talk] bug: reproducable Sup crash, ferret-less rewrite?
+In-Reply-To: <J4OdBBA7.1225577624.9061510.tpo2@192.168.3.7>
+References: <C5313447.2C02%chrisw@rice.edu>
+	<J4OdBBA7.1225577624.9061510.tpo2@192.168.3.7>
+Message-ID: <1225650088-sup-7423@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-11-01:
+> - has anybody tried to swap Ferret with any other indexer [also in
+> [1]]?
+
+Not AFAIK. There are a couple indexing options with Ruby bindings:
+Sphinx, Xapian, Solr, and HyperEstraier, off the top of my head. When I
+last looked, they all had their problems: Sphinx requires a daemon, is
+overly tied to databases, and has no incremental indexing, Xapian is
+confusing and doesn't seem to support document fields, Solr is Java,
+HyperEstraier doesn't seem to have anyone using it, etc.
+
+> - has anybody tried to fix the index corruption / ferret crash bug [2]?
+
+I'd love for someone to do this! Ferret has the best API and document
+model, by far, of any of the alternatives.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  2 13:50:36 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Nov 2008 10:50:36 -0800
+Subject: [sup-talk] CPU at 99%
+In-Reply-To: <6K5DuLg4.1225497709.2001540.tpo2@192.168.3.7>
+References: <1225497126-sup-2054@entry>
+	<6K5DuLg4.1225497709.2001540.tpo2@192.168.3.7>
+Message-ID: <1225651661-sup-1958@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-31:
+> The "[poll-mode]" buffer shows an "infinite amount" of the following
+> message:
+> [...]
+> Found message at 44352220 with labels {Sent, unread}
+> Found message at 44352220 with labels {Sent, unread}
+> Found message at 44352220 with labels {Sent, unread}
+> Found message at 44352220 with labels {Sent, unread}
+> Found message at 44352220 with labels {Sent, unread}
+
+What kind of source is this? I'm guessing mbox. Can you try to figure
+out what is around byte offset 44352220 in that file? Sup isn't
+advancing beyond that for some reason.
+
+> When I do that I get an "eternal" (?) output of:
+> 
+> [Sam Nov 01 01:00:53 +0100 2008] faking from for message
+> sup-faked-b5d74cf19a1ebaf02e979448d059d0f4: Sup Auto-generated Fake
+> Sender <sup at fake.sender.example.com>
+> [Sam Nov 01 01:00:53 +0100 2008] faking date header for
+> sup-faked-b5d74cf19a1ebaf02e979448d059d0f4
+> [Sam Nov 01 01:00:53 +0100 2008] faking message-id for message from Sup
+> Auto-generated Fake Sender <sup at fake.sender.example.com>:
+> sup-faked-b5d74cf19a1ebaf02e979448d059d0f4
+> [Sam Nov 01 01:00:53 +0100 2008] faking from for message
+> sup-faked-b5d74cf19a1ebaf02e979448d059d0f4: Sup Auto-generated Fake
+> Sender <sup at fake.sender.example.com>
+> [Sam Nov 01 01:00:53 +0100 2008] faking date header for
+> sup-faked-b5d74cf19a1ebaf02e979448d059d0f4
+
+This is almost definitely the same problem as above.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  2 13:54:59 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Nov 2008 10:54:59 -0800
+Subject: [sup-talk] patch: accept "yes" when asked so
+In-Reply-To: <7ny3wDtl.1225410022.1981460.tpo2@192.168.3.7>
+References: <7ny3wDtl.1225410022.1981460.tpo2@192.168.3.7>
+Message-ID: <1225652091-sup-4877@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> The patch below makes Sup accept a "yes" in addition to "y"
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  2 13:58:05 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Nov 2008 10:58:05 -0800
+Subject: [sup-talk] patch: pluralize minute(s) second(s)
+In-Reply-To: <jmft2NPp.1225409887.1308060.tpo2@192.168.3.7>
+References: <jmft2NPp.1225409887.1308060.tpo2@192.168.3.7>
+Message-ID: <1225652108-sup-1903@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> The patch below makes Sup say "1 second" instead of "1 seconds". Same
+> for minute(s).
+
+Applied, thanks! It will be a little easier for me in the future if you
+can use git to generate the patches. But it's not vital. See
+http://sup.rubyforge.org/wiki/wiki.pl?Contributing
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  2 14:30:54 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 02 Nov 2008 11:30:54 -0800
+Subject: [sup-talk] improvement: add self as recipient on crypted sent
+	messages
+In-Reply-To: <7tCX6GnV.1225386225.8453510.tpo2@192.168.3.7>
+References: <v0HRsyuE.1225375036.4997550.tpo2@192.168.3.7>
+	<7tCX6GnV.1225386225.8453510.tpo2@192.168.3.7>
+Message-ID: <1225654227-sup-7841@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> Patch is below. Two comments:
+
+Applied, thanks!
+
+> 1. is there a less ugly way to create a new Array with an additional
+> element?
+
+Nope, that's the right way.
+
+> 2. the patch assumes that adding "From: " to gpg's" --recipient"s is a
+> sensible thing to do and thus it does it with no questions asked
+
+Seems reasonable to me.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tpo2 at sourcepole.ch  Mon Nov  3 15:45:27 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Mon, 03 Nov 2008 20:45:27 +0000
+Subject: [sup-talk] CPU at 99%
+In-Reply-To: <1225651661-sup-1958@entry>
+Message-ID: <UIFTpH6o.1225745127.6308280.tpo2@192.168.3.7>
+
+
+On 11/2/2008, "William Morgan" <wmorgan-sup at masanjin.net> wrote:
+
+>Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-31:
+>> The "[poll-mode]" buffer shows an "infinite amount" of the following
+>> message:
+>> [...]
+>> Found message at 44352220 with labels {Sent, unread}
+>> Found message at 44352220 with labels {Sent, unread}
+>> Found message at 44352220 with labels {Sent, unread}
+>> Found message at 44352220 with labels {Sent, unread}
+>> Found message at 44352220 with labels {Sent, unread}
+>
+>What kind of source is this? I'm guessing mbox.
+
+Correct, that's mbox.
+
+> Can you try to figure out what is around byte offset 44352220 in that file? Sup isn't
+>advancing beyond that for some reason.
+
+$ hexdump -C -s 44352219 -n 80 /home/tpo/mail/sent-mail/sent-mail-jan-2008
+02a4c2db  0a 46 72 6f 6d 20 74 70  6f 32 2e 6c 6f 63 61 6c  |.From
+tpo2.local|
+02a4c2eb  20 28 31 30 2e 32 2e 31  35 39 2e 35 30 29 20 69  |
+(10.2.159.50) i|
+02a4c2fb  63 6d 70 5f 73 65 71 3d  35 37 35 35 20 44 65 73  |cmp_seq=5755
+Des|
+02a4c30b  74 69 6e 61 74 69 6f 6e  20 48 6f 73 74 20 55 6e  |tination
+Host Un|
+02a4c31b  72 65 61 63 68 61 62 6c  65 0a 46 72 6f 6d 20 74 
+|reachable.From t|
+
+Thus the byte just before offset 44352220 is a 'a0' thus a newline with
+a "^From" on the next line and thus I guess it's the same problem as:
+
+http://rubyforge.org/pipermail/sup-talk/2008-October/001719.html
+
+Regarding the "Sent" label mentioned in the log above I need to add
+that I did something like this:
+
+$ for i in $HOME/mail/sent-mail/*; do sup-add mbox:$i -a -l Sent ; done
+
+That went OK, however, when I list labels in Sup I get this:
+
+[...]
+       Sent    13 messages,     2 unread
+       Sent  6415 messages,  3271 unread
+[...]
+
+Thus apparently Sup get's a bit mixed up about the 'Sent' label.
+
+*t
+
+From tpo2 at sourcepole.ch  Mon Nov  3 16:29:30 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Mon, 03 Nov 2008 21:29:30 +0000
+Subject: [sup-talk] CPU at 99%
+In-Reply-To: <UIFTpH6o.1225745127.6308280.tpo2@192.168.3.7>
+Message-ID: <Y0P2qz1p.1225747770.7655610.tpo2@192.168.3.7>
+
+
+On 11/3/2008, "Tomas Pospisek ML" <tpo2 at sourcepole.ch> wrote:
+
+>
+>On 11/2/2008, "William Morgan" <wmorgan-sup at masanjin.net> wrote:
+>
+>>Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-31:
+>>> The "[poll-mode]" buffer shows an "infinite amount" of the following
+>>> message:
+>>> [...]
+>>> Found message at 44352220 with labels {Sent, unread}
+>>> Found message at 44352220 with labels {Sent, unread}
+>>> Found message at 44352220 with labels {Sent, unread}
+>>> Found message at 44352220 with labels {Sent, unread}
+>>> Found message at 44352220 with labels {Sent, unread}
+>>
+>>What kind of source is this? I'm guessing mbox.
+>
+>Correct, that's mbox.
+>
+>> Can you try to figure out what is around byte offset 44352220 in that file? Sup isn't
+>>advancing beyond that for some reason.
+>
+>$ hexdump -C -s 44352219 -n 80 /home/tpo/mail/sent-mail/sent-mail-jan-2008
+>02a4c2db  0a 46 72 6f 6d 20 74 70  6f 32 2e 6c 6f 63 61 6c  |.From
+>tpo2.local|
+>02a4c2eb  20 28 31 30 2e 32 2e 31  35 39 2e 35 30 29 20 69  |
+>(10.2.159.50) i|
+>02a4c2fb  63 6d 70 5f 73 65 71 3d  35 37 35 35 20 44 65 73  |cmp_seq=5755
+>Des|
+>02a4c30b  74 69 6e 61 74 69 6f 6e  20 48 6f 73 74 20 55 6e  |tination
+>Host Un|
+>02a4c31b  72 65 61 63 68 61 62 6c  65 0a 46 72 6f 6d 20 74
+>|reachable.From t|
+>
+>Thus the byte just before offset 44352220 is a 'a0' thus a newline with
+>a "^From" on the next line and thus I guess it's the same problem as:
+>
+>http://rubyforge.org/pipermail/sup-talk/2008-October/001719.html
+
+Oh, and I'm getting the impression, that Sup doesn't like:
+
+"
+>From 
+>>From 
+"
+
+lines either...
+*t
+
+From israel.herraiz at gmail.com  Mon Nov  3 19:08:41 2008
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Tue, 04 Nov 2008 01:08:41 +0100
+Subject: [sup-talk] [PATCH] Wrap text attachments
+Message-ID: <1225757268-sup-9251@elly>
+
+Hi,
+
+this patch wrap text attachaments, as well as messages. For me is
+quite annoying to have to scroll to see the text attachments. Perhaps
+it is useful for others too.
+
+Cheers,
+Israel
+
+---
+ lib/sup/message-chunks.rb |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index cc895f3..99bd12b 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -65,6 +65,8 @@ Return value:
+ EOS
+ #' stupid ruby-mode
+ 
++    WRAP_LEN = 80 # wrap text attachments at this width
++
+     ## raw_content is the post-MIME-decode content. this is used for
+     ## saving the attachment to disk.
+     attr_reader :content_type, :filename, :lines, :raw_content
+@@ -95,6 +97,7 @@ EOS
+       @lines = nil
+       if text
+         @lines = text.gsub("\r\n", "\n").gsub(/\t/, "        ").gsub(/\r/, "").split("\n")
++        @lines = lines.map {|l| l.chomp.wrap WRAP_LEN}.flatten
+         @quotable = true
+       end
+     end
+-- 
+1.5.6.5
+
+From nicolas.pouillard at gmail.com  Tue Nov  4 08:29:40 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 04 Nov 2008 14:29:40 +0100
+Subject: [sup-talk] [PATCH] Wrap text attachments
+In-Reply-To: <1225757268-sup-9251@elly>
+References: <1225757268-sup-9251@elly>
+Message-ID: <1225805250-sup-3958@ausone.local>
+
+Excerpts from Israel Herraiz's message of Tue Nov 04 01:08:41 +0100 2008:
+> Hi,
+
+Hi,
+
+> this patch wrap text attachaments, as well as messages. For me is
+> quite annoying to have to scroll to see the text attachments. Perhaps
+> it is useful for others too.
+
+I have no opinion about this change.
+
+However there is already a WRAP_LEN constant in this file, please provide
+a patch that reuse the same constant.
+
+Best regards,
+
+> ---
+>  lib/sup/message-chunks.rb |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+> 
+> diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+> index cc895f3..99bd12b 100644
+> --- a/lib/sup/message-chunks.rb
+> +++ b/lib/sup/message-chunks.rb
+> @@ -65,6 +65,8 @@ Return value:
+>  EOS
+>  #' stupid ruby-mode
+>  
+> +    WRAP_LEN = 80 # wrap text attachments at this width
+> +
+>      ## raw_content is the post-MIME-decode content. this is used for
+>      ## saving the attachment to disk.
+>      attr_reader :content_type, :filename, :lines, :raw_content
+> @@ -95,6 +97,7 @@ EOS
+>        @lines = nil
+>        if text
+>          @lines = text.gsub("\r\n", "\n").gsub(/\t/, "        ").gsub(/\r/, "").split("\n")
+> +        @lines = lines.map {|l| l.chomp.wrap WRAP_LEN}.flatten
+>          @quotable = true
+>        end
+>      end
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From israel.herraiz at gmail.com  Tue Nov  4 09:07:21 2008
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Tue, 04 Nov 2008 15:07:21 +0100
+Subject: [sup-talk] [PATCH] Wrap text attachments
+In-Reply-To: <1225805250-sup-3958@ausone.local>
+References: <1225757268-sup-9251@elly> <1225805250-sup-3958@ausone.local>
+Message-ID: <1225807479-sup-1191@elly>
+
+Excerpts from Nicolas's message on Nov  4, 2008 about  2 PM:
+> However there is already a WRAP_LEN constant in this file, please provide
+> a patch that reuse the same constant.
+
+Find it below. I have moved the constant out of the Attachment and
+Text classes, and it is now in the context of the Chunk module.
+
+Cheers,
+Israel
+
+
+---
+ lib/sup/message-chunks.rb |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index cc895f3..5b5c314 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -41,6 +41,8 @@ end
+ 
+ module Redwood
+ module Chunk
++  WRAP_LEN = 80 # wrap messages and text attachments at this width
++
+   class Attachment
+     HookManager.register "mime-decode", <<EOS
+ Executes when decoding a MIME attachment.
+@@ -95,6 +97,7 @@ EOS
+       @lines = nil
+       if text
+         @lines = text.gsub("\r\n", "\n").gsub(/\t/, "        ").gsub(/\r/, "").split("\n")
++        @lines = lines.map {|l| l.chomp.wrap WRAP_LEN}.flatten
+         @quotable = true
+       end
+     end
+@@ -143,7 +146,6 @@ EOS
+   end
+ 
+   class Text
+-    WRAP_LEN = 80 # wrap at this width
+ 
+     attr_reader :lines
+     def initialize lines
+-- 
+1.5.6.5
+
+From sgoldman at tower-research.com  Tue Nov  4 10:59:17 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 04 Nov 2008 10:59:17 -0500
+Subject: [sup-talk] How can I make sup use word wrap in the message preview
+	buffer?
+Message-ID: <1225814283-sup-1783@sgoldmanlinux.tower-research.com>
+
+
+I write a message in emacs and then save it, and then the message is displayed to me with signature, etc., in a preview buffer.  But the paragraphs are displayed as long lines.  Life is too short for this.  Please advise.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Tue Nov  4 10:57:30 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 04 Nov 2008 10:57:30 -0500
+Subject: [sup-talk] Does sup have spell check?
+Message-ID: <1225814181-sup-6494@sgoldmanlinux.tower-research.com>
+
+
+This may have been answered in the archives of this list, but there is no good way to search them.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Tue Nov  4 10:55:32 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 04 Nov 2008 10:55:32 -0500
+Subject: [sup-talk] How to make emacs position my cursor for me
+Message-ID: <1225813971-sup-1137@sgoldmanlinux.tower-research.com>
+
+
+I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From johnbent at lanl.gov  Tue Nov  4 11:11:32 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 09:11:32 -0700
+Subject: [sup-talk] Does sup have spell check?
+In-Reply-To: <1225814181-sup-6494@sgoldmanlinux.tower-research.com>
+References: <1225814181-sup-6494@sgoldmanlinux.tower-research.com>
+Message-ID: <1225814995-sup-5685@tangerine.lanl.gov>
+
+Excerpts from Steve Goldman's message of Tue Nov 04 08:57:30 -0700 2008:
+> 
+> This may have been answered in the archives of this list, but there is no good
+> way to search them.
+> 
+It doesn't.  Most people use the spell checker with their editor.  
+For example, in my .sup/config.yaml, I have the following line:
+:editor: vim -X -c 'set filetype=mail'
+
+then I turn on spellcheck in my .vimrc for filetype=mail.
+
+John
+> Thanks.
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+
+From steve at patter.mine.nu  Tue Nov  4 11:25:42 2008
+From: steve at patter.mine.nu (Stephen Patterson)
+Date: Tue, 4 Nov 2008 16:25:42 +0000
+Subject: [sup-talk] How to make emacs position my cursor for me
+In-Reply-To: <1225813971-sup-1137@sgoldmanlinux.tower-research.com>
+References: <1225813971-sup-1137@sgoldmanlinux.tower-research.com>
+Message-ID: <20081104162542.GA25080@patter.mine.nu>
+
+On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+> 
+> I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+
+Not sure how you set the editor for sup, but "emacs +8" will start the
+cursor on line 8. Mail clients (mutt) normally put the cursor at the top
+though.
+
+From steve at patter.mine.nu  Tue Nov  4 11:26:26 2008
+From: steve at patter.mine.nu (Stephen Patterson)
+Date: Tue, 4 Nov 2008 16:26:26 +0000
+Subject: [sup-talk] Does sup have spell check?
+In-Reply-To: <1225814181-sup-6494@sgoldmanlinux.tower-research.com>
+References: <1225814181-sup-6494@sgoldmanlinux.tower-research.com>
+Message-ID: <20081104162626.GB25080@patter.mine.nu>
+
+On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+> 
+> This may have been answered in the archives of this list, but there is no good way to search them.
+
+That would be handled by your editor, not sup. Try ispell-mode for
+emacs.
+
+From johnbent at lanl.gov  Tue Nov  4 12:18:52 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 10:18:52 -0700
+Subject: [sup-talk] How to make emacs position my cursor for me
+In-Reply-To: <20081104162542.GA25080@patter.mine.nu>
+References: <1225813971-sup-1137@sgoldmanlinux.tower-research.com>
+	<20081104162542.GA25080@patter.mine.nu>
+Message-ID: <1225818851-sup-2254@tangerine.lanl.gov>
+
+Excerpts from Stephen Patterson's message of Tue Nov 04 09:25:42 -0700 2008:
+> On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+> > 
+> > I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+> 
+> Not sure how you set the editor for sup, but "emacs +8" will start the
+> cursor on line 8. Mail clients (mutt) normally put the cursor at the top
+> though.
+>
+To set the editor for sup, just edit the :editor: line in
+.sup/config.yaml.
+
+vim has the same +N option but for email editing in sup I prefer 
+'+/^\s*\n'  which sets the initial cursor position to the first blank
+line (i.e. following the email headers).  
+
+John 
+
+From nicolas.pouillard at gmail.com  Tue Nov  4 14:06:11 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 04 Nov 2008 20:06:11 +0100
+Subject: [sup-talk] How to make emacs position my cursor for me
+In-Reply-To: <1225818851-sup-2254@tangerine.lanl.gov>
+References: <1225813971-sup-1137@sgoldmanlinux.tower-research.com>
+	<20081104162542.GA25080@patter.mine.nu>
+	<1225818851-sup-2254@tangerine.lanl.gov>
+Message-ID: <1225825527-sup-6138@ausone.local>
+
+Excerpts from John Bent's message of Tue Nov 04 18:18:52 +0100 2008:
+> Excerpts from Stephen Patterson's message of Tue Nov 04 09:25:42 -0700 2008:
+> > On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+> > > 
+> > > I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+> > 
+> > Not sure how you set the editor for sup, but "emacs +8" will start the
+> > cursor on line 8. Mail clients (mutt) normally put the cursor at the top
+> > though.
+> >
+> To set the editor for sup, just edit the :editor: line in
+> .sup/config.yaml.
+> 
+> vim has the same +N option but for email editing in sup I prefer 
+> '+/^\s*\n'  which sets the initial cursor position to the first blank
+> line (i.e. following the email headers).  
+
+Cool, thanks for the tip!
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From wmorgan-sup at masanjin.net  Tue Nov  4 16:08:14 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 04 Nov 2008 13:08:14 -0800
+Subject: [sup-talk] How can I make sup use word wrap in the message
+	preview buffer?
+In-Reply-To: <1225814283-sup-1783@sgoldmanlinux.tower-research.com>
+References: <1225814283-sup-1783@sgoldmanlinux.tower-research.com>
+Message-ID: <1225832450-sup-3822@entry>
+
+Hi Steve!
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-04:
+> I write a message in emacs and then save it, and then the message is
+> displayed to me with signature, etc., in a preview buffer.  But the
+> paragraphs are displayed as long lines.
+
+Sup displays exactly what the email looks like. Emacs may be displaying
+it wrapped, but it isn't actually wrapping it (i.e. putting \n's in.)
+You need to press meta-Q or whatever the Emacs command is to actually
+wrap those paragraphs.
+
+I don't have Sup do any wrapping because it's better left to the
+editor---there may very well be portions of the message you don't want
+wrapped (code snippets, log file snippets, etc.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tpo2 at sourcepole.ch  Tue Nov  4 16:28:35 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Tue, 04 Nov 2008 21:28:35 +0000
+Subject: [sup-talk] Patch: jump to body on compose [was: Re: How to make
+	emacs position my cursor for me]
+In-Reply-To: <1225825527-sup-6138@ausone.local>
+Message-ID: <aojKlrxp.1225834115.9805500.tpo2@192.168.3.7>
+
+
+On 11/4/2008, "Nicolas Pouillard" <nicolas.pouillard at gmail.com> wrote:
+
+>Excerpts from John Bent's message of Tue Nov 04 18:18:52 +0100 2008:
+>> Excerpts from Stephen Patterson's message of Tue Nov 04 09:25:42 -0700 2008:
+>> > On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+>> > >
+>> > > I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+>> >
+>> > Not sure how you set the editor for sup, but "emacs +8" will start the
+>> > cursor on line 8. Mail clients (mutt) normally put the cursor at the top
+>> > though.
+>> >
+>> To set the editor for sup, just edit the :editor: line in
+>> .sup/config.yaml.
+>>
+>> vim has the same +N option but for email editing in sup I prefer
+>> '+/^\s*\n'  which sets the initial cursor position to the first blank
+>> line (i.e. following the email headers).
+>
+>Cool, thanks for the tip!
+
+Sounds like a reasonable default to me. (Sorry for not putting this into
+a Git repo William. In case I get around hacking larger pieces of Sup
+I'll do that I promise):
+
+--- sup.rb.orig	2008-11-04 22:19:35.000000000 +0100
++++ sup.rb	2008-11-04 22:23:45.000000000 +0100
+@@ -212,7 +212,8 @@
+         :signature => File.join(ENV["HOME"], ".signature")
+       }
+     },
+-    :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell
+spelllang=en_us' -c 'set filetype=mail'",
++    :editor => ENV["EDITOR"] ||
++               '/usr/bin/vim -f -c "setlocal spell spelllang=en_us"
+-c "set filetype=mail" -c \'+/^\s*\n\'',
+     :thread_by_subject => false,
+     :edit_signature => false,
+     :ask_for_cc => true,
+
+From tpo2 at sourcepole.ch  Tue Nov  4 16:30:31 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Tue, 04 Nov 2008 21:30:31 +0000
+Subject: [sup-talk] Does sup have spell check?
+In-Reply-To: <1225814995-sup-5685@tangerine.lanl.gov>
+Message-ID: <LMhHHzmC.1225834231.9403150.tpo2@192.168.3.7>
+
+
+On 11/4/2008, "John Bent" <johnbent at lanl.gov> wrote:
+
+>Excerpts from Steve Goldman's message of Tue Nov 04 08:57:30 -0700 2008:
+>>
+>> This may have been answered in the archives of this list, but there is no good
+>> way to search them.
+>>
+>It doesn't.  Most people use the spell checker with their editor.
+>For example, in my .sup/config.yaml, I have the following line:
+>:editor: vim -X -c 'set filetype=mail'
+>
+>then I turn on spellcheck in my .vimrc for filetype=mail.
+
+Sup 0.6 switches on spell checking for vim by default.
+*t
+
+From johnbent at lanl.gov  Tue Nov  4 17:11:09 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 15:11:09 -0700
+Subject: [sup-talk] Patch: jump to body on compose [was: Re: How to
+	make	emacs position my cursor for me]
+In-Reply-To: <aojKlrxp.1225834115.9805500.tpo2@192.168.3.7>
+References: <1225825527-sup-6138@ausone.local>
+	<aojKlrxp.1225834115.9805500.tpo2@192.168.3.7>
+Message-ID: <1225836311-sup-7605@tangerine.lanl.gov>
+
+Excerpts from Tomas Pospisek ML's message of Tue Nov 04 14:28:35 -0700 2008:
+> 
+> On 11/4/2008, "Nicolas Pouillard" <nicolas.pouillard at gmail.com> wrote:
+> 
+> >Excerpts from John Bent's message of Tue Nov 04 18:18:52 +0100 2008:
+> >> Excerpts from Stephen Patterson's message of Tue Nov 04 09:25:42 -0700 2008:
+> >> > On 04 Nov 08, Steve Goldman (sgoldman at tower-research.com) wrote:
+> >> > >
+> >> > > I understand your religious fanaticism about top posting, etc.  I'll buy into it if you can tell me how to make sup make emacs position my cursor in the correct place when I hit compose or reply.  I want to hit 'c' or 'r' and immediately begin typing, instead of navigate around the buffer and dodge quoted text and a hundred signatures.
+> >> >
+> >> > Not sure how you set the editor for sup, but "emacs +8" will start the
+> >> > cursor on line 8. Mail clients (mutt) normally put the cursor at the top
+> >> > though.
+> >> >
+> >> To set the editor for sup, just edit the :editor: line in
+> >> .sup/config.yaml.
+> >>
+> >> vim has the same +N option but for email editing in sup I prefer
+> >> '+/^\s*\n'  which sets the initial cursor position to the first blank
+> >> line (i.e. following the email headers).
+> >
+> >Cool, thanks for the tip!
+> 
+> Sounds like a reasonable default to me. (Sorry for not putting this into
+> a Git repo William. In case I get around hacking larger pieces of Sup
+> I'll do that I promise):
+> 
+You don't want the preceding -c.  The tics (') are to protect the
+slashes and wildcards from the shell.  This is what you want:
+
+'/usr/bin/vim -f +/^\s*\n-c "setlocal spell spelllang=en_us" -c "set filetype=mail" '
+
+I also like passing -X to make it go a little faster in a terminal....
+
+John 
+
+> --- sup.rb.orig    2008-11-04 22:19:35.000000000 +0100
+> +++ sup.rb    2008-11-04 22:23:45.000000000 +0100
+> @@ -212,7 +212,8 @@
+>          :signature => File.join(ENV["HOME"], ".signature")
+>        }
+>      },
+> -    :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell
+> spelllang=en_us' -c 'set filetype=mail'",
+> +    :editor => ENV["EDITOR"] ||
+> +               '/usr/bin/vim -f -c "setlocal spell spelllang=en_us"
+> -c "set filetype=mail" -c \'+/^\s*\n\'',
+>      :thread_by_subject => false,
+>      :edit_signature => false,
+>      :ask_for_cc => true,
+
+From sgoldman at tower-research.com  Tue Nov  4 17:55:57 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 04 Nov 2008 17:55:57 -0500
+Subject: [sup-talk] Can sup only "save threads" on exit??
+Message-ID: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+
+
+When I quit, sup goes through a slow process where it "saves" all the
+modified threads.  This is problematic because 1) it takes a long
+time, and 2) if sup crashes before I get a chance to exit, then I have
+to rearchive everything again.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Tue Nov  4 17:57:45 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 04 Nov 2008 17:57:45 -0500
+Subject: [sup-talk] How can I explicitly add a contact?
+Message-ID: <1225839391-sup-4642@sgoldmanlinux.tower-research.com>
+
+
+For instance, there is no auto complete when I try to mail this list
+because the address isn't in my contacts list.  The help menu does not
+indicate a way to add it.
+
+Slightly related, not sure how the contacts list guesses who my
+favorites are, but people I email should have much higher priority
+than people who email me.
+
+Thanks.
+
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From johnbent at lanl.gov  Tue Nov  4 19:36:00 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 17:36:00 -0700
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+Message-ID: <1225845336-sup-7105@tangerine.lanl.gov>
+
+Excerpts from Steve Goldman's message of Tue Nov 04 15:55:57 -0700 2008:
+> 
+> When I quit, sup goes through a slow process where it "saves" all the
+> modified threads.  This is problematic because 1) it takes a long
+> time, and 2) if sup crashes before I get a chance to exit, then I have
+> to rearchive everything again.
+> 
+Do a 'H' and look at the help.  '$' does save now.
+
+John
+> Thanks.
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+
+From johnbent at lanl.gov  Tue Nov  4 19:46:36 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 17:46:36 -0700
+Subject: [sup-talk] How can I explicitly add a contact?
+In-Reply-To: <1225839391-sup-4642@sgoldmanlinux.tower-research.com>
+References: <1225839391-sup-4642@sgoldmanlinux.tower-research.com>
+Message-ID: <1225845897-sup-9430@tangerine.lanl.gov>
+
+Excerpts from Steve Goldman's message of Tue Nov 04 15:57:45 -0700 2008:
+> 
+> For instance, there is no auto complete when I try to mail this list
+> because the address isn't in my contacts list.  The help menu does not
+> indicate a way to add it.
+> 
+To add a contact, type 'i' while reading the email when focus is on the
+contact name.
+
+> Slightly related, not sure how the contacts list guesses who my
+> favorites are, but people I email should have much higher priority
+> than people who email me.
+> 
+You might look on the wiki page for lbdb:
+http://sup.rubyforge.org/wiki/wiki.pl?LbdbIntegration
+
+For contacts, I've been using a combination of sup's built-in contacts and 
+lbdb. Also, I just saw this old thread about hooks for contacts:
+http://www.nabble.com/External-contact-manager-address-book-td17110396.html
+
+John
+> Thanks.
+> 
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+
+From johnbent at lanl.gov  Tue Nov  4 19:47:49 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 04 Nov 2008 17:47:49 -0700
+Subject: [sup-talk] lbdb contact hook
+Message-ID: <1225846009-sup-1388@tangerine.lanl.gov>
+
+Has anyone written an extra-contact-addresses hook for lbdb?  If so,
+I'd really appreciate a copy.  
+
+Thanks,
+
+John
+
+From nicolas.pouillard at gmail.com  Wed Nov  5 08:06:46 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 05 Nov 2008 14:06:46 +0100
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225845336-sup-7105@tangerine.lanl.gov>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+Message-ID: <1225890375-sup-623@ausone.inria.fr>
+
+Excerpts from John Bent's message of Wed Nov 05 01:36:00 +0100 2008:
+> Excerpts from Steve Goldman's message of Tue Nov 04 15:55:57 -0700 2008:
+> > 
+> > When I quit, sup goes through a slow process where it "saves" all the
+> > modified threads.  This is problematic because 1) it takes a long
+> > time, and 2) if sup crashes before I get a chance to exit, then I have
+> > to rearchive everything again.
+> > 
+> Do a 'H' and look at the help.  '$' does save now.
+
+The help is '?' actually.
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From ehabkost at raisama.net  Wed Nov  5 09:17:00 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Wed, 5 Nov 2008 12:17:00 -0200
+Subject: [sup-talk] Removing sources (+ crash after trying)
+Message-ID: <20081105141700.GF5247@blackpad>
+
+Hi,
+
+While testing sup, sometimes I had typed incorrectly the path for sup-add,
+and I've found any way to remove the sources I've added. Is there a way
+to do that?
+
+Risking doing something stupid, I simply removed the source from
+~/.sup/sources.yaml, and now I am getting this when running sup-sync:
+
+[Wed Nov 05 11:54:15 -0200 2008] saving index and sources...
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `sort': undefined method `<=>' for :"kvm-devel":Symbol (NoMethodError)
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `save'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `open'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `save'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:499:in `send'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:499:in `method_missing'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:131:in `finish'
+        from /usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup-sync:243
+        from /usr/bin/sup-sync:19:in `load'
+        from /usr/bin/sup-sync:19
+
+I have little ruby experience, so I have no clue on what could be causing
+that error. I am not even sure if the error was really caused by the
+mess I did on sources.yaml.
+
+I am running sup from mainline.git.
+
+I've did the 'sup-dump;rm -rf ~/.sup/ferret;sup-sync' stuff mentioned
+on the FAQ, but the problem persists.
+
+My labels.txt file is empty (maybe because of the crash?). My sources.yaml
+currently looks like this:
+
+=========================================
+--- 
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:/home/ehabkost/mail/lkml-l/
+  cur_offset: 12258932500006359
+  usual: true
+  archived: true
+  id: 1
+  labels: 
+  - lkml
+  mtimes: 
+    cur: 2008-11-03 10:19:13 -02:00
+    new: 2008-11-05 11:54:10 -02:00
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:/home/ehabkost/mail/kvm-devel-l/
+  cur_offset: 12258909480004381
+  usual: true
+  archived: true
+  id: 2
+  labels: 
+  - kvm-devel
+  mtimes: 
+    cur: 2008-11-04 18:19:50 -02:00
+    new: 2008-11-05 11:15:48 -02:00
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:/home/ehabkost/mail/rh/memo-l/
+  cur_offset: 12258930050005616
+  usual: true
+  archived: true
+  id: 3
+  labels: 
+  - rh-memo
+  mtimes: 
+    cur: 2008-10-13 20:09:02 -03:00
+    new: 2008-11-05 11:50:05 -02:00
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:/home/ehabkost/mail/sup-talk-l/
+  cur_offset: 12258880050004663
+  usual: true
+  archived: true
+  id: 6
+  labels: 
+  - sup-talk
+  mtimes: 
+    cur: 2008-11-05 11:31:51 -02:00
+    new: 2008-11-05 10:42:29 -02:00
+- !masanjin.net,2006-10-01/Redwood/SentLoader 
+  cur_offset: 919
+- !masanjin.net,2006-10-01/Redwood/DraftLoader 
+  cur_offset: 0
+=====================
+
+-- 
+Eduardo
+
+From sgoldman at tower-research.com  Wed Nov  5 09:34:42 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Wed, 05 Nov 2008 09:34:42 -0500
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225845336-sup-7105@tangerine.lanl.gov>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+Message-ID: <1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+
+Excerpts from John Bent's message of Tue Nov 04 19:36:00 -0500 2008:
+> Excerpts from Steve Goldman's message of Tue Nov 04 15:55:57 -0700 2008:
+> > 
+> > When I quit, sup goes through a slow process where it "saves" all the
+> > modified threads.  This is problematic because 1) it takes a long
+> > time, and 2) if sup crashes before I get a chance to exit, then I have
+> > to rearchive everything again.
+> > 
+> Do a 'H' and look at the help.  '$' does save now.
+> 
+> John
+
+Great.  Is there a setting to make sup do this automatically every
+once in a while?  It would be nice to be able to leave sup open all
+day, or many days, and not have to worry about remembering to hit '$'
+or a crash.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Wed Nov  5 10:08:09 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Wed, 05 Nov 2008 10:08:09 -0500
+Subject: [sup-talk] Can't figure out how to use aliases
+Message-ID: <1225897590-sup-8793@sgoldmanlinux.tower-research.com>
+
+
+I can't get sup to replace an alias with its email address when I send
+To: an alias.  This is really confusing.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 12:48:34 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 09:48:34 -0800
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1225647558-sup-7206@gillespie.rupamsunyata.org>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+Message-ID: <1225907100-sup-4816@entry>
+
+Reformatted excerpts from Decklin Foster's message of 2008-11-02:
+> This just happened again. Should I put it into ditz or something? (I
+> feel exceedingly lame, but I don't have time to debug it today
+> either.)
+
+No. Sadly, this is one of the innumerable Ferret errors that crop up
+from time to time, which spurred STS.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 12:59:18 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 09:59:18 -0800
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+Message-ID: <1225907935-sup-8746@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> Great.  Is there a setting to make sup do this automatically every
+> once in a while?  It would be nice to be able to leave sup open all
+> day, or many days, and not have to worry about remembering to hit '$'
+> or a crash.
+
+There is not. Patches accepted!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 13:34:13 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 10:34:13 -0800
+Subject: [sup-talk] Removing sources (+ crash after trying)
+In-Reply-To: <20081105141700.GF5247@blackpad>
+References: <20081105141700.GF5247@blackpad>
+Message-ID: <1225909971-sup-384@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-05:
+> While testing sup, sometimes I had typed incorrectly the path for
+> sup-add, and I've found any way to remove the sources I've added. Is
+> there a way to do that?
+
+What you did is the best option so far: edit sources.yaml directly.
+
+> [Wed Nov 05 11:54:15 -0200 2008] saving index and sources...
+> /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `sort':
+> undefined method `<=>' for :"kvm-devel":Symbol (NoMethodError)
+
+Weird. I'm not sure what would've caused this, but I doubt it was the
+removal of that source.
+
+At any rate, I've pushed a "defensive programming" patch that should fix
+this, so git pull and see if it works now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 13:40:02 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 10:40:02 -0800
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <20081030034127.GK1092@digitalkingdom.org>
+References: <20081030034127.GK1092@digitalkingdom.org>
+Message-ID: <1225910189-sup-4581@entry>
+
+Reformatted excerpts from Robin Lee Powell's message of 2008-10-29:
+> I'm trying out sup, coming from mutt, and I've hit what is, for me,
+> a show-stopper bug.
+> 
+> sup things that the line:
+> 
+> From bob:
+> 
+> starts a new mail in mbox files.
+> 
+> I put lines like that all over the place in my mails.
+
+Do those lines actually occur raw in the mbox files? Because this is
+the standard, well-known mbox design flaw, but the solution is typically
+for clients to write ">From" instead of "From " when adding messages to
+the mbox.
+
+If mutt writes those lines raw, then Sup may have to be more heuristic
+in my mbox scanning. OTOH, we've had a large number of Sup users who
+come from mutt (including me!), and I think you're the first who's
+complained of this.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 13:41:58 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 10:41:58 -0800
+Subject: [sup-talk] bug: "hoe" dependency missing
+In-Reply-To: <n1iftxuQ.1225351681.9861340.tpo2@192.168.3.7>
+References: <n1iftxuQ.1225351681.9861340.tpo2@192.168.3.7>
+Message-ID: <1225910416-sup-4468@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> Is this a gem or a sup problem?
+
+A Sup problem. I've just fixed it in git.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 13:45:12 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 10:45:12 -0800
+Subject: [sup-talk] improvement: mention sup-announce on sup's web page
+In-Reply-To: <9OtUANH0.1225352121.6313560.tpo2@192.168.3.7>
+References: <9OtUANH0.1225352121.6313560.tpo2@192.168.3.7>
+Message-ID: <1225910573-sup-450@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> Therefore I fetched the www/index.html page from sup's git repository in
+> order to send in a patch to the list. However sup's homepage seems to
+> be generated by some tool from hel...sinki (producing massive amounts of
+> HTML "noise"). Would it be possible to:
+
+Eh? That file is hand-written HTML. From this comment:
+
+> - replace the index.html file with a "sane" one without the
+> CSS/everything inside tables/line numbering "noise"
+
+I suspect you downloaded an annotated version from Gitorious. If you
+click the "raw blob data" link, you'll get the original, or if you do a
+regular git clone of sup, you'll see a www/index.html that is
+human-editable.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 13:50:40 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 10:50:40 -0800
+Subject: [sup-talk] UTF-8 in replies?
+In-Reply-To: <rTObwtfT.1225372572.3650890.tpo2@192.168.3.7>
+References: <rTObwtfT.1225372572.3650890.tpo2@192.168.3.7>
+Message-ID: <1225910991-sup-4786@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-30:
+> I wrote a message containing a lot of czech characters (using vim as
+> my editor). When ':wq'-ing from vim, Sup showed me the horrible
+> results... aparently it did not recognize, that the message was in
+> UTF-8 (as indicated by 'file' when giving it vim's temporary file).
+> 
+> And apparently it doesn't seem to be possible to tell Sup either to
+> add an encoding to the message?
+
+Sup is currently utf-8 only, but getting curses, utf-8 and ruby to play
+nicely together still requires some work on your part.
+
+See: http://sup.rubyforge.org/wiki/wiki.pl?UTF8
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ehabkost at raisama.net  Wed Nov  5 13:54:50 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Wed, 05 Nov 2008 16:54:50 -0200
+Subject: [sup-talk] Removing sources (+ crash after trying)
+In-Reply-To: <1225909971-sup-384@entry>
+References: <20081105141700.GF5247@blackpad> <1225909971-sup-384@entry>
+Message-ID: <1225911069-sup-953@blackpad>
+
+Excerpts from William Morgan's message of Wed Nov 05 16:34:13 -0200 2008:
+> Reformatted excerpts from Eduardo Habkost's message of 2008-11-05:
+> > [Wed Nov 05 11:54:15 -0200 2008] saving index and sources...
+> > /usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/label.rb:81:in `sort':
+> > undefined method `<=>' for :"kvm-devel":Symbol (NoMethodError)
+> 
+> Weird. I'm not sure what would've caused this, but I doubt it was the
+> removal of that source.
+> 
+> At any rate, I've pushed a "defensive programming" patch that should fix
+> this, so git pull and see if it works now.
+
+It worked. Thanks!
+
+BTW, this is my first real e-mail message sent using sup.  8)
+-- 
+Eduardo
+
+From tpo2 at sourcepole.ch  Wed Nov  5 15:00:28 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Wed, 05 Nov 2008 20:00:28 +0000
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <1225910189-sup-4581@entry>
+Message-ID: <W49eawbv.1225915228.1271020.tpo2@192.168.3.7>
+
+
+On 11/5/2008, "William Morgan" <wmorgan-sup at masanjin.net> wrote:
+
+>Reformatted excerpts from Robin Lee Powell's message of 2008-10-29:
+>> I'm trying out sup, coming from mutt, and I've hit what is, for me,
+>> a show-stopper bug.
+>>
+>> sup things that the line:
+>>
+>> From bob:
+>>
+>> starts a new mail in mbox files.
+>>
+>> I put lines like that all over the place in my mails.
+>
+>Do those lines actually occur raw in the mbox files? Because this is
+>the standard, well-known mbox design flaw, but the solution is typically
+>for clients to write ">From" instead of "From " when adding messages to
+>the mbox.
+>
+>If mutt writes those lines raw, then Sup may have to be more heuristic
+>in my mbox scanning. OTOH, we've had a large number of Sup users who
+>come from mutt (including me!), and I think you're the first who's
+>complained of this.
+
+I'm coming from (al)pine and alpine. There actually is a line like this
+in the raw mbox:
+
+----------------
+blablabla
+>From bla bli blu
+bla bla bla
+----------------
+
+Apparently (al)pine doesn't quote, when there's not _an empty line_
+before the "From" line. [1] seems to provide a little bit of a meager
+reference.
+*t
+
+[1] http://qmail.org/qmail-manual-html/man5/mbox.html
+
+From wmorgan-sup at masanjin.net  Wed Nov  5 15:49:07 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 05 Nov 2008 12:49:07 -0800
+Subject: [sup-talk] Removing sources (+ crash after trying)
+In-Reply-To: <1225911069-sup-953@blackpad>
+References: <20081105141700.GF5247@blackpad> <1225909971-sup-384@entry>
+	<1225911069-sup-953@blackpad>
+Message-ID: <1225918139-sup-6086@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-05:
+> BTW, this is my first real e-mail message sent using sup.  8)
+
+Congrats!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From barton.schaefer at gmail.com  Wed Nov  5 20:16:51 2008
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Wed, 5 Nov 2008 17:16:51 -0800
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <W49eawbv.1225915228.1271020.tpo2@192.168.3.7>
+References: <1225910189-sup-4581@entry>
+	<W49eawbv.1225915228.1271020.tpo2@192.168.3.7>
+Message-ID: <6bb609560811051716u26bb7e8dtfc215f293140b32b@mail.gmail.com>
+
+On Wed, Nov 5, 2008 at 12:00 PM, Tomas Pospisek ML <tpo2 at sourcepole.ch> wrote:
+>
+> Apparently (al)pine doesn't quote, when there's not _an empty line_
+> before the "From" line. [1] seems to provide a little bit of a meager
+> reference.
+
+Pine and by inheritance alpine have a very strict view of what
+constitutes valid syntax for the line that begins a new message in
+mbox format.  It has to have the email address in the correct place,
+the date has to be in the correct format, etc., or it doesn't count.
+I believe it has a configuration option for whether it sticks a ">" in
+front of lines that begin with "From " but don't have the entire
+correct layout.
+
+Other email clients have a much more liberal notion of what
+constitutes a so-called From_ line.  Mush/Z-Mail, the email clients
+that I used to work on (as in, write the C code for) 15 years ago,
+would accept a fairly wide variety of formats, but they all had to
+have an address and something resembling a date.
+
+From tpo2 at sourcepole.ch  Wed Nov  5 20:50:21 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 06 Nov 2008 01:50:21 +0000
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <6bb609560811051716u26bb7e8dtfc215f293140b32b@mail.gmail.com>
+Message-ID: <G7u3qtTP.1225936221.0933950.tpo2@192.168.3.7>
+
+
+On 11/6/2008, "Bart Schaefer" <barton.schaefer at gmail.com> wrote:
+
+>On Wed, Nov 5, 2008 at 12:00 PM, Tomas Pospisek ML <tpo2 at sourcepole.ch> wrote:
+>>
+>> Apparently (al)pine doesn't quote, when there's not _an empty line_
+>> before the "From" line. [1] seems to provide a little bit of a meager
+>> reference.
+>
+>Pine and by inheritance alpine have a very strict view of what
+>constitutes valid syntax for the line that begins a new message in
+>mbox format.  It has to have the email address in the correct place,
+>the date has to be in the correct format, etc., or it doesn't count.
+>I believe it has a configuration option for whether it sticks a ">" in
+>front of lines that begin with "From " but don't have the entire
+>correct layout.
+>
+>Other email clients have a much more liberal notion of what
+>constitutes a so-called From_ line.  Mush/Z-Mail, the email clients
+>that I used to work on (as in, write the C code for) 15 years ago,
+>would accept a fairly wide variety of formats, but they all had to
+>have an address and something resembling a date.
+
+Possibly (al)pine is following RFC 4155, that describes how the "From"
+delimiter should look like down in Appendix A... ?
+*t
+
+From barton.schaefer at gmail.com  Thu Nov  6 06:21:32 2008
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Thu, 6 Nov 2008 03:21:32 -0800
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <G7u3qtTP.1225936221.0933950.tpo2@192.168.3.7>
+References: <6bb609560811051716u26bb7e8dtfc215f293140b32b@mail.gmail.com>
+	<G7u3qtTP.1225936221.0933950.tpo2@192.168.3.7>
+Message-ID: <6bb609560811060321m61dc3f6by5cf603c406980628@mail.gmail.com>
+
+On Wed, Nov 5, 2008 at 5:50 PM, Tomas Pospisek ML <tpo2 at sourcepole.ch> wrote:
+>
+> Possibly (al)pine is following RFC 4155, that describes how the "From"
+> delimiter should look like down in Appendix A... ?
+
+Given the history, I think it's equally likely that RFC 4155 follows
+Pine. :-)  The original mbox driver from the UW c-client package
+predates that RFC by nearly 20 years.  4155 is a case of documenting
+folklore so that newcomers don't have to learn it by hearsay.
+
+From ehabkost at raisama.net  Thu Nov  6 09:33:23 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Thu, 06 Nov 2008 12:33:23 -0200
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1225907100-sup-4816@entry>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry>
+Message-ID: <1225981048-sup-9011@blackpad>
+
+Excerpts from William Morgan's message of Wed Nov 05 15:48:34 -0200 2008:
+> Reformatted excerpts from Decklin Foster's message of 2008-11-02:
+> > This just happened again. Should I put it into ditz or something? (I
+> > feel exceedingly lame, but I don't have time to debug it today
+> > either.)
+> 
+> No. Sadly, this is one of the innumerable Ferret errors that crop up
+> from time to time, which spurred STS.
+
+I've been easily reproducing crashes similar to this one. The only thing
+I need to reproduce it is making sure I load another label while sup is
+still polling for new messages.
+
+If I deliver a lot of new messages to a maildir source and don't run
+sup-sync, sup will spend a few seconds loading the new messages and
+there is plenty of time to hit L, go to a label (I don't know if it
+needs to be the same label the new messages being loaded are getting),
+and see the crash.
+
+The "workaround" I am using here is being careful to never hit L when the
+"polling for new messages" message is shown on the screen.
+
+I have a small collection of core files, also (6 of them, by now),
+all of them are from segfaults on the following line on ferret source:
+
+#6  0x00421752 in is_seek (is=0xab75220, pos=31838147) at store.c:285
+285             is->m->seek_i(is, pos);
+
+Where is->m is corrupted (either 0 or a bogus value such as 0x10c0).
+
+I don't have the ruby abort message for all of them, but I remember one
+of them was triggered on lib/sup/index.rb, line 377 (at the
+'fake_header = { ... }' stuff). Unfortunately ruby doesn't produce a
+ruby stack trace on segfault, so I don't know what else was running at
+the time of the crash (especially on the other threads).
+
+The C backtrace looks like this:
+
+#0  0x00110416 in __kernel_vsyscall ()
+#1  0x00c76660 in raise () from /lib/libc.so.6
+#2  0x00c78028 in abort () from /lib/libc.so.6
+#3  0x004b6f08 in rb_bug (fmt=<value optimized out>) at error.c:214
+#4  0x00525dfb in sigsegv (sig=<value optimized out>) at signal.c:629
+#5  <signal handler called>
+#6  0x00421752 in is_seek (is=0xa67f3a0, pos=24745648) at store.c:285
+#7  0x003f42ea in cmpdi_read_i (is=0xafdbfa0, b=0xacda138 "\030\"?", len=170) at compound_io.c:140
+#8  0x00421605 in is_read_bytes (is=0xafdbfa0, buf=0xacda138 "\030\"?", len=170) at store.c:267
+#9  0x00432c93 in lazy_df_get_data (self=0xafe7100, i=<value optimized out>) at index.c:1207
+#10 0x0042b1c8 in frt_lazy_df_load (self=3063423180, rkey=13439246, lazy_df=0xafe7100) at r_index.c:1949
+#11 0x004ba02b in call_cfunc (func=<value optimized out>, recv=<value optimized out>, len=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>) at eval.c:5721
+#12 0x004c4e66 in rb_call0 (klass=<value optimized out>, recv=<value optimized out>, id=<value optimized out>, oid=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>, body=<value optimized out>, flags=<value optimized out>) at eval.c:5861
+#13 0x004c50ba in rb_call (klass=<value optimized out>, recv=<value optimized out>, mid=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>, scope=<value optimized out>, self=<value optimized out>) at eval.c:6117
+#14 0x004c5e9c in vafuncall (recv=<value optimized out>, mid=<value optimized out>, n=<value optimized out>, ar=<value optimized out>) at eval.c:6194
+#15 0x004c6014 in rb_funcall (recv=Could not find the frame base for "rb_funcall".
+) at eval.c:6211
+#16 0x004dcb3e in rb_hash_aref (hash=<value optimized out>, key=<value optimized out>) at hash.c:429
+#17 0x004ba02b in call_cfunc (func=<value optimized out>, recv=<value optimized out>, len=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>) at eval.c:5721
+#18 0x004c4e66 in rb_call0 (klass=<value optimized out>, recv=<value optimized out>, id=<value optimized out>, oid=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>, body=<value optimized out>, flags=<value optimized out>) at eval.c:5861
+#19 0x004c50ba in rb_call (klass=<value optimized out>, recv=<value optimized out>, mid=<value optimized out>, argc=<value optimized out>,
+    argv=<value optimized out>, scope=<value optimized out>, self=<value optimized out>) at eval.c:6117
+#20 0x004bf821 in rb_eval (self=<value optimized out>, n=<value optimized out>) at eval.c:3490
+#21 0x004bf73a in rb_eval (self=<value optimized out>, n=<value optimized out>) at eval.c:3484
+#22 0x004bf73a in rb_eval (self=<value optimized out>, n=<value optimized out>) at eval.c:3484
+[lots of rb_eval calls]
+-- 
+Eduardo
+
+From sgoldman at tower-research.com  Thu Nov  6 09:38:44 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 06 Nov 2008 09:38:44 -0500
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225907935-sup-8746@entry>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+	<1225907935-sup-8746@entry>
+Message-ID: <1225982260-sup-3050@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Wed Nov 05 12:59:18 -0500 2008:
+> Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> > Great.  Is there a setting to make sup do this automatically every
+> > once in a while?  It would be nice to be able to leave sup open all
+> > day, or many days, and not have to worry about remembering to hit '$'
+> > or a crash.
+> 
+> There is not. Patches accepted!
+
+Point me to a beginning ruby tutorial!  I've never contributed to
+anything open source before.  So exciting.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From nicolas.pouillard at gmail.com  Thu Nov  6 09:40:52 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 06 Nov 2008 15:40:52 +0100
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+Message-ID: <1225982366-sup-3598@ausone.inria.fr>
+
+Excerpts from Steve Goldman's message of Wed Nov 05 15:34:42 +0100 2008:
+> Excerpts from John Bent's message of Tue Nov 04 19:36:00 -0500 2008:
+> > Excerpts from Steve Goldman's message of Tue Nov 04 15:55:57 -0700 2008:
+> > > 
+> > > When I quit, sup goes through a slow process where it "saves" all the
+> > > modified threads.  This is problematic because 1) it takes a long
+> > > time, and 2) if sup crashes before I get a chance to exit, then I have
+> > > to rearchive everything again.
+> > > 
+> > Do a 'H' and look at the help.  '$' does save now.
+> > 
+> > John
+> 
+> Great.  Is there a setting to make sup do this automatically every
+> once in a while?  It would be nice to be able to leave sup open all
+> day, or many days, and not have to worry about remembering to hit '$'
+> or a crash.
+
+I have this in my ~/.sup/hooks/before-poll.rb:
+  say "Saving threads"
+  InboxMode.instance.save
+
+However saving from time to time would be nice also.
+Moreover saving the contacts.txt file on '$' would be also nice.
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From nicolas.pouillard at gmail.com  Thu Nov  6 10:00:02 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu,  6 Nov 2008 16:00:02 +0100
+Subject: [sup-talk] [PATCH] save contacts.txt on '$'
+In-Reply-To: <1225982366-sup-3598@ausone.inria.fr>
+References: <1225982366-sup-3598@ausone.inria.fr>
+Message-ID: <1225983602-76791-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/modes/thread-index-mode.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 4de4613..3dd0498 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -386,6 +386,7 @@ EOS
+   end
+ 
+   def save
++    BufferManager.say("Saving contacts...") { ContactManager.instance.save }
+     dirty_threads = @mutex.synchronize { (@threads + @hidden_threads.keys).select { |t| t.dirty? } }
+     return if dirty_threads.empty?
+ 
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Thu Nov  6 10:06:02 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 06 Nov 2008 16:06:02 +0100
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1225981048-sup-9011@blackpad>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+Message-ID: <1225983752-sup-1166@ausone.inria.fr>
+
+Excerpts from Eduardo Habkost's message of Thu Nov 06 15:33:23 +0100 2008:
+> Excerpts from William Morgan's message of Wed Nov 05 15:48:34 -0200 2008:
+> > Reformatted excerpts from Decklin Foster's message of 2008-11-02:
+> > > This just happened again. Should I put it into ditz or something? (I
+> > > feel exceedingly lame, but I don't have time to debug it today
+> > > either.)
+> > 
+> > No. Sadly, this is one of the innumerable Ferret errors that crop up
+> > from time to time, which spurred STS.
+> 
+> I've been easily reproducing crashes similar to this one. The only thing
+> I need to reproduce it is making sure I load another label while sup is
+> still polling for new messages.
+> 
+> If I deliver a lot of new messages to a maildir source and don't run
+> sup-sync, sup will spend a few seconds loading the new messages and
+> there is plenty of time to hit L, go to a label (I don't know if it
+> needs to be the same label the new messages being loaded are getting),
+> and see the crash.
+
+I rarely use 'L', however I often search for particular set of mails
+using '\', maybe it's a general problem with search during poll.
+
+In this case perhaps making sup a little bit more sequential would make
+it more robust (this could help us to wait for STS).
+
+Best regards,
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 11:18:46 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 08:18:46 -0800
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225982260-sup-3050@sgoldmanlinux.tower-research.com>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+	<1225907935-sup-8746@entry>
+	<1225982260-sup-3050@sgoldmanlinux.tower-research.com>
+Message-ID: <1225987338-sup-6300@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-06:
+> Point me to a beginning ruby tutorial!  I've never contributed to
+> anything open source before.  So exciting.
+
+There are a couple Ruby for beginners tutorials:
+- http://pine.fm/LearnToProgram/?Chapter=01,
+- http://poignantguide.net/ruby/ (best read while high),
+- http://tryruby.hobix.com/
+
+But you might be better of with Ruby for Java programmers stuff:
+- http://onestepback.org/articles/10things/
+- http://www.jroller.com/obie/entry/ruby_primer_for_java_programmers
+
+etc.
+
+You'll also have to know git to contribute to Sup. See
+http://sup.rubyforge.org/wiki/wiki.pl?Contributing.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 11:19:37 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 08:19:37 -0800
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225890375-sup-623@ausone.inria.fr>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225890375-sup-623@ausone.inria.fr>
+Message-ID: <1225988350-sup-3900@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-11-05:
+> The help is '?' actually.
+
+'H' is help everywhere except thread-view-mode, where it's overridden
+to view headers. Maybe it shouldn't be.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 14:49:47 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 11:49:47 -0800
+Subject: [sup-talk] Can't figure out how to use aliases
+In-Reply-To: <1225897590-sup-8793@sgoldmanlinux.tower-research.com>
+References: <1225897590-sup-8793@sgoldmanlinux.tower-research.com>
+Message-ID: <1226000889-sup-5922@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> I can't get sup to replace an alias with its email address when I send
+> To: an alias.  This is really confusing.
+
+This should happen automagically, if you enter the alias either when
+Sup prompts you, or if it's on a To/Cc/Bcc line when you exit the editor
+and return to Sup.
+
+Are you sure you're typing in the right alias?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sgoldman at tower-research.com  Thu Nov  6 15:15:15 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 06 Nov 2008 15:15:15 -0500
+Subject: [sup-talk] Can't figure out how to use aliases
+In-Reply-To: <1226000889-sup-5922@entry>
+References: <1225897590-sup-8793@sgoldmanlinux.tower-research.com>
+	<1226000889-sup-5922@entry>
+Message-ID: <1226002395-sup-9614@sgoldmanlinux.tower-research.com>
+
+Testing it out, it seems to be a casing issue.  When the alias I
+choose is all lowercase, it works.  Looks like when sup throws me into
+my editor to compose the email, it lower cases the entire alias.  Then
+when it comes back out, it can't match the lower cased alias if the
+alias had upper case letters.
+
+
+Excerpts from William Morgan's message of Thu Nov 06 14:49:47 -0500 2008:
+> Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> > I can't get sup to replace an alias with its email address when I send
+> > To: an alias.  This is really confusing.
+> 
+> This should happen automagically, if you enter the alias either when
+> Sup prompts you, or if it's on a To/Cc/Bcc line when you exit the editor
+> and return to Sup.
+> 
+> Are you sure you're typing in the right alias?
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 16:40:17 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 13:40:17 -0800
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1225981048-sup-9011@blackpad>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+Message-ID: <1226007592-sup-6295@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-06:
+> I've been easily reproducing crashes similar to this one. The only thing
+> I need to reproduce it is making sure I load another label while sup is
+> still polling for new messages.
+
+Can you try the next branch? I've just pushed some patches there that
+might help this.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sgoldman at tower-research.com  Thu Nov  6 17:07:57 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 06 Nov 2008 17:07:57 -0500
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+Message-ID: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+
+
+I set my editor in config.yaml to:
+
+emacs -f flyspell-mode -nw +8
+
+This command works correctly from the command line, but when sup opens
+emacs for composing, it uses -nw and +8 correctly but does not use
+flyspell-mode.  Anyone have any luck with this?
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 17:35:13 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 14:35:13 -0800
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+Message-ID: <1226010841-sup-4962@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> Is there a setting to make sup do this automatically every
+> once in a while?  It would be nice to be able to leave sup open all
+> day, or many days, and not have to worry about remembering to hit '$'
+> or a crash.
+
+I've been avoiding this because currently the only way to undo changes
+in thread-index-mode is to press @, which reverts you to the state you
+were last time you pressed $. Undo patches also welcome. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov  6 20:02:56 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 17:02:56 -0800
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+In-Reply-To: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+References: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+Message-ID: <1226019692-sup-835@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-06:
+> This command works correctly from the command line, but when sup opens
+> emacs for composing, it uses -nw and +8 correctly but does not use
+> flyspell-mode.  Anyone have any luck with this?
+
+Sup just does a system call to <editor> <filename>, with no fanciness,
+so it's hard to imagine what would be wrong, unless it's some Emacs
+wackiness. Time to switch to vi? :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jdugan at es.net  Thu Nov  6 20:51:19 2008
+From: jdugan at es.net (Jon Dugan)
+Date: Thu, 06 Nov 2008 17:51:19 -0800
+Subject: [sup-talk] Change URI for for a source?
+Message-ID: <1226022383-sup-1046@junction.es.net>
+
+Hello,
+
+I've been using sup for several months now and am quite happy with it.
+
+In my next wave of reorganization I would like to move the box that sup reads
+from.  Currently it's polling INBOX, but I'd like to take the current contents
+of INBOX and move them to SUPBOX.  Is it possible to tell sup that a mailbox
+has a new URI but is otherwise the same?  
+
+Essentially I'd like to keep my index and tags and just rename my sup box.
+
+I don't see an option in sup-sync for this sort of thing and I haven't had
+time to dig around in the code and see how hard this would be.
+
+Any suggestions?
+
+Thanks,
+
+Jon
+-- 
+Jon M. Dugan <jdugan at es.net>          | GTalk: jdugan.esnet
+ESnet Network Engineering Group       | http://www.es.net/
+Lawrence Berkeley National Laboratory | http://www.lbl.gov/
+
+From ehabkost at raisama.net  Thu Nov  6 21:52:01 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Fri, 07 Nov 2008 00:52:01 -0200
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1226007592-sup-6295@entry>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+	<1226007592-sup-6295@entry>
+Message-ID: <1226025882-sup-6197@blackpad>
+
+Excerpts from William Morgan's message of Thu Nov 06 19:40:17 -0200 2008:
+> Reformatted excerpts from Eduardo Habkost's message of 2008-11-06:
+> > I've been easily reproducing crashes similar to this one. The only thing
+> > I need to reproduce it is making sure I load another label while sup is
+> > still polling for new messages.
+> 
+> Can you try the next branch? I've just pushed some patches there that
+> might help this.
+
+Just tried it (commit 6831c5966aa0a6021978bffc071734d03cabf2b1).
+
+Triggered the same kind of exceptions of before (two samples below),
+when pressing P and M multiple times quickly on inbox-mode, followed by
+pressing 'end' and 'j'.
+
+Trying to load a label while polling for new messages triggered a segfault
+with the same backtrace as before.
+
+
+----------------------------------------------------------------
+--- IOError from thread: load threads for thread-index-mode
+IO Error occured at <except.c>:93 in xraise
+Error occured in fs_store.c:293 - fsi_seek_i
+        seeking pos 20882841: <Descritor de arquivo inv?lido>
+
+./lib/sup/index.rb:399:in `default'
+./lib/sup/index.rb:399:in `[]'
+./lib/sup/index.rb:399:in `build_message'
+./lib/sup/index.rb:369:in `each_message_in_thread_for'
+./lib/sup/thread.rb:341:in `call'
+./lib/sup/thread.rb:341:in `load_thread_for_message'
+./lib/sup/index.rb:382:in `each_message_in_thread_for'
+./lib/sup/index.rb:382:in `each'
+./lib/sup/index.rb:382:in `each_message_in_thread_for'
+./lib/sup/thread.rb:339:in `load_thread_for_message'
+./lib/sup/thread.rb:331:in `load_n_threads'
+./lib/sup/index.rb:288:in `each_id_by_date'
+./lib/sup/index.rb:287:in `each'
+./lib/sup/index.rb:287:in `each_id_by_date'
+./lib/sup/thread.rb:326:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+./lib/sup.rb:85:in `reporting_thread'
+./lib/sup.rb:83:in `initialize'
+./lib/sup.rb:83:in `new'
+./lib/sup.rb:83:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+bin/sup:167
+
+
+----------------------------------------------------------------
+--- EOFError from thread: load threads for thread-index-mode
+End-of-File Error occured at <except.c>:93 in xraise
+Error occured in compound_io.c:137 - cmpdi_read_i
+        Tried to read past end of file. File length is <60759> and tried to read to <452160>
+
+./lib/sup/index.rb:396:in `default'
+./lib/sup/index.rb:396:in `[]'
+./lib/sup/index.rb:396:in `build_message'
+./lib/sup/index.rb:288:in `each_id_by_date'
+./lib/sup/thread.rb:330:in `call'
+./lib/sup/thread.rb:330:in `load_n_threads'
+./lib/sup/index.rb:288:in `each_id_by_date'
+./lib/sup/index.rb:287:in `each'
+./lib/sup/index.rb:287:in `each_id_by_date'
+./lib/sup/thread.rb:326:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+./lib/sup.rb:85:in `reporting_thread'
+./lib/sup.rb:83:in `initialize'
+./lib/sup.rb:83:in `new'
+./lib/sup.rb:83:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+bin/sup:167
+-- 
+Eduardo
+
+From wmorgan-sup at masanjin.net  Fri Nov  7 00:51:15 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 21:51:15 -0800
+Subject: [sup-talk] Change URI for for a source?
+In-Reply-To: <1226022383-sup-1046@junction.es.net>
+References: <1226022383-sup-1046@junction.es.net>
+Message-ID: <1226037008-sup-1099@entry>
+
+Reformatted excerpts from Jon Dugan's message of 2008-11-06:
+> In my next wave of reorganization I would like to move the box that
+> sup reads from.  Currently it's polling INBOX, but I'd like to take
+> the current contents of INBOX and move them to SUPBOX.  Is it possible
+> to tell sup that a mailbox has a new URI but is otherwise the same?  
+
+You should be able to edit ~/.sup/sources.yaml and change the URI of the
+source as appropriate. As long as you don't change anything else, it
+should work. Keep a backup of sources.yaml just in case!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Nov  7 01:21:06 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 06 Nov 2008 22:21:06 -0800
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1226025882-sup-6197@blackpad>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+	<1226007592-sup-6295@entry> <1226025882-sup-6197@blackpad>
+Message-ID: <1226038806-sup-9313@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-06:
+> Just tried it (commit 6831c5966aa0a6021978bffc071734d03cabf2b1).
+> 
+> Triggered the same kind of exceptions of before (two samples below),
+> when pressing P and M multiple times quickly on inbox-mode, followed by
+> pressing 'end' and 'j'.
+
+Interesting. I can't reproduce this on my end.
+
+Can you please try commit d66cbee, which you can find if you check out
+the 'index-locking' branch?
+
+Thanks for helping me test this!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ehabkost at raisama.net  Fri Nov  7 06:32:07 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Fri, 07 Nov 2008 09:32:07 -0200
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1226038806-sup-9313@entry>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+	<1226007592-sup-6295@entry> <1226025882-sup-6197@blackpad>
+	<1226038806-sup-9313@entry>
+Message-ID: <1226057292-sup-676@blackpad>
+
+Reformatted excerpts from William Morgan's message of Fri Nov 07 04:21:06 -0200 2008:
+> 
+> Can you please try commit d66cbee, which you can find if you check out
+> the 'index-locking' branch?
+> 
+> Thanks for helping me test this!
+
+Looks better!  :D
+
+I didn't manage to reproduce the crash yet. With the previous version
+I could crash sup in a few seconds.
+
+
+> Interesting. I can't reproduce this on my end.
+
+What version of ferret are you using?
+
+In case the info is useful, my 'gem list' output is below. The rest of
+ruby packages are the latest ones from Fedora 9 updates ('rpm -qa | grep
+ruby' output below).
+
+BTW, do you know what happened to the ferret project site
+(http://ferret.davebalmain.com/)? Maybe this is a known bug on ferret,
+or something that could be investigated and tracked on the ferret project,
+but the site seems to be offline for days.
+
+
+*** LOCAL GEMS ***
+
+chronic (0.2.3)
+columnize (0.2)
+ditz (0.5)
+fastthread (1.0.1)
+ferret (0.11.6)
+gettext (1.93.0)
+highline (1.4.0)
+hoe (1.8.2)
+linecache (0.43)
+lockfile (1.4.3)
+mime-types (1.15)
+ncurses (0.9.1)
+net-ssh (2.0.4)
+rake (0.8.3)
+rmail (1.0.0)
+ruby-debug (0.10.2)
+ruby-debug-base (0.10.2)
+rubyforge (1.0.1)
+sup (999, 0.6)
+trollop (1.10.2)
+
+
+# rpm -qa | grep -i ruby
+libselinux-ruby-2.0.67-4.fc9.i386
+ruby-libs-1.8.6.287-2.fc9.i386
+ruby-devel-1.8.6.287-2.fc9.i386
+ruby-rdoc-1.8.6.287-2.fc9.i386
+rubygem-rubyforge-1.0.1-1.fc9.noarch
+ruby-1.8.6.287-2.fc9.i386
+ruby-irb-1.8.6.287-2.fc9.i386
+ruby-debuginfo-1.8.6.287-2.fc9.i386
+rubygems-1.2.0-2.fc9.noarch
+-- 
+Eduardo
+
+From ehabkost at raisama.net  Fri Nov  7 08:08:51 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Fri, 07 Nov 2008 11:08:51 -0200
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1226057292-sup-676@blackpad>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+	<1226007592-sup-6295@entry> <1226025882-sup-6197@blackpad>
+	<1226038806-sup-9313@entry> <1226057292-sup-676@blackpad>
+Message-ID: <1226063145-sup-529@blackpad>
+
+Reformatted excerpts from Eduardo Habkost's message of Fri Nov 07 09:32:07 -0200 2008:
+> Reformatted excerpts from William Morgan's message of Fri Nov 07 04:21:06 -0200 2008:
+> > 
+> > Can you please try commit d66cbee, which you can find if you check out
+> > the 'index-locking' branch?
+> > 
+> > Thanks for helping me test this!
+> 
+> Looks better!  :D
+> 
+> I didn't manage to reproduce the crash yet. With the previous version
+> I could crash sup in a few seconds.
+
+
+Got a different crash, now, while pressing P and M repeatedly on
+inbox-mode.
+
+Maybe related: a killed thread somehow appeared on my inbox listing
+(then I killed it again), right before this crash.
+
+
+--- Ferret::StateError from thread: load threads for thread-index-mode
+State Error occured at <except.c>:93 in xraise
+Error occured in index.c:4150 - sr_get_lazy_doc
+        Document 1 has already been deleted
+
+/usr/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:421:in `[]'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:413:in `[]'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:288:in `each_id_by_date'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:288:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:287:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:287:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/thread.rb:326:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:499:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:483:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:85:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:83:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:482:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:552:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/mode.rb:49:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:240:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:190
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+-- 
+Eduardo
+
+From nicolas.pouillard at gmail.com  Fri Nov  7 09:18:16 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 07 Nov 2008 15:18:16 +0100
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1225988350-sup-3900@entry>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225890375-sup-623@ausone.inria.fr> <1225988350-sup-3900@entry>
+Message-ID: <1226067332-sup-8801@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Thu Nov 06 17:19:37 +0100 2008:
+> Reformatted excerpts from nicolas.pouillard's message of 2008-11-05:
+> > The help is '?' actually.
+> 
+> 'H' is help everywhere except thread-view-mode, where it's overridden
+> to view headers. Maybe it shouldn't be.
+
+I often use 'H' for headers, it's pretty natural. I think the '?' binding is
+sufficient for help and that the 'H' alias could be removed.
+
+Moreover to help newcomers having a little text in the bottom bar like "type
+'?' for help" would be nice.
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From sgoldman at tower-research.com  Fri Nov  7 09:23:08 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 07 Nov 2008 09:23:08 -0500
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+In-Reply-To: <1226019692-sup-835@entry>
+References: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+	<1226019692-sup-835@entry>
+Message-ID: <1226067745-sup-6564@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Thu Nov 06 20:02:56 -0500 2008:
+> Reformatted excerpts from Steve Goldman's message of 2008-11-06:
+> > This command works correctly from the command line, but when sup opens
+> > emacs for composing, it uses -nw and +8 correctly but does not use
+> > flyspell-mode.  Anyone have any luck with this?
+> 
+> Sup just does a system call to <editor> <filename>, with no fanciness,
+> so it's hard to imagine what would be wrong, unless it's some Emacs
+> wackiness. Time to switch to vi? :)
+
+Yeah, looks like it's an emacs thing.  When I run it from the command
+line with a file argument, it doesn't work.  Sorry for the time
+waste...
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From wmorgan-sup at masanjin.net  Fri Nov  7 11:55:56 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 07 Nov 2008 08:55:56 -0800
+Subject: [sup-talk] [PATCH] Wrap text attachments
+In-Reply-To: <1225807479-sup-1191@elly>
+References: <1225757268-sup-9251@elly> <1225805250-sup-3958@ausone.local>
+	<1225807479-sup-1191@elly>
+Message-ID: <1226076945-sup-2588@entry>
+
+Reformatted excerpts from israel.herraiz's message of 2008-11-04:
+> Find it below. I have moved the constant out of the Attachment and
+> Text classes, and it is now in the context of the Chunk module.
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From stipim at rpi.edu  Fri Nov  7 12:13:48 2008
+From: stipim at rpi.edu (Mike Stipicevic)
+Date: Fri, 07 Nov 2008 12:13:48 -0500
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1226010841-sup-4962@entry>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225895601-sup-7171@sgoldmanlinux.tower-research.com>
+	<1226010841-sup-4962@entry>
+Message-ID: <1226078013-sup-1549@rmtacc26-la.rcs.rpi.edu>
+
+I had hoped to work on this in a bit...
+
+Excerpts from William Morgan's message of Thu Nov 06 17:35:13 -0500 2008:
+> Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> > Is there a setting to make sup do this automatically every
+> > once in a while?  It would be nice to be able to leave sup open all
+> > day, or many days, and not have to worry about remembering to hit '$'
+> > or a crash.
+> 
+> I've been avoiding this because currently the only way to undo changes
+> in thread-index-mode is to press @, which reverts you to the state you
+> were last time you pressed $. Undo patches also welcome. :)
+-- 
+Mike Stipicevic
+Chairman, RPI Student Branch of the IEEE
+
+stipim at rpi.edu
+mstipicevic at ieee.org
+
+From sgoldman at tower-research.com  Fri Nov  7 13:46:07 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 07 Nov 2008 13:46:07 -0500
+Subject: [sup-talk] Can't figure out how to use aliases
+In-Reply-To: <1226002395-sup-9614@sgoldmanlinux.tower-research.com>
+References: <1225897590-sup-8793@sgoldmanlinux.tower-research.com>
+	<1226000889-sup-5922@entry>
+	<1226002395-sup-9614@sgoldmanlinux.tower-research.com>
+Message-ID: <1226083370-sup-4870@sgoldmanlinux.tower-research.com>
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index ebc3587..0447f61 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -506,7 +506,7 @@ EOS
+     answer = BufferManager.ask_many_emails_with_completions domain, question, completions, default
+
+     if answer
+-      answer.split_on_commas.map { |x| ContactManager.contact_for(x.downcase) || PersonManager.person_for(x) }
++      answer.split_on_commas.map { |x| ContactManager.contact_for(x) || PersonManager.person_for(x) }
+     end
+   end
+
+We shouldn't downcase names before we look them up in the alias to
+person hash since the keys of that hash are case sensitive.  This
+brings up a more philosophical question of whether keys in that hash
+SHOULD be case sensitive.  What does it mean to have two aliases
+"Steve" and "steve"?
+
+
+Excerpts from Steve Goldman's message of Thu Nov 06 15:15:15 -0500 2008:
+> Testing it out, it seems to be a casing issue.  When the alias I
+> choose is all lowercase, it works.  Looks like when sup throws me into
+> my editor to compose the email, it lower cases the entire alias.  Then
+> when it comes back out, it can't match the lower cased alias if the
+> alias had upper case letters.
+> 
+> Excerpts from William Morgan's message of Thu Nov 06 14:49:47 -0500 2008:
+> > Reformatted excerpts from Steve Goldman's message of 2008-11-05:
+> > > I can't get sup to replace an alias with its email address when I send
+> > > To: an alias.  This is really confusing.
+> > 
+> > This should happen automagically, if you enter the alias either when
+> > Sup prompts you, or if it's on a To/Cc/Bcc line when you exit the editor
+> > and return to Sup.
+> > 
+> > Are you sure you're typing in the right alias?
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Fri Nov  7 15:04:33 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 07 Nov 2008 15:04:33 -0500
+Subject: [sup-talk] [PATCH] don't downcase names before looking them up in
+	the alias to person map, since keys in that map aren't downcased.
+Message-ID: <1226088207-sup-2545@sgoldmanlinux.tower-research.com>
+
+---
+We shouldn't downcase names before we look them up in the alias to
+person hash since the keys of that hash are case sensitive.  This
+brings up a more philosophical question of whether keys in that hash
+SHOULD be case sensitive.  What does it mean to have two aliases
+"Steve" and "steve"?
+
+ lib/sup/buffer.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index ebc3587..0447f61 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -506,7 +506,7 @@ EOS
+     answer = BufferManager.ask_many_emails_with_completions domain, question, completions, default
+
+     if answer
+-      answer.split_on_commas.map { |x| ContactManager.contact_for(x.downcase) || PersonManager.person_for(x) }
++      answer.split_on_commas.map { |x| ContactManager.contact_for(x) || PersonManager.person_for(x) }
+     end
+   end
+
+--
+1.5.5
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Fri Nov  7 16:05:35 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 07 Nov 2008 16:05:35 -0500
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses in
+	auto complete
+Message-ID: <1226091602-sup-7664@sgoldmanlinux.tower-research.com>
+
+---
+Suppose I have an alias "william" for "William Morgan
+<name at domain.blah>".  I hit compose, and in the "To:" field, I type
+"wil<TAB>".  Sup has two suggestions, listing the longer one first,
+and it autocompletes as far as they match.  So now my text field says,
+"To: William", which doesn't match the alias.  If we sort the possible
+completions so that aliases are before non-aliases, then the field
+would read, "To: william", which would match the alias and work
+correctly.
+
+ lib/sup/buffer.rb |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 0447f61..fc9a0a2 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -433,7 +433,9 @@ EOS
+       prefix, target = partial.split_on_commas_with_remainder
+       target ||= prefix.pop || ""
+       prefix = prefix.join(", ") + (prefix.empty? ? "" : ", ")
+-      completions.select { |x| x =~ /^#{Regexp::escape target}/i }.map { |x| [prefix + x, x] }
++      completions.select { |x| x =~ /^#{Regexp::escape target}/i }.
++                  sort { |x,y| x_is_c = ContactManager.contact_for(x); y_is_c = ContactManager.contact_for(y); x_is_c && !y_is_c ? -1 : !x_is_c && y_is_c ? 1 : x <=> y }.
++                  map { |x| [prefix + x, x] }
+     end
+   end
+
+@@ -501,7 +503,7 @@ EOS
+     recent = Index.load_contacts(AccountManager.user_emails, :num => 10).map { |c| [c.full_address, c.email] }
+     contacts = ContactManager.contacts.map { |c| [ContactManager.alias_for(c), c.full_address, c.email] }
+
+-    completions = (recent + contacts).flatten.uniq.sort
++    completions = (contacts + recent).flatten.uniq
+     completions += HookManager.run("extra-contact-addresses") || []
+     answer = BufferManager.ask_many_emails_with_completions domain, question, completions, default
+
+--
+1.5.5
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From chrisw at rice.edu  Fri Nov  7 17:03:06 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Fri, 07 Nov 2008 16:03:06 -0600
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+In-Reply-To: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+Message-ID: <C53A173A.2EA6%chrisw@rice.edu>
+
+"Steve Goldman" <sgoldman at tower-research.com> @ 2008-11-6 4:07 PM:
+> I set my editor in config.yaml to:
+> 
+> emacs -f flyspell-mode -nw +8
+> 
+> This command works correctly from the command line, but when sup opens
+> emacs for composing, it uses -nw and +8 correctly but does not use
+> flyspell-mode.  Anyone have any luck with this?
+
+I set my editor to be emacsclient and added this to my .emacs:
+
+; disable longlines-mode for e-mail
+; mail-mode runs text-mode first.
+(add-to-list 'auto-mode-alist
+'("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+(add-hook 'mail-mode-hook (function (lambda ()
+                                      (longlines-mode 0)
+                                      (auto-fill-mode 1))))
+
+Using emacsclient keeps one copy of emacs open, but each invocation of
+emacsclient opens a new buffer with the given file. I always used sup while
+using a windowing environment at the same time.
+http://www.emacswiki.org/emacs-en/EmacsClient
+
+Even if you don't use a windowing environment, the mail-mode modification
+should work. It will also give you some nice features like quote
+highlighting while editing (assuming font-lock is on).
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+
+
+
+From sgoldman at tower-research.com  Fri Nov  7 17:24:38 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Fri, 07 Nov 2008 17:24:38 -0500
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+In-Reply-To: <C53A173A.2EA6%chrisw@rice.edu>
+References: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+	<C53A173A.2EA6%chrisw@rice.edu>
+Message-ID: <1226096511-sup-2346@sgoldmanlinux.tower-research.com>
+
+Excerpts from Christopher Warrington's message of Fri Nov 07 17:03:06 -0500 2008:
+> "Steve Goldman" <sgoldman at tower-research.com> @ 2008-11-6 4:07 PM:
+> > I set my editor in config.yaml to:
+> > 
+> > emacs -f flyspell-mode -nw +8
+> > 
+> > This command works correctly from the command line, but when sup opens
+> > emacs for composing, it uses -nw and +8 correctly but does not use
+> > flyspell-mode.  Anyone have any luck with this?
+> 
+> I set my editor to be emacsclient and added this to my .emacs:
+> 
+> ; disable longlines-mode for e-mail
+> ; mail-mode runs text-mode first.
+> (add-to-list 'auto-mode-alist
+> '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+> (add-hook 'mail-mode-hook (function (lambda ()
+>                                       (longlines-mode 0)
+>                                       (auto-fill-mode 1))))
+> 
+> Using emacsclient keeps one copy of emacs open, but each invocation of
+> emacsclient opens a new buffer with the given file. I always used sup while
+> using a windowing environment at the same time.
+> http://www.emacswiki.org/emacs-en/EmacsClient
+> 
+> Even if you don't use a windowing environment, the mail-mode modification
+> should work. It will also give you some nice features like quote
+> highlighting while editing (assuming font-lock is on).
+> 
+
+Combining Christopher's idea with something I found on the internet,
+putting the following in my .emacs opens sup buffers with
+flyspell-mode enabled.  Warning, flyspell checks all the text in the
+buffer before letting you work, so if you are quoting a really long
+chain of emails, this can take a few seconds.
+
+;; flyspell stuff
+(add-to-list 'auto-mode-alist
+'("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+
+(setq mail-mode-hook (quote (#[nil "\300\301!\207" [flyspell-mode 1] 2] flyspell-buffer mail-mode-hook-identify)))
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From jdugan at es.net  Fri Nov  7 22:33:00 2008
+From: jdugan at es.net (Jon Dugan)
+Date: Fri, 07 Nov 2008 19:33:00 -0800
+Subject: [sup-talk] Change URI for for a source?
+In-Reply-To: <1226037008-sup-1099@entry>
+References: <1226022383-sup-1046@junction.es.net> <1226037008-sup-1099@entry>
+Message-ID: <1226115154-sup-7883@junction.es.net>
+
+Excerpts from William Morgan's message of Thu Nov 06 21:51:15 -0800 2008:
+> Reformatted excerpts from Jon Dugan's message of 2008-11-06:
+> > In my next wave of reorganization I would like to move the box that
+> > sup reads from.  Currently it's polling INBOX, but I'd like to take
+> > the current contents of INBOX and move them to SUPBOX.  Is it possible
+> > to tell sup that a mailbox has a new URI but is otherwise the same?  
+> 
+> You should be able to edit ~/.sup/sources.yaml and change the URI of the
+> source as appropriate. As long as you don't change anything else, it
+> should work. Keep a backup of sources.yaml just in case!
+
+Hot damn!  That worked!  Thanks William!
+
+Jon
+-- 
+Jon M. Dugan <jdugan at es.net>          | GTalk: jdugan.esnet
+ESnet Network Engineering Group       | http://www.es.net/
+Lawrence Berkeley National Laboratory | http://www.lbl.gov/
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 22:51:55 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 19:51:55 -0800
+Subject: [sup-talk] Patch: jump to body on compose [was: Re: How to make
+	emacs position my cursor for me]
+In-Reply-To: <1225836311-sup-7605@tangerine.lanl.gov>
+References: <1225825527-sup-6138@ausone.local>
+	<aojKlrxp.1225834115.9805500.tpo2@192.168.3.7>
+	<1225836311-sup-7605@tangerine.lanl.gov>
+Message-ID: <1226289098-sup-1638@entry>
+
+Reformatted excerpts from John Bent's message of 2008-11-04:
+> '/usr/bin/vim -f +/^\s*\n-c "setlocal spell spelllang=en_us" -c "set
+> filetype=mail" '
+
+I'll accept a patch to this effect if someone wants to whip one up!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 22:58:00 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 19:58:00 -0800
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+In-Reply-To: <6bb609560811060321m61dc3f6by5cf603c406980628@mail.gmail.com>
+References: <6bb609560811051716u26bb7e8dtfc215f293140b32b@mail.gmail.com>
+	<G7u3qtTP.1225936221.0933950.tpo2@192.168.3.7>
+	<6bb609560811060321m61dc3f6by5cf603c406980628@mail.gmail.com>
+Message-ID: <1226289411-sup-3516@entry>
+
+Reformatted excerpts from barton.schaefer's message of 2008-11-06:
+> Given the history, I think it's equally likely that RFC 4155 follows
+> Pine. :-)  The original mbox driver from the UW c-client package
+> predates that RFC by nearly 20 years.  4155 is a case of documenting
+> folklore so that newcomers don't have to learn it by hearsay.
+
+Okee doke, I've made an official ditz issue to replicate this
+20-year-old piece of work.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 22:59:27 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 19:59:27 -0800
+Subject: [sup-talk] EOFError crash
+In-Reply-To: <1226057292-sup-676@blackpad>
+References: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+	<1225647558-sup-7206@gillespie.rupamsunyata.org>
+	<1225907100-sup-4816@entry> <1225981048-sup-9011@blackpad>
+	<1226007592-sup-6295@entry> <1226025882-sup-6197@blackpad>
+	<1226038806-sup-9313@entry> <1226057292-sup-676@blackpad>
+Message-ID: <1226289520-sup-538@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-07:
+> Looks better!  :D
+> 
+> I didn't manage to reproduce the crash yet. With the previous version
+> I could crash sup in a few seconds.
+
+Great, I'm going to merge this into next then.
+
+> What version of ferret are you using?
+
+0.11.6, same as you.
+
+> BTW, do you know what happened to the ferret project site
+> (http://ferret.davebalmain.com/)? Maybe this is a known bug on ferret,
+> or something that could be investigated and tracked on the ferret
+> project, but the site seems to be offline for days.
+
+I haven't seen that up for a while. I think poor Ferret is very, very
+dead.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 23:49:41 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 20:49:41 -0800
+Subject: [sup-talk] Can sup only "save threads" on exit??
+In-Reply-To: <1226067332-sup-8801@ausone.inria.fr>
+References: <1225839289-sup-7273@sgoldmanlinux.tower-research.com>
+	<1225845336-sup-7105@tangerine.lanl.gov>
+	<1225890375-sup-623@ausone.inria.fr> <1225988350-sup-3900@entry>
+	<1226067332-sup-8801@ausone.inria.fr>
+Message-ID: <1226292556-sup-3497@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-11-07:
+> I often use 'H' for headers, it's pretty natural. I think the '?'
+> binding is sufficient for help and that the 'H' alias could be
+> removed.
+> 
+> Moreover to help newcomers having a little text in the bottom bar like
+> "type '?' for help" would be nice.
+
+Your wish is my command!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 23:51:23 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 20:51:23 -0800
+Subject: [sup-talk] [PATCH] save contacts.txt on '$'
+In-Reply-To: <1225983602-76791-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1225982366-sup-3598@ausone.inria.fr>
+	<1225983602-76791-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1226292674-sup-9612@entry>
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Nov  9 23:55:56 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 20:55:56 -0800
+Subject: [sup-talk] [PATCH] don't downcase names before looking them up
+	in the alias to person map, since keys in that map aren't downcased.
+In-Reply-To: <1226088207-sup-2545@sgoldmanlinux.tower-research.com>
+References: <1226088207-sup-2545@sgoldmanlinux.tower-research.com>
+Message-ID: <1226292778-sup-1719@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-07:
+> We shouldn't downcase names before we look them up in the alias to
+> person hash since the keys of that hash are case sensitive.  This
+> brings up a more philosophical question of whether keys in that hash
+> SHOULD be case sensitive.  What does it mean to have two aliases
+> "Steve" and "steve"?
+
+Certainly, either everything should be case sensitive, or everything
+should be case insensitive. The problem here was that creating aliases
+was case sensitive, but looking them up wasn't.
+
+Personally I'm fine with case-sensitive aliases. Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Nov 10 00:11:30 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 21:11:30 -0800
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses
+	in auto complete
+In-Reply-To: <1226091602-sup-7664@sgoldmanlinux.tower-research.com>
+References: <1226091602-sup-7664@sgoldmanlinux.tower-research.com>
+Message-ID: <1226293522-sup-862@entry>
+
+Hi Steve,
+
+Thanks for the patch! A couple comments:
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-07:
+> Suppose I have an alias "william" for "William Morgan
+> <name at domain.blah>".
+
+It might be nice to put this helpful explanatory text in the commit
+message itself, so that it gets recorded along with the patch.
+
+> +                  sort { |x,y| x_is_c = ContactManager.contact_for(x); y_is_c
+> = ContactManager.contact_for(y); x_is_c && !y_is_c ? -1 : !x_is_c && y_is_c ? 1
+
+I think you can express this more succinctly with something like
+
+  sort_by { |c| [ContactManager.contact_for(c) ? 1 : 0, c] }
+
+which makes use of both sort_by (Ruby's answer to the Schwartizan
+transform) and the fact that arrays are sorted element-by-element.
+
+Other than that, looks good and I like the idea.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Nov 10 00:13:57 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 21:13:57 -0800
+Subject: [sup-talk] Can't get emacs to open in flyspell-mode
+In-Reply-To: <1226096511-sup-2346@sgoldmanlinux.tower-research.com>
+References: <1226009080-sup-663@sgoldmanlinux.tower-research.com>
+	<C53A173A.2EA6%chrisw@rice.edu>
+	<1226096511-sup-2346@sgoldmanlinux.tower-research.com>
+Message-ID: <1226293993-sup-9586@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-07:
+> Combining Christopher's idea with something I found on the internet,
+> putting the following in my .emacs opens sup buffers with
+> flyspell-mode enabled.
+
+A gold star, and a free copy of Sup, to whoever adds their precious
+knowledge to the Wiki:
+
+  http://sup.rubyforge.org/wiki/wiki.pl?EmacsIntegration
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Nov 10 00:14:48 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 21:14:48 -0800
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses
+	in auto complete
+In-Reply-To: <1226293522-sup-862@entry>
+References: <1226091602-sup-7664@sgoldmanlinux.tower-research.com>
+	<1226293522-sup-862@entry>
+Message-ID: <1226294055-sup-4217@entry>
+
+Reformatted excerpts from William Morgan's message of 2008-11-09:
+>   sort_by { |c| [ContactManager.contact_for(c) ? 1 : 0, c] }
+
+Oh, 0 : 1, maybe.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Nov 10 00:31:03 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 09 Nov 2008 21:31:03 -0800
+Subject: [sup-talk] sup Debian packages
+In-Reply-To: <1223170671-sup-9872@gillespie.rupamsunyata.org>
+References: <1223170671-sup-9872@gillespie.rupamsunyata.org>
+Message-ID: <1226295035-sup-8258@entry>
+
+Since I never replied to this:
+
+Reformatted excerpts from Decklin Foster's message of 2008-10-04:
+> I've built Debian packages for sup 0.6 and related libraries.
+
+Whoooo!!!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From decklin at red-bean.com  Mon Nov 10 01:23:44 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Mon, 10 Nov 2008 01:23:44 -0500
+Subject: [sup-talk] sup Debian packages
+In-Reply-To: <1226295035-sup-8258@entry>
+References: <1223170671-sup-9872@gillespie.rupamsunyata.org>
+	<1226295035-sup-8258@entry>
+Message-ID: <1226296646-sup-4437@gillespie.rupamsunyata.org>
+
+Excerpts from William Morgan's message of Mon Nov 10 00:31:03 -0500 2008:
+> Whoooo!!!
+
+:-)
+
+Still stuck in NEW, unfortunately. Let me make sure the latest is up
+for testing... here we go. I'm changing the URL, actually.
+
+deb http://apt.rupamsunyata.org/sup/ ./
+
+And while I'm at it, I'm throwing in my personally hacked-up-for-utf8
+packages of libncurses-ruby, too. (In a couple minutes...)
+
+Debian/Ubuntu people: this really should Just Work, from a dead start
+(no gems), with "apt-get install sup-mail" (and "apt-get install
+libncurses-ruby" if you ever use anything except ASCII...[1]) This is
+how I did it, as I build/test the packages on my dev laptop and then
+install them from this test repository to my Linode where I read mail,
+but I'd love to hear from actual users. I'll update the wiki whenever
+the package officially gets in.
+
+[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=477366
+-- 
+things change.
+decklin at red-bean.com
+
+From sgoldman at tower-research.com  Mon Nov 10 09:55:18 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Mon, 10 Nov 2008 09:55:18 -0500
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses
+	in auto complete
+In-Reply-To: <1226294055-sup-4217@entry>
+References: <1226091602-sup-7664@sgoldmanlinux.tower-research.com>
+	<1226293522-sup-862@entry> <1226294055-sup-4217@entry>
+Message-ID: <1226328785-sup-310@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Mon Nov 10 00:14:48 -0500 2008:
+> Reformatted excerpts from William Morgan's message of 2008-11-09:
+> >   sort_by { |c| [ContactManager.contact_for(c) ? 1 : 0, c] }
+> 
+> Oh, 0 : 1, maybe.
+
+Ah, much cleaner.  Thanks for the ruby lesson.  And, yeah, the correct order is 0 : 1.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sup at davekap.com  Mon Nov 10 13:12:24 2008
+From: sup at davekap.com (Gladwright)
+Date: Mon, 10 Nov 2008 12:12:24 -0600
+Subject: [sup-talk] Allow searching of sup wiki?
+Message-ID: <1226340574-sup-8764@ubuntu>
+
+Hello, I noticed that sup is not allowing search engines to index it's
+wiki.
+
+Is this necessary, or can we open that information up?
+
+Cheers,
+Dave 
+
+From wmorgan-sup at masanjin.net  Mon Nov 10 15:51:39 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 10 Nov 2008 12:51:39 -0800
+Subject: [sup-talk] Allow searching of sup wiki?
+In-Reply-To: <1226340574-sup-8764@ubuntu>
+References: <1226340574-sup-8764@ubuntu>
+Message-ID: <1226349907-sup-5412@entry>
+
+Reformatted excerpts from Gladwright's message of 2008-11-10:
+> Hello, I noticed that sup is not allowing search engines to index it's
+> wiki.
+> 
+> Is this necessary, or can we open that information up?
+
+I've filed a bug report with the RubyForge guys.
+
+http://rubyforge.org/tracker/index.php?func=detail&aid=22739&group_id=5&atid=101
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Tue Nov 11 12:52:50 2008
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 11 Nov 2008 12:52:50 -0500
+Subject: [sup-talk] [PATCH] fix class name collision in testcases
+Message-ID: <1226425970-7997-1-git-send-email-rlane@club.cc.cmu.edu>
+
+'rake test' was broken because both testcases' classes had the same name and
+the setup method was overridden. This patch changes the class name in
+test_mbox_parsing.
+---
+ test/test_mbox_parsing.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/test/test_mbox_parsing.rb b/test/test_mbox_parsing.rb
+index 070b152..3a6c2f8 100644
+--- a/test/test_mbox_parsing.rb
++++ b/test/test_mbox_parsing.rb
+@@ -6,7 +6,7 @@ require 'stringio'
+ 
+ include Redwood
+ 
+-class TestMessage < Test::Unit::TestCase
++class TestMBoxParsing < Test::Unit::TestCase
+   def setup
+   end
+ 
+-- 
+1.5.4.3
+
+
+From nicolas.pouillard at gmail.com  Fri Nov 14 07:29:25 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 14 Nov 2008 13:29:25 +0100
+Subject: [sup-talk] [PATCH] Add a --query option to sup-tweak-labels.
+Message-ID: <1226665765-32595-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ bin/sup-tweak-labels |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup-tweak-labels b/bin/sup-tweak-labels
+index 21e766c..4d1313e 100644
+--- a/bin/sup-tweak-labels
++++ b/bin/sup-tweak-labels
+@@ -39,6 +39,7 @@ Options:
+ EOS
+   opt :add, "One or more labels (comma-separated) to add to every message from the specified sources", :type => String
+   opt :remove, "One or more labels (comma-separated) to remove from every message from the specified sources, if those labels are present", :type => String
++  opt :query, "A Sup search query", :type => String
+ 
+   text <<EOS
+ 
+@@ -76,6 +77,10 @@ begin
+     ## query to only messages with those labels
+     query += " +(" + remove_labels.map { |l| "label:#{l}" }.join(" ") + ")"
+   end
++  query += ' ' + opts[:query] if opts[:query]
++
++  qobj, opts = Redwood::Index.parse_user_query_string query
++  query = Redwood::Index.build_query opts.merge(:qobj => qobj)
+ 
+   results = index.ferret.search query, :limit => :all
+   num_total = results.total_hits
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Fri Nov 14 07:31:02 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 14 Nov 2008 13:31:02 +0100
+Subject: [sup-talk] [PATCH] Factor the Iconv decoding code,
+	and be more lenient on encodings.
+Message-ID: <1226665862-32637-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/message.rb |    3 +--
+ lib/sup/rfc2047.rb |    7 +------
+ lib/sup/util.rb    |   16 ++++++++++++++++
+ 3 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 944dd88..e01e245 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -434,11 +434,10 @@ private
+   end
+ 
+   def self.convert_from body, charset
+-    charset = "utf-8" if charset =~ /UTF_?8/i
+     begin
+       raise MessageFormatError, "RubyMail decode returned a null body" unless body
+       return body unless charset
+-      Iconv.iconv($encoding + "//IGNORE", charset, body + " ").join[0 .. -2]
++      Iconv.easy_decode($encoding, charset, body)
+     rescue Errno::EINVAL, Iconv::InvalidEncoding, Iconv::IllegalSequence, MessageFormatError => e
+       Redwood::log "warning: error (#{e.class.name}) decoding message body from #{charset}: #{e.message}"
+       File.open(File.join(BASE_DIR,"unable-to-decode.txt"), "w") { |f| f.write body }
+diff --git a/lib/sup/rfc2047.rb b/lib/sup/rfc2047.rb
+index 947de02..fcd5cf0 100644
+--- a/lib/sup/rfc2047.rb
++++ b/lib/sup/rfc2047.rb
+@@ -52,13 +52,8 @@ module Rfc2047
+         # WORD.
+       end
+ 
+-      charset = "utf-8" if charset =~ /UTF_?8/i
+-
+-      # Convert:
+-      #
+-      # Remember - Iconv.open(to, from)!
+       begin
+-        text = Iconv.iconv(target + "//IGNORE", charset, text + " ").join[0 .. -2]
++        Iconv.easy_decode(target, charset, text)
+       rescue Iconv::InvalidCharacter
+         text
+       end
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 9909022..6a6da5e 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -617,3 +617,19 @@ class FinishLine
+     @m.synchronize { !@over && @over = true }
+   end
+ end
++
++class Iconv
++  def self.easy_decode target, charset, text
++    return text if charset =~ /^x-unknown$/i
++    charset = case charset
++                when /UTF[-_]?8/i: "utf-8"
++                when /(iso[-_])?latin[-_]?1$/i: "ISO-8859-1"
++                else charset
++              end
++
++    # Convert:
++    #
++    # Remember - Iconv.open(to, from)!
++    Iconv.iconv(target + "//IGNORE", charset, text + " ").join[0 .. -2]
++  end
++end
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Fri Nov 14 08:28:56 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 14 Nov 2008 14:28:56 +0100
+Subject: [sup-talk] [PATCH] Do nothing on an unknown-8bit encoding.
+Message-ID: <1226669336-32978-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/util.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 6a6da5e..f3db95d 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -620,7 +620,7 @@ end
+ 
+ class Iconv
+   def self.easy_decode target, charset, text
+-    return text if charset =~ /^x-unknown$/i
++    return text if charset =~ /^(x-unknown|unknown-8bit)$/i
+     charset = case charset
+                 when /UTF[-_]?8/i: "utf-8"
+                 when /(iso[-_])?latin[-_]?1$/i: "ISO-8859-1"
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Sat Nov 15 12:53:26 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sat, 15 Nov 2008 18:53:26 +0100
+Subject: [sup-talk] Searching for after:(Jan 2008) before:(Feb 2008) yields
+	nothing
+Message-ID: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+
+
+Maybe others could confirm that before this issue to be merged...
+
+From nicolas.pouillard at gmail.com  Sat Nov 15 12:53:27 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sat, 15 Nov 2008 18:53:27 +0100
+Subject: [sup-talk] [PATCH] Add issue: Searching for after:(Jan 2008)
+	before:(Feb 2008) yields nothing
+In-Reply-To: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1226771607-64254-2-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ ...e-3ca7867637ab10e2433285a056fd326bbc61e84a.yaml |   21 ++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
+ create mode 100644 bugs/issue-3ca7867637ab10e2433285a056fd326bbc61e84a.yaml
+
+diff --git a/bugs/issue-3ca7867637ab10e2433285a056fd326bbc61e84a.yaml b/bugs/issue-3ca7867637ab10e2433285a056fd326bbc61e84a.yaml
+new file mode 100644
+index 0000000..7f86474
+--- /dev/null
++++ b/bugs/issue-3ca7867637ab10e2433285a056fd326bbc61e84a.yaml
+@@ -0,0 +1,21 @@
++--- !ditz.rubyforge.org,2008-03-06/issue 
++title: Searching for after:(Jan 2008) before:(Feb 2008) yields nothing
++desc: |-
++  When I try these two parts separately it works however.
++  Moreover in that case during:(Jan 2008) is sufficient.
++type: :bugfix
++component: indexing
++release: 
++reporter: Nicolas Pouillard <nicolas.pouillard at gmail.com>
++status: :unstarted
++disposition: 
++creation_time: 2008-11-15 17:47:46.194105 Z
++references: []
++
++id: 3ca7867637ab10e2433285a056fd326bbc61e84a
++log_events: 
++- - 2008-11-15 17:47:46.469898 Z
++  - Nicolas Pouillard <nicolas.pouillard at gmail.com>
++  - created
++  - ""
++git_branch: 
+-- 
+1.5.5.rc3
+
+
+From bburky at bburky.com  Sat Nov 15 14:37:50 2008
+From: bburky at bburky.com (Blake Burkhart)
+Date: Sat, 15 Nov 2008 13:37:50 -0600
+Subject: [sup-talk] LibC on OpenBSD
+Message-ID: <1226777116-sup-6508@ellipsis.bburky.com>
+
+I had been still using an old version of sup for quite a while. It was either 0.5 or a dev version from between 0.5 and 0.6. I decided I actually needed to update it for once.
+
+I tried downloading the tgz (I never can get gem to do what I want) of 0.6 but it didn't seem to work. I gave up on 0.6 and tried the version from git. Still problems.
+
+When I ran it I got these errors:
+
+$ ruby -I lib -w bin/sup 
+/usr/local/lib/ruby/1.8/dl/import.rb:29:in `initialize': File not found (RuntimeError)
+        from /usr/local/lib/ruby/1.8/dl/import.rb:29:in `dlopen'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:29:in `dlload'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:27:in `each'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:27:in `dlload'
+        from ./lib/sup.rb:17
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in `require'
+        from bin/sup:9
+
+Apparently it was breaking on loading LibC. I had no idea where LibC was supposed to be coming from so I searched my computer for it and finally found it called "libc.so.43.0"
+
+I changed the "libc.so.6" part of lib/sup.rb:17 to "libc.so.43.0".
+
+Basically, I was wondering if I had to do all that. Oh, and it does work perfectly fine now.
+-- 
+Blake Burkhart
+
+From marcus-sup at bar-coded.net  Sat Nov 15 17:16:19 2008
+From: marcus-sup at bar-coded.net (marcus-sup)
+Date: Sat, 15 Nov 2008 22:16:19 +0000
+Subject: [sup-talk] Searching for after:(Jan 2008) before:(Feb 2008)
+	yields nothing
+In-Reply-To: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1226787180-sup-5286@tomsk>
+
+On 15.11.2008, Nicolas Pouillard wrote:
+> Maybe others could confirm that before this issue to be merged...
+
+It was deliberate - after:(jan 2008) means all email after the _end_
+of jan 2008, before:(feb 2008) means all email before the _beginning_
+of feb 2008. So there wouldnt be any email in the period in between :)
+
+It uses the date ranges chronic gives back to get the beginning/end of
+the date period parsed.
+
+Marcus
+
+From wmorgan-sup at masanjin.net  Sat Nov 15 19:02:33 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 15 Nov 2008 16:02:33 -0800
+Subject: [sup-talk] Searching for after:(Jan 2008) before:(Feb 2008)
+	yields nothing
+In-Reply-To: <1226787180-sup-5286@tomsk>
+References: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+	<1226787180-sup-5286@tomsk>
+Message-ID: <1226793538-sup-2043@entry>
+
+Reformatted excerpts from marcus-sup's message of 2008-11-15:
+> It was deliberate - after:(jan 2008) means all email after the _end_
+> of jan 2008, before:(feb 2008) means all email before the _beginning_
+> of feb 2008. So there wouldnt be any email in the period in between :)
+
+Yep, I think this is the correct behavior. You can see the chronic
+interpretations in the log buffer, and you can use in:(jan 2008) to get
+what (I think) you're looking for.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Nov 15 19:14:28 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 15 Nov 2008 16:14:28 -0800
+Subject: [sup-talk] LibC on OpenBSD
+In-Reply-To: <1226777116-sup-6508@ellipsis.bburky.com>
+References: <1226777116-sup-6508@ellipsis.bburky.com>
+Message-ID: <1226794201-sup-4143@entry>
+
+Reformatted excerpts from Blake Burkhart's message of 2008-11-15:
+> I changed the "libc.so.6" part of lib/sup.rb:17 to "libc.so.43.0".
+
+Wow I REALLY don't want to play this game. But it looks like we have to,
+in order to get wide characters working with ncurses:
+
+What does
+  ruby -rrbconfig -e 'puts Config::CONFIG["arch"]'
+print on your system?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bburky at bburky.com  Sat Nov 15 19:42:19 2008
+From: bburky at bburky.com (Blake Burkhart)
+Date: Sat, 15 Nov 2008 18:42:19 -0600
+Subject: [sup-talk] LibC on OpenBSD
+In-Reply-To: <1226794201-sup-4143@entry>
+References: <1226777116-sup-6508@ellipsis.bburky.com>
+	<1226794201-sup-4143@entry>
+Message-ID: <1226796055-sup-4510@ellipsis.bburky.com>
+
+Excerpts from William Morgan's message of Sat Nov 15 18:14:28 -0600 2008:
+> What does
+>   ruby -rrbconfig -e 'puts Config::CONFIG["arch"]'
+> print on your system?
+
+Here's the output:
+
+$ ruby -rrbconfig -e 'puts Config::CONFIG["arch"]' 
+i386-openbsd4.3
+-- 
+Blake Burkhart
+
+From nicolas.pouillard at gmail.com  Sun Nov 16 05:32:26 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 16 Nov 2008 11:32:26 +0100
+Subject: [sup-talk] Searching for after:(Jan 2008) before:(Feb 2008)
+	yields nothing
+In-Reply-To: <1226793538-sup-2043@entry>
+References: <1226771607-64254-1-git-send-email-nicolas.pouillard@gmail.com>
+	<1226787180-sup-5286@tomsk> <1226793538-sup-2043@entry>
+Message-ID: <1226831536-sup-2712@ausone.local>
+
+Excerpts from William Morgan's message of Sun Nov 16 01:02:33 +0100 2008:
+> Reformatted excerpts from marcus-sup's message of 2008-11-15:
+> > It was deliberate - after:(jan 2008) means all email after the _end_
+> > of jan 2008, before:(feb 2008) means all email before the _beginning_
+> > of feb 2008. So there wouldnt be any email in the period in between :)
+> 
+> Yep, I think this is the correct behavior. You can see the chronic
+> interpretations in the log buffer, and you can use in:(jan 2008) to get
+> what (I think) you're looking for.
+
+Fine
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From marcus-sup at bar-coded.net  Sun Nov 16 12:08:08 2008
+From: marcus-sup at bar-coded.net (marcus-sup)
+Date: Sun, 16 Nov 2008 17:08:08 +0000
+Subject: [sup-talk] LibC on OpenBSD
+In-Reply-To: <1226777116-sup-6508@ellipsis.bburky.com>
+References: <1226777116-sup-6508@ellipsis.bburky.com>
+Message-ID: <1226855216-sup-4590@tomsk>
+
+On 15.11.2008, Blake Burkhart wrote:
+> Apparently it was breaking on loading LibC. I had no idea where LibC was
+> supposed to be coming from so I searched my computer for it and finally found
+> it called "libc.so.43.0"
+
+I _think_ (but I'm no freebsd expert!) you need to install compat6x
+which will give you the libc.so.6 libs (and others). It may be that
+they are just soft links anyway.
+
+MArcus
+
+From nicolas.pouillard at gmail.com  Sun Nov 16 12:17:59 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 16 Nov 2008 18:17:59 +0100
+Subject: [sup-talk] [PATCH] Add a limit:<int> search operator to limit the
+	number of results
+Message-ID: <1226855879-69629-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/index.rb |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index cda5cee..8af4edd 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -282,13 +282,15 @@ EOS
+     query = build_query opts
+     offset = 0
+     while true
+-      results = @index_mutex.synchronize { @index.search query, :sort => "date DESC", :limit => EACH_BY_DATE_NUM, :offset => offset }
++      limit = (opts[:limit])? [EACH_BY_DATE_NUM, opts[:limit] - offset].min : EACH_BY_DATE_NUM
++      results = @index_mutex.synchronize { @index.search query, :sort => "date DESC", :limit => limit, :offset => offset }
+       Redwood::log "got #{results.total_hits} results for query (offset #{offset}) #{query.inspect}"
+       results.hits.each do |hit|
+         yield @index_mutex.synchronize { @index[hit.doc][:message_id] }, lambda { build_message hit.doc }
+       end
+-      break if offset >= results.total_hits - EACH_BY_DATE_NUM
+-      offset += EACH_BY_DATE_NUM
++      break if opts[:limit] and offset >= opts[:limit] - limit
++      break if offset >= results.total_hits - limit
++      offset += limit
+     end
+   end
+ 
+@@ -561,6 +563,18 @@ protected
+       end
+       subs = nil if chronic_failure
+     end
++
++    ## limit:42 restrict the search to 42 results
++    subs = subs.gsub(/\blimit:(\S+)\b/) do
++      lim = $1
++      if lim =~ /^\d+$/
++        extraopts[:limit] = lim.to_i
++        ''
++      else
++        BufferManager.flash "Can't understand limit #{lim.inspect}!"
++        subs = nil
++      end
++    end
+     
+     if subs
+       [@qparser.parse(subs), extraopts]
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Sun Nov 16 12:18:33 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 16 Nov 2008 18:18:33 +0100
+Subject: [sup-talk] [PATCH] decoding rules: ignore ascii-7bit and normalize
+	utf-7
+Message-ID: <1226855913-69659-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/util.rb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index f3db95d..fc62532 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -620,10 +620,11 @@ end
+ 
+ class Iconv
+   def self.easy_decode target, charset, text
+-    return text if charset =~ /^(x-unknown|unknown-8bit)$/i
++    return text if charset =~ /^(x-unknown|unknown[-_]?8bit|ascii[-_]?7[-_]?bit)$/i
+     charset = case charset
+                 when /UTF[-_]?8/i: "utf-8"
+                 when /(iso[-_])?latin[-_]?1$/i: "ISO-8859-1"
++                when /unicode[-_]1[-_]1[-_]utf[-_]7/i: "utf-7"
+                 else charset
+               end
+ 
+-- 
+1.5.5.rc3
+
+
+From nicolas.pouillard at gmail.com  Sun Nov 16 12:32:12 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 16 Nov 2008 18:32:12 +0100
+Subject: [sup-talk] [PATCH] Allow to hit 'y' to send a draft in
+	thread-view-mode
+Message-ID: <1226856732-69997-1-git-send-email-nicolas.pouillard@gmail.com>
+
+---
+ lib/sup/modes/thread-view-mode.rb |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 5f578d3..6e9256d 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -30,6 +30,7 @@ EOS
+     k.add :activate_chunk, "Expand/collapse or activate item", :enter
+     k.add :expand_all_messages, "Expand/collapse all messages", 'E'
+     k.add :edit_draft, "Edit draft", 'e'
++    k.add :send_draft, "Send draft", 'y'
+     k.add :edit_labels, "Edit or add labels for a thread", 'l'
+     k.add :expand_all_quotes, "Expand/collapse all quotes in a message", 'o'
+     k.add :jump_to_next_open, "Jump to next open message", 'n'
+@@ -283,6 +284,18 @@ EOS
+     end
+   end
+ 
++  def send_draft
++    m = @message_lines[curpos] or return
++    if m.is_draft?
++      mode = ResumeMode.new m
++      BufferManager.spawn "Send message", mode
++      BufferManager.kill_buffer self.buffer
++      mode.send_message
++    else
++      BufferManager.flash "Not a draft message!"
++    end
++  end
++
+   def jump_to_first_open loose_alignment=false
+     m = @message_lines[0] or return
+     if @layout[m].state != :closed
+@@ -642,7 +655,7 @@ private
+       [[[:missing_message_color, "#{prefix}<an unreceived message>"]]]
+     when Message
+       message_patina_lines(chunk, state, start, parent, prefix, color, star_color) +
+-        (chunk.is_draft? ? [[[:draft_notification_color, prefix + " >>> This message is a draft. To edit, hit 'e'. <<<"]]] : [])
++        (chunk.is_draft? ? [[[:draft_notification_color, prefix + " >>> This message is a draft. Hit 'e' to edit, 'y' to send. <<<"]]] : [])
+ 
+     else
+       raise "Bad chunk: #{chunk.inspect}" unless chunk.respond_to?(:inlineable?) ## debugging
+-- 
+1.5.5.rc3
+
+
+From sgoldman at tower-research.com  Wed Nov 19 15:52:17 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Wed, 19 Nov 2008 15:52:17 -0500
+Subject: [sup-talk] Ctrl-C causes crash
+Message-ID: <1227127838-sup-7819@sgoldmanlinux.tower-research.com>
+
+
+This isn't as dumb of a question as it sounds.  Sometimes I'm in a sup
+buffer but mistakenly think I'm in emacs.  Then I type Ctrl-X/Ctrl-C
+and sup crashes.  This is not cool.  Here is the exception log:
+
+--- Interrupt from thread: main
+
+/apps/home/sgoldman/sup-src/mainline/lib/sup/buffer.rb:31:in `select'
+/apps/home/sgoldman/sup-src/mainline/lib/sup/buffer.rb:31:in `nonblocking_getch'
+bin/sup:184
+
+I tested just typing Ctrl-C and got the same log output.  Any idea on how to make sup not crash on Ctrl-C?
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From daniel at wagner-home.com  Wed Nov 19 17:50:39 2008
+From: daniel at wagner-home.com (Daniel Wagner)
+Date: Wed, 19 Nov 2008 17:50:39 -0500
+Subject: [sup-talk] migrating email to a new computer
+Message-ID: <1227135030-sup-401@buckwheat>
+
+Hey all, I've got a quick question about how sup handles Maildir.  I'm
+going to be migrating to a new machine soon, and I've got a couple of
+questions about it.
+
+1. My mail is spread out in hundreds of Maildir directories, most of
+   them "legacy" directories that I want to merge as I migrate.  Can I
+   do this by just copying the mail files from the various "new" and
+   "cur" directories to a central "cur" directory?  I know that Maildir
+   uses unique names, so this shouldn't clobber any messages, but I
+   haven't seen any information on whether this could cause other kinds
+   of problems.
+2. A more sup-related question: what things do I need to copy to migrate
+   my labels, read/archived/starred status information, etc?  I
+   definitely want to maintain as much of my mail's metadata as I can.
+   I guess this probably interacts with the previous question, too; in
+   the end, I would much prefer to keep my metadata than to merge
+   Maildir directories if they are mutually exclusive.
+3. I'm assuming I won't lose anything if I update sup.
+
+I think this topic deserves a wiki page, so I'll write up a summary of
+any advice I get as well as how my experience goes for future posterity.
+
+Thanks!
+~d
+
+From wmorgan-sup at masanjin.net  Thu Nov 20 09:28:26 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 20 Nov 2008 06:28:26 -0800
+Subject: [sup-talk] Ctrl-C causes crash
+In-Reply-To: <1227127838-sup-7819@sgoldmanlinux.tower-research.com>
+References: <1227127838-sup-7819@sgoldmanlinux.tower-research.com>
+Message-ID: <1227191082-sup-3553@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-19:
+> This isn't as dumb of a question as it sounds.  Sometimes I'm in a sup
+> buffer but mistakenly think I'm in emacs.
+
+The illusion is complete!
+
+> Then I type Ctrl-X/Ctrl-C and sup crashes.  This is not cool.
+
+Ctrl-C is the traditional unix forced-exit mechanism, but perhaps we
+could emulate mutt and have it prompt you before quitting. (And in
+contrast to regular quit, it shouldn't save state back to the index.)
+
+> /apps/home/sgoldman/sup-src/mainline/lib/sup/buffer.rb:31:in `select'
+> /apps/home/sgoldman/sup-src/mainline/lib/sup/buffer.rb:31:in `nonblocking_getch'
+> bin/sup:184
+> 
+> I tested just typing Ctrl-C and got the same log output.  Any idea on how to
+> make sup not crash on Ctrl-C?
+
+bin/sup already wraps everything in a rescue Exception, so you just need
+to check within the rescue block whether it's a ctrl-c exception or not.
+Something like:
+
+  rescue Exception => e
+    exit 1 if e.is_a?(Interrupt) && BufferManager.ask_yes_or_no("Die now?")
+  end
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov 20 10:15:37 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 20 Nov 2008 07:15:37 -0800
+Subject: [sup-talk] [PATCH] Add a --query option to sup-tweak-labels.
+In-Reply-To: <1226665765-32595-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226665765-32595-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227194106-sup-7286@entry>
+
+Applied, thanks.
+
+Sorry for the slow patch turnaround time recently. I'm moving across the
+country and only have bits of time here and there, at least for another
+week or so.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov 20 10:17:37 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 20 Nov 2008 07:17:37 -0800
+Subject: [sup-talk] [PATCH] Factor the Iconv decoding code,
+	and be more lenient on encodings.
+In-Reply-To: <1226665862-32637-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226665862-32637-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227194245-sup-9535@entry>
+
+Awesome. Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Nov 20 10:18:36 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 20 Nov 2008 07:18:36 -0800
+Subject: [sup-talk] [PATCH] Do nothing on an unknown-8bit encoding.
+In-Reply-To: <1226669336-32978-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226669336-32978-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227194309-sup-1963@entry>
+
+Applied!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From luis at tieguy.org  Thu Nov 20 13:35:08 2008
+From: luis at tieguy.org (Luis Villa)
+Date: Thu, 20 Nov 2008 13:35:08 -0500
+Subject: [sup-talk] 'best' mail storage for sup?
+Message-ID: <2cb10c440811201035w1a95f7d7y40c335e0c69a96a3@mail.gmail.com>
+
+hey, all-
+
+If I were going to start a new mail account from scratch, what is
+preferred/most reliable- mbox or maildir? I assume maildir, but just
+wanted to check.
+
+Thanks-
+Luis
+
+From luis at tieguy.org  Thu Nov 20 15:47:57 2008
+From: luis at tieguy.org (Luis Villa)
+Date: Thu, 20 Nov 2008 15:47:57 -0500
+Subject: [sup-talk] 'best' mail storage for sup?
+In-Reply-To: <1227209118-sup-6176@ausone.local>
+References: <2cb10c440811201035w1a95f7d7y40c335e0c69a96a3@mail.gmail.com>
+	<1227209118-sup-6176@ausone.local>
+Message-ID: <2cb10c440811201247y4f4beeb1w96742886df23c4f5@mail.gmail.com>
+
+On Thu, Nov 20, 2008 at 2:26 PM, Nicolas Pouillard
+<nicolas.pouillard at gmail.com> wrote:
+> Excerpts from Luis Villa's message of Thu Nov 20 19:35:08 +0100 2008:
+>> hey, all-
+>>
+>> If I were going to start a new mail account from scratch, what is
+>> preferred/most reliable- mbox or maildir? I assume maildir, but just
+>> wanted to check.
+>
+> I do prefer the mbox format, however it may depends on the ways you get your
+> mails.
+
+In this particular case, probably just getmail from a POP server,
+which can drop into either mbox or maildir as appropriate.
+
+Luis
+
+From sgoldman at tower-research.com  Sun Nov 23 14:29:36 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 14:29:36 -0500
+Subject: [sup-talk] [PATCH] make ctrl-c prompt user if sup should die
+	ungracefully
+Message-ID: <1227468533-sup-3252@sgoldmanlinux.tower-research.com>
+
+---
+ bin/sup |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 124af75..cee7051 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -181,7 +181,16 @@ begin
+   end
+ 
+   until Redwood::exceptions.nonempty? || SuicideManager.die?
+-    c = Ncurses.nonblocking_getch
++    c = 
++       begin
++         Ncurses.nonblocking_getch
++       rescue Exception => e
++         if e.is_a?(Interrupt)
++           raise if BufferManager.ask_yes_or_no("Die ungracefully now?")
++           bm.draw_screen
++           nil
++         end
++       end
+     next unless c
+     bm.erase_flash
+ 
+@@ -195,7 +204,6 @@ begin
+       rescue InputSequenceAborted
+         :nothing
+       end
+-
+     case action
+     when :quit_now
+       break if bm.kill_all_buffers_safely
+-- 
+1.5.6.4
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 15:59:08 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 15:59:08 -0500
+Subject: [sup-talk] Too many addresses at the To: prompt messes things up
+In-Reply-To: <1227471316-sup-6968@sgoldmanlinux.tower-research.com>
+References: <1227471316-sup-6968@sgoldmanlinux.tower-research.com>
+Message-ID: <1227473934-sup-5596@sgoldmanlinux.tower-research.com>
+
+Nevermind, I figured it out.  See forthcoming patch.
+
+Excerpts from Steve Goldman's message of Sun Nov 23 15:17:54 -0500 2008:
+> 
+> When you type so many addresses at the To: prompt that the cursor has
+> to wrap around, you lose all the addresses on the first line that you
+> typed.  I would dig around to try to figure this out, but it would
+> probably be a five minute fix for someone with knowledge of
+> completion-mode, etc.
+> 
+> This is fairly serious because it makes sending to more than four or
+> five people a huge hassle.
+> 
+> Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 14:44:29 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 14:44:29 -0500
+Subject: [sup-talk] [PATCH] git status should ignore emacs temp files
+Message-ID: <1227469451-sup-3570@sgoldmanlinux.tower-research.com>
+
+---
+ .gitignore |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 37775a6..b8d3bcd 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,5 @@
+ # i use vi
+ *.swp
+ .ditz-config
++# i use emacs
++*~
+-- 
+1.5.6.4
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 13:53:09 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 13:53:09 -0500
+Subject: [sup-talk] [PATCH] Display a default save path for attachments
+Message-ID: <1227466312-sup-6661@sgoldmanlinux.tower-research.com>
+
+Let the user specify a default path for saving attachments with
+:default_attachment_save_dir: in config.yaml, and display this path in
+front of the filename when saving an attachment in thread view mode.
+---
+ lib/sup.rb                        |    1 +
+ lib/sup/modes/thread-view-mode.rb |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 93369a5..92ace7d 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -221,6 +221,7 @@ else
+     :confirm_no_attachments => true,
+     :confirm_top_posting => true,
+     :discard_snippets_from_encrypted_messages => false,
++    :default_attachment_save_dir => "",
+   }
+   begin
+     FileUtils.mkdir_p Redwood::BASE_DIR
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 5f578d3..011eccd 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -259,7 +259,7 @@ EOS
+     chunk = @chunk_lines[curpos] or return
+     case chunk
+     when Chunk::Attachment
+-      fn = BufferManager.ask_for_filename :filename, "Save attachment to file: ", chunk.filename
++      fn = BufferManager.ask_for_filename :filename, "Save attachment to file: ", ($config[:default_attachment_save_dir] + chunk.filename)
+       save_to_file(fn) { |f| f.print chunk.raw_content } if fn
+     else
+       m = @message_lines[curpos]
+-- 
+1.5.6.4
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 14:39:10 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 14:39:10 -0500
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses in
+	auto complete
+Message-ID: <1227469112-sup-9061@sgoldmanlinux.tower-research.com>
+
+---
+ lib/sup/buffer.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index ebc3587..e56fbf7 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -433,7 +433,7 @@ EOS
+       prefix, target = partial.split_on_commas_with_remainder
+       target ||= prefix.pop || ""
+       prefix = prefix.join(", ") + (prefix.empty? ? "" : ", ")
+-      completions.select { |x| x =~ /^#{Regexp::escape target}/i }.map { |x| [prefix + x, x] }
++      completions.select { |x| x =~ /^#{Regexp::escape target}/i }.sort_by { |c| [ContactManager.contact_for(c) ? 0 : 1, c] }.map { |x| [prefix + x, x] }
+     end
+   end
+ 
+@@ -501,7 +501,7 @@ EOS
+     recent = Index.load_contacts(AccountManager.user_emails, :num => 10).map { |c| [c.full_address, c.email] }
+     contacts = ContactManager.contacts.map { |c| [ContactManager.alias_for(c), c.full_address, c.email] }
+ 
+-    completions = (recent + contacts).flatten.uniq.sort
++    completions = (recent + contacts).flatten.uniq
+     completions += HookManager.run("extra-contact-addresses") || []
+     answer = BufferManager.ask_many_emails_with_completions domain, question, completions, default
+ 
+-- 
+1.5.6.4
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 15:59:49 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 15:59:49 -0500
+Subject: [sup-talk] [PATCH] use offscreen lines for textfield overflow
+Message-ID: <1227473953-sup-5646@sgoldmanlinux.tower-research.com>
+
+In the To:, Cc:, Bcc:, etc., prompts, the TextField was initializing
+an NCurses form with zero offscreen lines.  So when the user typed too
+many addresses at the prompt the cursor wrapped around and everything
+they had typed was clobbered.  This patch initializes the form object
+to have 256 offscreen lines (I had no rationale for 256 except that it
+is a nice, big power of two).  Now the user can type plenty of names
+and the wrap-around works as the user would expect.
+---
+ lib/sup/textfield.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/textfield.rb b/lib/sup/textfield.rb
+index 479c609..c748c7a 100644
+--- a/lib/sup/textfield.rb
++++ b/lib/sup/textfield.rb
+@@ -33,7 +33,7 @@ class TextField
+     @w, @y, @x, @width = window, y, x, width
+     @question = question
+     @completion_block = block
+-    @field = Ncurses::Form.new_field 1, @width - question.length, @y, @x + question.length, 0, 0
++    @field = Ncurses::Form.new_field 1, @width - question.length, @y, @x + question.length, 256, 0
+     @form = Ncurses::Form.new_form [@field]
+     @value = default
+     Ncurses::Form.post_form @form
+-- 
+1.5.6.4
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From sgoldman at tower-research.com  Sun Nov 23 15:17:54 2008
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Sun, 23 Nov 2008 15:17:54 -0500
+Subject: [sup-talk] Too many addresses at the To: prompt messes things up
+Message-ID: <1227471316-sup-6968@sgoldmanlinux.tower-research.com>
+
+
+When you type so many addresses at the To: prompt that the cursor has
+to wrap around, you lose all the addresses on the first line that you
+typed.  I would dig around to try to figure this out, but it would
+probably be a five minute fix for someone with knowledge of
+completion-mode, etc.
+
+This is fairly serious because it makes sending to more than four or
+five people a huge hassle.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From ehabkost at raisama.net  Mon Nov 24 12:31:01 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Mon, 24 Nov 2008 15:31:01 -0200
+Subject: [sup-talk] Handling of messages appearing on multiple sources
+Message-ID: <1227547347-sup-6279@blackpad>
+
+
+Hi,
+
+Currently, what is the expected behavior when a message appear on multiple
+sources? Sometimes messages are sent to many different mailing lists
+and end up on different mailboxes, and I would like those messages to
+have the labels from both sources applied to them. Is it possible?
+
+It would be nice if sup-tweak-labels and other utilities that deal with
+messages on a per-source basis were aware that the message appeared on
+multiple sources, also.
+-- 
+Eduardo
+
+From marc.hartstein at alum.vassar.edu  Wed Nov 26 16:16:28 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Wed, 26 Nov 2008 16:16:28 -0500
+Subject: [sup-talk] Patch: jump to body on compose [was: Re: How to make
+	emacs position my cursor for me]
+In-Reply-To: <1226289098-sup-1638@entry>
+References: <1225825527-sup-6138@ausone.local>
+	<aojKlrxp.1225834115.9805500.tpo2@192.168.3.7>
+	<1225836311-sup-7605@tangerine.lanl.gov>
+	<1226289098-sup-1638@entry>
+Message-ID: <1227733927-sup-9969@cabinet>
+
+Excerpts from William Morgan's message of Sun Nov 09 22:51:55 -0500 2008:
+> Reformatted excerpts from John Bent's message of 2008-11-04:
+> > '/usr/bin/vim -f +/^\s*\n-c "setlocal spell spelllang=en_us" -c "set
+> > filetype=mail" '
+> 
+> I'll accept a patch to this effect if someone wants to whip one up!
+
+To discourage top-posting, would it not be preferable to begin with the
+cursor on the last line rather than the first line of the body?
+
+:editor: '/usr/bin/vim -f +$ -c "setlocal spell spelllang=en_us" -c "set
+filetype=mail"'
+
+(Of course, that might encourage an increased cascade, but there's only
+so much the tool author can do to encourage the user to comply with
+conventions)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20081126/70488389/attachment.bin>
+
+From ehabkost at raisama.net  Wed Nov 26 16:35:23 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Wed, 26 Nov 2008 19:35:23 -0200
+Subject: [sup-talk] Handling of messages appearing on multiple sources
+In-Reply-To: <1227647755-sup-3231@ausone.local>
+References: <1227547347-sup-6279@blackpad> <1227647755-sup-3231@ausone.local>
+Message-ID: <20081126213523.GB4628@blackpad>
+
+On Tue, Nov 25, 2008 at 10:19:38PM +0100, Nicolas Pouillard wrote:
+> Excerpts from Eduardo Habkost's message of Mon Nov 24 18:31:01 +0100 2008:
+> > 
+> > Hi,
+> Hi,
+> 
+> > Currently, what is the expected behavior when a message appear on multiple
+> > sources? Sometimes messages are sent to many different mailing lists
+> > and end up on different mailboxes, and I would like those messages to
+> > have the labels from both sources applied to them. Is it possible?
+> > 
+> > It would be nice if sup-tweak-labels and other utilities that deal with
+> > messages on a per-source basis were aware that the message appeared on
+> > multiple sources, also.
+> 
+> If it's the same message id, it should be shared.
+
+When testing it here, I got the following:
+
+Source 1 is the lkml source. Source 2 is the kvm-devel source. Some
+messages are posted to both mailing lists and end up on both sources.
+
+A message appearing only on kvm-devel is imported normally:
+
+Adding message maildir:/home/ehabkost/mail/kvm-devel-l/#12277020930025949 with state {kvm-devel, unread, inbox}
+
+A message appearing on both sources is imported this way:
+
+Updating message maildir:/home/ehabkost/mail/kvm-devel-l/#12277021040004976, source 1 => 2, offset 12277036400004673 => 12277021040004976, state {lkml, unread, inbox} => {lkml, unread, inbox}
+
+On this case, I would like the kvm-devel label to be applied to the
+message, also.
+
+I would even argue that adding the tags configured for both sources
+should be the default, but I don't know if there are users relying on
+the current behavior, today. What do you think?
+
+Handling the inbox label may be more complicated to implement properly
+(especially if some of the sources have the 'archive' flag set and
+some don't). But as an user, I expect that a message appearing on both a
+non-inbox source and an inbox source would get into the inbox. The problem
+would be handling a message appearing on an inbox source after the user
+have archived it. On this case, the user may expect the message to not
+appear on the inbox again (I am not sure what would be more intuitive).
+
+
+Additionally, I think it would be nice if sup were aware of when the
+message appears multiple times on the sources, instead of rewriting the
+source and offset fields. Most times the user doesn't need to be aware
+there are multiple versions of a message, but when checking message
+headers or other small details of messages coming from different paths,
+it would be useful to have both versions available.
+
+-- 
+Eduardo
+
+From nick at kousu.ca  Wed Nov 26 12:48:36 2008
+From: nick at kousu.ca (Nick Guenther)
+Date: Wed, 26 Nov 2008 12:48:36 -0500
+Subject: [sup-talk] sup and OpenBSD
+Message-ID: <98f5a8830811260948v1fbfd41ay62524d78e57b47cc@mail.gmail.com>
+
+I checked out the sup git repo and after fighting a bit to get all the
+libs I needed installed (it's a bit wonky since I'm letting both
+rubygems and BSD's pkg_add manage different ones).
+
+$ ruby -I lib -w bin/sup
+/usr/local/lib/ruby/1.8/dl/import.rb:29:in `initialize': File not
+found (RuntimeError)
+        from /usr/local/lib/ruby/1.8/dl/import.rb:29:in `dlopen'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:29:in `dlload'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:27:in `each'
+        from /usr/local/lib/ruby/1.8/dl/import.rb:27:in `dlload'
+        from ./lib/sup.rb:17
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`gem_original_require'
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`require'
+        from bin/sup:9
+
+The problem here is that you are asking for libc.so.6 which OpenBSD
+doesn't have (on my 4.3 system I see ["/usr/lib/libc.so.41.0",
+"/usr/lib/libc.so.43.0"]). A patch:
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 93369a5..dfdbda2 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -14,7 +14,7 @@ require 'curses'
+ require 'dl/import'
+ module LibC
+   extend DL::Importable
+-  dlload Config::CONFIG['arch'] =~ /darwin/ ? "libc.dylib" : "libc.so.6"
++  dlload Config::CONFIG['arch'] =~ /darwin/ ? "libc.dylib" : "libc.so"
+   extern "void setlocale(int, const char *)"
+ end
+ LibC.setlocale(6, "")  # LC_ALL == 6
+
+
+Now after doing that I still can't get sup to go. It doesn't seem to
+like curses for some reason:
+
+--- ArgumentError from thread: main
+couldn't initialize curses color pair 4, 0 (key 1)
+./lib/sup/colormap.rb:130:in `color_for'
+./lib/sup/colormap.rb:206:in `send'
+./lib/sup/colormap.rb:206:in `method_missing'
+./lib/sup/buffer.rb:106:in `write'
+./lib/sup/modes/scroll-mode.rb:51:in `draw'
+./lib/sup/modes/scroll-mode.rb:49:in `each'
+./lib/sup/modes/scroll-mode.rb:49:in `draw'
+./lib/sup/modes/line-cursor-mode.rb:24:in `draw'
+./lib/sup/buffer.rb:97:in `draw'
+./lib/sup/buffer.rb:294:in `draw_screen'
+bin/sup:154
+
+I noticed when trying to install sup via gems (before giving up and
+running the code directly) that it died on compiling curses support
+for some reason:
+
+I installed the OpenBSD ruby-ncurses package instead and hoped all was
+well. I am just learning Ruby, but the fact that sup gets past
+`require 'ncurses'` means that ncurses should be installed right?
+
+$ sudo gem install ncurses
+Password:
+Bulk updating Gem source index for: http://gems.rubyforge.org
+Building native extensions.  This could take a while...
+ERROR:  Error installing ncurses:
+        ERROR: Failed to build gem native extension.
+
+/usr/local/bin/ruby extconf.rb install ncurses
+checking for unistd.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncurses... yes
+checking for newscr()... yes
+checking for TABSIZE()... yes
+checking for ESCDELAY()... yes
+checking for keybound()... yes
+checking for curses_version()... yes
+checking for tigetstr()... yes
+checking for getwin()... yes
+checking for putwin()... yes
+checking for ungetmouse()... yes
+checking for mousemask()... yes
+checking for wenclose()... yes
+checking for mouseinterval()... yes
+checking for wmouse_trafo()... yes
+checking for mcprint()... yes
+checking for has_key()... yes
+checking for delscreen()... yes
+checking for define_key()... yes
+checking for keyok()... yes
+checking for resizeterm()... yes
+checking for use_default_colors()... yes
+checking for use_extended_names()... yes
+checking for wresize()... yes
+checking for attr_on()... yes
+checking for attr_off()... yes
+checking for attr_set()... yes
+checking for chgat()... yes
+checking for color_set()... yes
+checking for filter()... yes
+checking for intrflush()... yes
+checking for mvchgat()... yes
+checking for mvhline()... yes
+checking for mvvline()... yes
+checking for mvwchgat()... yes
+checking for mvwhline()... yes
+checking for mvwvline()... yes
+checking for noqiflush()... yes
+checking for putp()... yes
+checking for qiflush()... yes
+checking for scr_dump()... yes
+checking for scr_init()... yes
+checking for scr_restore()... yes
+checking for scr_set()... yes
+checking for slk_attr_off()... no
+checking for slk_attr_on()... no
+checking for slk_attr()... yes
+checking for slk_attr_set()... yes
+checking for slk_color()... yes
+checking for tigetflag()... yes
+checking for tigetnum()... yes
+checking for use_env()... yes
+checking for vidattr()... yes
+checking for vid_attr()... no
+checking for wattr_on()... yes
+checking for wattr_off()... yes
+checking for wattr_set()... yes
+checking for wchgat()... yes
+checking for wcolor_set()... yes
+checking for getattrs()... no
+checking which debugging functions to wrap...
+checking for _tracef()... no
+checking for _tracedump()... no
+checking for _nc_tracebits()... yes
+checking for _traceattr()... no
+checking for _traceattr2()... no
+checking for _tracechar()... no
+checking for _tracechtype()... no
+checking for _tracechtype2()... no
+checking for _tracemouse()... no
+checking for other functions that appeared after ncurses version 5.0...
+checking for assume_default_colors()... yes
+checking for attr_get()... yes
+checking for the panel library...
+checking for panel.h... yes
+checking for panel_hidden() in -lpanel... yes
+checking for the form library...
+checking for form.h... yes
+checking for new_form() in -lform... yes
+creating Makefile
+
+make
+cc -I. -I. -I/usr/local/lib/ruby/1.8/i386-openbsd4.3 -I.
+-DHAVE_UNISTD_H -DHAVE_NCURSES_H -DHAVE_NEWSCR -DHAVE_TABSIZE
+-DHAVE_ESCDELAY -DHAVE_KEYBOUND -DHAVE_CURSES_VERSION -DHAVE_TIGETSTR
+-DHAVE_GETWIN -DHAVE_PUTWIN -DHAVE_UNGETMOUSE -DHAVE_MOUSEMASK
+-DHAVE_WENCLOSE -DHAVE_MOUSEINTERVAL -DHAVE_WMOUSE_TRAFO
+-DHAVE_MCPRINT -DHAVE_HAS_KEY -DHAVE_DELSCREEN -DHAVE_DEFINE_KEY
+-DHAVE_KEYOK -DHAVE_RESIZETERM -DHAVE_USE_DEFAULT_COLORS
+-DHAVE_USE_EXTENDED_NAMES -DHAVE_WRESIZE -DHAVE_ATTR_ON
+-DHAVE_ATTR_OFF -DHAVE_ATTR_SET -DHAVE_CHGAT -DHAVE_COLOR_SET
+-DHAVE_FILTER -DHAVE_INTRFLUSH -DHAVE_MVCHGAT -DHAVE_MVHLINE
+-DHAVE_MVVLINE -DHAVE_MVWCHGAT -DHAVE_MVWHLINE -DHAVE_MVWVLINE
+-DHAVE_NOQIFLUSH -DHAVE_PUTP -DHAVE_QIFLUSH -DHAVE_SCR_DUMP
+-DHAVE_SCR_INIT -DHAVE_SCR_RESTORE -DHAVE_SCR_SET -DHAVE_SLK_ATTR
+-DHAVE_SLK_ATTR_SET -DHAVE_SLK_COLOR -DHAVE_TIGETFLAG -DHAVE_TIGETNUM
+-DHAVE_USE_ENV -DHAVE_VIDATTR -DHAVE_WATTR_ON -DHAVE_WATTR_OFF
+-DHAVE_WATTR_SET -DHAVE_WCHGAT -DHAVE_WCOLOR_SET -DHAVE__NC_TRACEBITS
+-DHAVE_ASSUME_DEFAULT_COLORS -DHAVE_ATTR_GET -DHAVE_PANEL_H
+-DHAVE_FORM_H -I/usr/local/include -DOPENSSL_NO_STATIC_ENGINE -fPIC
+-O2 -pipe  -fPIC -g -c form_wrap.c
+form_wrap.c: In function `field_check':
+form_wrap.c:1147: error: `true' undeclared (first use in this function)
+form_wrap.c:1147: error: (Each undeclared identifier is reported only once
+form_wrap.c:1147: error: for each function it appears in.)
+form_wrap.c: In function `char_check':
+form_wrap.c:1161: error: `true' undeclared (first use in this function)
+form_wrap.c: In function `next_choice':
+form_wrap.c:1192: error: `true' undeclared (first use in this function)
+form_wrap.c: In function `prev_choice':
+form_wrap.c:1201: error: `true' undeclared (first use in this function)
+*** Error code 1
+
+Stop in /usr/local/lib/ruby/gems/1.8/gems/ncurses-0.9.1 (line 92 of
+/usr/share/mk/sys.mk).
+
+
+Anyway, it shouldn't matter that the gem can't install because the
+ncurses.rb I have installed in site_ruby is newer than the ncurses.rb
+from the gem, judging from the version line. I don't know what to make
+of this since at all. I'm not familiar with Ruby yet but if you could
+point me at a right direction I will probably be able to figure this
+out.
+
+p.s. sorry for the null message just now. Sup doesn't work (yet) so I
+was going to write this message in `mail` before I realized that was a
+terrible idea but my finger slipped.
+
+-Nick
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:31:27 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:31:27 -0800
+Subject: [sup-talk] Handling of messages appearing on multiple sources
+In-Reply-To: <20081126213523.GB4628@blackpad>
+References: <1227547347-sup-6279@blackpad> <1227647755-sup-3231@ausone.local>
+	<20081126213523.GB4628@blackpad>
+Message-ID: <1227740974-sup-6395@entry>
+
+Reformatted excerpts from Eduardo Habkost's message of 2008-11-26:
+> I would even argue that adding the tags configured for both sources
+> should be the default, but I don't know if there are users relying on
+> the current behavior, today. What do you think?
+
+Actually, I think you're right. I don't know that there's a reason, at
+least during normal operation, to discard previous index state.
+
+Can you try the attached patch and see if it fixes the problem?
+
+> But as an user, I expect that a message appearing on both a non-inbox
+> source and an inbox source would get into the inbox. The problem would
+> be handling a message appearing on an inbox source after the user have
+> archived it. On this case, the user may expect the message to not
+> appear on the inbox again (I am not sure what would be more
+> intuitive).
+
+Well, it's an ambiguous situation, and I'm generally happy in ambiguous
+situations to take the simplest (to implement!) approach, which in this
+case is to pop it back into the inbox.
+
+> Additionally, I think it would be nice if sup were aware of when the
+> message appears multiple times on the sources, instead of rewriting
+> the source and offset fields. Most times the user doesn't need to be
+> aware there are multiple versions of a message, but when checking
+> message headers or other small details of messages coming from
+> different paths, it would be useful to have both versions available.
+
+I think I agree. STS (the apocryphal new version of Sup) probably won't
+canonicalize by message id like Sup does.
+-- 
+William <wmorgan-sup at masanjin.net>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-for-duplicate-messages-merge-labels-rather-than-dis.patch
+Type: application/octet-stream
+Size: 1373 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20081126/857ef42d/attachment.obj>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:32:11 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:32:11 -0800
+Subject: [sup-talk] Allow searching of sup wiki?
+In-Reply-To: <1226349907-sup-5412@entry>
+References: <1226340574-sup-8764@ubuntu> <1226349907-sup-5412@entry>
+Message-ID: <1227742325-sup-9058@entry>
+
+Reformatted excerpts from William Morgan's message of 2008-11-10:
+> Reformatted excerpts from Gladwright's message of 2008-11-10:
+> > Hello, I noticed that sup is not allowing search engines to index
+> > it's wiki.
+> 
+> I've filed a bug report with the RubyForge guys.
+
+Apparently the wikis generate a lot of traffic because of crappy robots,
+and they're thinking of disabling that feature anyways, so I doubt this
+will be fixed except by moving the wiki somewhere else.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:40:23 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:40:23 -0800
+Subject: [sup-talk] sup and OpenBSD
+In-Reply-To: <98f5a8830811260948v1fbfd41ay62524d78e57b47cc@mail.gmail.com>
+References: <98f5a8830811260948v1fbfd41ay62524d78e57b47cc@mail.gmail.com>
+Message-ID: <1227742378-sup-558@entry>
+
+Reformatted excerpts from Nick Guenther's message of 2008-11-26:
+> The problem here is that you are asking for libc.so.6 which OpenBSD
+> doesn't have (on my 4.3 system I see ["/usr/lib/libc.so.41.0",
+> "/usr/lib/libc.so.43.0"]).
+
+Someone else just reported this problem too. I wonder whether the best
+solution is your patch (remove the .6) or the patch I was thinking of,
+where we special-case BSD to look for libc.so.43. Does anyone have any
+suggestions?
+
+> I installed the OpenBSD ruby-ncurses package instead and hoped all was
+> well. I am just learning Ruby, but the fact that sup gets past
+> `require 'ncurses'` means that ncurses should be installed right?
+
+I... think so. What's your TERM environment variable set to? Do other
+(color!) ncurses programs work?
+
+> form_wrap.c: In function `field_check':
+> form_wrap.c:1147: error: `true' undeclared (first use in this function)
+
+Do you have both ncurses and ruby development libraries installed? I
+know what they are in Linux world but not in BSD land.
+
+> Anyway, it shouldn't matter that the gem can't install because the
+> ncurses.rb I have installed in site_ruby is newer than the ncurses.rb
+> from the gem, judging from the version line. I don't know what to make
+> of this since at all. I'm not familiar with Ruby yet but if you could
+> point me at a right direction I will probably be able to figure this
+> out.
+
+Yeah, I would ignore the gem issue for now. I suspect that at this point
+it's a matter of tricking the 1970's technology that is ncurses into
+displaying color on your particular environment, by trying different
+TERMs and terminal emulators.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:42:28 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:42:28 -0800
+Subject: [sup-talk] [PATCH] fix class name collision in testcases
+In-Reply-To: <1226425970-7997-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1226425970-7997-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1227742931-sup-1723@entry>
+
+Reformatted excerpts from Rich Lane's message of 2008-11-11:
+> 'rake test' was broken because both testcases' classes had the same
+> name and the setup method was overridden. This patch changes the class
+> name in test_mbox_parsing.
+
+Merged directly to master. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:48:30 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:48:30 -0800
+Subject: [sup-talk] [PATCH] Add a limit:<int> search operator to limit
+	the number of results
+In-Reply-To: <1226855879-69629-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226855879-69629-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227743290-sup-2507@entry>
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:50:54 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:50:54 -0800
+Subject: [sup-talk] [PATCH] decoding rules: ignore ascii-7bit and
+	normalize utf-7
+In-Reply-To: <1226855913-69659-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226855913-69659-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227743449-sup-6466@entry>
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 18:52:00 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 15:52:00 -0800
+Subject: [sup-talk] [PATCH] Allow to hit 'y' to send a draft in
+	thread-view-mode
+In-Reply-To: <1226856732-69997-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1226856732-69997-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1227743478-sup-8034@entry>
+
+Scary. Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:05:13 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:05:13 -0800
+Subject: [sup-talk] migrating email to a new computer
+In-Reply-To: <1227135030-sup-401@buckwheat>
+References: <1227135030-sup-401@buckwheat>
+Message-ID: <1227743600-sup-8882@entry>
+
+Hi Daniel,
+
+Sorry for the delay in replying. I've been moving across country and
+only have sporadic internet access right now.
+
+Reformatted excerpts from Daniel Wagner's message of 2008-11-19:
+> 1. My mail is spread out in hundreds of Maildir directories, most of
+> them "legacy" directories that I want to merge as I migrate.  Can I do
+> this by just copying the mail files from the various "new" and "cur"
+> directories to a central "cur" directory?
+
+I *think* that just moving files from cur/ to cur/ and new/ to new/ will
+work, but moving from new/ to cur/ I think typically changes the
+filename slightly. I don't know if the rename is required or optional
+though. Sup certainly doesn't care, but other tools might.
+
+> 2. A more sup-related question: what things do I need to copy to
+> migrate my labels, read/archived/starred status information, etc?  I
+> definitely want to maintain as much of my mail's metadata as I can.
+
+Since you're doing lots of moving things around, combining sources, and
+upgrading Sup at the same time, I think the best option is going to be
+to rebuild your index from scratch. You can use sup-dump to dump out
+state information into a huge text file, and sup-sync --restored
+--restore should be able to make use of that information to keep your
+message state once your new sources have been created.
+
+But definitely, DEFINITELY test it out first. I haven't tried that stuff
+for a while and it might have experienced bitrot.
+
+> 3. I'm assuming I won't lose anything if I update sup.
+
+Nope. And I can't believe you're still using Sup 0.4!
+
+> I think this topic deserves a wiki page, so I'll write up a summary of
+> any advice I get as well as how my experience goes for future
+> posterity.
+
+That sounds great. Let us know how it goes, and I'll do my best to help
+you though the process if things break. Just be sure to keep a backup of
+everything. Message state is a precious asset.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:11:32 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:11:32 -0800
+Subject: [sup-talk] 'best' mail storage for sup?
+In-Reply-To: <2cb10c440811201035w1a95f7d7y40c335e0c69a96a3@mail.gmail.com>
+References: <2cb10c440811201035w1a95f7d7y40c335e0c69a96a3@mail.gmail.com>
+Message-ID: <1227744630-sup-2415@entry>
+
+Reformatted excerpts from Luis Villa's message of 2008-11-20:
+> If I were going to start a new mail account from scratch, what is
+> preferred/most reliable- mbox or maildir? I assume maildir, but just
+> wanted to check.
+
+Given the recent spate of "From: " problems, Maildir might be a better
+choice at this point. At least until I fix it. But sup-sync-back only
+supports mbox right now, if you care about actually removing deleted and
+spam messages from your mailstore. At least until I fix it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:15:08 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:15:08 -0800
+Subject: [sup-talk] [PATCH] Display a default save path for attachments
+In-Reply-To: <1227466312-sup-6661@sgoldmanlinux.tower-research.com>
+References: <1227466312-sup-6661@sgoldmanlinux.tower-research.com>
+Message-ID: <1227744900-sup-7220@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-23:
+> Let the user specify a default path for saving attachments with
+> :default_attachment_save_dir: in config.yaml, and display this path in
+> front of the filename when saving an attachment in thread view mode.
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:23:24 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:23:24 -0800
+Subject: [sup-talk] [PATCH] make ctrl-c prompt user if sup should die
+	ungracefully
+In-Reply-To: <1227468533-sup-3252@sgoldmanlinux.tower-research.com>
+References: <1227468533-sup-3252@sgoldmanlinux.tower-research.com>
+Message-ID: <1227745395-sup-9416@entry>
+
+Applied, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:29:27 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:29:27 -0800
+Subject: [sup-talk] [PATCH] show matching aliases before email addresses
+	in auto complete
+In-Reply-To: <1227469112-sup-9061@sgoldmanlinux.tower-research.com>
+References: <1227469112-sup-9061@sgoldmanlinux.tower-research.com>
+Message-ID: <1227745738-sup-6571@entry>
+
+Now that's a fine-looking patch. Applied. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:29:45 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:29:45 -0800
+Subject: [sup-talk] [PATCH] git status should ignore emacs temp files
+In-Reply-To: <1227469451-sup-3570@sgoldmanlinux.tower-research.com>
+References: <1227469451-sup-3570@sgoldmanlinux.tower-research.com>
+Message-ID: <1227745771-sup-5375@entry>
+
+Well, ok.... applied. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Nov 26 19:33:33 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Nov 2008 16:33:33 -0800
+Subject: [sup-talk] [PATCH] use offscreen lines for textfield overflow
+In-Reply-To: <1227473953-sup-5646@sgoldmanlinux.tower-research.com>
+References: <1227473953-sup-5646@sgoldmanlinux.tower-research.com>
+Message-ID: <1227745956-sup-4988@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2008-11-23:
+> In the To:, Cc:, Bcc:, etc., prompts, the TextField was initializing
+> an NCurses form with zero offscreen lines.  So when the user typed too
+> many addresses at the prompt the cursor wrapped around and everything
+> they had typed was clobbered.  This patch initializes the form object
+> to have 256 offscreen lines (I had no rationale for 256 except that it
+> is a nice, big power of two).  Now the user can type plenty of names
+> and the wrap-around works as the user would expect.
+
+This is awesome. I've been trying to figure out how to do this for about
+two years. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marcus-sup at bar-coded.net  Thu Nov 27 03:35:47 2008
+From: marcus-sup at bar-coded.net (marcus-sup)
+Date: Thu, 27 Nov 2008 08:35:47 +0000
+Subject: [sup-talk] Allow searching of sup wiki?
+In-Reply-To: <1227742325-sup-9058@entry>
+References: <1226340574-sup-8764@ubuntu> <1226349907-sup-5412@entry>
+	<1227742325-sup-9058@entry>
+Message-ID: <1227774913-sup-1534@tomsk>
+
+On 26.11.2008, William Morgan wrote:
+> Apparently the wikis generate a lot of traffic because of crappy robots,
+> and they're thinking of disabling that feature anyways, so I doubt this
+> will be fixed except by moving the wiki somewhere else.
+
+github perhaps :) Mind you, you'd need to move sup to github as well
+then.... Marcus
+
+From ehabkost at raisama.net  Thu Nov 27 08:46:06 2008
+From: ehabkost at raisama.net (Eduardo Habkost)
+Date: Thu, 27 Nov 2008 11:46:06 -0200
+Subject: [sup-talk] Handling of messages appearing on multiple sources
+In-Reply-To: <1227740974-sup-6395@entry>
+References: <1227547347-sup-6279@blackpad> <1227647755-sup-3231@ausone.local>
+	<20081126213523.GB4628@blackpad> <1227740974-sup-6395@entry>
+Message-ID: <1227791474-sup-2961@blackpad>
+
+Excerpts from William Morgan's message of Qua Nov 26 21:31:27 -0200 2008:
+> Reformatted excerpts from Eduardo Habkost's message of 2008-11-26:
+> > I would even argue that adding the tags configured for both sources
+> > should be the default, but I don't know if there are users relying on
+> > the current behavior, today. What do you think?
+> 
+> Actually, I think you're right. I don't know that there's a reason, at
+> least during normal operation, to discard previous index state.
+
+It doesn't discard previous index state, currently. The problem is the
+inverse: it uses the previous index state and doesn't add any other
+label to an alrady indexed message.
+
+> 
+> Can you try the attached patch and see if it fixes the problem?
+
+It seems to do exactly what I want for new messages, but won't it break
+the ability to keep unread/inbox state unchanged if I use --all on
+sup-sync? I wouldn't like to all my archived messages to pop on inbox
+again if I specify --all. Sometimes I specify --all because messages
+were moved between sources, but I want to keep their archived/read state.
+
+> 
+> > But as an user, I expect that a message appearing on both a non-inbox
+> > source and an inbox source would get into the inbox. The problem would
+> > be handling a message appearing on an inbox source after the user have
+> > archived it. On this case, the user may expect the message to not
+> > appear on the inbox again (I am not sure what would be more
+> > intuitive).
+> 
+> Well, it's an ambiguous situation, and I'm generally happy in ambiguous
+> situations to take the simplest (to implement!) approach, which in this
+> case is to pop it back into the inbox.
+
+On the specific case of a message delivered to multiple sources, I
+agree. But if messages were just moved or copied between mailboxes,
+the user may want to keep the current archived/unread state. Actually,
+the archived/read state is currently the most important data the Sup
+index carries for me.
+
+Ouch, that's complicated.  8)
+
+I think the problem here is that the unread/inbox labels are special
+in a way: for most labels, I don't care if Sup adds them to my messages
+in addition to the current labels. But I would really care if the
+inbox/unread labels were re-added to my messages when I didn't expect it.
+
+Maybe this could be solved by forcing the user to be extra careful when
+moving messages between sources. But the current ability to simply move
+messages around and just use --all on sup-sync is a killer feature to
+me. I wouldn't like to break it.
+
+> 
+> > Additionally, I think it would be nice if sup were aware of when the
+> > message appears multiple times on the sources, instead of rewriting
+> > the source and offset fields. Most times the user doesn't need to be
+> > aware there are multiple versions of a message, but when checking
+> > message headers or other small details of messages coming from
+> > different paths, it would be useful to have both versions available.
+> 
+> I think I agree. STS (the apocryphal new version of Sup) probably won't
+> canonicalize by message id like Sup does.
+
+However, having some sort of message-id-based state seems to be useful
+for backing up and restoring state or when moving messages between
+sources, because it is the only thing that identify messages when they
+are moved around.
+
+The way it is implemented can change, but as an user I like the way sup
+presents messages with the same message-id as a single entity. Even if
+stored on different places or having some differences, they are the same
+message, after all.
+-- 
+Eduardo
+
+From daniel at wagner-home.com  Thu Nov 27 21:25:21 2008
+From: daniel at wagner-home.com (Daniel Wagner)
+Date: Thu, 27 Nov 2008 21:25:21 -0500
+Subject: [sup-talk] migrating email to a new computer
+In-Reply-To: <1227135030-sup-401@buckwheat>
+References: <1227135030-sup-401@buckwheat>
+Message-ID: <1227838973-sup-9122@buckwheat>
+
+Much thanks to Nicolas and William.  I'm just entering final projects
+season in school, so I may put off this project about a week or two
+longer, but will keep these messages +inbox until then. =)
+
+~d
+

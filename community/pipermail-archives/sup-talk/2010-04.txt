@@ -1,0 +1,4031 @@
+From richard at infoarts.info  Fri Apr  2 19:54:18 2010
+From: richard at infoarts.info (Richard Sandilands)
+Date: Sat, 3 Apr 2010 10:54:18 +1100
+Subject: [sup-talk] Still having wide character issues on OS X
+Message-ID: <t2q2e8d08f1004021654ydf7df351h1693b4b4cf0d4d12@mail.gmail.com>
+
+Hi there
+
+I'm tracking the next branch of Sup and it's working beautifully.
+However I still can't work out how to get wide character support  in
+OS X (Snow Leopard).
+
+I've tried installing the ncursesw gem but the installation fails:
+
+***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.
+checking for wmove() in -lncursesw... no
+checking for wmove() in -lpdcurses... no
+***
+
+I'd love to get this working. Is there anyone out there on OS X that
+has solved the wide character issue and would be able to provide step
+by step instructions on getting it working?
+
+Many thanks
+
+-- 
+Richard
+
+From eliecartan at mailworks.org  Mon Apr  5 20:27:32 2010
+From: eliecartan at mailworks.org (E. Cartan)
+Date: Mon, 5 Apr 2010 19:27:32 -0500
+Subject: [sup-talk] help with color changes [ colorpicker.rb / color.yaml ]
+Message-ID: <20100406002732.GA2293@katowice>
+
+
+
+  I would like to make a single change in the default colour scheme,
+  to improve the visibility of the currently selected message in the 
+  "thread-view" mode. 
+
+  The default "thread-view" is black characters on  a light blue background.  
+  Somehow when viewing a thread I get 3 colors for background (light blue, 
+  purple [or darker blue], green), unlike here
+
+          http://sup.rubyforge.org/ss3.png    and
+          http://sup.rubyforge.org/ss3.png    
+
+  where only two background colors (in addition to black) seem to be
+  in use.
+
+  I read that a certain ruby file contrib/colorpicker.rb is helpful
+  for making color changes, but I don't know how to run it (in fact
+  I have not been able to locate it in my gem installation of sup,
+  but I presume I may just copy it from somewhere where I have seen it).
+
+  I'll appreciate being told how to use colorpicker.rb  or alternatively
+  how to configure color.yaml, or perhaps a sample color.yalm to imitate.  
+
+  Thanks in advance,
+  E.C.
+   
+  
+   
+
+From anirudh at anirudhsanjeev.org  Thu Apr  1 05:31:22 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Thu, 01 Apr 2010 15:01:22 +0530
+Subject: [sup-talk] Workflow questions
+Message-ID: <1270113050-sup-7123@deepthought>
+
+Hi,
+
+I've been using sup exclusively for four months now, and it's working
+great! I sat down and was watching my email workflow and wanted to know how
+other sup users work with their email.
+
+A. Reading email in the middle of compose:
+This is my number one concern. I use vim to write my email, and since sup
+makes a blocking call, I am unable to read my email while composing. The
+only way I know how to do this right now is to quit my editor, hit ";" to
+switch to inbox buffer and read the other emails.
+
+I was hoping that this workflow would be refactored into something like
+this:
+1. User hits a key on message he/she wants to reply to.
+2. A file is created and a background process is launched (gvim remote,
+emacs, etc) opening this file.
+3. User edits file, maybe creates more replies, and edits each
+individually.
+4. Hitting "y" on a message which user had been composing will pull the
+latest saved file and load it into compose mode.
+5. Hitting "y" again will send it.
+
+If you folks have workarounds for this issue, I'd love to hear it. My
+current hack which I'm trying to fix up is to use the publish hook to quote
+each message into a temporary file, edit that file, and pull text from that
+file when sup invokes my editor to reply.
+
+B. Contacts:
+I don't know if this is the appropriate way to do it, but when I want to
+write a new email to a contact, I hit "C" and search for the name, and "M"
+again and again till the lazy loading finally finds the name I'm looking
+for.
+
+The system works great, although I wish there was some functionality to
+search all contacts without loading all of them first.
+
+Whenever I need to include a new email address while composing, I need to
+go back to my contacts list which can be quite cumbersome. I was hoping
+that Vim's insert mode dictionary completion feature can be used. If all
+the contacts are available in one file in the name <emailaddress> format, I
+can simply say:
+
+set dictionary += ~/.sup/contacts.txt
+And instantly gain completion capabilities.
+
+Thanks,
+Anirudh
+-- 
+Senior Undergraduate Student, Indian Institute of Technology, Kharagpur
+http://anirudhsanjeev.org
+
+The Unix philosophy - Do one thing. Do it well.
+
+From neil.stewart at warwick.ac.uk  Tue Apr  6 10:13:43 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Tue, 6 Apr 2010 15:13:43 +0100 (BST)
+Subject: [sup-talk] sent mail
+Message-ID: <alpine.DEB.1.10.1004061507350.20726@stewart.warwick.ac.uk>
+
+I'm a new sup user. It is great. I'd like to ask what is the 'right way' to
+set up my sent mail. I have a single mbox file sent-mail that contains many
+messages from my pre-sup days. I'd like to add messages sent with sup to the
+end of this file.
+
+I've tried choosing this file with sup-config for storing my sent mail, but
+sup crashes after the mail is sent without adding to the file (see
+http://masanjin.net/sup-bugs/issue89).
+
+I've tried linking ~/.sup/sent.mbox to sent-mail. Now sup doesn't crash and
+it adds mail to sent-mail. But the sent mail appears in my inbox because it
+has the inbox label.
+
+Can anyone offer a few pointers on how to append sent mail to my existing
+send-mail file, have the old sent mail in that file labeled as sent and
+searchable, and not have sent messages appear in my inbox? All comments most
+welcome.
+
+Thank you,
+Neil.
+
+
+From michael+sup at stapelberg.de  Tue Apr  6 12:23:34 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 06 Apr 2010 18:23:34 +0200
+Subject: [sup-talk] sent mail
+In-Reply-To: <alpine.DEB.1.10.1004061507350.20726@stewart.warwick.ac.uk>
+References: <alpine.DEB.1.10.1004061507350.20726@stewart.warwick.ac.uk>
+Message-ID: <1270570926-sup-5038@midna.zekjur.net>
+
+Hi Neil,
+
+Excerpts from Neil Stewart's message of 2010-04-06 16:13:43 +0200:
+> messages from my pre-sup days. I'd like to add messages sent with sup to the
+> end of this file.
+Are you sure about that? mbox files can easily get very large and it?s a pain
+to parse/handle them. I would really recommend maildir, you can use mb2md
+to convert an existing mbox file to a maildir folder.
+
+> it adds mail to sent-mail. But the sent mail appears in my inbox because it
+> has the inbox label.
+In sup 0.11, sent mail does not get the inbox label anymore (AFAIK). Are you
+using 0.11?
+
+Best regards,
+Michael
+
+From shreyankg at gmail.com  Tue Apr  6 12:24:17 2010
+From: shreyankg at gmail.com (shreyankg at gmail.com)
+Date: Tue, 6 Apr 2010 21:54:17 +0530
+Subject: [sup-talk] Workflow questions
+In-Reply-To: <1270113050-sup-7123@deepthought>
+References: <1270113050-sup-7123@deepthought>
+Message-ID: <w2g8b854d6b1004060924t2cb750c7gd82f86e871e29ed3@mail.gmail.com>
+
+On Thu, Apr 1, 2010 at 3:01 PM, Anirudh Sanjeev
+<anirudh at anirudhsanjeev.org> wrote:
+> Hi,
+>
+> I've been using sup exclusively for four months now, and it's working
+> great! I sat down and was watching my email workflow and wanted to know how
+> other sup users work with their email.
+>
+> A. Reading email in the middle of compose:
+> This is my number one concern. I use vim to write my email, and since sup
+> makes a blocking call, I am unable to read my email while composing. The
+> only way I know how to do this right now is to quit my editor, hit ";" to
+> switch to inbox buffer and read the other emails.
+>
+> I was hoping that this workflow would be refactored into something like
+> this:
+> 1. User hits a key on message he/she wants to reply to.
+> 2. A file is created and a background process is launched (gvim remote,
+> emacs, etc) opening this file.
+> 3. User edits file, maybe creates more replies, and edits each
+> individually.
+> 4. Hitting "y" on a message which user had been composing will pull the
+> latest saved file and load it into compose mode.
+> 5. Hitting "y" again will send it.
+>
+> If you folks have workarounds for this issue, I'd love to hear it. My
+> current hack which I'm trying to fix up is to use the publish hook to quote
+> each message into a temporary file, edit that file, and pull text from that
+> file when sup invokes my editor to reply.
+Hi,
+Even I am facing this issue.
+Another alternative could be to push sup into a background process
+while invoking vim/any_other_editor in the foreground. And have some
+sort of bindings to switch between vim and the background sup process
+(don't know how that works). Finish editing and quitting would land
+you to the updated reply buffer in sup.
+
+>
+> B. Contacts:
+> I don't know if this is the appropriate way to do it, but when I want to
+> write a new email to a contact, I hit "C" and search for the name, and "M"
+> again and again till the lazy loading finally finds the name I'm looking
+> for.
+>
+> The system works great, although I wish there was some functionality to
+> search all contacts without loading all of them first.
+I use tab completion after pressing 'c' to compose new mail. Although
+tab completion is nor substitute for search, I agree.
+
+>
+> Whenever I need to include a new email address while composing, I need to
+> go back to my contacts list which can be quite cumbersome. I was hoping
+> that Vim's insert mode dictionary completion feature can be used. If all
+> the contacts are available in one file in the name <emailaddress> format, I
+> can simply say:
+>
+> set dictionary += ~/.sup/contacts.txt
+> And instantly gain completion capabilities.
+Seems like a good idea.
+Also it could be handy if some sort of dynamic search could be added
+while you are typing down the 'To'/'Cc' field after starting to
+compose a new mail by pressing 'c'.
+
+
+
+
+-- 
+Peace and Love,
+Shreyank Gupta
+Blog: http://allsortsofshrink.blogspot.com
+
+From sup-talk at ryanb.org  Thu Apr  8 05:40:32 2010
+From: sup-talk at ryanb.org (Ryan Barrett)
+Date: Thu, 8 Apr 2010 02:40:32 -0700 (PDT)
+Subject: [sup-talk] current state of synching upstream?
+Message-ID: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+
+hi all! i've been looking forward to trying sup since i first heard about it a 
+couple years ago, and i'm getting pretty close. one of my few remaining 
+concerns is using sup in parallel with other mail clients, including sup 
+itself.
+
+i know best practice is to just use one sup installation and no other clients, 
+but i also know that synching back upstream is a frequent topic here. i've seen 
+the discussions of sup-sync --changed, sup-sync-back, maildir + offlineimap 
+etc. i'm mostly looking to hear about the current state. is anyone 
+successfully running sup synched with another sup or other client? if so, how?
+
+it seems like people have generally agreed that the best approach is to make 
+sup-sync-back support maildir, and then use offlineimap to sync from maildir 
+to the source. is that still true? cc'ing scott henson, who mentioned he was 
+working on maildir sync in january.
+
+http://rubyforge.org/pipermail/sup-talk/2010-January/003761.html
+
+more background:
+
+http://rubyforge.org/pipermail/sup-talk/2009-April/002126.html
+
+http://rubyforge.org/pipermail/sup-talk/2009-July/002567.html
+
+-Ryan
+
+--
+http://snarfed.org/
+
+From neil.stewart at warwick.ac.uk  Thu Apr  8 06:08:31 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Thu, 8 Apr 2010 11:08:31 +0100 (BST)
+Subject: [sup-talk] sent mail
+Message-ID: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+
+Hi Michael,
+
+> Are you sure about that? mbox files can easily get very large and it's a
+> pain to parse/handle them. I would really recommend maildir, you can use
+> mb2md to convert an existing mbox file to a maildir folder.
+
+I shall give this a serious look. Thanks for the tip.
+
+> In sup 0.11, sent mail does not get the inbox label anymore (AFAIK). Are you
+> using 0.11?
+
+I'm using 0.10.2-1 from Debian testing. I've had a go at getting 0.11, but
+it's not available in Debian. I've failed to compile it several times using
+"gems install sup". I finally got it to work using ruby1.9, but can't work
+out how to run sup. I tried
+
+# /var/lib/gems/1.9.0/bin/sup
+/var/lib/gems/1.9.0/gems/sup-0.11/lib/sup/util.rb:2:in `require': /var/lib/gems/1.9.0/gems/lockfile-1.4.3/lib/lockfile.rb:454: syntax error, unexpected ']' (SyntaxError)
+/var/lib/gems/1.9.0/gems/lockfile-1.4.3/lib/lockfile.rb:564: syntax error, unexpected $end, expecting keyword_end
+         from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup/util.rb:2:in `<top (required)>'
+         from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup.rb:277:in `require'
+         from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup.rb:277:in `<top (required)>'
+         from /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup:15:in `require'
+         from /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup:15:in `<top (required)>'
+         from /var/lib/gems/1.9.0/bin/sup:19:in `load'
+         from /var/lib/gems/1.9.0/bin/sup:19:in `<main>'
+
+which fails and
+
+# /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup
+/usr/bin/env: ruby: No such file or directory
+
+which fails.
+
+I was going to try rubyforge, but it only lists 0.10.2 and earlier.
+
+Being new to ruby is not helping! I'll have a go at compiling the
+development version from the git repository.
+
+Thank you for your help.
+
+Best,
+Neil.
+
+From neil.stewart at warwick.ac.uk  Thu Apr  8 06:49:46 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Thu, 8 Apr 2010 11:49:46 +0100 (BST)
+Subject: [sup-talk] gem install sup fail
+Message-ID: <alpine.DEB.1.10.1004081146590.23329@stewart.warwick.ac.uk>
+
+So I'm trying to install sup-0.11 and am having trouble. I think my install
+went okay:
+
+# gem install sup
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+Successfully installed xapian-full-1.1.3.4
+Successfully installed ncurses-0.9.1
+Successfully installed rmail-1.0.0
+Successfully installed highline-1.5.2
+Successfully installed net-ssh-2.0.21
+Successfully installed trollop-1.16.2
+Successfully installed lockfile-1.4.3
+Successfully installed mime-types-1.16
+Successfully installed locale-2.0.5
+Successfully installed gettext-2.1.0
+Successfully installed sup-0.11
+11 gems installed
+Installing ri documentation for xapian-full-1.1.3.4...
+Installing ri documentation for ncurses-0.9.1...
+Installing ri documentation for rmail-1.0.0...
+Installing ri documentation for highline-1.5.2...
+Installing ri documentation for net-ssh-2.0.21...
+Installing ri documentation for trollop-1.16.2...
+Installing ri documentation for lockfile-1.4.3...
+Installing ri documentation for mime-types-1.16...
+Installing ri documentation for locale-2.0.5...
+Installing ri documentation for gettext-2.1.0...
+Installing ri documentation for sup-0.11...
+Installing RDoc documentation for xapian-full-1.1.3.4...
+Installing RDoc documentation for ncurses-0.9.1...
+Installing RDoc documentation for rmail-1.0.0...
+Installing RDoc documentation for highline-1.5.2...
+Installing RDoc documentation for net-ssh-2.0.21...
+Installing RDoc documentation for trollop-1.16.2...
+Installing RDoc documentation for lockfile-1.4.3...
+Installing RDoc documentation for mime-types-1.16...
+Installing RDoc documentation for locale-2.0.5...
+Installing RDoc documentation for gettext-2.1.0...
+Installing RDoc documentation for sup-0.11...
+
+But how do I run sup? This fails:
+
+# /var/lib/gems/1.8/bin/sup
+/usr/lib/ruby/1.8/rubygems.rb:578:in `report_activate_error': Could not find
+/RubyGem archive-tar-minitar (~> 0.5) (Gem::LoadError)
+         from /usr/lib/ruby/1.8/rubygems.rb:134:in `activate'
+         from /usr/lib/ruby/1.8/rubygems.rb:158:in `activate'
+         from /usr/lib/ruby/1.8/rubygems.rb:157:in `each'
+         from /usr/lib/ruby/1.8/rubygems.rb:157:in `activate'
+         from /usr/lib/ruby/1.8/rubygems.rb:158:in `activate'
+         from /usr/lib/ruby/1.8/rubygems.rb:157:in `each'
+         from /usr/lib/ruby/1.8/rubygems.rb:157:in `activate'
+         from /usr/lib/ruby/1.8/rubygems.rb:49:in `gem'
+         from /var/lib/gems/1.8/bin/sup:18
+
+Any comments would be much appreciated---sup seems too good for me to give
+up now!
+
+Best,
+Neil.
+
+From neil.stewart at warwick.ac.uk  Thu Apr  8 08:04:48 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Thu, 8 Apr 2010 13:04:48 +0100 (BST)
+Subject: [sup-talk] gem install sup fail
+In-Reply-To: <alpine.DEB.1.10.1004081146590.23329@stewart.warwick.ac.uk>
+References: <alpine.DEB.1.10.1004081146590.23329@stewart.warwick.ac.uk>
+Message-ID: <alpine.DEB.1.10.1004081300340.23329@stewart.warwick.ac.uk>
+
+So I've installed a load of gems
+
+# gem list --local
+
+*** LOCAL GEMS ***
+
+archive-tar-minitar (0.5.2)
+gettext (2.1.0)
+highline (1.5.2)
+hoe (2.6.0)
+json_pure (1.2.4)
+locale (2.0.5)
+lockfile (1.4.3)
+mime-types (1.16)
+ncurses (0.9.1)
+net-ssh (2.0.21)
+nokogiri (1.4.1)
+racc (1.4.6)
+rake (0.8.7)
+rexical (1.0.4)
+rmail (1.0.0)
+rubyforge (2.0.4)
+sup (0.11)
+trollop (1.16.2)
+xapian-full (1.1.3.4)
+
+which fixes my earlier problem:
+
+> But how do I run sup? This fails:
+>
+> # /var/lib/gems/1.8/bin/sup
+> /usr/lib/ruby/1.8/rubygems.rb:578:in `report_activate_error': Could not find
+> /RubyGem archive-tar-minitar (~> 0.5) (Gem::LoadError)
+>        from /usr/lib/ruby/1.8/rubygems.rb:134:in `activate'
+>        from /usr/lib/ruby/1.8/rubygems.rb:158:in `activate'
+>        from /usr/lib/ruby/1.8/rubygems.rb:157:in `each'
+>        from /usr/lib/ruby/1.8/rubygems.rb:157:in `activate'
+>        from /usr/lib/ruby/1.8/rubygems.rb:158:in `activate'
+>        from /usr/lib/ruby/1.8/rubygems.rb:157:in `each'
+>        from /usr/lib/ruby/1.8/rubygems.rb:157:in `activate'
+>        from /usr/lib/ruby/1.8/rubygems.rb:49:in `gem'
+>        from /var/lib/gems/1.8/bin/sup:18
+
+I had to upgrade to gem 1.3.5 from debian testing to get the hoe gem to
+install.
+
+Now I'm getting a new error:
+
+# /var/lib/gems/1.8/bin/sup
+/usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require':
+/no such file to load -- openssl (LoadError)
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from
+         /var/lib/gems/1.8/gems/net-ssh-2.0.21/lib/net/ssh/transport/openssl.rb:1
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/net-ssh-2.0.21/lib/net/ssh/buffer.rb:2
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+         `gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from
+         /var/lib/gems/1.8/gems/net-ssh-2.0.21/lib/net/ssh/transport/algorithms.rb:1
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from
+         /var/lib/gems/1.8/gems/net-ssh-2.0.21/lib/net/ssh/transport/session.rb:7
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/net-ssh-2.0.21/lib/net/ssh.rb:10
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+         `gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/sup-0.11/lib/sup/mbox/ssh-file.rb:1
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+         `gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/sup-0.11/lib/sup/mbox.rb:2
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+         `gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:309
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+         `gem_original_require'
+         from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+         from /var/lib/gems/1.8/gems/sup-0.11/bin/sup:15
+         from /var/lib/gems/1.8/bin/sup:19:in `load'
+         from /var/lib/gems/1.8/bin/sup:19
+
+I've got openssl installed
+
+# dpkg -l | grep openssl
+ii  openssl                              0.9.8g-15+lenny6           Secure Socket Layer (SSL) binary and related
+ii  openssl-blacklist                    0.4.2                      list of blacklisted OpenSSL RSA keys
+
+but I don't think that's the problem.
+
+And help getting sup-0.11 running, in any form, very much appreciated!
+
+Best,
+Neil.
+
+
+From rgh at topikality.com  Thu Apr  8 08:01:27 2010
+From: rgh at topikality.com (Richard Heycock)
+Date: Thu, 08 Apr 2010 22:01:27 +1000
+Subject: [sup-talk] sent mail
+In-Reply-To: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+Message-ID: <1270727373-sup-8902@roughage.com.au>
+
+Excerpts from Neil Stewart's message of 2010-04-08 20:08:31 +1000:
+> Hi Michael,
+> 
+> > Are you sure about that? mbox files can easily get very large and it's a
+> > pain to parse/handle them. I would really recommend maildir, you can use
+> > mb2md to convert an existing mbox file to a maildir folder.
+> 
+> I shall give this a serious look. Thanks for the tip.
+> 
+> > In sup 0.11, sent mail does not get the inbox label anymore (AFAIK). Are you
+> > using 0.11?
+> 
+> I'm using 0.10.2-1 from Debian testing. I've had a go at getting 0.11, but
+> it's not available in Debian. I've failed to compile it several times using
+> "gems install sup". I finally got it to work using ruby1.9, but can't work
+> out how to run sup. I tried
+
+"gem install sup" will put a script in /usr/bin so you should be able to
+simply type sup. If you have multiple versions of ruby you might have
+problems but if you invoke it thus: /path/to/ruby /usr/bin/sup you
+should be right.
+
+> # /var/lib/gems/1.9.0/bin/sup
+> /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup/util.rb:2:in `require': /var/lib/gems/1.9.0/gems/lockfile-1.4.3/lib/lockfile.rb:454: syntax error, unexpected ']' (SyntaxError)
+> /var/lib/gems/1.9.0/gems/lockfile-1.4.3/lib/lockfile.rb:564: syntax error, unexpected $end, expecting keyword_end
+>          from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup/util.rb:2:in `<top (required)>'
+>          from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup.rb:277:in `require'
+>          from /var/lib/gems/1.9.0/gems/sup-0.11/lib/sup.rb:277:in `<top (required)>'
+>          from /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup:15:in `require'
+>          from /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup:15:in `<top (required)>'
+>          from /var/lib/gems/1.9.0/bin/sup:19:in `load'
+>          from /var/lib/gems/1.9.0/bin/sup:19:in `<main>'
+> 
+> which fails and
+> 
+> # /var/lib/gems/1.9.0/gems/sup-0.11/bin/sup
+> /usr/bin/env: ruby: No such file or directory
+> 
+> which fails.
+> 
+> I was going to try rubyforge, but it only lists 0.10.2 and earlier.
+> 
+> Being new to ruby is not helping! I'll have a go at compiling the
+> development version from the git repository.
+> 
+> Thank you for your help.
+> 
+> Best,
+> Neil.
+
+Not sure if this helps but you really don't want to be using ruby 1.9.0
+the latest is ruby-1.9.1-p376. If you want to install using Debian
+packages they are in testing.
+
+    apt-get install rubygems1.9.1 ruby1.9.1-dev rdoc1.9.1 irb1.9.1
+
+should see you right.
+
+rgh
+-- 
+Richard Heycock
+
+http://topikality.com
+
++61 (0) 410 646 369
+[e]:  rgh at topikality.com
+[im]: rgh at topikality.com
+
+From neil.stewart at warwick.ac.uk  Thu Apr  8 08:54:01 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Thu, 8 Apr 2010 13:54:01 +0100 (BST)
+Subject: [sup-talk] sent mail
+In-Reply-To: <1270727373-sup-8902@roughage.com.au>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+Message-ID: <alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+
+Hi Richard,
+
+> Not sure if this helps but you really don't want to be using ruby 1.9.0
+> the latest is ruby-1.9.1-p376. If you want to install using Debian
+> packages they are in testing.
+>
+>    apt-get install rubygems1.9.1 ruby1.9.1-dev rdoc1.9.1 irb1.9.1
+>
+> should see you right.
+
+Thanks for the pointers. I've got the right ruby packages now.
+
+# dpkg -l | grep ruby
+ii  libreadline-ruby1.9.1                1.9.1.378-1                Readline interface for Ruby 1.9.1
+ii  libruby1.9.1                         1.9.1.378-1                Libraries necessary to run Ruby 1.9.1
+ii  ruby1.9.1                            1.9.1.378-1                Interpreter of object-oriented scripting lan
+ii  ruby1.9.1-dev                        1.9.1.378-1                Header files for compiling extension modules
+ii  rubygems1.9.1                        1.3.5-2                    package management framework for Ruby librar
+
+> "gem install sup" will put a script in /usr/bin so you should be able to
+> simply type sup. If you have multiple versions of ruby you might have
+> problems but if you invoke it thus: /path/to/ruby /usr/bin/sup you
+> should be right.
+
+"gem install sup" seems to be failing on ncurses.
+
+# gem install sup
+Building native extensions.  This could take a while...
+ERROR:  Error installing sup:
+         ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.9.1 extconf.rb
+checking for unistd.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncurses... yes
+checking for newscr()... yes
+checking for TABSIZE()... yes
+checking for ESCDELAY()... yes
+checking for keybound()... yes
+checking for curses_version()... yes
+[SNIP]
+checking for new_form() in -lform... yes
+creating Makefile
+
+make
+Makefile:158: warning: overriding commands for target
+`/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+Makefile:156: warning: ignoring old commands for target
+`/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+cc -I. -I/usr/include/ruby-1.9.1/x86_64-linux
+-I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I.
+-DHAVE_UNISTD_H -DHAVE_NCURSES_H -DHAVE_NEWSCR -DHAVE_TABSIZE
+-DHAVE_ESCDELAY -DHAVE_KEYBOUND -DHAVE_CURSES_VERSION -DHAVE_TIGETSTR
+-DHAVE_GETWIN -DHAVE_PUTWIN -DHAVE_UNGETMOUSE -DHAVE_MOUSEMASK
+-DHAVE_WENCLOSE -DHAVE_MOUSEINTERVAL -DHAVE_WMOUSE_TRAFO -DHAVE_MCPRINT
+-DHAVE_HAS_KEY -DHAVE_DELSCREEN -DHAVE_DEFINE_KEY -DHAVE_KEYOK
+-DHAVE_RESIZETERM -DHAVE_USE_DEFAULT_COLORS -DHAVE_USE_EXTENDED_NAMES
+-DHAVE_WRESIZE -DHAVE_ATTR_ON -DHAVE_ATTR_OFF -DHAVE_ATTR_SET -DHAVE_CHGAT
+-DHAVE_COLOR_SET -DHAVE_FILTER -DHAVE_INTRFLUSH -DHAVE_MVCHGAT
+-DHAVE_MVHLINE -DHAVE_MVVLINE -DHAVE_MVWCHGAT -DHAVE_MVWHLINE
+-DHAVE_MVWVLINE -DHAVE_NOQIFLUSH -DHAVE_PUTP -DHAVE_QIFLUSH -DHAVE_SCR_DUMP
+-DHAVE_SCR_INIT -DHAVE_SCR_RESTORE -DHAVE_SCR_SET -DHAVE_SLK_ATTR
+-DHAVE_SLK_ATTR_SET -DHAVE_SLK_COLOR -DHAVE_TIGETFLAG -DHAVE_TIGETNUM
+-DHAVE_USE_ENV -DHAVE_VIDATTR -DHAVE_WATTR_ON -DHAVE_WATTR_OFF
+-DHAVE_WATTR_SET -DHAVE_WCHGAT -DHAVE_WCOLOR_SET -DHAVE_GETATTRS
+-DHAVE_ASSUME_DEFAULT_COLORS -DHAVE_ATTR_GET -DHAVE_PANEL_H -DHAVE_FORM_H
+-fPIC -fno-strict-aliasing -g -g -O2 -O2 -g -Wall -Wno-parentheses  -fPIC -g
+-o form_wrap.o -c form_wrap.c
+form_wrap.c: In function 'rbncurs_m_new_form':
+form_wrap.c:395: error: 'struct RArray' has no member named 'len'
+form_wrap.c: In function 'rbncurs_c_set_field_type':
+form_wrap.c:619: error: 'struct RArray' has no member named 'len'
+form_wrap.c: In function 'rbncurs_c_set_form_fields':
+form_wrap.c:778: error: 'struct RArray' has no member named 'len'
+form_wrap.c: In function 'make_arg':
+form_wrap.c:1126: error: 'struct RArray' has no member named 'len'
+make: *** [form_wrap.o] Error 1
+
+
+Gem files will remain installed in /var/lib/gems/1.9.1/gems/ncurses-0.9.1
+for inspection.
+Results logged to /var/lib/gems/1.9.1/gems/ncurses-0.9.1/gem_make.out
+
+
+I get pretty much identical output from "gem install ncurses", so I suspect
+the problem is not even a sup issue. Am I doing something terribly wrong?
+All comments most welcome.
+
+Best,
+Neil.
+
+
+From rgh at topikality.com  Thu Apr  8 09:27:28 2010
+From: rgh at topikality.com (Richard Heycock)
+Date: Thu, 08 Apr 2010 23:27:28 +1000
+Subject: [sup-talk] sent mail
+In-Reply-To: <alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+	<alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+Message-ID: <1270731588-sup-6397@roughage.com.au>
+
+Excerpts from Neil Stewart's message of 2010-04-08 22:54:01 +1000:
+> Hi Richard,
+> 
+> > Not sure if this helps but you really don't want to be using ruby 1.9.0
+> > the latest is ruby-1.9.1-p376. If you want to install using Debian
+> > packages they are in testing.
+> >
+> >    apt-get install rubygems1.9.1 ruby1.9.1-dev rdoc1.9.1 irb1.9.1
+> >
+> > should see you right.
+> 
+> Thanks for the pointers. I've got the right ruby packages now.
+> 
+> # dpkg -l | grep ruby
+> ii  libreadline-ruby1.9.1                1.9.1.378-1                Readline interface for Ruby 1.9.1
+> ii  libruby1.9.1                         1.9.1.378-1                Libraries necessary to run Ruby 1.9.1
+> ii  ruby1.9.1                            1.9.1.378-1                Interpreter of object-oriented scripting lan
+> ii  ruby1.9.1-dev                        1.9.1.378-1                Header files for compiling extension modules
+> ii  rubygems1.9.1                        1.3.5-2                    package management framework for Ruby librar
+> 
+> > "gem install sup" will put a script in /usr/bin so you should be able to
+> > simply type sup. If you have multiple versions of ruby you might have
+> > problems but if you invoke it thus: /path/to/ruby /usr/bin/sup you
+> > should be right.
+> 
+> "gem install sup" seems to be failing on ncurses.
+> 
+> # gem install sup
+> Building native extensions.  This could take a while...
+> ERROR:  Error installing sup:
+>          ERROR: Failed to build gem native extension.
+> 
+> /usr/bin/ruby1.9.1 extconf.rb
+> checking for unistd.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncurses... yes
+> checking for newscr()... yes
+> checking for TABSIZE()... yes
+> checking for ESCDELAY()... yes
+> checking for keybound()... yes
+> checking for curses_version()... yes
+> [SNIP]
+> checking for new_form() in -lform... yes
+> creating Makefile
+> 
+> make
+> Makefile:158: warning: overriding commands for target
+> `/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+> Makefile:156: warning: ignoring old commands for target
+> `/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+> cc -I. -I/usr/include/ruby-1.9.1/x86_64-linux
+> -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I.
+> -DHAVE_UNISTD_H -DHAVE_NCURSES_H -DHAVE_NEWSCR -DHAVE_TABSIZE
+> -DHAVE_ESCDELAY -DHAVE_KEYBOUND -DHAVE_CURSES_VERSION -DHAVE_TIGETSTR
+> -DHAVE_GETWIN -DHAVE_PUTWIN -DHAVE_UNGETMOUSE -DHAVE_MOUSEMASK
+> -DHAVE_WENCLOSE -DHAVE_MOUSEINTERVAL -DHAVE_WMOUSE_TRAFO -DHAVE_MCPRINT
+> -DHAVE_HAS_KEY -DHAVE_DELSCREEN -DHAVE_DEFINE_KEY -DHAVE_KEYOK
+> -DHAVE_RESIZETERM -DHAVE_USE_DEFAULT_COLORS -DHAVE_USE_EXTENDED_NAMES
+> -DHAVE_WRESIZE -DHAVE_ATTR_ON -DHAVE_ATTR_OFF -DHAVE_ATTR_SET -DHAVE_CHGAT
+> -DHAVE_COLOR_SET -DHAVE_FILTER -DHAVE_INTRFLUSH -DHAVE_MVCHGAT
+> -DHAVE_MVHLINE -DHAVE_MVVLINE -DHAVE_MVWCHGAT -DHAVE_MVWHLINE
+> -DHAVE_MVWVLINE -DHAVE_NOQIFLUSH -DHAVE_PUTP -DHAVE_QIFLUSH -DHAVE_SCR_DUMP
+> -DHAVE_SCR_INIT -DHAVE_SCR_RESTORE -DHAVE_SCR_SET -DHAVE_SLK_ATTR
+> -DHAVE_SLK_ATTR_SET -DHAVE_SLK_COLOR -DHAVE_TIGETFLAG -DHAVE_TIGETNUM
+> -DHAVE_USE_ENV -DHAVE_VIDATTR -DHAVE_WATTR_ON -DHAVE_WATTR_OFF
+> -DHAVE_WATTR_SET -DHAVE_WCHGAT -DHAVE_WCOLOR_SET -DHAVE_GETATTRS
+> -DHAVE_ASSUME_DEFAULT_COLORS -DHAVE_ATTR_GET -DHAVE_PANEL_H -DHAVE_FORM_H
+> -fPIC -fno-strict-aliasing -g -g -O2 -O2 -g -Wall -Wno-parentheses  -fPIC -g
+> -o form_wrap.o -c form_wrap.c
+> form_wrap.c: In function 'rbncurs_m_new_form':
+> form_wrap.c:395: error: 'struct RArray' has no member named 'len'
+> form_wrap.c: In function 'rbncurs_c_set_field_type':
+> form_wrap.c:619: error: 'struct RArray' has no member named 'len'
+> form_wrap.c: In function 'rbncurs_c_set_form_fields':
+> form_wrap.c:778: error: 'struct RArray' has no member named 'len'
+> form_wrap.c: In function 'make_arg':
+> form_wrap.c:1126: error: 'struct RArray' has no member named 'len'
+> make: *** [form_wrap.o] Error 1
+> 
+> 
+> Gem files will remain installed in /var/lib/gems/1.9.1/gems/ncurses-0.9.1
+> for inspection.
+> Results logged to /var/lib/gems/1.9.1/gems/ncurses-0.9.1/gem_make.out
+> 
+> 
+> I get pretty much identical output from "gem install ncurses", so I suspect
+> the problem is not even a sup issue. Am I doing something terribly wrong?
+> All comments most welcome.
+
+You are right it's not a sup issue. Ruby ncurses hasn't been ported to
+1.9 so I just used ncursesw which seems to work quite well. Since you
+are using gem to install sup you will need to untar the gem file modify
+the metadata, tar it all up and reinstall. Something along the lines of:
+
+cd /var/lib/gems/1.9.1/gems/cache/
+mkdir tmp; cd tmp
+tar xf ../sup-0.11.gem (ignore any timestamp errors)
+vi metadata (make sure you use vim which will deal with the compression)
+tar cf ../sup-0.11.gem .
+cd ..
+gem install sup-0.11.gem
+rm -r tmp (assuming it works)
+
+If you have problems working out which line to change in the metadata
+you could unzip it and apply the following patch:
+
+--- metadata.old        2010-04-08 23:10:27.363603950 +1000
++++ metadata.new        2010-04-08 23:11:09.479559396 +1000
+@@ -32,7 +32,7 @@
+   type: :runtime
+   version_requirements: *id001
+ - !ruby/object:Gem::Dependency 
+-  name: ncurses
++  name: ncursesw
+   prerelease: false
+   requirement: &id002 !ruby/object:Gem::Requirement 
+     requirements: 
+
+And that should do you.
+
+Or you could download a modified gem from http://stuff.roughage.com.au/sup-0.11.gem.
+That gem was built from git and works (on my machine!).
+
+William, is there any reason you are using ncurses and not ncursesw?
+
+rgh
+
+> Best,
+> Neil.
+> 
+-- 
+Richard Heycock
+
+http://topikality.com
+
++61 (0) 410 646 369
+[e]:  rgh at topikality.com
+[im]: rgh at topikality.com
+
+From neil.stewart at warwick.ac.uk  Thu Apr  8 17:44:30 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Thu, 8 Apr 2010 22:44:30 +0100 (BST)
+Subject: [sup-talk] sent mail
+In-Reply-To: <1270727373-sup-8902@roughage.com.au>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+Message-ID: <alpine.DEB.1.10.1004082207140.26765@stewart.warwick.ac.uk>
+
+>>> In sup 0.11, sent mail does not get the inbox label anymore (AFAIK). Are you
+>>> using 0.11?
+>>
+>> I'm using 0.10.2-1 from Debian testing. I've had a go at getting 0.11, but
+>> it's not available in Debian. I've failed to compile it several times using
+>> "gems install sup". I finally got it to work using ruby1.9, but can't work
+>> out how to run sup. I tried
+
+Here is some more information on sent mail appearing in the inbox. First, it
+was discussed a while ago. Apologies for missing it.
+
+http://www.mail-archive.com/sup-talk at rubyforge.org/msg03227.html
+
+Second, I've downloaded the development sup from the gitorious.org and built and
+installed a sup gem. Using this, sent mail does get the inbox tag and appear
+in the inbox after sending. I've found that by changing line 52 in sent.rb
+from
+
+   def labels; [:inbox, :sent]; end
+
+to
+
+   def labels; [:sent]; end
+
+this behaviour can be disabled, so sent mail goes straight into the archive
+and is not included in the inbox.
+
+
+I've not used ruby before, but I've added an option
+
+:sent_appears_in_inbox: true
+
+to config.yaml.
+
+So the critical lines in sent.rb are now
+
+   if $config[:sent_appears_in_inbox] then
+         def labels; [:inbox, :sent]; end
+   else
+         def labels; [:sent]; end
+
+and I added
+
+     :sent_appears_in_inbox => true
+
+to the bit of sup.pl that writes the default config.yaml.
+
+So the default is the current behaviour---sent appearing in the inbox, but
+one can turn this off by altering the default config.yaml.
+
+I've attached trivial patches for sup.rb and sent.rb if these are of any
+use.
+
+Best,
+Neil.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch_for_sent.rb
+Type: application/x-ruby
+Size: 350 bytes
+Desc: 
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100408/748d75a8/attachment-0002.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch_for_sup.rb
+Type: application/x-ruby
+Size: 343 bytes
+Desc: 
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100408/748d75a8/attachment-0003.bin>
+
+From plutek at infinity.net  Fri Apr  9 15:18:36 2010
+From: plutek at infinity.net (plutek)
+Date: Fri, 09 Apr 2010 15:18:36 -0400
+Subject: [sup-talk] killed threads not searchable?
+Message-ID: <1270840406-sup-730@paldesk>
+
+greetings!
+
+just getting into sup here.... it's looking to me like killed threads cannot be found by searches. is this true? the new user guide says otherwise.
+
+also, how do i list all archived threads?
+
+thanks much.... cheers!
+-- 
+.pltk.
+
+From hollunder at lavabit.com  Fri Apr  9 15:50:56 2010
+From: hollunder at lavabit.com (Philipp)
+Date: Fri, 09 Apr 2010 21:50:56 +0200
+Subject: [sup-talk] killed threads not searchable?
+In-Reply-To: <1270840406-sup-730@paldesk>
+References: <1270840406-sup-730@paldesk>
+Message-ID: <1270842600-sup-4869@eris>
+
+Excerpts from plutek's message of 2010-04-09 21:18:36 +0200:
+> greetings!
+> 
+> just getting into sup here.... it's looking to me like killed threads cannot be found by searches. is this true? the new user guide says otherwise.
+
+No idea
+
+> also, how do i list all archived threads?
+> 
+> thanks much.... cheers!
+
+try: !!
+
+Nice to see you here as well ;)
+
+Regards,
+Philipp
+
+
+From rlane at club.cc.cmu.edu  Fri Apr  9 16:26:00 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 09 Apr 2010 16:26:00 -0400
+Subject: [sup-talk] killed threads not searchable?
+In-Reply-To: <1270840406-sup-730@paldesk>
+References: <1270840406-sup-730@paldesk>
+Message-ID: <1270843975-sup-743@zyrg.net>
+
+Excerpts from plutek's message of 2010-04-09 15:18:36 -0400:
+> just getting into sup here.... it's looking to me like killed threads cannot be found by searches. is this true? the new user guide says otherwise.
+
+This was a bug, I've fixed it in master.
+
+> also, how do i list all archived threads?
+
+type:mail AND NOT is:inbox
+
+From neil.stewart at warwick.ac.uk  Fri Apr  9 17:37:28 2010
+From: neil.stewart at warwick.ac.uk (Neil Stewart)
+Date: Fri, 9 Apr 2010 22:37:28 +0100 (BST)
+Subject: [sup-talk] sent mail
+In-Reply-To: <alpine.DEB.1.10.1004092231370.4476@stewart.warwick.ac.uk>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+	<alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+	<1270731588-sup-6397@roughage.com.au>
+	<alpine.DEB.1.10.1004092231370.4476@stewart.warwick.ac.uk>
+Message-ID: <alpine.DEB.1.10.1004092232120.4476@stewart.warwick.ac.uk>
+
+Just a further note on the resolultion of the ncurses issue.
+
+>>> "gem install sup" seems to be failing on ncurses.
+>>>
+>>> # gem install sup
+>>> Building native extensions.  This could take a while...
+>>> ERROR:  Error installing sup:
+>>>          ERROR: Failed to build gem native extension.
+>>>
+>>> /usr/bin/ruby1.9.1 extconf.rb
+>>> checking for unistd.h... yes
+>>> checking for ncurses.h... yes
+>>> checking for wmove() in -lncurses... yes
+>>> checking for newscr()... yes
+>>> checking for TABSIZE()... yes
+>>> checking for ESCDELAY()... yes
+>>> checking for keybound()... yes
+>>> checking for curses_version()... yes
+>>> [SNIP]
+>>> checking for new_form() in -lform... yes
+>>> creating Makefile
+>>>
+>>> make
+>>> Makefile:158: warning: overriding commands for target
+>>> `/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+>>> Makefile:156: warning: ignoring old commands for target
+>>> `/var/lib/gems/1.9.1/gems/ncurses-0.9.1/lib'
+>>> cc -I. -I/usr/include/ruby-1.9.1/x86_64-linux
+>>> -I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I.
+>>> -DHAVE_UNISTD_H -DHAVE_NCURSES_H -DHAVE_NEWSCR -DHAVE_TABSIZE
+>>> -DHAVE_ESCDELAY -DHAVE_KEYBOUND -DHAVE_CURSES_VERSION -DHAVE_TIGETSTR
+>>> -DHAVE_GETWIN -DHAVE_PUTWIN -DHAVE_UNGETMOUSE -DHAVE_MOUSEMASK
+>>> -DHAVE_WENCLOSE -DHAVE_MOUSEINTERVAL -DHAVE_WMOUSE_TRAFO -DHAVE_MCPRINT
+>>> -DHAVE_HAS_KEY -DHAVE_DELSCREEN -DHAVE_DEFINE_KEY -DHAVE_KEYOK
+>>> -DHAVE_RESIZETERM -DHAVE_USE_DEFAULT_COLORS -DHAVE_USE_EXTENDED_NAMES
+>>> -DHAVE_WRESIZE -DHAVE_ATTR_ON -DHAVE_ATTR_OFF -DHAVE_ATTR_SET -DHAVE_CHGAT
+>>> -DHAVE_COLOR_SET -DHAVE_FILTER -DHAVE_INTRFLUSH -DHAVE_MVCHGAT
+>>> -DHAVE_MVHLINE -DHAVE_MVVLINE -DHAVE_MVWCHGAT -DHAVE_MVWHLINE
+>>> -DHAVE_MVWVLINE -DHAVE_NOQIFLUSH -DHAVE_PUTP -DHAVE_QIFLUSH -DHAVE_SCR_DUMP
+>>> -DHAVE_SCR_INIT -DHAVE_SCR_RESTORE -DHAVE_SCR_SET -DHAVE_SLK_ATTR
+>>> -DHAVE_SLK_ATTR_SET -DHAVE_SLK_COLOR -DHAVE_TIGETFLAG -DHAVE_TIGETNUM
+>>> -DHAVE_USE_ENV -DHAVE_VIDATTR -DHAVE_WATTR_ON -DHAVE_WATTR_OFF
+>>> -DHAVE_WATTR_SET -DHAVE_WCHGAT -DHAVE_WCOLOR_SET -DHAVE_GETATTRS
+>>> -DHAVE_ASSUME_DEFAULT_COLORS -DHAVE_ATTR_GET -DHAVE_PANEL_H -DHAVE_FORM_H
+>>> -fPIC -fno-strict-aliasing -g -g -O2 -O2 -g -Wall -Wno-parentheses  -fPIC -g
+>>> -o form_wrap.o -c form_wrap.c
+>>> form_wrap.c: In function 'rbncurs_m_new_form':
+>>> form_wrap.c:395: error: 'struct RArray' has no member named 'len'
+>>> form_wrap.c: In function 'rbncurs_c_set_field_type':
+>>> form_wrap.c:619: error: 'struct RArray' has no member named 'len'
+>>> form_wrap.c: In function 'rbncurs_c_set_form_fields':
+>>> form_wrap.c:778: error: 'struct RArray' has no member named 'len'
+>>> form_wrap.c: In function 'make_arg':
+>>> form_wrap.c:1126: error: 'struct RArray' has no member named 'len'
+>>> make: *** [form_wrap.o] Error 1
+>>>
+>>>
+>>> Gem files will remain installed in /var/lib/gems/1.9.1/gems/ncurses-0.9.1
+>>> for inspection.
+>>> Results logged to /var/lib/gems/1.9.1/gems/ncurses-0.9.1/gem_make.out
+>>>
+>>>
+>>> I get pretty much identical output from "gem install ncurses", so I suspect
+>>> the problem is not even a sup issue. Am I doing something terribly wrong?
+>>> All comments most welcome.
+>>
+>> You are right it's not a sup issue. Ruby ncurses hasn't been ported to
+>> 1.9 so I just used ncursesw which seems to work quite well. Since you
+>> are using gem to install sup you will need to untar the gem file modify
+>> the metadata, tar it all up and reinstall. Something along the lines of:
+>>
+>> cd /var/lib/gems/1.9.1/gems/cache/
+>> mkdir tmp; cd tmp
+>> tar xf ../sup-0.11.gem (ignore any timestamp errors)
+>> vi metadata (make sure you use vim which will deal with the compression)
+>> tar cf ../sup-0.11.gem .
+>> cd ..
+>> gem install sup-0.11.gem
+>> rm -r tmp (assuming it works)
+>>
+>> If you have problems working out which line to change in the metadata
+>> you could unzip it and apply the following patch:
+>>
+>> --- metadata.old        2010-04-08 23:10:27.363603950 +1000
+>> +++ metadata.new        2010-04-08 23:11:09.479559396 +1000
+>> @@ -32,7 +32,7 @@
+>>   type: :runtime
+>>   version_requirements: *id001
+>> - !ruby/object:Gem::Dependency
+>> -  name: ncurses
+>> +  name: ncursesw
+>>   prerelease: false
+>>   requirement: &id002 !ruby/object:Gem::Requirement
+>>     requirements:
+>>
+>> And that should do you.
+>>
+>> Or you could download a modified gem from http://stuff.roughage.com.au/sup-0.11.gem.
+>> That gem was built from git and works (on my machine!).
+>>
+>> William, is there any reason you are using ncurses and not ncursesw?
+
+I'm making my sup gem using ruby1.9.1 and the latest code from gitorious.
+The code compiles a gem without complaint, but the gem doesn't install and
+gives the above error. When the Rakefile is updated to refer to ncursesw not
+ncurses, the gem compiles, installs, and runs without a problem.
+
+Best,
+Neil.
+
+
+
+
+From rlane at club.cc.cmu.edu  Fri Apr  9 18:09:56 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 09 Apr 2010 18:09:56 -0400
+Subject: [sup-talk] sent mail
+In-Reply-To: <1270731588-sup-6397@roughage.com.au>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+	<alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+	<1270731588-sup-6397@roughage.com.au>
+Message-ID: <1270850674-sup-4940@zyrg.net>
+
+I switched the dependency back to plain ncurses because ncursesw was
+failing to compile on unusual platforms (because of its wide
+characterness). I guess this calls for a ncurses-new gem based on the
+same upstream code as ncursesw but without the wide character support.
+
+From artagnon at gmail.com  Sat Apr 10 06:39:04 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sat, 10 Apr 2010 16:09:04 +0530
+Subject: [sup-talk] [PATCH 2/4] Poll for editor status
+Message-ID: <1270895932-sup-2620@kytes>
+
+Write a second loop in PollManager to poll and check if the
+asynchronously spawned editor has finished. If finished, fire a
+callback.
+
+Signed-off-by: Ramkumar Ramachandra <artagnon at gmail.com>
+---
+ lib/sup/poll.rb |   31 ++++++++++++++++++++++++++++++-
+ 1 files changed, 30 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 582cd4d..0fabb87 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -38,6 +38,13 @@ EOS
+     @poll_sources = nil
+     @mode = nil
+     @should_clear_running_totals = false
++    
++    # For async editing
++    @editor_thread = nil
++    @edit_in_progress = false
++    @editor_file = nil
++    @edit_mtime = nil
++
+     clear_running_totals # defines @running_totals
+     UpdateManager.register self
+   end
+@@ -71,6 +78,20 @@ EOS
+     [num, numi]
+   end
+ 
++  def poll_editor
++    return if @polling
++    return if not @edit_in_progress
++    @polling = true
++    if @editor_thread.alive?
++      BufferManager.flash "Edit in progress..."
++    else
++      BufferManager.flash "Edit finished!"
++      @edit_in_progress = false
++      ComposeMode.edit_message_callback @editor_file, @editor_mtime
++    end
++    @polling = false
++  end
++
+   def poll_unusual
+     return if @polling
+     @polling = true
+@@ -83,8 +104,9 @@ EOS
+   def start
+     @thread = Redwood::reporting_thread("periodic poll") do
+       while true
+-        sleep DELAY / 2
++        sleep 1
+         poll if @last_poll.nil? || (Time.now - @last_poll) >= DELAY
++        poll_editor if @last_poll.nil? || (Time.now - @last_poll) >= 2
+       end
+     end
+   end
+@@ -192,6 +214,13 @@ EOS
+     UpdateManager.relay self, :added, m
+   end
+ 
++  def editor_loop_init pthread, file, mtime
++    @editor_thread = pthread
++    @edit_in_progress = true
++    @editor_file = file
++    @editor_mtime = mtime
++  end
++
+   def handle_idle_update sender, idle_since; @should_clear_running_totals = false; end
+   def handle_unidle_update sender, idle_since; @should_clear_running_totals = true; clear_running_totals; end
+   def clear_running_totals; @running_totals = {:num => 0, :numi => 0, :loaded_labels => Set.new}; end
+-- 
+1.7.0.4
+
+From artagnon at gmail.com  Sat Apr 10 06:39:43 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sat, 10 Apr 2010 16:09:43 +0530
+Subject: [sup-talk] [PATCH 3/4] Callback to compose
+Message-ID: <1270895977-sup-1231@kytes>
+
+Write a callback to parse the file and fill in the parsed contents
+into a newly spawned buffer.
+
+Signed-off-by: Ramkumar Ramachandra <artagnon at gmail.com>
+---
+ lib/sup/modes/compose-mode.rb |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/modes/compose-mode.rb b/lib/sup/modes/compose-mode.rb
+index f0d1e23..a19c294 100644
+--- a/lib/sup/modes/compose-mode.rb
++++ b/lib/sup/modes/compose-mode.rb
+@@ -20,6 +20,23 @@ class ComposeMode < EditMessageMode
+     edited
+   end
+ 
++  def parse_file fn
++    super fn
++  end
++
++  def self.edit_message_callback file, mtime
++    edited = File.mtime(file.path) > mtime ? true : false
++
++    return edited unless edited
++
++    mode = ComposeMode.new
++    header, body = mode.parse_file file.path
++    header -= NON_EDITABLE_HEADERS
++    mode.header, mode.body = header, body
++    BufferManager.spawn "New Message", mode
++    mode.update
++  end
++
+   def self.spawn_nicely opts={}
+     to = opts[:to] || (BufferManager.ask_for_contacts(:people, "To: ", [opts[:to_default]]) or return if ($config[:ask_for_to] != false))
+     cc = opts[:cc] || (BufferManager.ask_for_contacts(:people, "Cc: ") or return if $config[:ask_for_cc])
+-- 
+1.7.0.4
+
+From artagnon at gmail.com  Sat Apr 10 06:36:07 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sat, 10 Apr 2010 16:06:07 +0530
+Subject: [sup-talk] [PATCH 0/4] Read and compose simultaneously
+Message-ID: <1270895761-sup-9463@kytes>
+
+This patch series will allow sup to read and compose in separate
+threads when the user wishes to do so.
+
+It's still an early WIP, and I've posted it to the list so I can get a
+wider test audience, and more importantly comments on my design. It's
+been hacked together in a few hours, *very* buggy at the moment. I've
+only minimally tested it with `emacsclient`.
+
+I'd also appreciate any general style comments: I've never written a
+line of Ruby prior to this.
+
+Applies cleanly to `next`.
+Thanks.
+
+-- Ram
+
+Ramkumar Ramachandra (4):
+  Add method to shell out asynchronously
+  Poll for editor status
+  Callback to compose
+  Appropriate call to shell_out_async
+
+ lib/sup/buffer.rb                  |   20 ++++++++++++
+ lib/sup/modes/compose-mode.rb      |   17 ++++++++++
+ lib/sup/modes/edit-message-mode.rb |   58 +++++++++++++++++++----------------
+ lib/sup/poll.rb                    |   31 ++++++++++++++++++-
+ 4 files changed, 98 insertions(+), 28 deletions(-)
+
+
+
+From artagnon at gmail.com  Sat Apr 10 06:37:21 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sat, 10 Apr 2010 16:07:21 +0530
+Subject: [sup-talk] [PATCH 1/4] Add method to shell out asynchronously
+Message-ID: <1270895815-sup-99@kytes>
+
+Add shell_out_async method to fork and detach the editor, and register
+the monitoring thread in PollManager.
+
+Signed-off-by: Ramkumar Ramachandra <artagnon at gmail.com>
+---
+ lib/sup/buffer.rb |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 5772bb0..25a2025 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -768,6 +768,26 @@ EOS
+     @shelled = false
+   end
+ 
++  def shell_out_async editor, file
++    @shelled = true
++    command = "#{editor} #{file.path}"
++    mtime = File.mtime file.path
++
++    Ncurses.sync do
++      pid = Process.fork
++      if pid.nil?
++        exec(command)
++      else
++        pthread = Process.detach(pid)
++        PollManager.editor_loop_init pthread, file, mtime
++      end
++      Ncurses.stdscr.keypad 1
++      Ncurses.refresh
++      Ncurses.curs_set 0
++    end
++    @shelled = false
++  end
++
+ private
+ 
+   def default_status_bar buf
+-- 
+1.7.0.4
+
+From artagnon at gmail.com  Sat Apr 10 06:40:34 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sat, 10 Apr 2010 16:10:34 +0530
+Subject: [sup-talk] [PATCH 4/4] Appropriate call to shell_out_async
+Message-ID: <1270896024-sup-8760@kytes>
+
+Call shell_out_async instead of shell_out when the appropriate config
+option is present. Move parse_file and update out from the protected
+section.
+
+Signed-off-by: Ramkumar Ramachandra <artagnon at gmail.com>
+---
+ lib/sup/modes/edit-message-mode.rb |   58 +++++++++++++++++++----------------
+ 1 files changed, 31 insertions(+), 27 deletions(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index c1537ae..3dba941 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -158,19 +158,23 @@ EOS
+     @file.close
+ 
+     editor = $config[:editor] || ENV['EDITOR'] || "/usr/bin/vi"
++    editor_daemon = $config[:editor_daemon]
++    if editor_daemon
++      BufferManager.shell_out_async editor_daemon, @file
++    else
++      mtime = File.mtime @file.path
++      BufferManager.shell_out "#{editor} #{@file.path}"
++      @edited = true if File.mtime(@file.path) > mtime
+ 
+-    mtime = File.mtime @file.path
+-    BufferManager.shell_out "#{editor} #{@file.path}"
+-    @edited = true if File.mtime(@file.path) > mtime
+-
+-    return @edited unless @edited
++      return @edited unless @edited
+ 
+-    header, @body = parse_file @file.path
+-    @header = header - NON_EDITABLE_HEADERS
+-    handle_new_text @header, @body
+-    update
++      header, @body = parse_file @file.path
++      @header = header - NON_EDITABLE_HEADERS
++      handle_new_text @header, @body
++      update
+ 
+-    @edited
++      @edited
++    end
+   end
+ 
+   def killable?
+@@ -202,6 +206,23 @@ EOS
+     end
+   end
+ 
++  def parse_file fn
++    File.open(fn) do |f|
++      header = Source.parse_raw_email_header(f).inject({}) { |h, (k, v)| h[k.capitalize] = v; h } # lousy HACK
++      body = f.readlines.map { |l| l.chomp }
++
++      header.delete_if { |k, v| NON_EDITABLE_HEADERS.member? k }
++      header.each { |k, v| header[k] = parse_header k, v }
++
++      [header, body]
++    end
++  end
++
++  def update
++    regen_text
++    buffer.mark_dirty if buffer
++  end
++
+ protected
+ 
+   def mime_encode string
+@@ -250,11 +271,6 @@ protected
+     @selector_label_width = [@selector_label_width, s.label.length].max
+   end
+ 
+-  def update
+-    regen_text
+-    buffer.mark_dirty if buffer
+-  end
+-
+   def regen_text
+     header, @header_lines = format_headers(@header - NON_EDITABLE_HEADERS) + [""]
+     @text = header + [""] + @body
+@@ -269,18 +285,6 @@ protected
+     end
+   end
+ 
+-  def parse_file fn
+-    File.open(fn) do |f|
+-      header = Source.parse_raw_email_header(f).inject({}) { |h, (k, v)| h[k.capitalize] = v; h } # lousy HACK
+-      body = f.readlines.map { |l| l.chomp }
+-
+-      header.delete_if { |k, v| NON_EDITABLE_HEADERS.member? k }
+-      header.each { |k, v| header[k] = parse_header k, v }
+-
+-      [header, body]
+-    end
+-  end
+-
+   def parse_header k, v
+     if MULTI_HEADERS.include?(k)
+       v.split_on_commas.map do |name|
+-- 
+1.7.0.4
+
+From anirudh at anirudhsanjeev.org  Sat Apr 10 15:40:08 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Sun, 11 Apr 2010 01:10:08 +0530
+Subject: [sup-talk] [PATCH 1/4] Add method to shell out asynchronously
+In-Reply-To: <1270895815-sup-99@kytes>
+References: <1270895815-sup-99@kytes>
+Message-ID: <1270928203-sup-5488@deepthought>
+
+Some people (me for instance) use an editor in-shell. Even the default
+command that sup sets is "vim". Trying to launch an editor asynchronously
+in this manner might not work.
+
+Perhaps adding a custom option in config.yaml to launch editor
+asynchronously might be a better option, and also suggest sensible
+defaults.
+
+Thanks,
+Anirudh
+-- 
+Senior Undergraduate Student, Indian Institute of Technology, Kharagpur
+http://anirudhsanjeev.org
+
+The Unix philosophy - Do one thing. Do it well.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100411/6cbc78b4/attachment.bin>
+
+From artagnon at gmail.com  Sat Apr 10 16:12:59 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sun, 11 Apr 2010 01:42:59 +0530
+Subject: [sup-talk] [PATCH 1/4] Add method to shell out asynchronously
+In-Reply-To: <1270928203-sup-5488@deepthought>
+References: <1270895815-sup-99@kytes> <1270928203-sup-5488@deepthought>
+Message-ID: <w2of3271551004101312r9ad11837y91d363153f0fc182@mail.gmail.com>
+
+On Sun, Apr 11, 2010 at 1:10 AM, Anirudh Sanjeev
+<anirudh at anirudhsanjeev.org> wrote:
+> Perhaps adding a custom option in config.yaml to launch editor
+> asynchronously might be a better option, and also suggest sensible
+> defaults.
+
+Did you even read the patch? That's what I've done. From PATCH 4/4:
++    editor_daemon = $config[:editor_daemon]
+
+-- Ram
+
+From anirudh at anirudhsanjeev.org  Sat Apr 10 16:21:10 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Sun, 11 Apr 2010 01:51:10 +0530
+Subject: [sup-talk] [PATCH 1/4] Add method to shell out asynchronously
+In-Reply-To: <w2of3271551004101312r9ad11837y91d363153f0fc182@mail.gmail.com>
+References: <1270895815-sup-99@kytes> <1270928203-sup-5488@deepthought>
+	<w2of3271551004101312r9ad11837y91d363153f0fc182@mail.gmail.com>
+Message-ID: <1270930725-sup-6890@deepthought>
+
+Excerpts from Ramkumar Ramachandra's message of Sun Apr 11 01:42:59 +0530 2010:
+> Did you even read the patch? That's what I've done. From PATCH 4/4:
+> +    editor_daemon = $config[:editor_daemon]
+
+Oh, I guess it does. I should've gone through it in better detail. My bad.
+
+Btw, I applied the patch and it seems to work great!
+-- 
+
+From artagnon at gmail.com  Sat Apr 10 22:50:14 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sun, 11 Apr 2010 08:20:14 +0530
+Subject: [sup-talk] [PATCH 1/4] Add method to shell out asynchronously
+In-Reply-To: <1270930725-sup-6890@deepthought>
+References: <1270895815-sup-99@kytes> <1270928203-sup-5488@deepthought> 
+	<w2of3271551004101312r9ad11837y91d363153f0fc182@mail.gmail.com> 
+	<1270930725-sup-6890@deepthought>
+Message-ID: <w2nf3271551004101950jbf9a4a34s8c6d0f8eaae62509@mail.gmail.com>
+
+> Btw, I applied the patch and it seems to work great!
+
+Thanks. Rendering is horribly broken though, and I have no experience
+whatsoever with Ncurses- can someone help me out there?
+
+-- Ram
+
+From ismith at MIT.EDU  Sun Apr 11 06:30:59 2010
+From: ismith at MIT.EDU (Ian Smith)
+Date: Sun, 11 Apr 2010 06:30:59 -0400
+Subject: [sup-talk] GPG (outgoing)
+Message-ID: <1270981813-sup-1681@baad>
+
+Hi all,
+
+I'm having some trouble getting outgoing signed and/or encrypted messages to be
+accepted, and I'm hoping someone here has a suggestion.
+
+In particular, I can sign (I've been testing mostly with signatures, not
+encryption) using GPG, and send a message successfully; however, while sup
+verifies that it thinks the signature is good, hushmail doesn't recognize the
+message as having a signature (it sees signature.asc as an attachment, but
+doesn't read the message as being signed), and correspondents tell me that
+Enigmail flags my message as having a bad signature.
+
+Previous traffic on sup-talk suggests a number of people are successfully using
+gpg, so I'm a bit confused - a friend suggested that this might be because
+implementation of the PGP/MIME standard varies widely between clients, so the
+problem might be with hushmail and Enigmail rather than with sup or my
+configuration thereof.  Can someone confirm this?  Would it help to do inline
+signing and encryption rather than PGP/MIME, and if so, is there a patch in
+progress to do that, or should I start diving through crypto.rb?
+
+Thanks,
+
+Ian
+
+-- 
+Ian Smith
+ismith at mit.edu
+http://www.bostonaccess.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100411/c6bdbf70/attachment.bin>
+
+From anirudh at anirudhsanjeev.org  Sun Apr 11 11:54:21 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Sun, 11 Apr 2010 21:24:21 +0530
+Subject: [sup-talk] New website design for sup - preview
+Message-ID: <1271000793-sup-3212@deepthought>
+
+Hi,
+
+I took the liberty to give the Sup frontpage a facelift. I re-used some
+creative commons work without much modification to make something that
+looks really good. Please check out the current work in progress here:
+
+http://anirudhsanjeev.org/temp/supsite/
+
+I also wrote a detailed guide on getting Sup up and running with Gmail as
+many people aren't able to figure out what exactly to do initially. The
+guide is available in the same page.
+
+I feel sup is really good and is the only client that scratches my itch.
+I want more people to start using it and feel that an aesthetically
+pleasing website and a better introduction will help convince people sup is
+worth the effort of moving.
+
+Also, I was under the impression writing a project in ruby and not having a
+really nice website for it is a syntax error :)
+
+Please provide any feedback about the design and contents.
+
+Thanks,
+Anirudh
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100411/34cdd184/attachment.bin>
+
+From artagnon at gmail.com  Sun Apr 11 12:15:33 2010
+From: artagnon at gmail.com (Ramkumar Ramachandra)
+Date: Sun, 11 Apr 2010 21:45:33 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <y2of3271551004110915oa82ce252s8c5fce51afce7555@mail.gmail.com>
+
+> http://anirudhsanjeev.org/temp/supsite/
+
+Neat design. Small quirk: I noticed that the "# ui =
+Noninteractive.Quiet" line breaks due to the (very) long comment.
+Perhaps you want to shorten it for the benefit of those who're blindly
+copy-pasting?
+
+-- Ram
+
+From bwalton at artsci.utoronto.ca  Sun Apr 11 12:39:24 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 11 Apr 2010 12:39:24 -0400
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <y2of3271551004110915oa82ce252s8c5fce51afce7555@mail.gmail.com>
+References: <1271000793-sup-3212@deepthought>
+	<y2of3271551004110915oa82ce252s8c5fce51afce7555@mail.gmail.com>
+Message-ID: <1271003943-sup-3387@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Ramkumar Ramachandra's message of Sun Apr 11 12:15:33 -0400 2010:
+> > http://anirudhsanjeev.org/temp/supsite/
+> 
+> Neat design. Small quirk: I noticed that the "# ui =
+
+Agreed.  This has a very nice look to it.
+
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From anirudh at anirudhsanjeev.org  Sun Apr 11 13:43:33 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Sun, 11 Apr 2010 23:13:33 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <y2of3271551004110915oa82ce252s8c5fce51afce7555@mail.gmail.com>
+References: <1271000793-sup-3212@deepthought>
+	<y2of3271551004110915oa82ce252s8c5fce51afce7555@mail.gmail.com>
+Message-ID: <1271007749-sup-9924@deepthought>
+
+Excerpts from Ramkumar Ramachandra's message of Sun Apr 11 21:45:33 +0530 2010:
+> Neat design. 
+Thanks!
+
+> Perhaps you want to shorten it for the benefit of those who're blindly
+> copy-pasting?
+Then they shouldn't be using sup in the first place :)
+
+
+Thanks,
+Anirudh
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100411/df0561fb/attachment.bin>
+
+From sup-talk at ryanb.org  Sun Apr 11 13:52:57 2010
+From: sup-talk at ryanb.org (Ryan Barrett)
+Date: Sun, 11 Apr 2010 10:52:57 -0700 (PDT)
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+Message-ID: <Pine.LNX.4.64.1004111050110.21778@snarfed.org>
+
+ping? anyone successfully using sup in parallel with other client(s)?
+
+scott, are you still working on maildir sync? any updates since january?
+
+On Thu, 8 Apr 2010, Ryan Barrett wrote:
+
+> hi all! i've been looking forward to trying sup since i first heard about it 
+> a couple years ago, and i'm getting pretty close. one of my few remaining 
+> concerns is using sup in parallel with other mail clients, including sup 
+> itself.
+>
+> i know best practice is to just use one sup installation and no other 
+> clients, but i also know that synching back upstream is a frequent topic 
+> here. i've seen the discussions of sup-sync --changed, sup-sync-back, maildir 
+> + offlineimap etc. i'm mostly looking to hear about the current state. is 
+> anyone successfully running sup synched with another sup or other client? if 
+> so, how?
+>
+> it seems like people have generally agreed that the best approach is to make 
+> sup-sync-back support maildir, and then use offlineimap to sync from maildir 
+> to the source. is that still true? cc'ing scott henson, who mentioned he was 
+> working on maildir sync in january.
+>
+> http://rubyforge.org/pipermail/sup-talk/2010-January/003761.html
+>
+> more background:
+>
+> http://rubyforge.org/pipermail/sup-talk/2009-April/002126.html
+>
+> http://rubyforge.org/pipermail/sup-talk/2009-July/002567.html
+>
+> -Ryan
+>
+> --
+> http://snarfed.org/
+>
+
+  -Ryan
+
+--
+http://snarfed.org/
+
+From rogutes at googlemail.com  Sun Apr 11 15:33:58 2010
+From: rogutes at googlemail.com (=?utf-8?Q?Rogut=C4=97s?= Sparnuotos)
+Date: Sun, 11 Apr 2010 22:33:58 +0300
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <20100411193358.GA12371@urvas>
+
+Anirudh Sanjeev (2010-04-11 21:24):
+> Hi,
+> 
+> I took the liberty to give the Sup frontpage a facelift. I re-used some
+> creative commons work without much modification to make something that
+> looks really good. Please check out the current work in progress here:
+> 
+> http://anirudhsanjeev.org/temp/supsite/
+> 
+> I also wrote a detailed guide on getting Sup up and running with Gmail as
+> many people aren't able to figure out what exactly to do initially. The
+> guide is available in the same page.
+> 
+> I feel sup is really good and is the only client that scratches my itch.
+> I want more people to start using it and feel that an aesthetically
+> pleasing website and a better introduction will help convince people sup is
+> worth the effort of moving.
+> 
+> Also, I was under the impression writing a project in ruby and not having a
+> really nice website for it is a syntax error :)
+> 
+> Please provide any feedback about the design and contents.
+
+I am not a user of sup - might try again when 0.12 comes out. But I am
+sensitive when it comes to websites, so here goes my feedback.
+
+Why is the original site bad? I think that it provides more information
+and takes less vertical space. Only the screenshots could be bigger
+(and perhaps 4 instead of 6?).
+
+It looks like what you are proposing is not a new website, but a shift in
+targeted audience. You seem to be addressing the naive user, while
+forgetting the more technical ones. I would suggest to aim for the middle,
+going for the aesthetic looks (or at least matching the style of the
+homepage and the wiki), but keeping the technical tongue (is there any
+need to change the content of the current website?).
+
+There is this sentence at http://sup.rubyforge.org/:
+"
+  The goal of Sup is to become the email client of choice for nerds
+  everywhere.
+"
+
+And you seem to agree with it in a later mail:
+> Perhaps you want to shorten it for the benefit of those who're blindly
+> copy-pasting?
+> > Then they shouldn't be using sup in the first place :)
+
+But you do contradict yourself and that statement with the proposed
+design:
+1. Your design doesn't work without javascript:
+
+    * Why would an overview of the features need animation? What does the
+      animation give to the user, besides hiding a handful of text?
+      Perhaps a feeling that the software in question might have hidden
+      features?
+
+2. First 700px of the page show nothing useful, except for a screenshot
+   and big letters.
+
+3. Some very useful, even if technical, pieces information has been lost in
+   conversion:
+   "Handle massive amounts of email."
+
+   "
+     The current version of Sup is 0.11, released 2010-03-07. This is a beta
+     release. It supports mbox and Maildir mailstores.
+   "
+   
+   "
+     you can clone the git repository like so: 
+     git clone git://gitorious.org/sup/mainline.git
+   "
+
+4. You have replaced the credit to Xapian and RubyMail with the credit to
+   the authors of the website :)
+  
+As for the GMail guide, wouldn't it be very useful in the wiki?
+
+-- 
+--  Rogut?s Sparnuotos
+
+From michael+sup at stapelberg.de  Sun Apr 11 15:56:58 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 11 Apr 2010 21:56:58 +0200
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <20100411193358.GA12371@urvas>
+References: <1271000793-sup-3212@deepthought> <20100411193358.GA12371@urvas>
+Message-ID: <1271015642-sup-5582@midna.zekjur.net>
+
+Hi Rogut?s,
+
+Excerpts from Rogut?s Sparnuotos's message of 2010-04-11 21:33:58 +0200:
+> Why is the original site bad? I think that it provides more information
+> and takes less vertical space. Only the screenshots could be bigger
+> (and perhaps 4 instead of 6?).
+It is hard to read and does not look good, IMO.
+
+> 1. Your design doesn't work without javascript:
+I didn?t notice that. I was able to view it just fine without JavaScript.
+That being said, I very much suggest not using JavaScript for such a
+website (containing static information only).
+
+> 3. Some very useful, even if technical, pieces information has been lost in
+>    conversion:
+I think the website draft was not final on which information should be on it,
+just an idea where the design could go.
+
+Best regards,
+Michael
+
+From anirudh at anirudhsanjeev.org  Sun Apr 11 16:12:21 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Mon, 12 Apr 2010 01:42:21 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <20100411193358.GA12371@urvas>
+References: <1271000793-sup-3212@deepthought> <20100411193358.GA12371@urvas>
+Message-ID: <1271014668-sup-4377@deepthought>
+
+Hi,
+
+I'm sorry, I don't buy the "intelligent/experienced/developer users don't
+care about the frontend design" idea.
+
+What I'm talking about is, for lack of a better term, "professionalism". If
+anyone comes to a website, regardless of how experienced they are, the
+decision is already made. If there isn't any apparent effort gone into the
+user facing landing page, the user might get the impression that the
+project isn't mature or worthy enough for active usage as well.
+
+A funny story I just wrote to someone about:
+Someone wrote a python web framework called "Denied":
+http://denied.immersedcode.org/
+
+Go check the website. It looks very interesting - a new minimalist
+lightweight python web framework - complete with code snippets and
+screencasts. It got a lot of positive response from the intelligent Hacker
+News and Github communities.
+
+Turns out it was an April Fools' joke. But that proves a point - people are
+highly influenced by the quality of the tool.
+
+Excerpts from Rogut?s Sparnuotos's message of Mon Apr 12 01:03:58 +0530 2010:
+> Why is the original site bad? I think that it provides more information
+> and takes less vertical space. Only the screenshots could be bigger
+> (and perhaps 4 instead of 6?).
+Why is vertical space bad? I am not saying that the old website is bad. It
+isn't immediately obvious what the exact _killer functionality_ of sup is,
+unless you take a very close look.
+
+My design makes it _immediately obvious_ why sup is going to positively
+affect their lives, and reinforces it with visual feedback.
+
+If you notice, the ruby language does the same thing:
+http://ruby-lang.org
+They don't need to show a code sample, but they do it anyway as people need
+to _see_ what is so great about it.
+
+> It looks like what you are proposing is not a new website, but a shift in
+> targeted audience. You seem to be addressing the naive user, while
+> forgetting the more technical ones. I would suggest to aim for the middle,
+> going for the aesthetic looks (or at least matching the style of the
+> homepage and the wiki), but keeping the technical tongue (is there any
+> need to change the content of the current website?).
+While I'm a programmer now, I spent a very large amount of time learning
+about Usability. Usability is what makes GMail and Sup so much better to
+use. And usability is not only about making buttons bigger or keyboard
+shortcuts nicer.
+
+It's a lot about putting the important information in the places where
+people are more likely to look - so that people avoid having to look and
+give up.
+
+> There is this sentence at http://sup.rubyforge.org/:
+> "
+>   The goal of Sup is to become the email client of choice for nerds
+>   everywhere.
+> "
+> 
+> And you seem to agree with it in a later mail:
+> > Perhaps you want to shorten it for the benefit of those who're blindly
+> > copy-pasting?
+> > > Then they shouldn't be using sup in the first place :)
+> 
+> But you do contradict yourself and that statement with the proposed
+
+By the extension of your logic, the ruby gems website:
+http://rubygems.org/
+Needs to be coded solely in <h1> and <h2> as well. I'm sure that the
+website is not the way it currently is because it's intended to be that way
+to attract the targeted audience, but rather because the devs just didn't
+have the interest to work on the design.
+
+> 1. Your design doesn't work without javascript:
+Agreed. Nor does the rest of the Internet.
+
+>     * Why would an overview of the features need animation? What does the
+>       animation give to the user, besides hiding a handful of text?
+>       Perhaps a feeling that the software in question might have hidden
+>       features?
+The animation gives the user nothing. It merely makes it seem slightly more
+appealing. Also, the user can find out more about specific features that
+interests him/her.
+
+> 2. First 700px of the page show nothing useful, except for a screenshot
+>    and big letters.
+Have you heard of "minimalism"? There's a reason why clean desks and rooms
+are more enjoyable than cluttered dirty ones. It's not a developer/end-user
+thing it's a human thing.
+
+> 3. Some very useful, even if technical, pieces information has been lost in
+>    conversion:
+>    "Handle massive amounts of email."
+> 
+>    "
+>      The current version of Sup is 0.11, released 2010-03-07. This is a beta
+>      release. It supports mbox and Maildir mailstores.
+>    "
+>    
+>    "
+>      you can clone the git repository like so: 
+>      git clone git://gitorious.org/sup/mainline.git
+>    "
+I just hacked together this website for a few hours, even despite having my
+own projects to work on. I will be putting the source code up on github
+soon. I never mentioned this is the final design, let alone the final
+content.
+
+> 4. You have replaced the credit to Xapian and RubyMail with the credit to
+>    the authors of the website :)
+Again, that slipped my notice. Thank you for pointing it out. I'll put it
+up there. I am required to put up the main author's website because of
+attribution laws. But I will be removing my own name as my contribution
+isn't significant enough to merit credit.
+
+> As for the GMail guide, wouldn't it be very useful in the wiki?
+It's been on the wiki for four months. I wrote it. It's very hard to find
+on the wiki.
+
+I hope this again, reinforces my "don't make everything harder to find just
+because you target advanced users" belief. Instead of taking the most
+important information and putting it somewhere you'll have to google around
+for, put it right where people would expect to find it.
+
+tl;dr: It has nothing to do with a target audience. Saying a more pleasing
+website does not appeal to hackers is mild stereotyping, and I am not sure
+whether to be flattered or offended.
+
+I've seen this issue a lot before - we write awesome, incredible code and
+put it up on a wiki, and don't put in even a hundredth of effort doing
+design as it's not intellectually satisfying. So you've got great projects
+which fail to distinguish themselves from the crowd - on wikis and github
+accounts around the world, there are great projects just like sup nobody
+takes notice of.
+
+And then you wonder why nobody is interested in your project. It happened
+to me and my projects as well.
+
+What I'm hoping is that if someone visits the sup site, they should be
+excited and interested to try it out - and having something mildly
+professional and something that seems to have some effort put into it will
+surely help. More people trying it out is better for all of us.
+
+This is just a proposed facelift. The devs decide what happens and what
+doesn't. I just posted to get some constructive feedback and I'm sure I'll
+get some real soon.
+
+Thanks,
+Anirudh
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100412/9a5388c5/attachment.bin>
+
+From hollunder at lavabit.com  Sun Apr 11 16:47:57 2010
+From: hollunder at lavabit.com (Philipp)
+Date: Sun, 11 Apr 2010 22:47:57 +0200
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <1271018184-sup-517@eris>
+
+Excerpts from Anirudh Sanjeev's message of 2010-04-11 17:54:21 +0200:
+> Hi,
+> 
+> I took the liberty to give the Sup frontpage a facelift. I re-used some
+> creative commons work without much modification to make something that
+> looks really good. Please check out the current work in progress here:
+> 
+> http://anirudhsanjeev.org/temp/supsite/
+> 
+> I also wrote a detailed guide on getting Sup up and running with Gmail as
+> many people aren't able to figure out what exactly to do initially. The
+> guide is available in the same page.
+> 
+> I feel sup is really good and is the only client that scratches my itch.
+> I want more people to start using it and feel that an aesthetically
+> pleasing website and a better introduction will help convince people sup is
+> worth the effort of moving.
+> 
+> Also, I was under the impression writing a project in ruby and not having a
+> really nice website for it is a syntax error :)
+> 
+> Please provide any feedback about the design and contents.
+> 
+> Thanks,
+> Anirudh
+
+Hi,
+I don't try to put down your work, but it's not something I'd fall for.
+It's too web2.0ey for me, too much attention hog, too much bragging.
+It's very well possible that I wouldn't have tried sup with that website.
+
+The JS thing with description and changing image is a nice idea, but I'd
+either not click it (because I'd read the site first and had to assume
+it leads me to another one) or tried to open it in another tab and
+wondered why it didn't work or I'd click it on purpose, assuming it
+would lead me to another page and would have been negatively surprised
+because of the little bit of bragging information I got.
+
+The gmail featured so prominently would have put me off as well, I'd
+assume it's written mainly for gmail.
+
+I don't claim the current sup page is great, it also lacks in a few
+areas. I focused mainly on the negative aspects of your page, but it has
+a few improvements over the current page as well, mainly the links at
+the top, which make navigation to other parts of the page a bit easier.
+
+Regards,
+Philipp
+
+
+From anirudh at anirudhsanjeev.org  Sun Apr 11 17:14:32 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Mon, 12 Apr 2010 02:44:32 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271018184-sup-517@eris>
+References: <1271000793-sup-3212@deepthought> <1271018184-sup-517@eris>
+Message-ID: <1271019773-sup-7388@deepthought>
+
+Hi Phillip,
+
+Excerpts from Philipp's message of Mon Apr 12 02:17:57 +0530 2010:
+> I don't try to put down your work, but it's not something I'd fall for.
+> It's too web2.0ey for me, too much attention hog, too much bragging.
+> It's very well possible that I wouldn't have tried sup with that website.
+I understand what you're saying. I didn't do any of the design - I should
+mention this upfront. I'm not a design person at all. I just thought some
+other Creative Commons licensed work was good and thought I could modify it
+to benefit some other project.
+
+
+> The JS thing with description and changing image is a nice idea, but I'd
+> either not click it (because I'd read the site first and had to assume
+> it leads me to another one) or tried to open it in another tab and
+> wondered why it didn't work or I'd click it on purpose, assuming it
+> would lead me to another page and would have been negatively surprised
+> because of the little bit of bragging information I got.
+
+The tone does seem like it's a little pretentious, yes. Any suggestions on
+how the content can be changed will be addressed. The fact that the link is 
+
+> The gmail featured so prominently would have put me off as well, I'd
+> assume it's written mainly for gmail.
+I only put it up as I wrote the content earlier and many people mentioned
+it helped them get started with sup. While IMAP is supported out of the
+box, most people use OfflineImap, and msmtp support is not that
+significantly documented.
+
+For me, it's about conversion ratio. If n users come on to the site, and m
+users finally end up installing and using sup, we need to make that ratio
+better. Since most people use the IMAP setup - having the instructions for
+that more prominently featured on the page will help them have a more
+gratifying experience.
+
+I speak very strongly about "gratification". If user X comes on, downloads,
+installs and has to fish around just to get started, then there's a good
+chance he/she will give up and move on with their lives, unless they are
+_actively_ looking for a good email client in which case the website
+wouldn't have mattered anyways.
+
+> I don't claim the current sup page is great, it also lacks in a few
+> areas. I focused mainly on the negative aspects of your page, but it has
+> a few improvements over the current page as well, mainly the links at
+> the top, which make navigation to other parts of the page a bit easier.
+I don't have any issue with it either. I can recount my own experience when
+I started out with sup.
+
+I saw the sup website. Thought "oh, another console email client" and moved
+on, but bookmarked it on delicious before leaving. I used to use mutt and
+evolution at this point in time.
+
+The pain points got to me and I finally ended up trying sup, and had to
+figure out a good deal of things on my own - notably how to get
+offlineimap, msmtp and sup to play together.
+
+If I had seen a more appealing and in-your-face website, I might have
+considered giving it a bit more interest. I guess it's not about looking
+good as much as it is about standing out. There are a lot of other projects
+and mail clients over there, and a more memorable and appealing design will
+make people give it the attention I feel sup deserves.
+
+Then again, I feel compelled to inform that I didn't do much of the design.
+If the community feels that this isn't a step in the right direction,
+it would be perfectly fine.
+
+Thanks,
+Anirudh
+
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100412/dc319d14/attachment.bin>
+
+From rogutes at googlemail.com  Sun Apr 11 18:47:00 2010
+From: rogutes at googlemail.com (rogutes at googlemail.com)
+Date: Mon, 12 Apr 2010 01:47:00 +0300
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271014668-sup-4377@deepthought>
+References: <1271000793-sup-3212@deepthought> <20100411193358.GA12371@urvas>
+	<1271014668-sup-4377@deepthought>
+Message-ID: <20100411224659.GA2411@urvas>
+
+Anirudh Sanjeev (2010-04-12 01:42):
+> Hi,
+> 
+> I'm sorry, I don't buy the "intelligent/experienced/developer users don't
+> care about the frontend design" idea.
+
+But the frontend of Sup is the ncurses client, isn't it? I do care about
+my e-mail client's UI, I care less about its website.
+
+<..snip..>
+
+> Excerpts from Rogut?s Sparnuotos's message of Mon Apr 12 01:03:58 +0530 2010:
+> > Why is the original site bad? I think that it provides more information
+> > and takes less vertical space. Only the screenshots could be bigger
+> > (and perhaps 4 instead of 6?).
+> Why is vertical space bad? I am not saying that the old website is bad. It
+> isn't immediately obvious what the exact _killer functionality_ of sup is,
+> unless you take a very close look.
+
+_Wasted_ vertical space is bad: the more you see of the real content, the
+faster you skim through.
+
+<..snip..>
+
+> > 2. First 700px of the page show nothing useful, except for a screenshot
+> >    and big letters.
+> Have you heard of "minimalism"? There's a reason why clean desks and rooms
+> are more enjoyable than cluttered dirty ones. It's not a developer/end-user
+> thing it's a human thing.
+
+Sup's home is a very good example of HTML minimalism. It has minimal
+design, too. And is enjoyable. A matter of taste, I guess.
+
+Your proposed list of features seems to enforce structure by design, but
+it fails to carry out its mission by succumbing to javascript fun. But
+yes, the current website could put some kind of emphasis on the features
+section.
+
+<..snip..>
+
+> > As for the GMail guide, wouldn't it be very useful in the wiki?
+> It's been on the wiki for four months. I wrote it. It's very hard to find
+> on the wiki.
+>
+> I hope this again, reinforces my "don't make everything harder to find just
+> because you target advanced users" belief. Instead of taking the most
+> important information and putting it somewhere you'll have to google around
+> for, put it right where people would expect to find it.
+
+The point is that the wiki, not the homepage, needs a facelift. And the
+homepage could list the most visited pages of the wiki.
+I've seen the GMail guide in the wiki prior sending my mail and I still
+feel that such a guide is more appropriate there.
+
+> tl;dr: It has nothing to do with a target audience. Saying a more pleasing
+> website does not appeal to hackers is mild stereotyping, and I am not sure
+> whether to be flattered or offended.
+> 
+> I've seen this issue a lot before - we write awesome, incredible code and
+> put it up on a wiki, and don't put in even a hundredth of effort doing
+> design as it's not intellectually satisfying. So you've got great projects
+> which fail to distinguish themselves from the crowd - on wikis and github
+> accounts around the world, there are great projects just like sup nobody
+> takes notice of.
+> 
+> And then you wonder why nobody is interested in your project. It happened
+> to me and my projects as well.
+> 
+> What I'm hoping is that if someone visits the sup site, they should be
+> excited and interested to try it out - and having something mildly
+> professional and something that seems to have some effort put into it will
+> surely help. More people trying it out is better for all of us.
+> 
+> This is just a proposed facelift. The devs decide what happens and what
+> doesn't. I just posted to get some constructive feedback and I'm sure I'll
+> get some real soon.
+
+I was trying to compare the current website with the proposed one,
+criticizing the latter. Even if you didn't make the design, you have
+chosen it. I found the colors ok, but I didn't like non-degrading
+javascript and the amount of vertical space wasted. Next, instead of
+copying the content, you replaced it with your version. If yours would be
+chosen as final, I would mourn the current one, so I raised my points
+about it.
+
+Anyway, our dialogue looks incompatible: you seem to be worried about
+projects lost in web space, whereas I am worried about the trends of the
+web. One more issue adding to the incompatibility might be the destructive
+tone I initially chose. Sorry about that.
+
+-- 
+--  Rogut?s Sparnuotos
+
+From brian at microcomaustralia.com.au  Sun Apr 11 19:08:28 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Mon, 12 Apr 2010 09:08:28 +1000
+Subject: [sup-talk] utf8 support on Ubuntu Karmic
+Message-ID: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+
+Hello,
+
+I have been trying out sup, and rather like it. Unfortunately, it
+seems very easy
+to crash :-(
+
+First things though, how do I get utf8 support working properly?
+
+[Mon Apr 12 08:52:00 +1000 2010] No 'ncursesw' gem detected. Install
+it for wide character support.
+
+How do I install this on a Ubuntu Karmic system?
+
+I tried:
+
+brian at aquitard:~/tree/sup$ sudo gem install ncursesw
+Building native extensions.  This could take a while...
+ERROR:  Error installing ncursesw:
+	ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.8 extconf.rb
+extconf.rb:23:in `require': no such file to load -- mkmf (LoadError)
+	from extconf.rb:23
+
+
+Gem files will remain installed in
+/var/lib/gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+Results logged to /var/lib/gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+
+
+Thanks
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From ismith at MIT.EDU  Sun Apr 11 19:30:06 2010
+From: ismith at MIT.EDU (Ian Smith)
+Date: Sun, 11 Apr 2010 19:30:06 -0400
+Subject: [sup-talk] utf8 support on Ubuntu Karmic
+In-Reply-To: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+References: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+Message-ID: <1271028514-sup-7691@baad>
+
+Hi Brian - I believe before installing the ncursesw gem, you need to install
+libncurses-ruby (using aptitude).  You may also need libncursesw-dev; I've got
+both of those installed on my machine, and I'm honestly not sure which one is
+necessary.
+
+Ian
+
+Excerpts from Brian May's message of Sun Apr 11 19:08:28 -0400 2010:
+> Hello,
+> 
+> I have been trying out sup, and rather like it. Unfortunately, it
+> seems very easy
+> to crash :-(
+> 
+> First things though, how do I get utf8 support working properly?
+> 
+> [Mon Apr 12 08:52:00 +1000 2010] No 'ncursesw' gem detected. Install
+> it for wide character support.
+> 
+> How do I install this on a Ubuntu Karmic system?
+> 
+> I tried:
+> 
+> brian at aquitard:~/tree/sup$ sudo gem install ncursesw
+> Building native extensions.  This could take a while...
+> ERROR:  Error installing ncursesw:
+>     ERROR: Failed to build gem native extension.
+> 
+> /usr/bin/ruby1.8 extconf.rb
+> extconf.rb:23:in `require': no such file to load -- mkmf (LoadError)
+>     from extconf.rb:23
+> 
+> 
+> Gem files will remain installed in
+> /var/lib/gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+> Results logged to /var/lib/gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+> 
+> 
+> Thanks
+-- 
+Ian Smith
+ismith at mit.edu
+http://www.bostonaccess.org
+
+From brian at microcomaustralia.com.au  Sun Apr 11 20:10:35 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Mon, 12 Apr 2010 10:10:35 +1000
+Subject: [sup-talk] utf8 support on Ubuntu Karmic
+In-Reply-To: <1271028514-sup-7691@baad>
+References: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+	<1271028514-sup-7691@baad>
+Message-ID: <u2z3c5cf5261004111710of50cf13nf7f1c5dcb50b5f66@mail.gmail.com>
+
+On 12 April 2010 09:30, Ian Smith <ismith at mit.edu> wrote:
+> Hi Brian - I believe before installing the ncursesw gem, you need to install
+> libncurses-ruby (using aptitude). ?You may also need libncursesw-dev; I've got
+> both of those installed on my machine, and I'm honestly not sure which one is
+> necessary.
+
+Hello,
+
+Thanks for your response.
+
+Unfortunately, on my system, I have both these packages installed :-(
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From rlane at club.cc.cmu.edu  Sun Apr 11 20:15:37 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 11 Apr 2010 20:15:37 -0400
+Subject: [sup-talk] utf8 support on Ubuntu Karmic
+In-Reply-To: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+References: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+Message-ID: <1271031178-sup-6454@zyrg.net>
+
+Excerpts from Brian May's message of 2010-04-11 19:08:28 -0400:
+> /usr/bin/ruby1.8 extconf.rb
+> extconf.rb:23:in `require': no such file to load -- mkmf (LoadError)
+>     from extconf.rb:23
+
+You need ruby-dev for mkmf.
+
+From rlane at club.cc.cmu.edu  Sun Apr 11 20:57:42 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 11 Apr 2010 20:57:42 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+Message-ID: <1271023429-sup-9851@zyrg.net>
+
+Excerpts from Ryan Barrett's message of 2010-04-08 05:40:32 -0400:
+> hi all! i've been looking forward to trying sup since i first heard about it a 
+> couple years ago, and i'm getting pretty close. one of my few remaining 
+> concerns is using sup in parallel with other mail clients, including sup 
+> itself.
+
+My primary goal for the 0.12 release is making Sup play nice with other
+clients. You can see the work in progress on the maildir branch - it's
+getting more stable but it's still rough around the edges. Most of the
+changes on this branch are to make Sup gracefully handle cases where
+another client has moved or deleted mail out from under us.
+
+Sup will automatically detect changes to the Seen flag in the maildir
+and update the message's labels. I haven't decided what to do about the
+other direction. Historically Sup has never modified mail sources, but
+changing flags in a maildir is safe enough that I might implement it.
+Running sup-sync-back has the problem that you can't run the UI at the
+same time.
+
+Does anyone use the current sup-sync-back that only support mboxes? If
+there are no strong objections then the 0.12 sup-sync-back will only
+support maildir.
+
+From anirudh at anirudhsanjeev.org  Mon Apr 12 01:30:23 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Mon, 12 Apr 2010 11:00:23 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <20100411224659.GA2411@urvas>
+References: <1271000793-sup-3212@deepthought> <20100411193358.GA12371@urvas>
+	<1271014668-sup-4377@deepthought> <20100411224659.GA2411@urvas>
+Message-ID: <1271048913-sup-1077@deepthought>
+
+Hi Roguetes,
+
+
+Excerpts from rogutes's message of Mon Apr 12 04:17:00 +0530 2010:
+> But the frontend of Sup is the ncurses client, isn't it? I do care about
+> my e-mail client's UI, I care less about its website.
+Please don't mix up a good UI and a graphical UI. Sup has a fantastic user
+interface. If it put all of the information in a non-organized
+non-efficient manner, the result might not be as pleasing as one might have
+originally thought.
+
+As for the website, I think that the proposed changes with the content
+migrated will make it more appealing to potential users, and for hardcore
+users who do not care less about a website, and rather evaluate a product
+on it's own merits - it wouldn't bother them.
+
+
+> _Wasted_ vertical space is bad: the more you see of the real content, the
+> faster you skim through.
+If you need to "skim through" then the content should be very precise,
+highlighted and in a very simple manner - which it currently isn't.
+
+> Your proposed list of features seems to enforce structure by design, but
+> it fails to carry out its mission by succumbing to javascript fun. But
+> yes, the current website could put some kind of emphasis on the features
+> section.
+If I see a new project's website, the number one question on my mind is
+"How will this impact my life positively". I want people to understand that
+sup will definitely change how they work for the better.
+
+> The point is that the wiki, not the homepage, needs a facelift. And the
+> homepage could list the most visited pages of the wiki.
+> I've seen the GMail guide in the wiki prior sending my mail and I still
+> feel that such a guide is more appropriate there.
+The guide is still there on the wiki, and I just thought it might be useful
+to put more important "Getting Started" information readily available. I
+noticed one interesting thing however - sup-config presents a nice "wizard"
+to configure your email, and is very user-friendly (as opposed to editing a
+.suprc).
+
+However, if a user feels that all he/she needs to get started and get
+efficient is just sup (and doesn't know about offlineimap and msmtp), then
+he/she might not get the full blown experience.
+
+> copying the content, you replaced it with your version. If yours would be
+> chosen as final, I would mourn the current one, so I raised my points
+> about it.
+I still have to migrate most of the content - I tried to include as much as
+possible. You have already mentioned a few which I've already incorporated
+(but can't push changes right now as I have some connectivity issues), but
+this isn't a problem specifically.
+
+Still, you have a very valid point - this isn't the optimum iteration of
+the frontpage for sup's intended audience. But the question I ask is if the
+old variant is, and if the new variant is better/worse off than the old
+one.
+
+> Anyway, our dialogue looks incompatible: you seem to be worried about
+> projects lost in web space, whereas I am worried about the trends of the
+> web. One more issue adding to the incompatibility might be the destructive
+> tone I initially chose. Sorry about that.
+I just find one thing disheartening - so many developers write a great tool
+but lose motivation as it doesn't gather a great following. And also so
+many users are looking for a good tool (how many people are out there
+looking for a better email client), and even when the find the right one,
+they're so "numbed" by the quick-click internet out there, that they just
+ignore it unless it absolutely stands out.
+
+As for trends on the web, I'm not a big "web2.0" person either. But I know
+the value of good typography (for instance, are you happy putting a bad
+font on your console), and presenting content in a manner that's easy to
+grok.
+
+Thank you,
+Anirudh
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100412/1bdaf54b/attachment.bin>
+
+From andrew at pimlott.net  Mon Apr 12 01:02:07 2010
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Sun, 11 Apr 2010 22:02:07 -0700
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271023429-sup-9851@zyrg.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net>
+Message-ID: <1271048365-sup-3959@pimlott.net>
+
+Excerpts from Rich Lane's message of Sun Apr 11 17:57:42 -0700 2010:
+> Does anyone use the current sup-sync-back that only support mboxes? If
+> there are no strong objections then the 0.12 sup-sync-back will only
+> support maildir.
+
+It wouldn't kill me to lose it, but I use it, and think on principle it
+would be better to have an overlap period.
+
+Andrew
+
+From tero at tilus.net  Mon Apr 12 02:53:12 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 12 Apr 2010 09:53:12 +0300
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <1271053655-sup-9183@tilus.net>
+
+Anirudh Sanjeev, 2010-04-11 18:54:
+> I took the liberty to give the Sup frontpage a facelift.
+[...]
+> Please provide any feedback about the design and contents.
+
+I like it very much.  The way the features are introduced is just
+awesome!  Only without javascript the layout somewhat explodes.
+
+Would it be too much to ask if the source-order and default styles (to
+be modified using js) would be such that the feature introduction
+texts and respective images would be laid out side-by-side aligned if
+js was not available?
+
+> Also, I was under the impression writing a project in ruby and not
+> having a really nice website for it is a syntax error :)
+
+Right about that...
+
+Which reminds me of logo.  Would it be cool to have one for sup?  I
+missed a sup-icon when i was setting up "one touch to sup" (just plain
+quicklaunch `ssh myself at mysupbox -t screen -drU`) for my n900.
+Currently sup is only a beveled, rounded blue square on my
+communications-desktop. :)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Apr 12 03:25:03 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 12 Apr 2010 10:25:03 +0300
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <20100411193358.GA12371@urvas>
+References: <1271000793-sup-3212@deepthought> <20100411193358.GA12371@urvas>
+Message-ID: <1271055277-sup-2613@tilus.net>
+
+Rogut?s Sparnuotos, 2010-04-11 22:33:
+> It looks like what you are proposing is not a new website, but a
+> shift in targeted audience.
+
+I don't think it is.  But it might be just me.
+
+> You seem to be addressing the naive user, while forgetting the more
+> technical ones.
+
+I don't really agree with this point either.  Except that the features
+list is missing configurability & extensibility (keybindings and
+hooks).
+
+The features list is an issue worth a conversation.
+
+> There is this sentence at http://sup.rubyforge.org/:
+> "
+>   The goal of Sup is to become the email client of choice for nerds
+>   everywhere.
+> "
+
+Thats a real point I think.  IMO "client of choice for nerds" is
+relevant and will be for quite some time to come.
+
+> 2. First 700px of the page show nothing useful, except for a screenshot
+>    and big letters.
+
+I find the features list, screenshot(s), main navigation and app name
+very, very usefull.
+
+> 3. Some very useful, even if technical, pieces information has been lost in
+>    conversion:
+>    "Handle massive amounts of email."
+
+The point is there, though not with those exact words.  Introduction
+starts "Sup is a console-based email client for people with a lot of
+email".
+
+>    "
+>      you can clone the git repository like so: 
+>      git clone git://gitorious.org/sup/mainline.git
+>    "
+
+Link to gitorious project page (which is there) is IMO better than
+cloning instructions.
+
+> 4. You have replaced the credit to Xapian and RubyMail with the credit to
+>    the authors of the website :)
+
+Xapian credit is in the features list, but RubyMail credit is indeed missing.
+
+> As for the GMail guide, wouldn't it be very useful in the wiki?
+
++1
+
+HOWTOs should IMO be in wiki.  That helps to keep them up to date.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Apr 12 03:56:03 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 12 Apr 2010 10:56:03 +0300
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271018184-sup-517@eris>
+References: <1271000793-sup-3212@deepthought> <1271018184-sup-517@eris>
+Message-ID: <1271057503-sup-860@tilus.net>
+
+Philipp, 2010-04-11 23:47:
+> The JS thing with description and changing image is a nice idea, but
+> I'd either not click it (because I'd read the site first and had to
+> assume it leads me to another one)
+
+Fair point.  The list should have some visual clue to suggest that
+items are not links but just switch between "tabs".  Maybe a
+surrounding box and small down arrow (kinda like
+http://guides.rubyonrails.org/ "Guides Index" has) to give the feeling
+of opening a box/list instead of clicking a hyperlink.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Apr 12 05:53:04 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 12 Apr 2010 12:53:04 +0300
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271023429-sup-9851@zyrg.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net>
+Message-ID: <1271064967-sup-4090@tilus.net>
+
+Rich Lane, 2010-04-12 03:57:
+> Sup will automatically detect changes to the Seen flag in the
+> maildir and update the message's labels.
+
+What about Trashed, Draft and Flagged?  They have obvious counterparts
+in Sup labels too.
+
+> I haven't decided what to do about the other direction. Historically
+> Sup has never modified mail sources, but changing flags in a maildir
+> is safe enough that I might implement it.
+
+For what I know maildir was designed to handle delivery, deletion and
+flag changes "safely" (no mail content corruption) even without
+locking.
+
+Updating message status upstream is a major point for multi-agent
+users.  And I have got the impression that there are quire a few of
+them already.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From michael+sup at stapelberg.de  Sun Apr 11 12:23:02 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 11 Apr 2010 18:23:02 +0200
+Subject: [sup-talk] New website design for sup - preview
+Message-ID: <1271002965-sup-7133@midna.zekjur.net>
+
+Hi Anirudh,
+
+Excerpts from Anirudh Sanjeev's message of 2010-04-11 17:54:21 +0200:
+> looks really good. Please check out the current work in progress here:
+> http://anirudhsanjeev.org/temp/supsite/
+This looks very good!
+
+I see the following problems:
+1) Rendering is broken in Firefox 3.5.6, the "INTRODUCTION" headline overlaps
+   previous text. See the attached screenshot.
+2) Umlauts are broken in the list of contributors.
+3) The header might be a bit large for mobile devices. At least for the other
+   pages (docs, ?) I would suggest making it smaller, maybe just putting the
+   "Sup" in the left top edge.
+
+Apart from that, very good work. Keep it up :-).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 2010-04-11-180259_873x821_scrot.png
+Type: image/png
+Size: 149348 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100411/e5912e98/attachment-0001.png>
+
+From daemianmack at gmail.com  Mon Apr 12 08:11:01 2010
+From: daemianmack at gmail.com (Daemian Mack)
+Date: Mon, 12 Apr 2010 08:11:01 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271048365-sup-3959@pimlott.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271048365-sup-3959@pimlott.net>
+Message-ID: <1271072587-sup-4970@lenin>
+
+Excerpts from Andrew Pimlott's message of Mon Apr 12 01:02:07 -0400 2010:
+> Excerpts from Rich Lane's message of Sun Apr 11 17:57:42 -0700 2010:
+> > Does anyone use the current sup-sync-back that only support mboxes? If
+> > there are no strong objections then the 0.12 sup-sync-back will only
+> > support maildir.
+> 
+> It wouldn't kill me to lose it, but I use it, and think on principle it
+> would be better to have an overlap period.
+
+I use sup-sync-back with mbox. I agree with Andrew that overlap would
+be a good thing in principle, though personally speaking, I'll
+probably take this change as a nudge to convert to maildir. My mbox
+files get pretty large (~80-100Mb) between sup-sync-backs, and working with those
+files on my aging mail box (1.6GHz Athlon XP) gets pretty clunky in the meantime.
+
+Also looking forward to more interclient operability!
+
+Any interest in kicking off a simple usage survey to find out how
+people are using sup? I'd be really curious to see things like...
+
+- the mailstore formats being used
+- whether most people use sup as their sole MUA or as one of many
+- how multi-MUA users handle working with multiple clients
+- the various daily sup workflows in use
+
+Might be helpful from a "what's going on out there" roadmap
+perspective, too.
+-- 
+http://daemianmack.com/
+
+
+From eg at gaute.vetsj.com  Tue Apr 13 05:44:13 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 13 Apr 2010 11:44:13 +0200
+Subject: [sup-talk] Un-threading
+Message-ID: <1271151687-sup-1945@dolk>
+
+Greetings,
+
+is it possible to un-thread messages? I recently by wrongly threaded
+some messages using #, using 'u' didn't work - but undid the changes
+before. This might be fixed in latest (just pulled from git). 
+
+But is it possible to un-thread a message when you are viewing a thread?
+I.e. by pressing # the active message would be split into a separate
+thread?
+
+Best regards, Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100413/f04a8f37/attachment.bin>
+
+From dominik.epple at googlemail.com  Wed Apr 14 03:30:13 2010
+From: dominik.epple at googlemail.com (Dominik Epple)
+Date: Wed, 14 Apr 2010 09:30:13 +0200
+Subject: [sup-talk] Only show tagged mails
+Message-ID: <t2p123554aa1004140030y857f956aucf811c23c1549fa@mail.gmail.com>
+
+Hello,
+
+I often get a lot of automated mails from monitoring systems. I want
+to archive them all efficiently using
+
+g <regexp>
+=A
+
+But between those two steps, I would like to verify that my regexp did
+not match mails I do not want to archive. Therefore, I would like to
+have the possibility to display all tagged mails. Is this possible?
+
+Thanks
+Dominik
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 08:52:34 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 08:52:34 -0400
+Subject: [sup-talk] Only show tagged mails
+In-Reply-To: <t2p123554aa1004140030y857f956aucf811c23c1549fa@mail.gmail.com>
+References: <t2p123554aa1004140030y857f956aucf811c23c1549fa@mail.gmail.com>
+Message-ID: <1271248511-sup-2132@masanjin.net>
+
+Reformatted excerpts from Dominik Epple's message of 2010-04-14:
+> But between those two steps, I would like to verify that my regexp did
+> not match mails I do not want to archive. Therefore, I would like to
+> have the possibility to display all tagged mails. Is this possible?
+
+Not really, beyond visually scanning that the "> "'s are correct. One
+can imagine a filtered view of just tagged items, but the semantics get
+a little complicated---when you untag something, does it immediately
+disappear?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 08:53:11 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 08:53:11 -0400
+Subject: [sup-talk] Un-threading
+In-Reply-To: <1271151687-sup-1945@dolk>
+References: <1271151687-sup-1945@dolk>
+Message-ID: <1271249568-sup-8799@masanjin.net>
+
+Reformatted excerpts from Gaute Hope's message of 2010-04-13:
+> But is it possible to un-thread a message when you are viewing a
+> thread?  I.e. by pressing # the active message would be split into a
+> separate thread?
+
+Not currently, but this is something I'd like as well, and it shouldn't
+be too difficult.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 08:34:22 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 08:34:22 -0400
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271053655-sup-9183@tilus.net>
+References: <1271000793-sup-3212@deepthought> <1271053655-sup-9183@tilus.net>
+Message-ID: <1271248429-sup-3859@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2010-04-12:
+> Which reminds me of logo.  Would it be cool to have one for sup?  I
+> missed a sup-icon when i was setting up "one touch to sup" (just plain
+> quicklaunch `ssh myself at mysupbox -t screen -drU`) for my n900.
+
+Let's just steal the gmail logo and replace the M with an S. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 08:32:03 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 08:32:03 -0400
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <1271247598-sup-8822@masanjin.net>
+
+Reformatted excerpts from Anirudh Sanjeev's message of 2010-04-11:
+> http://anirudhsanjeev.org/temp/supsite/
+
+Personally I like this design. I think it's a lot more visually
+appealing than the original page, without going too much into world of
+web 2.0 gradients and shiny bubbles, which is something I would like to
+avoid.
+
+There are some tweaks I would make to the content--in particular, I like
+the tagline "the email client of choice for nerds everywhere", and
+references to IMAP should probably be removed--but I'm fine with the
+design as a whole.
+
+I also do like having the Gmail "quick"start guide readily available.
+The wiki has an aura of decay around it (if someone wants to clean it
+up, I will award Sup Points (tm)). Having the guide on the homepage
+would be super convenient. I'd prefer to have it be a separate page, and
+sit alongside an mbox/Maildir quickstart guide.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 09:00:59 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 09:00:59 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271023429-sup-9851@zyrg.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net>
+Message-ID: <1271249704-sup-1088@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-04-11:
+> Does anyone use the current sup-sync-back that only support mboxes?
+
+I do, but I would consider moving to Maildir to support the common good.
+(Assuming that the Maildir format won't simply collapse with the result
+of converting 29 million lines of mbox goodness.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 09:04:29 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 09:04:29 -0400
+Subject: [sup-talk] GPG (outgoing)
+In-Reply-To: <1270981813-sup-1681@baad>
+References: <1270981813-sup-1681@baad>
+Message-ID: <1271250134-sup-4282@masanjin.net>
+
+Reformatted excerpts from Ian Smith's message of 2010-04-11:
+> In particular, I can sign (I've been testing mostly with signatures,
+> not encryption) using GPG, and send a message successfully; however,
+> while sup verifies that it thinks the signature is good, hushmail
+> doesn't recognize the message as having a signature (it sees
+> signature.asc as an attachment, but doesn't read the message as being
+> signed), and correspondents tell me that Enigmail flags my message as
+> having a bad signature.
+
+I would compare the output of sup, hushmail and enigmail on a similar
+message, and see if there's anything obviously different in the MIME
+structure. It's possible Sup is emitting something they don't like.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 09:06:22 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 09:06:22 -0400
+Subject: [sup-talk] sent mail
+In-Reply-To: <1270850674-sup-4940@zyrg.net>
+References: <alpine.DEB.1.10.1004072122250.25589@stewart.warwick.ac.uk>
+	<1270727373-sup-8902@roughage.com.au>
+	<alpine.DEB.1.10.1004081346370.23329@stewart.warwick.ac.uk>
+	<1270731588-sup-6397@roughage.com.au>
+	<1270850674-sup-4940@zyrg.net>
+Message-ID: <1271250373-sup-8059@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-04-09:
+> I switched the dependency back to plain ncurses because ncursesw was
+> failing to compile on unusual platforms (because of its wide
+> characterness). I guess this calls for a ncurses-new gem based on the
+> same upstream code as ncursesw but without the wide character support.
+
+Welcome to hell.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sven.schober at uni-ulm.de  Wed Apr 14 09:30:25 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Wed, 14 Apr 2010 15:30:25 +0200
+Subject: [sup-talk] GPG (outgoing)
+In-Reply-To: <1270981813-sup-1681@baad>
+References: <1270981813-sup-1681@baad>
+Message-ID: <1271251758-sup-5560@hysbald>
+
+Hi!
+
+Excerpts from Ian Smith's message of 2010-04-11 12:30:59 +0200:
+> In particular, I can sign (I've been testing mostly with signatures, not
+> encryption) using GPG, and send a message successfully; however, while sup
+> verifies that it thinks the signature is good, hushmail doesn't recognize the
+> message as having a signature (it sees signature.asc as an attachment, but
+> doesn't read the message as being signed), and correspondents tell me that
+> Enigmail flags my message as having a bad signature.
+>
++1
+
+> Thanks,
+>
+> Ian
+>
+Ciao,
+ Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146                     |SYSTEMS LAB
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100414/13485b8c/attachment.bin>
+
+From bwalton at artsci.utoronto.ca  Wed Apr 14 10:16:10 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 14 Apr 2010 10:16:10 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271249704-sup-1088@masanjin.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+Message-ID: <1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed Apr 14 09:00:59 -0400 2010:
+
+> (Assuming that the Maildir format won't simply collapse with the result
+> of converting 29 million lines of mbox goodness.)
+
+mbox2maildir is (generally) your friend.  We've used it here with some
+success.  The only issue we had is when the first line in a paragraph
+of a mail message starts with /From /.  As you've seen from dealing
+with mboxes in sup, this isn't necessarily an easy problem to fix...in
+our case, we're dealing with mboxes created with the likes of ancient
+pine and elm, etc, so we might be worse off than normal mutt-made
+mboxes for instance.
+
+A conversion solution that is better, if possible, is to use imapsync,
+as it leaves the mbox parsing to the imap software.  It requires more
+overhead to be useful though[1].
+
+Thanks
+-Ben
+
+[1] I'll provide more (dovecot) tips if anyone is interested.
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From wmorgan-sup at masanjin.net  Wed Apr 14 11:57:28 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 14 Apr 2010 11:57:28 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1271260552-sup-9153@masanjin.net>
+
+Reformatted excerpts from Ben Walton's message of 2010-04-14:
+> mbox2maildir is (generally) your friend.
+
+Oh, I'm sure the conversion is pretty straight-forward (modulo the
+"From_" issues you point out). I just wonder if I'm going to hit limits
+on the number of files in a directory or something weird like that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Wed Apr 14 12:08:14 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 14 Apr 2010 12:08:14 -0400
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271260552-sup-9153@masanjin.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+Message-ID: <1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed Apr 14 11:57:28 -0400 2010:
+
+> Oh, I'm sure the conversion is pretty straight-forward (modulo the
+> "From_" issues you point out). I just wonder if I'm going to hit
+> limits on the number of files in a directory or something weird like
+> that.
+
+You might, but I don't know what that limit would be...My inbox is
+currently looking like:
+
+--snip--
+bwalton @ pinkfloyd : ~/Maildir
+$ lc
+total 3.1M
+drwx------ 2 bwalton user 496K Apr 29  2008 cur
+-rw------- 1 bwalton user 1.2K Apr 28  2008 dovecot-uidlist
+drwx------ 2 bwalton user 2.6M Apr 14 12:04 new
+drwx------ 2 bwalton user 4.0K Apr 14 12:04 tmp
+
+
+bwalton @ pinkfloyd : ~/Maildir
+$ ls -lA new/ | wc -l
+36413
+--snip--
+
+Big (notice the size of the new/ directory), but not huge.  Poll times
+increase linearly though, which one drawback to the current approach
+of not moving mail into cur/ when it's detected.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From stipredirect at gmail.com  Wed Apr 14 14:30:51 2010
+From: stipredirect at gmail.com (Michael Stipicevic)
+Date: Wed, 14 Apr 2010 14:30:51 -0400
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271000793-sup-3212@deepthought>
+References: <1271000793-sup-3212@deepthought>
+Message-ID: <g2t4c4248151004141130s9130e7b4ide16c023c4675736@mail.gmail.com>
+
+On Sun, Apr 11, 2010 at 11:54 AM, Anirudh Sanjeev <
+anirudh at anirudhsanjeev.org> wrote:
+
+> Hi,
+>
+> I took the liberty to give the Sup frontpage a facelift. I re-used some
+> creative commons work without much modification to make something that
+> looks really good.
+
+
+I'm a huge fan of the quick instructions to get an offlineimap/msmtp stack
+set up. You can't properly use sup without these (or another Maildir/smtp
+setup) and a user installing sup for the first time might be disappointed
+when IMAP takes half an hour. I think it would be important to shy away from
+calling it 'up and running with gmail' -- it makes sup look just like 'gmail
+on the console' and might discourage users from trying it out -- if sup is
+just gmail on the console, why should I care?
+
+- Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100414/1c23974a/attachment.html>
+
+From anirudh at anirudhsanjeev.org  Wed Apr 14 14:55:27 2010
+From: anirudh at anirudhsanjeev.org (Anirudh Sanjeev)
+Date: Thu, 15 Apr 2010 00:25:27 +0530
+Subject: [sup-talk] New website design for sup - preview
+In-Reply-To: <1271247598-sup-8822@masanjin.net>
+References: <1271000793-sup-3212@deepthought>
+	<1271247598-sup-8822@masanjin.net>
+Message-ID: <1271271168-sup-595@deepthought>
+
+Excerpts from William Morgan's message of Wed Apr 14 18:02:03 +0530 2010:
+> Personally I like this design. I think it's a lot more visually
+> appealing than the original page, without going too much into world of
+> web 2.0 gradients and shiny bubbles, which is something I would like to
+> avoid.
+Thank you :)
+
+> There are some tweaks I would make to the content--in particular, I like
+> the tagline "the email client of choice for nerds everywhere", and
+> references to IMAP should probably be removed--but I'm fine with the
+> design as a whole.
+I've put the entire code on github:
+http://github.com/ninjagod/misc/tree/master/supsite/
+
+Please send changes you feel fit as patches or send me a pull request. I am
+unfortunately a little busy with university work till the weekend.
+
+I plan to change the GMail specific guide to a generic IMAP guide. If a
+user plans to use Sup, they can figure out how to change it for Gmail.
+
+Thanks,
+Anirudh
+-- 
+http://anirudhsanjeev.org
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100415/9ce37f7b/attachment.bin>
+
+From ismith at MIT.EDU  Wed Apr 14 21:00:45 2010
+From: ismith at MIT.EDU (Ian Smith)
+Date: Wed, 14 Apr 2010 21:00:45 -0400
+Subject: [sup-talk] GPG (outgoing)
+In-Reply-To: <1271251758-sup-5560@hysbald>
+References: <1270981813-sup-1681@baad> <1271251758-sup-5560@hysbald>
+Message-ID: <1271293169-sup-4275@baad>
+
+On further testing, removing my signatures (the bit at the bottom of emails,
+not the digital type) makes Engimail happy.  I'm still not sure what hushmail's
+problem is, but I'm working on that, as well.  So my guess is that sup doesn't
+sign the signature of a message, just what it considers to be the body.
+
+Ian
+
+Excerpts from Sven Schober's message of Wed Apr 14 09:30:25 -0400 2010:
+> Hi!
+> 
+> Excerpts from Ian Smith's message of 2010-04-11 12:30:59 +0200:
+> > In particular, I can sign (I've been testing mostly with signatures, not
+> > encryption) using GPG, and send a message successfully; however, while sup
+> > verifies that it thinks the signature is good, hushmail doesn't recognize the
+> > message as having a signature (it sees signature.asc as an attachment, but
+> > doesn't read the message as being signed), and correspondents tell me that
+> > Enigmail flags my message as having a bad signature.
+> >
+> +1
+> 
+> > Thanks,
+> >
+> > Ian
+> >
+> Ciao,
+>  Sven
+
+From plutek at infinity.net  Thu Apr 15 12:29:04 2010
+From: plutek at infinity.net (plutek at infinity.net)
+Date: Thu, 15 Apr 2010 12:29:04 -0400
+Subject: [sup-talk] contacts list confusion
+Message-ID: <1271348071-sup-4116@paldesk>
+
+greetings!
+
+i'm curious about how the contacts list actually works... i've read and written a number of emails in sup now, and "C" shows quite a few contacts. when i open contacts.txt for editing, those contacts do not show in that file. however, if i add a few contacts in contacts.txt, they get added to the "C" list in sup -- if they were already there, the nickname i put in contacts.txt shows up, and if they weren't, then they become new additions to the list. contacts which are in the "C" list but which are *not* in contacts.txt do not participate in autocompletion when filling in headers.
+
+so, it looks like sup maintains its "C" list somewhere other than contacts.txt -- if i want those addresses which are "C"-listed to benefit from autocompletion, i have to manually add them to contacts.txt, right? 
+
+why doesn't sup auto-add "C" list addresses to contacts.txt?
+
+also, i noticed that all editing of contacts.txt has to be done while sup is not running -- anything changed during a sup run get reverted when sup closes.
+
+one other question regarding contacts: is there any facility for mailing lists? it looks like that's not currently possible, since if i do this in contacts.txt...
+
+listname: person1 <address1>, person2 <address2, person3 <address3
+
+...person2 and person3 get dropped in autocompletion and the "C" list.
+
+cheers!
+-- 
+.pltk.
+
+From plutek at infinity.net  Thu Apr 15 12:35:16 2010
+From: plutek at infinity.net (plutek at infinity.net)
+Date: Thu, 15 Apr 2010 12:35:16 -0400
+Subject: [sup-talk] contacts list confusion
+In-Reply-To: <1271348071-sup-4116@paldesk>
+References: <1271348071-sup-4116@paldesk>
+Message-ID: <1271349138-sup-2805@paldesk>
+
+Excerpts from plutek's message of Thu Apr 15 12:29:04 -0400 2010:
+> greetings!
+> 
+> i'm curious about how the contacts list actually works... i've read and written a number of emails in sup now, and "C" shows quite a few contacts. when i open contacts.txt for editing, those contacts do not show in that file. however, if i add a few contacts in contacts.txt, they get added to the "C" list in sup -- if they were already there, the nickname i put in contacts.txt shows up, and if they weren't, then they become new additions to the list. contacts which are in the "C" list but which are *not* in contacts.txt do not participate in autocompletion when filling in headers.
+> 
+> so, it looks like sup maintains its "C" list somewhere other than contacts.txt -- if i want those addresses which are "C"-listed to benefit from autocompletion, i have to manually add them to contacts.txt, right? 
+> 
+> why doesn't sup auto-add "C" list addresses to contacts.txt?
+> 
+> also, i noticed that all editing of contacts.txt has to be done while sup is not running -- anything changed during a sup run get reverted when sup closes.
+> 
+> one other question regarding contacts: is there any facility for mailing lists? it looks like that's not currently possible, since if i do this in contacts.txt...
+> 
+> listname: person1 <address1>, person2 <address2, person3 <address3
+
+oops... i meant this, of course:
+listname: person1 <address1>, person2 <address2>, person3 <address3>
+
+> 
+> ...person2 and person3 get dropped in autocompletion and the "C" list.
+> 
+> cheers!
+-- 
+.pltk.
+
+From tero at tilus.net  Fri Apr 16 05:30:51 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 16 Apr 2010 12:30:51 +0300
+Subject: [sup-talk] contacts list confusion
+In-Reply-To: <1271348071-sup-4116@paldesk>
+References: <1271348071-sup-4116@paldesk>
+Message-ID: <1271409217-sup-3839@tilus.net>
+
+plutek, 2010-04-15 19:29:
+> i'm curious about how the contacts list actually works.
+
+It works exactly as you described.  ;)
+
+> sup maintains its "C" list somewhere other than contacts.txt
+
+Sup doesn't actually maintain the "C" list anywhere.  It consists of
+contacts.txt, the list returned from extra-contact-addresses hook and
+other contacts extracted from the mails sup has recently indexed.  You
+can load more (older) extracted contacts by hitting "M" when viewing
+the contacts list.
+
+> -- if i want those addresses which are "C"-listed to benefit from
+> autocompletion, i have to manually add them to contacts.txt, right?
+
+Partially.  You can highlight them, hit "i" (and optionally give
+completion alias and fix real name) and sup adds them to contacts.txt.
+
+> why doesn't sup auto-add "C" list addresses to contacts.txt?
+
+Because you don't want all the (rubbish) addresses with all the
+(rubbish) realnames floating around bloating your contacts.  You want
+sup to be able to parse contacts out of mails, present them (the
+"persistent" and latest new) nicely to you and let you cherry-pick the
+contacts you want to "persist".
+
+> is there any facility for mailing lists? it looks like that's not
+> currently possible, since if i do this in contacts.txt...
+>
+> listname: person1 <address1>, person2 <address2, person3 <address3
+> 
+> ...person2 and person3 get dropped in autocompletion and the "C" list.
+
+I don't know how it is supposed to work, but I do have mailinglists in
+my contacts.txt like this:
+
+list-alias: person1-alias, person2-alias
+person1-alias: Person One <person.one at invalid>
+person2-alias: Person Two <person.two at invalid>
+
+It has the added bonus of the people in the list being available for
+autocompletion one by one too.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From dominik.epple at googlemail.com  Fri Apr 16 10:15:35 2010
+From: dominik.epple at googlemail.com (Dominik Epple)
+Date: Fri, 16 Apr 2010 16:15:35 +0200
+Subject: [sup-talk] Only show tagged mails
+In-Reply-To: <1271248511-sup-2132@masanjin.net>
+References: <t2p123554aa1004140030y857f956aucf811c23c1549fa@mail.gmail.com>
+	<1271248511-sup-2132@masanjin.net>
+Message-ID: <w2i123554aa1004160715taa45e87fl89f7e86b4170e03b@mail.gmail.com>
+
+2010/4/14 William Morgan <wmorgan-sup at masanjin.net>:
+> Reformatted excerpts from Dominik Epple's message of 2010-04-14:
+>> But between those two steps, I would like to verify that my regexp did
+>> not match mails I do not want to archive. Therefore, I would like to
+>> have the possibility to display all tagged mails. Is this possible?
+>
+> Not really, beyond visually scanning that the "> "'s are correct. One
+
+Sad. I really feel the need of such a feature often... Where can I
+submit a feature request? :-)
+
+Perhaps I will find the time to dig into the code. However, my ruby
+skills are extremely limited...
+
+> can imagine a filtered view of just tagged items, but the semantics get
+> a little complicated---when you untag something, does it immediately
+> disappear?
+
+Can't this be treated like a label? You can also remove labels from
+mails you are currently having in a filtered view
+(label-search-results-mode). The behavior of sup is such that mail is
+then still being displayed.
+
+Regards
+Dominik
+
+From plutek at infinity.net  Fri Apr 16 11:57:00 2010
+From: plutek at infinity.net (plutek at infinity.net)
+Date: Fri, 16 Apr 2010 11:57:00 -0400
+Subject: [sup-talk] contacts list confusion
+In-Reply-To: <1271409217-sup-3839@tilus.net>
+References: <1271348071-sup-4116@paldesk> <1271409217-sup-3839@tilus.net>
+Message-ID: <1271433052-sup-9462@paldesk>
+
+Excerpts from Tero Tilus's message of Fri Apr 16 05:30:51 -0400 2010:
+> Sup doesn't actually maintain the "C" list anywhere.  It consists of
+> contacts.txt, the list returned from extra-contact-addresses hook and
+> other contacts extracted from the mails sup has recently indexed.  You
+> can load more (older) extracted contacts by hitting "M" when viewing
+> the contacts list.
+
+thanks for that!
+
+> > -- if i want those addresses which are "C"-listed to benefit from
+> > autocompletion, i have to manually add them to contacts.txt, right?
+> 
+> Partially.  You can highlight them, hit "i" (and optionally give
+> completion alias and fix real name) and sup adds them to contacts.txt.
+
+excellent!
+
+> > why doesn't sup auto-add "C" list addresses to contacts.txt?
+> 
+> Because you don't want all the (rubbish) addresses with all the
+> (rubbish) realnames floating around bloating your contacts.  You want
+> sup to be able to parse contacts out of mails, present them (the
+> "persistent" and latest new) nicely to you and let you cherry-pick the
+> contacts you want to "persist".
+
+perfectly sensible!
+
+> I don't know how it is supposed to work, but I do have mailinglists in
+> my contacts.txt like this:
+> 
+> list-alias: person1-alias, person2-alias
+> person1-alias: Person One <person.one at invalid>
+> person2-alias: Person Two <person.two at invalid>
+> 
+> It has the added bonus of the people in the list being available for
+> autocompletion one by one too.
+
+cool.... a very nice list facility, indeed.
+
+thanks for all the answers! with these details in place, sup has now officially taken over my world.
+
+cheers!
+
+-- 
+.pltk.
+
+From brian at microcomaustralia.com.au  Mon Apr 19 21:08:57 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Tue, 20 Apr 2010 11:08:57 +1000
+Subject: [sup-talk] sup exception
+Message-ID: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+
+If I try to search for the string "outage" in my mail, sup crashes, every time:
+
+
+[Tue Apr 20 11:06:59 +1000 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/home/brian/tree/sup/lib/sup.rb:17:in `id'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/hook.rb:123:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `each'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:652:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:624:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+/home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+/home/brian/tree/sup/lib/sup.rb:75:in `new'
+/home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:48:in
+`spawn_from_query'
+/home/brian/tree/sup/bin/sup:294
+
+
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From mail.ghanashyam.prabhu at gmail.com  Fri Apr 23 01:57:48 2010
+From: mail.ghanashyam.prabhu at gmail.com (ghanashyam)
+Date: Thu, 22 Apr 2010 22:57:48 -0700 (PDT)
+Subject: [sup-talk]  Error installing gem install sup on CentOS.
+Message-ID: <28337512.post@talk.nabble.com>
+
+
+Hi, 
+
+I have installed the ruby dependencies on my CentOS  2.6.18-164.11.1.el5
+system. The following are the sequence of commands that I used to download
+ruby related packages. 
+
+For installing ruby and ruby related packages 
+
+>> yum install -y ruby
+>> yum install -y ruby-devel ruby-docs ruby-ri ruby-irb ruby-rdoc 
+
+I did not have gem installed and hence i used wget to install gems  and
+untarred and installed the setup.rb
+
+>> wget http://rubyforge.org/frs/download.php/45905/rubygems-1.3.1.tgz
+>> tar xzvf rubygems-1.3.1.tgz
+>> cd  rubygems-1.3.1.tgz
+>> sudo ruby ./setup.rb
+
+Once I installed this, I had gem on my system. So time for installing sup.
+
+>> sudo gem install sup
+Building native extensions.  This could take a while...
+
+ERROR:  Error installing sup:
+        ERROR: Failed to build gem native extension.
+
+rake RUBYARCHDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+RUBYLIBDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+sh: rake: command not found
+
+Gem files will remain installed in
+/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4 for inspection.
+Results logged to
+/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/gem_make.out
+
+I got the above error.? 
+what am i missing
+Can any one help me out with this ? 
+
+-- 
+View this message in context: http://old.nabble.com/Error-installing-gem-install-sup-on-CentOS.-tp28337512p28337512.html
+Sent from the SUP Talk mailing list archive at Nabble.com.
+
+
+From marka at pobox.com  Fri Apr 23 10:28:48 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 23 Apr 2010 10:28:48 -0400
+Subject: [sup-talk] Error installing gem install sup on CentOS.
+In-Reply-To: <28337512.post@talk.nabble.com>
+References: <28337512.post@talk.nabble.com>
+Message-ID: <1272032840-sup-1345@r61>
+
+Excerpts from ghanashyam's message of Fri Apr 23 01:57:48 -0400 2010:
+> sh: rake: command not found
+
+I don't use CentOS, so this is only a wild guess, but you might
+have to do one of the following:
+
+  gem install rake
+
+or
+
+  yum install ruby-rake
+
+From matthias.guedemann at ovgu.de  Fri Apr 23 10:22:37 2010
+From: matthias.guedemann at ovgu.de (Matthias Guedemann)
+Date: Fri, 23 Apr 2010 16:22:37 +0200
+Subject: [sup-talk] Error installing gem install sup on CentOS.
+In-Reply-To: <28337512.post@talk.nabble.com>
+References: <28337512.post@talk.nabble.com>
+Message-ID: <1272032388-sup-7420@pc44es141.cs.uni-magdeburg.de>
+
+Well you do not have rake installed:
+
+> rake RUBYARCHDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+> RUBYLIBDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+> sh: rake: command not found
+
+rake is "RAKE - Ruby Make" http://rake.rubyforge.org/ 
+I bet there is a CentOS package for rake
+
+regards
+
+From mi.au at papill0n.org  Fri Apr 23 16:52:49 2010
+From: mi.au at papill0n.org (Lucas Stadler)
+Date: Fri, 23 Apr 2010 22:52:49 +0200
+Subject: [sup-talk] Undeleting a deleted (and killed) thread.
+Message-ID: <1272055170-sup-2978@yippie>
+
+
+It might be a simple to solve problem, but I accidently did
+something I would like to reverse.
+At first I killed a thread I wanted to follow further and did
+not think of the 'u' (undo) command. Then I searched for all
+the killed threads ('L' -> label: killed) and saw that thread.
+I tried to un-archive it but then simply the 'Inbox' label was
+displayed on the thread, but the 'killed' label stayed.
+I somehow managed to try out the 'd' key and obviously it was
+quite a bad idea as the thread disappeared completely. I then
+searched for the label 'Deleted' but only some other mails
+showed up. Only then I tried the undo command but it did just
+undo some other change...
+
+So now here are my questions:
+  - How do I get a 'killed' thread back into my Inbox?
+  - Is it possible to undelete a deleted thread? (If I read
+    the built-in help correctly it is, but it did not work
+	 for me...)
+  ... Can anybody help me? :)
+
+I use sup 0.10.2 as Ubuntu just provides this and I did not
+succeed to build my own version (problem with Xapian...).
+
+From brian at microcomaustralia.com.au  Sat Apr 24 20:17:35 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Sun, 25 Apr 2010 10:17:35 +1000
+Subject: [sup-talk] Undeleting a deleted (and killed) thread.
+In-Reply-To: <1272055170-sup-2978@yippie>
+References: <1272055170-sup-2978@yippie>
+Message-ID: <u2v3c5cf5261004241717x68978be7k8a97f4afd003340d@mail.gmail.com>
+
+On 24 April 2010 06:52, Lucas Stadler <mi.au at papill0n.org> wrote:
+> So now here are my questions:
+> ?- How do I get a 'killed' thread back into my Inbox?
+> ?- Is it possible to undelete a deleted thread? (If I read
+> ? ?the built-in help correctly it is, but it did not work
+> ? ? ? ? for me...)
+
+'d' is a toggle. The second time will undelete the thread.
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From sup at equaeghe.nospammail.net  Sun Apr 25 14:44:05 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Sun, 25 Apr 2010 14:44:05 -0400 (EDT)
+Subject: [sup-talk] Hints for newby switching from Alpine with multiple imap
+	accounts
+Message-ID: <alpine.DEB.2.00.1004251432440.2734@flfbcjrt>
+
+Hi,
+
+
+I'm about to try out sup, because I might switch from Alpine (former 
+pine). I have multiple imap accounts and (a number of) folder hierarchies.
+
+While things are installing, I have a number of preliminary questions:
+
+* Does anybody have experience with switching from Alpine? What are the 
+things I should look out for?
+
+* What is the best strategy to try out sup? (I'm first going to try out 
+the installation and GMail guide on 
+http://anirudhsanjeev.org/temp/supsite/.)
+
+* I understand that I'll have to keep a local mail store, but is it 
+possible for basic mail state (read/deleted/answered/...) to be resynced 
+with the online imap account?
+
+* Can sup be used for usenet?
+
+
+Best,
+
+Erik
+
+From sup at equaeghe.nospammail.net  Mon Apr 26 00:51:10 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 26 Apr 2010 00:51:10 -0400 (EDT)
+Subject: [sup-talk] charset warning when starting sup
+Message-ID: <alpine.DEB.2.00.1004260046020.913@flfbcjrt>
+
+Hi,
+
+
+When starting sup (0.11 on ruby 1.8), I get
+
+WARNING: can't find character set by using locale, defaulting to utf-8
+
+while
+
+$ locale
+LANG=nl_BE.UTF-8
+LANGUAGE=nl_BE:nl:en_US:en
+LC_CTYPE="nl_BE.UTF-8"
+LC_NUMERIC="nl_BE.UTF-8"
+LC_TIME="nl_BE.UTF-8"
+LC_COLLATE="nl_BE.UTF-8"
+LC_MONETARY="nl_BE.UTF-8"
+LC_MESSAGES="nl_BE.UTF-8"
+LC_PAPER="nl_BE.UTF-8"
+LC_NAME="nl_BE.UTF-8"
+LC_ADDRESS="nl_BE.UTF-8"
+LC_TELEPHONE="nl_BE.UTF-8"
+LC_MEASUREMENT="nl_BE.UTF-8"
+LC_IDENTIFICATION="nl_BE.UTF-8"
+LC_ALL=
+
+So I have no problem using utf-8, even want it. But I would like to get 
+rid of the error message. How?
+
+On a related note: I saw a message about getting 24h-time notation in the 
+thread list, but can't seem to find it again; is there search 
+functionality for the archives?
+
+
+Thanks for suggestions,
+
+Erik
+
+From sup at equaeghe.nospammail.net  Mon Apr 26 00:57:39 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 26 Apr 2010 00:57:39 -0400 (EDT)
+Subject: [sup-talk] how to replace (al)pine's passfile functionality
+Message-ID: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+
+Hi,
+
+
+(Al)pine has a passfile functionality: a (weakly) encrypted file contains 
+the passwords necessary for imap, nntp, and smpt connections. For sup 
+(0.11 on ruby 1.8), I use offlineimap and msmpt, both of which need 
+passwords either stored in plaintext in their config files or in the netrc 
+file. Is there any way to use some kind of encrypted netrc (something in 
+the vein of kde's wallet), which is decrypted/made accessible on login or 
+with a one-time password dialog?
+
+
+Best,
+
+Erik
+
+From mariano.mara at gmail.com  Mon Apr 26 02:10:40 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Mon, 26 Apr 2010 03:10:40 -0300
+Subject: [sup-talk] how to replace (al)pine's passfile functionality
+In-Reply-To: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+References: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+Message-ID: <1272261905-sup-876@kafka>
+
+Excerpts from Erik Quaeghebeur's message of Mon Apr 26 01:57:39 -0300 2010:
+> Hi,
+> 
+> 
+> (Al)pine has a passfile functionality: a (weakly) encrypted file contains 
+> the passwords necessary for imap, nntp, and smpt connections. For sup 
+> (0.11 on ruby 1.8), I use offlineimap and msmpt, both of which need 
+> passwords either stored in plaintext in their config files or in the netrc 
+> file. Is there any way to use some kind of encrypted netrc (something in 
+> the vein of kde's wallet), which is decrypted/made accessible on login or 
+> with a one-time password dialog?
+> 
+I use gnome-keyring. I googled a bit and found the post that helped me
+when I was setting it up: http://www.clasohm.com/blog/one-entry?entry_id=90957
+(if I remember correctly). msmtp is even easier since it has an explicit
+option for adding it to the gnome-keyring.
+Since you're mentioning kde wallet I kinda feel this information won't
+be useful to you but nevertheless...
+
+Mariano
+
+From nicolas.pouillard at gmail.com  Mon Apr 26 03:23:38 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 26 Apr 2010 00:23:38 -0700 (PDT)
+Subject: [sup-talk] how to replace (al)pine's passfile functionality
+In-Reply-To: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+References: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+Message-ID: <4bd53f7a.810ce30a.79fc.ffff80a3@mx.google.com>
+
+On Mon, 26 Apr 2010 00:57:39 -0400 (EDT), Erik Quaeghebeur <sup at equaeghe.nospammail.net> wrote:
+> Hi,
+Hi,
+
+> (Al)pine has a passfile functionality: a (weakly) encrypted file contains 
+> the passwords necessary for imap, nntp, and smpt connections. For sup 
+> (0.11 on ruby 1.8), I use offlineimap and msmpt, both of which need 
+> passwords either stored in plaintext in their config files or in the netrc 
+> file. Is there any way to use some kind of encrypted netrc (something in 
+> the vein of kde's wallet), which is decrypted/made accessible on login or 
+> with a one-time password dialog?
+
+What I do is to store these sensitive configuration files on some encrypted
+filesystem. Encfs and dmcrypt-luks (linux only) are fine choices to do so.
+
+The result is that if someone get root access or your access to the machine
+then yes he has the password but its much worse than that since he can setup
+a keylogger patch your binaries...
+
+However the good news is that if he needs to reboot the machine then all of
+these filesystem will get unreadable.
+
+Regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wmorgan-sup at masanjin.net  Mon Apr 26 15:12:16 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 26 Apr 2010 15:12:16 -0400
+Subject: [sup-talk] charset warning when starting sup
+In-Reply-To: <alpine.DEB.2.00.1004260046020.913@flfbcjrt>
+References: <alpine.DEB.2.00.1004260046020.913@flfbcjrt>
+Message-ID: <1272308962-sup-3272@masanjin.net>
+
+Reformatted excerpts from Erik Quaeghebeur's message of 2010-04-26:
+> When starting sup (0.11 on ruby 1.8), I get
+> 
+> WARNING: can't find character set by using locale, defaulting to utf-8
+
+This is complaining about the output of the locale rubygem. What does
+this print for you?
+
+  $ irb -rlocale
+  >> Locale.current
+  => [#<Locale::Tag::Posix: en_US.utf8>] # what mine says
+
+> On a related note: I saw a message about getting 24h-time notation in
+> the thread list, but can't seem to find it again; is there search
+> functionality for the archives?
+
+Yes, http://www.google.com/search?q=sup-talk+24h :(
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup at equaeghe.nospammail.net  Mon Apr 26 16:12:24 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 26 Apr 2010 16:12:24 -0400 (EDT)
+Subject: [sup-talk] charset warning when starting sup
+In-Reply-To: <1272308962-sup-3272@masanjin.net>
+References: <alpine.DEB.2.00.1004260046020.913@flfbcjrt>
+	<1272308962-sup-3272@masanjin.net>
+Message-ID: <alpine.DEB.2.00.1004261612050.2089@flfbcjrt>
+
+> Reformatted excerpts from Erik Quaeghebeur's message of 2010-04-26:
+>
+> > When starting sup (0.11 on ruby 1.8), I get
+> >
+> > WARNING: can't find character set by using locale, defaulting to utf-8
+
+On Mon, 26 Apr 2010, William Morgan wrote:
+>
+> This is complaining about the output of the locale rubygem. What does
+> this print for you?
+>
+>  $ irb -rlocale
+>  >> Locale.current
+>  => [#<Locale::Tag::Posix: en_US.utf8>] # what mine says
+
+[after installing irb]
+
+$ irb -rlocale
+/usr/lib/ruby/1.8/irb/init.rb:252:in `require': no such file to load -- 
+locale
+(LoadError)
+         from /usr/lib/ruby/1.8/irb/init.rb:252:in `load_modules'
+         from /usr/lib/ruby/1.8/irb/init.rb:250:in `each'
+         from /usr/lib/ruby/1.8/irb/init.rb:250:in `load_modules'
+         from /usr/lib/ruby/1.8/irb/init.rb:21:in `setup'
+         from /usr/lib/ruby/1.8/irb.rb:54:in `start'
+         from /usr/bin/irb:13
+
+[after installing the ruby locale libs]
+
+$ irb -rlocale
+irb(main):001:0> Locale.current
+NoMethodError: undefined method `current' for Locale:Module
+
+
+Best,
+
+Erik
+
+
+From wmorgan-sup at masanjin.net  Mon Apr 26 16:25:55 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 26 Apr 2010 16:25:55 -0400
+Subject: [sup-talk] charset warning when starting sup
+In-Reply-To: <alpine.DEB.2.00.1004261612050.2089@flfbcjrt>
+References: <alpine.DEB.2.00.1004260046020.913@flfbcjrt>
+	<1272308962-sup-3272@masanjin.net>
+	<alpine.DEB.2.00.1004261612050.2089@flfbcjrt>
+Message-ID: <1272313012-sup-3555@masanjin.net>
+
+Reformatted excerpts from Erik Quaeghebeur's message of 2010-04-26:
+> $ irb -rlocale
+> irb(main):001:0> Locale.current
+> NoMethodError: undefined method `current' for Locale:Module
+
+Hm. I don't understand this package, or the intricacies of the unix
+locale system in general. Judging from the ruby-locale docs,
+Locale.current should be set in this manner:
+
+  Get the value from environment variables order by
+  LANGUAGE > LC_ALL > LC_MESSAGES > LANG. LANGUAGE can be set plural
+  locales such as "en_CA:en_US", others can be set a locale only such as
+  "en_CA".
+
+  (http://www.yotabanana.com/hiki/ruby-locale-howto.html)
+
+When I try setting my LANGUAGE var to be the same as yours, I get:
+
+  [#<Locale::Tag::Posix: nl_BE>, #<Locale::Tag::Posix: nl>, #<Locale::Tag::Posix: en_US>, #<Locale::Tag::Posix: en>]
+
+So I'm not sure where to go from here. If you can somehow convince
+ruby-locale to work on your system, then you can get rid of the warning.
+Or, you can simply comment out line 291 of sup.rb.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup at equaeghe.nospammail.net  Mon Apr 26 23:47:10 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 26 Apr 2010 23:47:10 -0400 (EDT)
+Subject: [sup-talk] how to replace (al)pine's passfile functionality
+In-Reply-To: <1272261905-sup-876@kafka>
+References: <alpine.DEB.2.00.1004260052050.913@flfbcjrt>
+	<1272261905-sup-876@kafka>
+Message-ID: <alpine.DEB.2.00.1004262343180.2052@flfbcjrt>
+
+> Excerpts from Erik Quaeghebeur's message of Mon Apr 26 01:57:39 -0300 2010:
+> >
+> > (Al)pine has a passfile functionality: a (weakly) encrypted file 
+> > contains the passwords necessary for imap, nntp, and smpt connections. 
+> > For sup (0.11 on ruby 1.8), I use offlineimap and msmpt, both of which 
+> > need passwords either stored in plaintext in their config files or in 
+> > the netrc file. Is there any way to use some kind of encrypted netrc 
+> > (something in the vein of kde's wallet), which is decrypted/made 
+> > accessible on login or with a one-time password dialog?
+
+On Mon, 26 Apr 2010, Mariano Mara wrote:
+>
+> I use gnome-keyring. I googled a bit and found the post that helped me 
+> when I was setting it up: 
+> http://www.clasohm.com/blog/one-entry?entry_id=90957 (if I remember 
+> correctly). msmtp is even easier since it has an explicit option for 
+> adding it to the gnome-keyring.
+
+Thank you for this information, it is just what I was looking for.
+
+> Since you're mentioning kde wallet I kinda feel this information won't
+> be useful to you but nevertheless...
+
+On the contrary: I have gnome-keyring installed, as I need it for the 
+gnome-networkmanager applet (the KDE one is not good enough yet). On top 
+of that, I hope that the effort to unify both gnome-keyring and kde-wallet 
+will allow me to not keep both once kde's netwrkmanager applet is up to 
+par: <http://www.freedesktop.org/wiki/Specifications/secret-storage-spec>.
+
+However, I am hampered by the fact that in ubuntu 9.10, msmtp-gnome 
+depends on gnome-keyring-manager, a package that does not exist in 9.10!
+
+Anyhow, I'll get there, currently with baby steps.
+
+
+Best,
+
+Erik
+
+From jason at petsod.org  Fri Apr 30 01:43:24 2010
+From: jason at petsod.org (Jason Petsod)
+Date: Fri, 30 Apr 2010 00:43:24 -0500
+Subject: [sup-talk] sup web interface
+Message-ID: <1272606137-sup-842@acheron.quadco.net>
+
+Hi,
+
+Is there still interest in a web interface for sup? There appear to be
+previous discussions on it [1][2], but it doesn't seem like anything
+conclusive was created.
+
+If there is interest, is there a specific web framework (or no framework)
+the community would prefer? I might have some time this weekend to cobble
+something together...
+
+-Jason
+
+[1] http://www.mail-archive.com/sup-talk at rubyforge.org/msg01536.html
+[2] http://www.mail-archive.com/sup-talk at rubyforge.org/msg03192.html
+
+From me at nicholasbs.net  Fri Apr 30 10:17:13 2010
+From: me at nicholasbs.net (Nicholas Bergson-Shilcock)
+Date: Fri, 30 Apr 2010 10:17:13 -0400
+Subject: [sup-talk] sup web interface
+In-Reply-To: <1272606137-sup-842@acheron.quadco.net>
+References: <1272606137-sup-842@acheron.quadco.net>
+Message-ID: <1272636834-sup-4453@chimaeric.net>
+
+Excerpts from Jason Petsod's message of Fri Apr 30 01:43:24 -0400 2010:
+> Hi,
+> 
+> Is there still interest in a web interface for sup? There appear to be
+> previous discussions on it [1][2], but it doesn't seem like anything
+> conclusive was created.
+> 
+> If there is interest, is there a specific web framework (or no framework)
+> the community would prefer? I might have some time this weekend to cobble
+> something together...
+
+I'd love to see a  web interface, particularly something that works well
+from an iPhone or Android.
+
+I don't have any strong preferences regarding the best web framework
+for the job.
+
+Thanks!
+  -Nick
+
+
+> 
+> -Jason
+> 
+> [1] http://www.mail-archive.com/sup-talk at rubyforge.org/msg01536.html
+> [2] http://www.mail-archive.com/sup-talk at rubyforge.org/msg03192.html
+
+From jdugan at es.net  Fri Apr 30 10:57:53 2010
+From: jdugan at es.net (Jon Dugan)
+Date: Fri, 30 Apr 2010 09:57:53 -0500
+Subject: [sup-talk] sup web interface
+In-Reply-To: <1272636834-sup-4453@chimaeric.net>
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272636834-sup-4453@chimaeric.net>
+Message-ID: <1272639390-sup-7549@arrakis.es.net>
+
+Excerpts from Nicholas Bergson-Shilcock's message of Fri Apr 30 09:17:13 -0500 2010:
+> I'd love to see a  web interface, particularly something that works well
+> from an iPhone or Android.
+
++1 for a web interface, especially iPhone/iPad optimized.
+
+Jon
+-- 
+Jon M. Dugan <jdugan at es.net>
+ESnet Network Engineering Group
+Lawrence Berkeley National Laboratory
+
+From rlane at club.cc.cmu.edu  Fri Apr 30 19:13:36 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 30 Apr 2010 19:13:36 -0400
+Subject: [sup-talk] sup web interface
+In-Reply-To: <1272606137-sup-842@acheron.quadco.net>
+References: <1272606137-sup-842@acheron.quadco.net>
+Message-ID: <1272644331-sup-1274@zyrg.net>
+
+This is a great idea. I recommend using the sup-server protocol, either
+natively or by running sup-cmd. That code has been in master for a while
+now. I don't have a real opinion on web frameworks, but I'm biased
+towards something lightweight.
+

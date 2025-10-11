@@ -1,0 +1,87 @@
+From eg at gaute.vetsj.com  Thu Nov  7 15:04:36 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 07 Nov 2013 16:04:36 +0100
+Subject: [sup-talk] Release 0.15.0
+Message-ID: <1383836355-sup-568@qwerzila>
+
+Hi all,
+
+Sup 0.15.0 is out, get it at rubygems:
+
+
+
+  $ gem install sup
+
+
+(detailed installation instructions in the wiki [1])
+
+
+News, please at least skim through:
+
+  * Maildir Syncback has now been merged into main sup! This is a
+    long-time waiting feature initially developed by Damien Leone,
+    then picked up by Edward Z. Yang who continued development. Additionally
+    several others have been contributing.
+
+    Eventually, recently, Eric Weikl has picked up this branch, modernized
+    it to current sup, maintained it and gotten it ready for release.
+
+    Main authors:
+
+    Damien Leone
+    Edward Z. Yang
+    Eric Weikl
+
+    Not all of the features initially proposed have been included. This is
+    to maintain compatibility with more operating systems and wait with
+    the more daring features to make sure sup is stable-ish.
+
+    This is a big change since sup now can modify your mail (!), please
+    back up your mail and your configuration before using the maildir
+    syncback feature. For instructions on how to migrate an existing
+    maildir source or how to set up a new one, refer to the wiki:
+
+    https://github.com/sup-heliotrope/sup/wiki/Using-sup-with-other-clients
+
+    It is possible to both disable maildir syncback globally (default:
+    disabled) and per-source (default: enabled).
+
+  * Sup on Ruby 2.0.0 now works - but beware, this has not been very throughly
+    tested. Patches are welcome.
+
+  * We are now using our own rmail-sup gem with fixes for Ruby 2.0.0 and
+    various warnings fixed.
+
+  * sup-sync-back has been renamed to sup-sync-back-mbox to conform with
+    the other sync-back scripts.
+
+  * You can now save attachments to directories without specifying the full
+    filename (default filename is used).
+
+  * Various encoding fixes and minor bug fixes
+
+
+Important: If you are upgrading from a Sup version prior to 0.14.0
+please read the migration instructions in the wiki [0].
+
+Please report any issues you encounter to our GitHub issue tracker [2].
+
+Thanks to all who have contributed to sup either with code [3] or
+testing!
+
+Cheers, Gaute
+
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14
+[1] https://github.com/sup-heliotrope/sup/wiki
+[2] https://github.com/sup-heliotrope/sup/issues
+[3] https://github.com/sup-heliotrope/sup/blob/release-0.15.0/CONTRIBUTORS
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20131107/e363e386/attachment.bin>
+

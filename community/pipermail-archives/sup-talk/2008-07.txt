@@ -1,0 +1,1806 @@
+From vb at haramis.fdn.fr  Tue Jul  1 05:43:39 2008
+From: vb at haramis.fdn.fr (Vincent Bernardoff)
+Date: Tue, 1 Jul 2008 11:43:39 +0200
+Subject: [sup-talk] Sup crashed
+Message-ID: <20080701094339.GC28663@anigel>
+
+vb~haramis (~)% sup
+[Tue Jul 01 11:48:50 +0200 2008] using character set encoding "UTF-8"
+[Tue Jul 01 11:48:51 +0200 2008] optional 'chronic' library not found
+(run 'gem                                      install chronic' to
+install)
+[Tue Jul 01 11:48:51 +0200 2008] locking /home/vb/.sup/lock...
+[Tue Jul 01 11:48:51 +0200 2008] crypto: detected gpg binary in
+/usr/bin/gpg
+[Tue Jul 01 11:48:51 +0200 2008] stopped cursing
+[Tue Jul 01 11:48:51 +0200 2008] oh crap, an exception
+[Tue Jul 01 11:48:51 +0200 2008] unlocking /home/vb/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of sup-exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: main
+wrong number of arguments (2 for 1)
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:422:in
+`respond_to?'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:422:in `flatten'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:422:in
+`load_sources'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:108:in `load'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/util.rb:497:in
+`method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:121
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+
+Installed with gem 1.1.1 on archlinux x86_64. (command: gem install sup)
+
+Thank in advance,
+
+-- 
+Vincent Bernardoff
+
+From wmorgan-sup at masanjin.net  Wed Jul  2 09:47:44 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 02 Jul 2008 06:47:44 -0700
+Subject: [sup-talk] Sup crashed
+In-Reply-To: <20080701094339.GC28663@anigel>
+References: <20080701094339.GC28663@anigel>
+Message-ID: <1215006339-sup-6551@entry>
+
+Reformatted excerpts from Vincent Bernardoff's message of 2008-07-01:
+> wrong number of arguments (2 for 1)
+> /usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:422:in
+> `respond_to?'
+
+This is due to ruby 1.8.7. It's fixed in git, if you want to try that,
+or you can apply this patch directly:
+
+http://repo.or.cz/w/sup.git?a=blobdiff;f=lib/sup/util.rb;fp=lib/sup/util.rb;h=9909022ffa9b0b1c5796f4fbdff925087dec2519;hp=ceaf0b8dabc8a83ea451005e9b27bc109823caf1;hb=7baf2ae82255b4ca77a1e2a4b46831371f92cfce;hpb=21e34247462f5a0ca69dc2de46eceb21e5f1fb58
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eric.williams at redhat.com  Thu Jul  3 03:34:48 2008
+From: eric.williams at redhat.com (Eric Williams)
+Date: Thu, 03 Jul 2008 08:34:48 +0100
+Subject: [sup-talk] Mark tagged as read/unread?
+Message-ID: <1215069949-sup-6698@eric.fab.redhat.com>
+
+Hi, Sup people!
+
+I'm trying to find something in sup that is really bogeying up my workflow
+at the moment. Is there a way to mark a bunch of tagged messages as Read or
+Unread?  I can only find a toggle at the moment, which is pretty useless if
+you've tagged a bunch of threads of mixed read/unread status. I would like
+to tag a bunch of messages, mark them all as read (regardless of their
+current status), them ship 'em off to the archive. Is there a keystroke not
+listed in the help page?
+
+Thanks,
+
+eric
+
+
+
+-- 
+Eric Williams
+GSS-EMEA
+ 08:34:01 up 1 day, 17:40,  1 user,  load average: 0.18, 0.27, 0.33
+
+From fedzor at gmail.com  Thu Jul  3 11:26:06 2008
+From: fedzor at gmail.com (fedzor)
+Date: Thu, 3 Jul 2008 11:26:06 -0400
+Subject: [sup-talk]  Sending Emails
+Message-ID: <B6855273-AE8F-4232-B47D-61BC5995AD6C@gmail.com>
+
+its not as dumb of a question as you think!
+
+I prowled around in the source, and i even used grep tons of times to  
+find where the messages are *actually* sent in the code, but I can't  
+find it.
+
+Mr. Morgan, I can only assume that you know exactly where this is.  
+Could you point me to it?
+
+-------------------------------------------------------|
+~ Ari
+if god gives you lemons
+YOU FIND A NEW GOD
+
+
+From its.jeff.balogh at gmail.com  Thu Jul  3 11:38:35 2008
+From: its.jeff.balogh at gmail.com (Jeff Balogh)
+Date: Thu, 03 Jul 2008 11:38:35 -0400
+Subject: [sup-talk] Sending Emails
+In-Reply-To: <B6855273-AE8F-4232-B47D-61BC5995AD6C@gmail.com>
+References: <B6855273-AE8F-4232-B47D-61BC5995AD6C@gmail.com>
+Message-ID: <1215099271-sup-5787@archie>
+
+fedzor wrote:
+> its not as dumb of a question as you think!
+> 
+> I prowled around in the source, and i even used grep tons of times to  
+> find where the messages are *actually* sent in the code, but I can't  
+> find it.
+> 
+> Mr. Morgan, I can only assume that you know exactly where this is.  
+> Could you point me to it?
+
+I'm not Mr. Morgan, but...
+
+    $ ack sendmail
+    lib/sup.rb
+    211:        :sendmail => "/usr/sbin/sendmail -oem -ti",
+    
+    lib/sup/modes/edit-message-mode.rb
+--> 285:      IO.popen(acct.sendmail, "w") { |p| p.puts m }
+    286:      raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}" unless $? == 0
+    
+    lib/sup/account.rb
+    4:  attr_accessor :sendmail, :signature
+    10:    @sendmail = h[:sendmail]
+    40:      [:name, :sendmail, :signature].each { |k| hash[k] ||= @default_account.send(k) }
+    
+The call is in send_message in lib/sup/modes/edit-message-mode.rb, line 285 in
+git-next.
+
+Cheers,
+jeff
+
+From wmorgan-sup at masanjin.net  Thu Jul  3 11:51:35 2008
+From: wmorgan-sup at masanjin.net (wmorgan-sup at masanjin.net)
+Date: Thu, 03 Jul 2008 08:51:35 -0700
+Subject: [sup-talk] Mark tagged as read/unread?
+In-Reply-To: <1215069949-sup-6698@eric.fab.redhat.com>
+References: <1215069949-sup-6698@eric.fab.redhat.com>
+Message-ID: <1215100280-sup-4628@entry>
+
+Reformatted excerpts from Eric Williams's message of 2008-07-03:
+> I'm trying to find something in sup that is really bogeying up my
+> workflow at the moment. Is there a way to mark a bunch of tagged
+> messages as Read or Unread?  I can only find a toggle at the moment,
+> which is pretty useless if you've tagged a bunch of threads of mixed
+> read/unread status.
+
+There's no way to do that but it would be pretty trivial to add.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Jul  3 11:52:35 2008
+From: wmorgan-sup at masanjin.net (wmorgan-sup at masanjin.net)
+Date: Thu, 03 Jul 2008 08:52:35 -0700
+Subject: [sup-talk] Sending Emails
+In-Reply-To: <1215099271-sup-5787@archie>
+References: <B6855273-AE8F-4232-B47D-61BC5995AD6C@gmail.com>
+	<1215099271-sup-5787@archie>
+Message-ID: <1215100319-sup-947@entry>
+
+Reformatted excerpts from its.jeff.balogh's message of 2008-07-03:
+>     lib/sup/modes/edit-message-mode.rb
+> --> 285:      IO.popen(acct.sendmail, "w") { |p| p.puts m }
+>     286:      raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}"
+> unless $? == 0
+
+Yep, this is the actual execution point. It's a call out to whatever
+sendmail program you've defined in your configuration.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From grant at antiflux.org  Thu Jul  3 08:30:46 2008
+From: grant at antiflux.org (Grant Hollingworth)
+Date: Thu, 03 Jul 2008 08:30:46 -0400
+Subject: [sup-talk] Mark tagged as read/unread?
+In-Reply-To: <1215069949-sup-6698@eric.fab.redhat.com>
+References: <1215069949-sup-6698@eric.fab.redhat.com>
+Message-ID: <1215088116-sup-502@spooky.local>
+
+* Eric Williams [2008-07-03 03:34 -0400]:
+> I'm trying to find something in sup that is really bogeying up my workflow
+> at the moment. Is there a way to mark a bunch of tagged messages as Read or
+> Unread?  I can only find a toggle at the moment, which is pretty useless if
+> you've tagged a bunch of threads of mixed read/unread status. I would like
+> to tag a bunch of messages, mark them all as read (regardless of their
+> current status), them ship 'em off to the archive. Is there a keystroke not
+> listed in the help page?
+
+There's 'A' (for read_and_archive) but it only works in the inbox. What mode
+are these messages in?
+
+From ecoffey at gmail.com  Thu Jul  3 19:08:27 2008
+From: ecoffey at gmail.com (Eoin Coffey)
+Date: Thu, 3 Jul 2008 17:08:27 -0600
+Subject: [sup-talk] Sup initalize setup crash
+Message-ID: <2d88cc360807031608i44d90bf1o402a0666a737e8d8@mail.gmail.com>
+
+Just finished sup-config and configured for secure imap (its a gmail
+account).
+
+-Eoin
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080703/34aa0c0e/attachment.html>
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: sup-exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080703/34aa0c0e/attachment.txt>
+
+From wmorgan-sup at masanjin.net  Thu Jul  3 20:55:37 2008
+From: wmorgan-sup at masanjin.net (wmorgan-sup)
+Date: Thu, 03 Jul 2008 17:55:37 -0700
+Subject: [sup-talk] Sup initalize setup crash
+In-Reply-To: <2d88cc360807031608i44d90bf1o402a0666a737e8d8@mail.gmail.com>
+References: <2d88cc360807031608i44d90bf1o402a0666a737e8d8@mail.gmail.com>
+Message-ID: <1215132892-sup-2132@entry>
+
+Reformatted excerpts from Eoin Coffey's message of 2008-07-03:
+> wrong number of arguments (2 for 1)
+> /usr/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/index.rb:422:in `respond_to?'
+
+This is due to ruby 1.8.7. It's fixed in git, if you want to try that,
+or you can apply this patch directly:                                           
+                                                                                http://repo.or.cz/w/sup.git?a=blobdiff;f=lib/sup/util.rb;fp=lib/sup/util.rb;h=9909022ffa9b0b1c5796f4fbdff925087dec2519;hp=ceaf0b8dabc8a83ea451005e9b27bc109823caf1;hb=7baf2ae82255b4ca77a1e2a4b46831371f92cfce;hpb=21e34247462f5a0ca69dc2de46ece
+
+Since you're the fourth person to report this in the past few weeks, I
+suppose this means it's time to release a new version of Sup...
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From georg at xtna.de  Tue Jul 15 04:59:55 2008
+From: georg at xtna.de (Georg Lehmann)
+Date: Tue, 15 Jul 2008 10:59:55 +0200
+Subject: [sup-talk] oh crap, an exception
+Message-ID: <1216111841-sup-5352@horst>
+
+Hi,
+
+First: thanks a lot for sup. Great email client/service ;)
+
+
+After sup-add mbox+ssh://koef.xxxx.net/var/mail/grl:
+
+
+[Tue Jul 15 10:12:44 +0200 2008] stopped cursing
+[Tue Jul 15 10:12:44 +0200 2008] oh crap, an exception
+[Tue Jul 15 10:12:44 +0200 2008] unlocking /home/georg/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of sup-exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: call #connect on mbox+ssh://koef.xxxx.net/var/mail/grl
+undefined method `shell' for #<Net::SSH::Connection::Session:0x2acd9ad1fca8>
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:175:in `unsafe_connect'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:170:in `synchronize'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:170:in `unsafe_connect'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:192:in `do_remote'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:117:in `connect'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-loader.rb:37:in `connect'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-loader.rb:61:in `safely'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-loader.rb:37:in `connect'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/util.rb:548:in `send'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/util.rb:548:in `__pass'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/util.rb:537:in `method_missing'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:203
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:60:in `reporting_thread'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `initialize'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `new'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:58:in `reporting_thread'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:201
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:199:in `each'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:199
+/opt/local/bin/sup:19:in `load'
+/opt/local/bin/sup:19
+--- SystemExit from thread: main
+undefined method `shell' for #<Net::SSH::Connection::Session:0x2acd9ad1fca8>
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup.rb:64:in `select'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/buffer.rb:31:in `nonblocking_getch'
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.5/bin/sup:227
+/opt/local/bin/sup:19:in `load'
+/opt/local/bin/sup:19
+
+
+
+(Sorry for obfuscation)
+I use ssh-agent, but it also doesnt work with user/pass in sources.yaml
+Installed ruby/gem manually on debian etch and sup with gem install sup.
+Kernel: 2.6.18-4-amd64
+
+
+best regards,
+
+
+Georg Lehmann
+
+
+From wmorgan-sup at masanjin.net  Wed Jul 16 20:00:26 2008
+From: wmorgan-sup at masanjin.net (wmorgan-sup)
+Date: Wed, 16 Jul 2008 17:00:26 -0700
+Subject: [sup-talk] oh crap, an exception
+In-Reply-To: <1216111841-sup-5352@horst>
+References: <1216111841-sup-5352@horst>
+Message-ID: <1216248900-sup-5089@entry>
+
+Reformatted excerpts from Georg Lehmann's message of 2008-07-15:
+> After sup-add mbox+ssh://koef.xxxx.net/var/mail/grl:
+> --- NoMethodError from thread: call #connect on
+> mbox+ssh://koef.xxxx.net/var/mail/grl
+> undefined method `shell' for #<Net::SSH::Connection::Session:0x2acd9ad1fca8>
+> /opt/local/lib/ruby/gems/1.8/gems/sup-0.5/lib/sup/mbox/ssh-file.rb:175:in
+> `unsafe_connect'
+
+Hm. I actually haven't tried mbox+ssh since the very early days of Sup,
+so that code has definitely experienced bitrot. I'll look into it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jul 20 17:33:24 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 20 Jul 2008 14:33:24 -0700
+Subject: [sup-talk] rethinking sup part ii
+Message-ID: <1216589569-sup-1520@entry>
+
+In which the new version of Sup is described!
+
+http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From guillaume.quintard at gmail.com  Sun Jul 20 19:28:44 2008
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Sun, 20 Jul 2008 16:28:44 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216589569-sup-1520@entry>
+References: <1216589569-sup-1520@entry>
+Message-ID: <1216596306-sup-2450@altis>
+
+Excerpts from William Morgan's message of Sun Jul 20 14:33:24 -0700 2008:
+> In which the new version of Sup is described!
+> 
+> http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+looks cool to me (mostly the server/client idea). I just have one
+question: I am currently using gmail+mpop, and giving the mbox file to
+sup. The new sup won't change a lot for me, will it? 
+(maybe a stupid question, but I'd like to be sure I understood the
+implications).
+
+-- 
+Guillaume
+
+From wmorgan-sup at masanjin.net  Sun Jul 20 20:04:35 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 20 Jul 2008 17:04:35 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216596306-sup-2450@altis>
+References: <1216589569-sup-1520@entry> <1216596306-sup-2450@altis>
+Message-ID: <1216598629-sup-896@entry>
+
+Reformatted excerpts from guillaume.quintard's message of 2008-07-20:
+> I just have one question: I am currently using gmail+mpop, and giving
+> the mbox file to sup. The new sup won't change a lot for me, will it?
+> (maybe a stupid question, but I'd like to be sure I understood the
+> implications).
+
+It should be basically the same, except that you can throw away the mbox
+file when you're done (because STS will handle the storage for you).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From guillaume.quintard at gmail.com  Mon Jul 21 01:43:40 2008
+From: guillaume.quintard at gmail.com (Guillaume Quintard)
+Date: Sun, 20 Jul 2008 22:43:40 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216598629-sup-896@entry>
+References: <1216589569-sup-1520@entry> <1216596306-sup-2450@altis>
+	<1216598629-sup-896@entry>
+Message-ID: <1216618816-sup-459@altis>
+
+Excerpts from William Morgan's message of Sun Jul 20 17:04:35 -0700 2008:
+> It should be basically the same, except that you can throw away the mbox
+> file when you're done (because STS will handle the storage for you).
+
+Ok, that was what I understood. I'd keep the mbox anyway, having a
+standard backup format is always nice.
+
+-- 
+Guillaume
+
+From peter.krenn at gmail.com  Mon Jul 21 08:14:05 2008
+From: peter.krenn at gmail.com (Peter Krenn)
+Date: Mon, 21 Jul 2008 14:14:05 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216589569-sup-1520@entry>
+References: <1216589569-sup-1520@entry>
+Message-ID: <575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+
+Sounds great.
+What kind of interface will this service provide? Or will it be more
+like a library which one could use to access the sup storage from any
+application? Something like a specialized database?
+
+From wmorgan-sup at masanjin.net  Mon Jul 21 11:22:35 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Jul 2008 08:22:35 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+Message-ID: <1216653716-sup-7355@entry>
+
+Reformatted excerpts from Peter Krenn's message of 2008-07-21:
+> What kind of interface will this service provide? Or will it be more
+> like a library which one could use to access the sup storage from any
+> application? Something like a specialized database?
+
+It will be a network service with Thrift defining the interface.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From steve at patter.mine.nu  Mon Jul 21 11:26:59 2008
+From: steve at patter.mine.nu (Stephen Patterson)
+Date: Mon, 21 Jul 2008 16:26:59 +0100
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216653716-sup-7355@entry>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry>
+Message-ID: <20080721152658.GA23270@patter.mine.nu>
+
+On 21 Jul 08, William Morgan (wmorgan-sup at masanjin.net) wrote:
+> Reformatted excerpts from Peter Krenn's message of 2008-07-21:
+> > What kind of interface will this service provide? Or will it be more
+> > like a library which one could use to access the sup storage from any
+> > application? Something like a specialized database?
+> 
+> It will be a network service with Thrift defining the interface.
+
+So we'd then need a collection of custom client applications to search
+and/or browse the index? 
+
+This sounds quite a bit like the beagle project -
+http://beagle-project.org/Main_Page
+
+-- 
+Stephen Patterson :: steve at patter.mine.nu :: http://patter.mine.nu/
+GPG: B416F0DE :: Jabber: patter at jabber.earth.li 
+"Don't be silly, Minnie. Who'd be walking round these cliffs with a gas oven?"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080721/aade96ff/attachment.bin>
+
+From johnbent at lanl.gov  Mon Jul 21 12:04:33 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 21 Jul 2008 10:04:33 -0600
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <20080721152658.GA23270@patter.mine.nu>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry> <20080721152658.GA23270@patter.mine.nu>
+Message-ID: <1216656194-sup-755@tangerine.lanl.gov>
+
+Excerpts from Stephen Patterson's message of Mon Jul 21 09:26:59 -0600 2008:
+> On 21 Jul 08, William Morgan (wmorgan-sup at masanjin.net) wrote:
+> > Reformatted excerpts from Peter Krenn's message of 2008-07-21:
+> > > What kind of interface will this service provide? Or will it be more
+> > > like a library which one could use to access the sup storage from any
+> > > application? Something like a specialized database?
+> > 
+> > It will be a network service with Thrift defining the interface.
+> 
+> So we'd then need a collection of custom client applications to search
+> and/or browse the index? 
+> 
+> This sounds quite a bit like the beagle project -
+> http://beagle-project.org/Main_Page
+> 
+And google desktop:
+http://desktop.google.com
+And spotlight:
+http://en.wikipedia.org/wiki/Spotlight_(software)
+And MS Fast Find:
+http://support.microsoft.com/support/kb/articles/Q166/3/02.ASP
+
+There is room for improvement in all of these tools but the margin seems
+considerably smaller than it did for the sup email client which is vastly
+superior to anything else.
+
+John
+
+From white.magic at gmx.de  Mon Jul 21 14:43:49 2008
+From: white.magic at gmx.de (Lionel Ott)
+Date: Mon, 21 Jul 2008 20:43:49 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216589569-sup-1520@entry>
+References: <1216589569-sup-1520@entry>
+Message-ID: <1216665560-sup-7096@Hel>
+
+Excerpts from William Morgan's message of Sun Jul 20 23:33:24 +0200 2008:
+> In which the new version of Sup is described!
+> 
+> http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+Sounds nice overall but something I couldn't infer from the post was if
+you're thinking about doing just the reading and searching part of sup or
+if some of the mail functionality is going to be kept.
+Basically will sts be able to send mail or would one have to send it
+using some other client and sts then would present all that nicely to
+one, given you feed it with your mails.
+
+From wmorgan-sup at masanjin.net  Mon Jul 21 22:12:09 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Jul 2008 19:12:09 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <20080721152658.GA23270@patter.mine.nu>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry> <20080721152658.GA23270@patter.mine.nu>
+Message-ID: <1216692061-sup-3543@entry>
+
+Reformatted excerpts from Stephen Patterson's message of 2008-07-21:
+> So we'd then need a collection of custom client applications to search
+> and/or browse the index? 
+> 
+> This sounds quite a bit like the beagle project -
+> http://beagle-project.org/Main_Page
+
+Thanks for the pointer. It does sound quite similar. Having played with
+Beagle a bit, I think they key difference is that I'm envisioning STS as
+being the primary interface to your precious infos, whereas Beagle seems
+more of a supplemental index of data that's primarily handled by other
+apps.
+
+This has a couple implications, including who's responsible for storing
+the files (STS: STS; Beagle: you and your apps), and what the user
+experience looks like (Beagle: use Thunderbird, then call up Beagle for
+help; STS: browse everything through your client, starting with a
+search for label "inbox", and call up other applications for handling
+foreign mime types).
+
+If anything, Beagle is closer to Sup classic, and STS brings us closer
+to Gmail.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rgh at roughage.com.au  Wed Jul 23 04:45:06 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Wed, 23 Jul 2008 18:45:06 +1000
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216589569-sup-1520@entry>
+References: <1216589569-sup-1520@entry>
+Message-ID: <1216802131-sup-4710@wrasse>
+
+Excerpts from William Morgan's message of Mon Jul 21 07:33:24 +1000 2008:
+> In which the new version of Sup is described!
+> 
+> http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+I really like the idea and I have to say that I'm *very* glad that you
+are keeping the ncurses interface.
+
+My one concern is that you are thinking of using Sphinx and as a
+consequence you are relient on a relational database. Is that really
+what you want for a mail client? I find this disturbing on two levels:
+having a full blown database system for email seems like overkill and
+the idea of an index bring based on a relational model quite appaling.
+
+There are a number of other indexs such as Xapian or Hyper Estraier
+both have ruby bindings and both are quite mature and widely used in
+other projects.
+
+Just my two cents.
+
+rgh
+
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+
+From nicolas.pouillard at gmail.com  Wed Jul 23 04:58:10 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 23 Jul 2008 10:58:10 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216802131-sup-4710@wrasse>
+References: <1216589569-sup-1520@entry> <1216802131-sup-4710@wrasse>
+Message-ID: <1216803452-sup-8333@port-ext16.ensta.fr>
+
+Excerpts from Richard Heycock's message of Wed Jul 23 10:45:06 +0200 2008:
+> Excerpts from William Morgan's message of Mon Jul 21 07:33:24 +1000 2008:
+> > In which the new version of Sup is described!
+> > 
+> > http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+> 
+> I really like the idea and I have to say that I'm *very* glad that you
+> are keeping the ncurses interface.
+> 
+> My one concern is that you are thinking of using Sphinx and as a
+> consequence you are relient on a relational database. Is that really
+> what you want for a mail client? I find this disturbing on two levels:
+> having a full blown database system for email seems like overkill and
+> the idea of an index bring based on a relational model quite appaling.
+> 
+> There are a number of other indexs such as Xapian or Hyper Estraier
+> both have ruby bindings and both are quite mature and widely used in
+> other projects.
+
+I'm also concerned by using relying on relational databases for a mail
+service.
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080723/0a4a45de/attachment.bin>
+
+From terence.namusonge at gmail.com  Wed Jul 23 05:27:46 2008
+From: terence.namusonge at gmail.com (teroz)
+Date: Wed, 23 Jul 2008 11:27:46 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216803452-sup-8333@port-ext16.ensta.fr>
+References: <1216589569-sup-1520@entry> <1216802131-sup-4710@wrasse>
+	<1216803452-sup-8333@port-ext16.ensta.fr>
+Message-ID: <1f7abd640807230227v75c28a62v6c299242a9bf3303@mail.gmail.com>
+
+Well surely if we r eschewing typical mail storage formats like mbox and
+IMAP then a database is the way to go
+unless your suggesting we write some form of storage library as well.
+
+On Wed, Jul 23, 2008 at 10:58 AM, Nicolas Pouillard <
+nicolas.pouillard at gmail.com> wrote:
+
+> Excerpts from Richard Heycock's message of Wed Jul 23 10:45:06 +0200 2008:
+> > Excerpts from William Morgan's message of Mon Jul 21 07:33:24 +1000 2008:
+> > > In which the new version of Sup is described!
+> > >
+> > > http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+> >
+> > I really like the idea and I have to say that I'm *very* glad that you
+> > are keeping the ncurses interface.
+> >
+> > My one concern is that you are thinking of using Sphinx and as a
+> > consequence you are relient on a relational database. Is that really
+> > what you want for a mail client? I find this disturbing on two levels:
+> > having a full blown database system for email seems like overkill and
+> > the idea of an index bring based on a relational model quite appaling.
+> >
+> > There are a number of other indexs such as Xapian or Hyper Estraier
+> > both have ruby bindings and both are quite mature and widely used in
+> > other projects.
+>
+> I'm also concerned by using relying on relational databases for a mail
+> service.
+>
+> --
+> Nicolas Pouillard aka Ertai
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+
+
+-- 
+--Teroz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080723/0dfa1626/attachment.html>
+
+From wmorgan-sup at masanjin.net  Wed Jul 23 13:09:35 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 Jul 2008 10:09:35 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216802131-sup-4710@wrasse>
+References: <1216589569-sup-1520@entry> <1216802131-sup-4710@wrasse>
+Message-ID: <1216832349-sup-2908@entry>
+
+Reformatted excerpts from Richard Heycock's message of 2008-07-23:
+> My one concern is that you are thinking of using Sphinx and as a
+> consequence you are relient on a relational database. Is that really
+> what you want for a mail client? I find this disturbing on two levels:
+> having a full blown database system for email seems like overkill and
+> the idea of an index bring based on a relational model quite appaling.
+
+I feel exactly the same way. I'm using Sphinx's XML interface to add
+things to the index, so there's no RDBMS involved. I hate XML but not as
+much as I hate RDBMS.
+
+The current plan is to actually store email/documents in some kind of
+persistent key-value store. I have a preliminary very simple
+implementation that just uses files on disk, but it will be possible to
+swap that out to something like TokyoCabinet or AWS.
+
+> There are a number of other indexs such as Xapian or Hyper Estraier
+> both have ruby bindings and both are quite mature and widely used in
+> other projects.
+
+Interesting. I will check those out. I only picked Sphinx because it
+seemed popular and robust, but it is currently making my life more difficult
+than it really needs to be.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Jul 23 13:40:35 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 23 Jul 2008 19:40:35 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216692061-sup-3543@entry>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry> <20080721152658.GA23270@patter.mine.nu>
+	<1216692061-sup-3543@entry>
+Message-ID: <1216834375-sup-1899@ausone.local>
+
+Excerpts from William Morgan's message of Tue Jul 22 04:12:09 +0200 2008:
+> Reformatted excerpts from Stephen Patterson's message of 2008-07-21:
+> > So we'd then need a collection of custom client applications to search
+> > and/or browse the index? 
+> > 
+> > This sounds quite a bit like the beagle project -
+> > http://beagle-project.org/Main_Page
+> 
+> Thanks for the pointer. It does sound quite similar. Having played with
+> Beagle a bit, I think they key difference is that I'm envisioning STS as
+> being the primary interface to your precious infos, whereas Beagle seems
+> more of a supplemental index of data that's primarily handled by other
+> apps.
+> 
+> This has a couple implications, including who's responsible for storing
+> the files (STS: STS; Beagle: you and your apps), and what the user
+> experience looks like (Beagle: use Thunderbird, then call up Beagle for
+> help; STS: browse everything through your client, starting with a
+> search for label "inbox", and call up other applications for handling
+> foreign mime types).
+> 
+> If anything, Beagle is closer to Sup classic, and STS brings us closer
+> to Gmail.
+
+Another design choice, that could (and perhaps *should*) be made; is that
+stored data don't change in the case of mails, IM..., only their labels and
+children (threading) do.
+
+Then, this makes even more differences, general file system indexers have an
+harder task since, files change all the time this imply more complex data
+structures that often provides worse complexity than one could wish.
+
+Cheers,
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080723/4e09fbde/attachment.bin>
+
+From rgh at roughage.com.au  Wed Jul 23 17:41:52 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Thu, 24 Jul 2008 07:41:52 +1000
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1f7abd640807230227v75c28a62v6c299242a9bf3303@mail.gmail.com>
+References: <1216589569-sup-1520@entry> <1216802131-sup-4710@wrasse>
+	<1216803452-sup-8333@port-ext16.ensta.fr>
+	<1f7abd640807230227v75c28a62v6c299242a9bf3303@mail.gmail.com>
+Message-ID: <1216848517-sup-4046@wrasse>
+
+Excerpts from terence.namusonge's message of Wed Jul 23 19:27:46 +1000 2008:
+> Well surely if we r eschewing typical mail storage formats like mbox and
+> IMAP then a database is the way to go
+> unless your suggesting we write some form of storage library as well.
+
+Two things: I do not have a problem with a database per se, I do however
+have a problem with a standalone relational database. There are many
+embedded databases that work a treat and the user never need know about
+them. That's pretty much what mbox, Maildir, etc are.
+
+The other point is that in using Sphinx the STS would not be using
+the database directly but would require it simply because the index
+required it.
+
+As I mentioned in my previous email there are a number of other indexes
+which will serve the purpose without the unnecessary complexity of a
+standalone database system.
+
+rgh
+
+
+> On Wed, Jul 23, 2008 at 10:58 AM, Nicolas Pouillard <
+> nicolas.pouillard at gmail.com> wrote:
+> 
+> > Excerpts from Richard Heycock's message of Wed Jul 23 10:45:06 +0200 2008:
+> > > Excerpts from William Morgan's message of Mon Jul 21 07:33:24 +1000 2008:
+> > > > In which the new version of Sup is described!
+> > > >
+> > > > http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+> > >
+> > > I really like the idea and I have to say that I'm *very* glad that you
+> > > are keeping the ncurses interface.
+> > >
+> > > My one concern is that you are thinking of using Sphinx and as a
+> > > consequence you are relient on a relational database. Is that really
+> > > what you want for a mail client? I find this disturbing on two levels:
+> > > having a full blown database system for email seems like overkill and
+> > > the idea of an index bring based on a relational model quite appaling.
+> > >
+> > > There are a number of other indexs such as Xapian or Hyper Estraier
+> > > both have ruby bindings and both are quite mature and widely used in
+> > > other projects.
+> >
+> > I'm also concerned by using relying on relational databases for a mail
+> > service.
+> >
+> > --
+> > Nicolas Pouillard aka Ertai
+> >
+> > _______________________________________________
+> > sup-talk mailing list
+> > sup-talk at rubyforge.org
+> > http://rubyforge.org/mailman/listinfo/sup-talk
+> >
+> >
+> 
+
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+
+From wmorgan-sup at masanjin.net  Wed Jul 23 18:26:18 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 Jul 2008 15:26:18 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216834375-sup-1899@ausone.local>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry> <20080721152658.GA23270@patter.mine.nu>
+	<1216692061-sup-3543@entry> <1216834375-sup-1899@ausone.local>
+Message-ID: <1216850710-sup-6364@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-07-23:
+> Another design choice, that could (and perhaps *should*) be made; is
+> that stored data don't change in the case of mails, IM..., only their
+> labels and children (threading) do.
+
+I think that's a true fact. Draft messages are sort of an exception, but
+editing can always be simulated as deleting the old one and adding the
+new one.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From 5srmspw02 at sneakemail.com  Thu Jul 24 00:55:38 2008
+From: 5srmspw02 at sneakemail.com (Guarded Identity)
+Date: Wed, 23 Jul 2008 23:55:38 -0500
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216589569-sup-1520@entry>
+References: <1216589569-sup-1520@entry>
+Message-ID: <18084-90829@sneakemail.com>
+
+Excerpts from wmorgan-sup-at-masanjin.net wmorgan-sup-at-masanjin.net |Sup_Talk|'s message of Sun Jul 20 16:33:24 -0500 2008:
+> In which the new version of Sup is described!
+> 
+> http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+
+Your first blog was intriguing, but this second one is putting Sup in a
+direction I'm really happy with.  I'm happy about:
+
+    Central Server
+    --------------
+    I like having a central server, so I can run clients from multiple
+    locations.
+
+    Modifiable Messages
+    -------------------
+    There was a post I read in this thread indicating that people didn't want
+    to modify documents.   But if we handle this as a "delete/re-add"
+    operation, I'm hoping it will be fine.
+
+    In all honesty, the modifications I'd like to do are
+
+        - remove attachments.  Sometimes at work, people send out some
+          absolutely useless, gigantic attachments.
+
+        - delete/expire documents.
+
+    Documents Beyond E-mail
+    -----------------------
+    I'm /really/ interested in storing different types of "documents" like RSS.
+    . . maybe newsgroups too?  Then I could stop using snownews and slrn.  One
+    client. . . actually, for this reason, I'd tried out Emacs Gnus, but I
+    wasn't really happy with the experience/complexity.
+
+However, I was hoping to see if I could get in a request while you're in the
+beginning stages of STS development.
+
+    True Thread-level Labels
+    ------------------------
+    I was using rss2email, so the number of messages I had was enormous
+    (although I disabled that due to performance problems, Ferret corruption,
+    and the problem I'm discussion here).  I hate wasting disk space
+    needlessly, or cluttering the index for that matter.  There's some mailing
+    lists that are mostly fluff, but I wanted to save the occasional thread and
+    expire the rest.  But because messages attach to messages really, and not
+    to the thread, negation in search logic breaks.  If I search for threads
+    that have "!label:save" I can get threads that have "save" messages if they
+    also have a message not labeled "save".
+
+    Attaching labels to message always bothered me.  I'm hoping that with STS,
+    you can consider designing an architecture that lets you attach labels to a
+    thread grouping.  I'm hoping it can be done in a way that's not too
+    terribly performing.
+
+While I'm at it, I also have a feature request for STC (Sup The Client)
+
+    Improved Multiple-Label Support
+    -------------------------------
+    If I'm only using one label for each thread, then really there's no benefit
+    to having labels over folders.  So to really get the benefit of labels, it
+    would be nice to be able to attach more than one of them in a more
+    convenient way.
+
+    There's a couple of ideas I had on how to do this:
+
+        Label Hierarchies
+        -----------------
+        if you use one label, it automatically pulls in another.  But I wasn't
+        sure how to manage this with the Sup UI.
+
+        Label Recommendations
+        ---------------------
+        When using tab-complete for labeling, I see all my labels initially.
+        By now, it's an overwhelming list, and I have to hunt for the label I
+        really wanted.  What would be nice is if Sup keeps an index of all
+        label combinations (and perhaps their frequencies).  Then when one hits
+        tab the first time only labels that are relevant are presented.  If
+        those aren't adequate, then one might hit tab to cycle to a listing
+        including the rest of the labels.  Or perhaps without cycling, all
+        labels can be listed by frequency; that way, the hunt for the most
+        relevant label won't be so bad.
+
+    So Sup probably didn't have this kind of feature because of the stronger
+    advocacy for:
+
+        - automated label attachment with hooks
+
+        - not relying on labels as much as one relies on the search engine for
+          keyword queries (the GMail way)
+
+    But at work, people send me too many messages with too many different types
+    of contexts.  It would take quite a bit of AI to auto-categorize these
+    messages.  Keyword searches are maybe okay for some of these messages, but
+    it's not really perfect.  Sometimes I have to run through synonyms for
+    certain concepts.  Better label management would really help me at work.
+
+Okay, so those are the requests I have thus far.  Hopefully they aren't too
+far off base from what you are interested in doing with Sup/STS.  I'm happy to
+talk through concepts on this list.  And although I'm still working up my Ruby
+skills, I'm happy to try to contribute code.
+
+By the way, are you set up to get these kinds of feature requests with ditz?  I
+didn't see a ditz "bugs" database (folder) in my git clone of Sup.  Or are you
+just using ditz internally for your own personal tracking of Sup development?
+
+Seems like there's a number of places to issue feature requests:
+
+    - this mailing list
+
+    - ditz, if you can help me figure out how best to use it
+
+    - a FeatureRequest wiki page, but it would be moot if you didn't make a
+      habit of looking at it
+
+Just let us know what you prefer.
+
+-Sukant
+
+From nicolas.pouillard at gmail.com  Thu Jul 24 05:16:45 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 24 Jul 2008 11:16:45 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216850710-sup-6364@entry>
+References: <1216589569-sup-1520@entry>
+	<575d86ad0807210514n573972ecr2feb7aafcb9679e1@mail.gmail.com>
+	<1216653716-sup-7355@entry> <20080721152658.GA23270@patter.mine.nu>
+	<1216692061-sup-3543@entry> <1216834375-sup-1899@ausone.local>
+	<1216850710-sup-6364@entry>
+Message-ID: <1216890970-sup-1179@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Thu Jul 24 00:26:18 +0200 2008:
+> Reformatted excerpts from nicolas.pouillard's message of 2008-07-23:
+> > Another design choice, that could (and perhaps *should*) be made; is
+> > that stored data don't change in the case of mails, IM..., only their
+> > labels and children (threading) do.
+> 
+> I think that's a true fact. Draft messages are sort of an exception, but
+> editing can always be simulated as deleting the old one and adding the
+> new one.
+
+Perhaps  that  drafts  should  be marked as "short-lived", and left in another
+store.  This  reminds me how generational Garbage Collectors works, there is a
+kind of relation...
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080724/2cc5f51a/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Thu Jul 24 05:21:28 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 24 Jul 2008 11:21:28 +0200
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <18084-90829@sneakemail.com>
+References: <1216589569-sup-1520@entry> <18084-90829@sneakemail.com>
+Message-ID: <1216891009-sup-9628@ausone.inria.fr>
+
+Excerpts from Guarded Identity's message of Thu Jul 24 06:55:38 +0200 2008:
+> Excerpts from wmorgan-sup-at-masanjin.net wmorgan-sup-at-masanjin.net |Sup_Talk|'s message of Sun Jul 20 16:33:24 -0500 2008:
+> > In which the new version of Sup is described!
+> > 
+> > http://all-thing.net/2008/07/rethinking-sup-part-ii.html
+> 
+> Your first blog was intriguing, but this second one is putting Sup in a
+> direction I'm really happy with.  I'm happy about:
+> 
+>     Central Server
+>     --------------
+>     I like having a central server, so I can run clients from multiple
+>     locations.
+> 
+>     Modifiable Messages
+>     -------------------
+>     There was a post I read in this thread indicating that people didn't want
+>     to modify documents.   But if we handle this as a "delete/re-add"
+>     operation, I'm hoping it will be fine.
+> 
+>     In all honesty, the modifications I'd like to do are
+> 
+>         - remove attachments.  Sometimes at work, people send out some
+>           absolutely useless, gigantic attachments.
+> 
+>         - delete/expire documents.
+> 
+>     Documents Beyond E-mail
+>     -----------------------
+>     I'm /really/ interested in storing different types of "documents" like RSS.
+>     . . maybe newsgroups too?  Then I could stop using snownews and slrn.  One
+>     client. . . actually, for this reason, I'd tried out Emacs Gnus, but I
+>     wasn't really happy with the experience/complexity.
+> 
+> However, I was hoping to see if I could get in a request while you're in the
+> beginning stages of STS development.
+> 
+>     True Thread-level Labels
+>     ------------------------
+
+Here is another big design decision, note that some labels are truly message
+based:
+
+  * unread: of course
+  * spam: to be sure that a spam message a response to a ham message don't
+          throw away the whole thread.
+  * starred: sometime it's there to highlight a message and sometimes to
+             select the whole thread.
+
+And some others are truly thread based:
+
+  * inbox
+  * most of users labels
+  * killed
+
+Since  there  is  mandatory  requirements  for message based labels and thread
+based  labels,  one can provide both. Perhaps a syntactic distinction would be
+sufficient:
+  * a case distinction: INBOX vs unread
+  * a special mark: inbox* vs unread (here the star means the repetition on
+    all messages of the thread).
+  * more ideas to find...
+
+>     I was using rss2email, so the number of messages I had was enormous
+>     (although I disabled that due to performance problems, Ferret corruption,
+>     and the problem I'm discussion here).  I hate wasting disk space
+>     needlessly, or cluttering the index for that matter.  There's some mailing
+>     lists that are mostly fluff, but I wanted to save the occasional thread and
+>     expire the rest.  But because messages attach to messages really, and not
+>     to the thread, negation in search logic breaks.  If I search for threads
+>     that have "!label:save" I can get threads that have "save" messages if they
+>     also have a message not labeled "save".
+> 
+>     Attaching labels to message always bothered me.  I'm hoping that with STS,
+>     you can consider designing an architecture that lets you attach labels to a
+>     thread grouping.  I'm hoping it can be done in a way that's not too
+>     terribly performing.
+> 
+> While I'm at it, I also have a feature request for STC (Sup The Client)
+> 
+>     Improved Multiple-Label Support
+>     -------------------------------
+>     If I'm only using one label for each thread, then really there's no benefit
+>     to having labels over folders.  So to really get the benefit of labels, it
+>     would be nice to be able to attach more than one of them in a more
+>     convenient way.
+> 
+>     There's a couple of ideas I had on how to do this:
+> 
+>         Label Hierarchies
+>         -----------------
+>         if you use one label, it automatically pulls in another.  But I wasn't
+>         sure how to manage this with the Sup UI.
+> 
+>         Label Recommendations
+>         ---------------------
+>         When using tab-complete for labeling, I see all my labels initially.
+>         By now, it's an overwhelming list, and I have to hunt for the label I
+>         really wanted.  What would be nice is if Sup keeps an index of all
+>         label combinations (and perhaps their frequencies).  Then when one hits
+>         tab the first time only labels that are relevant are presented.  If
+>         those aren't adequate, then one might hit tab to cycle to a listing
+>         including the rest of the labels.  Or perhaps without cycling, all
+>         labels can be listed by frequency; that way, the hunt for the most
+>         relevant label won't be so bad.
+
+Hum,  that's  a  very  interesting feature. This reminds me delicio.us. In the
+same  line,  be  able  to  share popular/public labels for discussion could be
+very nice.
+
+Let's  imagine  that  public  tagging  is  done using public:foo labels, users
+could  share  some  labels  using  public  ones.  Then  in  answer  message an
+X-Public-Labels  header  is  added  and  then suggested to users when applying
+labels.
+
+> 
+>     So Sup probably didn't have this kind of feature because of the stronger
+>     advocacy for:
+> 
+>         - automated label attachment with hooks
+> 
+>         - not relying on labels as much as one relies on the search engine for
+>           keyword queries (the GMail way)
+> 
+>     But at work, people send me too many messages with too many different types
+>     of contexts.  It would take quite a bit of AI to auto-categorize these
+>     messages.  Keyword searches are maybe okay for some of these messages, but
+>     it's not really perfect.  Sometimes I have to run through synonyms for
+>     certain concepts.  Better label management would really help me at work.
+> 
+> Okay, so those are the requests I have thus far.  Hopefully they aren't too
+> far off base from what you are interested in doing with Sup/STS.  I'm happy to
+> talk through concepts on this list.  And although I'm still working up my Ruby
+> skills, I'm happy to try to contribute code.
+> 
+> By the way, are you set up to get these kinds of feature requests with ditz?  I
+> didn't see a ditz "bugs" database (folder) in my git clone of Sup.  Or are you
+> just using ditz internally for your own personal tracking of Sup development?
+
+It's in the bugs branch.
+
+> 
+> Seems like there's a number of places to issue feature requests:
+> 
+>     - this mailing list
+> 
+>     - ditz, if you can help me figure out how best to use it
+> 
+>     - a FeatureRequest wiki page, but it would be moot if you didn't make a
+>       habit of looking at it
+> 
+> Just let us know what you prefer.
+
+I'm not William but I would say that the mailing list is the preferred way.
+Moreover attaching a git-patch for the ditz issue tracker could help.
+
+Cheers,
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20080724/598bc93c/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Fri Jul 25 03:18:14 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 25 Jul 2008 00:18:14 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <18084-90829@sneakemail.com>
+References: <1216589569-sup-1520@entry> <18084-90829@sneakemail.com>
+Message-ID: <1216967875-sup-4048@entry>
+
+Reformatted excerpts from Guarded Identity's message of 2008-07-23:
+> In all honesty, the modifications I'd like to do are
+>
+>   - remove attachments.  Sometimes at work, people send out some
+>     absolutely useless, gigantic attachments.
+> 
+>   - delete/expire documents.
+
+Sup 2.0 will definitely handle both of these cases.
+
+> I'm /really/ interested in storing different types of "documents" like
+> RSS.  . . maybe newsgroups too?
+
+Sure. Anything you can munge into Sup's expected format will be
+supported. I'm expecting, in addition to a variety of clients (well
+if other people get excited!), a variety of readers, each of which
+understands some how to get and import into Sup some kind of
+information.
+
+> There's some mailing lists that are mostly fluff, but I wanted to save
+> the occasional thread and expire the rest.  But because messages
+> attach to messages really, and not to the thread, negation in search
+> logic breaks.  If I search for threads that have "!label:save" I can
+> get threads that have "save" messages if they also have a message not
+> labeled "save".
+
+The problem here is not really that there are labels on messages, it's
+that the current search operation is: for each message that matches the
+query, return the thread that contains it. That works for positive
+searches, but clearly doesn't work for negative ones.
+
+Making negative search efficient is hard. But I don't think it matters
+whether the labels are per-message or per-thread... 
+
+> Attaching labels to message always bothered me.
+
+How come? Every other property of a thread is calculated from its
+component messages---subject, recipients, date---so why not the labels
+as well? It's a nice symmetry.
+
+Anyways, I'm not sure what the right answer is yet. It certainly could
+be per-thread labels.
+
+> Label Hierarchies
+> -----------------
+> if you use one label, it automatically pulls in another.  But I wasn't
+> sure how to manage this with the Sup UI.
+
+It would be doable... probably through a hook.
+
+> When using tab-complete for labeling, I see all my labels initially.
+> By now, it's an overwhelming list, and I have to hunt for the label I
+> really wanted.  What would be nice is if Sup keeps an index of all
+> label combinations (and perhaps their frequencies).  Then when one
+> hits tab the first time only labels that are relevant are presented.
+> If those aren't adequate, then one might hit tab to cycle to a listing
+> including the rest of the labels.  Or perhaps without cycling, all
+> labels can be listed by frequency; that way, the hunt for the most
+> relevant label won't be so bad.
+
+The last of those options (list all but by frequency) is definitely
+doable. The other options are probably a fair amount of work. You can
+play around with LabelSearchMode and LabelManager if you want to try and
+mock something up. I don't expect those to change too much, except that
+LabelManager will probably become a thin shell talking to the server.
+
+> By the way, are you set up to get these kinds of feature requests with
+> ditz?  I didn't see a ditz "bugs" database (folder) in my git clone of
+> Sup. Or are you just using ditz internally for your own personal
+> tracking of Sup development?
+
+As Nicolas pointed out, it's currently on the bugs branch, but I'm
+planning to move it back into master and starting to add issues there. I
+also have tentative plans to move Sup's git repo over to gitorious so
+that people can see pretty pictures when they clone.
+
+> Seems like there's a number of places to issue feature requests:
+>   - this mailing list
+>   - ditz, if you can help me figure out how best to use it
+>   - a FeatureRequest wiki page, but it would be moot if you didn't make a
+>     habit of looking at it
+> 
+> Just let us know what you prefer.
+
+The mailing list, ditz patches, or ditz merge requests are all perfectly
+acceptable.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marcus-sup at bar-coded.net  Fri Jul 25 08:11:06 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Fri, 25 Jul 2008 13:11:06 +0100
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216832349-sup-2908@entry>
+References: <1216589569-sup-1520@entry> <1216802131-sup-4710@wrasse>
+	<1216832349-sup-2908@entry>
+Message-ID: <1216987703-sup-5083@tomsk>
+
+On 23.7.2008, William Morgan wrote:
+> > There are a number of other indexs such as Xapian or Hyper Estraier
+> > both have ruby bindings and both are quite mature and widely used in
+> > other projects.
+> 
+> Interesting. I will check those out. I only picked Sphinx because it
+> seemed popular and robust, but it is currently making my life more difficult
+> than it really needs to be.
+
+You might enjoy datamapper  - http://datamapper.org
+
+I've been knocking up web apps in ruby/sinatra/datamapper in stupidly
+few lines with absolutely no contact with the db underlying the system
+other than through datamapper.
+
+Marcus
+
+From wmorgan-sup at masanjin.net  Fri Jul 25 12:00:40 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 25 Jul 2008 09:00:40 -0700
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1216891009-sup-9628@ausone.inria.fr>
+References: <1216589569-sup-1520@entry> <18084-90829@sneakemail.com>
+	<1216891009-sup-9628@ausone.inria.fr>
+Message-ID: <1217001070-sup-9401@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-07-24:
+> Here is another big design decision, note that some labels are truly
+> message based:
+> 
+>   * unread: of course
+>   * spam: to be sure that a spam message a response to a ham message
+>     don't throw away the whole thread.
+>   * starred: sometime it's there to highlight a message and sometimes
+>     to select the whole thread.
+
+What's interesting about the labels you've listed is that they all have
+special semantics, i.e. the server or the client does something special
+based on whether they're present.
+
+Do people have "user" labels that they use to distinguish individual
+messages, as opposed to individual threads?
+
+If not, we could have labels only on threads by having a bunch of
+boolean flags on messages: read/unread, spam/ham, starred/regular,
+draft/not-draft, etc. The search syntax would probably change for those
+features.
+
+> Since  there  is  mandatory  requirements  for message based labels
+> and thread based  labels,  one can provide both. Perhaps a syntactic
+> distinction would be sufficient:
+>   * a case distinction: INBOX vs unread
+>   * a special mark: inbox* vs unread (here the star means the
+>     repetition on all messages of the thread).
+
+Having both would be possible too, but it seems overly complicated to
+me. I think that's my least favorite option right now.
+
+This is a good discussion though. I haven't really thought this all
+through.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From 5srmspw02 at sneakemail.com  Sat Jul 26 03:32:17 2008
+From: 5srmspw02 at sneakemail.com (Guarded Identity)
+Date: Sat, 26 Jul 2008 02:32:17 -0500
+Subject: [sup-talk] rethinking sup part ii
+In-Reply-To: <1217001070-sup-9401@entry>
+References: <1216589569-sup-1520@entry> <18084-90829@sneakemail.com>
+	<1216891009-sup-9628@ausone.inria.fr> <1217001070-sup-9401@entry>
+Message-ID: <14658-35025@sneakemail.com>
+
+Excerpts from William Morgan's message of Fri Jul 25 11:00:40 -0500 2008:
+>
+> Reformatted excerpts from nicolas.pouillard's message of 2008-07-24:
+  >
+> > Here is another big design decision, note that some labels are truly
+> > message based:
+> >
+> >   * unread: of course
+> >   * spam: to be sure that a spam message a response to a ham message
+> >     don't throw away the whole thread.
+> >   * starred: sometime it's there to highlight a message and sometimes
+> >     to select the whole thread.
+>
+> What's interesting about the labels you've listed is that they all have
+> special semantics, i.e. the server or the client does something special
+> based on whether they're present.
+>
+> Do people have "user" labels that they use to distinguish individual
+> messages, as opposed to individual threads?
+
+I got away with applying the "spam" label at the thread level because I never
+get any spam that's actually part of a thread; it's normally just a stand-alone
+piece of mail.
+
+I'm not sure what other people use starring for, but I just use it to highlight
+things I need to reply to, and for that purpose, it works fine at a
+thread-level because most threads only have one response I'm interested in
+issuing.  But I guess I've seen some of those gigantic threads, so maybe
+starring at the message-level /might/ be useful, but I'd not sweat it if it
+wasn't possible.
+
+Even for "unread", I get away just managing it at the thread-level, because I'm
+generally marking an entire thread as read.  However, I'd imagine someone might
+want to revert the unread status of part of a thread.  However, that would be a
+nightmare for a large thread.  In that case, I'd probably just use the "@"
+key-binding to revert labels.
+
+So all in all, I never use message-level labels, even though I get understand
+the instance in which they're needed.  The major reason for this is that the
+presentation of the search is at the thread level, so it makes little sense to
+think of labels at the message level.
+
+> If not, we could have labels only on threads by having a bunch of
+> boolean flags on messages: read/unread, spam/ham, starred/regular,
+> draft/not-draft, etc. The search syntax would probably change for those
+> features.
+
+This is /exactly/ what I'm hoping for.  I could probably come up with other
+hypothetical abstractions for indexing, but I'm happy as long as at the end of
+the day I get negation in reasonably fast searches.  I know it sounds like a
+feature that not everyone might use, but the more messages I put in the index,
+the more I find I myself trying to make use of negation to prune searches.
+Also, sometimes I like to manage Sup with scripts and having negation allows me
+to do some more cool things without having to bother William with feature
+requests for the odd message/label-managing tasks I have.
+
+Hopefully you can continue brain-storming what design you want to do to support
+this.  If you run into a problem, maybe we can jump into the design then.
+
+> > Since  there  is  mandatory  requirements  for message based labels
+> > and thread based  labels,  one can provide both. Perhaps a syntactic
+> > distinction would be sufficient:
+> >   * a case distinction: INBOX vs unread
+> >   * a special mark: inbox* vs unread (here the star means the
+> >     repetition on all messages of the thread).
+>
+> Having both would be possible too, but it seems overly complicated to
+> me. I think that's my least favorite option right now.
+
+Yeah, I was trying to think of a way to manage both, and it felt like a kludge.
+Personally, I like the idea of managing as much as we can at the thread-level.
+
+-Sukant
+
+From matt.fowles at gmail.com  Mon Jul 28 11:04:04 2008
+From: matt.fowles at gmail.com (Matt Fowles)
+Date: Mon, 28 Jul 2008 11:04:04 -0400
+Subject: [sup-talk] incrementally loading large messages
+Message-ID: <fbf191170807280804w2e46363drdaed6425d65fc02e@mail.gmail.com>
+
+All~
+
+I have a feature request for sup which block my ability to use it in a
+work context.  Extremely large emails, must download fully before
+being displayed at all.  Unfortunately, my work emails out nightly
+test results which are so large that they can take minutes to load in
+sup.  I would like it if sup showed the incrementally as it loaded.
+
+Also, does sup have a bug tracker where features can be submitted,
+because I have a preference to be able to file bugs that I find
+without being on the mailing list.
+
+Thanks,
+Matt
+
+From wmorgan-sup at masanjin.net  Mon Jul 28 14:22:19 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 28 Jul 2008 11:22:19 -0700
+Subject: [sup-talk] incrementally loading large messages
+In-Reply-To: <fbf191170807280804w2e46363drdaed6425d65fc02e@mail.gmail.com>
+References: <fbf191170807280804w2e46363drdaed6425d65fc02e@mail.gmail.com>
+Message-ID: <1217269028-sup-6714@entry>
+
+Reformatted excerpts from Matt Fowles's message of 2008-07-28:
+> I have a feature request for sup which block my ability to use it in a
+> work context.  Extremely large emails, must download fully before
+> being displayed at all.  Unfortunately, my work emails out nightly
+> test results which are so large that they can take minutes to load in
+> sup.  I would like it if sup showed the incrementally as it loaded.
+
+Wow. That's a large email.
+
+This is a good time for such a feature request, because I'm in the
+middle of designing the Sup server protocol. Consider it added.
+
+> Also, does sup have a bug tracker where features can be submitted,
+> because I have a preference to be able to file bugs that I find
+> without being on the mailing list.
+
+Oh yes, it's very simple. Clone the Sup repo, add a ditz issue, and send
+a merge request to me. No mailing list usage required whatsoever. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From matt.fowles at gmail.com  Mon Jul 28 15:03:13 2008
+From: matt.fowles at gmail.com (Matt Fowles)
+Date: Mon, 28 Jul 2008 15:03:13 -0400
+Subject: [sup-talk] incrementally loading large messages
+In-Reply-To: <1217269028-sup-6714@entry>
+References: <fbf191170807280804w2e46363drdaed6425d65fc02e@mail.gmail.com>
+	<1217269028-sup-6714@entry>
+Message-ID: <fbf191170807281203h1f505959h8ffd62dd7704253c@mail.gmail.com>
+
+William~
+
+
+On Mon, Jul 28, 2008 at 2:22 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Matt Fowles's message of 2008-07-28:
+>> I have a feature request for sup which block my ability to use it in a
+>> work context.  Extremely large emails, must download fully before
+>> being displayed at all.  Unfortunately, my work emails out nightly
+>> test results which are so large that they can take minutes to load in
+>> sup.  I would like it if sup showed the incrementally as it loaded.
+>
+> Wow. That's a large email.
+
+Yeah, it is 5.3 MB.
+
+
+> This is a good time for such a feature request, because I'm in the
+> middle of designing the Sup server protocol. Consider it added.
+>
+>> Also, does sup have a bug tracker where features can be submitted,
+>> because I have a preference to be able to file bugs that I find
+>> without being on the mailing list.
+>
+> Oh yes, it's very simple. Clone the Sup repo, add a ditz issue, and send
+> a merge request to me. No mailing list usage required whatsoever. :)
+
+Is there no web interface?  Perhaps, that is a ditz feature request...
+
+Matt
+
+From wmorgan-sup at masanjin.net  Wed Jul 30 22:10:49 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 30 Jul 2008 19:10:49 -0700
+Subject: [sup-talk] sup news (including 0.6 release)
+Message-ID: <1217466178-sup-1370@entry>
+
+Hi all,
+
+Some news:
+
+- I've moved Sup over to Gitorious. I don't know that this will
+  magically spur a continuous stream of bugfixes, but at least now we
+  have a repo webpage that's not broken.
+  
+  If you're running from Git, you should update your repo to pull from
+  there.
+
+  If you don't have local changes, you can simply reclone it:
+    git clone git://gitorious.org/sup/mainline.git
+
+  If you want to preserve your local repository, you can do something like:
+    git remote add gitorious git://gitorious.org/sup/mainline.git
+    git fetch
+
+  Then for each branch that you want "git pull" to pull from gitorious,
+  you'll need to do:
+    git config branch.<branch>.remote gitorious
+    git config branch.<branch>.merge refs/heads/<branch>
+
+    and then check it out and try pulling. If you haven't made any
+    commits, this should be a fast-forward.
+
+  If you want to call the remote "origin" instead of "gitorious", you'll
+  just have to remove or rename your origin remote first. The commands
+  above will be the same.
+
+  Note that I've reset the "next" branch, so if you have commits on that
+  branch, life may be little more complicated. Doing the above and merging
+  should work. Or you can isolate your changes somehow and rebase
+  --onto, if you feel like being complicated.
+
+- I've merged all outstanding topic branches down to master, and
+  cherry-picked a couple commits that somehow ended up in next by
+  themselves. So master should be the latest and greatest for the
+  moment.
+
+- I've moved the bugs dir directly into master. The bugs branch is now
+  deprecated. (It doesn't even exist in the Gitorious repo.)
+
+- I'm planning on release an 0.6 soon with all the bugfixes we have so
+  far. To this end, I've unassigned all unclosed issues from the 0.6
+  release.
+
+- Can anyone confirm that that the master branch on gitorious works for
+  you, just like the next branch did in the old repo? It should, but I
+  want to double-check before I ship 0.6.
+
+That's it! Work continues on STS and I hope to have some kind of
+functional code to publish soon.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Wed Jul 30 22:22:30 2008
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 30 Jul 2008 20:22:30 -0600
+Subject: [sup-talk] sup news (including 0.6 release)
+In-Reply-To: <1217466178-sup-1370@entry>
+References: <1217466178-sup-1370@entry>
+Message-ID: <1217470901-sup-800@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Wed Jul 30 20:10:49 -0600 2008:
+>   If you don't have local changes, you can simply reclone it:
+>     git clone git://gitorious.org/sup/mainline.git
+> 
+This worked for me except I got an error message and had to install
+fastthread first.  Thanks William and all for all your hard work on sup!
+
+John
+
+From rgh at roughage.com.au  Thu Jul 31 02:38:05 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Thu, 31 Jul 2008 16:38:05 +1000
+Subject: [sup-talk] sup news (including 0.6 release)
+In-Reply-To: <1217466178-sup-1370@entry>
+References: <1217466178-sup-1370@entry>
+Message-ID: <1217486240-sup-679@wrasse>
+
+Excerpts from William Morgan's message of Thu Jul 31 12:10:49 +1000 2008:
+> Hi all,
+> 
+> Some news:
+> 
+> - I've moved Sup over to Gitorious. I don't know that this will
+>   magically spur a continuous stream of bugfixes, but at least now we
+>   have a repo webpage that's not broken.
+>   
+>   If you're running from Git, you should update your repo to pull from
+>   there.
+> 
+>   If you don't have local changes, you can simply reclone it:
+>     git clone git://gitorious.org/sup/mainline.git
+> 
+>   If you want to preserve your local repository, you can do something like:
+>     git remote add gitorious git://gitorious.org/sup/mainline.git
+>     git fetch
+> 
+>   Then for each branch that you want "git pull" to pull from gitorious,
+>   you'll need to do:
+>     git config branch.<branch>.remote gitorious
+>     git config branch.<branch>.merge refs/heads/<branch>
+> 
+>     and then check it out and try pulling. If you haven't made any
+>     commits, this should be a fast-forward.
+> 
+>   If you want to call the remote "origin" instead of "gitorious", you'll
+>   just have to remove or rename your origin remote first. The commands
+>   above will be the same.
+> 
+>   Note that I've reset the "next" branch, so if you have commits on that
+>   branch, life may be little more complicated. Doing the above and merging
+>   should work. Or you can isolate your changes somehow and rebase
+>   --onto, if you feel like being complicated.
+> 
+> - I've merged all outstanding topic branches down to master, and
+>   cherry-picked a couple commits that somehow ended up in next by
+>   themselves. So master should be the latest and greatest for the
+>   moment.
+> 
+> - I've moved the bugs dir directly into master. The bugs branch is now
+>   deprecated. (It doesn't even exist in the Gitorious repo.)
+> 
+> - I'm planning on release an 0.6 soon with all the bugfixes we have so
+>   far. To this end, I've unassigned all unclosed issues from the 0.6
+>   release.
+> 
+> - Can anyone confirm that that the master branch on gitorious works for
+>   you, just like the next branch did in the old repo? It should, but I
+>   want to double-check before I ship 0.6.
+
+Works for me as well.
+
+rgh
+
+> 
+> That's it! Work continues on STS and I hope to have some kind of
+> functional code to publish soon.
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+
+From me at pekdon.net  Thu Jul 31 03:14:26 2008
+From: me at pekdon.net (Claes Nästén)
+Date: Thu, 31 Jul 2008 09:14:26 +0200
+Subject: [sup-talk] sup news (including 0.6 release)
+In-Reply-To: <1217466178-sup-1370@entry>
+References: <1217466178-sup-1370@entry>
+Message-ID: <1217488425-sup-6633@hydrogen.lan>
+
+Excerpts from William Morgan's message of Thu Jul 31 04:10:49 +0200 2008:
+> 
+> - Can anyone confirm that that the master branch on gitorious works for
+>   you, just like the next branch did in the old repo? It should, but I
+>   want to double-check before I ship 0.6.
+> 
+
+Works for me as well after re-creating the next branch (didn't have
+anything to keep in it.)
+-- 
+Claes N?st?n, <me{@}pekdon.net>, http://www.pekdon.net/
+
+"Money has corrupted so much in this world, life would be meaningless
+if it kills music as well." - Bin?rpilot
+
+From wmorgan-sup at masanjin.net  Thu Jul 31 18:40:52 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Jul 2008 15:40:52 -0700
+Subject: [sup-talk] sup news (including 0.6 release)
+In-Reply-To: <1217488425-sup-6633@hydrogen.lan>
+References: <1217466178-sup-1370@entry> <1217488425-sup-6633@hydrogen.lan>
+Message-ID: <1217544036-sup-5850@entry>
+
+Reformatted excerpts from Claes N?st?n's message of 2008-07-31:
+> Works for me as well after re-creating the next branch (didn't have
+> anything to keep in it.)
+
+Thanks guys. I'm going to release an 0.6 soon.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rgh at roughage.com.au  Thu Jul 31 19:03:32 2008
+From: rgh at roughage.com.au (Richard Heycock)
+Date: Fri, 01 Aug 2008 09:03:32 +1000
+Subject: [sup-talk] colors in 0.6
+Message-ID: <1217545348-sup-5151@wrasse>
+
+I'm trying out the 0.6 pre-release and tried to change my colours but
+what I've done doesn't work. I created a $HOME/.sup/colors.yaml like
+this:
+
+    --- 
+    :colors:
+      :index_new:
+        :bg: yellow
+
+      <snip>
+
+But it still comes up the default colour scheme.
+
+I know the file is being read (using strace) so I'm guessing it's a
+problem with the yaml. Any ideas?
+
+rgh
+-- 
++61 (0) 410 646 369
+[e]:  rgh at neoss.com.au
+[im]: rgh at jabber.org
+
+You're worried criminals will continue to penetrate into cyberspace, and
+I'm worried complexity, poor design and mismanagement will be there to meet
+them - Marcus Ranum
+

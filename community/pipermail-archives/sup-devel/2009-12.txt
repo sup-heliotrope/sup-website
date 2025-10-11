@@ -1,0 +1,3264 @@
+From sup-bugs at masanjin.net  Tue Dec  1 19:21:45 2009
+From: sup-bugs at masanjin.net (Mark Anderson)
+Date: Wed, 02 Dec 2009 00:21:45 +0000
+Subject: [sup-devel] [issue28] Join thread fails silently
+In-Reply-To: <1259713305.52.0.316532974013.issue28@masanjin.net>
+Message-ID: <1259713305.52.0.316532974013.issue28@masanjin.net>
+
+
+New submission from Mark Anderson <MarkR.Anderson at amd.com>:
+
+I have issues with the sup thread membership detecting matches in the bug
+tracking system I'm using, but when I have a search for an issue number and tag
+all the threads I want to join, I often see absolutely no effect.
+
+Since join-threads is so silent, I don't have any helpful information to give on
+this topic.
+
+Sometimes I've seen when a search for a tag will include messages which are not
+tagged.
+
+----------
+messages: 65
+nosy: mranders
+priority: bug
+ruby_version: 1.8.7-p72
+status: unread
+sup_version: 0.9.1
+title: Join thread fails silently
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue28>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Dec  3 11:23:50 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 03 Dec 2009 16:23:50 +0000
+Subject: [sup-devel] [issue29] Exception thrown on exit
+In-Reply-To: <1259857429.88.0.189335247872.issue29@masanjin.net>
+Message-ID: <1259857429.88.0.189335247872.issue29@masanjin.net>
+
+
+New submission from anonymous:
+
+I got the following stack trace on exiting sup:
+
+undefined method `resize' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/buffer.rb:326:in `draw_screen'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:189:in
+`handle_added_update'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:169:in `add_new_message'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:110:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:154:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:160:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:157:in `upto'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:157:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:142:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:94:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:82:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:82:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:81:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:81:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in
+`__unprotected_load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:608:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:679:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+I'm running the git version of sup at revision
+c394806b26a45a71e9f43eb40cea9ba84cfed1a0 (I had to run the git version to work
+around a bug in the latest release)
+
+----------
+messages: 67
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: vgit
+title: Exception thrown on exit
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue29>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Dec  3 13:25:33 2009
+From: sup-bugs at masanjin.net (David R. MacIver)
+Date: Thu, 03 Dec 2009 18:25:33 +0000
+Subject: [sup-devel] [issue30] Crash during general use
+In-Reply-To: <1259864732.83.0.806740992923.issue30@masanjin.net>
+Message-ID: <1259864732.83.0.806740992923.issue30@masanjin.net>
+
+
+New submission from David R. MacIver <david at drmaciver.com>:
+
+I'm afraid I'm not sure what I was doing when I got this (I think just browsing
+email) but I see the following exception in 0.9:
+
+--- NoMethodError from thread: periodic poll
+undefined method `content_width' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:876:in
+`from_width'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:801:in
+`text_for_thread_at'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/hook.rb:121:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:800:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:800:in
+`each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:800:in
+`text_for_thread_at'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:758:in
+`regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:364:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/hook.rb:121:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:364:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:364:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:364:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:758:in
+`regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:230:in
+`update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:702:in
+`add_or_unhide'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:188:in
+`handle_added_update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/update.rb:26:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/update.rb:26:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:166:in `add_new_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:109:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:151:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:160:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:157:in `upto'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/maildir.rb:157:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:139:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:93:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:81:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:81:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:80:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:80:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:65:in `start'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/poll.rb:62:in `start'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.9/bin/sup:203
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+this seems to result from the buffer being nil when accessed from within the
+poll, which results in the content_width method call to it crashing.
+
+----------
+messages: 68
+nosy: DRMacIver
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: 0.9
+title: Crash during general use
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue30>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Dec  3 13:42:38 2009
+From: sup-bugs at masanjin.net (David R. MacIver)
+Date: Thu, 03 Dec 2009 18:42:38 +0000
+Subject: [sup-devel] [issue31] Another unexpected nil
+In-Reply-To: <1259865758.13.0.469501860618.issue31@masanjin.net>
+Message-ID: <1259865758.13.0.469501860618.issue31@masanjin.net>
+
+
+New submission from David R. MacIver <david at drmaciver.com>:
+
+I get the following stack trace when scrolling far down my inbox while it's
+still loading (I don't know if that's what's causing the problem or if this is
+just a function of specific emails).
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `date' for nil:NilClass
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:792:in
+`text_for_thread_at'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:758:in
+`regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:364:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/hook.rb:122:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:364:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:364:in `each_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:364:in `map_with_index'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:758:in
+`regen_text'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:230:in
+`update'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:702:in
+`add_or_unhide'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:188:in
+`handle_added_update'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/update.rb:26:in `relay'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:169:in `add_new_message'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:110:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:154:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:160:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:157:in `upto'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/maildir.rb:157:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:142:in `each_message_from'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:94:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:82:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:82:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:81:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:81:in `do_poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/poll.rb:48:in `poll'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in
+`__unprotected_load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:608:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:679:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-999/bin/sup:199
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+
+Offending lines:
+
+789   def text_for_thread_at line
+790     t, size_widget = @mutex.synchronize { [@threads[line],
+@size_widgets[line]] }
+791 
+792     date = t.date.to_nice_s
+
+----------
+messages: 69
+nosy: DRMacIver
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: git
+title: Another unexpected nil
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue31>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sat Dec  5 10:50:50 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 05 Dec 2009 15:50:50 +0000
+Subject: [sup-devel] [issue32] sup's poll mode fails to find new messages
+	(possibly	because ~/Maildir/new is a symlink)
+In-Reply-To: <1260028250.12.0.475302611124.issue32@masanjin.net>
+Message-ID: <1260028250.12.0.475302611124.issue32@masanjin.net>
+
+
+New submission from anonymous:
+
+I have a slightly weird setup, using symlinks in ~/Maildir:
+
+  $ ls -l /home/edward/Maildir | grep INBOX | sort
+  drwx------ 5 edward edward    4096 2009-12-05 15:32 INBOX
+  drwxr-xr-x 5 edward edward    4096 2009-12-05 15:29 INBOX.old
+  lrwxrwxrwx 1 edward edward       9 2009-12-05 15:45 cur -> INBOX/cur
+  lrwxrwxrwx 1 edward edward       9 2009-12-05 15:45 new -> INBOX/new
+  lrwxrwxrwx 1 edward edward       9 2009-12-05 15:45 tmp -> INBOX/tmp
+
+I configured sup to source mail from the directory "/home/edward/Maildir".
+
+"sup-sync --changed" found new emails, but sup's polling mode didn't.
+
+I've now started afresh, pointing sup at "/home/edward/Maildir/INBOX", and
+everything's working fine -- both sup-sync and sup itself are seeing new mails
+added to that Maildir.
+
+Ed
+
+----------
+messages: 70
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9
+title: sup's poll mode fails to find new messages (possibly because ~/Maildir/new is a symlink)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue32>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Dec 10 18:15:45 2009
+From: sup-bugs at masanjin.net (micah)
+Date: Thu, 10 Dec 2009 23:15:45 +0000
+Subject: [sup-devel] [issue33] sup hardcodes the micalg in signatures
+In-Reply-To: <1260486945.71.0.956778612306.issue33@masanjin.net>
+Message-ID: <1260486945.71.0.956778612306.issue33@masanjin.net>
+
+
+New submission from micah <micah at riseup.net>:
+
+crypto.rb, line 41 has this:
+
+    envelope.header["Content-Type"] = 'multipart/signed;
+protocol=application/pgp-signature; micalg=pgp-sha1'
+
+that is no good if my hash algorithm is *not* sha1, which it is not. in fact,
+what that creates are broken signatures, which some clients will complain about.
+in fact, enigmail for one complains about them because gpg complains:
+
+/usr/bin/gpg --charset utf8  --batch --no-tty --status-fd 2 --verify
+gpg: Signature made Wed 09 Dec 2009 01:03:13 PM EST using RSA key ID 2861A790
+gpg: WARNING: signature digest conflict in message
+gpg: Can't check signature: general error
+
+Sup should detect the hashing algorithm and set it properly, rather than
+hardcoding it. 
+
+RFC 3156 reads:
+
+  The "micalg" parameter for the "application/pgp-signature" protocol
+   MUST contain exactly one hash-symbol of the format "pgp-<hash-
+   identifier>", where <hash-identifier> identifies the Message
+   Integrity Check (MIC) algorithm used to generate the signature.
+   Hash-symbols are constructed from the text names registered in [1] or
+   according to the mechanism defined in that document by converting the
+   text name to lower case and prefixing it with the four characters
+   "pgp-".
+
+   Currently defined values are "pgp-md5", "pgp-sha1", "pgp-ripemd160",
+   "pgp-md2", "pgp-tiger192", and "pgp-haval-5-160".
+
+----------
+messages: 80
+nosy: micah
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: 0.9
+title: sup hardcodes the micalg in signatures
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue33>
+_________________________________________
+
+From sup-bugs at masanjin.net  Sun Dec 13 15:48:43 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sun, 13 Dec 2009 20:48:43 +0000
+Subject: [sup-devel] [issue34] Problems with spaces in source paths
+In-Reply-To: <1260737323.12.0.202473079881.issue34@masanjin.net>
+Message-ID: <1260737323.12.0.202473079881.issue34@masanjin.net>
+
+
+New submission from anonymous:
+
+I've been having problems adding a maildir source with a space in its absolute path.
+
+  sup-add "maildir:/path/to/maildir with spaces"
+
+It works if you enscape spaces with %20 or + as done normally in URIs:
+
+  sup-add "maildir:/path/to/maildir%20with%20spaces"
+
+But the maildir source doesn't unescape the uri path. Attached patch fixes that. 
+
+However, I'm still not convinced one should be expected to escape URIs for
+sup-add. I'd be interested in your opinion on that matter, and willing to go and
+write a patch for that part as well.
+
+----------
+files: 0001-unescaping-maildir-uri-to-allow-spaces-etc.patch
+messages: 86
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.9.1
+title: Problems with spaces in source paths
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue34>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-unescaping-maildir-uri-to-allow-spaces-etc.patch
+Type: application/octet-stream
+Size: 871 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091213/a0458e8a/attachment-0001.obj>
+
+From davrieb at liegesta.at  Sun Dec 20 12:06:11 2009
+From: davrieb at liegesta.at (David Riebenbauer)
+Date: Sun, 20 Dec 2009 18:06:11 +0100
+Subject: [sup-devel] [PATCH] change default default_attachment_save_dir
+Message-ID: <1261327726-sup-11@androgyn-mid.liegesta.at>
+
+Hi!
+
+Prefered patch submission place is sup-devel@ right?
+
+Just a trivial change I had sitting around here for way to long.
+
+Thanks,
+David
+
+>8--------------------------------------
+change default default_attachment_save_dir to "~/"
+
+With the current old default "" sup would try to save to / which was kind of
+annoying. So I changed it, so new users wouldn't have that problem.
+
+---
+ lib/sup.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 144f5e3..e685584 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -228,7 +228,7 @@ else
+     :confirm_no_attachments => true,
+     :confirm_top_posting => true,
+     :discard_snippets_from_encrypted_messages => false,
+-    :default_attachment_save_dir => "",
++    :default_attachment_save_dir => "~/",
+     :sent_source => "sup://sent"
+   }
+   begin
+-- 
+1.6.5.7
+>8--------------------------------------
+
+-- 
+David Riebenbauer
+Jabber: davrieb at jabber.ccc.de - ICQ: 322056002 
+http://liegesta.at
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091220/c7fd870e/attachment.bin>
+
+From ezyang at MIT.EDU  Sun Dec 20 17:19:57 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 20 Dec 2009 17:19:57 -0500
+Subject: [sup-devel] [PATCH] change default default_attachment_save_dir
+In-Reply-To: <1261327726-sup-11@androgyn-mid.liegesta.at>
+References: <1261327726-sup-11@androgyn-mid.liegesta.at>
+Message-ID: <1261347576-sup-7268@ezyang>
+
+Excerpts from David Riebenbauer's message of Sun Dec 20 12:06:11 -0500 2009:
+> Just a trivial change I had sitting around here for way to long.
+
++1
+
+This should have been fixed a long time ago.
+
+Edward
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 07:48:58 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 04:48:58 -0800
+Subject: [sup-devel] [PATCH] change default default_attachment_save_dir
+In-Reply-To: <1261327726-sup-11@androgyn-mid.liegesta.at>
+References: <1261327726-sup-11@androgyn-mid.liegesta.at>
+Message-ID: <1261399667-sup-7112@masanjin.net>
+
+Hi David,
+
+Reformatted excerpts from David Riebenbauer's message of 2009-12-20:
+> With the current old default "" sup would try to save to / which was
+> kind of annoying. So I changed it, so new users wouldn't have that
+> problem.
+
+Thanks! I fixed this in a different way, though, that allows the "" to
+act as "~/". That way old users are helped as well. Either "" or "~/"
+should now work.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Dec 21 07:50:49 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Dec 2009 04:50:49 -0800
+Subject: [sup-devel] encoding branch
+In-Reply-To: <1259209351-sup-4273@zyrg.net>
+References: <1259209351-sup-4273@zyrg.net>
+Message-ID: <1261399788-sup-5091@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-11-25:
+> I've pushed a branch "encoding" to my repo (git://github.com/rlane/sup)
+> which has many fixes for the encoding issues ruby 1.9 creates.
+[snip]
+> Caveats:
+>   Xapian-only
+>   still contains debugging code, so it will be slower
+
+How Xapian-only is this? Will it break Ferret compatibility?
+
+My plan for 0.10 is to release with Xapian being the default index. It
+would be great to be 1.9-compatible too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup-bugs at masanjin.net  Mon Dec 21 12:01:27 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 21 Dec 2009 17:01:27 +0000
+Subject: [sup-devel] [issue35] inbox-mode thread state appears incorrectly
+	saved via $
+In-Reply-To: <1261414887.04.0.679790695865.issue35@masanjin.net>
+Message-ID: <1261414887.04.0.679790695865.issue35@masanjin.net>
+
+
+New submission from anonymous:
+
+Sup's inbox-mode appears to fail to save thread state accurately for me, such 
+that a quit and re-open of sup or even a @ on the inbox will nearly always show 
+some threads that should have been archived.
+
+I haven't found why this only affects some threads.
+
+My normal workflow:
+. open a thread (now it loses it's :unread tag)
+. stuff
+. x out back to the index
+. a to archive (now it loses its :inbox tag)
+. repeat
+. $ to save the inbox state
+
+At this point if I close and re-open sup, or if I @ to refresh the inbox view, 
+there is a chance that the message(s) I just operated on will re-appear in the 
+inbox as unread.
+
+It also seems to happen if I N and a messages from within the inbox-mode.
+
+----------
+messages: 95
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2008-08-11 patchlevel 72) [universal-darwin10.0]
+status: unread
+sup_version: 0.9.1 ferret
+title: inbox-mode thread state appears incorrectly saved via $
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue35>
+_________________________________________
+
+From tero at tilus.net  Tue Dec 22 07:42:52 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 22 Dec 2009 14:42:52 +0200
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for yields
+	messages in cronological order
+Message-ID: <1261485246-sup-4236@tilus.net>
+
+This way I got rid of a couple of counterintuitive threading results.
+Namely real root of a thread would occasionally not be displayed as a
+root if a message containing the real root in the middle of its
+refs-list (dunno why) would get yielded (to threading algorithm)
+before the real root.  Threading algorithm looks like it silently
+expects threaded messages to appear in cronological order.
+
+Signed-off-by: Tero Tilus <tero at tilus.net>
+---
+ lib/sup/xapian_index.rb |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/xapian_index.rb b/lib/sup/xapian_index.rb
+index 0fdd55f..b31fd10 100644
+--- a/lib/sup/xapian_index.rb
++++ b/lib/sup/xapian_index.rb
+@@ -122,6 +122,7 @@ EOS
+     return unless doc = find_doc(m.id)
+     queue = doc.value(THREAD_VALUENO).split(',')
+     msgids = [m.id]
++    msgdates = { m.id => m.date.to_i }
+     seen_threads = Set.new
+     seen_messages = Set.new [m.id]
+     while not queue.empty?
+@@ -134,11 +135,15 @@ EOS
+         msgid = doc.value MSGID_VALUENO
+         next if seen_messages.member? msgid
+         msgids << msgid
++        msgdates[msgid] = Xapian.sortable_unserialise(doc.value(DATE_VALUENO)).to_i
+         seen_messages << msgid
+         queue.concat doc.value(THREAD_VALUENO).split(',')
+       end
+     end
+-    msgids.each { |id| yield id, lambda { build_message id } }
++    # We play nice and sort message ids by message date before
++    # yielding them.  Threading for example gets messed up if messages
++    # are iterated in (more or less) random order.
++    msgids.sort { |a,b| msgdates[a] <=> msgdates[b] }.each { |id| yield id, lambda { build_message id } }
+     true
+   end
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup-bugs at masanjin.net  Fri Dec 25 09:02:35 2009
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Fri, 25 Dec 2009 14:02:35 +0000
+Subject: [sup-devel] [issue36] label tab completion with utf-8 chars fail
+In-Reply-To: <1261749755.37.0.845609324711.issue36@masanjin.net>
+Message-ID: <1261749755.37.0.845609324711.issue36@masanjin.net>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+When trying to label a thread with a label containing unicode chars and pressing 
+TAB I get this. When typing in the whole label manually it ads it with some 
+minor glitches in the rendering of the message-line. When restarting sup I get a 
+one space between the subject and the label that doesn't change background color 
+when selected.
+
+[2009-12-25 14:51:11 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of /home/gaute/.sup/exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- Encoding::CompatibilityError from thread: main
+incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string)
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:461:in `block (2 levels) in 
+ask_many_with_completions'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:461:in `select'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:461:in `block in 
+ask_many_with_completions'
+/home/gaute/dev/ruby/sup.git/lib/sup/textfield.rb:75:in `call'
+/home/gaute/dev/ruby/sup.git/lib/sup/textfield.rb:75:in `handle_input'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:572:in `ask'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:450:in 
+`ask_many_with_completions'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:519:in `ask_for_labels'
+/home/gaute/dev/ruby/sup.git/lib/sup/util.rb:546:in `method_missing'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:536:in 
+`edit_labels'
+/home/gaute/dev/ruby/sup.git/lib/sup/mode.rb:52:in `handle_input'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:266:in `handle_input'
+bin/sup:244:in `<module:Redwood>'
+bin/sup:67:in `<main>'
+
+----------
+messages: 97
+nosy: gauteh
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: git
+title: label tab completion with utf-8 chars fail
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue36>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Sun Dec 27 16:37:37 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 27 Dec 2009 16:37:37 -0500
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
+	yields messages in cronological order
+In-Reply-To: <1261485246-sup-4236@tilus.net>
+References: <1261485246-sup-4236@tilus.net>
+Message-ID: <1261938751-sup-9421@zyrg.net>
+
+Excerpts from Tero Tilus's message of Tue Dec 22 07:42:52 -0500 2009:
+> This way I got rid of a couple of counterintuitive threading results.
+> Namely real root of a thread would occasionally not be displayed as a
+> root if a message containing the real root in the middle of its
+> refs-list (dunno why) would get yielded (to threading algorithm)
+> before the real root.  Threading algorithm looks like it silently
+> expects threaded messages to appear in cronological order.
+
+Hmm. Threading should only depend on refs and reply-tos, not the date.
+Could you give a short example (just the relevant headers) of a
+situation where this patch helps?
+
+What you describe sounds like a malformed message. What client is
+generating them / how common are they?
+
+From sup-bugs at masanjin.net  Tue Dec 29 08:30:40 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 29 Dec 2009 13:30:40 +0000
+Subject: [sup-devel] [issue37] special characters still not working
+In-Reply-To: <1262093440.47.0.488412386269.issue37@masanjin.net>
+Message-ID: <1262093440.47.0.488412386269.issue37@masanjin.net>
+
+
+New submission from anonymous:
+
+I still have problems with special characters. (Namely German "Umlaute"). They
+get displayed as M-CM-6 or M-CM-<.
+
+I've tried the (old) patches from the wiki but that didnt help. (I tried the
+ncurses patch - the libc one seemed already applied.
+
+I'm running gentoo and installed sup using gem.
+
+----------
+messages: 99
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+status: unread
+sup_version: 0.9
+title: special characters still not working
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue37>
+_________________________________________
+
+From tero at tilus.net  Tue Dec 29 14:34:33 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 29 Dec 2009 21:34:33 +0200
+Subject: [sup-devel] What's your workflow?
+Message-ID: <1262114695-sup-9446@tilus.net>
+
+I'm still a bit newbie with git.  I'd like to hear how do you folks
+develop/use sup.  What's your workflow?  Do you run master, next or
+some own branch?  If own, where do you fork and how do you track
+upstream and your own patches?  Detailed git commands appreciated.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From ezyang at MIT.EDU  Tue Dec 29 14:41:34 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 29 Dec 2009 14:41:34 -0500
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262114695-sup-9446@tilus.net>
+References: <1262114695-sup-9446@tilus.net>
+Message-ID: <1262115613-sup-1540@ezyang>
+
+Excerpts from Tero Tilus's message of Tue Dec 29 14:34:33 -0500 2009:
+> I'm still a bit newbie with git.  I'd like to hear how do you folks
+> develop/use sup.  What's your workflow?  Do you run master, next or
+> some own branch?  If own, where do you fork and how do you track
+> upstream and your own patches?  Detailed git commands appreciated.
+
+When I used to maintain a few patches on top of Git (I don't think I
+have any right now, since they became unnecessary when I switched
+to Xapian and OfflineImap), I'd have them on top of my local next
+branch; when pulling changes I'd:
+
+    git fetch
+    git rebase origin/next
+
+I used to run master, but switched to next on advice that it was fairly
+stable.
+
+Cheers,
+Edward
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 14:58:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 11:58:30 -0800
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262114695-sup-9446@tilus.net>
+References: <1262114695-sup-9446@tilus.net>
+Message-ID: <1262116690-sup-8655@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> I'm still a bit newbie with git.  I'd like to hear how do you folks
+> develop/use sup.  What's your workflow?  Do you run master, next or
+> some own branch?  If own, where do you fork and how do you track
+> upstream and your own patches?  Detailed git commands appreciated.
+
+See http://sup.rubyforge.org/wiki/wiki.pl?Contributing, and feel free to
+tweak that as appropriate!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Tue Dec 29 15:14:45 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 29 Dec 2009 22:14:45 +0200
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262116690-sup-8655@masanjin.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+Message-ID: <1262117270-sup-1009@tilus.net>
+
+William Morgan, 2009-12-29 21:58:
+> See http://sup.rubyforge.org/wiki/wiki.pl?Contributing
+
+Believe me, I have.  That's pretty much why I got this far in the
+first place.  ;)
+
+Wiki page just doesn't say anything on how to have your own daily-sup
+branch (master or next + a set of own and others' patches) and how to
+keep that up-to-date with upstream while your develop your own patches
+(which are supposed to live in topic branches).
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 15:43:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 12:43:15 -0800
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262117270-sup-1009@tilus.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+Message-ID: <1262118710-sup-1729@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> Wiki page just doesn't say anything on how to have your own daily-sup
+> branch (master or next + a set of own and others' patches) and how to
+> keep that up-to-date with upstream while your develop your own patches
+> (which are supposed to live in topic branches).
+
+You should be able to make a daily-sup branch off of (say) next, apply
+all your patches, and whenever next changes and you want to update,
+rebase like so:
+
+$ git checkout next
+$ git pull
+$ git checkout daily-sup
+$ git rebase next
+
+If you have feature branches merged into daily-sup, I think you need to
+use `git rebase -p next` to get it to recreate those merges. But I've
+never gotten that complex.
+
+(You could also just merge in next each time, which might be easier.
+Rebase has the advantage of keeping your patch set up to date with the
+remote branch, though, which might be nice if you decide to publish
+them.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Tue Dec 29 15:40:25 2009
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 29 Dec 2009 15:40:25 -0500
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262117270-sup-1009@tilus.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+Message-ID: <1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+
+Excerpts from Tero Tilus's message of Tue Dec 29 15:14:45 -0500 2009:
+
+> Wiki page just doesn't say anything on how to have your own daily-sup
+> branch (master or next + a set of own and others' patches) and how to
+> keep that up-to-date with upstream while your develop your own patches
+> (which are supposed to live in topic branches).
+
+Maybe something like Stacked Git would work for you?
+
+http://www.procode.org/stgit/
+
+Alternately, if you want to stick to plain git, I'd recommend
+something like:
+
+origin/master -> master
+origin/next -> next
+	       |
+	       \ mybranch
+
+Where 'mybranch' collects your locally desired deviations.  If you're
+not familiar with git, you'll want to do, assuming you've already got
+a good repo that is tracking both origin/* branches.
+
+Now, you can do:
+
+git checkout -b mybranch next
+
+As you update next with changes from origin/next, you can 'move' your
+local changeset forward with:
+
+git rebase next
+
+If you don't explicitly track the next branch locally, you can do:
+
+git checkout -b mybranch origin/next
+
+and then
+
+git rebase origin/next
+
+as you do `git fetch` to get changes from upstream.
+
+Be sure to do any devel work you expect to send back to the project as
+a branch from master though, as that makes integration easier
+upstream.
+
+HTH.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+GPG Key Id: 8E89F6D2; Key Server: pgp.mit.edu
+Contact me to arrange for a CAcert assurance meeting.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091229/9c82da6a/attachment.bin>
+
+From tero at tilus.net  Tue Dec 29 16:58:47 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 29 Dec 2009 23:58:47 +0200
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+	<1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+Message-ID: <1262123514-sup-7661@tilus.net>
+
+Ben Walton, 2009-12-29 22:40:
+> Maybe something like Stacked Git would work for you?
+> http://www.procode.org/stgit/
+
+Now _that_ is something i've been dreaming of!  Thanks a lot.  Even if
+I don't end up using stgit on sup development, I know I'll use it in
+quite a few other places.
+
+> Alternately, if you want to stick to plain git, I'd recommend
+> something like:
+> 
+> origin/master -> master
+> origin/next -> next
+>            |
+>            \ mybranch
+> 
+> Where 'mybranch' collects your locally desired deviations.
+
+Does it "just work" if I have feature branches off of master which are
+merged to mybranch and the feature patches get accepted and appear to
+next?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Tue Dec 29 17:03:26 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 00:03:26 +0200
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262118710-sup-1729@masanjin.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net> <1262118710-sup-1729@masanjin.net>
+Message-ID: <1262123932-sup-7232@tilus.net>
+
+William Morgan, 2009-12-29 22:43:
+> If you have feature branches merged into daily-sup, I think you need
+> to use `git rebase -p next` to get it to recreate those merges. But
+> I've never gotten that complex.
+
+If _you_ haven't done that it makes me think I'm seriously
+overengineering something here (or is it just because you are the
+maintainer and aren't pulling your next from anybody?)
+
+What is your daily-sup?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 17:33:05 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 14:33:05 -0800
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262123932-sup-7232@tilus.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net> <1262118710-sup-1729@masanjin.net>
+	<1262123932-sup-7232@tilus.net>
+Message-ID: <1262125869-sup-8873@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> What is your daily-sup?
+
+I use next and don't have personal patches because I publish all the
+code I write. (I do have code branches that I don't publish, but those
+aren't things that I run as daily-sup).
+
+I don't think you're overengineering. Git is good at maintaining local
+changesets like this.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 17:51:12 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 14:51:12 -0800
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262123514-sup-7661@tilus.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+	<1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+	<1262123514-sup-7661@tilus.net>
+Message-ID: <1262126992-sup-7312@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> Does it "just work" if I have feature branches off of master which are
+> merged to mybranch and the feature patches get accepted and appear to
+> next?
+
+It certainly works for the case where you're merging from next into your
+daily_sup branch, and rebase will happily drop changes that are
+duplicated by the target, so I would guess that rebase would do the
+right thing with redundant merges. Maybe a test is in order!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Tue Dec 29 18:03:29 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 01:03:29 +0200
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262126992-sup-7312@masanjin.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+	<1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+	<1262123514-sup-7661@tilus.net> <1262126992-sup-7312@masanjin.net>
+Message-ID: <1262127314-sup-3385@tilus.net>
+
+I think I gradually start to figure out how to get rid of habits I
+find messy.  Thanks a ton already guys!
+
+Still one thing.
+
+Assume I have a feature-branch which is merged to my-daily-sup and I
+go --amend a commit in that feature-branch.  How would I now get
+my-daily-sup up to date?  (also assume that merge from feature-branch
+is not the tip of my-daily-sup so that git reset HEAD^ && git merge
+feature-branch is not a solution)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Dec 29 19:01:53 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 29 Dec 2009 16:01:53 -0800
+Subject: [sup-devel] What's your workflow?
+In-Reply-To: <1262127314-sup-3385@tilus.net>
+References: <1262114695-sup-9446@tilus.net> <1262116690-sup-8655@masanjin.net>
+	<1262117270-sup-1009@tilus.net>
+	<1262118240-sup-4202@ntdws12.chass.utoronto.ca>
+	<1262123514-sup-7661@tilus.net> <1262126992-sup-7312@masanjin.net>
+	<1262127314-sup-3385@tilus.net>
+Message-ID: <1262130924-sup-285@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> Assume I have a feature-branch which is merged to my-daily-sup and I
+> go --amend a commit in that feature-branch.  How would I now get
+> my-daily-sup up to date?  (also assume that merge from feature-branch
+> is not the tip of my-daily-sup so that git reset HEAD^ && git merge
+> feature-branch is not a solution)
+
+If you --amend, then remerging will likely create a conflict. There
+might be a way of rebase -i on my-daily-sup to leave off the original
+merge commit, or you could "unmerge it" with the horribleness that is
+`git revert -m 1` on the original merge commit, leaving daily-sup with
+some reverse commits.
+
+The short answer is: don't do that. Avoid things that change the head on
+a branch that's been published or merged or otherwise used. Make an
+additional commit instead of --amend, or be prepared to do some work.
+
+(I realize this isn't ideal because presumably you're trying to keep
+both a clean topic branch and a clean daily-sup branch, but rebasing and
+amending necessarily drops the history that git needs to merge changes
+properly.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 18:58:56 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 15:58:56 -0800
+Subject: [sup-devel] [PATCH] try loading ncursesw
+Message-ID: <1262131136-14766-1-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ bin/sup           |   14 +++++++++++++-
+ lib/sup/buffer.rb |    7 ++++++-
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 471e833..fcc254f 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -1,7 +1,15 @@
+ #!/usr/bin/env ruby
+ 
+ require 'rubygems'
+-require 'ncurses'
++
++no_ncursesw = false
++begin
++  require 'ncursesw'
++rescue LoadError
++  require 'ncurses'
++  no_ncursesw = true
++end
++
+ require 'curses'
+ require 'fileutils'
+ require 'trollop'
+@@ -21,6 +29,10 @@ EOS
+   exit(-1)
+ end
+ 
++if no_ncursesw
++  warn "Install the ncursesw gem for wide character support."
++end
++
+ $opts = Trollop::options do
+   version "sup v#{Redwood::VERSION}"
+   banner <<EOS
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index df5d23c..e5175bb 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -1,6 +1,11 @@
+ require 'etc'
+ require 'thread'
+-require 'ncurses'
++
++begin
++  require 'ncursesw'
++rescue LoadError
++  require 'ncurses'
++end
+ 
+ if defined? Ncurses
+ module Ncurses
+-- 
+1.6.0.4
+
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 20:38:02 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 17:38:02 -0800
+Subject: [sup-devel] [PATCH 1/4] factor saving out of thread/message classes
+Message-ID: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/index.rb                   |    7 +++++++
+ lib/sup/message.rb                 |    5 +----
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ lib/sup/thread.rb                  |    2 +-
+ 4 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index ff03f19..5d8d714 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -172,6 +172,13 @@ class BaseIndex
+   def parse_query s
+     unimplemented
+   end
++
++  def save_thread t
++    t.each_dirty_message do |m|
++      update_message_state m 
++      m.clear_dirty
++    end
++  end
+ end
+ 
+ index_name = ENV['SUP_INDEX'] || $config[:index] || DEFAULT_INDEX
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index f3ac874..76ce330 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -182,11 +182,8 @@ class Message
+   ## don't tempt me.
+   def sanitize_message_id mid; mid.gsub(/(\s|[^\000-\177])+/, "")[0..254] end
+ 
+-  def save_state index
+-    return unless @dirty
+-    index.update_message_state self
++  def clear_dirty
+     @dirty = false
+-    true
+   end
+ 
+   def has_label? t; @labels.member? t; end
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 82f258b..c4a7d38 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -477,7 +477,7 @@ EOS
+       BufferManager.say("Saving threads...") do |say_id|
+         dirty_threads.each_with_index do |t, i|
+           BufferManager.say "Saving modified thread #{i + 1} of #{dirty_threads.length}...", say_id
+-          t.save_state Index
++          Index.save_thread t
+         end
+       end
+     end
+diff --git a/lib/sup/thread.rb b/lib/sup/thread.rb
+index 2300305..3fdf1f6 100644
+--- a/lib/sup/thread.rb
++++ b/lib/sup/thread.rb
+@@ -112,7 +112,7 @@ class Thread
+ 
+   def set_labels l; each { |m, *o| m && m.labels = l }; end
+   def has_label? t; any? { |m, *o| m && m.has_label?(t) }; end
+-  def save_state index; each { |m, *o| m && m.save_state(index) }; end
++  def each_dirty_message; each { |m, *o| m && m.dirty? && yield(m) }; end
+ 
+   def direct_participants
+     map { |m, *o| [m.from] + m.to if m }.flatten.compact.uniq
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 20:38:03 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 17:38:03 -0800
+Subject: [sup-devel] [PATCH 2/4] async thread indexing
+In-Reply-To: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262137085-25928-2-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ bin/sup                            |    2 ++
+ lib/sup/index.rb                   |   26 +++++++++++++++++++++++++-
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ 3 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index 471e833..f9ed7d5 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -141,6 +141,7 @@ Index.lock_interactively or exit
+ begin
+   Redwood::start
+   Index.load
++  Index.start_sync_worker unless $opts[:no_threads]
+ 
+   $die = false
+   trap("TERM") { |x| $die = true }
+@@ -329,6 +330,7 @@ ensure
+ 
+   HookManager.run "shutdown"
+ 
++  Index.stop_sync_worker
+   Redwood::finish
+   stop_cursing
+   Redwood::Logger.remove_all_sinks!
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 5d8d714..1131ec7 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -28,6 +28,8 @@ class BaseIndex
+   def initialize dir=BASE_DIR
+     @dir = dir
+     @lock = Lockfile.new lockfile, :retries => 0, :max_age => nil
++    @sync_worker = nil
++    @sync_queue = Queue.new
+   end
+ 
+   def lockfile; File.join @dir, "lock" end
+@@ -175,10 +177,32 @@ class BaseIndex
+ 
+   def save_thread t
+     t.each_dirty_message do |m|
+-      update_message_state m 
++      if @sync_worker
++        @sync_queue << m
++      else
++        update_message_state m
++      end
+       m.clear_dirty
+     end
+   end
++
++  def start_sync_worker
++    @sync_worker = Redwood::reporting_thread('index sync') { run_sync_worker }
++  end
++
++  def stop_sync_worker
++    return unless worker = @sync_worker
++    @sync_worker = nil
++    @sync_queue << :die
++    worker.join
++  end
++
++  def run_sync_worker
++    while m = @sync_queue.deq
++      return if m == :die
++      update_message_state m
++    end
++  end
+ end
+ 
+ index_name = ENV['SUP_INDEX'] || $config[:index] || DEFAULT_INDEX
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index c4a7d38..f6ea27c 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -477,7 +477,7 @@ EOS
+       BufferManager.say("Saving threads...") do |say_id|
+         dirty_threads.each_with_index do |t, i|
+           BufferManager.say "Saving modified thread #{i + 1} of #{dirty_threads.length}...", say_id
+-          Index.save_thread t
++          Index.save_thread_async t
+         end
+       end
+     end
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 20:38:04 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 17:38:04 -0800
+Subject: [sup-devel] [PATCH 3/4] immediate thread indexing
+In-Reply-To: <1262137085-25928-2-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262137085-25928-2-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262137085-25928-3-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/modes/inbox-mode.rb        |    4 +++
+ lib/sup/modes/thread-index-mode.rb |   40 +++++++++++++----------------------
+ lib/sup/modes/thread-view-mode.rb  |    7 ++++++
+ 3 files changed, 26 insertions(+), 25 deletions(-)
+
+diff --git a/lib/sup/modes/inbox-mode.rb b/lib/sup/modes/inbox-mode.rb
+index ba095da..9220925 100644
+--- a/lib/sup/modes/inbox-mode.rb
++++ b/lib/sup/modes/inbox-mode.rb
+@@ -34,6 +34,7 @@ class InboxMode < ThreadIndexMode
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+     regen_text
++    Index.save_thread thread
+   end
+ 
+   def multi_archive threads
+@@ -50,6 +51,7 @@ class InboxMode < ThreadIndexMode
+       hide_thread t
+     end
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def read_and_archive
+@@ -66,6 +68,7 @@ class InboxMode < ThreadIndexMode
+     cursor_thread.remove_label :inbox
+     hide_thread cursor_thread
+     regen_text
++    Index.save_thread thread
+   end
+ 
+   def multi_read_and_archive threads
+@@ -86,6 +89,7 @@ class InboxMode < ThreadIndexMode
+       regen_text
+     end
+ 
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def handle_unarchived_update sender, m
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index f6ea27c..5393189 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -37,7 +37,6 @@ EOS
+     k.add :toggle_spam, "Mark/unmark thread as spam", 'S'
+     k.add :toggle_deleted, "Delete/undelete thread", 'd'
+     k.add :kill, "Kill thread (never to be seen in inbox again)", '&'
+-    k.add :save, "Save changes now", '$'
+     k.add :jump_to_next_new, "Jump to next new thread", :tab
+     k.add :reply, "Reply to latest message in a thread", 'r'
+     k.add :reply_all, "Reply to all participants of the latest message in a thread", 'G'
+@@ -269,12 +268,14 @@ EOS
+     UndoManager.register "toggling thread starred status", undo
+     update_text_for_line curpos
+     cursor_down
++    Index.save_thread t
+   end
+ 
+   def multi_toggle_starred threads
+     UndoManager.register "toggling #{threads.size.pluralize 'thread'} starred status",
+       threads.map { |t| actually_toggle_starred t }
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   ## returns an undo lambda
+@@ -352,12 +353,14 @@ EOS
+     undo = actually_toggle_archived t
+     UndoManager.register "deleting/undeleting thread #{t.first.id}", undo, lambda { update_text_for_line curpos }
+     update_text_for_line curpos
++    Index.save_thread t
+   end
+ 
+   def multi_toggle_archived threads
+     undos = threads.map { |t| actually_toggle_archived t }
+     UndoManager.register "deleting/undeleting #{threads.size.pluralize 'thread'}", undos, lambda { regen_text }
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def toggle_new
+@@ -365,11 +368,13 @@ EOS
+     t.toggle_label :unread
+     update_text_for_line curpos
+     cursor_down
++    Index.save_thread t
+   end
+ 
+   def multi_toggle_new threads
+     threads.each { |t| t.toggle_label :unread }
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def multi_toggle_tagged threads
+@@ -385,6 +390,7 @@ EOS
+ 
+   def multi_join_threads threads
+     @ts.join_threads threads or return
++    threads.each { |t| Index.save_thread t }
+     @tags.drop_all_tags # otherwise we have tag pointers to invalid threads!
+     update
+   end
+@@ -421,6 +427,7 @@ EOS
+     UndoManager.register "marking/unmarking  #{threads.size.pluralize 'thread'} as spam",
+                          undos, lambda { regen_text }
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def toggle_deleted
+@@ -434,6 +441,7 @@ EOS
+     UndoManager.register "deleting/undeleting #{threads.size.pluralize 'thread'}",
+                          undos, lambda { regen_text }
+     regen_text
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def kill
+@@ -458,29 +466,7 @@ EOS
+ 
+     regen_text
+     BufferManager.flash "#{threads.size.pluralize 'thread'} killed."
+-  end
+-
+-  def save background=true
+-    if background
+-      Redwood::reporting_thread("saving thread") { actually_save }
+-    else
+-      actually_save
+-    end
+-  end
+-
+-  def actually_save
+-    @save_thread_mutex.synchronize do
+-      BufferManager.say("Saving contacts...") { ContactManager.instance.save }
+-      dirty_threads = @mutex.synchronize { (@threads + @hidden_threads.keys).select { |t| t.dirty? } }
+-      next if dirty_threads.empty?
+-
+-      BufferManager.say("Saving threads...") do |say_id|
+-        dirty_threads.each_with_index do |t, i|
+-          BufferManager.say "Saving modified thread #{i + 1} of #{dirty_threads.length}...", say_id
+-          Index.save_thread_async t
+-        end
+-      end
+-    end
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def cleanup
+@@ -492,7 +478,8 @@ EOS
+       sleep 0.1 # TODO: necessary?
+       BufferManager.erase_flash
+     end
+-    save false
++    dirty_threads = @mutex.synchronize { (@threads + @hidden_threads.keys).select { |t| t.dirty? } }
++    fail "dirty threads remain" unless dirty_threads.empty?
+     super
+   end
+ 
+@@ -546,6 +533,7 @@ EOS
+     end
+ 
+     UpdateManager.relay self, :labeled, thread.first
++    Index.save_thread thread
+   end
+ 
+   def multi_edit_labels threads
+@@ -582,6 +570,8 @@ EOS
+       end
+       regen_text
+     end
++    
++    threads.each { |t| Index.save_thread t }
+   end
+ 
+   def reply type_arg=nil
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 55d81b9..99abb04 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -131,6 +131,7 @@ EOS
+     @layout[earliest].state = :detailed if earliest.has_label?(:unread) || @thread.size == 1
+ 
+     @thread.remove_label :unread
++    Index.save_thread @thread
+     regen_text
+   end
+ 
+@@ -258,6 +259,7 @@ EOS
+     new_labels.each { |l| LabelManager << l }
+     update
+     UpdateManager.relay self, :labeled, @thread.first
++    Index.save_thread @thread
+     UndoManager.register "labeling thread" do
+       @thread.labels = old_labels
+       UpdateManager.relay self, :labeled, @thread.first
+@@ -284,6 +286,7 @@ EOS
+     ## star to the display
+     update
+     UpdateManager.relay self, :single_message_labeled, m
++    Index.save_thread @thread
+   end
+ 
+   ## called when someone presses enter when the cursor is highlighting
+@@ -478,6 +481,7 @@ EOS
+     dispatch op do
+       @thread.remove_label :inbox
+       UpdateManager.relay self, :archived, @thread.first
++      Index.save_thread @thread
+       UndoManager.register "archiving 1 thread" do
+         @thread.apply_label :inbox
+         UpdateManager.relay self, :unarchived, @thread.first
+@@ -489,6 +493,7 @@ EOS
+     dispatch op do
+       @thread.apply_label :spam
+       UpdateManager.relay self, :spammed, @thread.first
++      Index.save_thread @thread
+       UndoManager.register "marking 1 thread as spam" do
+         @thread.remove_label :spam
+         UpdateManager.relay self, :unspammed, @thread.first
+@@ -500,6 +505,7 @@ EOS
+     dispatch op do
+       @thread.apply_label :deleted
+       UpdateManager.relay self, :deleted, @thread.first
++      Index.save_thread @thread
+       UndoManager.register "deleting 1 thread" do
+         @thread.remove_label :deleted
+         UpdateManager.relay self, :undeleted, @thread.first
+@@ -511,6 +517,7 @@ EOS
+     dispatch op do
+       @thread.apply_label :unread
+       UpdateManager.relay self, :unread, @thread.first
++      Index.save_thread @thread
+     end
+   end
+ 
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Tue Dec 29 20:38:05 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 29 Dec 2009 17:38:05 -0800
+Subject: [sup-devel] [PATCH 4/4] force the index sync thread to give up the
+	cpu
+In-Reply-To: <1262137085-25928-3-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262137085-25928-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262137085-25928-3-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262137085-25928-4-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/index.rb |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 1131ec7..4f491d6 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -201,6 +201,8 @@ class BaseIndex
+     while m = @sync_queue.deq
+       return if m == :die
+       update_message_state m
++      # Necessary to keep Xapian calls from lagging the UI too much.
++      sleep 0.03
+     end
+   end
+ end
+-- 
+1.6.3.3
+
+
+From tero at tilus.net  Tue Dec 29 21:41:02 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 04:41:02 +0200
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
+	yields messages in cronological order
+In-Reply-To: <1261938751-sup-9421@zyrg.net>
+References: <1261485246-sup-4236@tilus.net> <1261938751-sup-9421@zyrg.net>
+Message-ID: <1262136474-sup-312@tilus.net>
+
+Rich Lane, 2009-12-27 23:37:
+> Hmm. Threading should only depend on refs and reply-tos, not the date.
+
+I think threading _should_ depend on date too.  Not of course the
+parent-connections, but the ordering of siblings.  So even this bug(?)
+aside the messages should afaik be processed in chronological order
+when threading to get siblings ordered by date.
+
+> Could you give a short example (just the relevant headers) of a
+> situation where this patch helps?
+> 
+> What you describe sounds like a malformed message. What client is
+> generating them / how common are they?
+
+For what I know you might trigger this by replying to many messages at
+once and thus having a list of ids in-reply-to header (in whatever
+order of course, rfc doesn't require any particular order) instead of
+one.  Then when you reply to this message using MUA that is bold
+enough to try to form References: with the standard in-reply-to +
+my-id method even if RFC 2822 says "trying to form a References: field
+for a reply that has multiple parents is discouraged and how to do so
+is not defined in this document".  You end up having References: which
+has bunch of (thread-wise) random ids in random order instead of the
+rfc-specified original, reply, replytoreply, etc. chain of ids.
+
+Workaround is easy.  Just process messages sorted by date so the
+in-reply-to fields of original messages override the fscked up
+references of some latter mangled replies, which of course appear
+_after_ any of the messages which threading they could possibly fsck
+... they wouldn't be replies if they didn't. ;)
+
+This thread was the itch that made me scratch.  I haven't really
+looked for other twisted threads, but I've got several thousands of
+mails from these same authors so I assume this is not singular case.
+User agent headers also included.
+
+Fscked up threading looks like this (produced by current git next)
+
++    Person Three, joulu 18 (2 weeks ago)
+  +    Person Four, joulu 18 (2 weeks ago)
+    +    Person Four, joulu 17 (2 weeks ago)
+      +    Person One, joulu 17 (2 weeks ago)
+        +    Person Five, joulu 17 (2 weeks ago)
+          +    Person Four, joulu 17 (2 weeks ago)  
+            +    Person Three, joulu 15 (2 weeks ago)  
+              +    Person Two, joulu 15 (2 weeks ago)
+                +    Person One, joulu 15 (2 weeks ago)  
+  +    Person Four, joulu 18 (2 weeks ago)
+    +    Person Three, joulu 18 (2 weeks ago)
+  +    Person Two, joulu 18 (2 weeks ago)
+    +    Person One, joulu 18 (2 weeks ago)
+      +    Person One, joulu 19 (2 weeks ago)
+
+Correct like this (produced by current git next + threading and date
+format patches, and that's why date formats differ too)
+
++    Person One, 15. 12:38 (2 weeks ago)
+  +    Person Two, 15. 14:17 (2 weeks ago)
+  +    Person Three, 15. 14:35 (2 weeks ago)
+  +    Person Four, 17. 01:47 (2 weeks ago)
+    +    Person Five, 17. 02:28 (2 weeks ago)
+    +    Person One, 17. 09:08 (2 weeks ago)
+      +    Person Four, 17. 11:26 (2 weeks ago)
+  +    Person Four, 18. 01:15 (2 weeks ago)
+    +    Person Three, 18. 10:15 (2 weeks ago)
+      +    Person Two, 18. 12:16 (2 weeks ago)
+        +    Person One, 18. 13:30 (2 weeks ago)
+          +    Person One, 19. 13:43 (2 weeks ago)
+      +    Person Four, 18. 14:16 (2 weeks ago)
+        +    Person Three, 18. 14:53 (2 weeks ago)
+
+The headers in the order the messages appear in correct threading.
+
+Date: Tue, 15 Dec 2009 12:38:28 +0200
+From: Person One
+Message-ID: <20091215103828.GA8328 at domain-one>
+User-Agent: Mutt/1.5.20 (2009-06-14)
+
+Date: Tue, 15 Dec 2009 14:17:38 +0200
+From: Person Two
+Message-ID: <1260879458.2530.42.camel at havelock>
+In-Reply-To: <20091215103828.GA8328 at domain-one>
+References: <20091215103828.GA8328 at domain-one>
+X-Mailer: Evolution 2.28.1
+
+Date: Tue, 15 Dec 2009 14:35:01 +0200 (EET)
+From: Person Three
+Message-ID: <alpine.LRH.1.10.0912151434380.12088 at domain-two>
+In-Reply-To: <20091215103828.GA8328 at domain-one>
+References: <20091215103828.GA8328 at domain-one>
+User-Agent: Alpine 1.10 (LRH 962 2008-03-14)
+
+Date: Thu, 17 Dec 2009 01:47:59 +0200
+From: Person Four
+Message-ID: <4B2971AF.7060808 at domain-three>
+In-Reply-To: <20091215103828.GA8328 at domain-one>
+References: <20091215103828.GA8328 at domain-one>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US;
+    rv:1.9.1.5) Gecko/20091204 Thunderbird/3.0
+
+Date: Thu, 17 Dec 2009 02:28:55 +0200 (EET)
+From: Person Five
+Message-ID: <alpine.DEB.2.00.0912170214460.25488 at domain-five>
+In-Reply-To: <4B2971AF.7060808 at domain-three>
+References: <20091215103828.GA8328 at domain-one>
+    <4B2971AF.7060808 at domain-three>
+User-Agent: Alpine 2.00 (DEB 1167 2008-08-23)
+
+Date: Thu, 17 Dec 2009 09:08:31 +0200
+From: Person One
+Message-ID: <20091217070831.GD27029 at domain-one>
+In-Reply-To: <4B2971AF.7060808 at domain-three>
+References: <20091215103828.GA8328 at domain-one>
+    <4B2971AF.7060808 at domain-three>
+User-Agent: Mutt/1.5.20 (2009-06-14)
+
+Date: Thu, 17 Dec 2009 11:26:15 +0200
+From: Person Four
+Message-ID: <4B29F937.7080909 at domain-four>
+In-Reply-To: <20091217070831.GD27029 at domain-one>
+References: <20091215103828.GA8328 at domain-one>    <4B2971AF.7060808 at domain-three>
+    <20091217070831.GD27029 at domain-one>
+User-Agent: Thunderbird 2.0.0.23 (X11/20090817)
+
+Date: Fri, 18 Dec 2009 01:15:33 +0200
+From: Person Four
+Message-ID: <4B2ABB95.6010301 at domain-three>
+In-Reply-To: <20091215103828.GA8328 at domain-one>
+References: <20091215103828.GA8328 at domain-one>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US;
+    rv:1.9.1.5) Gecko/20091204 Thunderbird/3.0
+
+Date: Fri, 18 Dec 2009 10:15:45 +0200 (EET)
+From: Person Three
+Message-ID: <alpine.LRH.1.10.0912181012570.30704 at domain-two>
+In-Reply-To: <4B2ABB95.6010301 at domain-three>
+References: <20091215103828.GA8328 at domain-one>
+    <4B2ABB95.6010301 at domain-three>
+User-Agent: Alpine 1.10 (LRH 962 2008-03-14)
+
+Date: Fri, 18 Dec 2009 12:16:57 +0200
+From: Person Two
+Message-ID: <1261131417.2530.179.camel at havelock>
+In-Reply-To: <alpine.LRH.1.10.0912181012570.30704 at domain-two>
+References: <20091215103828.GA8328 at domain-one>
+    <4B2ABB95.6010301 at domain-three>
+    <alpine.LRH.1.10.0912181012570.30704 at domain-two>
+X-Mailer: Evolution 2.28.1
+
+Date: Fri, 18 Dec 2009 13:30:10 +0200
+From: Person One
+Message-ID: <20091218113010.GI3160 at domain-one>
+In-Reply-To: <1261131417.2530.179.camel at havelock>
+    <alpine.LRH.1.10.0912181012570.30704 at domain-two>
+    <4B2ABB95.6010301 at domain-three> <4B29F937.7080909 at domain-four>
+    <20091217070831.GD27029 at domain-one>
+    <alpine.DEB.2.00.0912170214460.25488 at domain-five>
+    <4B2971AF.7060808 at domain-three>
+    <alpine.LRH.1.10.0912151434380.12088 at domain-two>
+    <1260879458.2530.42.camel at havelock>
+    <20091215103828.GA8328 at domain-one>
+User-Agent: Mutt/1.5.20 (2009-06-14)
+
+Date: Sat, 19 Dec 2009 13:43:14 +0200
+From: Person One
+Message-ID: <20091219114314.GA15682 at domain-six>
+In-Reply-To: <20091218113010.GI3160 at domain-one>
+References: <alpine.LRH.1.10.0912181012570.30704 at domain-two>
+    <4B2ABB95.6010301 at domain-three> <4B29F937.7080909 at domain-four>
+    <20091217070831.GD27029 at domain-one>
+    <alpine.DEB.2.00.0912170214460.25488 at domain-five>
+    <4B2971AF.7060808 at domain-three>
+    <alpine.LRH.1.10.0912151434380.12088 at domain-two>
+    <1260879458.2530.42.camel at havelock>
+    <20091215103828.GA8328 at domain-one>
+    <20091218113010.GI3160 at domain-one>
+User-Agent: Mutt/1.5.18 (2008-05-17)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Tue Dec 29 22:09:19 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 05:09:19 +0200
+Subject: [sup-devel] [PATCH] Make sup-tweak-labels work as advertised with
+	no sources listed
+Message-ID: <1262142124-sup-1397@tilus.net>
+
+Signed-off-by: Tero Tilus <tero at tilus.net>
+---
+
+It is checked later (line 68) on if there were any sources to work
+with.  This 'if ARGV.empty?' just prevents using sup-tweak-labels for
+all sources.
+
+ bin/sup-tweak-labels |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/bin/sup-tweak-labels b/bin/sup-tweak-labels
+index 90f6a57..9bb97b2 100755
+--- a/bin/sup-tweak-labels
++++ b/bin/sup-tweak-labels
+@@ -58,7 +58,6 @@ add_labels = opts[:add].to_set_of_symbols ","
+ remove_labels = opts[:remove].to_set_of_symbols ","
+ 
+ Trollop::die "nothing to do: no labels to add or remove" if add_labels.empty? && remove_labels.empty?
+-Trollop::die "no sources specified" if ARGV.empty?
+ 
+ Redwood::start
+ index = Redwood::Index.init
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup-bugs at masanjin.net  Tue Dec 29 22:09:20 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 30 Dec 2009 03:09:20 +0000
+Subject: [sup-devel] [issue38] "undefined method `downcase' for
+	nil:NilClass" while	polling or sup-sync
+In-Reply-To: <1262142560.38.0.813970281535.issue38@masanjin.net>
+Message-ID: <1262142560.38.0.813970281535.issue38@masanjin.net>
+
+
+New submission from anonymous:
+
+I tried to add one of my email accounts ans sup-sync crashed on me with this error:
+
+/usr/lib/ruby/vendor_gems/1.8/gems/rmail-1.0.0/lib/rmail/header.rb:537:in
+`content_type': undefined method `downcase' for nil:NilClass (NoMethodError)
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in
+`message_to_chunks'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in `map'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in
+`message_to_chunks'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:243:in
+`load_from_source!'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:339:in
+`build_from_source'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:163:in
+`each_message_from'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:197:in `each'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:185:in `upto'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:185:in `each'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `send'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `__pass'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:547:in
+`method_missing'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:157:in
+`each_message_from'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in
+`method_missing'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup-sync:146
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup-sync:141:in `each'
+	from /usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup-sync:141
+	from /usr/bin/sup-sync:19:in `load'
+	from /usr/bin/sup-sync:19
+
+So I just started sup and got this after some time:
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `downcase' for nil:NilClass
+/usr/lib/ruby/vendor_gems/1.8/gems/rmail-1.0.0/lib/rmail/header.rb:537:in
+`content_type'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in
+`message_to_chunks'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in `map'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:438:in
+`message_to_chunks'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:243:in
+`load_from_source!'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/message.rb:339:in
+`build_from_source'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:163:in
+`each_message_from'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:197:in `each'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:185:in `upto'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/imap.rb:185:in `each'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `send'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:560:in `__pass'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:547:in `method_missing'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:157:in
+`each_message_from'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:109:in `do_poll'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:97:in `each'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:97:in `do_poll'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:96:in `synchronize'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:96:in `do_poll'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:47:in `poll_with_sources'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/poll.rb:62:in `poll'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `send'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/util.rb:520:in `method_missing'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup:200
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup:200
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in
+`call'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:669:in
+`__unprotected_load_threads'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in
+`call'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:610:in
+`load_n_threads_background'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `new'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:608:in
+`load_n_threads_background'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/lib/sup/modes/thread-index-mode.rb:679:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/vendor_gems/1.8/gems/sup-999/bin/sup:200
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+
+
+It seems there is some malconstructed message somewhere that produces a nil
+pointer while being parsed...I will see if I can find out which one this might be...
+
+----------
+messages: 100
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2009-04-08 patchlevel 160) [i686-linux]
+status: unread
+sup_version: git
+title: "undefined method `downcase' for nil:NilClass" while polling or sup-sync
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue38>
+_________________________________________
+
+From tero at tilus.net  Tue Dec 29 23:06:07 2009
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 30 Dec 2009 06:06:07 +0200
+Subject: [sup-devel] [PATCH] reuse old account info with --foce-account
+	user@hostname option
+Message-ID: <1262145664-sup-4855@tilus.net>
+
+Signed-off-by: Tero Tilus <tero at tilus.net>
+---
+ bin/sup-add |   20 ++++++++++++++------
+ 1 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/bin/sup-add b/bin/sup-add
+index e27a0eb..c53378d 100755
+--- a/bin/sup-add
++++ b/bin/sup-add
+@@ -39,6 +39,7 @@ EOS
+   opt :unusual, "Do not automatically poll these sources for new messages."
+   opt :labels, "A comma-separated set of labels to apply to all messages from this source", :type => String
+   opt :force_new, "Create a new account for this source, even if one already exists."
++  opt :force_account, "Reuse previously defined account user at hostname.", :type => String
+ end
+ 
+ Trollop::die "require one or more sources" if ARGV.empty?
+@@ -56,13 +57,20 @@ def get_login_info uri, sources
+ 
+   username, password = nil, nil
+   unless accounts.empty? || $opts[:force_new]
+-    say "Would you like to use the same account as for a previous source for #{uri}?"
+-    choose do |menu|
+-      accounts.each do |host, olduser, oldpw|
+-        menu.choice("Use the account info for #{olduser}@#{host}") { username, password = olduser, oldpw }
++    if $opts[:force_account]
++      host, username, password = accounts.find { |h, u, p| $opts[:force_account] == "#{u}@#{h}" }
++      unless username && password
++        say "No previous account #{$opts[:force_account].inspect} found."
++      end
++    else
++      say "Would you like to use the same account as for a previous source for #{uri}?"
++      choose do |menu|
++        accounts.each do |host, olduser, oldpw|
++          menu.choice("Use the account info for #{olduser}@#{host}") { username, password = olduser, oldpw }
++        end
++        menu.choice("Use a new account") { }
++        menu.prompt = "Account selection? "
+       end
+-      menu.choice("Use a new account") { }
+-      menu.prompt = "Account selection? "
+     end
+   end
+ 
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Wed Dec 30 09:10:54 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 30 Dec 2009 06:10:54 -0800
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
+	yields messages in cronological order
+In-Reply-To: <1262136474-sup-312@tilus.net>
+References: <1261485246-sup-4236@tilus.net> <1261938751-sup-9421@zyrg.net>
+	<1262136474-sup-312@tilus.net>
+Message-ID: <1262182085-sup-1405@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> For what I know you might trigger this by replying to many messages at
+> once and thus having a list of ids in-reply-to header (in whatever
+> order of course, rfc doesn't require any particular order) instead of
+> one.  Then when you reply to this message using MUA that is bold
+> enough to try to form References: with the standard in-reply-to +
+> my-id method even if RFC 2822 says "trying to form a References: field
+> for a reply that has multiple parents is discouraged and how to do so
+> is not defined in this document".  You end up having References: which
+> has bunch of (thread-wise) random ids in random order instead of the
+> rfc-specified original, reply, replytoreply, etc. chain of ids.
+
+It's worth reading the top bit of http://www.jwz.org/doc/threading.html
+for what In-reply-to: and References: look like in practice. (Basically:
+a mess, and the references: header in particular can be truncated in any
+way that any MUA feels is reasonable.)
+
+The threading used by the Ferret indexer is a pretty faithful
+reproduction of the algorithm described on that page. I'm not that
+familiar with the one used by the Xapian index, but a cursory
+examination suggests it's a little more fragile.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Wed Dec 30 12:01:37 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 30 Dec 2009 12:01:37 -0500
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
+	yields messages in cronological order
+In-Reply-To: <1262182085-sup-1405@masanjin.net>
+References: <1261485246-sup-4236@tilus.net> <1261938751-sup-9421@zyrg.net>
+	<1262136474-sup-312@tilus.net> <1262182085-sup-1405@masanjin.net>
+Message-ID: <1262190807-sup-434@zyrg.net>
+
+Excerpts from William Morgan's message of Wed Dec 30 09:10:54 -0500 2009:
+> Reformatted excerpts from Tero Tilus's message of 2009-12-29:
+> > For what I know you might trigger this by replying to many messages at
+> > once and thus having a list of ids in-reply-to header (in whatever
+> > order of course, rfc doesn't require any particular order) instead of
+> > one.  Then when you reply to this message using MUA that is bold
+> > enough to try to form References: with the standard in-reply-to +
+> > my-id method even if RFC 2822 says "trying to form a References: field
+> > for a reply that has multiple parents is discouraged and how to do so
+> > is not defined in this document".  You end up having References: which
+> > has bunch of (thread-wise) random ids in random order instead of the
+> > rfc-specified original, reply, replytoreply, etc. chain of ids.
+> 
+> It's worth reading the top bit of http://www.jwz.org/doc/threading.html
+> for what In-reply-to: and References: look like in practice. (Basically:
+> a mess, and the references: header in particular can be truncated in any
+> way that any MUA feels is reasonable.)
+> 
+> The threading used by the Ferret indexer is a pretty faithful
+> reproduction of the algorithm described on that page. I'm not that
+> familiar with the one used by the Xapian index, but a cursory
+> examination suggests it's a little more fragile.
+
+I'm assuming you're talking about each_message_in_thread_for, since
+that's the only Index method that deals with threading.
+
+In what order does ThreadSet#add_message expect to get messages in?
+This determines the order from Index#each_message_in_thread_for. I'd
+assumed an arbitrary ordering would work because add_message needs to
+handle this case anyway to work with messages arriving out of order from
+the source (which happens all the time) and then added to the Inbox
+threadset. AFAICT JWZ's algorithm should work regardless of the order
+messages handed to it.
+
+From hyperbolist at gmail.com  Thu Dec 31 01:43:43 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 01:43:43 -0500
+Subject: [sup-devel] [PATCH] fixed a typo in parse_header
+Message-ID: <1262241818-sup-6917@changeling.local>
+
+On the initial sup-sync when trying to use xapian for the first time, one 
+of my headers apparently triggered this edge case.
+
+---
+ lib/sup/message.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 9d22508..bb7d4cd 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -117,7 +117,7 @@ class Message
+     @list_address = if header["list-post"]
+       address = if header["list-post"] =~ /mailto:(.*?)[>\s$]/
+         $1
+-      elsif list-post =~ /@/
++      elsif header["list-post"] =~ /@/
+         header["list-post"] # just try the whole fucking thing
+       end
+       address && Person.from_address(address)
+-- 
+1.6.5.7
+
+From hyperbolist at gmail.com  Thu Dec 31 09:48:25 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 09:48:25 -0500
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+Message-ID: <1262270484-sup-8396@changeling.local>
+
+Here's a patch that gives the proper am/pm display for ruby1.8 if that's 
+what's running.
+
+---
+ lib/sup/util.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index f99e1c1..1a2a447 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -486,9 +486,9 @@ class Time
+       strftime "%b %e"
+     else
+       if is_the_same_day? from
+-        strftime("%l:%M%P")
++        (RUBY_VERSION =~ /^1.8/) ? strftime("%l:%M%p").downcase : strftime("%l:%M%P")
+       elsif is_the_day_before? from
+-        "Yest."  + nearest_hour.strftime("%l%P")
++        "Yest." + ((RUBY_VERSION =~ /^1.8/) ? nearest_hour.strftime("%l%p").downcase : nearest_hour.strftime("%l%P"))
+       else
+         strftime "%b %e"
+       end
+-- 
+1.6.5.7
+
+From hyperbolist at gmail.com  Thu Dec 31 11:44:17 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 11:44:17 -0500
+Subject: [sup-devel] [PATCH] added colorized dates in thread-index-mode
+Message-ID: <1262277743-sup-775@changeling.local>
+
+---
+ lib/sup/colormap.rb                |    1 +
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/colormap.rb b/lib/sup/colormap.rb
+index fbbbfc9..c4a4024 100644
+--- a/lib/sup/colormap.rb
++++ b/lib/sup/colormap.rb
+@@ -50,6 +50,7 @@ class Colormap
+     :system_buf => { :fg => "blue", :bg => "default" },
+     :regular_buf => { :fg => "white", :bg => "default" },
+     :modified_buffer => { :fg => "yellow", :bg => "default", :attrs => ["bold"] },
++    :date => { :fg => "white", :bg => "default"},
+   }
+   
+   def initialize
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 12a76f9..b3172e4 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -849,7 +849,7 @@ protected
+ 
+     [ 
+       [:tagged_color, @tags.tagged?(t) ? ">" : " "],
+-      [:none, sprintf("%#{@date_width}s", date)],
++      [:date_color, sprintf("%#{@date_width}s", date)],
+       (starred ? [:starred_color, "*"] : [:none, " "]),
+     ] +
+       from +
+-- 
+1.6.5.7
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 13:56:19 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 10:56:19 -0800
+Subject: [sup-devel] [PATCH] try loading ncursesw
+In-Reply-To: <1262131136-14766-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262131136-14766-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262285772-sup-9424@masanjin.net>
+
+Applied directly to master, thanks.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:08:27 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:08:27 -0800
+Subject: [sup-devel] [PATCH] Make sup-tweak-labels work as advertised
+	with no sources listed
+In-Reply-To: <1262142124-sup-1397@tilus.net>
+References: <1262142124-sup-1397@tilus.net>
+Message-ID: <1262286240-sup-8417@masanjin.net>
+
+Applied to master, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:09:39 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:09:39 -0800
+Subject: [sup-devel] [PATCH] try loading ncursesw
+In-Reply-To: <1262285772-sup-9424@masanjin.net>
+References: <1262131136-14766-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262285772-sup-9424@masanjin.net>
+Message-ID: <1262286529-sup-1891@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2009-12-31:
+> Applied directly to master, thanks.
+
+I changed it from warn to debug though, in line with the chronic
+message.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:16:51 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:16:51 -0800
+Subject: [sup-devel] [PATCH] reuse old account info with --foce-account
+	user@hostname option
+In-Reply-To: <1262145664-sup-4855@tilus.net>
+References: <1262145664-sup-4855@tilus.net>
+Message-ID: <1262286810-sup-7004@masanjin.net>
+
+Applied to master, thanks.
+
+(PS. There's no reason to use the signoff message. Of course you can
+continue to use it if want. But the Sup bureaucracy hasn't become large
+enough to warrant it.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:41:16 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:41:16 -0800
+Subject: [sup-devel] [PATCH] XapianIndex.each_message_in_thread_for
+	yields messages in cronological order
+In-Reply-To: <1262190807-sup-434@zyrg.net>
+References: <1261485246-sup-4236@tilus.net> <1261938751-sup-9421@zyrg.net>
+	<1262136474-sup-312@tilus.net> <1262182085-sup-1405@masanjin.net>
+	<1262190807-sup-434@zyrg.net>
+Message-ID: <1262287125-sup-5933@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-30:
+> I'm assuming you're talking about each_message_in_thread_for, since
+> that's the only Index method that deals with threading.
+
+Yes, I suppose. In my mind the Xapian index had replaced the ThreadSet
+threading entirely, but perhaps that's not the case.
+
+> In what order does ThreadSet#add_message expect to get messages in?
+
+Arbitrary.
+
+> AFAICT JWZ's algorithm should work regardless of the order messages
+> handed to it.
+
+That's my understanding too.
+
+I don't like adding date as a component for threading (because it's just
+asking for a screwey date to wreak havok, just as a screwey References:
+header wreaks havok now). I don't like playing around with the threading
+algorithm, not in the least because we don't have a good test harness
+that lets us know if we screw something up. So I'm inclined to sit on
+this patch.
+
+Out of curiousity, Tero, could the problem also be solved by giving the
+in-reply-to header precedence over the references header?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:45:48 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:45:48 -0800
+Subject: [sup-devel] [PATCH] fixed a typo in parse_header
+In-Reply-To: <1262241818-sup-6917@changeling.local>
+References: <1262241818-sup-6917@changeling.local>
+Message-ID: <1262288702-sup-9835@masanjin.net>
+
+Reformatted excerpts from Eric Sherman's message of 2009-12-30:
+> On the initial sup-sync when trying to use xapian for the first time,
+> one of my headers apparently triggered this edge case.
+
+Wow, how did I let THAT get through. Applied to list-post-improvements,
+remerged into next. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:49:03 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:49:03 -0800
+Subject: [sup-devel] [PATCH] added colorized dates in thread-index-mode
+In-Reply-To: <1262277743-sup-775@changeling.local>
+References: <1262277743-sup-775@changeling.local>
+Message-ID: <1262288934-sup-95@masanjin.net>
+
+Applied directly to master, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 14:53:53 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 11:53:53 -0800
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262270484-sup-8396@changeling.local>
+References: <1262270484-sup-8396@changeling.local>
+Message-ID: <1262289195-sup-4420@masanjin.net>
+
+Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> Here's a patch that gives the proper am/pm display for ruby1.8 if
+> that's what's running.
+
+Can you give a little more info? My ruby 1.8.7 is fine with %P. Was this
+broken in earlier 1.8's?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hyperbolist at gmail.com  Thu Dec 31 15:03:18 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 15:03:18 -0500
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262289195-sup-4420@masanjin.net>
+References: <1262270484-sup-8396@changeling.local>
+	<1262289195-sup-4420@masanjin.net>
+Message-ID: <1262289317-sup-7991@changeling.local>
+
+Excerpts from William Morgan's message of Thu Dec 31 14:53:53 -0500 2009:
+> Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> > Here's a patch that gives the proper am/pm display for ruby1.8 if
+> > that's what's running.
+> 
+> Can you give a little more info? My ruby 1.8.7 is fine with %P. Was this
+> broken in earlier 1.8's?
+
+%P in 1.8.7 displays a literal "P" always, whereas %P in 1.9 display am/pm.
+
+%p in both 1.8.7 and 1.9 displays AM/PM.
+
+ruby1.8.7 strftime: http://ruby-doc.org/core-1.8.7/classes/Time.html#M000139
+ruby1.9 strftime: http://ruby-doc.org/core-1.9/classes/Time.html#M000314
+
+I didn't notice it until someone else mentioned it.
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 15:09:32 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 12:09:32 -0800
+Subject: [sup-devel] [PATCH 1/4] factor saving out of thread/message
+	classes
+In-Reply-To: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262137085-25928-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262290157-sup-2908@masanjin.net>
+
+Branch insta-save, merged into next.
+
+I can't believe it works! So cool.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 15:14:50 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 12:14:50 -0800
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262289317-sup-7991@changeling.local>
+References: <1262270484-sup-8396@changeling.local>
+	<1262289195-sup-4420@masanjin.net>
+	<1262289317-sup-7991@changeling.local>
+Message-ID: <1262290432-sup-9868@masanjin.net>
+
+Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> %P in 1.8.7 displays a literal "P" always, whereas %P in 1.9 display am/pm.
+
+That's not the case for me. I get an am/pm for 1.8.7 patch levels 174
+and 72 (the two I have on hand). Unless there's some weird Debian
+patching going on.
+
+Can anyone else confirm?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup-bugs at masanjin.net  Thu Dec 31 15:23:15 2009
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 31 Dec 2009 20:23:15 +0000
+Subject: [sup-devel] [issue39] Exception running Sup while following the
+	Instructions to	fix UTF-8
+In-Reply-To: <1262290995.91.0.416495320944.issue39@masanjin.net>
+Message-ID: <1262290995.91.0.416495320944.issue39@masanjin.net>
+
+
+New submission from anonymous:
+
+Sup!
+
+I was following [these][http://sup.rubyforge.org/wiki/wiki.pl?UTF8] instructions
+to fix the UTF-8 encoding problem, and when I ran `ruby -Ilib bin/sup`, I got
+the following exception:
+
+--- RuntimeError from thread: main
+no Redwood::SentManager instance defined in method call to i_am_the_instance!
+./lib/sup/util.rb:512:in `method_missing'
+/usr/lib/ruby/1.8/sup/sent.rb:10:in `initialize'
+./lib/sup/util.rb:524:in `new'
+./lib/sup/util.rb:524:in `init'
+./lib/sup.rb:124:in `start'
+bin/sup:143
+
+----------
+messages: 101
+nosy: anonymous
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: git
+title: Exception running Sup while following the Instructions to fix UTF-8
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue39>
+_________________________________________
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 15:31:50 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 12:31:50 -0800
+Subject: [sup-devel] topic branch merge report
+Message-ID: <1262291246-sup-2713@masanjin.net>
+
+Hi all,
+
+I've merged the following branches down to master:
+
+'thread-joining-fix', 'no-mailcap-on-darwin',
+'label-list-mode-auto-update', 'interactive-crypto',
+'label-list-mode-hooks', 'refine-inbox-mode', 'poll-unusual',
+'attach-wildcards', 'order-names-by-date' and 'save-all-attachments'.
+
+Rich, I think I need your help with the two branches 'xapian-bugfix' and
+'xapian-message-state', which are generating a conflict for some reason,
+and I don't understand the code well enough to resolve.  Would you be
+able to publish a branch ahead of master that has these two merged?
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From pi+sup at pihost.us  Thu Dec 31 15:45:30 2009
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Thu, 31 Dec 2009 13:45:30 -0700
+Subject: [sup-devel] [PATCH] Move the mark-as-spam hook so it runs on all
+	tagged threads.
+Message-ID: <1262292330-28131-1-git-send-email-pi+sup@pihost.us>
+
+This way, tagging a whole bunch of spam and then hitting =S will get
+them all run through bogofilter (or whatever is done in the mark-as-spam
+hook) instead of only the currently selected one.
+---
+ lib/sup/modes/thread-index-mode.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 12a76f9..9e49415 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -406,7 +406,6 @@ EOS
+   def toggle_spam
+     t = cursor_thread or return
+     multi_toggle_spam [t]
+-    HookManager.run("mark-as-spam", :thread => t)
+   end
+ 
+   ## both spam and deleted have the curious characteristic that you
+@@ -418,6 +417,7 @@ EOS
+   ## you also want them to disappear immediately.
+   def multi_toggle_spam threads
+     undos = threads.map { |t| actually_toggle_spammed t }
++    threads.each { |t| HookManager.run("mark-as-spam", :thread => t) }
+     UndoManager.register "marking/unmarking  #{threads.size.pluralize 'thread'} as spam",
+                          undos, lambda { regen_text }
+     regen_text
+-- 
+1.6.5
+
+
+From hyperbolist at gmail.com  Thu Dec 31 16:03:40 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 16:03:40 -0500
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262290432-sup-9868@masanjin.net>
+References: <1262270484-sup-8396@changeling.local>
+	<1262289195-sup-4420@masanjin.net>
+	<1262289317-sup-7991@changeling.local>
+	<1262290432-sup-9868@masanjin.net>
+Message-ID: <1262293338-sup-9364@changeling.local>
+
+Excerpts from William Morgan's message of Thu Dec 31 15:14:50 -0500 2009:
+> Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> > %P in 1.8.7 displays a literal "P" always, whereas %P in 1.9 display am/pm.
+> 
+> That's not the case for me. I get an am/pm for 1.8.7 patch levels 174
+> and 72 (the two I have on hand). Unless there's some weird Debian
+> patching going on.
+> 
+> Can anyone else confirm?
+
+Here's a simple test for others to try:
+
+    $ ruby --version
+    ruby 1.8.7 (2009-06-12 patchlevel 174) [i686-darwin10]
+    $ irb
+    irb(main):001:0> RUBY_VERSION
+    => "1.8.7"
+    irb(main):002:0> Time.now().strftime("%l:%M%P")
+    => " 3:58P"
+    irb(main):003:0> quit
+    $ ruby1.9 --version
+    ruby 1.9.1p376 (2009-12-07 revision 26041) [i386-darwin10]
+    $ irb1.9 irb(main):001:0> RUBY_VERSION
+    => "1.9.1"
+    irb(main):002:0> Time.now().strftime("%l:%M%P")
+    => " 3:58pm"
+
+From benoit.pierre at gmail.com  Thu Dec 31 16:27:41 2009
+From: benoit.pierre at gmail.com (=?utf-8?q?Beno=C3=AEt_PIERRE?=)
+Date: Thu, 31 Dec 2009 22:27:41 +0100
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262293338-sup-9364@changeling.local>
+References: <1262270484-sup-8396@changeling.local>
+	<1262289195-sup-4420@masanjin.net>
+	<1262289317-sup-7991@changeling.local>
+	<1262290432-sup-9868@masanjin.net>
+	<1262293338-sup-9364@changeling.local>
+Message-ID: <1262294449-sup-8418@localdomain>
+
+Excerpts from Eric Sherman's message of Thu Dec 31 22:03:40 +0100 2009:
+> Excerpts from William Morgan's message of Thu Dec 31 15:14:50 -0500 2009:
+> > Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> > > %P in 1.8.7 displays a literal "P" always, whereas %P in 1.9 display am/pm.
+> > 
+> > That's not the case for me. I get an am/pm for 1.8.7 patch levels 174
+> > and 72 (the two I have on hand). Unless there's some weird Debian
+> > patching going on.
+> > 
+> > Can anyone else confirm?
+> 
+> Here's a simple test for others to try:
+> 
+>     $ ruby --version
+>     ruby 1.8.7 (2009-06-12 patchlevel 174) [i686-darwin10]
+>     $ irb
+>     irb(main):001:0> RUBY_VERSION
+>     => "1.8.7"
+>     irb(main):002:0> Time.now().strftime("%l:%M%P")
+>     => " 3:58P"
+>     irb(main):003:0> quit
+>     $ ruby1.9 --version
+>     ruby 1.9.1p376 (2009-12-07 revision 26041) [i386-darwin10]
+>     $ irb1.9 irb(main):001:0> RUBY_VERSION
+>     => "1.9.1"
+>     irb(main):002:0> Time.now().strftime("%l:%M%P")
+>     => " 3:58pm"
+
+# ruby --version
+ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+# ruby -e 'puts Time.now().strftime("%l:%M%P")'
+10:21pm
+
+# ruby1.9 --version
+ruby 1.9.0 (2008-10-04 revision 19669) [x86_64-linux]
+# ruby1.9 -e 'puts Time.now().strftime("%l:%M%P")'
+10:22pm
+
+That's on Ubuntu Karmic.
+-- 
+A: Because it destroys the flow of conversation.
+Q: Why is top posting dumb?
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20091231/82055799/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 16:31:18 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 16:31:18 -0500
+Subject: [sup-devel] topic branch merge report
+In-Reply-To: <1262291246-sup-2713@masanjin.net>
+References: <1262291246-sup-2713@masanjin.net>
+Message-ID: <1262294884-sup-3554@zyrg.net>
+
+Excerpts from William Morgan's message of Thu Dec 31 15:31:50 -0500 2009:
+> Rich, I think I need your help with the two branches 'xapian-bugfix' and
+> 'xapian-message-state', which are generating a conflict for some reason,
+> and I don't understand the code well enough to resolve.  Would you be
+> able to publish a branch ahead of master that has these two merged?
+> Thanks!
+
+Done. Branch xapian-merged at git://github.com/rlane/sup
+
+From hyperbolist at gmail.com  Thu Dec 31 17:10:45 2009
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 31 Dec 2009 17:10:45 -0500
+Subject: [sup-devel] [PATCH] fixed am/pm in thread-list-mode for ruby1.8
+In-Reply-To: <1262294449-sup-8418@localdomain>
+References: <1262270484-sup-8396@changeling.local>
+	<1262289195-sup-4420@masanjin.net>
+	<1262289317-sup-7991@changeling.local>
+	<1262290432-sup-9868@masanjin.net>
+	<1262293338-sup-9364@changeling.local>
+	<1262294449-sup-8418@localdomain>
+Message-ID: <1262297415-sup-6997@changeling.local>
+
+Excerpts from Beno?t PIERRE's message of Thu Dec 31 16:27:41 -0500 2009:
+> Excerpts from Eric Sherman's message of Thu Dec 31 22:03:40 +0100 2009:
+> > Excerpts from William Morgan's message of Thu Dec 31 15:14:50 -0500 2009:
+> > > Reformatted excerpts from Eric Sherman's message of 2009-12-31:
+> > > > %P in 1.8.7 displays a literal "P" always, whereas %P in 1.9 display am/pm.
+> > > 
+> > > That's not the case for me. I get an am/pm for 1.8.7 patch levels 174
+> > > and 72 (the two I have on hand). Unless there's some weird Debian
+> > > patching going on.
+> > > 
+> > > Can anyone else confirm?
+> > 
+> > Here's a simple test for others to try:
+> > 
+> >     $ ruby --version
+> >     ruby 1.8.7 (2009-06-12 patchlevel 174) [i686-darwin10]
+> >     $ irb
+> >     irb(main):001:0> RUBY_VERSION
+> >     => "1.8.7"
+> >     irb(main):002:0> Time.now().strftime("%l:%M%P")
+> >     => " 3:58P"
+> >     irb(main):003:0> quit
+> >     $ ruby1.9 --version
+> >     ruby 1.9.1p376 (2009-12-07 revision 26041) [i386-darwin10]
+> >     $ irb1.9 irb(main):001:0> RUBY_VERSION
+> >     => "1.9.1"
+> >     irb(main):002:0> Time.now().strftime("%l:%M%P")
+> >     => " 3:58pm"
+> 
+> # ruby --version
+> ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+> # ruby -e 'puts Time.now().strftime("%l:%M%P")'
+> 10:21pm
+> 
+> # ruby1.9 --version
+> ruby 1.9.0 (2008-10-04 revision 19669) [x86_64-linux]
+> # ruby1.9 -e 'puts Time.now().strftime("%l:%M%P")'
+> 10:22pm
+> 
+> That's on Ubuntu Karmic.
+
+Hmm.  Maybe this issue only exists on OSX.  I'm kind of jealous that linux 
+rubies get features from the future!  I first heard about this AM/PM 
+behavior from [this][1] sup-talk thread and hadn't noticed it myself until 
+then.
+
+[1]: http://rubyforge.org/pipermail/sup-talk/2009-December/003599.html
+
+From wmorgan-sup at masanjin.net  Thu Dec 31 17:41:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 31 Dec 2009 14:41:30 -0800
+Subject: [sup-devel] topic branch merge report
+In-Reply-To: <1262294884-sup-3554@zyrg.net>
+References: <1262291246-sup-2713@masanjin.net> <1262294884-sup-3554@zyrg.net>
+Message-ID: <1262299210-sup-4509@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2009-12-31:
+> Done. Branch xapian-merged at git://github.com/rlane/sup
+
+Thank you. Also merged into master.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:48 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:48 -0800
+Subject: [sup-devel] Ruby 1.9 encoding fixes
+Message-ID: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+
+This patchset fixes the string encoding issues on Ruby 1.9.1. The general
+strategy is to treat raw messsages as binary and ensure that everything is
+passed through Iconv or String#ascii before being displayed or stored. I tested
+an earlier version of this patchset (with more debug checks) on around 700
+thousand mails including plenty of spam. It'd be nice if someone tested
+signed/encrypted mails to make sure I didn't break anything there.
+
+The only effect on Ruby 1.8 should be asciifying the raw header/message view,
+and maybe a little speedup due to reusing the RMail message header instead of
+parsing it ourselves.
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:49 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:49 -0800
+Subject: [sup-devel] [PATCH 01/10] open mail source files as binary
+In-Reply-To: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/maildir.rb     |    4 ++--
+ lib/sup/mbox/loader.rb |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index c2bd27a..0852576 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -59,7 +59,7 @@ class Maildir < Source
+         File.stat(tmp_path)
+       rescue Errno::ENOENT #this is what we want.
+         begin
+-          File.open(tmp_path, 'w') do |f|
++          File.open(tmp_path, 'wb:BINARY') do |f|
+             yield f #provide a writable interface for the caller
+             f.fsync
+           end
+@@ -207,7 +207,7 @@ private
+   def with_file_for id
+     fn = @ids_to_fns[id] or raise OutOfSyncSourceError, "No such id: #{id.inspect}."
+     begin
+-      File.open(fn) { |f| yield f }
++      File.open(fn, 'rb:BINARY') { |f| yield f }
+     rescue SystemCallError, IOError => e
+       raise FatalSourceError, "Problem reading file for id #{id.inspect}: #{fn.inspect}: #{e.message}."
+     end
+diff --git a/lib/sup/mbox/loader.rb b/lib/sup/mbox/loader.rb
+index 520e2ec..ec28d3b 100644
+--- a/lib/sup/mbox/loader.rb
++++ b/lib/sup/mbox/loader.rb
+@@ -22,7 +22,7 @@ class Loader < Source
+       raise ArgumentError, "not an mbox uri" unless uri.scheme == "mbox"
+       raise ArgumentError, "mbox URI ('#{uri}') cannot have a host: #{uri.host}" if uri.host
+       raise ArgumentError, "mbox URI must have a path component" unless uri.path
+-      @f = File.open uri.path
++      @f = File.open uri.path, 'rb:BINARY'
+       @path = uri.path
+     else
+       @f = uri_or_fp
+@@ -114,7 +114,7 @@ class Loader < Source
+ 
+   def store_message date, from_email, &block
+     need_blank = File.exists?(@filename) && !File.zero?(@filename)
+-    File.open(@filename, "a") do |f|
++    File.open(@filename, "ab:BINARY") do |f|
+       f.puts if need_blank
+       f.puts "From #{from_email} #{date.rfc2822}"
+       yield f
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:50 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:50 -0800
+Subject: [sup-devel] [PATCH 02/10] display_size is just size on Ruby 1.9
+In-Reply-To: <1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/util.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index f99e1c1..5f68d0d 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -177,7 +177,7 @@ class String
+   ## nasty multibyte hack for ruby 1.8. if it's utf-8, split into chars using
+   ## the utf8 regex and count those. otherwise, use the byte length.
+   def display_length
+-    if $encoding == "UTF-8" || $encoding == "utf8"
++    if RUBY_VERSION < '1.9.1' && ($encoding == "UTF-8" || $encoding == "utf8")
+       scan(/./u).size
+     else
+       size
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:51 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:51 -0800
+Subject: [sup-devel] [PATCH 03/10] add String#check
+In-Reply-To: <1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/util.rb |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 5f68d0d..fc90350 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -296,6 +296,16 @@ class String
+   ##
+   ## split_on will be passed to String#split, so you can leave this nil for space.
+   def to_set_of_symbols split_on=nil; Set.new split(split_on).map { |x| x.strip.intern } end
++
++  class CheckError < ArgumentError; end
++  def check
++    begin
++      fail "unexpected encoding #{encoding}" if respond_to?(:encoding) && !(encoding == Encoding::UTF_8 || encoding == Encoding::ASCII)
++      fail "invalid encoding" if respond_to?(:valid_encoding?) && !valid_encoding?
++    rescue
++      raise CheckError.new($!.message)
++    end
++  end
+ end
+ 
+ class Numeric
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:52 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:52 -0800
+Subject: [sup-devel] [PATCH 04/10] add String#ascii
+In-Reply-To: <1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/util.rb |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index fc90350..508bcee 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -306,6 +306,19 @@ class String
+       raise CheckError.new($!.message)
+     end
+   end
++
++  def ascii
++    out = ""
++    each_byte do |b|
++      if (b & 128) != 0
++        out << "\\x#{b.to_s 16}"
++      else
++        out << b.chr
++      end
++    end
++    out.force_encoding Encoding::UTF_8 if out.respond_to? :force_encoding
++    out
++  end
+ end
+ 
+ class Numeric
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:53 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:53 -0800
+Subject: [sup-devel] [PATCH 05/10] fixup Iconv#easy_decode for Ruby 1.9
+In-Reply-To: <1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/util.rb |   21 +++++++++++++--------
+ 1 files changed, 13 insertions(+), 8 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 508bcee..560ac73 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -664,21 +664,26 @@ class FinishLine
+ end
+ 
+ class Iconv
+-  def self.easy_decode target, charset, text
+-    return text if charset =~ /^(x-unknown|unknown[-_ ]?8bit|ascii[-_ ]?7[-_ ]?bit)$/i
+-    charset = case charset
++  def self.easy_decode target, orig_charset, text
++    if text.respond_to? :force_encoding
++      text = text.dup
++      text.force_encoding Encoding::BINARY
++    end
++    charset = case orig_charset
+       when /UTF[-_ ]?8/i then "utf-8"
+       when /(iso[-_ ])?latin[-_ ]?1$/i then "ISO-8859-1"
+       when /iso[-_ ]?8859[-_ ]?15/i then 'ISO-8859-15'
+       when /unicode[-_ ]1[-_ ]1[-_ ]utf[-_]7/i then "utf-7"
+-      else charset
++      when /^euc$/i then 'EUC-JP' # XXX try them all?
++      when /^(x-unknown|unknown[-_ ]?8bit|ascii[-_ ]?7[-_ ]?bit)$/i then 'ASCII'
++      else orig_charset
+     end
+ 
+     begin
+-      Iconv.iconv(target + "//IGNORE", charset, text + " ").join[0 .. -2]
+-    rescue Errno::EINVAL, Iconv::InvalidEncoding, Iconv::InvalidCharacter, Iconv::IllegalSequence => e
+-      warn "couldn't transcode text from #{charset} to #{target} (\"#{text[0 ... 20]}\"...) (got #{e.message}); using original as is"
+-      text
++      returning(Iconv.iconv(target, charset, text + " ").join[0 .. -2]) { |str| str.check }
++    rescue Errno::EINVAL, Iconv::InvalidEncoding, Iconv::InvalidCharacter, Iconv::IllegalSequence, String::CheckError
++      warn "couldn't transcode text from #{orig_charset} (#{charset}) to #{target}) (#{text[0 ... 20].inspect}...) (got #{$!.message} (#{$!.class}))"
++      text.ascii
+     end
+   end
+ end
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:56 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:56 -0800
+Subject: [sup-devel] [PATCH 08/10] decode raw header/message to ascii before
+	viewing
+In-Reply-To: <1262302618-20503-8-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-8-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-9-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/modes/thread-view-mode.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 8b5642e..52b54dd 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -148,14 +148,14 @@ EOS
+   def show_header
+     m = @message_lines[curpos] or return
+     BufferManager.spawn_unless_exists("Full header for #{m.id}") do
+-      TextMode.new m.raw_header
++      TextMode.new m.raw_header.ascii
+     end
+   end
+ 
+   def show_message
+     m = @message_lines[curpos] or return
+     BufferManager.spawn_unless_exists("Raw message for #{m.id}") do
+-      TextMode.new m.raw_message
++      TextMode.new m.raw_message.ascii
+     end
+   end
+ 
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:54 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:54 -0800
+Subject: [sup-devel] [PATCH 06/10] add String#transcode
+In-Reply-To: <1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/util.rb |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 560ac73..c27e527 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -319,6 +319,10 @@ class String
+     out.force_encoding Encoding::UTF_8 if out.respond_to? :force_encoding
+     out
+   end
++
++  def transcode src_encoding=$encoding
++    Iconv.easy_decode $encoding, src_encoding, self
++  end
+ end
+ 
+ class Numeric
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:57 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:57 -0800
+Subject: [sup-devel] [PATCH 09/10] use header from the RMail::Message in
+	Message#parse_header
+In-Reply-To: <1262302618-20503-9-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-8-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-9-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-10-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/message.rb |   24 ++++++++++++++----------
+ 1 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index f3ac874..519243a 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -31,6 +31,7 @@ class Message
+   MAX_SIG_DISTANCE = 15 # lines from the end
+   DEFAULT_SUBJECT = ""
+   DEFAULT_SENDER = "(missing sender)"
++  MAX_HEADER_VALUE_SIZE = 4096
+ 
+   attr_reader :id, :date, :from, :subj, :refs, :replytos, :to, :source,
+               :cc, :bcc, :labels, :attachments, :list_address, :recipient_email, :replyto,
+@@ -59,13 +60,15 @@ class Message
+     #parse_header(opts[:header] || @source.load_header(@source_info))
+   end
+ 
+-  def parse_header header
+-    ## forcibly decode these headers from and to the current encoding,
+-    ## which serves to strip out characters that aren't displayable
+-    ## (and which would otherwise be screwing up the display)
+-    %w(from to subject cc bcc).each do |f|
+-      header[f] = Iconv.easy_decode($encoding, $encoding, header[f]) if header[f]
+-    end
++  def decode_header_field v
++    return unless v
++    return v unless v.is_a? String
++    return unless v.size < MAX_HEADER_VALUE_SIZE # avoid regex blowup on spam
++    Rfc2047.decode_to $encoding, Iconv.easy_decode($encoding, 'ASCII', v)
++  end
++
++  def parse_header encoded_header
++    header = SavingHash.new { |k| decode_header_field encoded_header[k] }
+ 
+     @id = if header["message-id"]
+       mid = header["message-id"] =~ /<(.+?)>/ ? $1 : header["message-id"]
+@@ -100,7 +103,7 @@ class Message
+       Time.now
+     end
+ 
+-    @subj = header.member?("subject") ? header["subject"].gsub(/\s+/, " ").gsub(/\s+$/, "") : DEFAULT_SUBJECT
++    @subj = header["subject"] ? header["subject"].gsub(/\s+/, " ").gsub(/\s+$/, "") : DEFAULT_SUBJECT
+     @to = Person.from_address_list header["to"]
+     @cc = Person.from_address_list header["cc"]
+     @bcc = Person.from_address_list header["bcc"]
+@@ -235,8 +238,9 @@ class Message
+           ## bloat the index.
+           ## actually, it's also the differentiation between to/cc/bcc,
+           ## so i will keep this.
+-          parse_header @source.load_header(@source_info)
+-          message_to_chunks @source.load_message(@source_info)
++          rmsg = @source.load_message(@source_info)
++          parse_header rmsg.header
++          message_to_chunks rmsg
+         rescue SourceError, SocketError => e
+           warn "problem getting messages from #{@source}: #{e.message}"
+           ## we need force_to_top here otherwise this window will cover
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:55 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:55 -0800
+Subject: [sup-devel] [PATCH 07/10] transcode output from mime-decode hook too
+In-Reply-To: <1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-8-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/message-chunks.rb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 581b707..6328f1f 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -99,7 +99,7 @@ EOS
+ 
+       text = case @content_type
+       when /^text\/plain\b/
+-        Iconv.easy_decode $encoding, encoded_content.charset || $encoding, @raw_content
++        @raw_content
+       else
+         HookManager.run "mime-decode", :content_type => content_type,
+                         :filename => lambda { write_to_disk },
+@@ -109,6 +109,7 @@ EOS
+ 
+       @lines = nil
+       if text
++        text = text.transcode(encoded_content.charset || $encoding)
+         @lines = text.gsub("\r\n", "\n").gsub(/\t/, "        ").gsub(/\r/, "").split("\n")
+         @lines = lines.map {|l| l.chomp.wrap WRAP_LEN}.flatten
+         @quotable = true
+-- 
+1.6.3.3
+
+
+From rlane at club.cc.cmu.edu  Thu Dec 31 18:36:58 2009
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 31 Dec 2009 15:36:58 -0800
+Subject: [sup-devel] [PATCH 10/10] decode header fields of enclosed messages
+In-Reply-To: <1262302618-20503-10-git-send-email-rlane@club.cc.cmu.edu>
+References: <1262302618-20503-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-3-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-4-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-5-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-6-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-7-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-8-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-9-git-send-email-rlane@club.cc.cmu.edu>
+	<1262302618-20503-10-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1262302618-20503-11-git-send-email-rlane@club.cc.cmu.edu>
+
+---
+ lib/sup/message.rb |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 519243a..ff05df6 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -446,15 +446,12 @@ private
+         from = payload.header.from.first ? payload.header.from.first.format : ""
+         to = payload.header.to.map { |p| p.format }.join(", ")
+         cc = payload.header.cc.map { |p| p.format }.join(", ")
+-        subj = payload.header.subject
+-        subj = subj ? Message.normalize_subj(payload.header.subject.gsub(/\s+/, " ").gsub(/\s+$/, "")) : subj
+-        if Rfc2047.is_encoded? subj
+-          subj = Rfc2047.decode_to $encoding, subj
+-        end
++        subj = decode_header_field(payload.header.subject) || DEFAULT_SUBJECT
++        subj = Message.normalize_subj(subj.gsub(/\s+/, " ").gsub(/\s+$/, ""))
+         msgdate = payload.header.date
+-        from_person = from ? Person.from_address(from) : nil
+-        to_people = to ? Person.from_address_list(to) : nil
+-        cc_people = cc ? Person.from_address_list(cc) : nil
++        from_person = from ? Person.from_address(decode_header_field from) : nil
++        to_people = to ? Person.from_address_list(decode_header_field to) : nil
++        cc_people = cc ? Person.from_address_list(decode_header_field cc) : nil
+         [Chunk::EnclosedMessage.new(from_person, to_people, cc_people, msgdate, subj)] + message_to_chunks(payload, encrypted)
+       else
+         debug "no body for message/rfc822 enclosure; skipping"
+-- 
+1.6.3.3
+
+

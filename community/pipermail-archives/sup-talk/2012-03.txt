@@ -1,0 +1,107 @@
+From ruthard.baudach at web.de  Wed Mar 14 19:48:34 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Wed, 14 Mar 2012 20:48:34 +0100
+Subject: [sup-talk] attribution for forwarded mails?
+Message-ID: <1331753835-sup-2041@prxbdc.dyndns.org>
+
+The attribution hook can be used to change the sup standard reply line.
+Is there any similar mechanism to change the same line of forwarded
+mail?
+
+Yours,
+
+Ruthard
+
+From matthieu.rakotojaona at gmail.com  Mon Mar 26 23:18:06 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 27 Mar 2012 01:18:06 +0200
+Subject: [sup-talk] Filtering rules
+Message-ID: <CAMiZLn2_xGr2tqTeH8JhZ3RRBY1WrNYTgF+8jxZAn1ZFvAowrg@mail.gmail.com>
+
+Hello everyone,
+
+I have been working on a filtering rules system for heliotrope.
+Basically, I wanted to have something that can apply some rules to my
+messages, so that I could rearrange my mails' labels/state
+automatically at any given time, much like what notmuch does (speaking
+of which : it's sad that common goals in building an efficient mail
+system are so much separated by divergences in code).
+
+I preferred to use an "after-add" strategy, as opposed to a
+"before-add", for multiple reasons :
+
+- In a "after-add", messages are already indexed; a search for a
+matching criteria is easily done with mechanisms from whistlepig
+(which was built for the job). In a "before-add", you would have to
+search for your criterias manually
+- If you put bad labels/state before adding the message to the store,
+you have to search for it manually and apply the good ones
+- In case of a bulk import, a bulk labelling is practical.
+
+So I worked on a possible template for rules that is very simple. It's
+pure yaml, and looks like this :
+
+-  to:"sup" subject:"Filtering rules" :
+     labels: "+sup"
+-  to:"me at domain.com" body:"Enlarge your" :
+     state: "+spam"
+-  from:"facebook" :
+     state: "-unread"
+
+Again, it's very simple, but I believe it is quite readable and can do
+most of the things one would want. You can have find more (documented)
+examples at the previous link.
+
+So I created a filter.rb script, in the heliotrope folder, on my
+public repo (https://github.com/rakoo/heliotrope/tree/filter). Here's
+how you use it :
+
+  ruby filter.rb --dir /path/to/heliotrope/data/dir --check
+/path/to/rules/files.yml
+
+And it will print you what are the offending threads. I didn't put the
+changes back to the store yet for testing purposes (it's just a puts
+of the non-matching threads), but it's just a :dry_run opt away.
+Plus, state are to be considered differently than labels: they are
+per-message, not per-threads.
+
+Bonus : I guess most of us use Gmail and Gmail's filters. The same
+script can take your gmail filters and output a valid yaml rules file
+for you! You just have to export your rules by hand (it's a Lab
+feature) to a local file, and run :
+
+  ruby filter.rb --dir /path/to/heliotrope/data/dir --import
+/path/to/gmail/filters/file.xml
+
+I have to work around a few quirks, but you can post-edit the
+generated file easily to get a usable rules file.
+There's a way to get your rules automagically from Google servers, but
+it is reserved to Google Apps users. If you're a simple user, you must
+use the export function.
+
+I'm working on the other way around (heliotrope -> Gmail), but Gmail's
+import/export rules are XML-the-verbose.
+
+Please enjoy this  !
+
+Totally unrelated : I happen to have some negative thread_ids. Is it
+an expected behaviour ?
+
+-- 
+Matthieu RAKOTOJAONA
+
+From masterkorp at masterkorp.net  Tue Mar 27 12:38:10 2012
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Tue, 27 Mar 2012 14:38:10 +0200
+Subject: [sup-talk] Filtering rules
+In-Reply-To: <CAMiZLn2_xGr2tqTeH8JhZ3RRBY1WrNYTgF+8jxZAn1ZFvAowrg@mail.gmail.com>
+References: <CAMiZLn2_xGr2tqTeH8JhZ3RRBY1WrNYTgF+8jxZAn1ZFvAowrg@mail.gmail.com>
+Message-ID: <1332851835-sup-9298@masterkorp.net>
+
+Thanks, i alawus wanted to try heliotrope.
+
+
+--
+Regards, 
+Alfredo Palhares
+

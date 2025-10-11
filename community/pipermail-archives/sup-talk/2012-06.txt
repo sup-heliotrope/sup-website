@@ -1,0 +1,137 @@
+From helgedt at tihlde.org  Thu Jun 21 20:26:19 2012
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Thu, 21 Jun 2012 22:26:19 +0200
+Subject: [sup-talk] [PATCH] detect and set charset on text/* attachments
+Message-ID: <1340310366-sup-4562@tihlde.org>
+
+I got some feedback from non-suppers that my utf-8 text attachments were
+messed up. When I checked they (the MIME headers) lacked any info on charset,
+which I believe should be set for text/*.
+
+Here's a patch that uses the chardet gem to (try to) detect the appropriate charset
+and sets it in the Content-Type header.
+
+From eg at gaute.vetsj.com  Fri Jun 22 08:48:41 2012
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 22 Jun 2012 10:48:41 +0200
+Subject: [sup-talk] [PATCH] detect and set charset on text/* attachments
+In-Reply-To: <1340310366-sup-4562@tihlde.org>
+References: <1340310366-sup-4562@tihlde.org>
+Message-ID: <1340354870-sup-6182@qwerzila>
+
+Hi,
+
+Would be interested; but where's the patch ? ;)
+
+- Gaute
+
+Excerpts from Helge Titlestad's message of 2012-06-21 22:26:19 +0200:
+> I got some feedback from non-suppers that my utf-8 text attachments were
+> messed up. When I checked they (the MIME headers) lacked any info on charset,
+> which I believe should be set for text/*.
+> 
+> Here's a patch that uses the chardet gem to (try to) detect the appropriate charset
+> and sets it in the Content-Type header.
+
+From helgedt at tihlde.org  Fri Jun 22 10:29:21 2012
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Fri, 22 Jun 2012 12:29:21 +0200
+Subject: [sup-talk] [PATCH] detect and set charset on text/* attachments
+In-Reply-To: <1340354870-sup-6182@qwerzila>
+References: <1340310366-sup-4562@tihlde.org> <1340354870-sup-6182@qwerzila>
+Message-ID: <1340360491-sup-9159@tihlde.org>
+
+Excerpts from Gaute Hope's message of Fri Jun 22 10:48:41 +0200 2012:
+> Would be interested; but where's the patch ? ;)
+
+Hah, sorry guys. Someone tried to send an email from my sup last night[1],
+and managed to re-send this oooold mail instead. I think the utf-8 stuff
+was fixed a long time ago. (=
+
+-- 
+alge
+[1]: Yeah, alcohol was involved. 
+
+From kljohann at gmail.com  Sun Jun 24 12:00:39 2012
+From: kljohann at gmail.com (=?UTF-8?Q?Johann_Kl=C3=A4hn?=)
+Date: Sun, 24 Jun 2012 14:00:39 +0200
+Subject: [sup-talk] [sup-devel] [heliotrope] crashes while importing
+In-Reply-To: <CAE+8KM0SqqLfGKnTTAw6TDRdb0eTBftJdueBghGxnoXE+wN3hg@mail.gmail.com>
+References: <20120301151701.23555.84803@localhost> <1330985181-sup-8598@typhon>
+	<CAE+8KM0gu1UD=gGXfiEwmceW82AxF02Y+=Y-AZTW3SR5hToXZg@mail.gmail.com>
+	<CAE+8KM3BeubqLWAZFYOYjEiVUYpQT3vhwhaf37r1BzVECngbJA@mail.gmail.com>
+	<1334932275-turnsole-49140@terminus-est>
+	<CAE+8KM0SqqLfGKnTTAw6TDRdb0eTBftJdueBghGxnoXE+wN3hg@mail.gmail.com>
+Message-ID: <CAE+8KM1J_Q-N+2Sopq7Ta0nebk85MfK9DzxnerKHgpLz68-Rzg@mail.gmail.com>
+
+I just tried this again and the source of this problem does not seem
+to be memcpy vs memmove but that Append tries to copy data to
+unallocated memory.
+Note below that limit_ points to a string "wp/labels". This may
+indicate a stack overflow, I guess (Though I'm not too proficient in
+debugging C++).
+
+My test machine is running x86_64 (intel), ruby 1.9.3p194 and
+leveldb-ruby built from git HEAD.
+
+Program received signal SIGBUS, Bus error.
+0x00007ffff7753ceb in __memcpy_ssse3_back () from /lib/libc.so.6
+(gdb) bt
+#0  0x00007ffff7753ceb in __memcpy_ssse3_back () from /lib/libc.so.6
+#1  0x00007ffff3777181 in leveldb::(anonymous
+namespace)::PosixMmapFile::Append (this=0x107d760, data=...) at
+util/env_posix.cc:227
+#2  0x00007ffff3757cbc in leveldb::log::Writer::EmitPhysicalRecord
+(this=0x1009af0, t=leveldb::log::kFullType,
+    ptr=0x10065d8 "\264\n", n=150) at db/log_writer.cc:93
+#3  0x00007ffff3757a9a in leveldb::log::Writer::AddRecord
+(this=0x1009af0, slice=...) at db/log_writer.cc:67
+#4  0x00007ffff374980e in leveldb::DBImpl::Write (this=0x107aa40,
+options=..., my_batch=0x7fffffffdb00) at db/db_impl.cc:1140
+#5  0x00007ffff374a90a in leveldb::DB::Put (this=0x107aa40, opt=...,
+key=..., value=...) at db/db_impl.cc:1369
+#6  0x00007ffff3749573 in leveldb::DBImpl::Put (this=0x107aa40, o=...,
+key=..., val=...) at db/db_impl.cc:1103
+
+(gdb) up
+#1  0x00007ffff3777181 in leveldb::(anonymous
+namespace)::PosixMmapFile::Append (this=0x107d760, data=...) at
+util/env_posix.cc:227
+227	      memcpy(dst_, src, n);
+
+(gdb) print dst_
+$34 = 0x7ffff7e69fb5 ""
+
+(gdb) print n
+$11 = 150
+
+(gdb) print dst_ + (n-1)
+$1 = 0x7ffff7e6a04a <Address 0x7ffff7e6a04a out of bounds>
+(gdb) print dst_ + (n-2)
+$2 = 0x7ffff7e6a049 <Address 0x7ffff7e6a049 out of bounds>
+
+(gdb) print dst_ + 80
+$16 = 0x7ffff7e6a005 <Address 0x7ffff7e6a005 out of bounds>
+(gdb) print dst_ + 74
+$22 = 0x7ffff7e69fff ""
+(gdb) print dst_ + 75
+$23 = 0x7ffff7e6a000 <Address 0x7ffff7e6a000 out of bounds>
+
+(gdb) print limit_
+$24 = 0x7ffff7e78000 "wp/labels"
+(gdb) print limit_ + 1
+$25 = 0x7ffff7e78001 "p/labels"
+(gdb) print limit_ - 1
+$26 = 0x7ffff7e77fff <Address 0x7ffff7e77fff out of bounds>
+
+(gdb) print map_size_
+$28 = 65536
+(gdb) print page_size_
+$29 = 4096
+(gdb) print base_
+$30 = 0x7ffff7e68000 "\247T\210\024\036"
+(gdb) print last_sync_
+$31 = 0x7ffff7e68000 "\247T\210\024\036"
+(gdb) print file_offset_
+$32 = 0
+

@@ -1,0 +1,2378 @@
+From vallentin at icsi.berkeley.edu  Sun Jan  2 08:28:32 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Sun, 02 Jan 2011 05:28:32 -0800
+Subject: [sup-talk] Standard message operations
+Message-ID: <1293974819-sup-7114@samurai.icir.org>
+
+How do I move a message to the inbox? When I try to add the label
+inbox, sup complains: 'inbox' is a reserved label! 
+
+Also, how do I mark messages as read other than reading it in a buffer?
+
+    Matthias
+
+From kljohann at gmail.com  Sun Jan  2 09:38:12 2011
+From: kljohann at gmail.com (=?utf-8?q?Johann_Kl=C3=A4hn?=)
+Date: Sun, 02 Jan 2011 15:38:12 +0100
+Subject: [sup-talk] Standard message operations
+In-Reply-To: <1293974819-sup-7114@samurai.icir.org>
+References: <1293974819-sup-7114@samurai.icir.org>
+Message-ID: <1293978932-sup-1127@ahoi>
+
+Hi Matthias, pressing '?' at any time provides you with all key
+bindings available.
+
+> How do I move a message to the inbox? When I try to add the label
+> inbox, sup complains: 'inbox' is a reserved label! 
+I usually do this by pressing 'a' (the same key binding is used for
+archiving messages)
+
+> Also, how do I mark messages as read other than reading it in a buffer?
+Try 'N'
+
+Johann
+
+From bwalton at artsci.utoronto.ca  Sun Jan  2 09:39:09 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 02 Jan 2011 09:39:09 -0500
+Subject: [sup-talk] Standard message operations
+In-Reply-To: <1293974819-sup-7114@samurai.icir.org>
+References: <1293974819-sup-7114@samurai.icir.org>
+Message-ID: <1293979127-sup-9066@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Matthias Vallentin's message of Sun Jan 02 08:28:32 -0500 2011:
+
+> How do I move a message to the inbox? When I try to add the label
+> inbox, sup complains: 'inbox' is a reserved label! 
+
+The 'archive' toggle controls the inbox label.  Use 'a' on a message
+in the inbox to archive it.  Use 'A' on a message in the inbox to mark
+it read and archive it.
+
+> Also, how do I mark messages as read other than reading it in a
+> buffer?
+
+Use the 'n' key to do this.
+
+Use the '?' key on any sup view to see the available key strokes and
+their descriptions.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From moritz+sup at wzff.de  Sun Jan  2 10:47:03 2011
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sun, 02 Jan 2011 16:47:03 +0100
+Subject: [sup-talk] Standard message operations
+In-Reply-To: <1293979127-sup-9066@pinkfloyd.chass.utoronto.ca>
+References: <1293974819-sup-7114@samurai.icir.org>
+	<1293979127-sup-9066@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1293982844-sup-20@niflheimr>
+
+Excerpts from Ben Walton's message of Sun Jan 02 15:39:09 +0100 2011:
+> Excerpts from Matthias Vallentin's message of Sun Jan 02 08:28:32 -0500 2011:
+> 
+> > How do I move a message to the inbox? When I try to add the label
+> > inbox, sup complains: 'inbox' is a reserved label! 
+> 
+> The 'archive' toggle controls the inbox label.  Use 'a' on a message
+> in the inbox to archive it.  Use 'A' on a message in the inbox to mark
+> it read and archive it.
+
+Which raises the question: why are there some special labels reserved by sup?
+I don't see any disadvantages by making labels such as sent or inbox applicable
+to messages by normal means.  In fact, I think the the current behaviour is
+rather inconvenient.  Can anyone enlighten me?
+
+Best regards,
+
+Moritz
+
+From vallentin at icsi.berkeley.edu  Sun Jan  2 11:13:39 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Sun, 02 Jan 2011 08:13:39 -0800
+Subject: [sup-talk] message.list_address weirdness
+In-Reply-To: <20101227100718.GL60419@icsi.berkeley.edu>
+References: <20101227100718.GL60419@icsi.berkeley.edu>
+Message-ID: <1293984326-sup-8884@samurai.icir.org>
+
+On Dec 27 2010 at 02:07AM PST, Matthias Vallentin wrote:
+> I cannot get message.list_address to match to add labels before adding
+> messages although the messages definitively have the List-Post header.
+
+Actually, the proposed changes will cause a crash when replying to a
+list address (i.e., hitting 'G'), which expects message.list_address to
+return a Person object rather than a string containing the email
+address. This is inconsistent with the wiki [1] and started my confusion
+in the first place. Automatically adding labels for mailing lists would
+then change from
+
+    if message.list_address =~ /sup-talk/
+      message.add_label "sup"
+      message.add_label "list"
+    end
+
+to
+
+    if message.list_address and message.list_address.email =~ /sup-talk/
+      message.add_label "sup"
+      message.add_label "list"
+    end
+
+in order to work correctly. In [1], list_address is documented to be of
+type String, which should probably be changed to type Person. I find the
+naming (list_address) slightly misleading because it suggest a plain
+email address. What about introducing a new member message.list that
+returns a Person object and making
+message.list_{address,subscribe,unsubscribe} return a string?
+
+    Matthias
+
+[1] http://sup.rubyforge.org/wiki/wiki.pl?AutoAddLabelsToNewMessages
+
+From vallentin at icsi.berkeley.edu  Mon Jan  3 05:24:12 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 03 Jan 2011 02:24:12 -0800
+Subject: [sup-talk] Standard message operations
+In-Reply-To: <1293978932-sup-1127@ahoi>
+References: <1293974819-sup-7114@samurai.icir.org> <1293978932-sup-1127@ahoi>
+Message-ID: <1294050106-sup-9643@samurai.icir.org>
+
+On Jan 02 2011 at 06:38AM PST, Johann Kl?hn wrote:
+> Hi Matthias, pressing '?' at any time provides you with all key
+> bindings available.
+
+My main problem was getting used to the concept of toggling, i.e., using
+the same key for different operations. Now I wonder how I missed them in
+the first place!
+
+    Matthias
+
+From vallentin at icsi.berkeley.edu  Mon Jan  3 05:33:23 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 03 Jan 2011 02:33:23 -0800
+Subject: [sup-talk] Standard message operations
+In-Reply-To: <1293982844-sup-20@niflheimr>
+References: <1293974819-sup-7114@samurai.icir.org>
+	<1293979127-sup-9066@pinkfloyd.chass.utoronto.ca>
+	<1293982844-sup-20@niflheimr>
+Message-ID: <1294050366-sup-1412@samurai.icir.org>
+
+On Jan 02 2011 at 07:47AM PST, Moritz Wilhelmy wrote:
+> Which raises the question: why are there some special labels reserved by sup?
+> I don't see any disadvantages by making labels such as sent or inbox applicable
+> to messages by normal means.  In fact, I think the the current behaviour is
+> rather inconvenient.
+
+I agree that it is sometimes desirable to use reserved labels. For
+example, while I was loading my 100k+ messages into sup, I found some
+messages of mine that slipped through the automatic labelling as sent
+during the import, but I would still like to label them as such now.
+
+    Matthias
+
+From vallentin at icsi.berkeley.edu  Mon Jan  3 07:09:10 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 03 Jan 2011 04:09:10 -0800
+Subject: [sup-talk] Tilde expansion in signature path
+Message-ID: <1294053615-sup-2448@samurai.icir.org>
+
+Is there a specific reason why a tilde in the :signature: path is not
+expanded? If not, this patch will enable it:
+
+diff --git a/lib/sup/account.rb b/lib/sup/account.rb
+index 1718d94..6e078cf 100644
+--- a/lib/sup/account.rb
++++ b/lib/sup/account.rb
+@@ -8,7 +8,7 @@ class Account < Person
+     raise ArgumentError, "no email for account" unless h[:email]
+     super h[:name], h[:email]
+     @sendmail = h[:sendmail]
+-    @signature = h[:signature]
++    @signature = File.expand_path h[:signature]
+     @gpgkey = h[:gpgkey]
+   end
+
+    Matthias
+
+From vallentin at icsi.berkeley.edu  Mon Jan  3 14:34:00 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 03 Jan 2011 11:34:00 -0800
+Subject: [sup-talk] Multiple execution of before-edit hook
+Message-ID: <1294082627-sup-4287@samurai.icir.org>
+
+I noticed that before-edit is executed several times when replying:
+
+    @headers.each do |k, v|
+      @bodies[k] = body
+      HookManager.run "before-edit", :header => v, :body => @bodies[k]
+    end
+
+What's the rational behind this? Why not invoking the hook once, for all
+headers and the body. (Also, the hook is executed again in the parent
+class EditMessageMode.) Since I use the hook to append some text at the
+end of the body
+
+    body << "foo"
+
+the text is added multiple times. Currently I use a crude hack to avoid
+the duplicate appending by
+
+    body << "foo" unless body.last == "foo"
+
+but I wonder whether this behavior is intentional.
+
+    Matthias
+
+From vallentin at icsi.berkeley.edu  Mon Jan  3 15:15:46 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 03 Jan 2011 12:15:46 -0800
+Subject: [sup-talk] Tilde expansion in signature path
+In-Reply-To: <1294053615-sup-2448@samurai.icir.org>
+References: <1294053615-sup-2448@samurai.icir.org>
+Message-ID: <1294085707-sup-6047@samurai.icir.org>
+
+Better: this tweak supports account configurations with lacking
+:signature: fields.
+
++    @signature = File.expand_path h[:signature] if h[:signature]
+
+    Matthias
+
+From tero at tilus.net  Mon Jan  3 15:46:59 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 03 Jan 2011 22:46:59 +0200
+Subject: [sup-talk] Hook before-add-message,
+	any way to know if this message is in a topic I replied to ?
+In-Reply-To: <1293105681-sup-7985@Phoenix>
+References: <1292845256-sup-6025@Phoenix> <1292846110-sup-9522@tilus.net>
+	<1293105681-sup-7985@Phoenix>
+Message-ID: <1294086796-sup-9450@tilus.net>
+
+Wael Nasreddine, 2010-12-23 14:04:
+> I added this method to my before-add-message hook and I call it at the
+> very end of the before-add-hook (so it's executed at the end)
+> 
+> ------- CUT
+> def show_if_participated(message)
+>   return if message.has_label? :inbox
+> 
+>   my_emails = ['wael.nasreddine at gmail.com', 'anotheremail at example.com']
+>   ts = ThreadSet.new Index.instance, $config[:thread_by_subject]
+>   ts.load_thread_for_message message
+>   message_thread = ts.thread_for message
+>   return unless message_thread
+>   message.add_label :inbox if my_emails.any? { |email|
+> message_thread.authors.include? email }
+> end
+> ------- CUT
+> 
+> However it's not working, I remove ~/.sup/xapian and ran sup-sync,
+> this email does not have the inbox label however it's one of the
+> thread that I replied to in a mailing list, what's wrong with my
+> function?
+
+On the surface it looks like it should work.  Couple of questions
+raise when I look at the code.  Does the thread loading actually work
+like that?  I might have been awfully wrong.  Does #authors return
+email addresses or Person instances?  Did your reply come from one of
+the addresses listed in my_emails?  Did you reply only once and was
+that message the last one of it's thread to be indexed?  Your first
+mail to particular thread obviously won't trigger
+show_if_participated(), but subsequent mails will.
+
+Does your hook look like this?  (Judging by your explanation, it most
+probably does)
+
+  ...
+  def show_if_participated(message)
+  end
+  ...
+  show_if_participated(message)
+  ...
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wael.nasreddine at gmail.com  Mon Jan  3 16:02:06 2011
+From: wael.nasreddine at gmail.com (Wael Nasreddine)
+Date: Mon, 03 Jan 2011 22:02:06 +0100
+Subject: [sup-talk] Hook before-add-message,
+	any way to know if this message is in a topic I replied to ?
+In-Reply-To: <1294086796-sup-9450@tilus.net>
+References: <1292845256-sup-6025@Phoenix> <1292846110-sup-9522@tilus.net>
+	<1293105681-sup-7985@Phoenix> <1294086796-sup-9450@tilus.net>
+Message-ID: <1294088289-sup-6218@Phoenix>
+
+This one time, at SUP Camp, Tero Tilus said, On 2011-01-03 21:46:
+> Wael Nasreddine, 2010-12-23 14:04:
+> > I added this method to my before-add-message hook and I call it at the
+> > very end of the before-add-hook (so it's executed at the end)
+
+> > ------- CUT
+> > def show_if_participated(message)
+> >   return if message.has_label? :inbox
+
+> >   my_emails = ['wael.nasreddine at gmail.com', 'anotheremail at example.com']
+> >   ts = ThreadSet.new Index.instance, $config[:thread_by_subject]
+> >   ts.load_thread_for_message message
+> >   message_thread = ts.thread_for message
+> >   return unless message_thread
+> >   message.add_label :inbox if my_emails.any? { |email|
+> > message_thread.authors.include? email }
+> > end
+> > ------- CUT
+
+> > However it's not working, I remove ~/.sup/xapian and ran sup-sync,
+> > this email does not have the inbox label however it's one of the
+> > thread that I replied to in a mailing list, what's wrong with my
+> > function?
+
+> On the surface it looks like it should work.  Couple of questions
+> raise when I look at the code.  Does the thread loading actually work
+> like that?  I might have been awfully wrong.  Does #authors return
+> email addresses or Person instances?
+I'm not sure, someone else might know about this.
+
+
+> Did your reply come from one of
+> the addresses listed in my_emails?
+Of course, I made sure all my aliases are listed in this Array (BTW
+any way to get all the addresses listed in the config file into this
+array?)
+
+> Did you reply only once and was
+> that message the last one of it's thread to be indexed?  Your first
+> mail to particular thread obviously won't trigger
+> show_if_participated(), but subsequent mails will.
+
+Well This email ended up in the list_sup_talk and out of the inbox,
+even though I did reply couple of times to it
+
+> Does your hook look like this?  (Judging by your explanation, it most
+> probably does)
+
+Yes exactly like this, I'll attach the before-add-hook in another
+personal email to you since it has many addresses to people I know
+won't like to be spammed (@list: sorry)
+
+>   ...
+>   def show_if_participated(message)
+>   end
+>   ...
+>   show_if_participated(message)
+>   ...
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Wa?l Nasreddine
+website    http://wael.nasreddine.com
+Blog       http://emxyptlk.com
+TechnoGate http://technogate.fr
+mobile     06.32.94.70.13
+landline   09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From vallentin at icsi.berkeley.edu  Tue Jan  4 11:54:36 2011
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Tue, 04 Jan 2011 08:54:36 -0800
+Subject: [sup-talk] Exporting search query result to a Maildir directory
+Message-ID: <1294159745-sup-4314@samurai.icir.org>
+
+I would like to export the result of a search query to a Maildir
+directory. Is that possible? I feel that it starts like this
+
+    Index.each_message(Index.parse_query("select recent mail")) ...
+
+but don't know the machinery works that does the Maildir export. Because
+the result can span multiple sources the trivial solution, i.e.,  to
+access the raw Maildir source, is not an option.
+
+    Matthias
+
+From rlane at club.cc.cmu.edu  Sat Jan 15 02:07:28 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 15 Jan 2011 02:07:28 -0500
+Subject: [sup-talk] Sup 0.12 released
+Message-ID: <1295068347-sup-3453@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.12.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+Deprecated remote sources have been removed.
+
+Maildir support has been improved to gracefully handle messages that
+move or disappear. The "out of sync" errors should no longer occur.
+
+Inline GPG is now supported.
+
+Changelog for 0.12:
+
+* Remove deprecated IMAP, IMAPS, and mbox+ssh sources
+* Inline GPG support
+* Robust maildir support
+* sup-dump compatibility between Sup versions
+* New hook: sendmail
+* Better Ruby 1.9/UTF8 support
+* As always, many bugfixes and tweaks.
+
+From self at antono.info  Sun Jan 16 21:56:22 2011
+From: self at antono.info (Antono Vasiljev)
+Date: Mon, 17 Jan 2011 04:56:22 +0200
+Subject: [sup-talk] Custom cursor color
+Message-ID: <1295232827-sup-7356@ubook.local>
+
+Hello, All.
+
+First of all thanks to developers for great MUA!
+
+I trying to customize colors for sup and cannot find
+any yaml key for cursor color (highlighted line moved by J/K).
+Anyone can help me?
+
+-- 
+xmpp:self at antono.info
+http://antono.info/
+gopher://antono.info/
+
+From shadowfirebird at gmail.com  Mon Jan 17 05:44:42 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Mon, 17 Jan 2011 10:44:42 +0000
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1295068347-sup-3453@zyrg.net>
+References: <1295068347-sup-3453@zyrg.net>
+Message-ID: <AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+
+That's nice.
+
+Can I make a  criticism?   Perhaps there should have been a warning that
+upgrading is not just a matter of running "gem upgrade sup" because there
+are engine changes, with a link to the detailed description on the web of
+how to upgrade?
+
+And perhaps you should put a detailed descrption on the web of how to
+upgrade?
+
+"This Sup version expects a v4 index, but you have an existing v2 index.
+Please run sup-dump to save your labels, move /home/fred/.sup/xapian out of
+the way, and run sup-sync --restore."
+
+Perhaps it really is as simple as this, but this is my "live" data we are
+talking about here.   A little hand-holding would not have gone amis.
+
+
+On Sat, Jan 15, 2011 at 7:07 AM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+
+> I'm pleased to announce the release of Sup 0.12.
+>
+> Sup is a console-based email client for people with a lot of email.
+> It supports tagging, very fast full-text search, automatic contact-
+> list management, and more. If you're the type of person who treats
+> email as an extension of your long-term memory, Sup is for you.
+>
+> Get it: gem install sup
+> Learn it: http://sup.rubyforge.org
+> Love it: sup-talk at rubyforge.org
+>
+> Release notes:
+>
+> Deprecated remote sources have been removed.
+>
+> Maildir support has been improved to gracefully handle messages that
+> move or disappear. The "out of sync" errors should no longer occur.
+>
+> Inline GPG is now supported.
+>
+> Changelog for 0.12:
+>
+> * Remove deprecated IMAP, IMAPS, and mbox+ssh sources
+> * Inline GPG support
+> * Robust maildir support
+> * sup-dump compatibility between Sup versions
+> * New hook: sendmail
+> * Better Ruby 1.9/UTF8 support
+> * As always, many bugfixes and tweaks.
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+What a tangled web we weave / Go 'round with circumstance / Someone show me
+how to tell / The dancer from the dance...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110117/51fcfcfa/attachment.html>
+
+From hollunder at lavabit.com  Mon Jan 17 17:03:23 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Mon, 17 Jan 2011 23:03:23 +0100
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+Message-ID: <1295301694-sup-2240@eris>
+
+Excerpts from Shadowfirebird's message of 2011-01-17 11:44:42 +0100:
+> That's nice.
+> 
+> Can I make a  criticism?   Perhaps there should have been a warning that
+> upgrading is not just a matter of running "gem upgrade sup" because there
+> are engine changes, with a link to the detailed description on the web of
+> how to upgrade?
+> 
+> And perhaps you should put a detailed descrption on the web of how to
+> upgrade?
+> 
+> "This Sup version expects a v4 index, but you have an existing v2 index.
+> Please run sup-dump to save your labels, move /home/fred/.sup/xapian out of
+> the way, and run sup-sync --restore."
+> 
+> Perhaps it really is as simple as this, but this is my "live" data we are
+> talking about here.   A little hand-holding would not have gone amis.
+> 
+> On Sat, Jan 15, 2011 at 7:07 AM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> 
+> > I'm pleased to announce the release of Sup 0.12.
+> >
+> > Sup is a console-based email client for people with a lot of email.
+> > It supports tagging, very fast full-text search, automatic contact-
+> > list management, and more. If you're the type of person who treats
+> > email as an extension of your long-term memory, Sup is for you.
+> >
+> > Get it: gem install sup
+> > Learn it: http://sup.rubyforge.org
+> > Love it: sup-talk at rubyforge.org
+> >
+> > Release notes:
+> >
+> > Deprecated remote sources have been removed.
+> >
+> > Maildir support has been improved to gracefully handle messages that
+> > move or disappear. The "out of sync" errors should no longer occur.
+> >
+> > Inline GPG is now supported.
+> >
+> > Changelog for 0.12:
+> >
+> > * Remove deprecated IMAP, IMAPS, and mbox+ssh sources
+> > * Inline GPG support
+> > * Robust maildir support
+> > * sup-dump compatibility between Sup versions
+> > * New hook: sendmail
+> > * Better Ruby 1.9/UTF8 support
+> > * As always, many bugfixes and tweaks.
+> > _______________________________________________
+> > sup-talk mailing list
+> > sup-talk at rubyforge.org
+> > http://rubyforge.org/mailman/listinfo/sup-talk
+> >
+
+There also seem to be huge problems building and installing sup 0.12,
+have a look here to get an idea how much frustration it already caused:
+http://aur.archlinux.org/packages.php?ID=26439
+
+
+From rlane at club.cc.cmu.edu  Mon Jan 17 22:36:13 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 17 Jan 2011 22:36:13 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1295301694-sup-2240@eris>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris>
+Message-ID: <1295321122-sup-9696@zyrg.net>
+
+Excerpts from Philipp ?berbacher's message of Mon Jan 17 17:03:23 -0500 2011:
+> There also seem to be huge problems building and installing sup 0.12,
+> have a look here to get an idea how much frustration it already caused:
+> http://aur.archlinux.org/packages.php?ID=26439
+
+I use Arch myself so I'm surprised there's been so much trouble
+packaging for it. Does gettext need to be a gem dependency? I've
+reconsidered the ncurses mess and master now requires ncursesw. I'm not
+convinced an Arch package should be using xapian-full - I only made that
+gem because I wanted the install process to be as simple as "gem install
+sup". The normal Arch Xapian package should work fine.
+
+Besides the ncursesw change is there anything else you want in 0.12.1?
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Tue Jan 18 12:34:54 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 18:34:54 +0100
+Subject: [sup-talk] Send Individually feature
+In-Reply-To: <1278630818-sup-6829@guava.lanl.gov>
+References: <1278630818-sup-6829@guava.lanl.gov>
+Message-ID: <1295370861-sup-7366@xo15-sascha.sascha.silbe.org>
+
+Excerpts from John Bent's message of Fri Jul 09 01:15:50 +0200 2010:
+
+> I sometimes send email to large recipient lists.  I would really like
+> there to be a way to ask sup to send a separate email to each recipient
+> instead of just sending the same one to all.
+
+I've implemented something similar recently, using the new "sendmail"
+hook (that I added for exactly that purpose). Maybe you can adjust it to
+suit your needs.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sendmail.rb
+Type: application/x-ruby
+Size: 2575 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110118/7d5ab2ed/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110118/7d5ab2ed/attachment-0001.bin>
+
+From mnjagadeesh at gmail.com  Wed Jan 19 00:55:56 2011
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 19 Jan 2011 11:25:56 +0530
+Subject: [sup-talk] issue after upgrading sup mainline
+Message-ID: <AANLkTi=uUvKgVk4AEiiaBSjSL7=+w=HiWSNs5nb2MTdJ@mail.gmail.com>
+
+Hi,
+
+I wanted to use 0.12 version of sup and did git pull. But getting below
+error.
+
+jagadeesh at jagadeesh-laptop ~/Downloads/SUP/mainline $ ls
+bin           devel        lib          README.txt          sup-version.rb
+bugs          doc          LICENSE      ReleaseNotes        test
+contrib       HACKING      protocol.md  release-script.txt  www
+CONTRIBUTORS  History.txt  Rakefile     sup-files.rb
+
+jagadeesh at jagadeesh-laptop ~/Downloads/SUP/mainline $ ruby -I lib -w bin/sup
+./lib/sup/util.rb:330: warning: `&' interpreted as argument prefix
+/usr/lib/ruby/1.8/pathname.rb:263: warning: `*' interpreted as argument
+prefix
+./lib/sup/util.rb:19: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:30: warning: method redefined; discarding old dump_lock_id
+./lib/sup/util.rb:107: warning: method redefined; discarding old
+calculate_boundaries
+./lib/sup/message.rb:285: warning: `&' interpreted as argument prefix
+./lib/sup/index.rb:564: warning: `&' interpreted as argument prefix
+./lib/sup/index.rb:17: Xapian version 1.2.1 or higher required
+(RuntimeError)
+from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+from ./lib/sup.rb:359
+from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+from bin/sup:22
+jagadeesh at jagadeesh-laptop ~/Downloads/SUP/mainline $ ruby -v
+ruby 1.8.7 (2010-01-10 patchlevel 249) [i486-linux]
+
+Can someone help me fixing this issue?
+
+Thanks
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110119/165d6c98/attachment-0001.html>
+
+From edward at tropic.org.uk  Thu Jan 20 12:07:56 2011
+From: edward at tropic.org.uk (Edward Speyer)
+Date: Thu, 20 Jan 2011 09:07:56 -0800
+Subject: [sup-talk] Screen width
+Message-ID: <AANLkTimqCKWS7vAMGAv4bAxuTz5tKdKNBUP3ZdtGGdnB@mail.gmail.com>
+
+Yo,
+
+Is there an easy way to get sup to wrap emails at 72 columns, even if my
+terminal is much wider than that?
+
+Right now I'm reading an email with a single quoted-printable text/plain
+attachment with lines 283 characters long.
+
+I'm happy to try patching this myself if someone can get me started,
+pointing in the right direction.
+
+Cheers,
+
+Ed
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110120/540fe45f/attachment.html>
+
+From tero at tilus.net  Thu Jan 20 14:23:24 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 20 Jan 2011 21:23:24 +0200
+Subject: [sup-talk] Screen width
+In-Reply-To: <AANLkTimqCKWS7vAMGAv4bAxuTz5tKdKNBUP3ZdtGGdnB@mail.gmail.com>
+References: <AANLkTimqCKWS7vAMGAv4bAxuTz5tKdKNBUP3ZdtGGdnB@mail.gmail.com>
+Message-ID: <1295551276-sup-5039@tilus.net>
+
+Edward Speyer, 2011-01-20 19:07:
+> Is there an easy way to get sup to wrap emails at 72 columns
+
+Just tune wrap_width in your ~/.sup/config.yaml.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From edward at tropic.org.uk  Thu Jan 20 14:33:28 2011
+From: edward at tropic.org.uk (Edward Speyer)
+Date: Thu, 20 Jan 2011 11:33:28 -0800
+Subject: [sup-talk] Screen width
+In-Reply-To: <1295551276-sup-5039@tilus.net>
+References: <AANLkTimqCKWS7vAMGAv4bAxuTz5tKdKNBUP3ZdtGGdnB@mail.gmail.com>
+	<1295551276-sup-5039@tilus.net>
+Message-ID: <AANLkTi=GP38t0guNhsEJ5k0ap4-V5TjHcrnztbMOn6bz@mail.gmail.com>
+
+Smashing, cheers.
+
+On 20 January 2011 11:23, Tero Tilus <tero at tilus.net> wrote:
+
+> Edward Speyer, 2011-01-20 19:07:
+> > Is there an easy way to get sup to wrap emails at 72 columns
+>
+> Just tune wrap_width in your ~/.sup/config.yaml.
+>
+> --
+> Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110120/b3002205/attachment.html>
+
+From bacuh at riseup.net  Sun Jan 23 03:25:58 2011
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Sun, 23 Jan 2011 09:25:58 +0100
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+Message-ID: <1295770743-sup-9363@fly>
+
+Hi.
+
+I've just 'git pull'ed so my always_trust setting for GnuPG isn't
+working any more. I tried to set it by just putting
+  {:always_trust => true}
+into gpg-options.rb but it doesn't work. I bet I have to put something
+like
+  if(operation == encrypt)
+    always_trust = 1;
+into the file. The Problem is that I have got no clue about Ruby.
+
+Any assistance in putting the right code snipped here would be
+appreciated.
+
+-- 
+basti
+ 
+Government is a disease that masquerades as its own cure
+	-- Robert Lefevre
+
+From michael+sup at stapelberg.de  Sun Jan 23 07:17:41 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 23 Jan 2011 13:17:41 +0100
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <1295770743-sup-9363@fly>
+References: <1295770743-sup-9363@fly>
+Message-ID: <1295784926-sup-5885@midna.zekjur.net>
+
+Hi Sebastian,
+
+Excerpts from Sebastian Lipp's message of 2011-01-23 09:25:58 +0100:
+> Any assistance in putting the right code snipped here would be
+> appreciated.
+See the wiki at http://sup.rubyforge.org/wiki/wiki.pl?GPG, it has examples for
+hooks for sup >= 0.12.
+
+Best regards,
+Michael
+
+From bacuh at riseup.net  Sun Jan 23 17:09:01 2011
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Sun, 23 Jan 2011 23:09:01 +0100
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+References: <1295770743-sup-9363@fly>
+	<AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+Message-ID: <1295820417-sup-1526@fly>
+
+Excerpts from Hamish D's message of So Jan 23 11:47:32 +0100 2011:
+> > I've just 'git pull'ed so my always_trust setting for GnuPG isn't
+> > working any more. I tried to set it by just putting
+> > ?{:always_trust => true}
+> > into gpg-options.rb but it doesn't work.
+> 
+> This may be slightly obscure,
+
+I expected it would, but as I said I have no clue about ruby. ;)
+
+> if operation == "encrypt"
+>   options.merge({:always_trust => true})
+> end
+> options
+
+That is exactly what I was looking for. Thanks.
+
+But another problem popped up. Now I can't sign any message. It makes no
+difference if gpg-options.rb is there or not. There is also no difference in
+choosing sign or sign and encrypt. There are no messages about that in
+the log even with debugging turned on. Have I found a bug?
+
+-- 
+basti
+ 
+The Web should be like a white sheet of paper: ready to be written on,
+with no control over what is written.
+	-- Tim Berners-Lee
+
+From rlane at club.cc.cmu.edu  Mon Jan 24 01:05:04 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 24 Jan 2011 01:05:04 -0500
+Subject: [sup-talk] Sup 0.12.1 released
+Message-ID: <1295848539-sup-752@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.12.1.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+This release changes the gem dependency on ncurses to ncursesw, which
+allows the gem to install cleanly on Ruby 1.9.
+
+The new sup-import-dump program applies labels to an existing index,
+which could be done with sup-sync before 0.12.
+
+Changelog for 0.12.1:
+
+* Depend on ncursesw rather than ncurses (Ruby 1.9 compatibility)
+* Add sup-import-dump
+
+From shadowfirebird at gmail.com  Mon Jan 24 04:15:13 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Mon, 24 Jan 2011 09:15:13 +0000
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <1295820417-sup-1526@fly>
+References: <1295770743-sup-9363@fly>
+	<AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+	<1295820417-sup-1526@fly>
+Message-ID: <1295860315-sup-4750@blake>
+
+> But another problem popped up. Now I can't sign any message. It makes no
+> difference if gpg-options.rb is there or not. There is also no difference in
+> choosing sign or sign and encrypt. There are no messages about that in
+> the log even with debugging turned on. Have I found a bug?
+
+I've just upgraded to 0.12.   On reading your post I tried signing a message and sending it to myself' it worked fine.  So I hazard to guess that it might be a problem with your hooks (or rather, with how the new Sup is reading your existing hook code.)  I only have a before-add-message and a mime-view hook set, so that would appear to be the likely difference between you and me.  
+
+Hope that helps.  Maybe you need to post your gpg-related hooks here...
+
+-- 
+"It's not just a computer -- it's your ass."
+		-- Cal Keegan
+
+From sup at zevv.nl  Mon Jan 24 00:20:47 2011
+From: sup at zevv.nl (Ico)
+Date: Mon, 24 Jan 2011 06:20:47 +0100
+Subject: [sup-talk] Bug reading/writing contacts with \" in them
+Message-ID: <1295845756-sup-308@pruts.nl>
+
+Hi all,
+
+I just found out about Sup yesterday, great stuff, thanks for that to all
+involved with development!
+
+I did run into a small bug yesterday though. I was able to analyze it a bit,
+but my Ruby is not good enough to propose a solid fix. 
+
+The problem occurs when contacts have a certain combination of backslashes and
+quotes in them. I 'imported' my mutt aliases with a simple script converting
+the format (too bad it is *almost* the same but not quite), and one of the
+contacts looked like this:
+
+  somename: \"Some, Name\" <somename at somedomain.com>
+
+It seems there is a problem somewhere with parsing and writing out the backslashes, which
+get escaped each time sup saves the contact list, doubling the number of backslashes each time.
+
+  somename: Some, Name\\ <somename at somedomain.com>
+  somename: Some, Name\\\\ <somename at somedomain.com>
+  somename: Some, Name\\\\\\\\ <somename at somedomain.com>
+
+and so on.
+
+I first got a hint something was wrong when I noticed that sup was starting up slower
+and slower each time, and took over 10 minutes after a few tries. It seems that the regexp
+at person.rb:79 
+
+         when /(.+?) ((\S+?)@\S+) \3/
+
+goes haywire backtracking through all the backslashes, I guess the first .+?
+probably uses exponential time when trying to match the huge number of \'s
+
+Anyway, I did some quick trials to find where exaclty the bug is, but I
+couldn't come up with the proper fix right away. My problem has of course gone
+away by just removing the backslashes from the contacts file, but I hope
+somebody with more ruby-sense is willing to look into this one.
+
+Thanks,
+
+Ico
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From dmishd at gmail.com  Mon Jan 24 05:34:28 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Mon, 24 Jan 2011 10:34:28 +0000
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <AANLkTimB43mBbe-3EvRxZHCK_n9-Xy0mL1MHRGSO6MTf@mail.gmail.com>
+References: <1295770743-sup-9363@fly>
+	<AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+	<1295820417-sup-1526@fly> <1295860315-sup-4750@blake>
+	<AANLkTimrPK4Bt7z+uN5AkShp3uJSw3OdbR2A-R0p4RoA@mail.gmail.com>
+	<AANLkTimB43mBbe-3EvRxZHCK_n9-Xy0mL1MHRGSO6MTf@mail.gmail.com>
+Message-ID: <AANLkTimTV+qSRrVzMd=u7Z1egi2njbiHf2qqQDqOChqY@mail.gmail.com>
+
+Interesting ... it may well be a bug. As well as your hooks, could you let
+me know:
+
+* your gpg key type, including whether you have a separate sub key for
+signing. If your key is on public keyservers then the key ID could also be
+useful.
+* whether you use the gpgkey option in .sup/config.yaml
+
+I'll look into it in the next few days. I might even try constructing a gpg
+test suite for sup ...
+
+Hamish Downer
+On 24 Jan 2011 09:15, "Shadowfirebird" <shadowfirebird at gmail.com> wrote:
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110124/7461c96d/attachment.html>
+
+From michael+sup at stapelberg.de  Mon Jan 24 13:20:13 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 24 Jan 2011 19:20:13 +0100
+Subject: [sup-talk] [PATCH] Re: Bug reading/writing contacts with \" in them
+In-Reply-To: <1295845756-sup-308@pruts.nl>
+References: <1295845756-sup-308@pruts.nl>
+Message-ID: <1295892863-sup-1896@midna.zekjur.net>
+
+Hi Ico,
+
+Excerpts from Ico's message of 2011-01-24 06:20:47 +0100:
+> The problem occurs when contacts have a certain combination of backslashes and
+> quotes in them. I 'imported' my mutt aliases with a simple script converting
+> the format (too bad it is *almost* the same but not quite), and one of the
+> contacts looked like this:
+> 
+>   somename: \"Some, Name\" <somename at somedomain.com>
+As discussed on IRC, I?ve made the following findings:
+
+ ? Some combinations of email addresses (phrase + addr-spec in RFC822
+   terminology) need to be escaped, for example when they contain a comma or a
+   quote.
+ ? This escaping happens in Person#full_address by using @name.inspect
+ ? Person#full_address also is used when saving contacts back to contacts.txt
+ ? Person#initialize partly strips the quotes (line 10/11), but does not handle
+   backslashes.
+
+Attached is a patch which fixes the issue. Input like "Rob, Post\" will first
+be turned into "Rob, Post\\" when initially escaping, but will then stay "Rob,
+Post\\" (no more exploding backslashes).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Un-escape-slashes-when-initializing-a-new-Per.patch
+Type: application/octet-stream
+Size: 798 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110124/f9e9ff63/attachment-0001.obj>
+
+From wmorgan-sup at masanjin.net  Mon Jan 24 13:40:49 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 24 Jan 2011 13:40:49 -0500
+Subject: [sup-talk] call for new maintainers
+Message-ID: <1295894044-sup-7965@masanjin.net>
+
+I said this in another thread on sup-devel, but I thought I'd give it a
+broader audience.
+
+Rich is stepping down as maintainer due to lack of time (but will still
+be around as a contributor). I personally have a little more time
+nowadays than I did before. But I would rather spend it working on
+features, including possible a new index backend.
+
+So, anyone who would be interested in the maintainership busywork of
+collecting patches from sup-devel, making branches, and pushing
+releases, please let me know. You must be familiar with git, Ruby and,
+of course, Sup. I can provide a brief guide of how this all works.
+
+In exchange, you will have access to the secret Sup maintainer meetings
+that take place in the smoky backrooms of various San Francisco bars.
+
+If multiple people are interested, we can set up a rotation so that no
+one is stuck with it forever.
+
+If no one responds, I will continue to be your (not very responsive)
+maintainer.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sup at zevv.nl  Tue Jan 25 05:17:57 2011
+From: sup at zevv.nl (Ico)
+Date: Tue, 25 Jan 2011 11:17:57 +0100
+Subject: [sup-talk] un-archiving an archived mail
+Message-ID: <1295949814-sup-8566@pruts.nl>
+
+Hi all,
+
+Since yesterday I'm a sup user, and I'm quite impressed with the way
+things work, great stuff.
+
+I had once annoyance though, and today on irc met somebody with the same
+itch: if I (we) understand correctly, there is no way to 'unarchive' a
+message once it is archived. 'undo' does the trick while the sup
+session is still running, but afaik it is not possible to find an
+archived mail and mark it 'unachived' or 'inbox'.
+
+Is there something I'm missing, or is this really not possible at the
+moment ? Would it be possible to make the 'a' key a toggle like
+'d'elete, so it is simple possible to unarchive an archived message by
+hitting the 'a' key again ?
+
+Thanks,
+
+Ico
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From wael.nasreddine at gmail.com  Tue Jan 25 05:34:32 2011
+From: wael.nasreddine at gmail.com (Wael M. Nasreddine)
+Date: Tue, 25 Jan 2011 11:34:32 +0100
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295949814-sup-8566@pruts.nl>
+References: <1295949814-sup-8566@pruts.nl>
+Message-ID: <AANLkTimhrxGptBa2epDM0m56p6aidNRtAMp2+dZ7NPTc@mail.gmail.com>
+
+Hey,
+
+Welcome to SUP :)
+
+Just add the inbox label to it ( move the cursor on the thread and press l,
+l for like! and type inbox)
+
+This should work
+
+On Tue, Jan 25, 2011 at 11:17, Ico <sup at zevv.nl> wrote:
+
+> Hi all,
+>
+> Since yesterday I'm a sup user, and I'm quite impressed with the way
+> things work, great stuff.
+>
+> I had once annoyance though, and today on irc met somebody with the same
+> itch: if I (we) understand correctly, there is no way to 'unarchive' a
+> message once it is archived. 'undo' does the trick while the sup
+> session is still running, but afaik it is not possible to find an
+> archived mail and mark it 'unachived' or 'inbox'.
+>
+> Is there something I'm missing, or is this really not possible at the
+> moment ? Would it be possible to make the 'a' key a toggle like
+> 'd'elete, so it is simple possible to unarchive an archived message by
+> hitting the 'a' key again ?
+>
+> Thanks,
+>
+> Ico
+>
+> --
+> :wq
+> ^X^Cy^K^X^C^C^C^C
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :  06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/a8b0a29d/attachment.html>
+
+From aidecoe at aidecoe.name  Tue Jan 25 05:41:14 2011
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Tue, 25 Jan 2011 11:41:14 +0100
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295949814-sup-8566@pruts.nl>
+References: <1295949814-sup-8566@pruts.nl>
+Message-ID: <1295951914-sup-9032@ittemni>
+
+Hi,
+
+Excerpts from Ico's message of Tue Jan 25 11:17:57 +0100 2011:
+> Is there something I'm missing, or is this really not possible at the
+> moment ? Would it be possible to make the 'a' key a toggle like
+> 'd'elete, so it is simple possible to unarchive an archived message by
+> hitting the 'a' key again ?
+
+'a' does work as toggle. :-)  To access archived msgs you need to
+perform global search ('\' key).
+-- 
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/fd49da4c/attachment.bin>
+
+From ezyang at MIT.EDU  Tue Jan 25 05:39:48 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 25 Jan 2011 05:39:48 -0500
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295949814-sup-8566@pruts.nl>
+References: <1295949814-sup-8566@pruts.nl>
+Message-ID: <1295951969-sup-9468@ezyang>
+
+I regularly use 'a' to unarchive mail.  What are you doing specifically?
+
+Edward
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Tue Jan 25 06:15:31 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Tue, 25 Jan 2011 12:15:31 +0100
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295949814-sup-8566@pruts.nl>
+References: <1295949814-sup-8566@pruts.nl>
+Message-ID: <1295954038-sup-293@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Ico's message of Tue Jan 25 11:17:57 +0100 2011:
+
+> Is there something I'm missing, or is this really not possible at the
+> moment ? Would it be possible to make the 'a' key a toggle like
+> 'd'elete, so it is simple possible to unarchive an archived message by
+> hitting the 'a' key again ?
+
+It already does, though only in search-results-mode, not in
+thread-view-mode.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/247edfb2/attachment.bin>
+
+From matthieu.rakotojaona at gmail.com  Tue Jan 25 07:03:38 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 25 Jan 2011 13:03:38 +0100
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295951914-sup-9032@ittemni>
+References: <1295949814-sup-8566@pruts.nl> <1295951914-sup-9032@ittemni>
+Message-ID: <1295956639-sup-510@Otokar>
+
+Hi ! I'm a new sup user and I have some questions.
+
+Excerpts from Amadeusz ?o?nowski's message of mar. janv. 25 11:41:14 +0100 2011:
+> To access archived msgs you need to perform global search ('\' key).
+
+Specifically, how do you search for all your archives messages ? I thought 
+about something like "search for 'not this label'", but I don't know how to do 
+this.
+
+Thank you !
+
+-- 
+
+Matthieu Rakotojaona
+
+From wael.nasreddine at gmail.com  Tue Jan 25 09:19:10 2011
+From: wael.nasreddine at gmail.com (Wael M. Nasreddine)
+Date: Tue, 25 Jan 2011 15:19:10 +0100
+Subject: [sup-talk] call for new maintainers
+In-Reply-To: <1295894044-sup-7965@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+Message-ID: <AANLkTiktGxmVWJCrc=BJdVvA6g3521VCvsF22scY_BhH@mail.gmail.com>
+
+Hello,
+
+How much work you estimate per week?
+
+I'm familiar with Ruby and Git, but I'm not very familiar with the code of
+SUP itself as I haven't read it entirely yet.. I would gladly help sup but I
+need to know first how much work to expect..
+
+Regards,
+Wael Nasreddine
+
+On Mon, Jan 24, 2011 at 19:40, William Morgan <wmorgan-sup at masanjin.net>wrote:
+
+> I said this in another thread on sup-devel, but I thought I'd give it a
+> broader audience.
+>
+> Rich is stepping down as maintainer due to lack of time (but will still
+> be around as a contributor). I personally have a little more time
+> nowadays than I did before. But I would rather spend it working on
+> features, including possible a new index backend.
+>
+> So, anyone who would be interested in the maintainership busywork of
+> collecting patches from sup-devel, making branches, and pushing
+> releases, please let me know. You must be familiar with git, Ruby and,
+> of course, Sup. I can provide a brief guide of how this all works.
+>
+> In exchange, you will have access to the secret Sup maintainer meetings
+> that take place in the smoky backrooms of various San Francisco bars.
+>
+> If multiple people are interested, we can set up a rotation so that no
+> one is stuck with it forever.
+>
+> If no one responds, I will continue to be your (not very responsive)
+> maintainer.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :  06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/397d204d/attachment.html>
+
+From bacuh at riseup.net  Tue Jan 25 09:32:56 2011
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Tue, 25 Jan 2011 15:32:56 +0100
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <AANLkTimTV+qSRrVzMd=u7Z1egi2njbiHf2qqQDqOChqY@mail.gmail.com>
+References: <1295770743-sup-9363@fly>
+	<AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+	<1295820417-sup-1526@fly> <1295860315-sup-4750@blake>
+	<AANLkTimrPK4Bt7z+uN5AkShp3uJSw3OdbR2A-R0p4RoA@mail.gmail.com>
+	<AANLkTimB43mBbe-3EvRxZHCK_n9-Xy0mL1MHRGSO6MTf@mail.gmail.com>
+	<AANLkTimTV+qSRrVzMd=u7Z1egi2njbiHf2qqQDqOChqY@mail.gmail.com>
+Message-ID: <1295964928-sup-1373@fly>
+
+Excerpts from Hamish D's message of Mo Jan 24 11:34:28 +0100 2011:
+> * your gpg key type, including whether you have a separate sub key for
+> signing. If your key is on public keyservers then the key ID could also be
+> useful.
+
+A750401F
+
+> * whether you use the gpgkey option in .sup/config.yaml
+
+Yes, I do. I tried to delete this option and moved all my GPG-related
+hooks out of sup's reach. The last thing I just tried was pulling again.
+Nothing helped.
+
+In my last mail I told that I can't sign. That's not true (anymore). I
+can sign but when I choose sign and encrypt there is no signature. Can't
+say whether this was a misinformation by me or is related to the latest
+pull.
+
+All I can tell is that it worked like a charm since I use sup. It might
+be related to the change to GPGME.
+
+-- 
+basti
+ 
+Die Zwingburg des Privateigentums wird fallen und auf ihren Tr?mmer wird
+sich der Tempel des Kommunismus erheben.
+Alle Festungen des Staates werden kapitulieren m?ssen, und in herrlicher
+Gestalt wird sich zeigen der Genius der Anarchie.
+Wer diesen Idealen zuzuschreiten entschlossen ist, der reiche uns die
+H?nde!
+	-- Johann Most
+
+From garoth at gmail.com  Tue Jan 25 11:24:16 2011
+From: garoth at gmail.com (Andrei Thorp)
+Date: Tue, 25 Jan 2011 11:24:16 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1295321122-sup-9696@zyrg.net>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+Message-ID: <AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+
+On Mon, Jan 17, 2011 at 10:36 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> Excerpts from Philipp ?berbacher's message of Mon Jan 17 17:03:23 -0500 2011:
+>> There also seem to be huge problems building and installing sup 0.12,
+>> have a look here to get an idea how much frustration it already caused:
+>> http://aur.archlinux.org/packages.php?ID=26439
+>
+> I use Arch myself so I'm surprised there's been so much trouble
+> packaging for it. Does gettext need to be a gem dependency? I've
+> reconsidered the ncurses mess and master now requires ncursesw. I'm not
+> convinced an Arch package should be using xapian-full - I only made that
+> gem because I wanted the install process to be as simple as "gem install
+> sup". The normal Arch Xapian package should work fine.
+
+Hey there Rich. I'm the package maintainer there and have certainly
+had a never-ending cascade of trouble packaging it. Stuff ranging from
+dire lack of aur packages for the dependencies (which prompted me to
+write a system to automatically create them) to broken dependencies to
+massive Sup errors in the upgrade to Ruby 1.9.
+
+Anyway, I still can't get it to run even with 0.12.1. Here's the
+general situation (reposted partially from my comments there):
+
+* use ruby-xapian-full
+* need gettext to be a gem and not a regular install... -- pacman -Rd
+your ruby-gettext and sudo gem install ruby-gettext (STILL A PROBLEM,
+SHOULD TALK TO THE MAINTAINER OF THAT PACKAGE)
+* gem install sup:
+  - Won't install in local mode (i.e. into your ~), fyi (not that I care a lot)
+  - Still attempts to build ncurses (which fails)? Why's that? If I
+override and install it without dependencies it seems to use ncursesw
+happily enough.
+* The new package throws up this runtime error without a .sup directory:
+
+--- RuntimeError from thread: main
+can't modify frozen string
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+`force_encoding'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+`block in add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in `add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:38:in `initialize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:613:in `new'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:613:in `init'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:164:in `start'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:153:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+The above I've seen to be bug 98 on the bugtracker... but for whatever
+reason, the bugtracker has been down for a week or two on my end.
+
+What xapian package do you recommend using? Maybe that's the source of
+my problems.
+
+From garoth at gmail.com  Tue Jan 25 11:46:53 2011
+From: garoth at gmail.com (Andrei Thorp)
+Date: Tue, 25 Jan 2011 11:46:53 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+Message-ID: <AANLkTi=QRBEFuj8EPHchoqDYL=SsAS2ZRt7=a-mM6tem@mail.gmail.com>
+
+On Tue, Jan 25, 2011 at 11:24 AM, Andrei Thorp <garoth at gmail.com> wrote:
+> On Mon, Jan 17, 2011 at 10:36 PM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+>> Excerpts from Philipp ?berbacher's message of Mon Jan 17 17:03:23 -0500 2011:
+>>> There also seem to be huge problems building and installing sup 0.12,
+>>> have a look here to get an idea how much frustration it already caused:
+>>> http://aur.archlinux.org/packages.php?ID=26439
+>>
+>> I use Arch myself so I'm surprised there's been so much trouble
+>> packaging for it. Does gettext need to be a gem dependency? I've
+>> reconsidered the ncurses mess and master now requires ncursesw. I'm not
+>> convinced an Arch package should be using xapian-full - I only made that
+>> gem because I wanted the install process to be as simple as "gem install
+>> sup". The normal Arch Xapian package should work fine.
+>
+> Hey there Rich. I'm the package maintainer there and have certainly
+> had a never-ending cascade of trouble packaging it. Stuff ranging from
+> dire lack of aur packages for the dependencies (which prompted me to
+> write a system to automatically create them) to broken dependencies to
+> massive Sup errors in the upgrade to Ruby 1.9.
+>
+> Anyway, I still can't get it to run even with 0.12.1. Here's the
+> general situation (reposted partially from my comments there):
+>
+> * use ruby-xapian-full
+> * need gettext to be a gem and not a regular install... -- pacman -Rd
+> your ruby-gettext and sudo gem install ruby-gettext (STILL A PROBLEM,
+> SHOULD TALK TO THE MAINTAINER OF THAT PACKAGE)
+> * gem install sup:
+> ?- Won't install in local mode (i.e. into your ~), fyi (not that I care a lot)
+> ?- Still attempts to build ncurses (which fails)? Why's that? If I
+> override and install it without dependencies it seems to use ncursesw
+> happily enough.
+> * The new package throws up this runtime error without a .sup directory:
+>
+> --- RuntimeError from thread: main
+> can't modify frozen string
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+> `force_encoding'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+> `block in add_account'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in `each'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in `add_account'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:38:in `initialize'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:613:in `new'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:613:in `init'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:164:in `start'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:153:in `<module:Redwood>'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19:in `<main>'
+>
+> The above I've seen to be bug 98 on the bugtracker... but for whatever
+> reason, the bugtracker has been down for a week or two on my end.
+>
+> What xapian package do you recommend using? Maybe that's the source of
+> my problems.
+
+It also likes to indulge in this error on occasion:
+
+/usr/bin/ruby: symbol lookup error:
+/usr/lib/ruby/gems/1.9.1/gems/ncursesw-1.2.4.1/lib/ncursesw_bin.so:
+undefined symbol: STR2CSTR
+
+From aidecoe at aidecoe.name  Tue Jan 25 11:55:33 2011
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Tue, 25 Jan 2011 17:55:33 +0100
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <1295956639-sup-510@Otokar>
+References: <1295949814-sup-8566@pruts.nl> <1295951914-sup-9032@ittemni>
+	<1295956639-sup-510@Otokar>
+Message-ID: <1295974275-sup-8649@ittemni>
+
+Excerpts from Matthieu Rakotojaona's message of Tue Jan 25 13:03:38
++0100 2011:
+> Excerpts from Amadeusz ?o?nowski's message of mar. janv. 25 11:41:14
+> +0100 2011:
+> > To access archived msgs you need to perform global search ('\' key).
+> 
+> Specifically, how do you search for all your archives messages ? I
+> thought about something like "search for 'not this label'", but I
+> don't know how to do this.
+
+Well, you almost never want to see all your mail.  Big amount of
+information kills.  You might want for example to search for all
+messages that you received after Monday and which are not in the inbox.
+You press '\' and type: "after:Mon AND NOT label:inbox" (without "").
+
+Take a look at sup's wiki for more information on searching.
+-- 
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/cf37fbcc/attachment.bin>
+
+From marc.hartstein at alum.vassar.edu  Tue Jan 25 12:25:24 2011
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Tue, 25 Jan 2011 12:25:24 -0500
+Subject: [sup-talk] un-archiving an archived mail
+In-Reply-To: <AANLkTimhrxGptBa2epDM0m56p6aidNRtAMp2+dZ7NPTc@mail.gmail.com>
+References: <1295949814-sup-8566@pruts.nl>
+	<AANLkTimhrxGptBa2epDM0m56p6aidNRtAMp2+dZ7NPTc@mail.gmail.com>
+Message-ID: <1295976196-sup-7917@cabinet>
+
+Excerpts from Wael M. Nasreddine's message of Tue Jan 25 05:34:32 -0500 2011:
+> Just add the inbox label to it ( move the cursor on the thread and press l,
+> l for like! and type inbox)
+> 
+> This should work
+
+Frustratingly, it doesn't. You can't add 'reserved' labels using 'l'.
+
+I have no idea why that's the case, though.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110125/4804b853/attachment.bin>
+
+From luislupe at gmail.com  Tue Jan 25 19:00:38 2011
+From: luislupe at gmail.com (Luis P. Mendes)
+Date: Wed, 26 Jan 2011 00:00:38 +0000
+Subject: [sup-talk] Problem undefined symbol
+Message-ID: <AANLkTik+UZqxkFb3KpWR93+5b=BX4YrvwqFtwSUZTic7@mail.gmail.com>
+
+Hi,
+
+I installed sup version 12.1 and tried to run it.
+I'm using Slackware64 13.1 and had sup V 0.11 installed before.
+
+$ sup
+[2011-01-25 23:52:33 +0000] WARNING: can't find character set by using
+locale, defaulting to utf-8
+/usr/bin/ruby: symbol lookup error:
+/usr/lib64/ruby/1.9.1/x86_64-linux/dl.so: undefined symbol:
+rb_dl_init_callbacks_5
+
+$ cat sup-exception-log.txt
+/usr/lib64/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:113:in `load_index'
+/usr/lib64/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:93:in `load'
+/usr/lib64/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:100:in `<top
+(required)>'
+/usr/bin/sup-sync:19:in `load'
+/usr/bin/sup-sync:19:in `<main>'
+
+What can I do to have sup running in my box?
+
+
+Luis
+
+From tero at tilus.net  Wed Jan 26 02:43:45 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 26 Jan 2011 09:43:45 +0200
+Subject: [sup-talk] Problem undefined symbol
+In-Reply-To: <AANLkTik+UZqxkFb3KpWR93+5b=BX4YrvwqFtwSUZTic7@mail.gmail.com>
+References: <AANLkTik+UZqxkFb3KpWR93+5b=BX4YrvwqFtwSUZTic7@mail.gmail.com>
+Message-ID: <1296027550-sup-4996@tilus.net>
+
+Luis P. Mendes, 2011-01-26 02:00:
+> I installed sup version 12.1 and tried to run it.
+> I'm using Slackware64 13.1 and had sup V 0.11 installed before.
+
+Does 0.11 still work?
+
+> $ sup
+> [2011-01-25 23:52:33 +0000] WARNING: can't find character set by using
+> locale, defaulting to utf-8
+> /usr/bin/ruby: symbol lookup error:
+> /usr/lib64/ruby/1.9.1/x86_64-linux/dl.so: undefined symbol:
+> rb_dl_init_callbacks_5
+
+I'd guess you have either have your ruby or gem C extensions somehow
+fscked up.  Error in lib/sup/index.rb suggests the problem might be
+xapian-related.  Other than that I really have no idea whats going on.
+You could try both xapian and xapian-full gems (and uninstall the
+other one).
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup at zevv.nl  Wed Jan 26 08:12:03 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Wed, 26 Jan 2011 14:12:03 +0100
+Subject: [sup-talk] Non-english outlook block quote regexp
+Message-ID: <1296046853-sup-2234@pruts.nl>
+
+Hi,
+
+I'm unfortunate enough to have regular correspondence with Dutch
+outlook-users, which is mostly annoying because of the way outlook
+handles quoting of original messages.
+
+I found that Sup is able to handle block quotes from English outlook
+users where the regexp
+
+  ^-----\s*Original Message\s*----+$
+
+is used to find out where the quote starts. This fails unfortunately for
+other languages, because the 'Original Mesage' text seems to be
+localized. In dutch for example, the text 'Oorspronkelik Bericht' is
+used instead.
+
+Would it be an impovement to change this to a more generic regexp to
+match more languages. I was not able to find a complete list of possible
+strings used here, so some heuristics would be necassery.
+
+Any opinions on matching the exact number of hashes, two uppercase words
+and again the exact number of hashes, something like:
+
+  ^-----\s*([A-Z][a-z]+\s*){2}----+$
+
+Would that be safe to do ?
+
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 10:50:15 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 10:50:15 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+Message-ID: <1296056218-sup-3756@masanjin.net>
+
+Hi Andrei,
+
+These problems are all 1.9 related. But I'm very interested in getting
+Sup working with 1.9, so let's see if we can figure something out.
+
+Reformatted excerpts from Andrei Thorp's message of 2011-01-25:
+> * use ruby-xapian-full
+
+You may not need this; see Rich's comments earlier.
+
+> * need gettext to be a gem and not a regular install... -- pacman -Rd
+> your ruby-gettext and sudo gem install ruby-gettext (STILL A PROBLEM,
+> SHOULD TALK TO THE MAINTAINER OF THAT PACKAGE)
+
+Perhaps the package has not been updated to 1.9?
+
+> * gem install sup:
+>   - Won't install in local mode (i.e. into your ~), fyi (not that I care a lot)
+
+What is ther error? Sup shouldn't care where its source files go.
+
+>   - Still attempts to build ncurses (which fails)? Why's that? If I
+> override and install it without dependencies it seems to use ncursesw
+> happily enough.
+
+This is weird. Sup doesn't depend on the ncurses gem any more. And that
+gem doesn't build under 1.9. Sup now depends on the ncursesw gem (which
+Rich has been releasing newer versions of) which *does* support 1.9.
+
+> * The new package throws up this runtime error without a .sup directory:
+> 
+> --- RuntimeError from thread: main
+> can't modify frozen string
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+> `force_encoding'
+
+This is the most troubling. I will see if I can figure out what's going
+on here. I've seen this before and it's another symptom of Ruby 1.9
+string insanity.
+
+> The above I've seen to be bug 98 on the bugtracker... but for whatever
+> reason, the bugtracker has been down for a week or two on my end.
+
+Due to spam reasons I've shut it down, at least for the time being.
+
+> What xapian package do you recommend using? Maybe that's the source of
+> my problems.
+
+I suspect not, given the above.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 10:52:52 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 10:52:52 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <AANLkTi=QRBEFuj8EPHchoqDYL=SsAS2ZRt7=a-mM6tem@mail.gmail.com>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+	<AANLkTi=QRBEFuj8EPHchoqDYL=SsAS2ZRt7=a-mM6tem@mail.gmail.com>
+Message-ID: <1296057034-sup-1364@masanjin.net>
+
+Reformatted excerpts from Andrei Thorp's message of 2011-01-25:
+> It also likes to indulge in this error on occasion:
+> 
+> /usr/bin/ruby: symbol lookup error:
+> /usr/lib/ruby/gems/1.9.1/gems/ncursesw-1.2.4.1/lib/ncursesw_bin.so:
+> undefined symbol: STR2CSTR
+
+Can you try with the 1.2.4.3? This is a 1.9 compability issue. If it's
+still not working, Rich may have an idea (Rich, perhaps compat.h is not
+being included somewhere?)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Wed Jan 26 13:22:35 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 26 Jan 2011 13:22:35 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1296057034-sup-1364@masanjin.net>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+	<AANLkTi=QRBEFuj8EPHchoqDYL=SsAS2ZRt7=a-mM6tem@mail.gmail.com>
+	<1296057034-sup-1364@masanjin.net>
+Message-ID: <1296065958-sup-8939@zyrg.net>
+
+Excerpts from William Morgan's message of 2011-01-26 10:52:52 -0500:
+> Reformatted excerpts from Andrei Thorp's message of 2011-01-25:
+> > It also likes to indulge in this error on occasion:
+> > 
+> > /usr/bin/ruby: symbol lookup error:
+> > /usr/lib/ruby/gems/1.9.1/gems/ncursesw-1.2.4.1/lib/ncursesw_bin.so:
+> > undefined symbol: STR2CSTR
+> 
+> Can you try with the 1.2.4.3? This is a 1.9 compability issue. If it's
+> still not working, Rich may have an idea (Rich, perhaps compat.h is not
+> being included somewhere?)
+
+Yeah, 1.2.4.3 fixes compat.h not being included in menu_wrap.c.
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 14:11:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 14:11:59 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1296065958-sup-8939@zyrg.net>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+	<AANLkTi=QRBEFuj8EPHchoqDYL=SsAS2ZRt7=a-mM6tem@mail.gmail.com>
+	<1296057034-sup-1364@masanjin.net> <1296065958-sup-8939@zyrg.net>
+Message-ID: <1296069110-sup-1872@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2011-01-26:
+> Yeah, 1.2.4.3 fixes compat.h not being included in menu_wrap.c.
+
+Damn I'm good.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Wed Jan 26 18:59:24 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Wed, 26 Jan 2011 23:59:24 +0000
+Subject: [sup-talk] problem starting sup
+Message-ID: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+
+I have a strange problem when trying to start sup from master. I am
+running Ubuntu 10.10 x86_64. I have installed ruby and rubygems from
+the archive, but installed all the gems with "gem install" and sup is
+from git. I don't seem to be able to install xapian due to it looking
+for some 32 bit libraries on a path that doesn't exist on my 64 bit
+system, so I have installed the xapian-full gem, which installs fine.
+
+When I start sup I get:
+
+$ SUP_LOG_LEVEL=debug ruby -I /home/mish/dev/sup/sup-mainline/lib -w
+/home/mish/dev/sup/sup-mainline/bin/sup
+...
+[Wed Jan 26 23:58:42 +0000 2011] locking /home/mish/.sup/lock...
+/home/mish/dev/sup/sup-mainline/lib/sup/index.rb:84: warning: instance
+variable @lock_update_thread not initialized
+/home/mish/dev/sup/sup-mainline/lib/sup/util.rb:602:in
+`method_missing': no Redwood::HookManager instance defined in method
+call to run! (RuntimeError)
+	from /home/mish/dev/sup/sup-mainline/bin/sup:381
+
+Any ideas?
+
+Hamish Downer
+
+From marco-oweber at gmx.de  Wed Jan 26 19:24:24 2011
+From: marco-oweber at gmx.de (Marc Weber)
+Date: Thu, 27 Jan 2011 01:24:24 +0100
+Subject: [sup-talk] problem starting sup
+In-Reply-To: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+References: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+Message-ID: <1296087829-sup-1828@localhost.localdomain>
+
+Excerpts from Hamish D's message of Thu Jan 27 00:59:24 +0100 2011:
+> Any ideas?
+
+No, but you should talk about ruby --version output
+and the git version of sup you're using?
+
+Marc Weber
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 20:57:36 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 20:57:36 -0500
+Subject: [sup-talk] problem starting sup
+In-Reply-To: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+References: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+Message-ID: <1296093042-sup-322@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-01-26:
+> `method_missing': no Redwood::HookManager instance defined in method
+> call to run! (RuntimeError)
+>     from /home/mish/dev/sup/sup-mainline/bin/sup:381
+
+This is masking another exception. Something is breaking before
+HookManager is initialized, and in rescuing from it, we try and run the
+shutdown hook, which of course dies.
+
+Can you comment out that line? Or maybe try commenting out the three
+lines starting with rescue and ending with ensure at line 372 in
+bin/sup? This should at least unmask the exception.
+
+Initting the hookmanager happens very early on in Sup, so I'm guessing
+there's something wrong with your config file or the log file (the only
+two things that happen before the hookmanager is brought up).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Thu Jan 27 08:29:22 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 27 Jan 2011 15:29:22 +0200
+Subject: [sup-talk] Non-english outlook block quote regexp
+In-Reply-To: <1296046853-sup-2234@pruts.nl>
+References: <1296046853-sup-2234@pruts.nl>
+Message-ID: <1296131602-sup-9793@tilus.net>
+
+Ico Doornekamp, 2011-01-26 15:12:
+> Any opinions on matching the exact number of hashes, two uppercase words
+> and again the exact number of hashes, something like:
+> 
+>   ^-----\s*([A-Z][a-z]+\s*){2}----+$
+> 
+> Would that be safe to do ?
+
+Prolly safe, but it misses german Outlook quote
+
+  "-------- Original-Nachricht --------"
+
+and yes, it has different amount of dashes :-O Also it misses finnish
+quote (for two obvious reason).
+
+  "-----Alkuper?inen viesti-----"
+
+Would ^-----+\s*\S+[ -]\S+\s*-----+$ do the trick and not give false
+positives?
+
+ps.  I have occasionaly thought of configurable quote etc. regexen.
+Would anybody else use such a feature?  Or should we go all the way to
+state-transition-hook for state machine parsing message body?  :)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From michael+sup at stapelberg.de  Thu Jan 27 10:00:10 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 27 Jan 2011 16:00:10 +0100
+Subject: [sup-talk] Non-english outlook block quote regexp
+In-Reply-To: <1296131602-sup-9793@tilus.net>
+References: <1296046853-sup-2234@pruts.nl> <1296131602-sup-9793@tilus.net>
+Message-ID: <1296140298-sup-9582@midna.zekjur.net>
+
+Hi Tero,
+
+Excerpts from Tero Tilus's message of 2011-01-27 14:29:22 +0100:
+> Prolly safe, but it misses german Outlook quote
+We also discussed this on IRC. Ico came up with a list of a few more
+(localized) messages. I suggested the most pragmatic solution: keeping this
+list around with a comment to send patches if anybody stumbles upon a new
+localized version of it.
+
+I don?t really think a hook is a good way for this one because the user should
+not be the one who has to maintain an accurate and up-to-date list of these
+strings?
+
+Best regards,
+Michael
+
+From garoth at gmail.com  Thu Jan 27 13:51:49 2011
+From: garoth at gmail.com (Andrei Thorp)
+Date: Thu, 27 Jan 2011 13:51:49 -0500
+Subject: [sup-talk] Sup 0.12 released
+In-Reply-To: <1296056218-sup-3756@masanjin.net>
+References: <1295068347-sup-3453@zyrg.net>
+	<AANLkTimE-40sx8xXxQbjz=Jok3FnWJZgmNTBiMObRahx@mail.gmail.com>
+	<1295301694-sup-2240@eris> <1295321122-sup-9696@zyrg.net>
+	<AANLkTik=GqXrK9WOtA7CQrU51Tyeq7AoBQ6rGHB4iepg@mail.gmail.com>
+	<1296056218-sup-3756@masanjin.net>
+Message-ID: <AANLkTi=MTP05C-ZVVi=q5+giXctgfZNtwGrgPQ_t6Ljn@mail.gmail.com>
+
+On Wed, Jan 26, 2011 at 10:50 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Hi Andrei,
+>
+> These problems are all 1.9 related. But I'm very interested in getting
+> Sup working with 1.9, so let's see if we can figure something out.
+>
+> Reformatted excerpts from Andrei Thorp's message of 2011-01-25:
+>> * use ruby-xapian-full
+>
+> You may not need this; see Rich's comments earlier.
+
+Yeah, I tried it with regular xapian-ruby-bindings, but sup seems to
+insist on wanting "ruby-full" as a dependency. However, I haven't
+checked this just now, so I might be misremembering!
+
+>
+>> * need gettext to be a gem and not a regular install... -- pacman -Rd
+>> your ruby-gettext and sudo gem install ruby-gettext (STILL A PROBLEM,
+>> SHOULD TALK TO THE MAINTAINER OF THAT PACKAGE)
+>
+> Perhaps the package has not been updated to 1.9?
+
+The package is up to date, I think. It's just doing an actual source
+download and compile, so it's being installed in a non-gem format, if
+I understand correctly. Sup then doesn't find it. This should be
+something I can sort out myself though amongst the AUR. Again, not
+100% sure on this one.
+
+>> * gem install sup:
+>> ? - Won't install in local mode (i.e. into your ~), fyi (not that I care a lot)
+>
+> What is ther error? Sup shouldn't care where its source files go.
+
+Yeah, ignore this. I think rubygems changed the behaviour I used to
+remember where if you weren't sudo'd, it'd install as your local user
+in ~/.gems or something. Nothing to worry about.
+
+>> ? - Still attempts to build ncurses (which fails)? Why's that? If I
+>> override and install it without dependencies it seems to use ncursesw
+>> happily enough.
+>
+> This is weird. Sup doesn't depend on the ncurses gem any more. And that
+> gem doesn't build under 1.9. Sup now depends on the ncursesw gem (which
+> Rich has been releasing newer versions of) which *does* support 1.9.
+
+I did experience this, but for whatever reason, gem is taking ages at
+the moment so I can't test. Anyway, it doesn't matter for the package,
+since I ignore gem dependencies during install and get them from the
+Arch repos instead.
+
+>> * The new package throws up this runtime error without a .sup directory:
+>>
+>> --- RuntimeError from thread: main
+>> can't modify frozen string
+>> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/account.rb:54:in
+>> `force_encoding'
+>
+> This is the most troubling. I will see if I can figure out what's going
+> on here. I've seen this before and it's another symptom of Ruby 1.9
+> string insanity.
+>
+>> The above I've seen to be bug 98 on the bugtracker... but for whatever
+>> reason, the bugtracker has been down for a week or two on my end.
+>
+> Due to spam reasons I've shut it down, at least for the time being.
+
+Ew, spam :(
+
+>> What xapian package do you recommend using? Maybe that's the source of
+>> my problems.
+>
+> I suspect not, given the above.
+
+PHENOMENAL NEWS! For the first time in ages, Sup now works properly on
+Archlinux with ruby 1.9. The update to ncursesw fixes the frozen
+string issue, and sup seems to be running properly! Fantastic! Ahh,
+it's so pretty and blue. :D
+
+Anyway, so hopefully things should be smoother now since Ruby should
+be more stable and its libs are finally catching up. It's been a bit
+of a pain to get sup to run on Arch in the past, but hopefully that's
+largely behind us now. Thanks everyone.
+
+From garoth at gmail.com  Thu Jan 27 14:16:44 2011
+From: garoth at gmail.com (Andrei Thorp)
+Date: Thu, 27 Jan 2011 14:16:44 -0500
+Subject: [sup-talk] Need a simple check / nice error message for user error
+ on mbox being a dir
+Message-ID: <AANLkTimwsQMLrpLgtWKjZ6A35b81MrR9Tomxq67VD3dr@mail.gmail.com>
+
+Scanning mbox:/var/spool/mail/thought...
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:155:in
+`gets': Is a directory - /var/spool/mail/thought (Errno::EISDIR)
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:155:in
+`block in next_offset'
+	from <internal:prelude>:10:in `synchronize'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:152:in
+`next_offset'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:169:in
+`first_new_message'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:139:in `poll'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:155:in
+`poll_from'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:123:in
+`block in <top (required)>'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:118:in `each'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:118:in
+`<top (required)>'
+	from /usr/bin/sup-sync:19:in `load'
+	from /usr/bin/sup-sync:19:in `<main>'
+
+Obviously a simple user error here. Would be nice if sup knew to throw
+a nicer error here. Not a big deal!
+
+From tero at tilus.net  Thu Jan 27 15:59:00 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 27 Jan 2011 22:59:00 +0200
+Subject: [sup-talk] Need a simple check / nice error message for user
+	error on mbox being a dir
+In-Reply-To: <AANLkTimwsQMLrpLgtWKjZ6A35b81MrR9Tomxq67VD3dr@mail.gmail.com>
+References: <AANLkTimwsQMLrpLgtWKjZ6A35b81MrR9Tomxq67VD3dr@mail.gmail.com>
+Message-ID: <1296161278-sup-5120@tilus.net>
+
+Andrei Thorp, 2011-01-27 21:16:
+> Scanning mbox:/var/spool/mail/thought...
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mbox.rb:155:in
+> `gets': Is a directory - /var/spool/mail/thought (Errno::EISDIR)
+...
+> Obviously a simple user error here. Would be nice if sup knew to throw
+> a nicer error here. Not a big deal!
+
+Did you mean sup should detect if mbox source actually points to a
+maildir (was /var/spool/mail/thought a maildir?) and suggest a
+correction to configuration or that sup wouldn't crash but reported
+"/var/spool/mail/thought Is a directory. File was expected."
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup at zevv.nl  Fri Jan 28 04:24:22 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Fri, 28 Jan 2011 10:24:22 +0100
+Subject: [sup-talk] Non-english outlook block quote regexp
+In-Reply-To: <1296140298-sup-9582@midna.zekjur.net>
+References: <1296046853-sup-2234@pruts.nl> <1296131602-sup-9793@tilus.net>
+	<1296140298-sup-9582@midna.zekjur.net>
+Message-ID: <1296206571-sup-1285@pruts.nl>
+
+* On Thu Jan 27 16:00:10 +0100 2011, Michael Stapelberg wrote:
+ 
+> Excerpts from Tero Tilus's message of 2011-01-27 14:29:22 +0100:
+> > Prolly safe, but it misses german Outlook quote
+> We also discussed this on IRC. Ico came up with a list of a few more
+> (localized) messages. I suggested the most pragmatic solution: keeping
+> this list around with a comment to send patches if anybody stumbles
+> upon a new localized version of it.
+
+Yes, that's probably the most pragmatic way to go. It's a shame that MUA
+type A is forced to keep a list of possible ramblings of MUA type B to
+do it's work, but that's the way it is.
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From support at plecavalier.com  Sat Jan 29 10:20:38 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Sat, 29 Jan 2011 09:20:38 -0600
+Subject: [sup-talk] illegible encoding when exiting vim
+Message-ID: <20110129092038.6798sdxsmc04oko8@webmail.plecavalier.com>
+
+Hi All.
+
+I'm new to Sup. I'm almost switched over from Evo -yes. drastic
+change, I know- All but one issues remains. When I exit vim and return
+to the compose-mode window, hundreds of lines of illegible encoding is
+added to the bottom of the msg. I imagine I'm not the firs to
+encounter this. My first guess was the encoding support but adding
+ncursesw didn't do anything other than suppress the warning of the
+missing gem in the log buffer.
+
+My relevant system info is here[1]. If I forgot anything please ask.
+Thanks in advance for any guidance.
+
+[1] http://paste.debian.net/106026/
+
+Cheers,
+Phil
+
+
+From marc.hartstein at alum.vassar.edu  Sat Jan 29 12:31:07 2011
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Sat, 29 Jan 2011 12:31:07 -0500
+Subject: [sup-talk] crypto-mode hook fragment to sign if from address can be
+	signed
+Message-ID: <1296322007-sup-3060@cabinet>
+
+I wrote this crypto-mode hook fragment so sup will default to Sign when
+it has selected a from address for the outgoing email for which I have a
+key which can sign emails. I have an occasionally used address for
+outgoing mail which is not associated with my private key and which only
+posts to a mailing list which complains about signed email anyway, so
+this makes my life easier.
+
+Posted to share if anybody else finds it useful, and also to solicit
+suggestions for improvements. It works as-is, but I'm neither a Ruby nor
+GPG expert and wouldn't be surprised to learn there's a better way.
+
+======================================================================
+sign_addresses = `gpg -K`.grep(/<(.*)>/){$1}
+crypto_selector.set_to :sign if not sign_addresses.select{|a| header["From"].include?(a) }.empty?
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110129/86f50389/attachment.bin>
+
+From fedzor at gmail.com  Sat Jan 29 12:47:16 2011
+From: fedzor at gmail.com (fedzor)
+Date: Sat, 29 Jan 2011 12:47:16 -0500
+Subject: [sup-talk]  Adding Sources
+Message-ID: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+
+Hey,
+
+I got sup to work finally. It took me a while because xapian and xapian-full weren't playing well together. I feel like just dropping it for a couple months was really good because it feels like the two libraries took that time to work out their differences and come to an agreement.
+
+Now, it's time to add sources. But sup has changed since I last used it! I read my email from four IMAP boxes. In my experience, IMAP is incredibly shitty and servers bug out all the fucking time and they just kinda do whatever they want. According to the source code, William has a similar sentiment.
+
+Despite my frustrations with it, I was still surprised not to see an IMAP option for sup-config.
+
+What's the recommended way to read my IMAP mailboxes?
+
+Thanks,
+Ari Brown
+
+From michael+sup at stapelberg.de  Sat Jan 29 13:16:57 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 29 Jan 2011 19:16:57 +0100
+Subject: [sup-talk] Adding Sources
+In-Reply-To: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+References: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+Message-ID: <1296324992-sup-8810@midna.zekjur.net>
+
+Hi fedzor,
+
+Excerpts from fedzor's message of 2011-01-29 18:47:16 +0100:
+> What's the recommended way to read my IMAP mailboxes?
+offlineimap
+
+Best regards,
+Michael
+
+From support at plecavalier.com  Sat Jan 29 13:19:22 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Sat, 29 Jan 2011 12:19:22 -0600
+Subject: [sup-talk] Adding Sources
+In-Reply-To: <1296324992-sup-8810@midna.zekjur.net>
+References: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+	<1296324992-sup-8810@midna.zekjur.net>
+Message-ID: <20110129121922.wr0vgv5ggk448wgs@webmail.plecavalier.com>
+
+Quoting Michael Stapelberg <michael+sup at stapelberg.de>:
+
+> Hi fedzor,
+>
+> Excerpts from fedzor's message of 2011-01-29 18:47:16 +0100:
+>> What's the recommended way to read my IMAP mailboxes?
+> offlineimap
+>
++1 there's no substitute.
+Phil
+
+From tero at tilus.net  Sat Jan 29 13:45:54 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 29 Jan 2011 20:45:54 +0200
+Subject: [sup-talk] Adding Sources
+In-Reply-To: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+References: <9E351CF2-F2A4-4CDB-8E88-0AEEACF9BB8A@gmail.com>
+Message-ID: <1296325142-sup-5672@tilus.net>
+
+fedzor, 2011-01-29 19:47:
+> I got sup to work finally. It took me a while because xapian and
+> xapian-full weren't playing well together.
+
+Afaik they aren't supposed to play _together_.  They provide the same
+functionality (ruby bindings to xapian).  One (xapian) links against
+system xapian lib and you need it (+ xapian devel stuff if packaged
+separately) installed and the other (xapian-full) comes bundled with
+(as the name suggests) full xapian and doesn't have external
+dependencies with respect to it.
+
+> What's the recommended way to read my IMAP mailboxes?
+
+You use an offline synchronizer to pull mail from IMAP to local
+Maildir storage.  See
+
+  http://sup.rubyforge.org/wiki/wiki.pl?TriggeringMailCollection
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Sat Jan 29 13:50:54 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 29 Jan 2011 20:50:54 +0200
+Subject: [sup-talk] crypto-mode hook fragment to sign if from address
+	can be signed
+In-Reply-To: <1296322007-sup-3060@cabinet>
+References: <1296322007-sup-3060@cabinet>
+Message-ID: <1296326853-sup-891@tilus.net>
+
+Marc Hartstein, 2011-01-29 19:31:
+> Posted to share if anybody else finds it useful
+
+Throw it up to wiki
+
+  http://sup.rubyforge.org/wiki/wiki.pl?GPG
+
+Looks like there are other crypto-mode hook fragments at the end of
+the page already.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Sat Jan 29 14:00:48 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 29 Jan 2011 21:00:48 +0200
+Subject: [sup-talk] illegible encoding when exiting vim
+In-Reply-To: <20110129092038.6798sdxsmc04oko8@webmail.plecavalier.com>
+References: <20110129092038.6798sdxsmc04oko8@webmail.plecavalier.com>
+Message-ID: <1296327468-sup-4848@tilus.net>
+
+Philippe LeCavalier, 2011-01-29 17:20:
+> When I exit vim and return to the compose-mode window, hundreds of
+> lines of illegible encoding is added to the bottom of the msg.
+
+Could you provide a screenshots (minimal mail in vim, compose-mode
+after vim) demonstrating the behavior you described.
+
+> If I forgot anything please ask.
+
+$ ruby --version
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Sat Jan 29 17:46:27 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 30 Jan 2011 00:46:27 +0200
+Subject: [sup-talk] illegible encoding when exiting vim
+In-Reply-To: <20110129141920.nfxc8118ysss0840@webmail.plecavalier.com>
+References: <20110129092038.6798sdxsmc04oko8@webmail.plecavalier.com>
+	<1296327468-sup-4848@tilus.net>
+	<20110129141920.nfxc8118ysss0840@webmail.plecavalier.com>
+Message-ID: <1296340383-sup-5241@tilus.net>
+
+Philippe LeCavalier, 2011-01-29 22:19:
+> See attached.
+
+Holy crap!  That's most likely a jpeg image right there.  At the top
+you can see a snippet of XMP metadata.  After that there's app data
+segment, which apparently contains embedded ICC profile.
+
+How did you do that?!  :-O
+
+You could do some more debugging.  Save the message in vim, check the
+filename, but do not exit.  Go check the contents of the file using
+another editor or a pager.  What do you see?
+
+If you re-enter vim from reply-mode, does the (supposedly raw jpeg
+image) garbage appear in editor?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From dmishd at gmail.com  Sun Jan 30 18:04:58 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 30 Jan 2011 23:04:58 +0000
+Subject: [sup-talk] gpg-options.rb: how to set always_trust
+In-Reply-To: <1295820417-sup-1526@fly>
+References: <1295770743-sup-9363@fly>
+	<AANLkTimJZiRE31R5KJBdqZv5L17qhKeLjbO4fWM5LfD2@mail.gmail.com>
+	<1295820417-sup-1526@fly>
+Message-ID: <1296428275-sup-8599@whisper>
+
+Excerpts from Sebastian Lipp's message of Sun Jan 23 22:09:01 +0000 2011:
+> Excerpts from Hamish D's message of So Jan 23 11:47:32 +0100 2011:
+> > if operation == "encrypt"
+> >   options.merge({:always_trust => true})
+> > end
+> > options
+> 
+> That is exactly what I was looking for. Thanks.
+
+I've discovered that it actually needs to be  
+
+if operation == "encrypt"
+  options.merge!({:always_trust => true})
+end
+options
+
+I've updated the wiki aswell. The difference is using merge! rather than
+merge - I discovered this while tracking down your other issue:
+
+> But another problem popped up. Now I can't sign any message. It makes no
+> difference if gpg-options.rb is there or not. There is also no difference in
+> choosing sign or sign and encrypt. There are no messages about that in
+> the log even with debugging turned on. Have I found a bug?
+
+This bug is now fixed in the next branch (and the gpgme branch). Someone
+should hopefully merge this into master soon.
+
+http://rubyforge.org/pipermail/sup-devel/2011-January/000965.html
+
+Hamish Downer
+
+From dmishd at gmail.com  Sun Jan 30 18:07:02 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 30 Jan 2011 23:07:02 +0000
+Subject: [sup-talk] problem starting sup
+In-Reply-To: <1296093042-sup-322@masanjin.net>
+References: <AANLkTi=ZX0cT-fiT7DeETx7wbO77wZeLJk86_zhbkqGF@mail.gmail.com>
+	<1296093042-sup-322@masanjin.net>
+Message-ID: <AANLkTi=eZojPJvMB4=AqWPm_MhyvhCoa5Qfq3bNCm+rm@mail.gmail.com>
+
+> Initting the hookmanager happens very early on in Sup, so I'm guessing
+> there's something wrong with your config file or the log file (the only
+> two things that happen before the hookmanager is brought up).
+
+I moved .sup out of the way and the error went away. Then with playing
+with it I managed to delete the .sup directory that caused the errors
+:/ If I ever happen to reproduce this I'll know what to do anyway.
+
+Hamish
+

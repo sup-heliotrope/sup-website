@@ -1,0 +1,215 @@
+From alex.shulgin at gmail.com  Fri Aug 12 01:20:32 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Fri, 12 Aug 2011 08:20:32 +0300
+Subject: [sup-talk] Exception when archiving thread and moving to previous
+	one
+Message-ID: <CAM-UEKQXzoq7ZtYfe9tMw=v_fj6DbK_j3XxD=f8jTs2XX9Tzxg@mail.gmail.com>
+
+Hello,
+
+Just got this exception:
+
+--- ArgumentError from thread: load messages for thread-view-mode
+buffer not on stack: #<Redwood::Buffer:0x7fd0148098a0>: "[SnakeOil -
+Bug #12345] (New) Do some work"
+/home/ash/src/sup-mainline/lib/sup/buffer.rb:440:in `kill_buffer'
+/home/ash/src/sup-mainline/lib/sup/buffer.rb:431:in `kill_buffer_safely'
+(eval):1:in `send'
+(eval):1:in `kill_buffer_safely'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-view-mode.rb:647:in `dispatch'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-index-mode.rb:129:in `call'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-index-mode.rb:129:in `select'
+/home/ash/src/sup-mainline/lib/sup.rb:78:in `reporting_thread'
+/home/ash/src/sup-mainline/lib/sup.rb:76:in `initialize'
+/home/ash/src/sup-mainline/lib/sup.rb:76:in `new'
+/home/ash/src/sup-mainline/lib/sup.rb:76:in `reporting_thread'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-index-mode.rb:109:in `select'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-index-mode.rb:159:in
+`launch_another_thread'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-index-mode.rb:145:in
+`launch_prev_thread_before'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-view-mode.rb:654:in `dispatch'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-view-mode.rb:591:in
+`archive_and_then'
+/home/ash/src/sup-mainline/lib/sup/modes/thread-view-mode.rb:584:in
+`archive_and_prev'
+/home/ash/src/sup-mainline/lib/sup/mode.rb:59:in `send'
+/home/ash/src/sup-mainline/lib/sup/mode.rb:59:in `handle_input'
+/home/ash/src/sup-mainline/lib/sup/buffer.rb:277:in `handle_input'
+/home/ash/src/sup-mainline/bin/sup:271
+
+I was browsing my morning mail, then at some point I've typed "] a",
+to archive currently open mail and move to the prev. one in the inbox.
+ This appeared to be stalled for a second or two, so I've pressed "x"
+to kill current buffer and return to inbox.  Sup crashed :'(
+
+My version of sup is e146b1790bf3a9f231f0712e68280f726c1bd153 @
+git://gitorious.org/sup/mainline.git
+
+--
+Regards,
+Alex
+
+From alex.shulgin at gmail.com  Fri Aug 12 01:24:39 2011
+From: alex.shulgin at gmail.com (Alexander Shulgin)
+Date: Fri, 12 Aug 2011 08:24:39 +0300
+Subject: [sup-talk] Exception when archiving thread and moving to
+	previous one
+In-Reply-To: <CAM-UEKQXzoq7ZtYfe9tMw=v_fj6DbK_j3XxD=f8jTs2XX9Tzxg@mail.gmail.com>
+References: <CAM-UEKQXzoq7ZtYfe9tMw=v_fj6DbK_j3XxD=f8jTs2XX9Tzxg@mail.gmail.com>
+Message-ID: <CAM-UEKTf38FCOFMkd=GhSyrA7kZczcq1j3FQL2MBB9z=8U9fVA@mail.gmail.com>
+
+On Fri, Aug 12, 2011 at 08:20, Alexander Shulgin <alex.shulgin at gmail.com> wrote:
+>
+> I was browsing my morning mail, then at some point I've typed "] a",
+> to archive currently open mail and move to the prev. one in the inbox.
+> ?This appeared to be stalled for a second or two, so I've pressed "x"
+> to kill current buffer and return to inbox. ?Sup crashed :'(
+
+Oh, the reason to the stall seems to be that the prev. mail was really
+huge (21k lines), it takes about 3-4 seconds to open that particular
+mail on my box.  Hope this helps to track down the problem.
+
+--
+Alex
+
+From matthieu.rakotojaona at gmail.com  Mon Aug 15 17:19:12 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Mon, 15 Aug 2011 23:19:12 +0200
+Subject: [sup-talk] A little bit of heliotrope hacking
+Message-ID: <CAMiZLn307C9-6eg10dPchSuWrpJVwezd+kriGv4Bch_J-JoV+g@mail.gmail.com>
+
+Hello everyone,
+
+I was playing with the lib/heliotrop-client to try and get some
+messages from the heliotrope server. I think there is a mistake in
+this file : one would need
+
+require 'set'
+
+to have it work. Turnsole includes it by default.
+
+I was also thinking about trying to run a mailserver with heliotrope
+as the mailstore. But I have only a few knowledge in this field. If I
+understand well, I would need to install an MTA, and run something
+like "cat message | ruby -I lib bin/heliotrope-add ", as explained in
+the README, to deliver my mails to my mailbox. Is that right ?
+
+Speaking of MTAs, which one would you recommand for a beginner like me
+? I can get my hands dirty, but I don't have much time. Postfix and
+Exim seem like the most common, the former may be a good start.
+
+I will try to get together some information about the JSON API
+(nothing too fancy)
+
+Bye !
+
+-- 
+Matthieu RAKOTOJAONA
+
+From johnbent at gmail.com  Thu Aug 18 17:03:11 2011
+From: johnbent at gmail.com (John Bent)
+Date: Thu, 18 Aug 2011 21:03:11 +0000
+Subject: [sup-talk] wrong id called on #<YAML::DomainType
+Message-ID: <CAGfFL-yCrAkTxr08jPX1Fxzdeh7Y+M==a-OKsOcs9gzS=Vh=dQ@mail.gmail.com>
+
+Hello all,
+
+My computer crashed and I had to reinstall the operating system but my sup
+files should be all fine.  However, when I try to run sup, I see the below
+error.  I've tried to sup-sync --restore and sup-sync --changed and they get
+the same error.  Anyone have any ideas?  Thx.
+
+--- RuntimeError from thread: main
+wrong id called on #<YAML::DomainType:0x7f7d1db3b608
+@value={"uri"=>"mbox:/Users/johnbent/mail/cronjobs", "usual"=>true,
+"archived"=>true, "id"=>366, "labels"=>[]}, @type_id="Redwood/MBox",
+@domain="masanjin.net,2006-10-01">
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:17:in `id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:599:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:599:in `__pass'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:588:in `id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in
+`load_sources'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in `map'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in
+`load_sources'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:214:in
+`load_sources'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:559:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:559:in
+`method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:70:in `load'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:236:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:236:in
+`method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:169
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+John
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110818/4bec1b66/attachment.html>
+
+From johnbent at gmail.com  Thu Aug 18 17:38:05 2011
+From: johnbent at gmail.com (John Bent)
+Date: Thu, 18 Aug 2011 21:38:05 +0000
+Subject: [sup-talk] wrong id called on #<YAML::DomainType
+In-Reply-To: <CAGfFL-yCrAkTxr08jPX1Fxzdeh7Y+M==a-OKsOcs9gzS=Vh=dQ@mail.gmail.com>
+References: <CAGfFL-yCrAkTxr08jPX1Fxzdeh7Y+M==a-OKsOcs9gzS=Vh=dQ@mail.gmail.com>
+Message-ID: <CAGfFL-yHEEHV4ynkhHqeab9NuVVoxCm0XwzXUfgJxxFCsFTdSg@mail.gmail.com>
+
+All,
+
+I figured it out.  FYI: the problem was that my old install of sup was using
+xapian V4 and the newly installed one ('yum install sup') was using V1.
+
+Thanks,
+
+John
+
+On Thu, Aug 18, 2011 at 9:03 PM, John Bent <johnbent at gmail.com> wrote:
+
+> Hello all,
+>
+> My computer crashed and I had to reinstall the operating system but my sup
+> files should be all fine.  However, when I try to run sup, I see the below
+> error.  I've tried to sup-sync --restore and sup-sync --changed and they get
+> the same error.  Anyone have any ideas?  Thx.
+>
+> --- RuntimeError from thread: main
+> wrong id called on #<YAML::DomainType:0x7f7d1db3b608
+> @value={"uri"=>"mbox:/Users/johnbent/mail/cronjobs", "usual"=>true,
+> "archived"=>true, "id"=>366, "labels"=>[]}, @type_id="Redwood/MBox",
+> @domain="masanjin.net,2006-10-01">
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:17:in `id'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:599:in `send'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:599:in `__pass'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:588:in `id'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in
+> `load_sources'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in `map'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:215:in
+> `load_sources'
+> /usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/source.rb:214:in
+> `load_sources'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:559:in `send'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/util.rb:559:in
+> `method_missing'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:70:in `load'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:236:in `send'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:236:in
+> `method_missing'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:169
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19
+>
+> John
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110818/8bf5d92e/attachment-0001.html>
+

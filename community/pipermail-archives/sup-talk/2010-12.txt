@@ -1,0 +1,2698 @@
+From plutek at infinity.net  Wed Dec  1 14:05:37 2010
+From: plutek at infinity.net (Peter Lutek)
+Date: Wed, 1 Dec 2010 14:05:37 -0500
+Subject: [sup-talk] sup crashing on start
+Message-ID: <11028.1291230337@infinity.net>
+
+  BODY { font-family:Arial, Helvetica, sans-serif;font-size:12px;
+}greetings!
+ just this morning, i have been unable to start sup -- it is crashing
+as soon as i try to start. the inbox buffer starts to show briefly,
+but then sup immediately crashes. this is after a "sup-sync -a", but
+i've been running this setup and doing "sup-sync -a" for many months
+without issue.
+ any help would be greatly appreciated -- i'm currently resorting to
+webmail. yuck!
+ sup 0.11
+ ruby 1.8 
+ i've submitted a report at the sup bug tracker, and my
+.sup/exception-log.txt is attached there -- see ID 135.
+ thanks in advance.... cheers!
+ .pltk.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101201/9d17f023/attachment.html>
+
+From dmishd at gmail.com  Wed Dec  1 19:18:08 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 2 Dec 2010 00:18:08 +0000
+Subject: [sup-talk] sup leaves unencrypted emails in /tmp
+Message-ID: <AANLkTikzfKZ9573c+NOiYA3UWjFhWpohhcGroS0Zz19F@mail.gmail.com>
+
+I noticed that sup appears to leave the unencrypted contents of emails
+in /tmp - at least it did on my system. This is a pretty serious issue
+on shared computers. I'm not sure why - my attempts at a quick fix
+failed. The files are created using Tempfile.new and close is called,
+but after that the files are written to by gpg. I'm not sure if this
+means that the tempfile system then doesn't delete them later for some
+reason.
+
+The tempfile stuff does seem to work for the files containing the
+output from gpg. They do (eventually) get deleted. But the "temporary"
+files that gpg puts the plaintext into seem to hang around even after
+I've done a clean exit from sup.
+
+If anyone has got good ideas about how to fix this for sup 0.12 I
+think that would be a fine thing to do.
+
+Note that this is the mainline version of sup, not the gpgme version
+I've been developing - using gpgme means the plaintexts never have to
+be written to disk, so if we move to gpgme (once I've got it up to
+scratch) then these problems will go away.
+
+Thought people ought to know.
+Hamish Downer
+
+From shadowfirebird at gmail.com  Thu Dec  2 05:06:16 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 2 Dec 2010 10:06:16 +0000
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+Message-ID: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+
+Anyone got any ideas how I get out of this?
+
+>>>>
+$ sup
+Error: the index is locked by another process! User '' on
+host '' is running  with pid .
+The process was alive as of at least 4216 minutes ago.
+Should I ask that process to kill itself (y/n)? n
+Sorry, couldn't unlock the index.
+$
+$ sup
+Error: the index is locked by another process! User '' on
+host '' is running  with pid .
+The process was alive as of at least 4216 minutes ago.
+Should I ask that process to kill itself (y/n)? y
+Ok, trying to kill process...
+Terminated
+$
+$ sup
+Error: the index is locked by another process! User '' on
+host '' is running  with pid .
+The process was alive as of at least 4217 minutes ago.
+Should I ask that process to kill itself (y/n)?
+<<<<
+
+-- 
+What a tangled web we weave / Go 'round with circumstance / Someone show me
+how to tell / The dancer from the dance...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101202/adf9a586/attachment.html>
+
+From michael+sup at stapelberg.de  Thu Dec  2 05:53:35 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 02 Dec 2010 11:53:35 +0100
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+Message-ID: <1291287153-sup-8966@midna.zekjur.net>
+
+Hi Shadowfirebird,
+
+Excerpts from Shadowfirebird's message of 2010-12-02 11:06:16 +0100:
+> Anyone got any ideas how I get out of this?
+Do an 'strace -fF -s2048 -o /tmp/sup.log sup' and check the resulting
+/tmp/sup.log for errors (searching from the very bottom), like -EPERM or
+something. If that doesn?t help, bzip2 that file, upload it somewhere, and send
+us/me a link to it.
+
+Best regards,
+Michael
+
+From shadowfirebird at gmail.com  Thu Dec  2 07:36:21 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 2 Dec 2010 12:36:21 +0000
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <1291287153-sup-8966@midna.zekjur.net>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+	<1291287153-sup-8966@midna.zekjur.net>
+Message-ID: <AANLkTinRRBOHh=zp3DQXSWvXBnYeABJ6zO1My+SNBfCj@mail.gmail.com>
+
+Well, I'm not seeing any errors.  But the log file does explain what is
+going on, I think.   Sup says the other process that it is trying to kill
+.... is itself; the process that is doing the killing.
+
+I can still try and upload the log file if anyone is interested; not sure
+where right now.  Would a public folder on Dropbox be okay?
+
+Relevant last few lines pasted below.   Note, three from the bottom,
+"kill(18723, SIGTERM)".   18723 is the *current* process number, so if I'm
+reading this right, it's self-destructing.
+
+>>>>
+write(2, "Error: the index is locked by another process! User '' on\nhost ''
+is running  with pid .\nThe process was alive as of at least 4365 minutes
+ago.\n\n"..., 145) = 145
+write(2, "Should I ask that process to kill itself (y/n)? "..., 48) = 48
+fstat(0, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 1), ...}) = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+0x7f7d384bc000
+read(0, "y\n"..., 1024)                 = 2
+write(2, "Ok, trying to kill process..."..., 29) = 29
+write(2, "\n"..., 1)                    = 1
+rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+kill(0, SIGTERM)                        = 0
+--- SIGTERM (Terminated) @ 0 (0) ---
+rt_sigreturn(0xf)                       = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+rt_sigaction(SIGINT, {SIG_DFL}, {0x7f7d380483e0, [INT],
+SA_RESTORER|SA_RESTART, 0x7f7d37391040}, 8) = 0
+rt_sigaction(SIGTERM, {SIG_DFL}, {0x7f7d380483e0, [], SA_RESTORER,
+0x7f7d37da0080}, 8) = 0
+kill(18723, SIGTERM)                    = 0
+--- SIGTERM (Terminated) @ 0 (0) ---
++++ killed by SIGTERM +++
+<<<<
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101202/dd4c68e4/attachment-0001.html>
+
+From paul.a.grove at gmail.com  Thu Dec  2 07:56:28 2010
+From: paul.a.grove at gmail.com (Paul Grove)
+Date: Thu, 02 Dec 2010 12:56:28 +0000
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <AANLkTinRRBOHh=zp3DQXSWvXBnYeABJ6zO1My+SNBfCj@mail.gmail.com>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+	<1291287153-sup-8966@midna.zekjur.net>
+	<AANLkTinRRBOHh=zp3DQXSWvXBnYeABJ6zO1My+SNBfCj@mail.gmail.com>
+Message-ID: <1291294378-sup-282@localhost>
+
+I had this problem myself, exactly as described by Shadowfirebird.
+
+I cant 100% recall the steps it took to resolve it, but I know I had to
+delete the ~/.sup/lock file, and then I manually killed all instances of
+sup just to be sure.  Maybe I did something else as well - maybe I didn't,
+It was only a few weeks ago but I got such a bad memory.
+
+Hope this helps,
+
+Paul Grove
+
+Excerpts from Shadowfirebird's message of Thu Dec 02 12:36:21 +0000 2010:
+> Well, I'm not seeing any errors.  But the log file does explain what is
+> going on, I think.   Sup says the other process that it is trying to kill
+> .... is itself; the process that is doing the killing.
+> 
+> I can still try and upload the log file if anyone is interested; not sure
+> where right now.  Would a public folder on Dropbox be okay?
+> 
+> Relevant last few lines pasted below.   Note, three from the bottom,
+> "kill(18723, SIGTERM)".   18723 is the *current* process number, so if I'm
+> reading this right, it's self-destructing.
+> 
+> >>>>
+> write(2, "Error: the index is locked by another process! User '' on\nhost ''
+> is running  with pid .\nThe process was alive as of at least 4365 minutes
+> ago.\n\n"..., 145) = 145
+> write(2, "Should I ask that process to kill itself (y/n)? "..., 48) = 48
+> fstat(0, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 1), ...}) = 0
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =
+> 0x7f7d384bc000
+> read(0, "y\n"..., 1024)                 = 2
+> write(2, "Ok, trying to kill process..."..., 29) = 29
+> write(2, "\n"..., 1)                    = 1
+> rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> kill(0, SIGTERM)                        = 0
+> --- SIGTERM (Terminated) @ 0 (0) ---
+> rt_sigreturn(0xf)                       = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+> rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> rt_sigprocmask(SIG_BLOCK, NULL, [], 8)  = 0
+> rt_sigaction(SIGINT, {SIG_DFL}, {0x7f7d380483e0, [INT],
+> SA_RESTORER|SA_RESTART, 0x7f7d37391040}, 8) = 0
+> rt_sigaction(SIGTERM, {SIG_DFL}, {0x7f7d380483e0, [], SA_RESTORER,
+> 0x7f7d37da0080}, 8) = 0
+> kill(18723, SIGTERM)                    = 0
+> --- SIGTERM (Terminated) @ 0 (0) ---
+> +++ killed by SIGTERM +++
+> <<<<
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101202/d4d7e3d9/attachment.bin>
+
+From michael+sup at stapelberg.de  Thu Dec  2 08:00:01 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 02 Dec 2010 14:00:01 +0100
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <AANLkTinRRBOHh=zp3DQXSWvXBnYeABJ6zO1My+SNBfCj@mail.gmail.com>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+	<1291287153-sup-8966@midna.zekjur.net>
+	<AANLkTinRRBOHh=zp3DQXSWvXBnYeABJ6zO1My+SNBfCj@mail.gmail.com>
+Message-ID: <1291294755-sup-8801@midna.zekjur.net>
+
+Hi Shadowfirebird,
+
+Excerpts from Shadowfirebird's message of 2010-12-02 13:36:21 +0100:
+> Relevant last few lines pasted below.   Note, three from the bottom,
+> "kill(18723, SIGTERM)".   18723 is the *current* process number, so if I'm
+> reading this right, it's self-destructing.
+Heh, right. Passing 0 as pid to kill() is not such a good idea.
+
+In your case, I would suggest deleting the lock files manually (use ls -la
+.sup/xapian to find them)
+
+Best regards,
+Michael
+
+From rhomunuq+ml_sup at gmail.com  Thu Dec  2 07:54:11 2010
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Thu, 02 Dec 2010 12:54:11 +0000
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+Message-ID: <1291294338-sup-7754@leda>
+
+> Anyone got any ideas how I get out of this?
+> 
+> >>>>
+> $ sup
+> Error: the index is locked by another process! User '' on
+> host '' is running  with pid .
+> The process was alive as of at least 4216 minutes ago.
+> Should I ask that process to kill itself (y/n)? n
+> Sorry, couldn't unlock the index.
+
+Something similar happened to me once. I just did "rm ~/.sup/lock", then
+started sup as normal. Does that work for you?
+
+From shadowfirebird at gmail.com  Thu Dec  2 08:07:44 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 2 Dec 2010 13:07:44 +0000
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <1291294338-sup-7754@leda>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+	<1291294338-sup-7754@leda>
+Message-ID: <AANLkTimai1E437LCNrE=5fqQfwu+fS8hsEMCwxnC1zGV@mail.gmail.com>
+
+Yes!! Thank you!
+
+On Thu, Dec 2, 2010 at 12:54 PM, Iain
+<rhomunuq+ml_sup at gmail.com<rhomunuq%2Bml_sup at gmail.com>
+> wrote:
+
+> > Anyone got any ideas how I get out of this?
+> >
+> > >>>>
+> > $ sup
+> > Error: the index is locked by another process! User '' on
+> > host '' is running  with pid .
+> > The process was alive as of at least 4216 minutes ago.
+> > Should I ask that process to kill itself (y/n)? n
+> > Sorry, couldn't unlock the index.
+>
+> Something similar happened to me once. I just did "rm ~/.sup/lock", then
+> started sup as normal. Does that work for you?
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+What a tangled web we weave / Go 'round with circumstance / Someone show me
+how to tell / The dancer from the dance...
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101202/c71a2568/attachment.html>
+
+From david at rysdam.org  Thu Dec  2 08:13:35 2010
+From: david at rysdam.org (David Rysdam)
+Date: Thu, 02 Dec 2010 08:13:35 -0500
+Subject: [sup-talk] Can't start Sup, allegedly because of a locked index.
+In-Reply-To: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+References: <AANLkTi=0mcFSCJyJJSqvRuZw60GA9A0aX3MmVRp8hEsP@mail.gmail.com>
+Message-ID: <1291295519-sup-2688@hero>
+
+An agent or agents purporting to be Shadowfirebird said:
+> Anyone got any ideas how I get out of this?
+> 
+> >>>>
+> $ sup
+> Error: the index is locked by another process! User '' on
+> host '' is running  with pid .
+> The process was alive as of at least 4216 minutes ago.
+> Should I ask that process to kill itself (y/n)? n
+> Sorry, couldn't unlock the index.
+
+I don't have this exact problem, but I have had problems where sup has
+claimed to be unable to kill another instance because of a lock
+problem.  I get a different message, but I'm running an old version.
+
+I find that sometimes Xapian has left a lockfile.  If I delete
+.sup/xapian/flintlock then I can start sup just fine.
+
+From sup at maseinet.de  Thu Dec  2 19:41:22 2010
+From: sup at maseinet.de (Marc Seibert)
+Date: Fri, 03 Dec 2010 01:41:22 +0100
+Subject: [sup-talk] run sup (or sup-sync) as daemon Hello everybody,
+Message-ID: <1291336288-sup-8394@maseinet.de>
+
+I am very new in using sup - and I am glad to find this nice tool for my console :-)
+So I wonder if its a good idea to remove my procmail rules and manage the whole thing in ruby over sup.
+There is no daemon mode built in - if I got it right - so I want to write a cron job to sup-sync every ten minutes.
+For this I have to write a script, that checks if there is a sup lock or not.
+I just want too know, if there is a better solution.
+
+Regards
+Marc
+
+From tero at tilus.net  Fri Dec  3 00:52:24 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 03 Dec 2010 07:52:24 +0200
+Subject: [sup-talk] run sup (or sup-sync) as daemon Hello everybody,
+In-Reply-To: <1291336288-sup-8394@maseinet.de>
+References: <1291336288-sup-8394@maseinet.de>
+Message-ID: <1291354461-sup-2909@tilus.net>
+
+Marc Seibert, 2010-12-03 02:41:
+> So I wonder if its a good idea to remove my procmail rules and
+> manage the whole thing in ruby over sup.
+
+I did exactly that.  Hooks (especially before-add-message) are your
+best friends.
+
+> There is no daemon mode built in - if I got it right - so I want to
+> write a cron job to sup-sync every ten minutes.
+
+Why would you want to do that?  When sup is running, it polls
+periodically for new mail.  When its not, why would you care?
+
+You can think of sup-sync as parameterized way of doing what sup
+itself does when it polls for new mail (only from sources that are
+marked "usua", i.e. they are expected to receive new mail) and does
+indexing.  Sup-sync comes handy when you start with sup and want to
+index all the sources or want to restore a dump.  Other than that, sup
+maintains index by itself by polling on start and periodically after
+that.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From marka at pobox.com  Fri Dec  3 08:33:12 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 03 Dec 2010 08:33:12 -0500
+Subject: [sup-talk] run sup (or sup-sync) as daemon Hello everybody,
+In-Reply-To: <1291336288-sup-8394@maseinet.de>
+References: <1291336288-sup-8394@maseinet.de>
+Message-ID: <1291382774-sup-9612@bloovis.org>
+
+Excerpts from Marc Seibert's message of Thu Dec 02 19:41:22 -0500 2010:
+> I am very new in using sup - and I am glad to find this nice tool for my console :-)
+> So I wonder if its a good idea to remove my procmail rules and manage the whole thing in ruby over sup.
+
+You can keep using procmail; I had been using that long before I
+started using sup, along with fetchmail. My filters would put messages
+in various directories based on From lines and so forth, and I just
+made each of those directories a separate source in sup.  Now I'm
+using maildrop instead of procmail but the overall idea is the same.
+
+I also used to have fechmail running as a daemon, but at one point
+over a year ago, while debugging some maildir problems in sup, I
+switched to having sup initiate the polling by writing a before-poll
+hook that invoked fetchmail.  That has been working well.
+
+From sup at maseinet.de  Fri Dec  3 09:16:16 2010
+From: sup at maseinet.de (Marc Seibert)
+Date: Fri, 03 Dec 2010 15:16:16 +0100
+Subject: [sup-talk] run sup (or sup-sync) as daemon Hello everybody,
+In-Reply-To: <1291382774-sup-9612@bloovis.org>
+References: <1291336288-sup-8394@maseinet.de> <1291382774-sup-9612@bloovis.org>
+Message-ID: <1291385110-sup-7331@maseinet.de>
+
+Excerpts from Mark Alexander's message of Fr Dez 03 14:33:12 +0100 2010:
+> Excerpts from Marc Seibert's message of Thu Dec 02 19:41:22 -0500 2010:
+> > I am very new in using sup - and I am glad to find this nice tool for my console :-)
+> > So I wonder if its a good idea to remove my procmail rules and manage the whole thing in ruby over sup.
+> 
+> You can keep using procmail; I had been using that long before I
+> started using sup, along with fetchmail. My filters would put messages
+> in various directories based on From lines and so forth, and I just
+> made each of those directories a separate source in sup.  Now I'm
+> using maildrop instead of procmail but the overall idea is the same.
+> 
+> I also used to have fechmail running as a daemon, but at one point
+> over a year ago, while debugging some maildir problems in sup, I
+> switched to having sup initiate the polling by writing a before-poll
+> hook that invoked fetchmail.  That has been working well.
+
+Yes, thanks alot.
+I think I wil keep using procmail for the base filtering.
+Ruby Filters would be fine, but procmail still works :-)
+
+From cam+sup at cammunism.org  Sat Dec  4 02:16:22 2010
+From: cam+sup at cammunism.org (Cameron Matheson)
+Date: Sat, 04 Dec 2010 00:16:22 -0700
+Subject: [sup-talk] sup leaves unencrypted emails in /tmp
+In-Reply-To: <AANLkTikzfKZ9573c+NOiYA3UWjFhWpohhcGroS0Zz19F@mail.gmail.com>
+References: <AANLkTikzfKZ9573c+NOiYA3UWjFhWpohhcGroS0Zz19F@mail.gmail.com>
+Message-ID: <1291445874-sup-7444@cammunism.org>
+
+Excerpts from Hamish D's message of Wed Dec 01 17:18:08 -0700 2010:
+> I noticed that sup appears to leave the unencrypted contents of emails
+> in /tmp - at least it did on my system. This is a pretty serious issue
+> on shared computers. I'm not sure why - my attempts at a quick fix
+> failed. The files are created using Tempfile.new and close is called,
+> but after that the files are written to by gpg. I'm not sure if this
+> means that the tempfile system then doesn't delete them later for some
+> reason.
+
+Tempfile is interesting because the file is not deleted until the object
+is garbage-collected.  From the Tempfile.close rdoc:
+
+     If you don't explicitly unlink the temporary file, the removal will
+     be delayed until the object is finalized.
+
+So if I'm understanding this correctly, the tempfiles may or may not be
+cleaned up, depending on when the garbage collector runs (e.g., if the
+GC runs before gpg is run, the original tempfile will have already been
+deleted, and the new file created by gpg will live on indefinitely).
+
+I was going to write a patch, but I don't do anything use gpg often so
+it wasn't convenient to test.  I think an easy solution would just be to
+add a 'File.unlink whatever.path' call after each call to gpg (this
+would need to be done in encrypt/decrypt/sign/etc.).
+
+Cam
+
+From shadowfirebird at gmail.com  Thu Dec  9 07:34:34 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 09 Dec 2010 12:34:34 +0000
+Subject: [sup-talk] search '-label:' fails
+Message-ID: <1291897830-sup-3354@blake>
+
+
+I want to search for all non-list mail.  It so happens that I have a label "list", so in theory I should just be able to type '\-label:list'.  
+
+But in fact this produces exactly the same result as '\label:list'.  Presumably this is a known bug (on 0.11)?  Or am I doing something stupid?
+
+Does anyone have a workaround? Ideally I want to see just those mails that Sup tags with a '>', but any suggestions would be an improvement.
+
+-- 
+How come wrong numbers are never busy?
+
+From wael.nasreddine at gmail.com  Fri Dec 10 13:10:44 2010
+From: wael.nasreddine at gmail.com (Wael M. Nasreddine)
+Date: Fri, 10 Dec 2010 19:10:44 +0100
+Subject: [sup-talk] before-add-message.rb <-> Gmail Filters
+Message-ID: <AANLkTimbEFpL35xdiwc6BVF921+H1Hgu_JRqNJN0O9hN@mail.gmail.com>
+
+Hello,
+
+First I would like to thank all and everyone who has contributed to
+the PERFECT email client, the client I was looking for, for a very
+long time... I love it...
+
+My gmail account is, at the same time, my primary email address and
+the storage for all my emails, all email aliases, work-related or not,
+ends up one way or another in my gmail, even the sent mail, and to
+keep track of everything, I use gmail filters to, well, hide, label,
+mark as read, mark as Crap :)
+
+So I have more than 100 filters already setup, fortunately gmail let's
+you export those filters as an XML (c.f below for an example) through
+one of the labs extensions, however I couldn't find any information on
+before-add-message.rb hook using mailFilters.xml..
+
+So my question is, did anyone write a hook to reads that XML file and
+work on the message object ? Otherwise, did anyone make a dynamic
+before-add-message.rb I could follow? I know ruby, but not that much
+so I would appreciate an example to follow..
+
+Thank you all,,
+
+Regards,
+Wael Nasreddine
+
+
+
+
+-------------------------------------- mailFilters.xml
+<?xml version='1.0' encoding='UTF-8'?><feed
+xmlns='http://www.w3.org/2005/Atom'
+xmlns:apps='http://schemas.google.com/apps/2006'>
+	<title>Mail Filters</title>
+	<id>tag:mail.google.com,2008:filters:1226589431861,1237145025938,1244162662829,1244162696287</id>
+	<updated>2010-12-10T15:01:45Z</updated>
+	<author>
+		<name>Wael Nasreddine</name>
+		<email>my.email at gmail.com</email>
+	</author>
+        <entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<id>tag:mail.google.com,2008:filter:1226589431861</id>
+		<updated>2010-12-10T15:01:45Z</updated>
+		<content></content>
+		<apps:property name='from' value='customersupport at somecompany.com OR
+support at somecompany.com OR supporttestv3 at somecompany.com'/>
+		<apps:property name='label' value='SomeCompany'/>
+		<apps:property name='shouldNeverSpam' value='true'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<id>tag:mail.google.com,2008:filter:1237145025938</id>
+		<updated>2010-12-10T15:01:45Z</updated>
+		<content></content>
+		<apps:property name='to' value='zsh-workers at sunsite.dk'/>
+		<apps:property name='label' value='ML/Zsh-Workers'/>
+		<apps:property name='shouldArchive' value='true'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<id>tag:mail.google.com,2008:filter:1244162662829</id>
+		<updated>2010-12-10T15:01:45Z</updated>
+		<content></content>
+		<apps:property name='subject' value='[Something Test][PASS]'/>
+		<apps:property name='label' value='Something Test'/>
+		<apps:property name='shouldMarkAsRead' value='true'/>
+		<apps:property name='shouldArchive' value='true'/>
+		<apps:property name='shouldNeverSpam' value='true'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<id>tag:mail.google.com,2008:filter:1244162696287</id>
+		<updated>2010-12-10T15:01:45Z</updated>
+		<content></content>
+		<apps:property name='subject' value='[Something Test][FAIL]'/>
+		<apps:property name='label' value='Something Test'/>
+		<apps:property name='shouldNeverSpam' value='true'/>
+		<apps:property name='shouldAlwaysMarkAsImportant' value='true'/>
+	</entry>
+</feed>
+-------------------------------------- mailFilters.xml
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :? 06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From wael.nasreddine at gmail.com  Fri Dec 10 13:17:41 2010
+From: wael.nasreddine at gmail.com (Wael M. Nasreddine)
+Date: Fri, 10 Dec 2010 19:17:41 +0100
+Subject: [sup-talk] Gmail Contacts
+Message-ID: <AANLkTi=1VO0FgOTnJ34E3wLm87szJwZZvt3GmoXEV-P=@mail.gmail.com>
+
+Hello again,
+
+I was just wondering, were anyone able to get contacts from gmail
+directly? I used to export gmail contact through a command to a plain
+text file to use with mutt, but I can't recall which command it was.
+
+Regards,
+Wael Nasreddine
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :? 06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From vallentin at icsi.berkeley.edu  Wed Dec 15 02:57:14 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Tue, 14 Dec 2010 23:57:14 -0800
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287950838-sup-5470@mailer>
+References: <1287452900-sup-9784@maullin> <1287916961-sup-4654@difference.lan>
+	<1287950838-sup-5470@mailer>
+Message-ID: <20101215075714.GE568@icsi.berkeley.edu>
+
+On Sun, Oct 24, 2010 at 10:11:49PM +0200, Damien Leone wrote:
+> However this thread reminds me to add an option to whether delete
+> emails from Maildirs or just mark them as deleted (the T flag) and let
+> another software (such as offlineimap) handle them.
+
+Adding the T flag appears to be the current behavior. Having an option
+in sup to delete the actual file would be great. How do you delete a
+mail marked as deleted with offlineimap by the way?
+
+I am looking forward to seeing this functionality in master!
+
+   Matthias
+
+From vallentin at icsi.berkeley.edu  Wed Dec 15 03:19:55 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Wed, 15 Dec 2010 00:19:55 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+Message-ID: <20101215081955.GF568@icsi.berkeley.edu>
+
+On Wed, Apr 14, 2010 at 12:08:14PM -0400, Ben Walton wrote:
+> Big (notice the size of the new/ directory), but not huge.  Poll times
+> increase linearly though, which one drawback to the current approach
+> of not moving mail into cur/ when it's detected.
+
+Does the current version of sup still keep mail in new? As a fairly new
+sup user, I am trying to understand the limitations of maildir support
+and this one seems to be one.
+
+My traditional mindest is still similar to logrotate, i.e., regularly
+copying maildirs into an archive. If this is still an issue, what about
+an where mail directories with more than X messages are being
+automatically copied to an archive? This would bound the linear poll
+times at a configurable threshold. I don't know how this would look like
+(adding a new source per rotated maildir does not seem a nice solution)
+and how it would interplay with Xapian. For example, I worry that
+maildir rotation could involve major index rebuilding.
+
+   Matthias
+
+From damien.leone at fensalir.fr  Wed Dec 15 06:53:32 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 15 Dec 2010 12:53:32 +0100
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <20101215075714.GE568@icsi.berkeley.edu>
+References: <1287452900-sup-9784@maullin> <1287916961-sup-4654@difference.lan>
+	<1287950838-sup-5470@mailer>
+	<20101215075714.GE568@icsi.berkeley.edu>
+Message-ID: <1292413755-sup-2166@mailer>
+
+Hello,
+
+Excerpts from Matthias Vallentin's message of mer. d?c. 15 08:57:14 +0100 2010:
+> Adding the T flag appears to be the current behavior. Having an option
+> in sup to delete the actual file would be great. How do you delete a
+> mail marked as deleted with offlineimap by the way?
+
+It depends on the configuration, AFAIK by default there is "realdelete
+= no", see offlineimap documentation for more information. [0]
+
+> I am looking forward to seeing this functionality in master!
+
+I will try to work on it as soon as my exams are finished (late
+January).
+
+Cheers,
+
+[0] : http://www.docunext.com/wiki/Example_OfflineIMAP_configuration_file
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From piotr.kempa at sigarden.com  Wed Dec 15 10:59:06 2010
+From: piotr.kempa at sigarden.com (Piotr Kempa)
+Date: Wed, 15 Dec 2010 16:59:06 +0100
+Subject: [sup-talk] search by message size (incl. attachments)
+Message-ID: <1292428060-sup-9071@pk-desktop>
+
+'sup dear users of sup
+(see the little joke I made there?)
+
+So anyway, my question is this: is there any way to search (or sort) by
+message size? E.g. find all emails bigger than 20MB.
+
+Background: I've been using sup for a little over a year now and already
+my work maildir is close to 2GB, and while sup works blazingly fast (I
+love it for that) and I have plenty of space on my HDD, I need to backup
+my maildir regularly, have it zipped, encrypted and sent away, and it's
+taking more and more time. And backup space on our company central
+server, per user, is not as large as on my own HDD. So I'm gonna have to
+face the problem sooner or later. 
+
+So I was thinking that some time in the future I'll have to find all
+those huge (20meg+) emails and possibly delete some of them. I know
+there's no sync-back to maildir in the main trunk now, but maybe there
+will be before I get to 5 gig maildir. AFAIK there's something working
+quite alright in the branches for some time now, so I guess it's gonna
+make it to main sooner or later. 
+
+And if all else fails I can always kick up the ruby interpreter, import
+the index and generate a list of files with the 'Deleted' tag and just
+'rm' that (it doesn't sound very safe maybe but I have backup:) 
+But still I first need to find those large messages, right? 
+
+tl;dr: can you search by message size? or sort by that? 
+
+Thanks!
+
+From james at jamestaylor.org  Wed Dec 15 12:06:54 2010
+From: james at jamestaylor.org (James Taylor)
+Date: Wed, 15 Dec 2010 17:06:54 +0000
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101215081955.GF568@icsi.berkeley.edu>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+Message-ID: <1292432651-sup-6834@jamestaylor.org>
+
+Excerpts from Matthias Vallentin's message of Wed Dec 15 08:19:55 +0000 2010:
+
+> Does the current version of sup still keep mail in new? As a fairly new
+> sup user, I am trying to understand the limitations of maildir support
+> and this one seems to be one.
+
+For what it is worth, I've been using maildir-sync for almost six months
+every day, no problems. I exercise it pretty hard since I usually have
+at least four imap clients (mobile devices and such) accessing the
+maildir simultaneously via dovecot imap. Everything works fine. 
+
+Currently using Damien's latest sync up with the mainline from here:
+
+  http://git.fensalir.fr/?p=dleone/sup.git;a=shortlog;h=refs/heads/maildir-sync-master
+
+Anybody else using this? It seems ready to integrate.
+
+-- jt
+
+From marc.hartstein at alum.vassar.edu  Wed Dec 15 16:15:14 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Wed, 15 Dec 2010 16:15:14 -0500
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292428060-sup-9071@pk-desktop>
+References: <1292428060-sup-9071@pk-desktop>
+Message-ID: <1292447511-sup-8924@cabinet>
+
+Excerpts from Piotr Kempa's message of Wed Dec 15 10:59:06 -0500 2010:
+> tl;dr: can you search by message size? or sort by that? 
+
+Not sure, but maildir is one-file-per-message, so you could go ahead and
+use your favorite tool which lets you inspect the filesystem and
+identify large files.
+
+You'd still have to work around sup potentially getting cranky that you
+removed a file it was expecting to still be there. I forget how that all
+works out.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101215/f1c5ef57/attachment-0001.bin>
+
+From tero at tilus.net  Wed Dec 15 17:03:11 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 16 Dec 2010 00:03:11 +0200
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292428060-sup-9071@pk-desktop>
+References: <1292428060-sup-9071@pk-desktop>
+Message-ID: <1292450230-sup-1708@tilus.net>
+
+Piotr Kempa, 2010-12-15 17:59:
+> I need to backup my maildir regularly, have it zipped, encrypted and
+> sent away, and it's taking more and more time.
+
+I'd go with incremental backups in that scenario.  Daily backup size
+is gonna be a tiny fraction of the whole mail archive.
+
+Repeatedly sending stuff that has not changed (as most of your mail in
+current backup were in the previous too) is plain waste of resources.
+No matter if the zip is a gig or five.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From piotr.kempa at sigarden.com  Thu Dec 16 04:22:03 2010
+From: piotr.kempa at sigarden.com (Piotr Kempa)
+Date: Thu, 16 Dec 2010 10:22:03 +0100
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292447511-sup-8924@cabinet>
+References: <1292428060-sup-9071@pk-desktop> <1292447511-sup-8924@cabinet>
+Message-ID: <1292491046-sup-2372@pk-desktop>
+
+Excerpts from Marc Hartstein's message of 2010-12-15 22:15:14 +0100:
+> Excerpts from Piotr Kempa's message of Wed Dec 15 10:59:06 -0500 2010:
+> > tl;dr: can you search by message size? or sort by that? 
+> 
+> Not sure, but maildir is one-file-per-message, so you could go ahead and
+> use your favorite tool which lets you inspect the filesystem and
+> identify large files.
+> 
+> You'd still have to work around sup potentially getting cranky that you
+> removed a file it was expecting to still be there. I forget how that all
+> works out.
+
+Thanks for the suggestions, I thought about just finding the large
+files, inspecting and removing but I'm afraid sup's will panic. But I
+think I saw some way to sync it again to a changed source, so maybe
+there's that. 
+
+Re incremental backup - that's something I'll have to do, true, but
+since I want it to be encrypted on the backup server (with no other
+users or root getting a peek:) I settled on just bzipping, encrypting
+and uploading one huge file. Even when there are small changes, when
+it's one file and it's encrypted, it changes the whole file. 
+
+I could think about getting some loopfile and cryptsetup a LUKS on it on
+the server, or maybe encfs (I'm not sure they have encfs the server
+though...).
+
+Thanks again!
+
+From moritz+sup at wzff.de  Thu Dec 16 07:49:31 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Thu, 16 Dec 2010 13:49:31 +0100
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292491046-sup-2372@pk-desktop>
+References: <1292428060-sup-9071@pk-desktop> <1292447511-sup-8924@cabinet>
+	<1292491046-sup-2372@pk-desktop>
+Message-ID: <1292503648-sup-6880@niflheimr>
+
+Excerpts from Piotr Kempa's message of Thu Dec 16 10:22:03 +0100 2010:
+> Re incremental backup - that's something I'll have to do, true, but
+> since I want it to be encrypted on the backup server (with no other
+> users or root getting a peek:) I settled on just bzipping, encrypting
+> and uploading one huge file. Even when there are small changes, when
+> it's one file and it's encrypted, it changes the whole file. 
+> 
+> I could think about getting some loopfile and cryptsetup a LUKS on it on
+> the server, or maybe encfs (I'm not sure they have encfs the server
+> though...).
+
+You could use encfs locally and just rsync the encrypted encfs on the server?
+Also, see rsnapshot for incrememtal backups.
+
+Cheers,
+
+Moritz
+
+From piotr.kempa at sigarden.com  Thu Dec 16 08:19:30 2010
+From: piotr.kempa at sigarden.com (Piotr Kempa)
+Date: Thu, 16 Dec 2010 14:19:30 +0100
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292503648-sup-6880@niflheimr>
+References: <1292428060-sup-9071@pk-desktop> <1292447511-sup-8924@cabinet>
+	<1292491046-sup-2372@pk-desktop> <1292503648-sup-6880@niflheimr>
+Message-ID: <1292505513-sup-3596@pk-desktop>
+
+Excerpts from Moritz Wilhelmy's message of 2010-12-16 13:49:31 +0100:
+> Excerpts from Piotr Kempa's message of Thu Dec 16 10:22:03 +0100 2010:
+> > Re incremental backup - that's something I'll have to do, true, but
+> > since I want it to be encrypted on the backup server (with no other
+> > users or root getting a peek:) I settled on just bzipping, encrypting
+> > and uploading one huge file. Even when there are small changes, when
+> > it's one file and it's encrypted, it changes the whole file. 
+> > 
+> > I could think about getting some loopfile and cryptsetup a LUKS on it on
+> > the server, or maybe encfs (I'm not sure they have encfs the server
+> > though...).
+> 
+> You could use encfs locally and just rsync the encrypted encfs on the server?
+> Also, see rsnapshot for incrememtal backups.
+> 
+Thanks, all great suggestions (especially rsyncing the encrypted encfs,
+why didn't I think of that!). 
+
+But from all the answers I gather there's no way to search or sort by
+mail size in sup, correct? 
+
+Piotr
+
+From rhomunuq+ml_sup at gmail.com  Thu Dec 16 08:21:10 2010
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Thu, 16 Dec 2010 13:21:10 +0000
+Subject: [sup-talk] search by message size (incl. attachments)
+In-Reply-To: <1292503648-sup-6880@niflheimr>
+References: <1292428060-sup-9071@pk-desktop> <1292447511-sup-8924@cabinet>
+	<1292491046-sup-2372@pk-desktop> <1292503648-sup-6880@niflheimr>
+Message-ID: <1292505575-sup-8039@leda>
+
+Excerpts from Moritz Wilhelmy's message of Thu Dec 16 12:49:31 +0000 2010:
+> You could use encfs locally and just rsync the encrypted encfs on the server?
+> Also, see rsnapshot for incrememtal backups.
+
+Another approach is duplicity, "Encrypted bandwidth-efficient backup
+using the rsync algorithm": <http://duplicity.nongnu.org/>.
+
+~Iain
+
+From rthrd at web.de  Fri Dec 17 08:36:52 2010
+From: rthrd at web.de (Ruthard Baudach)
+Date: Fri, 17 Dec 2010 14:36:52 +0100
+Subject: [sup-talk] change automagicaly inserted line in reply messages
+Message-ID: <1292592960-sup-9518@ruthard-mini>
+
+
+If I reply to a message sup automagicaly inserts the original message
+and a headline "excerpts from..."
+
+Is it possible to costumize this headline?
+
+Ruthard Baudach
+
+From tero at tilus.net  Fri Dec 17 08:54:05 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 17 Dec 2010 15:54:05 +0200
+Subject: [sup-talk] change automagicaly inserted line in reply messages
+In-Reply-To: <1292592960-sup-9518@ruthard-mini>
+References: <1292592960-sup-9518@ruthard-mini>
+Message-ID: <1292593794-sup-5905@tilus.net>
+
+Ruthard Baudach, 2010-12-17 15:36:
+> Is it possible to costumize this headline?
+
+Customize?  Yes.  Write ~/.sup/hooks/attribution.rb to build
+attribution line to your taste.  Mine looks like
+
+== ~/.sup/hooks/attribution.rb ==
+message.from.name + ', ' + message.date.strftime('%Y-%m-%d %H:%M') + ':'
+==
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Fri Dec 17 08:54:50 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 17 Dec 2010 08:54:50 -0500
+Subject: [sup-talk] change automagicaly inserted line in reply messages
+In-Reply-To: <1292592960-sup-9518@ruthard-mini>
+References: <1292592960-sup-9518@ruthard-mini>
+Message-ID: <1292594064-sup-1011@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Ruthard Baudach's message of Fri Dec 17 08:36:52 -0500 2010:
+
+Hi Ruthard,
+
+> Is it possible to costumize this headline?
+
+You're looking for the attribution hook.
+
+http://sup.rubyforge.org/wiki/wiki.pl?Hooks
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From snaipperi at gmail.com  Fri Dec 17 09:03:38 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Fri, 17 Dec 2010 16:03:38 +0200
+Subject: [sup-talk] Hook for in-reply-to
+Message-ID: <AANLkTikBr_82a9=28kzmePD8jgMksGrCa6FfMyy2G-iP@mail.gmail.com>
+
+Hey folks,
+
+I gave up using sup a while ago (read half a year) when I began
+getting a lot of email from my university's Moodle. Moodle has/had a
+rather stupid bug (now fixed, but it's gonna take years to reach my
+university), which was that every email that wasn't based on a reply
+(For example a new forum thread notification at moodle), received a
+default In-Reply-To header of "moodlepost0 at moodle.tamk.fi".
+
+You can probably imagine what happens: Every email coming from moodle
+gets threaded under non-existing email "moodlepost0". In fact, they
+wont appear in my inbox at all.
+
+So I'd need a hook to kill this moodlepost0 from every email I
+receive. I found this on pastebin, which looks like sup stuff:
+
+http://pastebin.com/vzuXu9gr
+
+In what file should I use it in? And is there a way to make the whole
+index go through the hook, so I can recover all my old moodle emails
+and get them threaded properly too?
+
+
+Thanks,
+Matti Eiden
+
+From bwalton at artsci.utoronto.ca  Fri Dec 17 09:30:49 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 17 Dec 2010 09:30:49 -0500
+Subject: [sup-talk] Hook for in-reply-to
+In-Reply-To: <AANLkTikBr_82a9=28kzmePD8jgMksGrCa6FfMyy2G-iP@mail.gmail.com>
+References: <AANLkTikBr_82a9=28kzmePD8jgMksGrCa6FfMyy2G-iP@mail.gmail.com>
+Message-ID: <1292596203-sup-4988@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Matti Eiden's message of Fri Dec 17 09:03:38 -0500 2010:
+
+Hi Matti,
+
+> In what file should I use it in? And is there a way to make the
+> whole index go through the hook, so I can recover all my old moodle
+> emails and get them threaded properly too?
+
+I _think_ you'd want to apply that in the before-add-message hook
+(~/.sup/hooks/before-add-message.rb).  That type of things makes me
+want to cry...glad moodle fixed it though.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From snaipperi at gmail.com  Fri Dec 17 14:04:27 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Fri, 17 Dec 2010 21:04:27 +0200
+Subject: [sup-talk] Hook for in-reply-to
+In-Reply-To: <1292596203-sup-4988@pinkfloyd.chass.utoronto.ca>
+References: <AANLkTikBr_82a9=28kzmePD8jgMksGrCa6FfMyy2G-iP@mail.gmail.com>
+	<1292596203-sup-4988@pinkfloyd.chass.utoronto.ca>
+Message-ID: <AANLkTi=24+QodANv51K=BzXkJJNRihvvM1HQa_zwQpWd@mail.gmail.com>
+
+For anyone concerned, here's what worked for me. It was important to
+delete the reference too, which included the same thing, as I guess
+the threading function of sup automatically sets the reference to
+in-reply-to if it's missing.
+
+Here's also the original bug report at Moodle;
+http://tracker.moodle.org/browse/MDL-22551
+
+Thanks Ben for pointing me in the right direction.
+
+
+##hooks/before-add-message.rb
+
+fail_replyto = "moodlepost0 at moodle.tamk.fi"
+if message.replytos.include?(fail_replyto)
+  message.replytos.delete(fail_replyto)
+end
+
+if message.refs.include?(fail_replyto)
+  message.refs.delete(fail_replyto)
+end
+
+From vallentin at icsi.berkeley.edu  Fri Dec 17 23:09:41 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Fri, 17 Dec 2010 20:09:41 -0800
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1292413755-sup-2166@mailer>
+References: <1287452900-sup-9784@maullin> <1287916961-sup-4654@difference.lan>
+	<1287950838-sup-5470@mailer>
+	<20101215075714.GE568@icsi.berkeley.edu>
+	<1292413755-sup-2166@mailer>
+Message-ID: <20101218040941.GR60419@icsi.berkeley.edu>
+
+On Wed, Dec 15, 2010 at 12:53:32PM +0100, Damien Leone wrote:
+> It depends on the configuration, AFAIK by default there is "realdelete
+> = no", see offlineimap documentation for more information. [0]
+
+That does the trick, thanks.
+
+> I will try to work on it as soon as my exams are finished (late
+> January).
+
+Sounds great, good luck on your exams! (I just finished mine last week.)
+
+   Matthias
+
+From vallentin at ICSI.Berkeley.EDU  Sat Dec 18 00:12:16 2010
+From: vallentin at ICSI.Berkeley.EDU (Matthias Vallentin)
+Date: Fri, 17 Dec 2010 21:12:16 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292432651-sup-6834@jamestaylor.org>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+Message-ID: <20101218051216.GS60419@icsi.berkeley.edu>
+
+On Wed, Dec 15, 2010 at 05:06:54PM +0000, James Taylor wrote:
+> For what it is worth, I've been using maildir-sync for almost six months
+> every day, no problems. I exercise it pretty hard since I usually have
+> at least four imap clients (mobile devices and such) accessing the
+> maildir simultaneously via dovecot imap. 
+
+This looks like the scenario I envision. Two questions:
+
+    - Do you use the IMAP clients as read-only clients or do you invoke
+      sup-sync after the devices modify the maildir (or before polling
+      in sup)?
+
+    - Do you use sup-sync-back when changing message state via sup? From
+      what I understand, this would be desirable to copy messages from
+      new to cur in order to avoid a linear increase in poll times with
+      growing number of mails in new.
+
+   Matthias
+
+From james at jamestaylor.org  Sat Dec 18 00:25:05 2010
+From: james at jamestaylor.org (James Taylor)
+Date: Sat, 18 Dec 2010 05:25:05 +0000
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101218051216.GS60419@icsi.berkeley.edu>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+Message-ID: <1292649662-sup-8863@jamestaylor.org>
+
+Excerpts from Matthias Vallentin's message of Sat Dec 18 05:12:16 +0000 2010:
+
+> This looks like the scenario I envision. Two questions:
+> 
+>     - Do you use the IMAP clients as read-only clients or do you invoke
+>       sup-sync after the devices modify the maildir (or before polling
+>       in sup)?
+> 
+>     - Do you use sup-sync-back when changing message state via sup? From
+>       what I understand, this would be desirable to copy messages from
+>       new to cur in order to avoid a linear increase in poll times with
+>       growing number of mails in new.
+
+Neither. The imap clients are read write, the only time this becomes a
+problem is when the imap client moves a message from new to cur. Sup
+will not be able to find the message until the next time it polls (but
+this is mostly seamless, if I use the imap client I just poll and
+refresh in sup). This does imply that sup must be polling cur as well as
+new.
+
+Similarly, sup-sync-back is not needed because messages are synced back
+to the maildir immediately. 
+
+From kljohann at gmail.com  Sat Dec 18 09:39:59 2010
+From: kljohann at gmail.com (=?utf-8?q?Johann_Kl=C3=A4hn?=)
+Date: Sat, 18 Dec 2010 15:39:59 +0100
+Subject: [sup-talk] Hook for in-reply-to
+In-Reply-To: <AANLkTi=24+QodANv51K=BzXkJJNRihvvM1HQa_zwQpWd@mail.gmail.com>
+References: <AANLkTikBr_82a9=28kzmePD8jgMksGrCa6FfMyy2G-iP@mail.gmail.com>
+	<1292596203-sup-4988@pinkfloyd.chass.utoronto.ca>
+	<AANLkTi=24+QodANv51K=BzXkJJNRihvvM1HQa_zwQpWd@mail.gmail.com>
+Message-ID: <1292682785-sup-3227@ahoi>
+
+FYI you can create a small script to fix already indexed mails.
+Be sure to quit sup before you do this and change the moodlepost address.
+
+require 'sup'
+include Redwood
+start
+i = Index.init
+i.load
+
+moodle_junk = "moodlepost0 at whatever.org"
+
+i.each_message do |m|
+  if m.replytos.include?(moodle_junk)
+    m.replytos.delete(moodle_junk)
+    i.update_message_state m
+  end
+
+  if m.refs.include?(moodle_junk)
+    m.refs.delete(moodle_junk)
+    i.update_message_state m
+  end
+end
+
+i.save
+
+From vallentin at ICSI.Berkeley.EDU  Sat Dec 18 14:04:27 2010
+From: vallentin at ICSI.Berkeley.EDU (Matthias Vallentin)
+Date: Sat, 18 Dec 2010 11:04:27 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292649662-sup-8863@jamestaylor.org>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+Message-ID: <20101218190427.GU60419@icsi.berkeley.edu>
+
+On Sat, Dec 18, 2010 at 05:25:05AM +0000, James Taylor wrote:
+> Neither. The imap clients are read write, the only time this becomes a
+> problem is when the imap client moves a message from new to cur. 
+
+Is that the only operation the imap clients do? What happens if they
+delete messages (or moved them to another source) and sup has that
+message already in the index.
+
+> Sup will not be able to find the message until the next time it polls
+> (but this is mostly seamless, if I use the imap client I just poll and
+> refresh in sup). This does imply that sup must be polling cur as well
+> as new.
+
+If sup polls both cur and new then there is no more benefit in keeping
+new small to avoid long poll times for large maildirs. 
+
+This brings me to my main sup question. What is the best strategy to
+avoid overly large maildirs? Say I have around 10 maildirs, each of
+which represent a separate source. The classic scheme that comes to mind
+(and that I use with Mutt and Mairix) would be some horizontal
+partitioning scheme according to time, i.e., creating a new tree of
+maildirs at a certain time interval (e.g., quarterly could imply a
+naming scheme for the top-level directories like mail-2010-1 to
+mail-2010-4). Then, only the most recent partition needs to be polled.
+
+The downside appears to be that each rotation adds, in the above
+example, 10 new source entries to sources.yaml and requires switching
+of polling in the non-current sources.
+
+Does that sound tractable and aligned with sup's mail philosophy? 
+
+   Matthias
+
+From bwalton at artsci.utoronto.ca  Sat Dec 18 14:21:40 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 18 Dec 2010 14:21:40 -0500
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101218190427.GU60419@icsi.berkeley.edu>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+Message-ID: <1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Matthias Vallentin's message of Sat Dec 18 14:04:27 -0500 2010:
+
+> The downside appears to be that each rotation adds, in the above
+> example, 10 new source entries to sources.yaml and requires
+> switching of polling in the non-current sources.
+
+Here's my current approach that I've been happy with since I
+implemented it back in the summer:
+
+1. Procmail files all mail (regardless of originating source) into
+   Maildirs like .incoming.%Y.%m.  This gives me a new maildir each month
+   that holds all incoming mail for that month.  The basics of the
+   .procmailrc to do this are:
+
+--snip--
+
+MAILDIR=$HOME/Maildir/
+DATEDIR=`date +%Y.%m`
+
+:0
+$MAILDIR/.incoming.$DATEDIR/
+
+--snip--
+
+2. I have the following hook setup as after-poll:
+
+--snip--
+s = "maildir:/path/to/Maildir/.incoming.#{Date.today.strftime("%Y.%m")}"
+
+unless Redwood::SourceManager.source_for(s)
+  Redwood::Logger.force_message "Adding new source: #{s}"
+  Redwood::SourceManager.add_source Recoverable.new(Redwood::Maildir.new(s))
+end
+--snip--
+
+3. I have almost all of my labelling done via the before-add-message
+   hook.  This gets me the per-mailing-list tags that I would have
+   applied based on source originally.  I almost never apply tags
+   manually any more.
+
+The only downside to this is that my sources.yaml file needs manual
+twiddling at restart to add the sources that were added during
+runtime.  I've yet to be annoyed enough by this to figure out how to
+make these dynamic additions sticky across restarts.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From tero at tilus.net  Sat Dec 18 15:02:46 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 18 Dec 2010 22:02:46 +0200
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1292702329-sup-1169@tilus.net>
+
+Ben Walton, 2010-12-18 21:21:
+> The only downside to this is that my sources.yaml file needs manual
+> twiddling at restart to add the sources that were added during
+> runtime.
+
+How come?  For what I know sup should save sources.yml (the call to
+SoureManager.save_sources is in Index.save) upon graceful exit.
+That's exactly how sup-add modifies sources.yml.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Sat Dec 18 15:12:34 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 18 Dec 2010 15:12:34 -0500
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292702329-sup-1169@tilus.net>
+References: <Pine.LNX.4.64.1004080235530.8539@snarfed.org>
+	<1271023429-sup-9851@zyrg.net> <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<1292702329-sup-1169@tilus.net>
+Message-ID: <1292703012-sup-2641@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Tero Tilus's message of Sat Dec 18 15:02:46 -0500 2010:
+> Ben Walton, 2010-12-18 21:21:
+> > The only downside to this is that my sources.yaml file needs manual
+> > twiddling at restart to add the sources that were added during
+> > runtime.
+> 
+> How come?  For what I know sup should save sources.yml (the call to
+> SoureManager.save_sources is in Index.save) upon graceful exit.
+> That's exactly how sup-add modifies sources.yml.
+
+I'm not sure as I haven't had the time to look into it.  I only
+discovered this after the first time sup restarted after adding this
+hook (a few months later).  I rarely restart sup and when I do, I
+don't usually have time to poke at the problem (work mail and
+all...).  I might be able to just make the SourceManager.save_sources
+call manually.
+
+Thanks
+-Ben
+
+
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From jonas at lophus.org  Sun Dec 19 17:57:33 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Sun, 19 Dec 2010 23:57:33 +0100
+Subject: [sup-talk] Help me getting started.
+Message-ID: <4D0E8DDD.20505@lophus.org>
+
+Hello Sup-ers!
+
+I want to get rid of Thunderbird. :)
+
+The following questions surely are of this 
+same-pesky-newbie-questions-every-day kind, but I have them, anyway ;)
+
+1. `sup-configure` asked me for my primary e-mail address. I have no 
+primary e-mail address. In fact, I have several "personalities" being 
+myself in in different contexts.  It is very important to me to make 
+sure those personalities, represented by different e-mail addresses, 
+will *never* be accidentally mixed.  Can Sup make me force to chose the 
+e-mail address I want to send from for every mail I start writing? (Of 
+course, when answering a mail, I would answer with the address it was 
+sent to.)
+
+2. How can I display my own email bodies in thread view? Sometimes 
+someone digs up thread so ancient I don't remember what I wrote back then.
+
+3. I hate mbox. Can I use other mailbox formats for sent e-mails?
+
+4. For incoming mails, I used to use POP3, and I want keep storing my 
+mail locally (only). Which MDA solution is the best as far as 
+performance is concerned? My netbook has very poor CPU and HDD 
+performance (loooong HDD wakeup times), so that's what matters most in 
+this regard.
+
+5. As it worth using Ruby 1.9 for Sup? I have no idea about Ruby 1.8 vs 
+Ruby 1.9 -- any bug fixes, performance improvements, ... affecting Sup?
+
+6. Vertical scrolling is *very* laggy. The terminal emulator doesn't 
+matter; as soon as I do a vertical scroll CPU usage jumps up to 100%. Am 
+I missing any important tweaks?
+
+That's all! ;)
+Hoping to be able to join sup pack soon,
+thanks in advance,
+Jonas
+
+From bwalton at artsci.utoronto.ca  Sun Dec 19 18:34:35 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 19 Dec 2010 18:34:35 -0500
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D0E8DDD.20505@lophus.org>
+References: <4D0E8DDD.20505@lophus.org>
+Message-ID: <1292801467-sup-5115@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Jonas H.'s message of Sun Dec 19 17:57:33 -0500 2010:
+
+Hi Jonas,
+
+> 1. `sup-configure` asked me for my primary e-mail address. I have no
+> primary e-mail address. In fact, I have several "personalities"
+> being myself in in different contexts.  It is very important to me
+> to make sure those personalities, represented by different e-mail
+> addresses, will *never* be accidentally mixed.  Can Sup make me
+> force to chose the e-mail address I want to send from for every mail
+> I start writing? (Of course, when answering a mail, I would answer
+> with the address it was sent to.)
+
+You can add and use multiple email accounts.  The 'primary' label is
+more of a 'default' than a primary.  You'll want to use the various
+hooks to automatically set the email address used.  You can also
+change this while editing the message you're sending.
+
+> 2. How can I display my own email bodies in thread view? Sometimes
+> someone digs up thread so ancient I don't remember what I wrote back
+> then.
+
+Sup does this automatically.
+
+> 3. I hate mbox. Can I use other mailbox formats for sent e-mails?
+
+Maildir is an option.
+
+> 4. For incoming mails, I used to use POP3, and I want keep storing
+> my mail locally (only). Which MDA solution is the best as far as
+> performance is concerned? My netbook has very poor CPU and HDD
+> performance (loooong HDD wakeup times), so that's what matters most
+> in this regard.
+
+I'd say fetchmail, but I think it still requires a local mail delivery
+system.  There is likely some pop3 fetch tool, but I'm not familiar
+with any of them.
+
+> 5. As it worth using Ruby 1.9 for Sup? I have no idea about Ruby 1.8
+> vs Ruby 1.9 -- any bug fixes, performance improvements,
+> ... affecting Sup?
+
+I'm still using a really old 1.8.  I've tried to go to 1.9, but I
+don't have xapian working yet...
+
+> 6. Vertical scrolling is *very* laggy. The terminal emulator doesn't
+> matter; as soon as I do a vertical scroll CPU usage jumps up to
+> 100%. Am I missing any important tweaks?
+
+Not sure.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From tero at tilus.net  Mon Dec 20 02:57:04 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 20 Dec 2010 09:57:04 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D0E8DDD.20505@lophus.org>
+References: <4D0E8DDD.20505@lophus.org>
+Message-ID: <1292830767-sup-1667@tilus.net>
+
+Jonas H., 2010-12-20 00:57:
+> 2. How can I display my own email bodies in thread view?
+
+They should be there.  If they aren't they eithere aren't properly
+indexed, aren't referenced by the reply (reply is missing both
+In-reply-to and References -headers, there are evil mailclients out
+there which do this) or there's a bug in sup.
+
+> 6. Vertical scrolling is *very* laggy.
+
+Is there any chance you are talking about paging down in thread index?
+Sup is lazy. It only lists a screenfull of results at first by
+default.  It continues loading messages if you scroll further down.
+Once the loading is done scrolling should be instantaneous.
+
+Tags and search make paging thru "mail folders" pretty much obsolete.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wael.nasreddine at gmail.com  Mon Dec 20 06:07:40 2010
+From: wael.nasreddine at gmail.com (Wael Nasreddine)
+Date: Mon, 20 Dec 2010 12:07:40 +0100
+Subject: [sup-talk] change automagicaly inserted line in reply messages
+In-Reply-To: <1292593794-sup-5905@tilus.net>
+References: <1292592960-sup-9518@ruthard-mini> <1292593794-sup-5905@tilus.net>
+Message-ID: <1292843168-sup-2290@Phoenix>
+
+This one time, at SUP Camp, Tero Tilus said, On 2010-12-17 14:54:
+> Ruthard Baudach, 2010-12-17 15:36:
+> > Is it possible to costumize this headline?
+
+> Customize?  Yes.  Write ~/.sup/hooks/attribution.rb to build
+> attribution line to your taste.  Mine looks like
+
+> == ~/.sup/hooks/attribution.rb ==
+> message.from.name + ', ' + message.date.strftime('%Y-%m-%d %H:%M') + ':'
+> ==
+
+Very cool tip, Read mine lol
+
+there's nothing beside the name of this hook on the
+wiki so it was hard to figure it out on my own..
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Wa?l Nasreddine
+website    http://wael.nasreddine.com
+Blog       http://emxyptlk.com
+TechnoGate http://technogate.fr
+mobile     06.32.94.70.13
+landline   09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From tero at tilus.net  Mon Dec 20 06:28:12 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 20 Dec 2010 13:28:12 +0200
+Subject: [sup-talk] change automagicaly inserted line in reply messages
+In-Reply-To: <1292843168-sup-2290@Phoenix>
+References: <1292592960-sup-9518@ruthard-mini> <1292593794-sup-5905@tilus.net>
+	<1292843168-sup-2290@Phoenix>
+Message-ID: <1292844390-sup-7943@tilus.net>
+
+Wael Nasreddine, 2010-12-20 13:07:
+> there's nothing beside the name of this hook on the
+> wiki so it was hard to figure it out on my own..
+
+As the wiki-page says right at the beginning
+
+  To see documentation on the available hooks, just run "sup -l".
+
+;)
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wael.nasreddine at gmail.com  Mon Dec 20 06:45:39 2010
+From: wael.nasreddine at gmail.com (Wael Nasreddine)
+Date: Mon, 20 Dec 2010 12:45:39 +0100
+Subject: [sup-talk] Hook before-add-message,
+	any way to know if this message is in a topic I replied to ?
+Message-ID: <1292845256-sup-6025@Phoenix>
+
+Hello,
+
+I filter all email from a mailing list out of my inbox into the
+list_XXX where XXX is the name of the list, this is fine however I
+would like to see at glance emails in topic I replied to, for instance
+a reply to this email ends up in the list_sup_talk Label, which forces
+me to look for updates, what would be cool is a way to read emails to
+the list whenever I have time but replies to my questions or to any of
+answers should stay in the inbox (have the inbox label)
+
+Any way to do that? Is there any method in the message variable that
+can be called to know that?
+
+BTW, how can I run a console from within a hook with all the
+environment loaded? This actually allows me to call message.methods
+myself and interact with it..
+
+Regards,
+Wael Nasreddine
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Wa?l Nasreddine
+website    http://wael.nasreddine.com
+Blog       http://emxyptlk.com
+TechnoGate http://technogate.fr
+mobile     06.32.94.70.13
+landline   09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From tero at tilus.net  Mon Dec 20 08:12:52 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 20 Dec 2010 15:12:52 +0200
+Subject: [sup-talk] Hook before-add-message,
+	any way to know if this message is in a topic I replied to ?
+In-Reply-To: <1292845256-sup-6025@Phoenix>
+References: <1292845256-sup-6025@Phoenix>
+Message-ID: <1292846110-sup-9522@tilus.net>
+
+Wael Nasreddine, 2010-12-20 13:45:
+> I would like to see at glance emails in topic I replied to
+
+You'd basically check all the messages in the same thread with the
+received mail and see if you appear in from.  I think it could look
+something like
+
+  ts = ThreadSet.new(...something...)
+  ts.load_thread_for_message message
+  participated = ts.thread_for(message).authors.include? 'my at email'
+  message.add_label :inbox if participated
+
+More advanced suppers please step in and correct.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From marka at pobox.com  Mon Dec 20 08:41:36 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 20 Dec 2010 08:41:36 -0500
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D0E8DDD.20505@lophus.org>
+References: <4D0E8DDD.20505@lophus.org>
+Message-ID: <1292851798-sup-1112@bloovis.org>
+
+Excerpts from Jonas H.'s message of Sun Dec 19 17:57:33 -0500 2010:
+> 4. For incoming mails, I used to use POP3, and I want keep storing my 
+> mail locally (only). Which MDA solution is the best as far as 
+> performance is concerned? My netbook has very poor CPU and HDD 
+> performance (loooong HDD wakeup times), so that's what matters most in 
+> this regard.
+
+Fetchmail would be a good choice, and you can use it with procmail or
+maildrop to deliver the mail to your local maildir(s).  The
+configuration language for maildrop is somewhat easier to learn than
+procmail's.
+
+I once tried using offlineimap, but had to stop because our Exchange
+mail server at work would occasionally cause mails to be deleted and
+that would mess up sup.  (I think was a "feature" of Exchange or Outlook
+that allowed people to recall messages after they'd been sent.  I am
+not sure, though; I don't use Windows.)
+
+In case this would be useful, I've attached sanitized examples of my
+fetchmail and maildrop config files.  I've got them set up to use two
+different incoming mail accounts, one for personal mail (gmail) and
+one for work mail (a bogus company, widgets.com), with separate
+maildirs for each.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: .fetchmailrc
+Type: application/octet-stream
+Size: 386 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101220/7b59c285/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: .mailfilter
+Type: application/octet-stream
+Size: 235 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101220/7b59c285/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: .mailfilter.widgets
+Type: application/octet-stream
+Size: 91 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101220/7b59c285/attachment-0002.obj>
+
+From jonas at lophus.org  Mon Dec 20 08:39:50 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Mon, 20 Dec 2010 14:39:50 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1292830767-sup-1667@tilus.net>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+Message-ID: <4D0F5CA6.7070001@lophus.org>
+
+On 12/20/2010 08:57 AM, Tero Tilus wrote:
+> Jonas H., 2010-12-20 00:57:
+>> 2. How can I display my own email bodies in thread view?
+>
+> They should be there.  If they aren't they eithere aren't properly
+> indexed, aren't referenced by the reply (reply is missing both
+> In-reply-to and References -headers, there are evil mailclients out
+> there which do this) or there's a bug in sup.
+
+Humm... all replies have both the In-Reply-To and the References 
+headers. Just to clarify this - I see the headers of my messages, can 
+expand them, but never see the body. (This does not only apply to 
+responses but to messages in general.)
+
+>> 6. Vertical scrolling is *very* laggy.
+>
+> Is there any chance you are talking about paging down in thread index?
+
+Sorry, I meant horizontal scolling using left/right arrows.
+
+[ Why doesn't this mailing list set the Reply-To header :'( ]
+
+From tero at tilus.net  Mon Dec 20 08:57:34 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 20 Dec 2010 15:57:34 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D0F5C5E.7030809@lophus.org>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org>
+Message-ID: <1292853433-sup-364@tilus.net>
+
+Jonas H., 2010-12-20 15:38:
+> Just to clarify this - I see the headers of my messages, can expand
+> them, but never see the body. (This does not only apply to responses
+> but to messages in general.)
+
+You mean you don't see any mail bodies at all!?  Something has really
+gone haywire during indexing/polling then.  Could you describe the
+behavior more closely?  Screenshots?
+
+> Sorry, I meant horizontal scolling using left/right arrows.
+
+I've never had any problems with that.  Not even with really lo-fi hw.
+Could you try profiling if? (gem install ruby-prof, launch sup using
+ruby-prof and do scrolling, preferably a lot of it and then exit)
+
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From shadowfirebird at gmail.com  Mon Dec 20 09:10:11 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Mon, 20 Dec 2010 14:10:11 +0000
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1292851798-sup-1112@bloovis.org>
+References: <4D0E8DDD.20505@lophus.org> <1292851798-sup-1112@bloovis.org>
+Message-ID: <1292854085-sup-6276@blake>
+
+> Fetchmail would be a good choice, and you can use it with procmail or
+> maildrop to deliver the mail to your local maildir(s).  The
+> configuration language for maildrop is somewhat easier to learn than
+> procmail's.
+
+I use Getmail because it's slightly more Google-friendly, but essentially similar to Fetchmail.  Worth considering.
+
+-- 
+If a listener nods his head when you're explaining your program, wake him up.
+
+From marc.hartstein at alum.vassar.edu  Mon Dec 20 13:24:27 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Mon, 20 Dec 2010 13:24:27 -0500
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D0F5CA6.7070001@lophus.org>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5CA6.7070001@lophus.org>
+Message-ID: <1292869298-sup-8785@cabinet>
+
+Excerpts from Jonas H.'s message of Mon Dec 20 08:39:50 -0500 2010:
+> [ Why doesn't this mailing list set the Reply-To header :'( ]
+
+Because net standards require that mailing lists not override Reply-To
+to set it to the mailing list. Reply-To is intended to always be the
+proper address for a reply directly to the author. There are other
+semi-official headers for mailing lists to use to instruct an MUA of the
+correct address for mailing list replies. sup honors those and should
+offer you the option of replying to the list.
+
+From vallentin at ICSI.Berkeley.EDU  Tue Dec 21 01:44:45 2010
+From: vallentin at ICSI.Berkeley.EDU (Matthias Vallentin)
+Date: Mon, 20 Dec 2010 22:44:45 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+References: <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+Message-ID: <20101221064445.GZ60419@icsi.berkeley.edu>
+
+On Sat, Dec 18, 2010 at 02:21:40PM -0500, Ben Walton wrote:
+> Here's my current approach that I've been happy with since I
+> implemented it back in the summer:
+
+Cool, this is exactly how I expected it to look like!
+
+> --snip--
+> s = "maildir:/path/to/Maildir/.incoming.#{Date.today.strftime("%Y.%m")}"
+> 
+> unless Redwood::SourceManager.source_for(s)
+>   Redwood::Logger.force_message "Adding new source: #{s}"
+>   Redwood::SourceManager.add_source Recoverable.new(Redwood::Maildir.new(s))
+> end
+> --snip--
+
+Neither master nor Damien's Maildir clone contain the class Recoverable.
+Is this code you added somewhere else?
+
+The only (conceptual) issue I see with this code that you miss sources
+when having more than a month of idleness. Say the suffix of s is
+2012.10 and the next time you check back is in December, then you'll
+miss 2012.11. Now whether anyone of us has the freedom to not check
+email for that long is a different question :-).
+
+> The only downside to this is that my sources.yaml file needs manual
+> twiddling at restart to add the sources that were added during
+> runtime.
+
+As Tilo mentioned, this is weird indeed since sup calls Index.save which
+in turn should call SourceManager.save_sources. I'll look into this when
+I get a chance.
+
+   Matthias
+
+From vallentin at ICSI.Berkeley.EDU  Tue Dec 21 01:48:32 2010
+From: vallentin at ICSI.Berkeley.EDU (Matthias Vallentin)
+Date: Mon, 20 Dec 2010 22:48:32 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101221064445.GZ60419@icsi.berkeley.edu>
+References: <1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<20101221064445.GZ60419@icsi.berkeley.edu>
+Message-ID: <20101221064832.GA60419@icsi.berkeley.edu>
+
+On Mon, Dec 20, 2010 at 10:44:45PM -0800, Matthias Vallentin wrote:
+> As Tilo mentioned [..]
+
+I was referring to Tero, sorry about the confusion.
+
+   Matthias
+
+From vallentin at icsi.berkeley.edu  Tue Dec 21 02:12:30 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 20 Dec 2010 23:12:30 -0800
+Subject: [sup-talk] Maildir sent_source
+Message-ID: <20101221071230.GE60419@icsi.berkeley.edu>
+
+It seems that qualifying sent_source with maildir in config.yaml does
+not have an effect, e.g., the sent source is still mbox despite an
+
+    :sent_source: maildir:~/.mail/sent
+
+entry. Briefly crawling through the source, I don't see support for
+Maildir as sent source anyway. Am I missing a patch or am I in the wrong
+branch (currently Damien's maildir clone)?
+
+   Matthias
+
+From tero at tilus.net  Tue Dec 21 05:56:23 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 21 Dec 2010 12:56:23 +0200
+Subject: [sup-talk] Maildir sent_source
+In-Reply-To: <20101221071230.GE60419@icsi.berkeley.edu>
+References: <20101221071230.GE60419@icsi.berkeley.edu>
+Message-ID: <1292928629-sup-4367@tilus.net>
+
+Matthias Vallentin, 2010-12-21 09:12:
+> It seems that qualifying sent_source with maildir in config.yaml does
+> not have an effect, e.g., the sent source is still mbox despite an
+> 
+>     :sent_source: maildir:~/.mail/sent
+> 
+> entry. Briefly crawling through the source, I don't see support for
+> Maildir as sent source anyway.
+
+I do see it.  ;)  Open bin/sup and look for
+
+  if(s = Redwood::SourceManager.source_for SentManager.source_uri)
+    SentManager.source = s
+  else
+    Redwood::SourceManager.add_source SentManager.default_source
+  end
+
+Judging by the code it looks like you also need to sup-add your
+maildir in addition to adding it to config.  If
+Redwood::SourceManager.source_for doesn't find the source it silently
+drops back to default sent source.  IMO it should complain about
+invalid config or something.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Tue Dec 21 06:01:59 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 21 Dec 2010 13:01:59 +0200
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101221064445.GZ60419@icsi.berkeley.edu>
+References: <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<20101221064445.GZ60419@icsi.berkeley.edu>
+Message-ID: <1292929122-sup-7072@tilus.net>
+
+Matthias Vallentin, 2010-12-21 08:44:
+>> The only downside to this is that my sources.yaml file needs manual
+>> twiddling at restart to add the sources that were added during
+>> runtime.
+> 
+> As Tero mentioned, this is weird indeed since sup calls Index.save
+> which in turn should call SourceManager.save_sources. I'll look into
+> this when I get a chance.
+...
+> Neither master nor Damien's Maildir clone contain the class
+> Recoverable.  Is this code you added somewhere else?
+
+This sources not getting saved might be because of that Recoverable
+wrapper class.  YAML marshalling might not be able to digest it.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From bwalton at artsci.utoronto.ca  Tue Dec 21 09:11:42 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 21 Dec 2010 09:11:42 -0500
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292929122-sup-7072@tilus.net>
+References: <1271249704-sup-1088@masanjin.net>
+	<1271254358-sup-3024@pinkfloyd.chass.utoronto.ca>
+	<1271260552-sup-9153@masanjin.net>
+	<1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<20101221064445.GZ60419@icsi.berkeley.edu>
+	<1292929122-sup-7072@tilus.net>
+Message-ID: <1292940403-sup-7858@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Tero Tilus's message of Tue Dec 21 06:01:59 -0500 2010:
+
+> > Neither master nor Damien's Maildir clone contain the class
+> > Recoverable.  Is this code you added somewhere else?
+> 
+> This sources not getting saved might be because of that Recoverable
+> wrapper class.  YAML marshalling might not be able to digest it.
+
+When I wrote the hook, I referenced the following from
+lib/sup/source.rb:
+
+  def load_sources fn=Redwood::SOURCE_FN
+    source_array = (Redwood::load_yaml_obj(fn) || []).map { |o| Recoverable.new o }
+    @source_mutex.synchronize do
+      @sources = Hash[*(source_array).map { |s| [s.id, s] }.flatten]
+      @sources_dirty = false
+    end
+  end
+
+So, after de-marshalling the yaml file, it wraps the object in a
+Recoverable.  This class is defined in lib/sup/util.rb.
+
+I'm looking at the code again right now as the Recoverable may be the
+key as to why this doesn't get saved...
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From vallentin at icsi.berkeley.edu  Wed Dec 22 09:34:41 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Wed, 22 Dec 2010 06:34:41 -0800
+Subject: [sup-talk] Maildir sent_source
+In-Reply-To: <1292928629-sup-4367@tilus.net>
+References: <20101221071230.GE60419@icsi.berkeley.edu>
+	<1292928629-sup-4367@tilus.net>
+Message-ID: <20101222143441.GF60419@icsi.berkeley.edu>
+
+On Tue, Dec 21, 2010 at 12:56:23PM +0200, Tero Tilus wrote:
+> I do see it.  ;)
+
+Yeah, me too now :-).
+
+> Judging by the code it looks like you also need to sup-add your
+> maildir in addition to adding it to config.  If
+> Redwood::SourceManager.source_for doesn't find the source it silently
+> drops back to default sent source.  IMO it should complain about
+> invalid config or something.
+
+I agree, this inconsistency should not go through without flagging it
+and terminating with an error.
+
+Alternatively, the patch below would allow for adding a maildir source
+before the default logic kicks in.
+
+   Matthias
+
+--- a/bin/sup
++++ b/bin/sup
+@@ -158,6 +158,9 @@ begin
+   trap("TERM") { |x| $die = true }
+   trap("WINCH") { |x| BufferManager.sigwinch_happened! }
+ 
++  HookManager.run "startup"
++  Redwood::Keymap.run_hook global_keymap
++
+   if(s = Redwood::SourceManager.source_for DraftManager.source_name)
+     DraftManager.source = s
+   else
+@@ -171,9 +174,6 @@ begin
+     Redwood::SourceManager.add_source SentManager.default_source
+   end
+ 
+-  HookManager.run "startup"
+-  Redwood::Keymap.run_hook global_keymap
+-
+   debug "starting curses"
+   Redwood::Logger.remove_sink $stderr
+   start_cursing
+
+
+From vallentin at icsi.berkeley.edu  Wed Dec 22 09:42:22 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Wed, 22 Dec 2010 06:42:22 -0800
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <1292940403-sup-7858@pinkfloyd.chass.utoronto.ca>
+References: <1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<20101221064445.GZ60419@icsi.berkeley.edu>
+	<1292929122-sup-7072@tilus.net>
+	<1292940403-sup-7858@pinkfloyd.chass.utoronto.ca>
+Message-ID: <20101222144222.GG60419@icsi.berkeley.edu>
+
+On Tue, Dec 21, 2010 at 09:11:42AM -0500, Ben Walton wrote:
+> I'm looking at the code again right now as the Recoverable may be the
+> key as to why this doesn't get saved...
+
+I did some printf-debugging at shutdown time and am now really puzzled
+why SourceManager.save_source is not invoked. The function Index.save
+and SourceManager.save_source look as follows:
+
+    def save
+        debug "saving index and sources..."
+        FileUtils.mkdir_p @dir unless File.exists? @dir
+->      debug "*** Index.save"
+        SourceManager.save_sources
+        save_index
+    end
+
+
+    def save_sources fn=Redwood::SOURCE_FN
+->      debug "*** SourceManager.save_sources"
+        @source_mutex.synchronize do
+            ...
+        end
+    end
+
+
+Adding the with -> marked statement in Index.save printed, however, not
+the debug statement in SourceManager.save_sources! Any ideas how this is
+possible?
+
+   Matthias
+
+From tero at tilus.net  Wed Dec 22 11:27:30 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 22 Dec 2010 18:27:30 +0200
+Subject: [sup-talk] current state of synching upstream?
+In-Reply-To: <20101222144222.GG60419@icsi.berkeley.edu>
+References: <1271261164-sup-4109@pinkfloyd.chass.utoronto.ca>
+	<20101215081955.GF568@icsi.berkeley.edu>
+	<1292432651-sup-6834@jamestaylor.org>
+	<20101218051216.GS60419@icsi.berkeley.edu>
+	<1292649662-sup-8863@jamestaylor.org>
+	<20101218190427.GU60419@icsi.berkeley.edu>
+	<1292699674-sup-8221@pinkfloyd.chass.utoronto.ca>
+	<20101221064445.GZ60419@icsi.berkeley.edu>
+	<1292929122-sup-7072@tilus.net>
+	<1292940403-sup-7858@pinkfloyd.chass.utoronto.ca>
+	<20101222144222.GG60419@icsi.berkeley.edu>
+Message-ID: <1293035040-sup-5469@tilus.net>
+
+Matthias Vallentin, 2010-12-22 16:42:
+> Adding the with -> marked statement in Index.save printed, however, not
+> the debug statement in SourceManager.save_sources! Any ideas how this is
+> possible?
+
+I think I have a hunch.  SourceManager is a singleton, which (see
+util.rb) silently drops all the calls if it is in deinstantiated
+state.  Could you inject some debugging in Singleton#method_missing to
+see if SourceManager is already deinstantiated when #save_sources is
+called.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From vallentin at icsi.berkeley.edu  Wed Dec 22 12:14:44 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Wed, 22 Dec 2010 09:14:44 -0800
+Subject: [sup-talk] Maildir sent_source
+In-Reply-To: <1292928629-sup-4367@tilus.net>
+References: <20101221071230.GE60419@icsi.berkeley.edu>
+	<1292928629-sup-4367@tilus.net>
+Message-ID: <20101222171444.GH60419@icsi.berkeley.edu>
+
+On Tue, Dec 21, 2010 at 12:56:23PM +0200, Tero Tilus wrote:
+> Judging by the code it looks like you also need to sup-add your
+> maildir in addition to adding it to config.  
+
+Yup, the following configuration works for me:
+
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:~/.mail/sent
+  usual: false
+  archived: true
+  id: 1
+  labels: 
+  - sent
+
+This works only if the source is added before the first launch. As you
+mentioned earlier, the cleanest solution would be to patch bin/sup such
+that it respects the sent_source configuration (and in particular the
+URI scheme and location).
+
+   Matthias
+
+From jonas at lophus.org  Thu Dec 23 05:17:06 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Thu, 23 Dec 2010 11:17:06 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1292853433-sup-364@tilus.net>
+References: <4D0E8DDD.20505@lophus.org>
+	<1292830767-sup-1667@tilus.net>	<4D0F5C5E.7030809@lophus.org>
+	<1292853433-sup-364@tilus.net>
+Message-ID: <4D1321A2.9070206@lophus.org>
+
+(Unfortunately it seems like my original mail was swallowed because of 
+the attachments, so I'm re-sending it without any. You can find the 
+attachments here: http://jonas.lophus.org/sup-attachments.tar.bz2)
+
+On 12/20/2010 02:57 PM, Tero Tilus wrote:
+> Jonas H., 2010-12-20 15:38:
+>> Just to clarify this - I see the headers of my messages, can expand
+>> them, but never see the body. (This does not only apply to responses
+>> but to messages in general.)
+>
+> You mean you don't see any mail bodies at all!?  Something has really
+> gone haywire during indexing/polling then.  Could you describe the
+> behavior more closely?  Screenshots?
+
+Pressing enter/E simply does not show any body for my messages. 
+Screenshots attached.
+
+>> Sorry, I meant horizontal scolling using left/right arrows.
+>
+> I've never had any problems with that.  Not even with really lo-fi hw.
+> Could you try profiling if? (gem install ruby-prof, launch sup using
+> ruby-prof and do scrolling, preferably a lot of it and then exit)
+
+Results attached; the 'short' log is without lines that only consist of 
+0.0[012]  0.0[012]  ...  0.0[012].
+
+I also made up a video. Watch the screen when I stop thrashing the 
+left/right arrow keys. Feels like scrolling on Windows without a proper 
+graphics driver installed ;-)
+
+http://fileshare.itratos.org/video/4d0fb9362b9afb3bf4000002/VIDEO0006.3gp/
+
+(Direct WebM version link for the lazy: 
+http://fileshare.itratos.org/uploads/videos/0/VIDEO0006-Iv0cY.3gp/VIDEO0006-Iv0cY-original.webm)
+
+Jonas
+
+
+From wael.nasreddine at gmail.com  Thu Dec 23 07:04:48 2010
+From: wael.nasreddine at gmail.com (Wael Nasreddine)
+Date: Thu, 23 Dec 2010 13:04:48 +0100
+Subject: [sup-talk] Hook before-add-message,
+	any way to know if this message is in a topic I replied to ?
+In-Reply-To: <1292846110-sup-9522@tilus.net>
+References: <1292845256-sup-6025@Phoenix> <1292846110-sup-9522@tilus.net>
+Message-ID: <1293105681-sup-7985@Phoenix>
+
+This one time, at SUP Camp, Tero Tilus said, On 2010-12-20 14:12:
+> Wael Nasreddine, 2010-12-20 13:45:
+> > I would like to see at glance emails in topic I replied to
+
+> You'd basically check all the messages in the same thread with the
+> received mail and see if you appear in from.  I think it could look
+> something like
+
+>   ts = ThreadSet.new(...something...)
+>   ts.load_thread_for_message message
+>   participated = ts.thread_for(message).authors.include? 'my at email'
+>   message.add_label :inbox if participated
+
+> More advanced suppers please step in and correct.
+
+I added this method to my before-add-message hook and I call it at the
+very end of the before-add-hook (so it's executed at the end)
+
+------- CUT
+def show_if_participated(message)
+  return if message.has_label? :inbox
+
+  my_emails = ['wael.nasreddine at gmail.com', 'anotheremail at example.com']
+  ts = ThreadSet.new Index.instance, $config[:thread_by_subject]
+  ts.load_thread_for_message message
+  message_thread = ts.thread_for message
+  return unless message_thread
+  message.add_label :inbox if my_emails.any? { |email|
+message_thread.authors.include? email }
+end
+------- CUT
+
+However it's not working, I remove ~/.sup/xapian and ran sup-sync,
+this email does not have the inbox label however it's one of the
+thread that I replied to in a mailing list, what's wrong with my
+function?
+
+Regards,
+Wael Nasreddine
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Wa?l Nasreddine
+website    http://wael.nasreddine.com
+Blog       http://emxyptlk.com
+TechnoGate http://technogate.fr
+mobile     06.32.94.70.13
+landline   09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From snaipperi at gmail.com  Fri Dec 24 16:44:08 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Fri, 24 Dec 2010 23:44:08 +0200
+Subject: [sup-talk] Running sup on Ruby 1.9.2 (Arch Linux)
+Message-ID: <AANLkTik9gqBwR29aUO0KMR5wvqOJ2OB18yZKoG72jrAb@mail.gmail.com>
+
+Hey folks,
+
+I somehow broke my Ruby 1.8 installation a few days ago and ended up
+trying to run sup with Ruby 1.9.2. I grabbed it from git, however the
+rake would fail for not finding "sup-files" and "sup-version". I
+changed these two lines in the Rakefile
+
+from
+
+require 'sup-files'
+require 'sup-version'
+
+to
+
+require './sup-files.rb'
+require './sup-version.rb'
+
+and a nice gem came out. Does anyone know what caused this? Has Ruby
+syntax for requiring local files changed or is my system just being
+weird?
+
+Also, after installing the gem it failed to run because rubygems was
+nagging I didn't have two other gems: ncurses and xapian-full.
+(xapian-full is provided in arch linux by xapian-ruby-bindings).
+Ncurses for 1.9.2.. I don't know if that even exists. And ncursesw
+works just fine. I guess there's a method to compile the gem to ignore
+dependencies? Anyway I just removed those dependencies to get it to
+work. I cloned earlier my own repository of sup where I made these
+changes if anybody wants to look (or get sup run on arch+ruby 1.9.2).
+It's available here: http://gitorious.org/sup/ruby192-arch
+
+Other than that, sup seems to work very well under 1.9.2! Nice job!
+Matti Eiden
+
+From vallentin at icsi.berkeley.edu  Mon Dec 27 04:51:22 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 27 Dec 2010 01:51:22 -0800
+Subject: [sup-talk] Sharing code and data between hooks
+Message-ID: <20101227095122.GK60419@icsi.berkeley.edu>
+
+What is the best way to share code and state between hooks? Say I define
+a class in the startup hook and create an instance of it. When executing
+before-poll, I want to reference that instance. How would I do this?
+
+   Matthias
+
+From vallentin at icsi.berkeley.edu  Mon Dec 27 05:07:18 2010
+From: vallentin at icsi.berkeley.edu (Matthias Vallentin)
+Date: Mon, 27 Dec 2010 02:07:18 -0800
+Subject: [sup-talk] message.list_address weirdness
+Message-ID: <20101227100718.GL60419@icsi.berkeley.edu>
+
+I cannot get message.list_address to match to add labels before adding
+messages although the messages definitively have the List-Post header.
+I found that message.list_address is sometimes a Person instance, which 
+suggest a bug in the code assigning the instance variable @list_address
+(reformatted):
+
+@list_address = if header["list-post"]
+                  address = if header["list-post"] =~ /mailto:(.*?)[>\s$]/
+                              $1
+                            elsif header["list-post"] =~ /@/
+                              header["list-post"] # just try the whole fucking thing
+                            end
+                  address && Person.from_address(address)
+                elsif header["x-mailing-list"]
+                  Person.from_address header["x-mailing-list"]
+                end
+
+This code looks erroneous in that Person.from_address returns a Person
+instance in the elsif branch. Shouldn't that be a string of the address
+instead, i.e.,
+
+    Person.from_address(header["x-mailing-list"]).email
+
+? The same problem seems to appear in the conjunction
+
+    address && Person.from_address(address)
+
+which should in my opinion be
+
+    address && Person.from_address(address).email
+
+. Does that makes sense?
+
+   Matthias
+
+From mnjagadeesh at gmail.com  Wed Dec 29 10:00:40 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 29 Dec 2010 20:30:40 +0530
+Subject: [sup-talk] appending domain names
+Message-ID: <AANLkTikuph+JhoqBY38B9kXTCCJH=eDHLwwMLCHy8rx-@mail.gmail.com>
+
+Hi,
+
+How can I append domain name to the email recipient?
+
+Thanks
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101229/9e83a7e0/attachment.html>
+
+From bwalton at artsci.utoronto.ca  Wed Dec 29 10:10:37 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 29 Dec 2010 10:10:37 -0500
+Subject: [sup-talk] appending domain names
+In-Reply-To: <AANLkTikuph+JhoqBY38B9kXTCCJH=eDHLwwMLCHy8rx-@mail.gmail.com>
+References: <AANLkTikuph+JhoqBY38B9kXTCCJH=eDHLwwMLCHy8rx-@mail.gmail.com>
+Message-ID: <1293635283-sup-9377@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Jagadeesh N. Malakannavar's message of Wed Dec 29 10:00:40 -0500 2010:
+
+> How can I append domain name to the email recipient?
+
+Is this a general question (eg: $domain might be somewhere.net or
+something.com?) or a specific question (eg: always append mydomain.org
+to unqualified addresses)?
+
+If the former, try the before-edit hook to scan the message recipients
+and modify as required.  You could also use aliases/contacts depending
+on your situation.
+
+If the latter, have your MTA configuration do it for you and don't
+worry about it from sup.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From mnjagadeesh at gmail.com  Wed Dec 29 10:44:34 2010
+From: mnjagadeesh at gmail.com (Jagadeesh N. Malakannavar)
+Date: Wed, 29 Dec 2010 21:14:34 +0530
+Subject: [sup-talk] appending domain names
+In-Reply-To: <1293635283-sup-9377@pinkfloyd.chass.utoronto.ca>
+References: <AANLkTikuph+JhoqBY38B9kXTCCJH=eDHLwwMLCHy8rx-@mail.gmail.com>
+	<1293635283-sup-9377@pinkfloyd.chass.utoronto.ca>
+Message-ID: <AANLkTinVrrLcruQbaQ93PS9YD9DrpZ9GH++ZA0M1ow4H@mail.gmail.com>
+
+Mine is always append mydomain.org case. Thanks for the reply.
+
+Thanks
+
+On Wed, Dec 29, 2010 at 8:40 PM, Ben Walton <bwalton at artsci.utoronto.ca>wrote:
+
+> Excerpts from Jagadeesh N. Malakannavar's message of Wed Dec 29 10:00:40
+> -0500 2010:
+>
+> > How can I append domain name to the email recipient?
+>
+> Is this a general question (eg: $domain might be somewhere.net or
+> something.com?) or a specific question (eg: always append mydomain.org
+> to unqualified addresses)?
+>
+> If the former, try the before-edit hook to scan the message recipients
+> and modify as required.  You could also use aliases/contacts depending
+> on your situation.
+>
+> If the latter, have your MTA configuration do it for you and don't
+> worry about it from sup.
+>
+> HTH.
+> -Ben
+> --
+> Ben Walton
+> Systems Programmer - CHASS
+> University of Toronto
+> C:416.407.5610 | W:416.978.4302
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101229/159342d8/attachment.html>
+
+From jonas at lophus.org  Thu Dec 30 08:14:21 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Thu, 30 Dec 2010 14:14:21 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D1321A2.9070206@lophus.org>
+References: <4D0E8DDD.20505@lophus.org>
+	<1292830767-sup-1667@tilus.net>	<4D0F5C5E.7030809@lophus.org>
+	<1292853433-sup-364@tilus.net> <4D1321A2.9070206@lophus.org>
+Message-ID: <4D1C85AD.9040301@lophus.org>
+
+*bump* any news on these issues?
+
+From tero at tilus.net  Thu Dec 30 10:31:43 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 30 Dec 2010 17:31:43 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D1321A2.9070206@lophus.org>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org> <1292853433-sup-364@tilus.net>
+	<4D1321A2.9070206@lophus.org>
+Message-ID: <1293722265-sup-2399@tilus.net>
+
+Jonas H., 2010-12-23 12:17:
+> On 12/20/2010 02:57 PM, Tero Tilus wrote:
+> > I've never had any problems with that.  Not even with really lo-fi hw.
+> > Could you try profiling if? (gem install ruby-prof, launch sup using
+> > ruby-prof and do scrolling, preferably a lot of it and then exit)
+> 
+> Results attached; the 'short' log is without lines that only consist of 
+> 0.0[012]  0.0[012]  ...  0.0[012].
+
+The biggest problem seems to be String#display_length with ruby
+versions < 1.9.1.  Manually calculating display lenght using
+scan(/./u) is definitely not nice, but I don't know how could you make
+it faster.  Maybe caching calculated display_lengths?
+
+Looks like I just haven't done enough scrolling to find that out. :-O
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Dec 30 16:33:05 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 30 Dec 2010 23:33:05 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1293722265-sup-2399@tilus.net>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org> <1292853433-sup-364@tilus.net>
+	<4D1321A2.9070206@lophus.org> <1293722265-sup-2399@tilus.net>
+Message-ID: <1293740777-sup-5080@tilus.net>
+
+Tero Tilus, 2010-12-30 17:31:
+> Maybe caching calculated display_lengths?
+
+Caching cuts down String#scan calls by ~30% and produces no
+perceivable difference in scrolling responsivenes.
+
+After String#display_length caching the main cpu hog is
+Ncurses::WINDOW#method_missing, which dispatches calls to wide char or
+ordinary Ncurses methods depending what's available.  Gonna try to
+hardwire Ncurses::WINDOW#mvaddstr next.
+
+> Looks like I just haven't done enough scrolling to find that out. :-O
+
+Now that I really look into this.  The performance I see (sup runnin
+screened on Bytemark VPS) is considerably better that what is seen on
+the video.  It is definitely not fast, but otoh I can't make it lag
+behind like it does on the video.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Dec 30 18:03:40 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 31 Dec 2010 01:03:40 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D1321A2.9070206@lophus.org>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org> <1292853433-sup-364@tilus.net>
+	<4D1321A2.9070206@lophus.org>
+Message-ID: <1293749950-sup-6919@tilus.net>
+
+Jonas H., 2010-12-23 12:17:
+> Pressing enter/E simply does not show any body for my messages. 
+> Screenshots attached.
+
+Thats plain weird.  Are these mails you have sent using sup?  If so,
+your mails prolly displayed ok when sending?  Could you look into sent
+mailbox (~/.sup/sent.mbox) to see if the mails are OK there.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Dec 30 18:09:07 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 31 Dec 2010 01:09:07 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1293740777-sup-5080@tilus.net>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org> <1292853433-sup-364@tilus.net>
+	<4D1321A2.9070206@lophus.org> <1293722265-sup-2399@tilus.net>
+	<1293740777-sup-5080@tilus.net>
+Message-ID: <1293750256-sup-6120@tilus.net>
+
+Tero Tilus, 2010-12-30 23:33:
+> After String#display_length caching the main cpu hog is
+> Ncurses::WINDOW#method_missing, which dispatches calls to wide char or
+> ordinary Ncurses methods depending what's available.  Gonna try to
+> hardwire Ncurses::WINDOW#mvaddstr next.
+
+That cut the average per call total time for Redwood::Buffer#write to
+almost half of what it was.  Although I'm still unable to actually
+feel any difference.  ;)  Responsiveness prolly depends in my case
+mostly on the network speed and latency.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From jonas at lophus.org  Thu Dec 30 18:37:32 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Fri, 31 Dec 2010 00:37:32 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1293749950-sup-6919@tilus.net>
+References: <4D0E8DDD.20505@lophus.org>
+	<1292830767-sup-1667@tilus.net>	<4D0F5C5E.7030809@lophus.org>
+	<1292853433-sup-364@tilus.net>	<4D1321A2.9070206@lophus.org>
+	<1293749950-sup-6919@tilus.net>
+Message-ID: <4D1D17BC.8050006@lophus.org>
+
+On 12/31/2010 12:03 AM, Tero Tilus wrote:
+> Jonas H., 2010-12-23 12:17:
+>> Pressing enter/E simply does not show any body for my messages.
+>> Screenshots attached.
+>
+> Thats plain weird.  Are these mails you have sent using sup?
+
+Nope, they are from the Thunderbird-generated mbox files.
+
+If you want I could make up a small test mbox file (new Thunderbird 
+profile) and send it?
+
+From tero at tilus.net  Thu Dec 30 19:45:08 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 31 Dec 2010 02:45:08 +0200
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <4D1D17BC.8050006@lophus.org>
+References: <4D0E8DDD.20505@lophus.org> <1292830767-sup-1667@tilus.net>
+	<4D0F5C5E.7030809@lophus.org> <1292853433-sup-364@tilus.net>
+	<4D1321A2.9070206@lophus.org> <1293749950-sup-6919@tilus.net>
+	<4D1D17BC.8050006@lophus.org>
+Message-ID: <1293755723-sup-3842@tilus.net>
+
+Jonas H., 2010-12-31 01:37:
+> If you want I could make up a small test mbox file (new Thunderbird
+> profile) and send it?
+
+Please do.  File a bug <http://masanjin.net/sup-bugs/> and attach a
+(minimal) mbox to trigger it.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From jonas at lophus.org  Fri Dec 31 05:14:10 2010
+From: jonas at lophus.org (Jonas H.)
+Date: Fri, 31 Dec 2010 11:14:10 +0100
+Subject: [sup-talk] Help me getting started.
+In-Reply-To: <1293755723-sup-3842@tilus.net>
+References: <4D0E8DDD.20505@lophus.org>
+	<1292830767-sup-1667@tilus.net>	<4D0F5C5E.7030809@lophus.org>
+	<1292853433-sup-364@tilus.net>	<4D1321A2.9070206@lophus.org>
+	<1293749950-sup-6919@tilus.net>	<4D1D17BC.8050006@lophus.org>
+	<1293755723-sup-3842@tilus.net>
+Message-ID: <4D1DACF2.3000400@lophus.org>
+
+On 12/31/2010 01:45 AM, Tero Tilus wrote:
+> Jonas H., 2010-12-31 01:37:
+>> If you want I could make up a small test mbox file (new Thunderbird
+>> profile) and send it?
+>
+> Please do.  File a bug<http://masanjin.net/sup-bugs/>  and attach a
+> (minimal) mbox to trigger it.
+>
+
+http://masanjin.net/sup-bugs/issue141
+

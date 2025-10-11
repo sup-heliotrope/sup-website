@@ -1,0 +1,744 @@
+From eg at gaute.vetsj.com  Tue Mar 11 07:38:53 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 11 Mar 2014 08:38:53 +0100
+Subject: [sup-devel] ncursesw 1.4.6
+Message-ID: <1394523501-sup-395@qwerzila>
+
+Hi,
+
+just released ncursesw-ruby 1.4.6. Available at rubygems.
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140311/ed40ef1c/attachment.bin>
+
+From eg at gaute.vetsj.com  Fri Mar 14 08:17:43 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 14 Mar 2014 09:17:43 +0100
+Subject: [sup-devel] ncursesw 1.4.7 released
+Message-ID: <1394784966-sup-6633@qwerzila>
+
+greetings,
+
+ncursesw 1.4.7 released:
+
+ * fix issue #25: include <sys/time.h> when available for increased
+   portability (fix found by: James Pearson)
+
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140314/7f1b0c79/attachment.bin>
+
+From eg at gaute.vetsj.com  Mon Mar 17 07:52:14 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 17 Mar 2014 08:52:14 +0100
+Subject: [sup-devel] [sup] Maildir root: Keep labels in sync with
+	maildir folders (#253)
+In-Reply-To: <sup-heliotrope/sup/pull/253/c37732781@github.com>
+References: <sup-heliotrope/sup/pull/253@github.com>
+	<sup-heliotrope/sup/pull/253/c37732781@github.com>
+Message-ID: <1395042468-sup-5821@qwerzila>
+
+Excerpts from Matthieu Rakotojaona's message of 2014-03-15 18:53:10 +0100:
+> Just opened https://github.com/sup-heliotrope/sup/tree/maildir-root
+> branch at 3f6bc97a14f8e87f1663f924aca5333617cbeec7 (your HEAD) to
+> track development of maildir-root. I'd like to use it in instead of
+> `gmail_source` because even if I break my sup, I can still read my
+> mails with any other MUA in the world.
+>
+> --- Reply to this email directly or view it on GitHub:
+> https://github.com/sup-heliotrope/sup/pull/253#issuecomment-37732781
+
+Cool. Feel free to push fixes there.
+
+That was definetly a strong motivation for me as well.
+
+- gaute
+
+
+From eg at gaute.vetsj.com  Tue Mar 18 14:24:28 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 18 Mar 2014 15:24:28 +0100
+Subject: [sup-devel] deprecating psych migration
+Message-ID: <1395152363-sup-3117@qwerzila>
+
+hi,
+
+i just pushed a pull request (#268) which deprecates yaml migration from
+old 1.8 style configs. the tests for ruby > 2.1 were broken (for the
+yaml migration bit) and I figured it was futile/not worth it to keep the
+migration script running for successive rubies.
+
+so, as of ruby 2.1.0 it won't be possible to migrate your old config
+files automatically from pre 0.13 sup. the upgrade path will then either
+involve using ruby < 2.0.0 to migrate, or to just manually
+migrate/re-configure sup (which I think is will be the preferred way).
+
+
+currently sup tests pass on 2.0 to 2.1.1 and I am running sup on ruby
+2.1.1. seems to work fine.
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140318/cda073c8/attachment.bin>
+
+From eg at gaute.vetsj.com  Fri Mar 21 15:00:20 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 21 Mar 2014 16:00:20 +0100
+Subject: [sup-devel] sup 0.16.0 released
+Message-ID: <1395413618-sup-4468@qwerzila>
+
+Greetings,
+
+I just released sup 0.16.0, get it at rubygems:
+
+ $ gem install sup
+
+release notes:
+
+* sup-sync-back-mbox removed.
+* safer mime-view attachment file name handling
+* show thread labels in thread-view-mode
+* remove lock file if there is no sup alive
+* deprecate migration script on ruby > 2.1
+
+
+Cheers, Gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140321/9b398c5f/attachment.bin>
+
+From steven at schmeiser.org  Thu Mar 27 23:40:18 2014
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Thu, 27 Mar 2014 19:40:18 -0400
+Subject: [sup-devel] [sup] Maildir root: Keep labels in sync with
+	maildir folders (#253)
+In-Reply-To: <1395042468-sup-5821@qwerzila>
+References: <sup-heliotrope/sup/pull/253@github.com>
+	<sup-heliotrope/sup/pull/253/c37732781@github.com>
+	<1395042468-sup-5821@qwerzila>
+Message-ID: <18152441-C2B3-4454-B1E1-3242F62E7412@schmeiser.org>
+
+I'm trying out the maildir-root branch, but get the following error:
+
+undefined local variable or method `check_enable_experimental' for MaildirSub (deleted):Redwood::MaildirRoot::MaildirSub
+/usr/local/Cellar/ruby193/1.9.3-p545/lib/ruby/gems/1.9.1/gems/sup-999/lib/sup/maildirroot.rb:153:in `ensure_maildir'
+
+I did a diff with an older version of maildir-root that I was using from gauteh's personal repository, but I didn't see anything obviously related to this that changed in maildirroot.rb.  Any suggestions?
+
+Thanks,
+steve 
+
+
+On Mar 17, 2014, at 3:52, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+> Excerpts from Matthieu Rakotojaona's message of 2014-03-15 18:53:10 +0100:
+>> Just opened https://github.com/sup-heliotrope/sup/tree/maildir-root
+>> branch at 3f6bc97a14f8e87f1663f924aca5333617cbeec7 (your HEAD) to
+>> track development of maildir-root. I'd like to use it in instead of
+>> `gmail_source` because even if I break my sup, I can still read my
+>> mails with any other MUA in the world.
+>> 
+>> --- Reply to this email directly or view it on GitHub:
+>> https://github.com/sup-heliotrope/sup/pull/253#issuecomment-37732781
+> 
+> Cool. Feel free to push fixes there.
+> 
+> That was definetly a strong motivation for me as well.
+> 
+> - gaute
+> 
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+> 
+
+
+From matthieu.rakotojaona at gmail.com  Fri Mar 28 07:47:35 2014
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 28 Mar 2014 08:47:35 +0100
+Subject: [sup-devel] [sup] Maildir root: Keep labels in sync with
+	maildir folders (#253)
+In-Reply-To: <18152441-C2B3-4454-B1E1-3242F62E7412@schmeiser.org>
+References: <sup-heliotrope/sup/pull/253@github.com>
+	<sup-heliotrope/sup/pull/253/c37732781@github.com>
+	<1395042468-sup-5821@qwerzila>
+	<18152441-C2B3-4454-B1E1-3242F62E7412@schmeiser.org>
+Message-ID: <1395992480-sup-9485@kpad>
+
+Excerpts from Steven Schmeiser's message of 2014-03-28 00:40:18 +0100:
+> I'm trying out the maildir-root branch, but get the following error:
+> 
+> undefined local variable or method `check_enable_experimental' for MaildirSub (deleted):Redwood::MaildirRoot::MaildirSub
+> /usr/local/Cellar/ruby193/1.9.3-p545/lib/ruby/gems/1.9.1/gems/sup-999/lib/sup/maildirroot.rb:153:in `ensure_maildir'
+> 
+> I did a diff with an older version of maildir-root that I was using from gauteh's personal repository, but I didn't see anything obviously related to this that changed in maildirroot.rb.  Any suggestions?
+
+Yes, the `check_enable_experimental` function is defined at the
+maildirroot level, not the maildirsub level. The whole
+e8bc811bb9188cbe9c2111b9515110a90278c46e commit is wrong.
+
+If you feel adventurous you can fix this: the 2 lines are related to the
+@maildirroot variable. I'll provide a patch a fix after $dayjob.
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 966 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140328/fdc41f23/attachment-0001.bin>
+
+From mbaehr at email.archlab.tuwien.ac.at  Sun Mar 30 09:51:43 2014
+From: mbaehr at email.archlab.tuwien.ac.at (=?utf-8?q?Martin_B=C3=A4hr?=)
+Date: Sun, 30 Mar 2014 11:51:43 +0200
+Subject: [sup-devel] use-mail branch and other work
+Message-ID: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+
+hi,
+
+i'd like to introduce what i am working on and some ideas that i have for sup.
+
+first of all, i was very enthusiastic when i discovered sup (i was checking out
+a fork of mutt, which was including notmuch, which was inspired by sup. the
+mutt fork or notmuch were not really interesting to me, but sup is!)
+
+i have been using mutt since more than 15 years, and in recent years i have
+been running more and more into limitations.
+i knew knew right away that sup could be a platform to overcome those
+limitations. i was even more delighted when i found out that several of the
+mutt limitations i ran into are already solved in sup.
+
+ongoing work:
+add support for a "new" state that is different from unread.
+  the idea here is that the new state of a message can be cleared without
+  reading the message or marking it as read. this distinction is important
+  because i have lots of old unread mail, and so i can't see where i have
+  actual new mail.
+  i don't want to mark everything as read because occasionally i am searching
+  for an old message where i read about something specific, which is hard if i
+  can't tell the difference between what i read and what i didn't read. 
+  not to mention that it is very hard to mark 500+K messages as read.
+
+use the use-mail branch and fix problems as i discover them.
+  i stumbled into this by accident. i tried use-mail because current stable and
+  develop branches have problems on debian 6. as a result i discovered that the
+  use-mail branch is stable enough for my needs. since this branch is
+  inevitably the way forward given that RMail is dead, i figured that my time
+  is better spent fixing my problems here, and avoid RMail alltogether.
+
+some ideas:
+    i'd like the ability to apply a label change to all messages that match a
+  given search, not just the ones loaded into the buffer.
+
+  i have imported a lot of uncategorized messages from my mutt inbox, and i
+  want to make use of sup's tagging to group them. instead of loading all
+  messages in a search with !! it would be nice to just let sup tagg those
+  messages in the background.
+
+    i am using procmail still to prefilter mail. it's going to take a while to
+  switch to a sup based filtering, and i am not sure i even want that, at least
+  not until sup can reliably filter mails into folders.
+
+  procmail also filters spam, and in sup those sources are automatically tagged
+  as spam. my spam filters are aggressive, and do have false positives. sup
+  should be able to determine that any message that is a reply to a known
+  non-spam message is also not spam, and should thus not apply the spam label
+  to this message.
+
+  the same goes for any message from an email address that i have sent mail to.
+  iaw, all my contacts should automatically be whitelisted.
+
+    occasionally, when writing mail i need to look up something in other mails.
+  with mutt i "solved" this by running two instances of mutt in parallel. (the
+  main reason for that was to be able to switch between the inbox and other
+  folders without having to reload the inbox all the time. sup solves that part
+  nicely by allowing me to switch between buffers.)
+
+  so what i want here is some way to switch back and forth between vim and sup.
+  possibly this can be done with tmux or screen by opening vim in another
+  window.
+
+    i'd like to treat saved searches as virtual folders. they should be in a
+  combined list with labels, and i'd like to be able to open them by typing the
+  name in the search prompt.
+
+    related to this and above, i'd like to auto-label searches. instead of
+  writing a hook, i'd like to just say: always label messages matching this
+  search, and have sup generate the necessary hook by itself
+
+  i have some more ideas that don't come to mind right now.
+
+you can find my work on https://github.com/embee/sup in the use-mail and
+work-in-progress branches.
+
+greetings, martin.
+
+-- 
+eKita                   -   the online platform for your entire academic life
+hackerspace beijing     -                                    http://qike.info
+-- 
+chief engineer                                                       eKita.co
+pike programmer      pike.lysator.liu.se    caudium.net     societyserver.org
+BLUG secretary                                                 beijinglug.org
+foresight developer  foresightlinux.org                            realss.com
+unix sysadmin
+Martin B?hr          working in china        http://societyserver.org/mbaehr/
+
+From steven at schmeiser.org  Sun Mar 30 20:47:37 2014
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Sun, 30 Mar 2014 16:47:37 -0400
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+Message-ID: <9CF97884-262B-4CAA-951C-D359C331AC3F@schmeiser.org>
+
+Hi Martin,
+
+Here is what I do to go back and forth between sup and vim while composing a message.
+
+Launch sup with a script...
+
+#!/bin/sh
+tmux -2 new-session -d -s mail -n 'sup' "export TERM=screen-256color; sup"
+tmux select-window -t 1
+tmux attach-session -d -t mail
+
+Use an async-edit hook:
+
+system '/Users/steve/.bin/supCompose.sh ' + file_path
+
+where supCompose.sh is
+
+#!/bin/sh
+tmux new-window -n compose "vim +/^$ -f -c 'normal o' -c 'startinsert' $1"
+
+Then I use the async edit mode when replying to messages.  It would be nice for sup to have an option to always use async edit, but this gets me by.
+
+steve
+
+On Mar 30, 2014, at 5:51, Martin B?hr <mbaehr at email.archlab.tuwien.ac.at> wrote:
+
+> hi,
+> 
+> i'd like to introduce what i am working on and some ideas that i have for sup.
+> 
+> first of all, i was very enthusiastic when i discovered sup (i was checking out
+> a fork of mutt, which was including notmuch, which was inspired by sup. the
+> mutt fork or notmuch were not really interesting to me, but sup is!)
+> 
+> i have been using mutt since more than 15 years, and in recent years i have
+> been running more and more into limitations.
+> i knew knew right away that sup could be a platform to overcome those
+> limitations. i was even more delighted when i found out that several of the
+> mutt limitations i ran into are already solved in sup.
+> 
+> ongoing work:
+> add support for a "new" state that is different from unread.
+>  the idea here is that the new state of a message can be cleared without
+>  reading the message or marking it as read. this distinction is important
+>  because i have lots of old unread mail, and so i can't see where i have
+>  actual new mail.
+>  i don't want to mark everything as read because occasionally i am searching
+>  for an old message where i read about something specific, which is hard if i
+>  can't tell the difference between what i read and what i didn't read. 
+>  not to mention that it is very hard to mark 500+K messages as read.
+> 
+> use the use-mail branch and fix problems as i discover them.
+>  i stumbled into this by accident. i tried use-mail because current stable and
+>  develop branches have problems on debian 6. as a result i discovered that the
+>  use-mail branch is stable enough for my needs. since this branch is
+>  inevitably the way forward given that RMail is dead, i figured that my time
+>  is better spent fixing my problems here, and avoid RMail alltogether.
+> 
+> some ideas:
+>    i'd like the ability to apply a label change to all messages that match a
+>  given search, not just the ones loaded into the buffer.
+> 
+>  i have imported a lot of uncategorized messages from my mutt inbox, and i
+>  want to make use of sup's tagging to group them. instead of loading all
+>  messages in a search with !! it would be nice to just let sup tagg those
+>  messages in the background.
+> 
+>    i am using procmail still to prefilter mail. it's going to take a while to
+>  switch to a sup based filtering, and i am not sure i even want that, at least
+>  not until sup can reliably filter mails into folders.
+> 
+>  procmail also filters spam, and in sup those sources are automatically tagged
+>  as spam. my spam filters are aggressive, and do have false positives. sup
+>  should be able to determine that any message that is a reply to a known
+>  non-spam message is also not spam, and should thus not apply the spam label
+>  to this message.
+> 
+>  the same goes for any message from an email address that i have sent mail to.
+>  iaw, all my contacts should automatically be whitelisted.
+> 
+>    occasionally, when writing mail i need to look up something in other mails.
+>  with mutt i "solved" this by running two instances of mutt in parallel. (the
+>  main reason for that was to be able to switch between the inbox and other
+>  folders without having to reload the inbox all the time. sup solves that part
+>  nicely by allowing me to switch between buffers.)
+> 
+>  so what i want here is some way to switch back and forth between vim and sup.
+>  possibly this can be done with tmux or screen by opening vim in another
+>  window.
+> 
+>    i'd like to treat saved searches as virtual folders. they should be in a
+>  combined list with labels, and i'd like to be able to open them by typing the
+>  name in the search prompt.
+> 
+>    related to this and above, i'd like to auto-label searches. instead of
+>  writing a hook, i'd like to just say: always label messages matching this
+>  search, and have sup generate the necessary hook by itself
+> 
+>  i have some more ideas that don't come to mind right now.
+> 
+> you can find my work on https://github.com/embee/sup in the use-mail and
+> work-in-progress branches.
+> 
+> greetings, martin.
+> 
+> -- 
+> eKita                   -   the online platform for your entire academic life
+> hackerspace beijing     -                                    http://qike.info
+> -- 
+> chief engineer                                                       eKita.co
+> pike programmer      pike.lysator.liu.se    caudium.net     societyserver.org
+> BLUG secretary                                                 beijinglug.org
+> foresight developer  foresightlinux.org                            realss.com
+> unix sysadmin
+> Martin B?hr          working in china        http://societyserver.org/mbaehr/
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+
+
+From eg at gaute.vetsj.com  Mon Mar 31 12:09:56 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 31 Mar 2014 14:09:56 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+Message-ID: <1396267373-sup-7639@qwerzila>
+
+Excerpts from Martin B?hr's message of 2014-03-30 11:51:43 +0200:
+> hi,
+>
+> i'd like to introduce what i am working on and some ideas that i have for sup.
+>
+> first of all, i was very enthusiastic when i discovered sup (i was checking out
+> a fork of mutt, which was including notmuch, which was inspired by sup. the
+> mutt fork or notmuch were not really interesting to me, but sup is!)
+>
+> i have been using mutt since more than 15 years, and in recent years i have
+> been running more and more into limitations.
+> i knew knew right away that sup could be a platform to overcome those
+> limitations. i was even more delighted when i found out that several of the
+> mutt limitations i ran into are already solved in sup.
+>
+> ongoing work:
+> add support for a "new" state that is different from unread.
+>   the idea here is that the new state of a message can be cleared without
+>   reading the message or marking it as read. this distinction is important
+>   because i have lots of old unread mail, and so i can't see where i have
+>   actual new mail.
+>   i don't want to mark everything as read because occasionally i am searching
+>   for an old message where i read about something specific, which is hard if i
+>   can't tell the difference between what i read and what i didn't read.
+>   not to mention that it is very hard to mark 500+K messages as read.
+
+Perhaps you followed the discussion with Ico / Zevv on irc? There might
+be a solution together with the proposed hooks in #276, or are you
+looking for something more integrated?
+
+>
+> use the use-mail branch and fix problems as i discover them.
+>   i stumbled into this by accident. i tried use-mail because current stable and
+>   develop branches have problems on debian 6. as a result i discovered that the
+>   use-mail branch is stable enough for my needs. since this branch is
+>   inevitably the way forward given that RMail is dead, i figured that my time
+>   is better spent fixing my problems here, and avoid RMail alltogether.
+
+Excellent!
+
+>
+> some ideas:
+>     i'd like the ability to apply a label change to all messages that match a
+>   given search, not just the ones loaded into the buffer.
+>
+>   i have imported a lot of uncategorized messages from my mutt inbox, and i
+>   want to make use of sup's tagging to group them. instead of loading all
+>   messages in a search with !! it would be nice to just let sup tagg those
+>   messages in the background.
+>
+>     i am using procmail still to prefilter mail. it's going to take a while to
+>   switch to a sup based filtering, and i am not sure i even want that, at least
+>   not until sup can reliably filter mails into folders.
+>
+>   procmail also filters spam, and in sup those sources are automatically tagged
+>   as spam. my spam filters are aggressive, and do have false positives. sup
+>   should be able to determine that any message that is a reply to a known
+>   non-spam message is also not spam, and should thus not apply the spam label
+>   to this message.
+>
+>   the same goes for any message from an email address that i have sent mail to.
+>   iaw, all my contacts should automatically be whitelisted.
+
+
+Some of these might be harder to do with sup since we don't keep an
+adress book. One option is to keep updating it as mail happens, but also
+have a way to run through the index and generate the stats you need.
+
+>     occasionally, when writing mail i need to look up something in other mails.
+>   with mutt i "solved" this by running two instances of mutt in parallel. (the
+>   main reason for that was to be able to switch between the inbox and other
+>   folders without having to reload the inbox all the time. sup solves that part
+>   nicely by allowing me to switch between buffers.)
+>
+>   so what i want here is some way to switch back and forth between vim and sup.
+>   possibly this can be done with tmux or screen by opening vim in another
+>   window.
+>
+>     i'd like to treat saved searches as virtual folders. they should be in a
+>   combined list with labels, and i'd like to be able to open them by typing the
+>   name in the search prompt.
+
+You can presse enter after searching to get a list, but I agree, it
+could be a streamlined way to do these things.
+
+
+>     related to this and above, i'd like to auto-label searches. instead of
+>   writing a hook, i'd like to just say: always label messages matching this
+>   search, and have sup generate the necessary hook by itself
+>
+>   i have some more ideas that don't come to mind right now.
+>
+> you can find my work on https://github.com/embee/sup in the use-mail and
+> work-in-progress branches.
+
+Lots of good ideas and I hope that you can get sup to do what you want.
+I think much of it could be included if it needs to be tweaked.
+
+This is great, if you are interested I could set you up as an
+contributor on the github organization and you could push your changes
+to the use-mail branch. With your changes and especially if we get
+crypto working on Mail I would switch completely as well.
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140331/b19372ef/attachment.bin>
+
+From eg at gaute.vetsj.com  Mon Mar 31 12:02:46 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 31 Mar 2014 14:02:46 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <9CF97884-262B-4CAA-951C-D359C331AC3F@schmeiser.org>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+	<9CF97884-262B-4CAA-951C-D359C331AC3F@schmeiser.org>
+Message-ID: <1396267296-sup-756@qwerzila>
+
+Excerpts from Steven Schmeiser's message of 2014-03-30 22:47:37 +0200:
+> Then I use the async edit mode when replying to messages.  It would be
+> nice for sup to have an option to always use async edit, but this gets
+> me by.
+
+I added an option in #283 as a response to your old request in #118.
+Please try it out. Probably needs some testing in regular mode first as
+well..
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140331/97883c7e/attachment.bin>
+
+From matthieu.rakotojaona at gmail.com  Mon Mar 31 19:42:57 2014
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Mon, 31 Mar 2014 21:42:57 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+Message-ID: <1396294116-sup-6519@kpad>
+
+Hello Martin!
+
+Excerpts from Martin B?hr's message of 2014-03-30 11:51:43 +0200:
+> ongoing work:
+> add support for a "new" state that is different from unread.
+>   the idea here is that the new state of a message can be cleared without
+>   reading the message or marking it as read. this distinction is important
+>   because i have lots of old unread mail, and so i can't see where i have
+>   actual new mail.
+>   i don't want to mark everything as read because occasionally i am searching
+>   for an old message where i read about something specific, which is hard if i
+>   can't tell the difference between what i read and what i didn't read. 
+>   not to mention that it is very hard to mark 500+K messages as read.
+
+Isn't that more ore less achievable with the inbox label ? It is added
+automatically to new messages unless you explicitely specify otherwise.
+
+> use the use-mail branch and fix problems as i discover them.
+>   i stumbled into this by accident. i tried use-mail because current stable and
+>   develop branches have problems on debian 6. as a result i discovered that the
+>   use-mail branch is stable enough for my needs. since this branch is
+>   inevitably the way forward given that RMail is dead, i figured that my time
+>   is better spent fixing my problems here, and avoid RMail alltogether.
+
+Good :)
+
+> some ideas:
+>     i'd like the ability to apply a label change to all messages that match a
+>   given search, not just the ones loaded into the buffer.
+> 
+>   i have imported a lot of uncategorized messages from my mutt inbox, and i
+>   want to make use of sup's tagging to group them. instead of loading all
+>   messages in a search with !! it would be nice to just let sup tagg those
+>   messages in the background.
+
+Semi-answer: bin/sup-tweak-labels is this, except it's supposed to be
+used from the command line. Moreover you must exit sup because the index
+can't be shared safely.
+Since Sup is mostly targeted towards the ui and that use case happen
+once in the lifetime of a user (hopefully !), I guess I'm ok with how
+things are. I don't know how we could manage to reproduce the
+bin/sup-tweak-labels _inside_ sup efficiently, but I'm open to the
+discussion.
+
+>     i am using procmail still to prefilter mail. it's going to take a while to
+>   switch to a sup based filtering, and i am not sure i even want that, at least
+>   not until sup can reliably filter mails into folders.
+> 
+>   procmail also filters spam, and in sup those sources are automatically tagged
+>   as spam. my spam filters are aggressive, and do have false positives. sup
+>   should be able to determine that any message that is a reply to a known
+>   non-spam message is also not spam, and should thus not apply the spam label
+>   to this message.
+> 
+>   the same goes for any message from an email address that i have sent mail to.
+>   iaw, all my contacts should automatically be whitelisted.
+
+That would be possible with a hook, possibly in PollManager::do_poll
+
+>     occasionally, when writing mail i need to look up something in other mails.
+>   with mutt i "solved" this by running two instances of mutt in parallel. (the
+>   main reason for that was to be able to switch between the inbox and other
+>   folders without having to reload the inbox all the time. sup solves that part
+>   nicely by allowing me to switch between buffers.)
+> 
+>   so what i want here is some way to switch back and forth between vim and sup.
+>   possibly this can be done with tmux or screen by opening vim in another
+>   window.
+> 
+>     i'd like to treat saved searches as virtual folders. they should be in a
+>   combined list with labels, and i'd like to be able to open them by typing the
+>   name in the search prompt.
+> 
+>     related to this and above, i'd like to auto-label searches. instead of
+>   writing a hook, i'd like to just say: always label messages matching this
+>   search, and have sup generate the necessary hook by itself
+> 
+>   i have some more ideas that don't come to mind right now.
+
+You do have interesting ideas. Welcome on board :)
+
+> you can find my work on https://github.com/embee/sup in the use-mail and
+> work-in-progress branches.
+> 
+> greetings, martin.
+> 
+> -- 
+> eKita                   -   the online platform for your entire academic life
+> hackerspace beijing     -                                    http://qike.info
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 966 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140331/a79df87e/attachment-0001.bin>
+
+From eg at gaute.vetsj.com  Mon Mar 31 20:57:06 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 31 Mar 2014 22:57:06 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396294116-sup-6519@kpad>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+	<1396294116-sup-6519@kpad>
+Message-ID: <1396299131-sup-5113@qwerzila>
+
+Excerpts from Matthieu Rakotojaona's message of 2014-03-31 21:42:57 +0200:
+> Excerpts from Martin B?hr's message of 2014-03-30 11:51:43 +0200:
+> > some ideas:
+> >     i'd like the ability to apply a label change to all messages that match a
+> >   given search, not just the ones loaded into the buffer.
+> >
+> >   i have imported a lot of uncategorized messages from my mutt inbox, and i
+> >   want to make use of sup's tagging to group them. instead of loading all
+> >   messages in a search with !! it would be nice to just let sup tagg those
+> >   messages in the background.
+>
+> Semi-answer: bin/sup-tweak-labels is this, except it's supposed to be
+> used from the command line. Moreover you must exit sup because the index
+> can't be shared safely.
+> Since Sup is mostly targeted towards the ui and that use case happen
+> once in the lifetime of a user (hopefully !), I guess I'm ok with how
+> things are. I don't know how we could manage to reproduce the
+> bin/sup-tweak-labels _inside_ sup efficiently, but I'm open to the
+> discussion.
+
+We could do something similar to what tagging and + does now, but
+iterate over all the threads in the search without rendering them.
+Unless the chunks are loaded it is a matter of loading it from the
+index. It would be an extension to thread-index mode. Basically a
+command: Apply an action to all threads matching the current search. It
+will be the equivalent of: Search + show all (!!) + tag all +
+do action.
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140331/452f69a5/attachment.bin>
+

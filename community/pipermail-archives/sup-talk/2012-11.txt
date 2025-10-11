@@ -1,0 +1,555 @@
+From atann at alphasrv.net  Thu Nov 22 14:54:08 2012
+From: atann at alphasrv.net (Andre Tann)
+Date: Thu, 22 Nov 2012 15:54:08 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+Message-ID: <201211221554.08990@inter.netz>
+
+Hello everyone,
+
+as this Website http://sup.rubyforge.org/wiki/wiki.pl?Hooks is not
+really informative ;) ? does anybody here have some examples for sup
+hooks?
+
+I'm completely new to ruby, nearly completely new to sup, and I would
+like to do some tagging in the after-poll.rb hook.
+
+Thanks a lot!
+Andre
+
+-- 
+Andre Tann
+
+
+From jim at gonzul.net  Thu Nov 22 21:35:54 2012
+From: jim at gonzul.net (Jim Cheetham)
+Date: Fri, 23 Nov 2012 10:35:54 +1300
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <201211221554.08990@inter.netz>
+References: <201211221554.08990@inter.netz>
+Message-ID: <CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+
+On Fri, Nov 23, 2012 at 3:54 AM, Andre Tann <atann at alphasrv.net> wrote:
+> as this Website http://sup.rubyforge.org/wiki/wiki.pl?Hooks is not
+> really informative ;) ? does anybody here have some examples for sup
+> hooks?
+
+Sadly the wiki has been almost completely spammed out of existance; it
+doesn't store a long-enough revision history to get reverted correctly
+any more.
+
+You probably should be doing tagging in before-add.rb
+
+In my before-add hook I was doing a lot of tagging, so much that I
+built a small function to help me add and remove tags in one
+invocation. A bunch of standard actions help.
+
+First, extract the useful fields -- because a message can have
+multiple recipients and I want to check any/all of them (To, Cc, Bcc).
+Doing this means I don't have to check the array of recpipents every
+time, I can just use string matching on a long flat list of
+recipients.
+
+----
+# Build up an array of recipients for this message
+recipients=[]
+message.recipients.each {|rp| recipients << rp.email }
+recips = recipients.join(' ')
+----
+
+Then I use a case statement to separate out all the different checks I
+want to do:
+
+----
+# Nest a set of mutually exclusive cases ...
+case
+# Nagios messages
+        when (message.from.email =~ /nagios at MYDOMAIN/ \
+          and recips =~ /MYDOMAIN/) :
+                tagit(message,"auto nagios -inbox")
+# Logwatch messages
+        when (message.from.email =~ /^logwatch@/ \
+          and message.subj =~ /^Logwatch for/) :
+                tagit(message,"auto logwatch -inbox")
+# Legato messages
+        when message.from.email =~ /^legato@/ :
+                tagit(message,"auto legato -inbox")
+----
+
+Those three cases check the sender, adding the tags "auto" and
+"nagios"/"logwatch"/"legato" as appropriate, and remove the inbox tag,
+so I don't see them in my default view.
+
+I'm using a function "tagit" to do this, it's just a helper function
+to make the rules read a little easier. It's defined at the beginning
+of my before-add.rb :-
+
+----
+def tagit(message,labels)
+        actions=[]
+        labels.split(' ').each {|l|
+                # Check the first character of each label.
+                # If it starts with -, remove the label
+                # otherwise add it.
+                minus=l.match('^-(.*)$')
+                if minus
+                        message.remove_label minus[1]
+                        actions << "Del #{minus[1]}"
+                else
+                        message.add_label l
+                        actions << "Add #{l}"
+                end
+        }
+        log "Tagit: #{labels} -> #{message.id} : #{actions.join(',')}"
+end
+----
+
+Here are a few more tests that I do :-
+
+----
+# EDUCAUSE Security
+        when message.raw_header =~ /^List-Owner:
+<mailto:SECURITY-request at LISTSERV.EDUCAUSE.EDU>$/ :
+                tagit(message,"list educause -inbox")
+# rss2email blog messages
+        when message.raw_header =~ /X-rss2email/ :
+                tagit(message,"blog -inbox")
+                log " blog from #{message.from.inspect}"
+                log " blog name #{message.from.name}"
+                case message.from.name
+                        when /Shipping Container House/
+                                tagit(message,"blog.marek")
+                        when /cortesi/
+                                tagit(message,"blog.cortesi")
+                        when /RISKS/
+                                tagit(message,"blog.risks")
+                        when /WTF/
+                                tagit(message,"blog.wtf")
+                        when /Schneier on Security/
+                                tagit(message,"blog.schneier")
+                        when /Krebs/
+                                tagit(message,"blog.krebs")
+                end
+----
+
+So in general I'm looking at these fields :-
+* sender address (message.from.email)
+* sender name (message.from.name)
+* recipient (handy when it's to a list address, using a copy of
+message.recipients.each)
+* subject (message.subj)
+* unusual headers (message.raw_header)
+
+and using decisions based on those to change the tags, using
+message.add_label and message.remove_label -- but I'm doing those via
+my helper function tagit()
+
+Hope that helps :-)
+
+-jim
+
+From atann at alphasrv.net  Fri Nov 23 11:16:36 2012
+From: atann at alphasrv.net (Andre Tann)
+Date: Fri, 23 Nov 2012 12:16:36 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+Message-ID: <201211231216.36779@inter.netz>
+
+Hi Jim,
+
+Jim Cheetham, Donnerstag, 22. November 2012: 
+
+> Sadly the wiki has been almost completely spammed out of existance; it
+> doesn't store a long-enough revision history to get reverted correctly
+> any more.
+
+?and even more sadly, the sup-project is not so really alive at the
+moment. As I found it has difficulties displaying utf8 messages. That's
+really annoying?
+
+
+> First, extract the useful fields -- because a message can have
+> multiple recipients and I want to check any/all of them (To, Cc, Bcc).
+> Doing this means I don't have to check the array of recpipents every
+> time, I can just use string matching on a long flat list of
+> recipients.
+[?lots of code?]
+> Hope that helps :-)
+
+Yes, this helps very much, and I'll have to translate this into my
+situation.
+
+
+Another thing - I found nothing about dealing with different
+personalities. On the website I read 
+
+   Handle multiple accounts. Replying to email sent to a particular
+   account will use the correct SMTP server, signature, and from address.
+
+But I see nothing about how this can be done. What is an account? How
+do account and sender address, signature? stick together? How can I
+choose the personality with which I reply in case sup guesses wrong?
+
+Is there a site out there where I can read about this?
+
+
+Thanks for your help!
+
+-- 
+Andre Tann
+
+
+From ruthard.baudach at web.de  Fri Nov 23 15:14:09 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Fri, 23 Nov 2012 16:14:09 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <201211231216.36779@inter.netz>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+Message-ID: <1353683327-sup-1399@prxbdc.dyndns.org>
+
+>== Ausz?ge aus der Nachricht von  Andre Tann vom 2012-11-23 12:16:
+> Hi Jim,
+> 
+> Jim Cheetham, Donnerstag, 22. November 2012: 
+> 
+> > Sadly the wiki has been almost completely spammed out of existance; it
+> > doesn't store a long-enough revision history to get reverted correctly
+> > any more.
+> 
+> ?and even more sadly, the sup-project is not so really alive at the
+> moment. As I found it has difficulties displaying utf8 messages. That's
+> really annoying?
+That's not a problem of sup, but of the curses library. you must install
+a ruby-nwcurses library instead of ncurses tu support utf-8.
+Alas I forgot how to do this. There used to be three or four places on
+the web describing this problem, I hope they can still be found.
+
+Greetings,
+
+Ruthard
+
+From sdothum at gmail.com  Fri Nov 23 18:49:52 2012
+From: sdothum at gmail.com (Steven Hum)
+Date: Fri, 23 Nov 2012 13:49:52 -0500
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <1353683327-sup-1399@prxbdc.dyndns.org>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+	<1353683327-sup-1399@prxbdc.dyndns.org>
+Message-ID: <1353696475-sup-5507@luna>
+
+Does the ncursesw gem not address this which is loaded in place of the 
+standard ncurses library if available?
+
+Steven
+
+Excerpts from Ruthard Baudach's message of 2012-11-23 10:14:09 -0500:
+> >== Ausz?ge aus der Nachricht von  Andre Tann vom 2012-11-23 12:16:
+> > Hi Jim,
+> > 
+> > Jim Cheetham, Donnerstag, 22. November 2012: 
+> > 
+> > > Sadly the wiki has been almost completely spammed out of existance; it
+> > > doesn't store a long-enough revision history to get reverted correctly
+> > > any more.
+> > 
+> > ?and even more sadly, the sup-project is not so really alive at the
+> > moment. As I found it has difficulties displaying utf8 messages. That's
+> > really annoying?
+> That's not a problem of sup, but of the curses library. you must install
+> a ruby-nwcurses library instead of ncurses tu support utf-8.
+> Alas I forgot how to do this. There used to be three or four places on
+> the web describing this problem, I hope they can still be found.
+> 
+> Greetings,
+> 
+> Ruthard
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From atann at alphasrv.net  Fri Nov 23 20:20:18 2012
+From: atann at alphasrv.net (Andre Tann)
+Date: Fri, 23 Nov 2012 21:20:18 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <1353683327-sup-1399@prxbdc.dyndns.org>
+References: <201211221554.08990@inter.netz> <201211231216.36779@inter.netz>
+	<1353683327-sup-1399@prxbdc.dyndns.org>
+Message-ID: <201211232120.19098@inter.netz>
+
+Ruthard Baudach, Freitag, 23. November 2012: 
+
+> That's not a problem of sup, but of the curses library. you must install
+> a ruby-nwcurses library instead of ncurses tu support utf-8.
+> Alas I forgot how to do this. There used to be three or four places on
+> the web describing this problem, I hope they can still be found.
+
+As we see here
+
+   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=477366#52
+
+it is not the cure just to install this library.
+
+Googling around for a while now it seems that there is no way to make
+sup work fine with utf8.
+
+It's *really* a pity that this is a dead project (and I have no clue
+about ruby).
+
+-- 
+Andre Tann
+
+
+From atann at alphasrv.net  Sat Nov 24 20:42:25 2012
+From: atann at alphasrv.net (Andre Tann)
+Date: Sat, 24 Nov 2012 21:42:25 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+Message-ID: <201211242142.25559@inter.netz>
+
+Hi Jim,
+
+thanks again for your code-snippets. To feed google and for the files:
+Here is a complete example how to label incoming mail:
+
+===snip
+$ cat ~/.sup/hooks/before-add-message.rb 
+
+def tagit(message,labels)
+        actions=[]
+        labels.split(' ').each {|l|
+                # Check the first character of each label.
+                # If it starts with -, remove the label
+                # otherwise add it.
+                minus=l.match('^-(.*)$')
+                if minus
+                        message.remove_label minus[1]
+                        actions << "Del #{minus[1]}"
+                else
+                        message.add_label l
+                        actions << "Add #{l}"
+                end
+        }
+        log "Tagit: #{labels} -> #{message.id} : #{actions.join(',')}"
+end
+
+
+# Build up an array of recipients for this message
+recipients=[]
+message.recipients.each {|rp| recipients << rp.email }
+recips = recipients.join(' ')
+
+# Nest a set of mutually exclusive cases ?
+case
+# Label test messages
+        when (message.subj =~ /test/ ) :
+                tagit(message,"Testlabel")
+
+end
+===snip
+
+
+Still, I have no idea on how to deal with accounts. But that goes into
+another thread ;)
+
+Greetings,
+
+-- 
+Andre Tann
+
+
+From jim at gonzul.net  Sun Nov 25 21:09:57 2012
+From: jim at gonzul.net (Jim Cheetham)
+Date: Mon, 26 Nov 2012 10:09:57 +1300
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <201211231216.36779@inter.netz>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+Message-ID: <CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+
+Glad that helped. It was a bit of a code-dump because I'm not using
+sup any more.
+
+The abandon-ness of sup is sad; it was probably the best mail client
+I've used (except for mh, about 20 years ago). Unfortunately as my
+underlying OS libraries changed, sup didn't keep up with API changes,
+and now it can't handle GPG. For a while I was running a chroot Ubuntu
+11.04 just for sup, but I stopped doing that a while ago. As others
+have mentioned, nwcurses is the solution to utf8 but applying it isn't
+straightforward. And I didn't ever try multiple personalities (as I
+keep my personalities in separate areas/servers and try hard not to
+mix them in the same UI; too much chance of data leakage otherwise and
+that's not a good thing in my line of work)
+
+I'm currently trying to keep heliotrope/turnsole running, but it seems
+to be only halfway useable; the basics work but the more advanced
+things are not present. I'm not a developer and can't wade in to @wm's
+code to help there. It does keep my daily mailbox running though.
+
+I'd go back to mh again, possibly combined with some tmux invocations
+to keep the asynchronous nature, except I've grown to like the use of
+a tagging interface rather than the traditional Maildir/IMAP folder
+system. However, notmuchfs is a tempting general-purpose solution to
+that.
+
+
+-jim
+
+From matthieu.rakotojaona at gmail.com  Tue Nov 27 12:54:46 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 27 Nov 2012 13:54:46 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+	<CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+Message-ID: <CAMiZLn25NOtA1evXysuObdHUi_j3WVRueB2GFWkPn4=ibZk_xw@mail.gmail.com>
+
+On Sun, Nov 25, 2012 at 10:09 PM, Jim Cheetham <jim at gonzul.net> wrote:
+
+> I'm currently trying to keep heliotrope/turnsole running, but it seems
+> to be only halfway useable; the basics work but the more advanced
+> things are not present. I'm not a developer and can't wade in to @wm's
+> code to help there. It does keep my daily mailbox running though.
+>
+
+What about tackling heliotrope, then ? I already did some heavy changes to
+make it work the way I wanted, but unfortunately I'm a bit alone here. I
+got basic functionalities working too, and, most importantly, I have added
+an IMAP endpoint for OfflineIMAP to synchronize heliotrope with some
+external maildir/IMAP system, albeit not totally complete yet.
+
+Heliotrope is in a quite usable state for me now, but there are some
+functionalities in turnsole I'd like to work on. On the other hand, notmuch
+has more development going on, so it seems to be a reasonable way to go if
+you don't have time to spend on fiddling with the code.
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20121127/e5933842/attachment-0001.html>
+
+From ruthard.baudach at web.de  Tue Nov 27 15:13:07 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Tue, 27 Nov 2012 16:13:07 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <CAMiZLn25NOtA1evXysuObdHUi_j3WVRueB2GFWkPn4=ibZk_xw@mail.gmail.com>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+	<CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+	<CAMiZLn25NOtA1evXysuObdHUi_j3WVRueB2GFWkPn4=ibZk_xw@mail.gmail.com>
+Message-ID: <1354029005-sup-779@prxbdc.dyndns.org>
+
+
+I never got heliotrope/turnsole running for me, but it would be great,
+if this family of projects (sup and heliotrope/turnsole) could be
+better maintained/developed.
+
+A first important point would be a central source of information like
+the sup-wiki, but with spam-protection.
+
+Yours,
+
+Ruthard Baudach
+>== Ausz?ge aus der Nachricht von  Matthieu Rakotojaona vom 2012-11-27 13:54:
+> On Sun, Nov 25, 2012 at 10:09 PM, Jim Cheetham <jim at gonzul.net> wrote:
+> 
+> > I'm currently trying to keep heliotrope/turnsole running, but it seems
+> > to be only halfway useable; the basics work but the more advanced
+> > things are not present. I'm not a developer and can't wade in to @wm's
+> > code to help there. It does keep my daily mailbox running though.
+> >
+> 
+> What about tackling heliotrope, then ? I already did some heavy changes to
+> make it work the way I wanted, but unfortunately I'm a bit alone here. I
+> got basic functionalities working too, and, most importantly, I have added
+> an IMAP endpoint for OfflineIMAP to synchronize heliotrope with some
+> external maildir/IMAP system, albeit not totally complete yet.
+> 
+> Heliotrope is in a quite usable state for me now, but there are some
+> functionalities in turnsole I'd like to work on. On the other hand, notmuch
+> has more development going on, so it seems to be a reasonable way to go if
+> you don't have time to spend on fiddling with the code.
+> 
+
+From matthieu.rakotojaona at gmail.com  Tue Nov 27 17:48:56 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 27 Nov 2012 18:48:56 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <1354029005-sup-779@prxbdc.dyndns.org>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+	<CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+	<CAMiZLn25NOtA1evXysuObdHUi_j3WVRueB2GFWkPn4=ibZk_xw@mail.gmail.com>
+	<1354029005-sup-779@prxbdc.dyndns.org>
+Message-ID: <CAMiZLn19MB=DMY_e7NMqMapzStLuq7vUV-jxy1J7iAiTLwAN3w@mail.gmail.com>
+
+On Tue, Nov 27, 2012 at 4:13 PM, Ruthard Baudach <ruthard.baudach at web.de>wrote:
+
+> A first important point would be a central source of information like
+> the sup-wiki, but with spam-protection.
+>
+
+I started a brief API overview on my github branch :
+https://github.com/rakoo/heliotrope/wiki
+
+You need to have a github account to edit it, so I guess we can say it's
+relatively well spam-free. Plus, it's all Markdown in git, so it's easily
+exportable.
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20121127/38ba3410/attachment.html>
+
+From ruthard.baudach at web.de  Fri Nov 30 08:49:34 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Fri, 30 Nov 2012 09:49:34 +0100
+Subject: [sup-talk] Hooks - some examples appreciated
+In-Reply-To: <CAMiZLn19MB=DMY_e7NMqMapzStLuq7vUV-jxy1J7iAiTLwAN3w@mail.gmail.com>
+References: <201211221554.08990@inter.netz>
+	<CA+2knqvXGPNx1wSa78RKqSTpbcgHmp-a_MGMGpjV_XOavwNFYg@mail.gmail.com>
+	<201211231216.36779@inter.netz>
+	<CA+2knqsvExn2c679Qg98waoqckROH_S4HbR0Og+ws6GKDmJhHw@mail.gmail.com>
+	<CAMiZLn25NOtA1evXysuObdHUi_j3WVRueB2GFWkPn4=ibZk_xw@mail.gmail.com>
+	<1354029005-sup-779@prxbdc.dyndns.org>
+	<CAMiZLn19MB=DMY_e7NMqMapzStLuq7vUV-jxy1J7iAiTLwAN3w@mail.gmail.com>
+Message-ID: <1354264971-sup-7791@prxbdc.dyndns.org>
+
+>== Ausz?ge aus der Nachricht von  Matthieu Rakotojaona vom 2012-11-27 18:48:
+> On Tue, Nov 27, 2012 at 4:13 PM, Ruthard Baudach <ruthard.baudach at web.de>wrote:
+> 
+> > A first important point would be a central source of information like
+> > the sup-wiki, but with spam-protection.
+> >
+> 
+> I started a brief API overview on my github branch :
+> https://github.com/rakoo/heliotrope/wiki
+Good work, -- but necessary for developers, not for users.
+
+This is the main problem with heliotrope/turnsole -- it's yet not
+suitable for (advanced) users. I know enough ruby to adapt hook scripts
+for my needs, but do not have time to learn ruby by heart, or to
+participate in the development of heliotrope/turnsole. I tried to
+install it two or three times, but didn't manage to.
+
+Regards
+
+Ruthard
+

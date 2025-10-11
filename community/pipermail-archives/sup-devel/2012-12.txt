@@ -1,0 +1,79 @@
+From dmishd at gmail.com  Thu Dec 27 16:19:40 2012
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 27 Dec 2012 16:19:40 +0000
+Subject: [sup-devel] after second heliotrope import,
+	new messages not appearing
+Message-ID: <CAOxvSbextWLEObcKrU-93SzFqnhZ-up7cV6MwUboFgN2TM7GNw@mail.gmail.com>
+
+Hello
+
+I've just been trying to carry on from where I left off with migrating
+my work email into heliotrope (which I last worked on in May).
+
+So I've rsynced the mbox files across to where I will run heliotrope
+and tried running heliotrope-import to put all the new messages in the
+index. It appeared to work properly, reporting that messages were
+being added to the index and the index files themselves have had their
+timestamps updated. But when I start turnsole, I can't find any email
+after May.
+
+Any ideas on where to start looking to work out what is going on?
+
+Hamish
+
+From matthieu.rakotojaona at gmail.com  Sun Dec 30 16:22:51 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sun, 30 Dec 2012 17:22:51 +0100
+Subject: [sup-devel] after second heliotrope import,
+	new messages not appearing
+In-Reply-To: <CAOxvSbextWLEObcKrU-93SzFqnhZ-up7cV6MwUboFgN2TM7GNw@mail.gmail.com>
+References: <CAOxvSbextWLEObcKrU-93SzFqnhZ-up7cV6MwUboFgN2TM7GNw@mail.gmail.com>
+Message-ID: <CAMiZLn1Uv-5Csf7O2kxijbwanVsT78W4puy_ypN0vMr=3mA0Yg@mail.gmail.com>
+
+Hello,
+
+Your problem may have multiple origins, and I have no idea where you could
+start :
+
+- Did you use the correct directories for messages and index for _both_ the
+import and the server ? (sorry if this sounds stupid)
+- Did the index size in heliotrope change ? (as given by a GET to
+/size.json)
+- Did the messages file size change ?
+- Are the messages absent in inbox only or from the whole turnsole ?
+- As a last resort, could you send the mbox file so that I can try this at
+home, if your mails aren't too personal ?
+
+
+
+On Thu, Dec 27, 2012 at 5:19 PM, Hamish D <dmishd at gmail.com> wrote:
+
+> Hello
+>
+> I've just been trying to carry on from where I left off with migrating
+> my work email into heliotrope (which I last worked on in May).
+>
+> So I've rsynced the mbox files across to where I will run heliotrope
+> and tried running heliotrope-import to put all the new messages in the
+> index. It appeared to work properly, reporting that messages were
+> being added to the index and the index files themselves have had their
+> timestamps updated. But when I start turnsole, I can't find any email
+> after May.
+>
+> Any ideas on where to start looking to work out what is going on?
+>
+> Hamish
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20121230/7ccbeadd/attachment.html>
+

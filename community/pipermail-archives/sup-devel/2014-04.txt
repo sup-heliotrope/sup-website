@@ -1,0 +1,353 @@
+From mbaehr at email.archlab.tuwien.ac.at  Tue Apr  1 03:46:29 2014
+From: mbaehr at email.archlab.tuwien.ac.at (=?utf-8?q?Martin_B=C3=A4hr?=)
+Date: Tue, 01 Apr 2014 05:46:29 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396294116-sup-6519@kpad>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+	<1396294116-sup-6519@kpad>
+Message-ID: <1396321899-sup-4786@email.archlab.tuwien.ac.at>
+
+Excerpts from Matthieu Rakotojaona's message of 2014-03-31 21:42:57 +0200:
+> > add support for a "new" state that is different from unread.
+> >   the idea here is that the new state of a message can be cleared without
+> >   reading the message or marking it as read. this distinction is important
+> >   because i have lots of old unread mail, and so i can't see where i have
+> >   actual new mail.
+> Isn't that more ore less achievable with the inbox label ? It is added
+> automatically to new messages unless you explicitely specify otherwise.
+
+the inbox is where all the important new mail comes in. it is easy to reach
+with "I", which is important. i do not want mailing list emails in the inbox. i
+have some very active lists, which would just flodd the inbox view and drown
+out all other new messages.
+
+i could use the inbox if i made a search that excludes all mailinglists, but
+that search would take more than one keystroke to reach. and it would not give me other features, such as a count of new messages in the label-list
+
+"new" is a state that should be automatically cleared when i read a message or
+when the message/thread goes out of view.
+
+i currently have it working semi-automaticly in 
+https://github.com/eMBee/sup/commit/9debc5be804f6dc38cc9d4a14d5eead0337b1e22
+
+the new state is cleared when a thread is read or when i refresh with @
+
+in the label-list-mode, labels are sorted by the time of the latest new
+message, and each label has a count of how many new messages this label has:
+
+                 new    429 messages,    260 unread, 429 new -     5:21am                         
+              Unread 614916 messages, 614916 unread, 260 new -     5:21am                         
+               Inbox 928373 messages, 562870 unread,   9 new -     5:18am                         
+                news  91638 messages,  55560 unread,  74 new -     5:03am                         
+                fish   4037 messages,   2447 unread,   5 new -     3:33am                         
+                Spam  18456 messages,  11190 unread,  43 new -     3:26am                         
+                 git  55779 messages,  33819 unread, 100 new -     2:53am                         
+             Replied     77 messages,      0 unread,   0 new -     2:08am                         
+                 sup   6401 messages,   3880 unread,   0 new -     Mar 31                         
+          Attachment  14521 messages,   8804 unread,   8 new -     Mar 31                         
+              debian  13541 messages,   8210 unread,  10 new -     Mar 31                         
+              fedora    221 messages,     89 unread,  14 new -     Mar 31                         
+
+i can now easily see where there are new messages, how recent they are, and how many.
+
+> > some ideas:
+> >     i'd like the ability to apply a label change to all messages that match a
+> >   given search, not just the ones loaded into the buffer.
+> Semi-answer: bin/sup-tweak-labels is this, except it's supposed to be
+> used from the command line. Moreover you must exit sup because the index
+> can't be shared safely.
+
+ah, thanks, yes, that should solve this problem mostly.
+
+> I don't know how we could manage to reproduce the bin/sup-tweak-labels
+> _inside_ sup efficiently, but I'm open to the discussion.
+
+i'd be happy for it to not be efficient. just some fire-and-forget command that
+silently chuggs away in the background.
+
+> You do have interesting ideas. Welcome on board :)
+
+thank you. 
+ 
+greetings, martin.
+
+-- 
+eKita                   -   the online platform for your entire academic life
+hackerspace beijing     -                                    http://qike.info
+-- 
+chief engineer                                                       eKita.co
+pike programmer      pike.lysator.liu.se    caudium.net     societyserver.org
+BLUG secretary                                                 beijinglug.org
+foresight developer  foresightlinux.org                            realss.com
+unix sysadmin
+Martin B?hr          working in china        http://societyserver.org/mbaehr/
+
+From mbaehr at email.archlab.tuwien.ac.at  Tue Apr  1 03:55:12 2014
+From: mbaehr at email.archlab.tuwien.ac.at (=?utf-8?q?Martin_B=C3=A4hr?=)
+Date: Tue, 01 Apr 2014 05:55:12 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396299131-sup-5113@qwerzila>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+	<1396294116-sup-6519@kpad> <1396299131-sup-5113@qwerzila>
+Message-ID: <1396324091-sup-9960@email.archlab.tuwien.ac.at>
+
+Excerpts from Gaute Hope's message of 2014-03-31 22:57:06 +0200:
+> We could do something similar to what tagging and + does now, but
+> iterate over all the threads in the search without rendering them.
+> Unless the chunks are loaded it is a matter of loading it from the
+> index. It would be an extension to thread-index mode. Basically a
+> command: Apply an action to all threads matching the current search. It
+> will be the equivalent of: Search + show all (!!) + tag all +
+> do action.
+
+yes, that's how i imagined to use it.
+
+btw: do action for all tagged blocks. with a few threads tagged or on a fast
+machine it's not noticable, but on a slower machine it is.
+
+if the above is solved to run in the background, then the current do action for
+all tagged, could use the same mechanism. it is just a matter of which list of
+threads/messages the function receives to operate on:
+
+search + tag some messages + do action on tagged -> call action with list of tagged messages.
+search + do action on search -> call action with list of matching messages.
+
+same function for both, return to view immideately, maybe update view when function completes
+
+greetings, martin.
+
+-- 
+eKita                   -   the online platform for your entire academic life
+hackerspace beijing     -                                    http://qike.info
+-- 
+chief engineer                                                       eKita.co
+pike programmer      pike.lysator.liu.se    caudium.net     societyserver.org
+BLUG secretary                                                 beijinglug.org
+foresight developer  foresightlinux.org                            realss.com
+unix sysadmin
+Martin B?hr          working in china        http://societyserver.org/mbaehr/
+
+From mbaehr at email.archlab.tuwien.ac.at  Tue Apr  1 04:13:44 2014
+From: mbaehr at email.archlab.tuwien.ac.at (=?utf-8?q?Martin_B=C3=A4hr?=)
+Date: Tue, 01 Apr 2014 06:13:44 +0200
+Subject: [sup-devel] use-mail branch and other work
+In-Reply-To: <1396267373-sup-7639@qwerzila>
+References: <1396168444-sup-8010@email.archlab.tuwien.ac.at>
+	<1396267373-sup-7639@qwerzila>
+Message-ID: <1396324522-sup-8837@email.archlab.tuwien.ac.at>
+
+Excerpts from Gaute Hope's message of 2014-03-31 14:09:56 +0200:
+> > add support for a "new" state that is different from unread.
+
+> Perhaps you followed the discussion with Ico / Zevv on irc? There might
+> be a solution together with the proposed hooks in #276, or are you
+> looking for something more integrated?
+
+new state operates on the thread-index.
+a message is new if it has not been seen in an index.
+
+if i have read the cubject-line and decided that i don't want to read this
+thread, then at that point it is no longer new. (of course if i do read it, it
+is also no longer new)
+
+i have this mostly working in
+https://github.com/eMBee/sup/commit/9debc5be804f6dc38cc9d4a14d5eead0337b1e22
+
+since we don't have a ruby mind-reader gem, i am currently using @ refresh to
+clear the new state. other options could be to detect when the cursor is
+scrolled over a message, or when the buffer is closed or hidden when i switch
+to another buffer.
+
+initially i cleared the new state when the thread-index was loaded, but that
+meant i could not see what was actually new, so i switched it to refresh.
+
+> Some of these might be harder to do with sup since we don't keep an
+> adress book.
+
+for another idea that i have in mind, this is something i'd like to change.
+
+> >     i'd like to treat saved searches as virtual folders. they should be in a
+> >   combined list with labels, and i'd like to be able to open them by typing the
+> >   name in the search prompt.
+>
+> You can presse enter after searching to get a list, but I agree, it
+> could be a streamlined way to do these things.
+
+that's what i do now, i hardwired \+enter as the key-sequence to get the list.
+but it means i have to deal with two lists, which is not wrong, but a merged
+list would be nice as a 3rd option.
+
+> This is great, if you are interested I could set you up as an
+> contributor on the github organization and you could push your changes
+> to the use-mail branch. With your changes and especially if we get
+> crypto working on Mail I would switch completely as well.
+
+let me work on my own repo for a while, as i am quite new to ruby, learning it
+as i go along, so i don't feel confident to make commits without anyone
+reviewing them. (actually, i think, if at all possible any commit to a project
+should be reviewed by at least one other person)
+
+but thanks for the offer. i am sure in time we'll see
+whether my work is good enough.
+
+greetings, martin.
+
+-- 
+eKita                   -   the online platform for your entire academic life
+hackerspace beijing     -                                    http://qike.info
+-- 
+chief engineer                                                       eKita.co
+pike programmer      pike.lysator.liu.se    caudium.net     societyserver.org
+BLUG secretary                                                 beijinglug.org
+foresight developer  foresightlinux.org                            realss.com
+unix sysadmin
+Martin B?hr          working in china        http://societyserver.org/mbaehr/
+
+From steven at schmeiser.org  Wed Apr  2 00:42:35 2014
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Tue, 01 Apr 2014 20:42:35 -0400
+Subject: [sup-devel] spam and maildirroot
+Message-ID: <1396399147-sup-1409@indy.local>
+
+I'm trying to figure out if this is the intended behavior with the maildir-root branch.
+
+When I get a new message in my inbox and mark it as spam, it also gets added to the archive folder.  Looking briefly at the code, it looks like threads marked as spam or deleted skip the ensure_in_archive step (and the debug logs confirm this), but it must be getting added to the archive at some other point?  Thanks for any pointers.
+
+steve
+
+
+From matthieu.rakotojaona at gmail.com  Thu Apr  3 20:16:19 2014
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 03 Apr 2014 22:16:19 +0200
+Subject: [sup-devel] [sup] Maildir root: Keep labels in sync with
+	maildir folders (#253)
+In-Reply-To: <18152441-C2B3-4454-B1E1-3242F62E7412@schmeiser.org>
+References: <sup-heliotrope/sup/pull/253@github.com>
+	<sup-heliotrope/sup/pull/253/c37732781@github.com>
+	<1395042468-sup-5821@qwerzila>
+	<18152441-C2B3-4454-B1E1-3242F62E7412@schmeiser.org>
+Message-ID: <1396556151-sup-8951@kpad>
+
+Hey Steven,
+
+Turns out that $dayjob was far longer than expected.
+
+I've pushed a PR at https://github.com/sup-heliotrope/sup/pull/286 that
+should solve your issue. Could you please have a go at it ?
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 966 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140403/d6ae23ba/attachment.bin>
+
+From m.klinik at gmx.de  Tue Apr  8 12:59:46 2014
+From: m.klinik at gmx.de (Markus Klinik)
+Date: Tue, 08 Apr 2014 14:59:46 +0200
+Subject: [sup-devel] documentation for removing a source
+Message-ID: <1396961864-sup-9525@x200>
+
+Hi,
+
+I wrote a wiki page on how to remove a source. Can you review it for
+correctness and comprehensibility?
+
+https://github.com/sup-heliotrope/sup/wiki/Removing-A-Source
+
+Thanks!
+Markus
+
+From matthieu.rakotojaona at gmail.com  Tue Apr  8 18:34:25 2014
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 08 Apr 2014 20:34:25 +0200
+Subject: [sup-devel] documentation for removing a source
+In-Reply-To: <1396961864-sup-9525@x200>
+References: <1396961864-sup-9525@x200>
+Message-ID: <1396981865-sup-5808@kpad>
+
+Excerpts from Markus Klinik's message of 2014-04-08 14:59:46 +0200:
+> Hi,
+> 
+> I wrote a wiki page on how to remove a source. Can you review it for
+> correctness and comprehensibility?
+> 
+> https://github.com/sup-heliotrope/sup/wiki/Removing-A-Source
+> 
+> Thanks!
+> Markus
+
+Looks good to me.
+
+I personally had to re-index my whole index, and I followed pretty much
+those steps with success.
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 966 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140408/5e6893d2/attachment-0001.bin>
+
+From eg at gaute.vetsj.com  Fri Apr 11 07:20:14 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 11 Apr 2014 09:20:14 +0200
+Subject: [sup-devel] release 0.17.0
+Message-ID: <1397200723-sup-7099@qwerzila>
+
+greetings,
+
+sup 0.17.0 is out, get it at rubygems: $ gem install sup.
+
+Release notes:
+>   == 0.17.0 / 2014-04-11
+>
+>   * add continuous scrolling to thread view
+>   * add option for always editing in async mode
+>   * bugfix: fix completion char
+>   * bugfix: thread-view: dont close message when it is the first or last
+
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140411/f1d39e94/attachment.bin>
+
+From eg at gaute.vetsj.com  Thu Apr 24 08:07:20 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 24 Apr 2014 10:07:20 +0200
+Subject: [sup-devel] more colors for you
+Message-ID: <1398326551-sup-1169@qwerzila>
+
+Hi,
+
+Thanks to several contributors we've now gotten a bunch of new
+colorschemes in https://github.com/sup-heliotrope/sup-colors, most of
+them with screenshots.
+
+Also: It is now also possible to customize the attachment char color
+(76ab78ef00) using the :with_attachment property. Check out the new
+default colors in the template folder for color schemes:
+https://github.com/sup-heliotrope/sup-colors/tree/master/template
+
+- gaute
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140424/60a20faa/attachment.bin>
+

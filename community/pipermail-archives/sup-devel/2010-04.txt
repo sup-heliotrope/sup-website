@@ -1,0 +1,858 @@
+From rlane at club.cc.cmu.edu  Sat Apr  3 14:01:56 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 03 Apr 2010 14:01:56 -0400
+Subject: [sup-devel] Now in master: multiple-locations and
+	remote-source-removal
+Message-ID: <1270316637-sup-2831@zyrg.net>
+
+As promised, IMAP and mbox+ssh sources have been completely removed from
+the codebase.
+
+I've also merged the index format change to keep track of all locations
+(source + source_info) for a message. Once you've opened your index with
+an upgraded sup you won't be able to read it with an older sup. I expect
+the multiple-locations change by itself to be stable so that shouldn't
+be a big deal. It is important to get it in master before I merge the
+maildir branch to next so that you can switch between them without
+nuking your index.
+
+From sup-bugs at masanjin.net  Mon Apr  5 03:18:41 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 05 Apr 2010 07:18:41 +0000
+Subject: [sup-devel] [issue88] just a crash
+In-Reply-To: <1270451921.06.0.062010047151.issue88@masanjin.net>
+Message-ID: <1270451921.06.0.062010047151.issue88@masanjin.net>
+
+
+New submission from anonymous:
+
+sup crashes for me almost daily. installed from the aur
+
+--- NoMethodError from thread: periodic poll
+undefined method `[]' for nil:NilClass
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:722:in `mkterm'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:500:in `find_docid'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:506:in `find_doc'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:516:in `get_entry'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:193:in `block in 
+build_message'
+/usr/lib/ruby/1.9.1/monitor.rb:190:in `mon_synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:525:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:193:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:117:in `block (3 levels) 
+in do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:176:in `block in 
+each_message_from'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/imap.rb:197:in `block in each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/imap.rb:185:in `upto'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/imap.rb:185:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:610:in `__pass'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:597:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:164:in 
+`each_message_from'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:116:in `block (2 levels) 
+in do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:104:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:104:in `block in do_poll'
+<internal:prelude>:8:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:103:in `do_poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:50:in `poll_with_sources'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:69:in `poll'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/poll.rb:87:in `block in start'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:76:in `block in 
+reporting_thread'
+
+----------
+messages: 208
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1_p378-1
+status: unread
+sup_version: 0.11-1
+title: just a crash
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue88>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Apr  6 09:09:41 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 06 Apr 2010 13:09:41 +0000
+Subject: [sup-devel] [issue89] Crash on sending mail
+In-Reply-To: <1270559381.0.0.61709774331.issue89@masanjin.net>
+Message-ID: <1270559381.0.0.61709774331.issue89@masanjin.net>
+
+
+New submission from anonymous:
+
+I'm greatly enjoying sup. I'm afraid I got an exception whilst sending my first
+e-mail. I've copied my terminal output below and attached the exception-log.txt
+file. The e-mail did arrive intact.
+
+
+
+File /tmp/20522-0-sup.compose-mode saved
+[Tue Apr 06 14:03:18 +0100 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/neil/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- TypeError from thread: main
+can't convert nil into String
+/usr/lib/ruby/1.8/sup/mbox/loader.rb:117:in `exists?'
+/usr/lib/ruby/1.8/sup/mbox/loader.rb:117:in `store_message'
+/usr/lib/ruby/1.8/sup/util.rb:599:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:599:in `__pass'
+/usr/lib/ruby/1.8/sup/util.rb:586:in `method_missing'
+/usr/lib/ruby/1.8/sup/sent.rb:28:in `write_sent_message'
+/usr/lib/ruby/1.8/sup/util.rb:559:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:559:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/edit-message-mode.rb:325:in `send_message'
+/usr/lib/ruby/1.8/sup/mode.rb:51:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:51:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:270:in `handle_input'
+/usr/bin/sup-mail:268
+
+----------
+files: exception-log.txt
+messages: 210
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7.72-3lenny1
+status: unread
+sup_version: 0.10.2
+title: Crash on sending mail
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue89>
+_________________________________________
+-------------- next part --------------
+--- TypeError from thread: main
+can't convert nil into String
+/usr/lib/ruby/1.8/sup/mbox/loader.rb:117:in `exists?'
+/usr/lib/ruby/1.8/sup/mbox/loader.rb:117:in `store_message'
+/usr/lib/ruby/1.8/sup/util.rb:599:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:599:in `__pass'
+/usr/lib/ruby/1.8/sup/util.rb:586:in `method_missing'
+/usr/lib/ruby/1.8/sup/sent.rb:28:in `write_sent_message'
+/usr/lib/ruby/1.8/sup/util.rb:559:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:559:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/edit-message-mode.rb:325:in `send_message'
+/usr/lib/ruby/1.8/sup/mode.rb:51:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:51:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:270:in `handle_input'
+/usr/bin/sup-mail:268
+
+From sup-bugs at masanjin.net  Fri Apr  9 08:07:44 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 09 Apr 2010 12:07:44 +0000
+Subject: [sup-devel] [issue90] Crash during index
+In-Reply-To: <1270814864.86.0.660572706943.issue90@masanjin.net>
+Message-ID: <1270814864.86.0.660572706943.issue90@masanjin.net>
+
+
+New submission from anonymous:
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `content_width' for nil:NilClass
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:923:in `from_width'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:840:in 
+`text_for_thread_at'
+/home/artagnon/src/sup/lib/sup/index.rb:493:in `each_with_index'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:839:in `each'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:839:in 
+`each_with_index'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:839:in 
+`text_for_thread_at'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/home/artagnon/src/sup/lib/sup/util.rb:415:in `map_with_index'
+/home/artagnon/src/sup/lib/sup/index.rb:493:in `each_with_index'
+/home/artagnon/src/sup/lib/sup/util.rb:415:in `each'
+/home/artagnon/src/sup/lib/sup/util.rb:415:in `each_with_index'
+/home/artagnon/src/sup/lib/sup/util.rb:415:in `map_with_index'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:242:in `update'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:717:in `add_or_unhide'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:196:in 
+`handle_added_update'
+/home/artagnon/src/sup/lib/sup/update.rb:26:in `send'
+/home/artagnon/src/sup/lib/sup/update.rb:26:in `relay'
+/home/artagnon/src/sup/lib/sup/update.rb:26:in `each'
+/home/artagnon/src/sup/lib/sup/update.rb:26:in `relay'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `send'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `method_missing'
+/home/artagnon/src/sup/lib/sup/poll.rb:192:in `add_new_message'
+/home/artagnon/src/sup/lib/sup/poll.rb:133:in `do_poll'
+/home/artagnon/src/sup/lib/sup/poll.rb:177:in `each_message_from'
+/home/artagnon/src/sup/lib/sup/maildir.rb:160:in `each'
+/home/artagnon/src/sup/lib/sup/maildir.rb:157:in `upto'
+/home/artagnon/src/sup/lib/sup/maildir.rb:157:in `each'
+/home/artagnon/src/sup/lib/sup/util.rb:620:in `send'
+/home/artagnon/src/sup/lib/sup/util.rb:620:in `__pass'
+/home/artagnon/src/sup/lib/sup/util.rb:607:in `method_missing'
+/home/artagnon/src/sup/lib/sup/poll.rb:165:in `each_message_from'
+/home/artagnon/src/sup/lib/sup/poll.rb:116:in `do_poll'
+/home/artagnon/src/sup/lib/sup/poll.rb:104:in `each'
+/home/artagnon/src/sup/lib/sup/poll.rb:104:in `do_poll'
+/home/artagnon/src/sup/lib/sup/poll.rb:103:in `synchronize'
+/home/artagnon/src/sup/lib/sup/poll.rb:103:in `do_poll'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `send'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `method_missing'
+/home/artagnon/src/sup/lib/sup/modes/poll-mode.rb:15:in `poll'
+/home/artagnon/src/sup/lib/sup/poll.rb:50:in `poll_with_sources'
+/home/artagnon/src/sup/lib/sup/poll.rb:69:in `poll'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `send'
+/home/artagnon/src/sup/lib/sup/util.rb:580:in `method_missing'
+/home/artagnon/src/sup/bin/sup:211
+/home/artagnon/src/sup/lib/sup.rb:77:in `reporting_thread'
+/home/artagnon/src/sup/lib/sup.rb:75:in `initialize'
+/home/artagnon/src/sup/lib/sup.rb:75:in `new'
+/home/artagnon/src/sup/lib/sup.rb:75:in `reporting_thread'
+/home/artagnon/src/sup/bin/sup:211
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:684:in `call'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:684
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:625:in `call'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:625:in 
+`load_n_threads_background'
+/home/artagnon/src/sup/lib/sup.rb:77:in `reporting_thread'
+/home/artagnon/src/sup/lib/sup.rb:75:in `initialize'
+/home/artagnon/src/sup/lib/sup.rb:75:in `new'
+/home/artagnon/src/sup/lib/sup.rb:75:in `reporting_thread'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:623:in 
+`load_n_threads_background'
+/home/artagnon/src/sup/lib/sup/modes/thread-index-mode.rb:694:in 
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/artagnon/src/sup/bin/sup:211
+
+----------
+messages: 211
+nosy: anonymous
+priority: bug
+ruby_version: 4.4
+status: unread
+sup_version: 4e2734082bebee2
+title: Crash during index
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue90>
+_________________________________________
+
+From hyperbolist at gmail.com  Fri Apr 16 19:20:04 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Fri, 16 Apr 2010 19:20:04 -0400
+Subject: [sup-devel] [PATCH] before-add-message now only fires for new
+	messages
+Message-ID: <1271459926-sup-1259@changeling.local>
+
+---
+ lib/sup/poll.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 582cd4d..02aa0d3 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -130,6 +130,7 @@ EOS
+             end
+           else
+             yield "Found new message at #{m.source_info} with labels #{m.labels.to_a * ','}"
++            HookManager.run "before-add-message", :message => m
+             add_new_message m
+             loaded_labels.merge m.labels
+             num += 1
+@@ -173,7 +174,6 @@ EOS
+         m.labels.delete :unread if m.source_marked_read? # preserve read status if possible
+         m.labels.each { |l| LabelManager << l }
+ 
+-        HookManager.run "before-add-message", :message => m
+         yield m
+       end
+     rescue SourceError => e
+-- 
+1.6.6
+
+
+From michael+sup at stapelberg.de  Mon Apr 19 03:43:49 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 19 Apr 2010 09:43:49 +0200
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+Message-ID: <1271662579-sup-4883@midna.zekjur.net>
+
+Hi,
+
+yesterday I got a PGP/MIME message which had multiple attachments. Turns out
+RubyMail cannot do multipart/signed (sup says RubyMail failed to decode the
+document for some bizarre reason, when you try it in irb, you?ll see it
+actually decodes the message parts as headers). I also tried 'mail' by the
+same author which he claims can do multipart and is better in general, but
+it seems it also cannot do multipart/signed (RFC 1847).
+
+So, what are the plans in regard to RubyMail? Switching to something different
+altogether? If so, to which library? I would then fix parsing of
+multipart/signed messages for this library?
+
+Best regards,
+Michael
+
+PS: I attached a minimum working example of a problematic message (decrypted
+body only)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mwe
+Type: application/octet-stream
+Size: 2099 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100419/6ef078a1/attachment.obj>
+
+From samhall at riseup.net  Mon Apr 19 08:55:37 2010
+From: samhall at riseup.net (Sam Hall)
+Date: Mon, 19 Apr 2010 14:55:37 +0200
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+In-Reply-To: <1271662579-sup-4883@midna.zekjur.net>
+References: <1271662579-sup-4883@midna.zekjur.net>
+Message-ID: <20100419125537.GA19586@3QuajwodyerfIj>
+
+Hi,
+
+On Mon, Apr 19, 2010 at 09:43 (+0200), Michael Stapelberg wrote:
+> I also tried 'mail' by the same author which he claims can do
+> multipart and is better in general, but it seems it also cannot do
+> multipart/signed (RFC 1847).
+
+'rmail' is significantly broken since a whole while IMHO, but 'mail'
+works for me:
+
+~> irb -r mail      
+irb(main):001:0> pp Mail.read('mwe').parts
+[#<Mail::Part:16136008, Multipart: true, Headers: <Content-Type: multipart/mixed; boundary="MP_/+kacMkT=yx+FKvl3YUds1sR">>,
+ #<Mail::Part:19934460, Multipart: false, Headers: <Content-Type: application/pgp-signature; name=signature.asc>, <Content-Disposition: attachment; filename=signature.asc>>]
+=> nil
+
+What's the problem on your side?
+
+
+Best wishes, Sam
+
+From michael+sup at stapelberg.de  Mon Apr 19 11:57:11 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 19 Apr 2010 17:57:11 +0200
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+In-Reply-To: <20100419125537.GA19586@3QuajwodyerfIj>
+References: <1271662579-sup-4883@midna.zekjur.net>
+	<20100419125537.GA19586@3QuajwodyerfIj>
+Message-ID: <1271692464-sup-1637@midna.zekjur.net>
+
+Hi Sam,
+
+Excerpts from Sam Hall's message of 2010-04-19 14:55:37 +0200:
+> ~> irb -r mail      
+> irb(main):001:0> pp Mail.read('mwe').parts
+> [#<Mail::Part:16136008, Multipart: true, Headers: <Content-Type: multipart/mixed; boundary="MP_/+kacMkT=yx+FKvl3YUds1sR">>,
+>  #<Mail::Part:19934460, Multipart: false, Headers: <Content-Type: application/pgp-signature; name=signature.asc>, <Content-Disposition: attachment; filename=signature.asc>>]
+> => nil
+> What's the problem on your side?
+The problem arises as soon as you try to iterate over the content of the mail.
+You will see that it only contains 2 parts (according to 'mail'), while there
+are at least three text files, a signature and a text part:
+
+irb(main):003:0> puts mail.parts.length
+2
+irb(main):006:0> pp mail.parts.map { |p| p.content_type }
+["multipart/mixed; boundary=\"MP_/+kacMkT=yx+FKvl3YUds1sR\"",
+ "application/pgp-signature; name=signature.asc"]
+irb(main):007:0>
+
+Best regards,
+Michael
+
+From gregor at hoffleit.de  Mon Apr 19 11:48:09 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Mon, 19 Apr 2010 17:48:09 +0200
+Subject: [sup-devel] Slow Sup: Drawing speed depends on window height?
+Message-ID: <1271690970-sup-7143@sam.mediasupervision.de>
+
+My Sup window is about 60 lines high. Interacting with Sup feels slow,
+even simple actions like tagging/untagging threads ('t') in the Inbox.
+
+Only recently I noticed that interaction speed is much better in a
+smaller terminal window (in the sense of less lines, the width seems to
+be no issue).
+
+To reproduce: A simple benchmark is to tag the first 10 threads of the
+page. In a terminal window with 60 lines, I type ten "t"'s and then can
+wait for several seconds, watchin the cursor move down line be line.
+In a terminal with 20 lines, the cursor moves almost the same speed as I
+type.
+
+FWIW, I'm running the next branch on a Debian lenny system, with
+packages ruby1.8 (1.8.7.174-2), libncurses-ruby1.8 (1.2.3-0.2) etc.pp.
+
+
+Regards,
+    Gregor
+
+From sup-bugs at masanjin.net  Mon Apr 19 21:59:39 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 20 Apr 2010 01:59:39 +0000
+Subject: [sup-devel] [issue91] sup crashes on startup
+In-Reply-To: <1271728778.83.0.161866916629.issue91@masanjin.net>
+Message-ID: <1271728778.83.0.161866916629.issue91@masanjin.net>
+
+
+New submission from anonymous:
+
+--- RuntimeError from thread: load threads for thread-index-mode
+invalid source 16
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:197:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:187:in `block (2 levels) 
+in each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/thread.rb:343:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/thread.rb:343:in `block in 
+load_thread_for_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:187:in `block in 
+each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:187:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:187:in 
+`each_message_in_thread_for'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/thread.rb:341:in 
+`load_thread_for_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/thread.rb:333:in `block in 
+load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:148:in `block in 
+each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:239:in `block in 
+each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:239:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/thread.rb:328:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:640:in 
+`load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in 
+`block in load_n_threads_background'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:76:in `block in 
+reporting_thread'
+
+----------
+messages: 212
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.9.1p378 (2010-01-10 revision 26273) [i686-linux]
+status: unread
+sup_version: 0.11
+title: sup crashes on startup
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue91>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Apr 20 02:13:29 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 20 Apr 2010 06:13:29 +0000
+Subject: [sup-devel] [issue92] undefined method `downcase' for
+	nil:NilClass	(message.rb:387)
+In-Reply-To: <1271744009.52.0.220249256921.issue92@masanjin.net>
+Message-ID: <1271744009.52.0.220249256921.issue92@masanjin.net>
+
+
+New submission from anonymous:
+
+/opt/local/lib/ruby/gems/1.8/gems/rmail-1.0.0/lib/rmail/header.rb:537:in 
+`content_type': undefined method `downcase' for nil:NilClass (NoMethodError)
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-
+0.8.1/lib/sup/message.rb:387:in `message_to_chunks'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-
+0.8.1/lib/sup/message.rb:209:in `load_from_source!'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/poll.rb:151:in 
+`add_messages_from'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/imap.rb:187:in 
+`each'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/imap.rb:175:in 
+`upto'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/imap.rb:175:in 
+`each'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/util.rb:552:in 
+`send'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/util.rb:552:in 
+`__pass'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/util.rb:539:in 
+`method_missing'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/poll.rb:141:in 
+`add_messages_from'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/util.rb:513:in 
+`send'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/lib/sup/util.rb:513:in 
+`method_missing'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/bin/sup-sync:140
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/bin/sup-sync:135:in 
+`each'
+        from /opt/local/lib/ruby/gems/1.8/gems/sup-0.8.1/bin/sup-sync:135
+        from /opt/local/bin/sup-sync:19:in `load'
+        from /opt/local/bin/sup-sync:19
+Rats, that failed. You may have to do it manually.
+
+----------
+messages: 213
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.8.1
+title: undefined method `downcase' for nil:NilClass (message.rb:387)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue92>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue Apr 20 02:17:41 2010
+From: sup-bugs at masanjin.net (Maarten Billemont)
+Date: Tue, 20 Apr 2010 06:17:41 +0000
+Subject: [sup-devel] [issue93] undefined method `downcase' for
+	nil:NilClass	(message.rb:387)
+In-Reply-To: <1271744261.84.0.880071737049.issue93@masanjin.net>
+Message-ID: <1271744261.84.0.880071737049.issue93@masanjin.net>
+
+
+New submission from Maarten Billemont <lhunath at gmail.com>:
+
+Copy of issue 92
+
+----------
+messages: 215
+nosy: lhunath
+priority: bug
+ruby_version: 1.8.7
+status: chatting
+sup_version: 0.8.1
+title: undefined method `downcase' for nil:NilClass (message.rb:387)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue93>
+_________________________________________
+
+From samhall at riseup.net  Tue Apr 20 02:26:00 2010
+From: samhall at riseup.net (Sam Hall)
+Date: Tue, 20 Apr 2010 08:26:00 +0200
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+In-Reply-To: <1271692464-sup-1637@midna.zekjur.net>
+References: <1271662579-sup-4883@midna.zekjur.net>
+	<20100419125537.GA19586@3QuajwodyerfIj>
+	<1271692464-sup-1637@midna.zekjur.net>
+Message-ID: <20100420062557.GA31729@jurbIgebBeddUfs2>
+
+On Mon, Apr 19, 2010 at 17:57 (+0200), Michael Stapelberg wrote:
+> The problem arises as soon as you try to iterate over the content of the mail.
+> You will see that it only contains 2 parts (according to 'mail'), while there
+> are at least three text files, a signature and a text part:
+
+The first part is a multipart-message in itself, you have to recurse to get
+hands on its parts:
+
+irb(main):012:0> pp mail.parts.first.parts.map { |p| p.content_type }
+["text/plain; charset=US-ASCII",
+ "text/plain; charset=US_ASCII",
+ "text/plain; charset=US_ASCII",
+ "text/plain; charset=US_ASCII",
+ "text/plain; charset=US_ASCII"]
+
+
+This is not only legal, RFC 3156 even requires this (in 5.):
+
+  The multipart/signed body MUST consist of exactly two parts.  The first part
+  contains the signed data in MIME canonical format, including a set of
+  appropriate content headers describing the data.
+
+  The second body MUST contain the OpenPGP digital signature.  It MUST be
+  labeled with a content type of "application/pgp-signature".
+
+
+Best wishes, Sam
+
+
+From michael+sup at stapelberg.de  Tue Apr 20 02:40:36 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 20 Apr 2010 08:40:36 +0200
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+In-Reply-To: <20100420062557.GA31729@jurbIgebBeddUfs2>
+References: <1271662579-sup-4883@midna.zekjur.net>
+	<20100419125537.GA19586@3QuajwodyerfIj>
+	<1271692464-sup-1637@midna.zekjur.net>
+	<20100420062557.GA31729@jurbIgebBeddUfs2>
+Message-ID: <1271745597-sup-8192@midna.zekjur.net>
+
+Hi Sam,
+
+Excerpts from Sam Hall's message of 2010-04-20 08:26:00 +0200:
+> The first part is a multipart-message in itself, you have to recurse to get
+> hands on its parts:
+Ah, alright. I thought 'mail' would automatically flatten the parts. Nevermind,
+then.
+
+So, when do we switch to 'mail'?
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Tue Apr 20 11:27:54 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 20 Apr 2010 11:27:54 -0400
+Subject: [sup-devel] RubyMail cannot handle multipart/signed messages
+In-Reply-To: <1271745597-sup-8192@midna.zekjur.net>
+References: <1271662579-sup-4883@midna.zekjur.net>
+	<20100419125537.GA19586@3QuajwodyerfIj>
+	<1271692464-sup-1637@midna.zekjur.net>
+	<20100420062557.GA31729@jurbIgebBeddUfs2>
+	<1271745597-sup-8192@midna.zekjur.net>
+Message-ID: <1271776749-sup-2472@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-04-20 02:40:36 -0400:
+> So, when do we switch to 'mail'?
+
+I'm all for it but we need to be careful about regressions. We'd need
+to have a pretty extensive testsuite covering Message and Chunk before
+switching, which is a bigger effort than the switch itself.
+
+From sup-bugs at masanjin.net  Wed Apr 21 04:36:11 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 21 Apr 2010 08:36:11 +0000
+Subject: [sup-devel] [issue94] sup crashes on thread labelling
+In-Reply-To: <1271838971.05.0.229170305885.issue94@masanjin.net>
+Message-ID: <1271838971.05.0.229170305885.issue94@masanjin.net>
+
+
+New submission from anonymous:
+
+sup crashes when labelling a certain thread with an existing label (i.e. other
+same labeled threads exist). Labelling this thread in not possible, even afte
+restart, other thread can be labeled with the given label.
+
+label was "sopra2010"
+
+exception log attached, may be a Xapian problem
+
+----------
+files: exception-log.txt
+messages: 218
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2010-01-10 patchlevel 249) [x86_64-linux]
+status: unread
+sup_version: sup/git last commitFri Apr 16 16:32:51 2010
+title: sup crashes on thread labelling
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue94>
+_________________________________________
+-------------- next part --------------
+--- ArgumentError from thread: index sync
+InvalidArgumentError: Term `I9998' is not present in document, in Xapian::Document::Internal::remove_term()
+/home/guedemann/source/sup/lib/sup/index.rb:665:in `remove_term'
+/home/guedemann/source/sup/lib/sup/index.rb:665:in `index_message_locations'
+/home/guedemann/source/sup/lib/sup/index.rb:665:in `each'
+/home/guedemann/source/sup/lib/sup/index.rb:665:in `index_message_locations'
+/home/guedemann/source/sup/lib/sup/index.rb:605:in `sync_message'
+/home/guedemann/source/sup/lib/sup/index.rb:125:in `update_message_state'
+/home/guedemann/source/sup/lib/sup/index.rb:428:in `run_sync_worker'
+/home/guedemann/source/sup/lib/sup/index.rb:415:in `start_sync_worker'
+/home/guedemann/source/sup/lib/sup.rb:77:in `reporting_thread'
+/home/guedemann/source/sup/lib/sup.rb:75:in `initialize'
+/home/guedemann/source/sup/lib/sup.rb:75:in `new'
+/home/guedemann/source/sup/lib/sup.rb:75:in `reporting_thread'
+/home/guedemann/source/sup/lib/sup/index.rb:415:in `start_sync_worker'
+/home/guedemann/source/sup/lib/sup/util.rb:580:in `send'
+/home/guedemann/source/sup/lib/sup/util.rb:580:in `method_missing'
+/home/guedemann/source/sup/bin/sup:155
+
+From sup-bugs at masanjin.net  Wed Apr 21 09:03:27 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 21 Apr 2010 13:03:27 +0000
+Subject: [sup-devel] [issue95] incompatible encoding regexp match
+	(ASCII-8BIT regexp with	UTF-8 string)
+In-Reply-To: <1271855007.24.0.641994624503.issue95@masanjin.net>
+Message-ID: <1271855007.24.0.641994624503.issue95@masanjin.net>
+
+
+New submission from anonymous:
+
+sup crashes when I try to autocomplete a contact that contains umlauts
+
+a ~$ cat .sup/exception-log.txt 
+--- Encoding::CompatibilityError from thread: main
+incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string)
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:483:in `block (2 
+levels) in ask_many_emails_with_completions'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:483:in `select'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:483:in `block in 
+ask_many_emails_with_completions'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/textfield.rb:79:in `call'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/textfield.rb:79:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:585:in `ask'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:479:in 
+`ask_many_emails_with_completions'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/buffer.rb:555:in 
+`ask_for_contacts'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/compose-mode.rb:24:in 
+`spawn_nicely'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:330:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:68:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+----------
+messages: 219
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.9.1p378 (2010-01-10 revision 26273) [i686-linux]
+status: unread
+sup_version: 0.11
+title: incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue95>
+_________________________________________
+
+From eg at gaute.vetsj.com  Wed Apr 21 09:24:55 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 21 Apr 2010 15:24:55 +0200
+Subject: [sup-devel] [issue95] incompatible encoding regexp match
+	(ASCII-8BIT regexp with UTF-8 string)
+In-Reply-To: <1271855007.24.0.641994624503.issue95@masanjin.net>
+References: <1271855007.24.0.641994624503.issue95@masanjin.net>
+Message-ID: <1271856189-sup-1107@dolk>
+
+Excerpts from anonymous's message of 2010-04-21 15:03:27 +0200:
+> 
+> New submission from anonymous:
+> 
+> sup crashes when I try to autocomplete a contact that contains umlauts
+
+this is probably related to: http://masanjin.net/sup-bugs/issue36
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100421/977d44d9/attachment.bin>
+
+From sup-bugs at masanjin.net  Thu Apr 22 04:50:41 2010
+From: sup-bugs at masanjin.net (Gaute Hope)
+Date: Thu, 22 Apr 2010 08:50:41 +0000
+Subject: [sup-devel] [issue96] Crash on archive
+In-Reply-To: <1271926203-sup-2253@dolk>
+Message-ID: <1271926203-sup-2253@dolk>
+
+
+New submission from Gaute Hope <eg at gaute.vetsj.com>:
+
+While trying to archive a specific thread in the index or thread view,
+this happens:
+
+--- ArgumentError from thread: index sync
+InvalidArgumentError: Term `I9998' is not present in document, in Xapian::Document::Internal::remove_term()
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:665:in `remove_term'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:665:in `block in index_message_locations'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:665:in `each'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:665:in `index_message_locations'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:605:in `sync_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:125:in `update_message_state'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:428:in `run_sync_worker'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/index.rb:415:in `block in start_sync_worker'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup.rb:77:in `block in reporting_thread'
+
+Running latest 'next'.
+
+- gaute
+
+----------
+messages: 220
+nosy: gauteh
+status: unread
+title: Crash on archive
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue96>
+_________________________________________
+
+From sup-bugs at masanjin.net  Mon Apr 26 00:31:28 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 26 Apr 2010 04:31:28 +0000
+Subject: [sup-devel] [issue97] exception (NoMethodError from thread:
+	periodic poll)
+In-Reply-To: <1272256288.63.0.525145954272.issue97@masanjin.net>
+Message-ID: <1272256288.63.0.525145954272.issue97@masanjin.net>
+
+
+New submission from anonymous:
+
+I was browsing a 68-message long thread and poof, seemingly unrelated, I was
+thrown out of sup! exception log attached, hopefully more informative than I can be.
+
+----------
+files: exception-log.txt
+messages: 221
+nosy: anonymous
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: 0.11
+title: exception (NoMethodError from thread: periodic poll)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue97>
+_________________________________________
+-------------- next part --------------
+--- NoMethodError from thread: periodic poll
+undefined method `+' for nil:NilClass
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/maildir.rb:171:in `end_offset'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/source.rb:88:in `done?'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:610:in `send'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:610:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:597:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:107:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:104:in `each'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:104:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:103:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:103:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `send'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/modes/poll-mode.rb:15:in `poll'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:50:in `poll_with_sources'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:69:in `poll'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:87:in `start'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/poll.rb:84:in `start'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `send'
+/var/lib/gems/1.8/gems/sup-0.11/lib/sup/util.rb:570:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.11/bin/sup:241
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+

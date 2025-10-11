@@ -1,0 +1,1527 @@
+From 5srmspw02 at sneakemail.com  Thu Oct  2 13:19:25 2008
+From: 5srmspw02 at sneakemail.com (Sukant Hajra)
+Date: Thu, 2 Oct 2008 17:19:25 +0000 (UTC)
+Subject: [sup-talk] How's STS coming?
+Message-ID: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+
+Hi William,
+
+I just tried to post a longer message about how STS was coming, but I'm not
+sure it sent.  If it did send, I didn't want repeat myself here.
+
+If it didn't send, it really wan't saying much. . . just along the lines of
+
+    - How's STS coming?
+
+    - If it's not soon to be released, do you think we can at least see the
+      tree (I'm just curious to see it)
+
+    - I'm eagerly awaiting, and if STS is stalled, I'm thinking about other
+      ways to manage mail/NNTP/RSS, but I don't want to waste my time if STS is
+      around the corner.
+
+Thanks for all your hard work,
+Sukant
+
+
+From marcus-sup at bar-coded.net  Thu Oct  2 17:21:06 2008
+From: marcus-sup at bar-coded.net (Marcus Williams)
+Date: Thu, 02 Oct 2008 22:21:06 +0100
+Subject: [sup-talk] How's STS coming?
+In-Reply-To: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+References: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+Message-ID: <1222982255-sup-5712@tomsk>
+
+On 2.10.2008, Guarded Identity wrote:
+>     - If it's not soon to be released, do you think we can at least see the
+>       tree (I'm just curious to see it)
+
++1 on this one! I've all but given up on my web interface to current
+sup. The only way I can do it properly is to pull all the ncurses code
+out and then I'm going to have something that is probably fairly close
+to what you're trying to do anyway in some ways so it makes more sense
+to wait for STS and put some effort into coding for/with that. I ca
+get something up and running against the ferret db, but then I found
+myself implementing a lot of the classes/methods in sup all over and
+that seemed a bit pointless as well.
+
+Marcus
+
+From wmorgan-sup at masanjin.net  Thu Oct  2 18:01:17 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 02 Oct 2008 15:01:17 -0700
+Subject: [sup-talk] How's STS coming?
+In-Reply-To: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+References: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+Message-ID: <1222984492-sup-1381@entry>
+
+Reformatted excerpts from Guarded Identity's message of 2008-10-02:
+> I just tried to post a longer message about how STS was coming, but
+> I'm not sure it sent.
+
+I haven't seen it.
+
+> - How's STS coming?
+
+It has been stalled for a bit while I work on other things (ditz, the
+projects I get paid to work on, Anathem, etc), but I've actually been
+slowly warming it back up over the past few days. I do have something
+reasonable to show for myself, so a little pressure from you guys is
+beneficial. :)
+
+Give me a few more days to clean it up, and I'll throw up a git branch
+somewhere. Definitely keep bugging me.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From decklin at red-bean.com  Sat Oct  4 22:16:15 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Sat, 04 Oct 2008 22:16:15 -0400
+Subject: [sup-talk] sup Debian packages
+Message-ID: <1223170671-sup-9872@gillespie.rupamsunyata.org>
+
+I apologize to all for the delay in getting this out -- had to put the
+project on the back burner for a while.
+
+I've built Debian packages for sup 0.6 and related libraries. If you're
+using Debian (or Ubuntu -- there shouldn't be any problems using the same
+packages there), please test them out. I'd like to be completely sure
+they work before going into the archive proper.
+
+Here's the line for sources.list:
+
+deb http://deb.rupamsunyata.org/sup/ ./
+
+You will want to remove your local version of the gems therein. This should
+do it:
+
+sudo gem uninstall chronic lockfile mime-types trollop
+
+Then, apt-get install sup-mail. (Yeah, not sup... name was already taken.)
+
+(Also, I know trollop is out of date, I'll fix it.)
+
+My repository should also be available at git.debian.org as soon as the
+cron job to enable it runs.
+-- 
+things change.
+decklin at red-bean.com
+
+From wmorgan-sup at masanjin.net  Tue Oct  7 15:00:15 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 07 Oct 2008 12:00:15 -0700
+Subject: [sup-talk] How's STS coming?
+In-Reply-To: <1222984492-sup-1381@entry>
+References: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+	<1222984492-sup-1381@entry>
+Message-ID: <1223405490-sup-4884@entry>
+
+Reformatted excerpts from William Morgan's message of 2008-10-02:
+> Give me a few more days to clean it up, and I'll throw up a git branch
+> somewhere. Definitely keep bugging me.
+
+Status update: after trying a couple things over the past few months, I
+think I have settled on a workable architecture. It's split into three
+components: a general searchable-tree-of-documents store, an
+email-specific layer that handles things like attachments and the JWZ
+threading algorithm, and, of course, a client.
+
+I have a partial implementation of the first layer, which I'm currently
+working on converting from an earlier architecture into the current one.
+I'm making both the base document store, and the search index,
+pluggable, and have a simple implementation of each: the document store
+just keeps documents as files on your local disk, and the search
+component uses Sphinx.
+
+My current plan is to put up a git repo this weekend of what I have, so
+that others can start hacking on it too. It will basically be the first
+layer as I described above, though without any of the tree stuff
+actually working. It will use Thrift as the interface layer, so writing
+clients should be possible in any language.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Oct 13 14:14:51 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 13 Oct 2008 11:14:51 -0700
+Subject: [sup-talk] How's STS coming?
+In-Reply-To: <1223405490-sup-4884@entry>
+References: <slrngea0kr.sbb.0osz0s302@hole.internal.mydonutshop.org>
+	<1222984492-sup-1381@entry> <1223405490-sup-4884@entry>
+Message-ID: <1223921642-sup-8967@entry>
+
+Reformatted excerpts from William Morgan's message of 2008-10-07:
+> My current plan is to put up a git repo this weekend of what I have, so
+> that others can start hacking on it too.
+
+Here you go:
+
+  http://github.com/wmorgan/heliotrope/tree/master
+
+Yep, github. :)
+
+Currently the only thing that's functional are the unit tests.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From aglarond at gmail.com  Mon Oct 13 19:06:55 2008
+From: aglarond at gmail.com (Dimitri Aivaliotis)
+Date: Tue, 14 Oct 2008 01:06:55 +0200
+Subject: [sup-talk] sup-sync-back imap support
+Message-ID: <55c107bf0810131606q2e9b8d16rc2de8d2d609b3841@mail.gmail.com>
+
+Hi All,
+
+First of all, I want to thank William for creating a very useful tool
+that I've been using since version 0.0.6.  As a mail client, sup has
+really grown up, and I look forward to seeing the work spawned by the
+recent STS work released under Heliotrope.
+
+Now for the request: does anybody have a dusty patch to sup-sync-back
+to make it work with IMAP sources lying around anywhere?  Perhaps with
+just functionality for --drop-spam?
+
+I've been using sup exclusively with an IMAP source, and since it's
+always been from one computer, I haven't missed the sync-back
+functionality.  But now I've got the problem that I'm migrating from
+one IMAP server to another, and I don't want to sync the thousands of
+messages that only sup recognizes as spam.
+
+If there's no response, I guess I'll cook up a patch sometime in the
+next few weeks, as I'd really like to move away from my ageing
+mailsystem.
+
+Thanks,
+- Dimitri
+
+From wmorgan-sup at masanjin.net  Tue Oct 14 16:18:37 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Oct 2008 13:18:37 -0700
+Subject: [sup-talk] sup-sync-back imap support
+In-Reply-To: <55c107bf0810131606q2e9b8d16rc2de8d2d609b3841@mail.gmail.com>
+References: <55c107bf0810131606q2e9b8d16rc2de8d2d609b3841@mail.gmail.com>
+Message-ID: <1224015062-sup-5794@entry>
+
+Hi Dmitri,
+
+Reformatted excerpts from Dimitri Aivaliotis's message of 2008-10-13:
+> Now for the request: does anybody have a dusty patch to sup-sync-back
+> to make it work with IMAP sources lying around anywhere?  Perhaps with
+> just functionality for --drop-spam?
+
+I don't have a patch, but I've just made a couple commits to the next
+branch to make this easier, at least as a one-off task. Unfortunately I
+haven't quite gotten it to work.
+
+Git pull and then try something like this:
+
+  $ sh devel/console.sh
+  [Tue Oct 14 13:06:24 -0700 2008] using character set encoding "UTF-8"
+  [Tue Oct 14 13:06:24 -0700 2008] optional 'chronic' library not found (run 'gem install chronic' to install)
+  [Tue Oct 14 13:06:24 -0700 2008] crypto: detected gpg binary in /usr/bin/gpg
+  [Tue Oct 14 13:06:24 -0700 2008] loading index...
+  [Tue Oct 14 13:06:24 -0700 2008] loaded index of 168 messages
+  >> docids = Index.ferret.search("label:spam", :limit => :all).hits.map { |h| h.doc }
+  => [166]
+  >> imap_ids = docids.map { |id| Index.ferret[id][:source_info].to_i }
+  => [12235610720003659]
+  >> source = Index.sources.select { |s| s.is_a? IMAP }.first
+  => #<Recoverable:0x2b86d8889c28 @mutex=#<Mutex:0x2b86d8889bd8>, errorn...>
+
+  ## (or however you want to get the source. if you have more than one
+  ## IMAP source, you'll have to look at Index.ferret[id][:source_id] as
+  ## well, and match them up to the source.id for each source
+
+  >> Index.ferret[166][:subject]
+  => "__START_SUBJECT__ *****SPAM***** exclusive flash __END_SUBJECT__"
+  ## (just making sure)
+
+  >> source.mark_as_deleted imap_ids
+  [Tue Oct 14 13:08:28 -0700 2008] Connecting to IMAP server xxx:993...
+  [Tue Oct 14 13:08:28 -0700 2008] Logging in...
+  [Tue Oct 14 13:08:28 -0700 2008] CRAM-MD5 authentication failed: Net::IMAP::NoResponseError. Trying LOGIN auth...
+  [Tue Oct 14 13:08:29 -0700 2008] Successfully connected to imaps://xxx/.
+  [Tue Oct 14 13:08:29 -0700 2008] fetching IMAP headers 1..183
+  [Tue Oct 14 13:08:30 -0700 2008] done fetching IMAP headers
+  => [#<struct Net::IMAP::FetchData seqno=153, attr={"FLAGS"=>[:Seen, :Deleted]}>]
+  >> source.expunge
+  [Tue Oct 14 13:08:36 -0700 2008] fetching IMAP headers 1..183
+  [Tue Oct 14 13:08:37 -0700 2008] done fetching IMAP headers
+  => true
+
+Unfortunately the expunge command doesn't seem to have any actual
+effect. I'm not sure if this is because the server I'm using is broken,
+or what. It seems like this should work.
+
+So you can take it from here. I'm done trying to make IMAP act
+reasonable. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From fedzor at gmail.com  Tue Oct 14 17:52:06 2008
+From: fedzor at gmail.com (fedzor)
+Date: Tue, 14 Oct 2008 17:52:06 -0400
+Subject: [sup-talk]  Gmail and OfflineIMAP
+Message-ID: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+
+Hey,
+
+I love sup. I first started using it ~ 0.3 with Gmail, but had to  
+stop because Gmail was causing sup to crash unexpectedly (it also  
+made it impossible to handle large amounts of email). But like I  
+said, I love sup. I want it back in my life. I'm tired of being a  
+wannabe command line junkie - I want to be a REAL command line  
+junkie. Thus, I'm looking at my options again.
+
+I'm thinking of using OfflineIMAP. Apparently it's fast (er than  
+imap), and will allow me to send email offline (like offline git  
+commits?). But how do I do this? How can I set it up?
+
+Thanks,
+------------------------------------------
+~ ari
+About the use of language: it is impossible to sharpen a pencil with  
+a blunt axe. It is equally vain to try to do it with ten blunt axes  
+instead.
+Edsger Dijkstra
+
+
+From wmorgan-sup at masanjin.net  Tue Oct 14 18:04:46 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Oct 2008 15:04:46 -0700
+Subject: [sup-talk] Gmail and OfflineIMAP
+In-Reply-To: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+References: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+Message-ID: <1224021714-sup-7841@entry>
+
+Reformatted excerpts from fedzor's message of 2008-10-14:
+> I'm thinking of using OfflineIMAP. Apparently it's fast (er than
+> imap), and will allow me to send email offline (like offline git
+> commits?). But how do I do this? How can I set it up?
+
+A couple people have done this, and it seems to be the only real
+workable solution to get reasonable speed with Sup. (IMAP's fault, not
+Sup's, IMO.)
+
+I've never used it personally, but there should be a couple people on
+the list who could give you pointers. Also check the archives; I believe
+it's been discussed quite a bit in the past.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From paul.t.hinze at gmail.com  Tue Oct 14 18:06:07 2008
+From: paul.t.hinze at gmail.com (Paul Hinze)
+Date: Tue, 14 Oct 2008 17:06:07 -0500
+Subject: [sup-talk] Gmail and OfflineIMAP
+In-Reply-To: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+References: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+Message-ID: <20081014220607.GA58659@dhcp80ff8f79.dynamic.uiowa.edu>
+
+fedzor <fedzor at gmail.com> on 2008-10-14 at 16:58:
+> I love sup. I first started using it ~ 0.3 with Gmail, but had to stop 
+> because Gmail was causing sup to crash unexpectedly (it also made it 
+> impossible to handle large amounts of email). But like I said, I love sup. 
+> I want it back in my life. I'm tired of being a wannabe command line 
+> junkie - I want to be a REAL command line junkie. Thus, I'm looking at my 
+> options again.
+>
+> I'm thinking of using OfflineIMAP. Apparently it's fast (er than imap), 
+
+I too am lurking while sup goes through its early development phases.
+In the meantime I use GMail and OfflineIMAP and other than the
+occassional bug out from OfflineIMAP things have been working pretty
+smoothly for a couple of months.  It's much faster than IMAP, especially
+with my mua of choice: mutt.
+
+> and will allow me to send email offline (like offline git commits?).
+
+No, you still send mail using GMail's SMTP server.  It will sync back
+any changes you make to the folder structure though.
+
+> how do I do this? How can I set it up?
+
+I figured it out from this link:
+http://soren.overgaard.org/2007/12/15/backing-up-gmail-using-offlineimap/
+
+Good luck!
+
+Paul
+
+From nicolas.pouillard at gmail.com  Tue Oct 14 19:53:55 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 15 Oct 2008 01:53:55 +0200
+Subject: [sup-talk] Gmail and OfflineIMAP
+In-Reply-To: <1224021714-sup-7841@entry>
+References: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+	<1224021714-sup-7841@entry>
+Message-ID: <1224028318-sup-9575@ausone.local>
+
+Excerpts from William Morgan's message of Wed Oct 15 00:04:46 +0200 2008:
+> Reformatted excerpts from fedzor's message of 2008-10-14:
+> > I'm thinking of using OfflineIMAP. Apparently it's fast (er than
+> > imap), and will allow me to send email offline (like offline git
+> > commits?). But how do I do this? How can I set it up?
+> 
+> A couple people have done this, and it seems to be the only real
+> workable solution to get reasonable speed with Sup. (IMAP's fault, not
+> Sup's, IMO.)
+
+I fetch GMail emails using POP (mpop) and then use sup with a single
+huge mbox. Most of the times performances are correct, the drawback being
+the lack of GMail back sync.
+
+Regards,
+
+-- 
+Nicolas Pouillard aka Ertai
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 194 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20081015/d3748a32/attachment.bin>
+
+From paul.t.hinze at gmail.com  Tue Oct 14 21:13:52 2008
+From: paul.t.hinze at gmail.com (Paul Hinze)
+Date: Tue, 14 Oct 2008 20:13:52 -0500
+Subject: [sup-talk] Gmail and OfflineIMAP
+In-Reply-To: <1F15520C-69CA-4E56-8B37-A6C43E710C3B@gmail.com>
+References: <3B0118F8-A2D9-47BF-9EC6-C5D9CDCEB571@gmail.com>
+	<20081014220607.GA58659@dhcp80ff8f79.dynamic.uiowa.edu>
+	<1F15520C-69CA-4E56-8B37-A6C43E710C3B@gmail.com>
+Message-ID: <20081015011352.GB58659@dhcp80ff8f79.dynamic.uiowa.edu>
+
+fedzor <fedzor at gmail.com> on 2008-10-14 at 17:14:
+>
+> On Oct 14, 2008, at 6:06 PM, Paul Hinze wrote:
+>> I too am lurking while sup goes through its early development phases.
+>> In the meantime I use GMail and OfflineIMAP and other than the
+>> occassional bug out from OfflineIMAP things have been working pretty
+>> smoothly for a couple of months.  It's much faster than IMAP,  
+>> especially
+>> with my mua of choice: mutt.
+>
+> Wait, where does sup come into play if you're using mutt? I'm confused as 
+> to what "Sup as a Service" really means.
+
+Using the instructions linked in my previous email will allow you to use
+offlineimap to mirror GMail account locally in Maildir format.  AFAICT,
+you could then use sup, which supports Maildir as a source, to read and
+search through your mail.
+
+Hope this helps,
+
+Paul
+
+From richih.mailinglist at gmail.com  Wed Oct 15 11:58:31 2008
+From: richih.mailinglist at gmail.com (Richard Hartmann)
+Date: Wed, 15 Oct 2008 17:58:31 +0200
+Subject: [sup-talk] sup-announce?
+Message-ID: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+
+Hi all,
+
+I have an interest in Sup, but will not start playing with it, yet.
+
+I suggest a sup-announce at r.o is created. Ideally, all subscribers to
+sup-talk at r.o. would just be subscribed to the new list, as well.
+
+
+Richard
+
+From wmorgan-sup at masanjin.net  Wed Oct 15 14:08:14 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 15 Oct 2008 11:08:14 -0700
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+Message-ID: <1224094029-sup-9518@entry>
+
+Reformatted excerpts from richih.mailinglist's message of 2008-10-15:
+> I suggest a sup-announce at r.o is created. Ideally, all subscribers to
+> sup-talk at r.o. would just be subscribed to the new list, as well.
+
+I haven't done this because sup-talk traffic has never been that big,
+but I'd be happy to if others would find this useful. Of course any
+announcements might still be quite some time away. :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From richih.mailinglist at gmail.com  Wed Oct 15 19:49:12 2008
+From: richih.mailinglist at gmail.com (Richard Hartmann)
+Date: Thu, 16 Oct 2008 01:49:12 +0200
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <1224094029-sup-9518@entry>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+Message-ID: <2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+
+On Wed, Oct 15, 2008 at 20:08, William Morgan <wmorgan-sup at masanjin.net> wrote:
+
+> I haven't done this because sup-talk traffic has never been that big,
+> but I'd be happy to if others would find this useful. Of course any
+> announcements might still be quite some time away. :)
+
+Feedback from others would be appreciated, yes :)
+
+Especially since announcements are a far way off, I would like to
+have such a list available. I filter all normal list traffic into the
+archives, but announcements go into the normal inbox so I can
+see them immediately.
+
+
+Richard
+
+From fedzor at gmail.com  Wed Oct 15 21:43:22 2008
+From: fedzor at gmail.com (fedzor)
+Date: Wed, 15 Oct 2008 21:43:22 -0400
+Subject: [sup-talk]  STS
+Message-ID: <76D7DBC9-339A-490F-9DF5-F186E014B99D@gmail.com>
+
+Hey,
+
+In STS, will it be delivering messages itself? Is there a reason why  
+it shouldn't? If it should be done, I'd be more than happy to add  
+that ability.
+
+thanks,
+-------------------------------------------------------|
+~ Ari
+if god gives you lemons
+YOU FIND A NEW GOD
+
+
+From nicolas.pouillard at gmail.com  Fri Oct 17 04:55:37 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 17 Oct 2008 10:55:37 +0200
+Subject: [sup-talk] [PATCH] Sort the contents of labels.txt
+Message-ID: <1224233737-32731-1-git-send-email-nicolas.pouillard@gmail.com>
+
+This enable better behaviors when versioning this
+kind of files.
+---
+ lib/sup/label.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/label.rb b/lib/sup/label.rb
+index 716ef98..da14df6 100644
+--- a/lib/sup/label.rb
++++ b/lib/sup/label.rb
+@@ -78,7 +78,7 @@ class LabelManager
+ 
+   def save
+     return unless @modified
+-    File.open(@fn, "w") { |f| f.puts @labels.keys }
++    File.open(@fn, "w") { |f| f.puts @labels.keys.sort }
+   end
+ end
+ 
+-- 
+1.5.5.rc3
+
+
+From israel.herraiz at gmail.com  Sun Oct 19 06:53:52 2008
+From: israel.herraiz at gmail.com (Israel Herraiz)
+Date: Sun, 19 Oct 2008 12:53:52 +0200
+Subject: [sup-talk] [PATCH] Keybinding to show a list of unread messages
+Message-ID: <1224414435-sup-9918@elly>
+
+Hi all,
+
+this patch adds a global keybinding to make a search of all the unread
+messages. I use this quite often, and maybe it can be useful for
+others too.
+
+The keybinding is 'U'.
+
+Cheers,
+Israel
+
+---
+ bin/sup |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index e27b3f7..74a4997 100644
+--- a/bin/sup
++++ b/bin/sup
+@@ -65,6 +65,7 @@ global_keymap = Keymap.new do |k|
+   k.add :list_contacts, "List contacts", 'C'
+   k.add :redraw, "Redraw screen", :ctrl_l
+   k.add :search, "Search all messages", '\\', 'F'
++  k.add :search_unread, "Show all unread messages", 'U'
+   k.add :list_labels, "List labels", 'L'
+   k.add :poll, "Poll for new messages", 'P'
+   k.add :compose, "Compose new message", 'm', 'c'
+@@ -220,6 +221,8 @@ begin
+       query = BufferManager.ask :search, "search all messages: "
+       next unless query && query !~ /^\s*$/
+       SearchResultsMode.spawn_from_query query
++    when :search_unread
++      SearchResultsMode.spawn_from_query "is:unread"
+     when :list_labels
+       labels = LabelManager.listable_labels.map { |l| LabelManager.string_for l }
+       user_label = bm.ask_with_completions :label, "Show threads with label (enter for listing): ", labels
+-- 
+1.5.6.5
+
+
+From richih.mailinglist at gmail.com  Sun Oct 19 19:41:47 2008
+From: richih.mailinglist at gmail.com (Richard Hartmann)
+Date: Mon, 20 Oct 2008 01:41:47 +0200
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+	<2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+Message-ID: <2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+
+On Thu, Oct 16, 2008 at 01:49, Richard Hartmann
+<richih.mailinglist at gmail.com> wrote:
+
+> Feedback from others would be appreciated, yes :)
+
+Poke? :)
+
+
+Richard
+
+From wmorgan-sup at masanjin.net  Sun Oct 19 22:38:13 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Oct 2008 19:38:13 -0700
+Subject: [sup-talk] STS
+In-Reply-To: <76D7DBC9-339A-490F-9DF5-F186E014B99D@gmail.com>
+References: <76D7DBC9-339A-490F-9DF5-F186E014B99D@gmail.com>
+Message-ID: <1224470147-sup-7715@entry>
+
+Reformatted excerpts from fedzor's message of 2008-10-15:
+> In STS, will it be delivering messages itself? Is there a reason why
+> it shouldn't? If it should be done, I'd be more than happy to add that
+> ability.
+
+The server part won't, but clients may choose to. I'm planning on doing
+the minimum to port the current curses client over, so if you really
+want that in STS, you could just add it there. Personally I'm happy to
+have sendmail do all the hard work for me, but I understand that that
+complicates some people's setup.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Oct 19 22:39:36 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Oct 2008 19:39:36 -0700
+Subject: [sup-talk] [PATCH] Sort the contents of labels.txt
+In-Reply-To: <1224233737-32731-1-git-send-email-nicolas.pouillard@gmail.com>
+References: <1224233737-32731-1-git-send-email-nicolas.pouillard@gmail.com>
+Message-ID: <1224470366-sup-1251@entry>
+
+Reformatted excerpts from nicolas.pouillard's message of 2008-10-17:
+> This enable better behaviors when versioning this
+> kind of files.
+
+Applied to master. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Oct 19 22:41:24 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Oct 2008 19:41:24 -0700
+Subject: [sup-talk] [PATCH] Keybinding to show a list of unread messages
+In-Reply-To: <1224414435-sup-9918@elly>
+References: <1224414435-sup-9918@elly>
+Message-ID: <1224470472-sup-5432@entry>
+
+Reformatted excerpts from israel.herraiz's message of 2008-10-19:
+> this patch adds a global keybinding to make a search of all the unread
+> messages. I use this quite often, and maybe it can be useful for
+> others too.
+
+Applied to master, thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Oct 19 22:42:18 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Oct 2008 19:42:18 -0700
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+	<2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+	<2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+Message-ID: <1224470496-sup-2470@entry>
+
+Reformatted excerpts from richih.mailinglist's message of 2008-10-19:
+> Poke? :)
+
+Created; in another 24 hours it should be active and I'll subscribe
+everyone here.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From chrisw at rice.edu  Sun Oct 19 19:47:14 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Sun, 19 Oct 2008 18:47:14 -0500
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+	<2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+	<2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+Message-ID: <op.ujapo02csp4qz7@t-gewarr-tablet.ntdev.corp.microsoft.com>
+
+Richard Hartmann <richih.mailinglist at gmail.com> @ 2008-10-19 06:41 PM
+"Re: [sup-talk] sup-announce?"  
+<2d460de70810191641m2ed28e72q801429381ec66a89 at mail.gmail.com>
+
+>> Feedback from others would be appreciated, yes :)
+>
+> Poke? :)
+
+Sure, why not?
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+Jones College
+
+From richih.mailinglist at gmail.com  Mon Oct 20 04:22:36 2008
+From: richih.mailinglist at gmail.com (Richard Hartmann)
+Date: Mon, 20 Oct 2008 10:22:36 +0200
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <1224470496-sup-2470@entry>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+	<2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+	<2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+	<1224470496-sup-2470@entry>
+Message-ID: <2d460de70810200122j2c493b67wa7abc63c00dcd6ac@mail.gmail.com>
+
+On Mon, Oct 20, 2008 at 04:42, William Morgan <wmorgan-sup at masanjin.net> wrote:
+
+> Created; in another 24 hours it should be active and I'll subscribe
+> everyone here.
+
+Thanks :)
+
+
+Richard
+
+From wmorgan-sup at masanjin.net  Mon Oct 20 20:01:59 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Oct 2008 17:01:59 -0700
+Subject: [sup-talk] sup-sync-back imap support
+In-Reply-To: <55c107bf0810201644m5888cb42r6087c016f071361b@mail.gmail.com>
+References: <55c107bf0810131606q2e9b8d16rc2de8d2d609b3841@mail.gmail.com>
+	<1224015062-sup-5794@entry>
+	<55c107bf0810201644m5888cb42r6087c016f071361b@mail.gmail.com>
+Message-ID: <1224547296-sup-9853@entry>
+
+Reformatted excerpts from Dimitri Aivaliotis's message of 2008-10-20:
+> I've finally been able to give your patch a try.  It worked like a
+> charm for me!
+
+Cool, glad to hear it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Oct 20 20:21:53 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Oct 2008 17:21:53 -0700
+Subject: [sup-talk] sup-announce?
+In-Reply-To: <2d460de70810200122j2c493b67wa7abc63c00dcd6ac@mail.gmail.com>
+References: <2d460de70810150858p6c756134mbd611d2688eecd57@mail.gmail.com>
+	<1224094029-sup-9518@entry>
+	<2d460de70810151649i53943a3ex1a15fbc73e930677@mail.gmail.com>
+	<2d460de70810191641m2ed28e72q801429381ec66a89@mail.gmail.com>
+	<1224470496-sup-2470@entry>
+	<2d460de70810200122j2c493b67wa7abc63c00dcd6ac@mail.gmail.com>
+Message-ID: <1224548435-sup-1219@entry>
+
+Ok, I've silently subscribed every active sup-talk subscriber to
+sup-announce. No one can post there but me, and I'm only going to send
+one email per release, so, you know, shouldn't be much traffic.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From decklin at red-bean.com  Sun Oct 26 14:41:55 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Sun, 26 Oct 2008 14:41:55 -0400
+Subject: [sup-talk] "X-" headers
+Message-ID: <1225046068-sup-1321@gillespie.rupamsunyata.org>
+
+I've noticed sup strips X-Foo: from mails during editing (or indeed, any
+header that isn't recognized in mbox.rb). I think it would be better to
+just ignore and pass them on (as they are officially okay in emails whereas
+random unknown non "X-" headers are not). What do people think?
+
+(I use X-Tags: for blogging, myself. I also used to have a joke X-Windows:
+header.)
+
+I've pushed a change to fix it to Gitorious:
+http://gitorious.org/projects/sup/repos/decklins-clone/commits/aa1b6846c33b44dfd723ad9657448e45e7a2a143
+(I moved up the special-case X- stuff so this doesn't interfere with it. Might
+not actually be necessary.)
+
+William, for future patch submissions, is it cool to just say "hey, I
+commited something", and then you can pull it if desired? Or should I attach
+the patch here for discussion?
+-- 
+things change.
+decklin at red-bean.com
+
+From decklin at red-bean.com  Sun Oct 26 14:48:41 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Sun, 26 Oct 2008 14:48:41 -0400
+Subject: [sup-talk] run-mailcap weirdness
+Message-ID: <1225046594-sup-8381@gillespie.rupamsunyata.org>
+
+Viewing HTML attachments fails for me. It turns out that Debian's mailcap
+falls over if standard output is not a terminal (see below).
+
+I don't know if this is right, but removing the redirection makes it work
+for me (I've committed this to decklins-clone at Gitorious). What was the
+original rationale for /dev/null-ing this? I noticed if you set the mailcap
+command to something that just prints text (no pager) it blips by
+instantaneously in Sup. So, unless we can snarf the output for logging
+purposes, maybe it is better to just let it reach the terminal?
+
+Example mailcap lossage:
+
+$ echo hello | /usr/bin/run-mailcap --debug=1 --action=view text/plain:- >/dev/null
+ - parsing parameter "--action=view"
+ - parsing parameter "text/plain:-"
+ - file "-" does not exist -- assuming mime-type specification of "text/plain"
+ - Reading mailcap file "/home/decklin/.mailcap"...
+ - Reading mailcap file "/etc/mailcap"...
+Processing file "-" of type "text/plain" (encoding=none)...
+ - checking mailcap entry "text/plain; less '%s'; needsterminal"
+ - program to execute: less '%s'
+ - no terminal available for rule (needsterminal)
+ - checking mailcap entry "text/plain; more '%s'; needsterminal"
+ - program to execute: more '%s'
+ - no terminal available for rule (needsterminal)
+ - checking mailcap entry "text/*; less '%s'; needsterminal"
+ - program to execute: less '%s'
+ - no terminal available for rule (needsterminal)
+ - checking mailcap entry "text/*; more '%s'; needsterminal"
+ - program to execute: more '%s'
+ - no terminal available for rule (needsterminal)
+Error: no "view" rule for type "text/plain" passed its test case
+       (for more information, add "--debug=1" on the command line)
+
+-- 
+things change.
+decklin at red-bean.com
+
+From kevinr at free-dissociation.com  Sun Oct 26 18:07:23 2008
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Sun, 26 Oct 2008 18:07:23 -0400
+Subject: [sup-talk] Exceptions around saving drafts
+Message-ID: <1225058548-sup-3222@black-opal>
+
+Working with a draft message today got me lots of exceptions, usually
+when I saved the draft and went back to my inbox.  (These all took the
+same form, so I've only attached one of them.)  Running sup-sync didn't
+help.  Attempting to /delete/ a draft (open the message, hit 'e' on the
+draft, quit my editor, close the buffer in Sup, hit 'y' for discard) got
+me a segfault in Ruby (the stock Ubuntu package thereof):
+
+./lib/sup/draft.rb:38: [BUG] Segmentation fault ruby 1.8.6 (2007-09-24) [x86_64-linux] 
+Aborted
+
+FYI.
+
+- Kevin
+-- 
+Kevin Riggle (kevinr at free-dissociation.com) 
+http://free-dissociation.com
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20081026/20fa0a0e/attachment.txt>
+
+From nicolas.pouillard at gmail.com  Mon Oct 27 08:12:39 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 27 Oct 2008 13:12:39 +0100
+Subject: [sup-talk] Exceptions around saving drafts
+In-Reply-To: <1225058548-sup-3222@black-opal>
+References: <1225058548-sup-3222@black-opal>
+Message-ID: <1225109441-sup-9989@ausone.inria.fr>
+
+I also had this problem and never took time to debug it or report a bug.
+Generally sup-sync fix it. Sometimes also working on a draft can duplicate
+it and trying to remove the duplicate leads to this problem. Last time
+I directly ran a console and removed it from the index.
+
+Excerpts from Kevin Riggle's message of Sun Oct 26 23:07:23 +0100 2008:
+> Working with a draft message today got me lots of exceptions, usually
+> when I saved the draft and went back to my inbox.  (These all took the
+> same form, so I've only attached one of them.)  Running sup-sync didn't
+> help.  Attempting to /delete/ a draft (open the message, hit 'e' on the
+> draft, quit my editor, close the buffer in Sup, hit 'y' for discard) got
+> me a segfault in Ruby (the stock Ubuntu package thereof):
+> 
+> ./lib/sup/draft.rb:38: [BUG] Segmentation fault ruby 1.8.6 (2007-09-24) [x86_64-linux] 
+> Aborted
+> 
+> FYI.
+> 
+> - Kevin
+> --- EOFError from thread: main
+> End-of-File Error occured at <except.c>:93 in xraise
+> Error occured in compound_io.c:137 - cmpdi_read_i
+>         Tried to read past end of file. File length is <1> and tried to read to <30056>
+> 
+> ./lib/sup/draft.rb:38:in `default'
+> ./lib/sup/draft.rb:38:in `[]'
+> ./lib/sup/draft.rb:38:in `discard'
+> ./lib/sup/util.rb:499:in `send'
+> ./lib/sup/util.rb:499:in `method_missing'
+> ./lib/sup/modes/resume-mode.rb:43:in `save_as_draft'
+> ./lib/sup/mode.rb:49:in `send'
+> ./lib/sup/mode.rb:49:in `handle_input'
+> ./lib/sup/buffer.rb:240:in `handle_input'
+> bin/sup:189
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From wmorgan-sup at masanjin.net  Mon Oct 27 22:15:23 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Oct 2008 19:15:23 -0700
+Subject: [sup-talk] "X-" headers
+In-Reply-To: <1225046068-sup-1321@gillespie.rupamsunyata.org>
+References: <1225046068-sup-1321@gillespie.rupamsunyata.org>
+Message-ID: <1225159970-sup-8568@entry>
+
+Reformatted excerpts from Decklin Foster's message of 2008-10-26:
+> I've noticed sup strips X-Foo: from mails during editing (or indeed,
+> any header that isn't recognized in mbox.rb). I think it would be
+> better to just ignore and pass them on (as they are officially okay in
+> emails whereas random unknown non "X-" headers are not). What do
+> people think?
+
+That's fine with me. The ignore headers stuff was just there to try and
+speed up mbox reading (and it seemed to make a difference at the time,
+though in retrospect I wonder).
+
+> I've pushed a change to fix it to Gitorious:
+
+Merged into next. Thanks!
+
+> William, for future patch submissions, is it cool to just say "hey, I
+> commited something", and then you can pull it if desired? Or should I
+> attach the patch here for discussion?
+
+No, that's fine. Posting patches here is fine too, but no one really
+reads them except for me, so... whatever's easiest for you. Official
+Gitorious merge requests also work.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Oct 27 22:21:30 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Oct 2008 19:21:30 -0700
+Subject: [sup-talk] Exceptions around saving drafts
+In-Reply-To: <1225058548-sup-3222@black-opal>
+References: <1225058548-sup-3222@black-opal>
+Message-ID: <1225160241-sup-4803@entry>
+
+Reformatted excerpts from Kevin Riggle's message of 2008-10-26:
+> Working with a draft message today got me lots of exceptions, usually
+> when I saved the draft and went back to my inbox.  (These all took the
+> same form, so I've only attached one of them.)  Running sup-sync
+> didn't help.  Attempting to /delete/ a draft (open the message, hit
+> 'e' on the draft, quit my editor, close the buffer in Sup, hit 'y' for
+> discard) got me a segfault in Ruby (the stock Ubuntu package thereof):
+> 
+> ./lib/sup/draft.rb:38: [BUG] Segmentation fault ruby 1.8.6 (2007-09-24) [x86_64-linux] 
+
+That don't look good.
+
+> --- EOFError from thread: main
+> End-of-File Error occured at <except.c>:93 in xraise
+> Error occured in compound_io.c:137 - cmpdi_read_i
+>         Tried to read past end of file. File length is <1> and tried to read to <30056>
+
+That neither. Any weird situations like running out of disk space?
+
+Have you tried sup-sync -a sup://drafts? That should force a full
+reindex of all your draft messages.
+
+You can also try deleting the message manually through devel/console.sh.
+Search the archives for "console.sh"; I believe there are a few good
+examples of using it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Oct 27 22:17:08 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Oct 2008 19:17:08 -0700
+Subject: [sup-talk] run-mailcap weirdness
+In-Reply-To: <1225046594-sup-8381@gillespie.rupamsunyata.org>
+References: <1225046594-sup-8381@gillespie.rupamsunyata.org>
+Message-ID: <1225160150-sup-916@entry>
+
+Reformatted excerpts from Decklin Foster's message of 2008-10-26:
+> I don't know if this is right, but removing the redirection makes it work
+> for me (I've committed this to decklins-clone at Gitorious). What was the
+> original rationale for /dev/null-ing this? I noticed if you set the mailcap
+> command to something that just prints text (no pager) it blips by
+> instantaneously in Sup.
+
+The original rationale was to stop it from screwing up the screen, but
+I'd rather have it work in the first place.
+
+I've merged in your commit. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Oct 29 05:09:57 2008
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 29 Oct 2008 10:09:57 +0100
+Subject: [sup-talk] Exceptions around saving drafts
+In-Reply-To: <1225160241-sup-4803@entry>
+References: <1225058548-sup-3222@black-opal> <1225160241-sup-4803@entry>
+Message-ID: <1225271215-sup-3640@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Tue Oct 28 03:21:30 +0100 2008:
+> Reformatted excerpts from Kevin Riggle's message of 2008-10-26:
+> > Working with a draft message today got me lots of exceptions, usually
+> > when I saved the draft and went back to my inbox.  (These all took the
+> > same form, so I've only attached one of them.)  Running sup-sync
+> > didn't help.  Attempting to /delete/ a draft (open the message, hit
+> > 'e' on the draft, quit my editor, close the buffer in Sup, hit 'y' for
+> > discard) got me a segfault in Ruby (the stock Ubuntu package thereof):
+> > 
+> > ./lib/sup/draft.rb:38: [BUG] Segmentation fault ruby 1.8.6 (2007-09-24) [x86_64-linux] 
+> 
+> That don't look good.
+> 
+> > --- EOFError from thread: main
+> > End-of-File Error occured at <except.c>:93 in xraise
+> > Error occured in compound_io.c:137 - cmpdi_read_i
+> >         Tried to read past end of file. File length is <1> and tried to read to <30056>
+> 
+> That neither. Any weird situations like running out of disk space?
+> 
+> Have you tried sup-sync -a sup://drafts? That should force a full
+> reindex of all your draft messages.
+> 
+> You can also try deleting the message manually through devel/console.sh.
+> Search the archives for "console.sh"; I believe there are a few good
+> examples of using it.
+
+Yes console.sh is very nice! However the API seems not really designed to be
+used that way, maybe a small refactoring with more idiomatic names (like in
+rails) would be nice.
+
+  ex: Message.find_by_message_id
+      Message.search(:first, 'is:draft foo bar').destroy!
+
+-- 
+Nicolas Pouillard aka Ertai
+
+From rlpowell at digitalkingdom.org  Wed Oct 29 23:41:27 2008
+From: rlpowell at digitalkingdom.org (Robin Lee Powell)
+Date: Wed, 29 Oct 2008 20:41:27 -0700
+Subject: [sup-talk] You've got the "From " bug, I'm afraid.
+Message-ID: <20081030034127.GK1092@digitalkingdom.org>
+
+I'm trying out sup, coming from mutt, and I've hit what is, for me,
+a show-stopper bug.
+
+sup things that the line:
+
+>From bob:
+
+starts a new mail in mbox files.
+
+I put lines like that all over the place in my mails.
+
+-Robin
+
+
+-- 
+They say:  "The first AIs will be built by the military as weapons."
+And I'm thinking:  "Does it even occur to you to try for something
+other than the default outcome?" -- http://shorl.com/tydruhedufogre
+http://www.digitalkingdom.org/~rlpowell/ *** http://www.lojban.org/
+
+From rlpowell at digitalkingdom.org  Thu Oct 30 00:39:32 2008
+From: rlpowell at digitalkingdom.org (Robin Lee Powell)
+Date: Wed, 29 Oct 2008 21:39:32 -0700
+Subject: [sup-talk] Moderation problems?
+Message-ID: <20081030043932.GL1092@digitalkingdom.org>
+
+FWIW, as far as I can tell this never got moderated; I had to join
+the list to get it sent through.
+
+-Robin
+
+----- Forwarded message from sup-talk-bounces at rubyforge.org -----
+
+Subject: Your message to sup-talk awaits moderator approval
+From: sup-talk-bounces at rubyforge.org
+To: rlpowell at digitalkingdom.org
+Date: Fri, 24 Oct 2008 01:37:12 -0400
+
+Your mail to 'sup-talk' with the subject
+
+    You've got the "From " bug, I'm afraid.
+
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+    Post by non-member to a members-only list
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+    http://rubyforge.org/mailman/confirm/sup-talk/f924720658fe01628c81165ff8e2259d5ffba1e4
+
+
+----- End forwarded message -----
+
+-- 
+They say:  "The first AIs will be built by the military as weapons."
+And I'm thinking:  "Does it even occur to you to try for something
+other than the default outcome?" -- http://shorl.com/tydruhedufogre
+http://www.digitalkingdom.org/~rlpowell/ *** http://www.lojban.org/
+
+From tpo2 at sourcepole.ch  Thu Oct 30 03:35:21 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 07:35:21 +0000
+Subject: [sup-talk] improvement: mention sup-announce on sup's web page
+Message-ID: <9OtUANH0.1225352121.6313560.tpo2@192.168.3.7>
+
+
+It'd be nice to mention the sup-announce mailing list on sup's homepage.
+
+Therefore I fetched the www/index.html page from sup's git repository in
+order to send in a patch to the list. However sup's homepage seems to
+be generated by some tool from hel...sinki (producing massive amounts of
+HTML "noise"). Would it be possible to:
+
+- either add the source of index.html to the git repository along with a
+note in the generated HTML code describing what tool generated the code
+- replace the index.html file with a "sane" one without the
+CSS/everything inside tables/line numbering "noise"
+
+?
+*t
+
+From tpo2 at sourcepole.ch  Thu Oct 30 03:28:01 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 07:28:01 +0000
+Subject: [sup-talk] bug: "hoe" dependency missing
+Message-ID: <n1iftxuQ.1225351681.9861340.tpo2@192.168.3.7>
+
+
+$ sudo gem install sup
+Building native extensions.  This could take a while...
+Successfully installed rake-0.8.3
+Successfully installed ferret-0.11.6
+Successfully installed rmail-1.0.0
+Successfully installed highline-1.4.0
+Successfully installed net-ssh-2.0.4
+Successfully installed trollop-1.10.2
+Successfully installed lockfile-1.4.3
+Successfully installed mime-types-1.15
+Successfully installed gettext-1.93.0
+Successfully installed fastthread-1.0.1
+Successfully installed sup-0.6
+11 gems installed
+[...]
+$ sup
+/usr/lib/ruby/1.8/rubygems.rb:578:in `report_activate_error': Could not
+find RubyGem hoe (>= 1.7.0) (Gem::LoadError)
+	from /usr/lib/ruby/1.8/rubygems.rb:134:in `activate'
+	from /usr/lib/ruby/1.8/rubygems.rb:158:in `activate'
+	from /usr/lib/ruby/1.8/rubygems.rb:157:in `each'
+	from /usr/lib/ruby/1.8/rubygems.rb:157:in `activate'
+	from /usr/lib/ruby/1.8/rubygems.rb:49:in `gem'
+	from /usr/local/bin/sup:18
+
+Is this a gem or a sup problem?
+*t
+
+From tpo2 at sourcepole.ch  Thu Oct 30 09:16:12 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 13:16:12 +0000
+Subject: [sup-talk] UTF-8 in replies?
+Message-ID: <rTObwtfT.1225372572.3650890.tpo2@192.168.3.7>
+
+
+I wrote a message containing a lot of czech characters (using vim as my
+editor). When ':wq'-ing from vim, Sup showed me the horrible
+results... aparently it did not recognize, that the message was in UTF-8
+(as indicated by 'file' when giving it vim's temporary file).
+
+And apparently it doesn't seem to be possible to tell Sup either to add
+an encoding to the message?
+
+Using sup 0.6 from "gem install sup"
+*t
+
+From tpo2 at sourcepole.ch  Thu Oct 30 09:57:16 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 13:57:16 +0000
+Subject: [sup-talk] improvement: add self as recipient on sent messages
+Message-ID: <v0HRsyuE.1225375036.4997550.tpo2@192.168.3.7>
+
+
+Currently sup seems to call gpg with the recipient only. However sup
+should add "self" also to the recipients. Otherwise one is not able to
+read sent, encrypted mails any more.
+*t
+
+From tpo2 at sourcepole.ch  Thu Oct 30 13:03:45 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 17:03:45 +0000
+Subject: [sup-talk] improvement: add self as recipient on crypted sent
+	messages
+In-Reply-To: <v0HRsyuE.1225375036.4997550.tpo2@192.168.3.7>
+Message-ID: <7tCX6GnV.1225386225.8453510.tpo2@192.168.3.7>
+
+
+On 10/30/2008, "Tomas Pospisek ML" <tpo2 at sourcepole.ch> wrote:
+
+>
+>Currently sup seems to call gpg with the recipient only. However sup
+>should add "self" also to the recipients. Otherwise one is not able to
+>read sent, encrypted mails any more.
+
+Patch is below. Two comments:
+
+1. is there a less ugly way to create a new Array with an additional
+element?
+2. the patch assumes that adding "From: " to gpg's" --recipient"s is
+a sensible thing to do and thus it does it with no questions asked
+
+OK?
+*t
+
+--- sup/crypto.rb.orig	2008-10-30 16:36:37.000000000 +0100
++++ sup/crypto.rb	2008-10-30 17:40:07.000000000 +0100
+@@ -53,7 +53,7 @@
+     payload_fn.write format_payload(payload)
+     payload_fn.close
+
+-    recipient_opts = to.map { |r| "--recipient '<#{r}>'" }.join("
+")
++    recipient_opts = (to + [ from ] ).map { |r| "--recipient
+'<#{r}>'" }.join(" ")
+     sign_opts = sign ? "--sign --local-user '#{from}'" : ""
+     gpg_output = run_gpg "--output - --armor --encrypt --textmode
+#{sign_opts} #{recipient_opts} #{payload_fn.path}"
+     raise Error, (gpg_output || "gpg command failed: #{cmd}") unless
+$?.success?
+
+From decklin at red-bean.com  Thu Oct 30 14:42:40 2008
+From: decklin at red-bean.com (Decklin Foster)
+Date: Thu, 30 Oct 2008 14:42:40 -0400
+Subject: [sup-talk] EOFError crash
+Message-ID: <1225392037-sup-9224@gillespie.rupamsunyata.org>
+
+Sup just crashed on me (I was sending an edited draft):
+
+--- EOFError from thread: main
+End-of-File Error occured at <except.c>:93 in xraise
+Error occured in compound_io.c:137 - cmpdi_read_i
+	Tried to read past end of file. File length is <120> and tried to read to <33392>
+
+/usr/lib/ruby/1.8/sup/draft.rb:38:in `default'
+/usr/lib/ruby/1.8/sup/draft.rb:38:in `[]'
+/usr/lib/ruby/1.8/sup/draft.rb:38:in `discard'
+/usr/lib/ruby/1.8/sup/util.rb:499:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:499:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/resume-mode.rb:36:in `send_message'
+/usr/lib/ruby/1.8/sup/mode.rb:49:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:49:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:240:in `handle_input'
+/usr/bin/sup-mail:188
+
+Any ideas? I got nothing. (Might be a total fluke, but I don't have
+time to investigate so I'll just throw it out there.)
+-- 
+things change.
+decklin at red-bean.com
+
+From tpo2 at sourcepole.ch  Thu Oct 30 19:38:07 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 23:38:07 +0000
+Subject: [sup-talk] patch: pluralize minute(s) second(s)
+Message-ID: <jmft2NPp.1225409887.1308060.tpo2@192.168.3.7>
+
+
+The patch below makes Sup say "1 second" instead of "1 seconds". Same
+for minute(s).
+*t
+
+--- lib/sup/index.rb.orig	2008-10-31 00:03:41.000000000 +0100
++++ lib/sup/index.rb	2008-10-31 00:05:24.000000000 +0100
+@@ -66,14 +66,19 @@
+     @lock_update_thread = nil
+   end
+
++  def possibly_pluralize number_of, kind
++    "#{number_of} #{kind}" +
++        if number_of == 1 then "" else "s" end
++  end
++
+   def fancy_lock_error_message_for e
+-    secs = Time.now - e.mtime
+-    mins = secs.to_i / 60
++    secs = (Time.now - e.mtime).to_i
++    mins = secs / 60
+     time =
+       if mins == 0
+-        "#{secs.to_i} seconds"
++        possibly_pluralize secs , "second"
+       else
+-        "#{mins} minutes"
++        possibly_pluralize mins, "minute"
+       end
+
+     <<EOS
+
+From tpo2 at sourcepole.ch  Thu Oct 30 19:40:22 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Thu, 30 Oct 2008 23:40:22 +0000
+Subject: [sup-talk] patch: accept "yes" when asked so
+Message-ID: <7ny3wDtl.1225410022.1981460.tpo2@192.168.3.7>
+
+
+The patch below makes Sup accept a "yes" in addition to "y"
+
+--- bin/sup.orig	2008-10-30 23:38:04.000000000 +0100
++++ bin/sup	2008-10-30 23:43:23.000000000 +0100
+@@ -101,7 +101,7 @@
+   h.say Index.fancy_lock_error_message_for(e)
+
+   case h.ask("Should I ask that process to kill itself? ")
+-  when /^\s*y\s*$/i
++  when /^\s*y(es)?\s*$/i
+     h.say "Ok, suggesting seppuku..."
+     FileUtils.touch Redwood::SUICIDE_FN
+     sleep SuicideManager::DELAY * 2
+
+From marc.hartstein at alum.vassar.edu  Fri Oct 31 12:56:04 2008
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Fri, 31 Oct 2008 12:56:04 -0400
+Subject: [sup-talk] "X-" headers
+In-Reply-To: <1225159970-sup-8568@entry>
+References: <1225046068-sup-1321@gillespie.rupamsunyata.org>
+	<1225159970-sup-8568@entry>
+Message-ID: <1225472018-sup-3924@cabinet>
+
+Excerpts from William Morgan's message of Mon Oct 27 22:15:23 -0400 2008:
+> No, that's fine. Posting patches here is fine too, but no one really
+> reads them except for me, so... whatever's easiest for you. Official
+> Gitorious merge requests also work.
+
+I've been known to read patches posted here in the past, and even apply
+them locally if it was something I really wanted and I didn't want to
+wait for it to make it to next.
+
+I don't think I'm alone, although there probably aren't many of us.
+
+Just, y'know, to debate the irrelevant point.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20081031/c6a80f5b/attachment-0001.bin>
+
+From wmorgan-sup at masanjin.net  Fri Oct 31 16:03:06 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 31 Oct 2008 13:03:06 -0700
+Subject: [sup-talk] Moderation problems?
+In-Reply-To: <20081030043932.GL1092@digitalkingdom.org>
+References: <20081030043932.GL1092@digitalkingdom.org>
+Message-ID: <1225483371-sup-1023@entry>
+
+Reformatted excerpts from Robin Lee Powell's message of 2008-10-29:
+> FWIW, as far as I can tell this never got moderated; I had to join the
+> list to get it sent through.
+
+Sorry. I'm a little slow on the moderation stuff sometimes.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tpo2 at sourcepole.ch  Fri Oct 31 17:38:09 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Fri, 31 Oct 2008 21:38:09 +0000
+Subject: [sup-talk] CPU at 99%
+Message-ID: <Lg3myPlb.1225489089.1213610.tpo2@192.168.3.7>
+
+
+When I start Sup, it starts eating my CPU and won't stop. And it
+doesn't seem to be doing anything either:
+
+top - 22:34:10 up 19 days,  1:43, 14 users,  load average: 1.12, 0.98,
+0.64
+Tasks: 169 total,   3 running, 166 sleeping,   0 stopped,   0 zombie
+Cpu(s): 23.8%us, 27.6%sy,  0.0%ni, 47.9%id,  0.0%wa,  0.7%hi,  0.0%si, 
+0.0%st
+Mem:   2054936k total,  2038152k used,    16784k free,    10264k buffers
+Swap:  1951856k total,   683256k used,  1268600k free,   310932k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+18228 tpo       20   0  185m  85m 3696 R   99  4.3  12:33.83 sup
+
+Meanwhile my laptop is blowing hot air like a fumarole.
+System is amd64 on Ubuntu Heron, Sup 0.6.
+?
+*t
+
+From tpo2 at sourcepole.ch  Fri Oct 31 18:51:36 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Fri, 31 Oct 2008 22:51:36 +0000
+Subject: [sup-talk] "RuntimeError from thread: poll after loading inbox"
+Message-ID: <Z6EOIjGi.1225493496.8474040.tpo2@192.168.3.7>
+
+
+I wasn't doing anything special - read some mail, deleted other. Had one
+"html mail" opened in a terminal. Then I said 'q'uit. And Sup splat
+on its face.
+
+Google tells me that there have been two reports to the mailing list with
+similar errors:
+http://www.google.ch/search?q=site%3Ahttp%3A%2F%2Frubyforge.org%2Fpipermail%2Fsup-talk%2F+"RuntimeError+from+thread%3A+poll+after+loading+inbox"
+
+*t
+
+--- RuntimeError from thread: poll after loading inbox
+trying to delete non-corresponding entry 8930 with index message-id
+"8BC92D9B-F5B4-4880-B852-7262A2F69650 at gmx.net" and parameter message
+id "sup-faked-b5d74cf19a1ebaf02e979448d059d0f4"
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/index.rb:174:in `sync_message'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:160:in `add_messages_from'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/source.rb:98:in `each'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `send'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:538:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:525:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:141:in `add_messages_from'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:98:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:86:in `each'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:86:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:85:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:85:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/poll-mode.rb:17:in `poll'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/poll.rb:53:in `poll'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `send'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/util.rb:499:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.6/bin/sup:166
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `new'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.6/bin/sup:166
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:542:in
+`call'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:542:in
+`__unprotected_load_threads'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:484:in
+`call'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:484:in
+`load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:85:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `new'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup.rb:83:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:482:in
+`load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.6/lib/sup/modes/thread-index-mode.rb:552:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.6/bin/sup:166
+/usr/local/bin/sup:19:in `load'
+/usr/local/bin/sup:19
+
+From tpo2 at sourcepole.ch  Fri Oct 31 19:52:45 2008
+From: tpo2 at sourcepole.ch (Tomas Pospisek ML)
+Date: Fri, 31 Oct 2008 23:52:45 +0000
+Subject: [sup-talk] bug: reproducable Sup crash, ferret-less rewrite?
+Message-ID: <YILM7EO5.1225497165.2060790.tpo2@192.168.3.7>
+
+
+I can reproduce now the following:
+
+"Sending...
+  /var/lib/gems/1.8/gems/sup-0.6/lib/sup/index.rb:367: [BUG] Segmentation
+fault
+  ruby 1.8.6 (2007-09-24) [x86_64-linux]
+  Aborted"
+
+Googling around showed me a similar problem [1] and particulary an
+enigmatic answer [2] by William Morgan:
+
+"These are both Ferret index corruption errors, which means I can either
+ debug Ferret, or rewrite Sup to not use it. (I've chosen the latter.)"
+
+I can not find any trace of the latter, i.e. Sup's source code
+repository at Gitorious [3] doesn't show any ferret amputation. Are
+you, William Morgan working on a Sup version that doesn't show that
+supposedly ferret induced crashiness? Possibly your "private" branch
+is not ready yet and not accessible?
+*t
+
+[1] http://www.mail-archive.com/sup-talk at rubyforge.org/msg01217.html
+[2] http://www.mail-archive.com/sup-talk at rubyforge.org/msg01218.html
+[3] http://gitorious.org/projects/sup
+
+From wmorgan-sup at masanjin.net  Fri Oct 31 19:53:39 2008
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 31 Oct 2008 16:53:39 -0700
+Subject: [sup-talk] CPU at 99%
+In-Reply-To: <Lg3myPlb.1225489089.1213610.tpo2@192.168.3.7>
+References: <Lg3myPlb.1225489089.1213610.tpo2@192.168.3.7>
+Message-ID: <1225497126-sup-2054@entry>
+
+Reformatted excerpts from Tomas Pospisek ML's message of 2008-10-31:
+> When I start Sup, it starts eating my CPU and won't stop. And it
+> doesn't seem to be doing anything either:
+
+It could be indexing a large volume of mail. If you swap to the poll
+buffer, you should be able to confirm that.
+
+If you've just added some large mail sources, or something like that,
+you might want to run sup-sync first to index them offline.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From chrisw at rice.edu  Fri Oct 31 23:16:39 2008
+From: chrisw at rice.edu (Christopher Warrington)
+Date: Fri, 31 Oct 2008 22:16:39 -0500
+Subject: [sup-talk] bug: reproducable Sup crash, ferret-less rewrite?
+In-Reply-To: <YILM7EO5.1225497165.2060790.tpo2@192.168.3.7>
+Message-ID: <C5313447.2C02%chrisw@rice.edu>
+
+"Tomas Pospisek ML" <tpo2 at sourcepole.ch> @ 2008-10-31 6:52 PM:
+
+> I can not find any trace of the latter, i.e. Sup's source code
+> repository at Gitorious [3] doesn't show any ferret amputation. Are
+> you, William Morgan working on a Sup version that doesn't show that
+> supposedly ferret induced crashiness? Possibly your "private" branch
+> is not ready yet and not accessible?
+
+See these blog posts about "Sup: The Server!"
+http://all-thing.net/search/label/sup
+
+-- 
+Christopher Warrington <chrisw at rice.edu>
+Jones College
+
+
+

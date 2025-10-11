@@ -1,0 +1,1420 @@
+From bwalton at artsci.utoronto.ca  Sat Jul  3 09:35:38 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 03 Jul 2010 09:35:38 -0400
+Subject: [sup-talk] sup exception
+In-Reply-To: <1276137615-sup-4328@pinkfloyd.chass.utoronto.ca>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+	<AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+	<1276135857-sup-1888@zyrg.net>
+	<1276137615-sup-4328@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278164115-sup-7199@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Ben Walton's message of Wed Jun 09 22:42:12 -0400 2010:
+
+> I needed the following patch to run (old 1.8 here; no
+> Symbol#to_proc).
+
+Bump...
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From johnbent at lanl.gov  Thu Jul  8 19:15:50 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 08 Jul 2010 17:15:50 -0600
+Subject: [sup-talk] Send Individually feature
+Message-ID: <1278630818-sup-6829@guava.lanl.gov>
+
+I'm sorry I just contribute wishes and not patches . . . 
+
+Speaking of which, here's a wish!
+
+I sometimes send email to large recipient lists.  I would really like
+there to be a way to ask sup to send a separate email to each recipient
+instead of just sending the same one to all.  I want to break the
+problem of diffused responsibility.  Also, when I'm sending out
+invitations, I feel the acceptance rate is higher when people receive an
+individual email. bcc'ing also doesn't work because I want them to be
+tricked into thinking that I've sent them an individualized email. 
+-- 
+Thanks,
+
+John 
+
+From fedzor at gmail.com  Sat Jul 10 13:55:51 2010
+From: fedzor at gmail.com (fedzor)
+Date: Sat, 10 Jul 2010 13:55:51 -0400
+Subject: [sup-talk]  xapian load issues
+Message-ID: <B74D42D5-E809-446D-A972-2737C441C454@gmail.com>
+
+Hello:
+
+I love sup. I have used it before (0.4) and loved it to bits, but had to stop using it because my computer was too slow.
+
+But now, I have a fast laptop and want to make sup my primary MUA. Let's give it a shot, shall we?
+
+[ari: ~] sup
+/Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle: dlopen(/Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle, 9): Library not loaded: /usr/local/lib/libxapian-1.1.3.dylib (LoadError)
+ Referenced from: /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+ Reason: image not found - /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/xapian.rb:41
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/sup-0.11/lib/sup/index.rb:3
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/sup-0.11/lib/sup.rb:316
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+       from /Users/ari/.rvm/rubies/ruby-1.8.7-p174/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/sup-0.11/bin/sup:15
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/bin/sup:19:in `load'
+       from /Users/ari/.rvm/gems/ruby-1.8.7-p174/bin/sup:19
+[ari: ~] 
+
+
+FUUUUUUUUU. I have no idea how to fix this, and I have done mucho googling for it. Thoughts? Suggestions? Help?
+
+- Ari Brown (seydar)
+
+From bwalton at artsci.utoronto.ca  Sat Jul 10 14:28:48 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 10 Jul 2010 14:28:48 -0400
+Subject: [sup-talk] xapian load issues
+In-Reply-To: <B74D42D5-E809-446D-A972-2737C441C454@gmail.com>
+References: <B74D42D5-E809-446D-A972-2737C441C454@gmail.com>
+Message-ID: <1278786266-sup-5828@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from fedzor's message of Sat Jul 10 13:55:51 -0400 2010:
+
+I'm not a mac person, but...
+
+> /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle: dlopen(/Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle, 9): Library not loaded: /usr/local/lib/libxapian-1.1.3.dylib (LoadError)
+>  Referenced from: /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+>  Reason: image not found -
+>  /Users/ari/.rvm/gems/ruby-1.8.7-p174/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+
+How did you install the non-gem part of xapian?  Eg the .dylib files
+that the .dylib file built by the gem would be linked
+against...looking at this error, I'd suspect you built it by hand or
+with some other (macports?) process.  Does
+/usr/local/lib/libxapian-1.1.3.dylib exist?  Is it in fact a dynamic
+shared object (file /usr/local/lib/libxapian...).  Excuse the
+terminology if it's not that used by the mac platform.
+
+If libxapian-1.1.3.dylib is not in /usr/local, but in some other
+location, you could be fighting an RPATH (embedded in another .dylib
+file) or an environment setting like LD_LIBRARY_PATH, etc.
+
+First of all, make sure your environment isn't polluted with LD*
+variables.  Second, determine the correct location of the xapian
+library.  Third, report back and hope there are some other mac people
+here! :)
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From mk.kawalec at gmail.com  Sun Jul 11 08:03:47 2010
+From: mk.kawalec at gmail.com (=?UTF-8?B?TWljaGHFgiBLYXdhbGVj?=)
+Date: Sun, 11 Jul 2010 14:03:47 +0200
+Subject: [sup-talk] No imap support in sup-config
+Message-ID: <4C39B323.4040000@gmail.com>
+
+Hello,
+I recently installed sup with gem install sup, however a lack of imap 
+while doing sup-config prevents me from using it to more serious tasks 
+than looking on different buffers. Is there any way to fix it?
+
+Best Regards,
+Michal
+
+From bwalton at artsci.utoronto.ca  Sun Jul 11 08:20:53 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 11 Jul 2010 08:20:53 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <4C39B323.4040000@gmail.com>
+References: <4C39B323.4040000@gmail.com>
+Message-ID: <1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Micha? Kawalec's message of Sun Jul 11 08:03:47 -0400 2010:
+
+Hi Michal,
+
+> I recently installed sup with gem install sup, however a lack of
+> imap while doing sup-config prevents me from using it to more
+> serious tasks than looking on different buffers. Is there any way to
+> fix it?
+
+IMAP support in sup is deprecated.  It just didn't work well with the
+way sup wants to view the mail stores.  People that have mail
+available by IMAP are using offlineimap to retrieve it locally to
+Maildir's and then adding Maildir sources to sup.
+
+There is a recent thread on this list about making this handling work
+better so that you can have other mail clients in use with the sources
+too, but that's experimental still.
+
+HTH.
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From hollunder at lavabit.com  Sun Jul 11 08:18:23 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Sun, 11 Jul 2010 14:18:23 +0200
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <4C39B323.4040000@gmail.com>
+References: <4C39B323.4040000@gmail.com>
+Message-ID: <1278850662-sup-8619@eris>
+
+Excerpts from Micha? Kawalec's message of 2010-07-11 14:03:47 +0200:
+> Hello,
+> I recently installed sup with gem install sup, however a lack of imap 
+> while doing sup-config prevents me from using it to more serious tasks 
+> than looking on different buffers. Is there any way to fix it?
+> 
+> Best Regards,
+> Michal
+
+Something like offlineimap is recommended.
+-- 
+Regards,
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From mk.kawalec at gmail.com  Sun Jul 11 09:02:26 2010
+From: mk.kawalec at gmail.com (=?UTF-8?B?TWljaGHFgiBLYXdhbGVj?=)
+Date: Sun, 11 Jul 2010 15:02:26 +0200
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+Message-ID: <4C39C0E2.1040904@gmail.com>
+
+W dniu 11.07.2010 14:20, Ben Walton pisze:
+> Excerpts from Micha? Kawalec's message of Sun Jul 11 08:03:47 -0400 2010:
+>
+> Hi Michal,
+>
+>> I recently installed sup with gem install sup, however a lack of
+>> imap while doing sup-config prevents me from using it to more
+>> serious tasks than looking on different buffers. Is there any way to
+>> fix it?
+>
+> IMAP support in sup is deprecated.  It just didn't work well with the
+> way sup wants to view the mail stores.  People that have mail
+> available by IMAP are using offlineimap to retrieve it locally to
+> Maildir's and then adding Maildir sources to sup.
+>
+> There is a recent thread on this list about making this handling work
+> better so that you can have other mail clients in use with the sources
+> too, but that's experimental still.
+>
+> HTH.
+> -Ben
+>
+> --
+> Ben Walton
+> Systems Programmer - CHASS
+> University of Toronto
+> C:416.407.5610 | W:416.978.4302
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+Hi Ben,
+
+Thank you for the fast answer. I'll try doing it this way then.
+
+Best Regards,
+Michal
+
+From david at rysdam.org  Sun Jul 11 11:40:31 2010
+From: david at rysdam.org (David Rysdam)
+Date: Sun, 11 Jul 2010 11:40:31 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278862607-sup-5940@hero>
+
+Excerpts from Ben Walton's message of Sun Jul 11 08:20:53 -0400 2010:
+> Excerpts from Micha? Kawalec's message of Sun Jul 11 08:03:47 -0400 2010:
+> 
+> Hi Michal,
+> 
+> > I recently installed sup with gem install sup, however a lack of
+> > imap while doing sup-config prevents me from using it to more
+> > serious tasks than looking on different buffers. Is there any way to
+> > fix it?
+> 
+> IMAP support in sup is deprecated.  It just didn't work well with the
+> way sup wants to view the mail stores.  People that have mail
+> available by IMAP are using offlineimap to retrieve it locally to
+> Maildir's and then adding Maildir sources to sup.
+
+Heh, I was just coming here to ask about something related.
+
+I noticed the IMAP support was gone, which is sad, but OK.  So I set
+up getmail to get my mail.  But how do I migrate to that?
+
+I got the mail into a maildir and I added that as a source and I did a
+sup-sync --changed source1 source2.  But how do I remove the IMAP
+source?  Just removing it from sources.yaml makes sup crash.  (This is
+0.10.2.)  I see something in the wiki about removing index entries,
+but the instructions are for ferret instead of xapian.
+
+From bwalton at artsci.utoronto.ca  Sun Jul 11 16:45:42 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 11 Jul 2010 16:45:42 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278862607-sup-5940@hero>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+	<1278862607-sup-5940@hero>
+Message-ID: <1278881060-sup-2957@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from David Rysdam's message of Sun Jul 11 11:40:31 -0400 2010:
+
+> I got the mail into a maildir and I added that as a source and I did
+> a sup-sync --changed source1 source2.  But how do I remove the IMAP
+> source?  Just removing it from sources.yaml makes sup crash.  (This
+> is 0.10.2.)  I see something in the wiki about removing index
+> entries, but the instructions are for ferret instead of xapian.
+
+I _think_ you'd need to do a sup-sync-back with a sup that supports
+IMAP still after removing the mail from the IMAP source.  When the
+index is in such a state where no messages reference the source id for
+the imap source, you should then be able to yank.
+
+I've never need to do anything like this though, so hopefully others
+will chime in with advice.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From david at rysdam.org  Sun Jul 11 18:37:59 2010
+From: david at rysdam.org (David Rysdam)
+Date: Sun, 11 Jul 2010 18:37:59 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278881060-sup-2957@pinkfloyd.chass.utoronto.ca>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+	<1278862607-sup-5940@hero>
+	<1278881060-sup-2957@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278887799-sup-4561@hero>
+
+Excerpts from Ben Walton's message of Sun Jul 11 16:45:42 -0400 2010:
+> Excerpts from David Rysdam's message of Sun Jul 11 11:40:31 -0400 2010:
+> 
+> > I got the mail into a maildir and I added that as a source and I did
+> > a sup-sync --changed source1 source2.  But how do I remove the IMAP
+> > source?  Just removing it from sources.yaml makes sup crash.  (This
+> > is 0.10.2.)  I see something in the wiki about removing index
+> > entries, but the instructions are for ferret instead of xapian.
+> 
+> I _think_ you'd need to do a sup-sync-back with a sup that supports
+> IMAP still after removing the mail from the IMAP source.  When the
+> index is in such a state where no messages reference the source id for
+> the imap source, you should then be able to yank.
+
+
+Wellllll.....what if I were moving from imap to offlineimap?  Then
+wouldn't the messages be staying on the server?  I shouldn't have to
+delete them, I wouldn't think.
+
+From bwalton at artsci.utoronto.ca  Sun Jul 11 20:00:50 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 11 Jul 2010 20:00:50 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278887799-sup-4561@hero>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+	<1278862607-sup-5940@hero>
+	<1278881060-sup-2957@pinkfloyd.chass.utoronto.ca>
+	<1278887799-sup-4561@hero>
+Message-ID: <1278892733-sup-2198@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from David Rysdam's message of Sun Jul 11 18:37:59 -0400 2010:
+
+> Wellllll.....what if I were moving from imap to offlineimap?  Then
+> wouldn't the messages be staying on the server?  I shouldn't have to
+> delete them, I wouldn't think.
+
+Right, but sup relies heavily on the association between message and
+source.  When you add the mail to a Maildir and then sync that source,
+you'd be adding a duplicate copy to the index.  I don't think this
+would be good for your use of sup.  Again though, I'm talking about
+things I haven't done and I'm not (at all) familiar with the code
+handling the indexing.
+
+Thanks
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From rlane at club.cc.cmu.edu  Mon Jul 12 22:05:04 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 12 Jul 2010 22:05:04 -0400
+Subject: [sup-talk] sup exception
+In-Reply-To: <1276137615-sup-4328@pinkfloyd.chass.utoronto.ca>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+	<AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+	<1276135857-sup-1888@zyrg.net>
+	<1276137615-sup-4328@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1278986684-sup-9540@zyrg.net>
+
+Applied to master.
+
+From hollunder at lavabit.com  Tue Jul 13 12:46:40 2010
+From: hollunder at lavabit.com (Philipp)
+Date: Tue, 13 Jul 2010 18:46:40 +0200
+Subject: [sup-talk] sup 0.11 - re-appearing thread
+Message-ID: <1279039349-sup-583@eris>
+
+Hi,
+everytime I start sup, one particular thread appears. I can archive it,
+and next time I start sup it's there again.
+Is this a known bug? Is there anything I can do about it?
+-- 
+Regards,
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From bwalton at artsci.utoronto.ca  Tue Jul 13 12:55:59 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 13 Jul 2010 12:55:59 -0400
+Subject: [sup-talk] sup 0.11 - re-appearing thread
+In-Reply-To: <1279039349-sup-583@eris>
+References: <1279039349-sup-583@eris>
+Message-ID: <1279040060-sup-4045@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philipp's message of Tue Jul 13 12:46:40 -0400 2010:
+
+Hi Philipp,
+
+> everytime I start sup, one particular thread appears. I can archive it,
+> and next time I start sup it's there again.
+> Is this a known bug? Is there anything I can do about it?
+
+I'm going to guiltily raise my hand and note that I'm aware of this
+issue and have simply been working around it instead of digging into
+the code to see why it happens...
+
+You can (for now) work around it by altering the message state in some
+other way.  I typically add a * and then remove it again.  If you do
+this and then archive the thread, the archive will now 'stick.'
+
+I may have time in the next few days to try and see why this happens.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From hollunder at lavabit.com  Tue Jul 13 13:09:26 2010
+From: hollunder at lavabit.com (Philipp)
+Date: Tue, 13 Jul 2010 19:09:26 +0200
+Subject: [sup-talk] Possibility of missing messages in a thread?
+Message-ID: <1279039610-sup-1286@eris>
+
+This is just a suspicion I want to have confirmed.
+Imagine an active mailinglist thread, messages might arrive every
+minute. Imagine long-ish messages where it takes you minutes to reply.
+Imagine you answer to one of those messages, it takes you 5 minutes and
+say two new messages arrived in this thread the meantime.
+When do you get to see them?
+
+When I answer a message I write the answer in vim, save it, send the
+message and get back to sup's view of that particular message. Then I
+hit 'x' and usually 'a' to get back to the thread overview.
+
+At which point is the view of the thread updated? Do I already see the
+new messages after hitting 'x' and land in that thread? Is the thread
+there again after I hit 'a'? Or neither?
+
+I think I've missed a couple of messages this way.
+I'd appreciate it if someone could clarify.
+-- 
+Regards,
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From hollunder at lavabit.com  Tue Jul 13 14:08:10 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 13 Jul 2010 20:08:10 +0200
+Subject: [sup-talk] sup 0.11 - re-appearing thread
+In-Reply-To: <1279040060-sup-4045@pinkfloyd.chass.utoronto.ca>
+References: <1279039349-sup-583@eris>
+	<1279040060-sup-4045@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1279044401-sup-3293@eris>
+
+Excerpts from Ben Walton's message of 2010-07-13 18:55:59 +0200:
+> Excerpts from Philipp's message of Tue Jul 13 12:46:40 -0400 2010:
+> 
+> Hi Philipp,
+> 
+> > everytime I start sup, one particular thread appears. I can archive it,
+> > and next time I start sup it's there again.
+> > Is this a known bug? Is there anything I can do about it?
+> 
+> I'm going to guiltily raise my hand and note that I'm aware of this
+> issue and have simply been working around it instead of digging into
+> the code to see why it happens...
+> 
+> You can (for now) work around it by altering the message state in some
+> other way.  I typically add a * and then remove it again.  If you do
+> this and then archive the thread, the archive will now 'stick.'
+> 
+> I may have time in the next few days to try and see why this happens.
+> 
+> HTH.
+> -Ben
+> --
+> Ben Walton
+> Systems Programmer - CHASS
+> University of Toronto
+> C:416.407.5610 | W:416.978.4302
+
+Ah, thanks for looking into this. If it helps anything I can forward the
+messages of that particular thread or something, it's around 5 messages.
+-- 
+Regards,
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From bwalton at artsci.utoronto.ca  Tue Jul 13 14:17:13 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 13 Jul 2010 14:17:13 -0400
+Subject: [sup-talk] sup 0.11 - re-appearing thread
+In-Reply-To: <1279044401-sup-3293@eris>
+References: <1279039349-sup-583@eris>
+	<1279040060-sup-4045@pinkfloyd.chass.utoronto.ca>
+	<1279044401-sup-3293@eris>
+Message-ID: <1279044929-sup-5774@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philipp ?berbacher's message of Tue Jul 13 14:08:10 -0400 2010:
+
+> Ah, thanks for looking into this. If it helps anything I can forward the
+> messages of that particular thread or something, it's around 5 messages.
+
+No problem.  I've got enough of my own threads that do it from time to
+time.  At this point, I don't think it's specific to anything in the
+thread and more of a general bug (worse to track down), but I could
+be wrong.
+
+Thanks
+-ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From david at rysdam.org  Wed Jul 14 09:24:01 2010
+From: david at rysdam.org (David Rysdam)
+Date: Wed, 14 Jul 2010 09:24:01 -0400
+Subject: [sup-talk] changing "excerpts from" string?
+Message-ID: <1279113764-sup-423@hero>
+
+"Excerpts from <person's> message of Tue Jul 13 10:46:51 -0400"
+
+Is the format of that a config option that isn't documented or is it
+hardcoded?
+
+From mariano.mara at gmail.com  Wed Jul 14 09:40:38 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Wed, 14 Jul 2010 10:40:38 -0300
+Subject: [sup-talk] changing "excerpts from" string?
+In-Reply-To: <1279113764-sup-423@hero>
+References: <1279113764-sup-423@hero>
+Message-ID: <1279114597-sup-9742@kafka>
+
+Excerpts from David Rysdam's message of Wed Jul 14 10:24:01 -0300 2010:
+> "Excerpts from <person's> message of Tue Jul 13 10:46:51 -0400"
+> 
+> Is the format of that a config option that isn't documented or is it
+> hardcoded?
+
+$ grep -Rn Excerpts *
+modes/edit-message-mode.rb:476:    @body.join("\n") =~ /(\S+)\s*Excerpts
+from.*\n(>.*\n)+\s*\Z/
+modes/reply-mode.rb:14:Generates an attribution ("Excerpts from Joe
+Bloggs's message of Fri Jan 11 09:54:32 -0500 2008:").
+modes/reply-mode.rb:187:    "Excerpts from #{@m.from.name}'s message of
+#{@m.date}:"
+
+Looks hardcoded to me. Since I don't really understand ruby, this is a
+wild guess.
+
+Mariano
+
+From bwalton at artsci.utoronto.ca  Wed Jul 14 09:45:00 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 14 Jul 2010 09:45:00 -0400
+Subject: [sup-talk] changing "excerpts from" string?
+In-Reply-To: <1279113764-sup-423@hero>
+References: <1279113764-sup-423@hero>
+Message-ID: <1279115021-sup-9020@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from David Rysdam's message of Wed Jul 14 09:24:01 -0400 2010:
+
+> Is the format of that a config option that isn't documented or is it
+> hardcoded?
+
+What you're looking for is the attribution hook.  Run sup with -l to
+see the list of available hooks and the location where sup expects to
+find the file.  Additionally, it tells you 'what you get' and 'what to
+give back.'
+
+In this case, you have a message variable available that represents
+the message you're replying to and you need to return a string.
+
+HTH.
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From david at rysdam.org  Wed Jul 14 09:49:40 2010
+From: david at rysdam.org (David Rysdam)
+Date: Wed, 14 Jul 2010 09:49:40 -0400
+Subject: [sup-talk] changing "excerpts from" string?
+In-Reply-To: <1279115021-sup-9020@pinkfloyd.chass.utoronto.ca>
+References: <1279113764-sup-423@hero>
+	<1279115021-sup-9020@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1279115307-sup-8828@hero>
+
+Excerpts from Ben Walton's message of Wed Jul 14 09:45:00 -0400 2010:
+> Excerpts from David Rysdam's message of Wed Jul 14 09:24:01 -0400 2010:
+> 
+> > Is the format of that a config option that isn't documented or is it
+> > hardcoded?
+> 
+> What you're looking for is the attribution hook.  Run sup with -l to
+> see the list of available hooks and the location where sup expects to
+> find the file.  Additionally, it tells you 'what you get' and 'what to
+> give back.'
+
+Whoa, that -l thing is an awesome feature.  One thanks for the
+attribution hook and one thanks for the -l feature.
+
+From danielgoldin at gmail.com  Fri Jul 16 12:51:54 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Fri, 16 Jul 2010 09:51:54 -0700
+Subject: [sup-talk] ubuntu 10.10 failed install
+Message-ID: <AANLkTilBm2Ow3ATHo1UlBqGwvFGEUnxCBw42wPnwxb1G@mail.gmail.com>
+
+I'm a non-programmer type who has been enjoying sup-mail on ubuntu 10.04. I
+upgraded to the alpha version for various reasons, but now sup-mail doesn't
+work following an apt install.
+
+I get this error:
+
+/usr/lib/ruby/1,8/ncurses.rb:22:in 'require': no such file to load --
+ncurses_bin.so (LoadError)...
+
+Any ideas of how to troubleshoot or solve.
+
+d.
+
+-- 
+Daniel Goldin
+626.817.2462
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100716/5363fca8/attachment-0001.html>
+
+From marka at pobox.com  Fri Jul 16 17:21:09 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 16 Jul 2010 17:21:09 -0400
+Subject: [sup-talk] ubuntu 10.10 failed install
+In-Reply-To: <AANLkTilBm2Ow3ATHo1UlBqGwvFGEUnxCBw42wPnwxb1G@mail.gmail.com>
+References: <AANLkTilBm2Ow3ATHo1UlBqGwvFGEUnxCBw42wPnwxb1G@mail.gmail.com>
+Message-ID: <1279315086-sup-6073@r61>
+
+Excerpts from Daniel Goldin's message of Fri Jul 16 12:51:54 -0400 2010:
+> I'm a non-programmer type who has been enjoying sup-mail on ubuntu 10.04.
+
+Wow, I didn't know there was a sup package for 10.04; I've been installing
+it on all my systems using gem.
+
+> /usr/lib/ruby/1,8/ncurses.rb:22:in 'require': no such file to load --
+> ncurses_bin.so (LoadError)...
+
+This is just a wild guess, but you might be able to fix the problem by
+installing the libncurses-ruby package (I found this by doing
+"aptitude search ncurses").
+
+From danielgoldin at gmail.com  Sat Jul 17 00:45:03 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Fri, 16 Jul 2010 21:45:03 -0700
+Subject: [sup-talk] ubuntu 10.10 failed install
+In-Reply-To: <1279315086-sup-6073@r61>
+References: <AANLkTilBm2Ow3ATHo1UlBqGwvFGEUnxCBw42wPnwxb1G@mail.gmail.com>
+	<1279315086-sup-6073@r61>
+Message-ID: <AANLkTim_naZyDdlK2PHg-lFr9VHwoyIzK35SpX3psy66@mail.gmail.com>
+
+Nope. Libncurses-ruby package is installed.
+
+On Fri, Jul 16, 2010 at 2:21 PM, Mark Alexander <marka at pobox.com> wrote:
+
+> Excerpts from Daniel Goldin's message of Fri Jul 16 12:51:54 -0400 2010:
+> > I'm a non-programmer type who has been enjoying sup-mail on ubuntu 10.04.
+>
+> Wow, I didn't know there was a sup package for 10.04; I've been installing
+> it on all my systems using gem.
+>
+> > /usr/lib/ruby/1,8/ncurses.rb:22:in 'require': no such file to load --
+> > ncurses_bin.so (LoadError)...
+>
+> This is just a wild guess, but you might be able to fix the problem by
+> installing the libncurses-ruby package (I found this by doing
+> "aptitude search ncurses").
+>
+
+
+
+-- 
+Daniel Goldin
+626.817.2462
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100716/9a31d959/attachment.html>
+
+From danielgoldin at gmail.com  Sat Jul 17 13:29:41 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Sat, 17 Jul 2010 10:29:41 -0700
+Subject: [sup-talk] install problems on ubuntu 10.10
+Message-ID: <AANLkTimoFaCUwRBX8u005SoygSgmlIYI72Ty2qLtLXAb@mail.gmail.com>
+
+Installing from apt didn't work. Trying gem install sup, I get the following
+errors:
+
+ERROR:  Error installing sup:
+    ERROR: Failed to build gem native extension.
+
+rake1.8 RUBYARCHDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+RUBYLIBDIR=/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib
+sh: rake1.8: not
+
+Any thoughts? I am not a programmer, so keep it elementary, if you will.
+
+d.
+
+-- 
+Daniel Goldin
+626.817.2462
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100717/03a8297c/attachment.html>
+
+From bwalton at artsci.utoronto.ca  Sat Jul 17 14:10:12 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 17 Jul 2010 14:10:12 -0400
+Subject: [sup-talk] install problems on ubuntu 10.10
+In-Reply-To: <AANLkTimoFaCUwRBX8u005SoygSgmlIYI72Ty2qLtLXAb@mail.gmail.com>
+References: <AANLkTimoFaCUwRBX8u005SoygSgmlIYI72Ty2qLtLXAb@mail.gmail.com>
+Message-ID: <1279390136-sup-7516@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Daniel Goldin's message of Sat Jul 17 13:29:41 -0400 2010:
+
+>     ERROR: Failed to build gem native extension.
+
+To install the xapian gem, you'll need the xapian library and
+development headers.  On my Ubuntu 10.10 box here, those are packages
+named libxapian15 and libxapian-dev.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From marka at pobox.com  Sat Jul 17 15:05:12 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Sat, 17 Jul 2010 15:05:12 -0400
+Subject: [sup-talk] install problems on ubuntu 10.10
+In-Reply-To: <AANLkTimoFaCUwRBX8u005SoygSgmlIYI72Ty2qLtLXAb@mail.gmail.com>
+References: <AANLkTimoFaCUwRBX8u005SoygSgmlIYI72Ty2qLtLXAb@mail.gmail.com>
+Message-ID: <1279393381-sup-2001@r61>
+
+Excerpts from Daniel Goldin's message of Sat Jul 17 13:29:41 -0400 2010:
+> sh: rake1.8: not
+
+Looks like the complete error message was truncated, but I think
+this means rake was not found.  I ran into this on Ubuntu 10.04.
+Try doing this:
+
+  sudo gem install rake
+
+To build xapian, you'll also need a C++ compiler:
+
+  sudo aptitude install g++
+
+From vojtech at aschenbrenner.cz  Mon Jul 19 14:55:21 2010
+From: vojtech at aschenbrenner.cz (=?utf-8?Q?Vojt=C4=9Bch?= Aschenbrenner)
+Date: Mon, 19 Jul 2010 20:55:21 +0200
+Subject: [sup-talk] More accounts, more send folders, etc.
+Message-ID: <20100719185521.GA16709@nb-asch.cust.nbox.cz>
+
+Hi folks,
+
+is it possible to configure sup to save sent messages to different
+folders according to mail account? For example if I send mail from
+school account save message to school/sent and if I send mail from
+personal account save it to personal/sent?
+
+Next think is, when writing new mail, how to specify which account use?
+Everytime is used default account.
+
+Sup has really great idea with huge mailbox and power of searching, but
+these 2 things are important for me.
+
+Thanks!
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100719/24ebd9d1/attachment.bin>
+
+From vojtech at aschenbrenner.cz  Mon Jul 19 15:13:36 2010
+From: vojtech at aschenbrenner.cz (=?utf-8?Q?Vojt=C4=9Bch?= Aschenbrenner)
+Date: Mon, 19 Jul 2010 21:13:36 +0200
+Subject: [sup-talk] More accounts, more send folders, etc.
+Message-ID: <20100719191336.GB16709@nb-asch.cust.nbox.cz>
+
+Hi folks,
+
+is it possible to configure sup to save sent messages to different
+folders according to mail account? For example if I send mail from
+school account save message to school/sent and if I send mail from
+personal account save it to personal/sent?
+
+Next think is, when writing new mail, how to specify which account use?
+Everytime is used default account.
+
+Sup has really great idea with huge mailbox and power of searching, but
+these 2 things are important for me.
+
+Thanks!
+
+From damien.leone at fensalir.fr  Mon Jul 19 15:28:28 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 19 Jul 2010 21:28:28 +0200
+Subject: [sup-talk] More accounts, more send folders, etc.
+In-Reply-To: <20100719185521.GA16709@nb-asch.cust.nbox.cz>
+References: <20100719185521.GA16709@nb-asch.cust.nbox.cz>
+Message-ID: <1279567526-sup-7758@mailer>
+
+Hi,
+
+Excerpts from Vojt?ch Aschenbrenner's message of Mon Jul 19 20:55:21 +0200 2010:
+> is it possible to configure sup to save sent messages to different
+> folders according to mail account? For example if I send mail from
+> school account save message to school/sent and if I send mail from
+> personal account save it to personal/sent?
+
+AFAIK, it's not (yet) possible.
+
+> Next think is, when writing new mail, how to specify which account use?
+> Everytime is used default account.
+
+There is a ask_for_from option that will allow you to select your
+account before composing a new mail.
+
+Also, there are patches on sup-devel that add an account-selector in
+every edit buffers.
+
+Cheers,
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From marka at pobox.com  Mon Jul 19 15:47:32 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 19 Jul 2010 15:47:32 -0400
+Subject: [sup-talk] More accounts, more send folders, etc.
+In-Reply-To: <20100719185521.GA16709@nb-asch.cust.nbox.cz>
+References: <20100719185521.GA16709@nb-asch.cust.nbox.cz>
+Message-ID: <1279568336-sup-3126@r61>
+
+Excerpts from Vojt?ch Aschenbrenner's message of Mon Jul 19 14:55:21 -0400 2010:
+> is it possible to configure sup to save sent messages to different
+> folders according to mail account? For example if I send mail from
+> school account save message to school/sent and if I send mail from
+> personal account save it to personal/sent?
+
+Not sure.  Maybe somebody else can help with this.
+
+> Next think is, when writing new mail, how to specify which account use?
+> Everytime is used default account.
+
+I think you can do this with ~/.sup/hooks/before-send.rb .  Here's mine
+(actual company name replaced with "widgets"):
+
+unless header["In-reply-to"]
+  if header["To"] =~ /widgets/
+    header["From"] = "Mark Alexander <marka at widgets.com>"
+  else
+    header["From"] = "Mark Alexander <marka at pobox.com>"
+  end
+end
+
+There are two corresponding accounts in ~/.sup/config.yaml.
+
+From david at rysdam.org  Mon Jul 19 22:00:22 2010
+From: david at rysdam.org (David Rysdam)
+Date: Mon, 19 Jul 2010 22:00:22 -0400
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+Message-ID: <1279590966-sup-4411@hero>
+
+I'm new to Maildir, so I'm not sure how this should be working.  
+
+I've got getmail fetching my POP3 mail to a Maildir and I've got sup
+pointed at that (as an additional source, not the primary one).
+
+Just tonight, I noticed that most of my mail is in /new rather than
+/cur.  Because sup isn't moving it?
+
+Also, every message in /new is repeated dozens of times.  getmail has
+been fetching my entire 30-day-long mailbox every time.  Like I said,
+I'm not sure how Maildir is supposed to work, so maybe getmail is
+doing the right thing (i.e. "fetch everything after the last thing in
+/cur") or not.
+
+I'm on a fairly old version of sup: 0.10.2.
+
+From eric+sup-talk at gerlach.ca  Mon Jul 19 22:15:17 2010
+From: eric+sup-talk at gerlach.ca (Eric Gerlach)
+Date: Mon, 19 Jul 2010 22:15:17 -0400
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279590966-sup-4411@hero>
+References: <1279590966-sup-4411@hero>
+Message-ID: <1279591667-sup-6537@gerlach.ca>
+
+Excerpts from David Rysdam's message of Mon Jul 19 22:00:22 -0400 2010:
+> I'm new to Maildir, so I'm not sure how this should be working.  
+> 
+> I've got getmail fetching my POP3 mail to a Maildir and I've got sup
+> pointed at that (as an additional source, not the primary one).
+> 
+> Just tonight, I noticed that most of my mail is in /new rather than
+> /cur.  Because sup isn't moving it?
+> 
+> Also, every message in /new is repeated dozens of times.  getmail has
+> been fetching my entire 30-day-long mailbox every time.  Like I said,
+> I'm not sure how Maildir is supposed to work, so maybe getmail is
+> doing the right thing (i.e. "fetch everything after the last thing in
+> /cur") or not.
+> 
+> I'm on a fairly old version of sup: 0.10.2.
+
+I've also just started with sup, and though I don't know about sup's
+behaviour (I think it should be moving mail from new/ to cur/ as well)
+
+I do, however, have experience with POP and Maildirs, and it sounds like
+you might have getmail misconfigured.  Is it set to delete messages from
+the server?
+
+Cheers,
+
+Eric
+
+From bwalton at artsci.utoronto.ca  Mon Jul 19 22:46:41 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 19 Jul 2010 22:46:41 -0400
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279591667-sup-6537@gerlach.ca>
+References: <1279590966-sup-4411@hero> <1279591667-sup-6537@gerlach.ca>
+Message-ID: <1279593880-sup-4595@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Eric Gerlach's message of Mon Jul 19 22:15:17 -0400 2010:
+
+> I've also just started with sup, and though I don't know about sup's
+> behaviour (I think it should be moving mail from new/ to cur/ as
+> well)
+
+I haven't looked at the most recent Maildir changes[1], but as is
+sup's way it hasn't traditionally altered the filesystem at all.  It
+treats all mail sources as read-only, which in this case means it
+doesn't do the ln new/foo cur/foo; rm new/foo steps.
+
+HTH.
+-Ben
+
+[1] There was talk of implementing this as one step toward having sup
+    play nicer with other MUA's.
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sm at khjk.org  Tue Jul 20 05:51:45 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Tue, 20 Jul 2010 11:51:45 +0200
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279593880-sup-4595@pinkfloyd.chass.utoronto.ca>
+References: <1279590966-sup-4411@hero> <1279591667-sup-6537@gerlach.ca>
+	<1279593880-sup-4595@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1279618763-sup-4286@khjk.org>
+
+My humble personal opinion:
+
+Excerpts from Ben Walton's message of 2010-07-20 04:46:41 +0200:
+> > I've also just started with sup, and though I don't know about sup's
+> > behaviour (I think it should be moving mail from new/ to cur/ as
+> > well)
+> 
+> I haven't looked at the most recent Maildir changes[1], but as is
+> sup's way it hasn't traditionally altered the filesystem at all.  It
+> treats all mail sources as read-only, which in this case means it
+> doesn't do the ln new/foo cur/foo; rm new/foo steps.
+
+Guys, you should really implement this. This is not a policy (touch filesystem
+or not) issue, but a compliance issue. As it stands, sup is basically violating
+the Maildir "standard". Note that moving mails away from new has no semantic
+meaning. The mail doesn't become "read" or unavailable to other MUAs or
+anything. It's part of Maildir's access/concurrency design.
+
+And the fact that sup doesn't "play nice" with other MUAs is in part a direct
+artifact of this misbehaviour because others (correctly) move the mails out
+from under sup's nose. If sup did this as it should, the files would stay in
+place modulo renaming wrt. the file flags ("read" etc.), but that is another
+issue which can be mitigated in another step. (And to an extent, this issue
+exists with all MUAs because the format of the flag fields isn't standardized.)
+
+-pesco
+
+From damien.leone at fensalir.fr  Tue Jul 20 07:07:47 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Tue, 20 Jul 2010 13:07:47 +0200
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279618763-sup-4286@khjk.org>
+References: <1279590966-sup-4411@hero> <1279591667-sup-6537@gerlach.ca>
+	<1279593880-sup-4595@pinkfloyd.chass.utoronto.ca>
+	<1279618763-sup-4286@khjk.org>
+Message-ID: <1279623541-sup-4351@mailer>
+
+Hi,
+
+Excerpts from Sven Moritz Hallberg's message of Tue Jul 20 11:51:45 +0200 2010:
+> Guys, you should really implement this. This is not a policy (touch filesystem
+> or not) issue, but a compliance issue. As it stands, sup is basically violating
+> the Maildir "standard". Note that moving mails away from new has no semantic
+> meaning. The mail doesn't become "read" or unavailable to other MUAs or
+> anything. It's part of Maildir's access/concurrency design.
+> 
+> And the fact that sup doesn't "play nice" with other MUAs is in part a direct
+> artifact of this misbehaviour because others (correctly) move the mails out
+> from under sup's nose. If sup did this as it should, the files would stay in
+> place modulo renaming wrt. the file flags ("read" etc.), but that is another
+> issue which can be mitigated in another step. (And to an extent, this issue
+> exists with all MUAs because the format of the flag fields isn't standardized.)
+
+All of this is getting supported in the maildir-sync [0] branch that I
+encourage you to test and review so it can be quickly merged into the
+master branch. :)
+
+Cheers,
+
+[0] http://www.mail-archive.com/sup-devel at rubyforge.org/msg00566.html
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100720/dba6845c/attachment.bin>
+
+From sm at khjk.org  Tue Jul 20 10:37:57 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Tue, 20 Jul 2010 16:37:57 +0200
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279623541-sup-4351@mailer>
+References: <1279590966-sup-4411@hero> <1279591667-sup-6537@gerlach.ca>
+	<1279593880-sup-4595@pinkfloyd.chass.utoronto.ca>
+	<1279618763-sup-4286@khjk.org> <1279623541-sup-4351@mailer>
+Message-ID: <1279636271-sup-2393@khjk.org>
+
+Excerpts from Damien Leone's message of 2010-07-20 13:07:47 +0200:
+> Excerpts from Sven Moritz Hallberg's message of Tue Jul 20 11:51:45 +0200 2010:
+> > Guys, you should really implement this. This is not a policy (touch filesystem
+> > or not) issue, but a compliance issue. As it stands, sup is basically violating
+> > the Maildir "standard". Note that moving mails away from new has no semantic
+> > meaning. The mail doesn't become "read" or unavailable to other MUAs or
+> > anything. It's part of Maildir's access/concurrency design.
+> > 
+> > And the fact that sup doesn't "play nice" with other MUAs is in part a direct
+> > artifact of this misbehaviour because others (correctly) move the mails out
+> > from under sup's nose. If sup did this as it should, the files would stay in
+> > place modulo renaming wrt. the file flags ("read" etc.), but that is another
+> > issue which can be mitigated in another step. (And to an extent, this issue
+> > exists with all MUAs because the format of the flag fields isn't standardized.)
+> 
+> All of this is getting supported in the maildir-sync [0] branch that I
+> encourage you to test and review so it can be quickly merged into the
+> master branch. :)
+
+Ah, thanks for that! I'll try to check it out!
+
+From david at rysdam.org  Tue Jul 20 10:52:42 2010
+From: david at rysdam.org (David Rysdam)
+Date: Tue, 20 Jul 2010 10:52:42 -0400
+Subject: [sup-talk] not moving msgs to /cur in Maildir?
+In-Reply-To: <1279590966-sup-4411@hero>
+References: <1279590966-sup-4411@hero>
+Message-ID: <1279637473-sup-2420@hero>
+
+An agent or agents purporting to be David Rysdam said:
+> Also, every message in /new is repeated dozens of times.  getmail has
+> been fetching my entire 30-day-long mailbox every time.  Like I said,
+> I'm not sure how Maildir is supposed to work, so maybe getmail is
+> doing the right thing (i.e. "fetch everything after the last thing in
+> /cur") or not.
+
+OK, I've looked at this a little more.  I think getmail is either
+misbehaving or misconfigured.  The POP3 behavior can't be predicated
+on what is in the Maildir for multiple reasons, therefore sup's
+behavior in the Maildir (right or wrong) can't be the source of this
+issue.
+
+From david at rysdam.org  Wed Jul 21 14:33:35 2010
+From: david at rysdam.org (David Rysdam)
+Date: Wed, 21 Jul 2010 14:33:35 -0400
+Subject: [sup-talk] No imap support in sup-config
+In-Reply-To: <1278862607-sup-5940@hero>
+References: <4C39B323.4040000@gmail.com>
+	<1278850749-sup-7289@pinkfloyd.chass.utoronto.ca>
+	<1278862607-sup-5940@hero>
+Message-ID: <1279737023-sup-4960@hero>
+
+An agent or agents purporting to be David Rysdam said:
+> Excerpts from Ben Walton's message of Sun Jul 11 08:20:53 -0400 2010:
+> > Excerpts from Micha? Kawalec's message of Sun Jul 11 08:03:47 -0400 2010:
+> > 
+> > Hi Michal,
+> > 
+> > > I recently installed sup with gem install sup, however a lack of
+> > > imap while doing sup-config prevents me from using it to more
+> > > serious tasks than looking on different buffers. Is there any way to
+> > > fix it?
+> > 
+> > IMAP support in sup is deprecated.  It just didn't work well with the
+> > way sup wants to view the mail stores.  People that have mail
+> > available by IMAP are using offlineimap to retrieve it locally to
+> > Maildir's and then adding Maildir sources to sup.
+> 
+> Heh, I was just coming here to ask about something related.
+> 
+> I noticed the IMAP support was gone, which is sad, but OK.  So I set
+> up getmail to get my mail.  But how do I migrate to that?
+> 
+> I got the mail into a maildir and I added that as a source and I did a
+> sup-sync --changed source1 source2.  But how do I remove the IMAP
+> source?  Just removing it from sources.yaml makes sup crash.  (This is
+> 0.10.2.)  I see something in the wiki about removing index entries,
+> but the instructions are for ferret instead of xapian.
+
+OK, so I figured out what to do.
+
+1) Backup (or maybe "export" would be a better term for this usage)
+your sup index.
+
+2) Set up your offlineimap stuff.
+
+3) Move .sup aside and sup-config again, but choose the Maildir that
+offlineimap is writing to.
+
+3b) Copy any config stuff (colors, hooks, contacts.txt, etc) from the
+old .sup back in.
+
+4) Restore the backup.
+
+Ta-da!
+
+From david at rysdam.org  Thu Jul 22 11:12:36 2010
+From: david at rysdam.org (David Rysdam)
+Date: Thu, 22 Jul 2010 11:12:36 -0400
+Subject: [sup-talk] color customization
+Message-ID: <1279811550-sup-7833@hero>
+
+I've customized my colors a bit, but there's a couple things I can't
+find.  How do I configure the color the movable horizontal "bar" (I
+know there's a term for this but I don't remember it)?  And more
+importantly, how do I configure the color the text highlighted by that
+bar?  Like, I have my new messages set to red but when the bar is on
+them they are black.  I want them red *always*.
+
+From david at rysdam.org  Mon Jul 26 22:02:27 2010
+From: david at rysdam.org (David Rysdam)
+Date: Mon, 26 Jul 2010 22:02:27 -0400
+Subject: [sup-talk] color customization
+In-Reply-To: <1279811550-sup-7833@hero>
+References: <1279811550-sup-7833@hero>
+Message-ID: <1280195847-sup-7116@hero>
+
+An agent or agents purporting to be David Rysdam said:
+> I've customized my colors a bit, but there's a couple things I can't
+> find.  How do I configure the color the movable horizontal "bar" (I
+> know there's a term for this but I don't remember it)?  And more
+> importantly, how do I configure the color the text highlighted by that
+> bar?  Like, I have my new messages set to red but when the bar is on
+> them they are black.  I want them red *always*.
+
+Replying to myself again, for the benefit of others and after two
+nights of hacking the code to try to figure this out:
+
+Each of the colors takes a property called "highlight" that is the
+name of another color in colors.yaml.  That color's fg/bg indicate how
+it should display when "highlighted" by the cursor.  For example:
+
+:index_new:
+  :highlight: index_new_highlight
+  :attrs:
+  - bold
+  :fg: red
+  :bg: default
+:index_new_highlight:
+  :fg: red
+  :bg: cyan
+
+In this example, new mails are red in the thread view on a white
+background (for me) and when highlighted by the cursor they are red on
+a cyan background.
+
+This works with the code currently in the repository but not with
+.10.2, the default version on Ubuntu.  Since .10.2 also doesn't use
+ncursesw by default, I'm going to switch the repository pretty soon.
+Or maybe a few versions back to avoid any Maildir unpleasantness...
+
+From bwalton at artsci.utoronto.ca  Fri Jul 30 21:47:56 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 30 Jul 2010 21:47:56 -0400
+Subject: [sup-talk] new mail library
+Message-ID: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+
+
+Hi All,
+
+I just found this (seemingly) awesome new mail handling library.  I
+know that rmail has lots of flaws and there has been previously
+expressed sentiment that something better might be nice.  Have a look
+at:
+
+http://github.com/mikel/mail
+
+I just whipped up a quick little script that uses it and it's quite
+nice.  It pulls in actionsupport, so it's not a lightweight gem by any
+means.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From ezyang at MIT.EDU  Fri Jul 30 23:28:44 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Fri, 30 Jul 2010 23:28:44 -0400
+Subject: [sup-talk] Behavior for sent messages
+Message-ID: <1280546878-sup-5384@ezyang>
+
+Does anyone know when the default behavior for sent messages became
+'Archive automatically'?  I've found keeping then in the inbox was
+a good reminder for following up in the case of lack of response,
+so at least making this configurable would be nice.
+
+Cheers,
+Edward
+
+From hollunder at lavabit.com  Sat Jul 31 05:00:06 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Sat, 31 Jul 2010 11:00:06 +0200
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1280546878-sup-5384@ezyang>
+References: <1280546878-sup-5384@ezyang>
+Message-ID: <1280566713-sup-8235@eris>
+
+Excerpts from Edward Z. Yang's message of 2010-07-31 05:28:44 +0200:
+> Does anyone know when the default behavior for sent messages became
+> 'Archive automatically'?  I've found keeping then in the inbox was
+> a good reminder for following up in the case of lack of response,
+> so at least making this configurable would be nice.
+> 
+> Cheers,
+> Edward
+
+They are kept in the inbox with 0.11. All I know.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From bwalton at artsci.utoronto.ca  Sat Jul 31 07:25:38 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 31 Jul 2010 07:25:38 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1280546878-sup-5384@ezyang>
+References: <1280546878-sup-5384@ezyang>
+Message-ID: <1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Edward Z. Yang's message of Fri Jul 30 23:28:44 -0400 2010:
+
+> Does anyone know when the default behavior for sent messages became
+> 'Archive automatically'?  I've found keeping then in the inbox was a
+> good reminder for following up in the case of lack of response, so
+> at least making this configurable would be nice.
+
+I'm running pretty close to the tip of git/next and that's not the
+behaviour here.  There are times, when using Maildir that the sent
+message doesn't get added immediately, but it always pops up at the
+next poll.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From ezyang at MIT.EDU  Sat Jul 31 22:06:34 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 31 Jul 2010 22:06:34 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1280628309-sup-7092@ezyang>
+
+Excerpts from Ben Walton's message of Sat Jul 31 07:25:38 -0400 2010:
+> I'm running pretty close to the tip of git/next and that's not the
+> behaviour here.  There are times, when using Maildir that the sent
+> message doesn't get added immediately, but it always pops up at the
+> next poll.
+
+Hello Ben,
+
+I tested your hypothesis and noted that the messages did not pop up
+with a poll.
+
+Since this behavior does not seem intentional, I guess it's a regression
+caused by some combination of factors (possibly the new backsync branch?)
+I'll try to reproduce on a clean Maildir with sup commit 900768918490a1040b55e2216f7f5429b2dadf84
+
+Cheers,
+Edward
+
+From bwalton at artsci.utoronto.ca  Sat Jul 31 22:15:15 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 31 Jul 2010 22:15:15 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1280628309-sup-7092@ezyang>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+Message-ID: <1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Edward Z. Yang's message of Sat Jul 31 22:06:34 -0400 2010:
+
+Hi Edward,
+
+> Since this behavior does not seem intentional, I guess it's a
+> regression caused by some combination of factors (possibly the new
+> backsync branch?)  I'll try to reproduce on a clean Maildir with sup
+> commit 900768918490a1040b55e2216f7f5429b2dadf84
+
+Ok, that's interesting.  If it helps, I'm running on 3f9d7d9, with my
+conditional Symbol#to_proc patch added...I haven't done a pull since
+then although the patch was merged.
+
+This might provide you a useful range for a bisect though...
+
+HTH.
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+

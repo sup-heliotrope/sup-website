@@ -1,0 +1,224 @@
+From allan_wind at lifeintegrity.com  Mon Jan 23 01:58:14 2012
+From: allan_wind at lifeintegrity.com (Allan Wind)
+Date: Mon, 23 Jan 2012 01:58:14 -0500
+Subject: [sup-talk] First impressions
+Message-ID: <1327301754-sup-3169@lifeintegrity.com>
+
+I was trying to see if sup v0.12.1 would be a suitable alternative to mutt but
+first impressions are shaky.  Is there a more stalbe version than the one from
+installed vi gem?  Help/insight appreciated.
+
+As suggest in the new users guide I first ran sup-config, but that seem to
+create a bad config and sup crashed on start-up with:
+
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:601:in `method_missing': no Redwood::HookManager instance defined in method call to run! (RuntimeError)
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:370
+        from /var/lib/gems/1.8/bin/sup:19:in `load'
+        from /var/lib/gems/1.8/bin/sup:19
+
+I am happy to send the .sup directory along if anyone are interested.  Figured
+there was nothing else to lose so I blew the .sup directory away, and found
+that it was auto-created on start-up.  Nice.
+
+Next step was to add a source and the new users guide suggest using sup-add
+with maildir://path/to/a/filename.  This fails with:
+
+allan at vent:~$ sup-add maildir://home/allan/mail/received
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:106:in `initialize': DatabaseLockError: Unable to get write lock on /home/allan/.sup/xapian: already locked (IOError)
+        from /var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:106:in `new'
+        from /var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:106:in `load_index'
+        from /var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:93:in `load'
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup-add:80
+        from /var/lib/gems/1.8/bin/sup-add:19:in `load'
+        from /var/lib/gems/1.8/bin/sup-add:19
+
+so I quit sup and try it again and get this error:
+
+allan at vent:~$ sup-add maildir://home/allan/mail/received
+[Mon Jan 23 01:41:06 -0500 2012] Flushing Xapian updates to disk. This may take a while...
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:17:in `initialize': maildir URI cannot have a host: home (ArgumentError)
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup-add:100:in `new'
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup-add:100
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup-add:87:in `each'
+        from /var/lib/gems/1.8/gems/sup-0.12.1/bin/sup-add:87
+        from /var/lib/gems/1.8/bin/sup-add:19:in `load'
+        from /var/lib/gems/1.8/bin/sup-add:19
+
+sup-add --help suggest a single slash alternative syntax which works (not sure
+if this a code or doc defect):
+
+For Maildir folders, use the form:
+    maildir:<path to Maildir directory>; or
+    maildir://<path to Maildir directory>
+
+Next step was to convince sup to use a maildir instead of a mbox for sent
+folder.  Changing .sup/config.yml to:
+
+:sent_source: maildir:/home/allan/mail/sent
+
+seemed to be ignord even after adding it as a source as suggested in the email
+archives.
+
+Then I tried some of the searches listed in the "Searching your mail" wiki.  In
+particular I was trying to find all messages and came up short.  I tried the
+date searches (after:yesterday, before:tomorrow etc) but they returned nothing.
+
+I was able to pull up things by lables, and was able to search with from:allan
+OR to:allan.  It puzzled me a bit that OR had to be upper case.
+
+In writing this message I postposted (P) and I thought recalled the message with
+R and then selected the newest version but the UI gives me the impression that
+I end up with a draft each time I postpose a message.   Maybe this is a feature
+and I am just missing something here.
+
+I know Q quits and q asks for confirmation.  Is there a way to not have q ask
+for confirmation?  Sorry if this is documented somewhere, still going through
+the mail archive and wiki.
+
+Hope it helps,
+
+
+/Allan
+-- 
+Allan Wind
+Life Integrity, LLC
+<http://lifeintegrity.com>
+
+From treed at ultraviolet.org  Sat Jan 28 00:14:14 2012
+From: treed at ultraviolet.org (Tracy Reed)
+Date: Fri, 27 Jan 2012 21:14:14 -0800
+Subject: [sup-talk] First impressions
+In-Reply-To: <1327301754-sup-3169@lifeintegrity.com>
+References: <1327301754-sup-3169@lifeintegrity.com>
+Message-ID: <20120128051414.GB3481@tracyreed.org>
+
+On Mon, Jan 23, 2012 at 01:58:14AM -0500, Allan Wind spake thusly:
+> I was trying to see if sup v0.12.1 would be a suitable alternative to mutt but
+> first impressions are shaky.  
+
+I went through the very same process. I've given up on sup and am sticking with
+mutt for the time being.. The developers aren't really doing anything with sup
+other than minor bug fixes. They prefer to work on heliotrope which is the
+successor to sup. sup itself doesn't have a future as far as I can tell. While
+I love the tagging and configurability via a nice programming language I found
+it crashed a lot too.
+
+-- 
+Tracy Reed
+http://tracyreed.org
+Digital signature attached for your safety.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20120127/6dac9268/attachment-0001.bin>
+
+From allan_wind at lifeintegrity.com  Sat Jan 28 13:38:01 2012
+From: allan_wind at lifeintegrity.com (Allan Wind)
+Date: Sat, 28 Jan 2012 13:38:01 -0500
+Subject: [sup-talk] First impressions
+In-Reply-To: <20120128051414.GB3481@tracyreed.org>
+References: <1327301754-sup-3169@lifeintegrity.com>
+	<20120128051414.GB3481@tracyreed.org>
+Message-ID: <20120128183801.GF25519@lifeintegrity.com>
+
+On 2012-01-27 21:14:14, Tracy Reed wrote:
+> I went through the very same process. I've given up on sup and am sticking with
+> mutt for the time being.. The developers aren't really doing anything with sup
+> other than minor bug fixes. They prefer to work on heliotrope which is the
+> successor to sup. sup itself doesn't have a future as far as I can tell. While
+> I love the tagging and configurability via a nice programming language I found
+> it crashed a lot too.
+
+Thanks Tracy.
+
+
+/Allan
+-- 
+Allan Wind
+Life Integrity, LLC
+<http://lifeintegrity.com>
+
+From patricktotzke at googlemail.com  Sat Jan 28 14:32:19 2012
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Sat, 28 Jan 2012 19:32:19 -0000
+Subject: [sup-talk] First impressions
+In-Reply-To: <20120128183801.GF25519@lifeintegrity.com>
+References: <1327301754-sup-3169@lifeintegrity.com>
+	<20120128051414.GB3481@tracyreed.org>
+	<20120128183801.GF25519@lifeintegrity.com>
+Message-ID: <20120128193219.16698.23541@brick.lan>
+
+Hi Allan and everybody else who might be interested;
+Apologies in advance for the spam.
+
+I can recommend switching to notmuch [0], a mail indexer that started of as some improvements to sup
+but has grown into a very reliable and powerful mail indexer.
+
+Notmuch uses Xapian to provide a mail indexing library and bindings for go, python and ruby are
+included. There are several user interfaces that make use of this library:
+Apart from a command-line binary there is an Emacs mode and a few attempts to integrate notmuch into mutt.
+I am the author of a terminal interface [2] that uses notmuch's python bindings and the urwid [1] toolkit
+to provide a MUA experience similar to that of sup.
+
+Notmuch is very stable, very fast and under active development of a mid-sized group of excellent
+developers.
+
+Hope this helps, looking forward to discussions in #notmuch at freenode,
+/p
+
+[0] http://notmuchmail.org
+[1] http://excess.org/urwid
+[2] https://github.com/pazz/alot
+
+From allan_wind at lifeintegrity.com  Sat Jan 28 16:06:35 2012
+From: allan_wind at lifeintegrity.com (Allan Wind)
+Date: Sat, 28 Jan 2012 16:06:35 -0500
+Subject: [sup-talk] First impressions
+In-Reply-To: <20120128193219.16698.23541@brick.lan>
+References: <1327301754-sup-3169@lifeintegrity.com>
+	<20120128051414.GB3481@tracyreed.org>
+	<20120128183801.GF25519@lifeintegrity.com>
+	<20120128193219.16698.23541@brick.lan>
+Message-ID: <20120128210635.GB29628@lifeintegrity.com>
+
+On 2012-01-28 19:32:19, Patrick Totzke wrote:
+> I can recommend switching to notmuch [0], a mail indexer that started of as some improvements to sup
+> but has grown into a very reliable and powerful mail indexer.
+
+Thanks for the pointer.  I installed it earlier this week and 
+integrated into offlineimap for (re)indexing of new email.
+
+> Notmuch uses Xapian to provide a mail indexing library and bindings for go, python and ruby are
+> included. There are several user interfaces that make use of this library:
+> Apart from a command-line binary there is an Emacs mode and a few attempts to integrate notmuch into mutt.
+
+I am trying to convince mutt-kz (which has notmuch integration) 
+to compile without much luck.
+
+> I am the author of a terminal interface [2] that uses notmuch's python bindings and the urwid [1] toolkit
+> to provide a MUA experience similar to that of sup.
+
+The dependencies of alot makes this a bit of a challenge to run 
+on Debian stable:
+
+Alot depends on recent versions of notmuch (>=0.10) and urwid 
+(>=1.0). Note that due to restrictions on argparse and 
+subprocess, you need to run *python v>=2.7*,
+
+> Notmuch is very stable, very fast and under active development of a mid-sized group of excellent
+> developers.
+> 
+> Hope this helps, looking forward to discussions in #notmuch at freenode,
+
+Thanks again.
+
+
+/Allan
+-- 
+Allan Wind
+Life Integrity, LLC
+<http://lifeintegrity.com>
+

@@ -1,0 +1,3424 @@
+From pi+sup at pihost.us  Mon Feb  1 14:30:50 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Mon,  1 Feb 2010 12:30:50 -0700
+Subject: [sup-devel] [PATCH] in thread-view-mode,
+	doubling up on the multi-keys now DTRT
+Message-ID: <1265052650-6641-1-git-send-email-pi+sup@pihost.us>
+
+dot dot, comma comma, and bracket bracket now all "do nothing and"
+whatever their prefixes mean.
+---
+ lib/sup/modes/thread-view-mode.rb |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 0e935a4..37c99c5 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -74,6 +74,7 @@ EOS
+       kk.add :delete_and_kill, "Delete this thread and kill buffer", 'd'
+       kk.add :spam_and_kill, "Mark this thread as spam and kill buffer", 's'
+       kk.add :unread_and_kill, "Mark this thread as unread and kill buffer", 'N'
++      kk.add :do_nothing_and_kill, "Just kill this buffer", '.'
+     end
+ 
+     k.add_multi "(a)rchive/(d)elete/mark as (s)pam/mark as u(N)read/do (n)othing:", ',' do |kk|
+@@ -81,7 +82,7 @@ EOS
+       kk.add :delete_and_next, "Delete this thread, kill buffer, and view next", 'd'
+       kk.add :spam_and_next, "Mark this thread as spam, kill buffer, and view next", 's'
+       kk.add :unread_and_next, "Mark this thread as unread, kill buffer, and view next", 'N'
+-      kk.add :do_nothing_and_next, "Kill buffer, and view next", 'n'
++      kk.add :do_nothing_and_next, "Kill buffer, and view next", 'n', ','
+     end
+ 
+     k.add_multi "(a)rchive/(d)elete/mark as (s)pam/mark as u(N)read/do (n)othing:", ']' do |kk|
+@@ -89,7 +90,7 @@ EOS
+       kk.add :delete_and_prev, "Delete this thread, kill buffer, and view previous", 'd'
+       kk.add :spam_and_prev, "Mark this thread as spam, kill buffer, and view previous", 's'
+       kk.add :unread_and_prev, "Mark this thread as unread, kill buffer, and view previous", 'N'
+-      kk.add :do_nothing_and_prev, "Kill buffer, and view previous", 'n'
++      kk.add :do_nothing_and_prev, "Kill buffer, and view previous", 'n', ']'
+     end
+   end
+ 
+@@ -508,6 +509,7 @@ EOS
+   def spam_and_kill; spam_and_then :kill end
+   def delete_and_kill; delete_and_then :kill end
+   def unread_and_kill; unread_and_then :kill end
++  def do_nothing_and_kill; do_nothing_and_then :kill end
+ 
+   def archive_and_next; archive_and_then :next end
+   def spam_and_next; spam_and_then :next end
+-- 
+1.6.6
+
+
+From sup-bugs at masanjin.net  Tue Feb  2 17:02:59 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 02 Feb 2010 22:02:59 +0000
+Subject: [sup-devel] [issue60] Crash on sending a newly composed message
+	(ASCII-8BIT	regexp with UTF-8 string)
+In-Reply-To: <1265148179.27.0.521879651683.issue60@masanjin.net>
+Message-ID: <1265148179.27.0.521879651683.issue60@masanjin.net>
+
+
+New submission from anonymous:
+
+It seems that when I compose a new message and try to send it sup crashes with 
+this error. I had it on two ocassions today. I don't even remember what the 
+first mail was about, the information is simply lost. The second case is 
+reproducable. Replying seems to work fine.
+
+$ sup
+which: no gpg in 
+(/bin:/usr/bin:/sbin:/usr/sbin:/opt/kde/bin:/usr/bin/perlbin/site:/usr/bin/perlb
+in/vendor:/usr/bin/perlbin/core:/opt/qt/bin)
+[2010-02-02 22:53:10 +0100] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/murks/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- Encoding::CompatibilityError from thread: main
+incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string)
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:205:in `match'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:205:in `match'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:205:in `mime_encode_address'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:374:in `block in build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:369:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:369:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-
+mode.rb:322:in `send_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/mode.rb:51:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/buffer.rb:270:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/bin/sup:270:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/bin/sup:64:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+----------
+files: exception-log.txt
+messages: 147
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1_p378
+status: unread
+sup_version: 0.10.1
+title: Crash on sending a newly composed message (ASCII-8BIT regexp with UTF-8 string)
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue60>
+_________________________________________
+-------------- next part --------------
+--- Encoding::CompatibilityError from thread: main
+incompatible encoding regexp match (ASCII-8BIT regexp with UTF-8 string)
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:205:in `match'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:205:in `match'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:205:in `mime_encode_address'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:374:in `block in build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:369:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:369:in `build_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/modes/edit-message-mode.rb:322:in `send_message'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/mode.rb:51:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/buffer.rb:270:in `handle_input'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/bin/sup:270:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/bin/sup:64:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+From sup-bugs at masanjin.net  Wed Feb  3 11:06:43 2010
+From: sup-bugs at masanjin.net (Peter Harkins)
+Date: Wed, 03 Feb 2010 16:06:43 +0000
+Subject: [sup-devel] [issue61] sup crashes if draft file missing
+In-Reply-To: <1265213203.01.0.0861922015522.issue61@masanjin.net>
+Message-ID: <1265213203.01.0.0861922015522.issue61@masanjin.net>
+
+
+New submission from Peter Harkins <ph at malaprop.org>:
+
+I started and stopped working on a message a few times and had leftover drafts
+in ~/.sup/drafts that I rm'd. Or so I thought - apparently I was still working
+on one of those. Now every time I try to open the thread, sup crashes with this
+error:
+
+
+[Wed Feb 03 09:59:44 -0600 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/harkins/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- Errno::ENOENT from thread: load messages for thread-view-mode
+No such file or directory - /home/harkins/.sup/drafts/22
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/draft.rb:78:in `initialize'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/draft.rb:78:in `open'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/draft.rb:78:in `load_message'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/util.rb:599:in `send'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/util.rb:599:in `__pass'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/util.rb:586:in `method_missing'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/message.rb:242:in `load_from_source!'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:108:in
+`select'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/hook.rb:122:in `each_with_index'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:68:in `each'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:170:in `each_with_stuff'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:168:in `each_with_stuff'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:170:in `each_with_stuff'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each_with_stuff'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/thread.rb:67:in `each'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:105:in
+`each_with_index'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:105:in
+`select'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/buffer.rb:719:in `say'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/util.rb:559:in `send'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/util.rb:559:in `method_missing'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:104:in
+`select'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:77:in `reporting_thread'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `initialize'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `new'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup.rb:75:in `reporting_thread'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:101:in
+`select'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:151:in
+`launch_another_thread'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:133:in
+`launch_next_thread_after'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-view-mode.rb:586:in
+`dispatch'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-view-mode.rb:525:in
+`archive_and_then'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/modes/thread-view-mode.rb:512:in
+`archive_and_next'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/mode.rb:51:in `send'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/mode.rb:51:in `handle_input'
+/home/harkins/.gems/gems/sup-0.10.2/lib/sup/buffer.rb:270:in `handle_input'
+/home/harkins/.gems/gems/sup-0.10.2/bin/sup:270
+/home/harkins/.gems/bin/sup:19:in `load'
+/home/harkins/.gems/bin/sup:19
+
+----------
+messages: 148
+nosy: Harkins
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: 0.10.2
+title: sup crashes if draft file missing
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue61>
+_________________________________________
+
+From daniel.schoepe at googlemail.com  Wed Feb  3 15:16:35 2010
+From: daniel.schoepe at googlemail.com (Daniel Schoepe)
+Date: Wed,  3 Feb 2010 21:16:35 +0100
+Subject: [sup-devel] [PATCH] Add config option to limit text wrapping width
+Message-ID: <1265228195-4063-1-git-send-email-daniel.schoepe@googlemail.com>
+
+This patch adds a configuration `wrap_width' option to limit the width
+text wrapping uses(e.g. to wrap after 80 characters).
+---
+ lib/sup.rb                        |    3 ++-
+ lib/sup/modes/thread-view-mode.rb |    7 ++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index b9dc749..df85636 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -263,7 +263,8 @@ else
+     :discard_snippets_from_encrypted_messages => false,
+     :default_attachment_save_dir => "",
+     :sent_source => "sup://sent",
+-    :poll_interval => 300
++    :poll_interval => 300,
++    :wrap_width => 0
+   }
+   begin
+     FileUtils.mkdir_p Redwood::BASE_DIR
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 0e935a4..e109a2d 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -792,7 +792,12 @@ private
+       if chunk.inlineable?
+         lines = chunk.lines
+         if @wrap
+-          width = buffer.content_width
++          config_width = $config[:wrap_width]
++          if config_width and config_width != 0
++            width = [config_width, buffer.content_width].min
++          else
++            width = buffer.content_width
++          end
+           lines = lines.map { |l| l.chomp.wrap width }.flatten
+         end
+         lines.map { |line| [[chunk.color, "#{prefix}#{line}"]] }
+-- 
+1.6.6.1
+
+
+From tero at tilus.net  Thu Feb  4 02:06:03 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 04 Feb 2010 09:06:03 +0200
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1264123657-sup-4929@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net> <1264123657-sup-4929@tilus.net>
+Message-ID: <1265266889-sup-260@tilus.net>
+
+Tero Tilus, 2010-01-22 03:32:
+> William Morgan, 2009-12-21 15:38:
+> > Reformatted excerpts from Tero Tilus's message of 2009-12-19:
+> > > detect-missing-attachment hook
+> > 
+> > index-mode-date-widget
+> 
+> Here they are, finally...
+
+Any feedback on these?  Do they need any tuning?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Feb  4 02:58:29 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 04 Feb 2010 09:58:29 +0200
+Subject: [sup-devel] [PATCH] Message#edit_labels [was: Ruby question:
+	before-add-message.rb and adding multiple labels at once]
+In-Reply-To: <1264384775-sup-925@tilus.net>
+References: <1263574849-sup-3477@sam.mediasupervision.de>
+	<1263680819-sup-415@tilus.net> <1264117436-sup-4429@tilus.net>
+	<1264252198-sup-6507@masanjin.net> <1264384775-sup-925@tilus.net>
+Message-ID: <1265270246-sup-151@tilus.net>
+
+Tero Tilus, 2010-01-25 04:05:
+> William Morgan, 2010-01-23 15:11:
+> > It's also important to call LabelManager.<< for each label, to
+> > make sure they appear in label-list-mode.
+> 
+> I went a step further with this.  Counting on people not having
+> billion-mail threads and gazillions of tags (and thus this
+> potentially having performance implications) I dropped all the
+> LabelManager.<< calls down to Message to ensure that every time
+> labels change, LabelManager is informed.
+
+...and that broke sup-dump.  Patch v3 (rebased to next) attached.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Message-edit_labels.patch
+Type: application/octet-stream
+Size: 8196 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100204/9a6104cb/attachment-0001.obj>
+
+From sup-bugs at masanjin.net  Thu Feb  4 06:11:38 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 04 Feb 2010 11:11:38 +0000
+Subject: [sup-devel] [issue62] Sup crashes when trying to put a new message
+	to the Sent	folder
+In-Reply-To: <1265281898.54.0.722634324299.issue62@masanjin.net>
+Message-ID: <1265281898.54.0.722634324299.issue62@masanjin.net>
+
+
+New submission from anonymous:
+
+Quite often (~50% of trials) an email gets sent but right after that sup tries to 
+save it in the INBOX.Sent folder and crashes. Sometimes it works though. Here's 
+the stripped config for that folder:
+
+sources.yaml:
+- !masanjin.net,2006-10-01/Redwood/IMAP
+  uri: imaps://mail.example.com/INBOX.Sent
+  ...
+  usual: false
+  archived: false
+  id: 2
+  labels: []
+
+config.yaml:
+:sent_source: imaps://mail.idiles.com/INBOX.Sent
+
+Thank you!
+
+----------
+files: exception-log.txt
+messages: 149
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: Branch next with ncurses utf-8 patch
+title: Sup crashes when trying to put a new message to the Sent folder
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue62>
+_________________________________________
+-------------- next part --------------
+--- Redwood::FatalSourceError from thread: main
+While communicating with IMAP server (type Net::IMAP::NoResponseError): "Current box is selected READ-ONLY."
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/imap.rb:343:in `safely'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/imap.rb:121:in `store_message'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:599:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:599:in `__pass'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:586:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/sent.rb:28:in `write_sent_message'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:559:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/util.rb:559:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/modes/edit-message-mode.rb:325:in `send_message'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/mode.rb:51:in `send'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/mode.rb:51:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.9/lib/sup/buffer.rb:272:in `handle_input'
+/var/lib/gems/1.8/gems/sup-0.9/bin/sup:276
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+From sup-bugs at masanjin.net  Thu Feb  4 12:03:41 2010
+From: sup-bugs at masanjin.net (Gregor Hoffleit)
+Date: Thu, 04 Feb 2010 17:03:41 +0000
+Subject: [sup-devel] [issue63] Attachment filenames: RFC2184 and extension
+	guessing
+In-Reply-To: <1265303021.03.0.840779379479.issue63@masanjin.net>
+Message-ID: <1265303021.03.0.840779379479.issue63@masanjin.net>
+
+
+New submission from Gregor Hoffleit <gregor at hoffleit.de>:
+
+I noticed sup has trouble handling attachments sent by Roundcube webmail. 
+Somehow, those mails use an alternative encoding of filenames, specified in 
+RFC2184:
+
+    Content-Transfer-Encoding: base64
+    Content-Type: image/jpeg;
+     name*="UTF-8''20090912-i004232-gr000.jpg";
+    Content-Disposition: attachment;
+     filename*="UTF-8''20090912-i004232-gr000.jpg";
+
+Sup fails to detect these filenames.
+
+When trying to save these attachements, the filenames generated by sup have a 
+trailing semicolon.
+
+The attached patch is a quick and dirty fix for these specific problems.
+There's probably a better way to implement this.
+
+----------
+files: rfc2184.diff
+messages: 150
+nosy: flight
+priority: bug
+ruby_version: 1.8.5
+status: unread
+sup_version: 0.10.2
+title: Attachment filenames: RFC2184 and extension guessing
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue63>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: rfc2184.diff
+Type: application/octet-stream
+Size: 954 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100204/a0bd5c56/attachment.obj>
+
+From hyperbolist at gmail.com  Fri Feb  5 11:19:03 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Fri, 05 Feb 2010 11:19:03 -0500
+Subject: [sup-devel] [PATCH] prevent "year too big to marshal" crashes
+Message-ID: <1265386698-sup-8060@changeling.local>
+
+Xapian::Document#entry= performs a Marshal.dump which was throwing a
+"year too big to marshal" when adding a new message.  I just
+truncate_date'd the message's date when the entry hash is created in
+sync_message and this problem went away for me.
+
+It was a spam message, as the MIN_DATE/MAX_DATE comments hinted.
+---
+ lib/sup/xapian_index.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/xapian_index.rb b/lib/sup/xapian_index.rb
+index 443b88d..44531a2 100644
+--- a/lib/sup/xapian_index.rb
++++ b/lib/sup/xapian_index.rb
+@@ -435,7 +435,7 @@ EOS
+       :message_id => m.id,
+       :source_id => m.source.id,
+       :source_info => m.source_info,
+-      :date => m.date,
++      :date => truncate_date(m.date),
+       :snippet => snippet,
+       :labels => m.labels.to_a,
+       :from => [m.from.email, m.from.name],
+-- 
+1.6.6
+
+
+From sup-bugs at masanjin.net  Mon Feb  8 23:03:14 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 09 Feb 2010 04:03:14 +0000
+Subject: [sup-devel] [issue64] Crash on sup start
+In-Reply-To: <1265688194.03.0.035958787068.issue64@masanjin.net>
+Message-ID: <1265688194.03.0.035958787068.issue64@masanjin.net>
+
+
+New submission from anonymous:
+
+sup crashed after I sent an email, and won't start anymore.
+
+This is with the latest git version. Ubuntu/Karmic.
+
+[Tue Feb 09 14:59:30 +1100 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+
+/home/brian/tree/sup/lib/sup/xapian_index.rb:348:in `find_docid'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:353:in `find_doc'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:363:in `get_entry'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:77:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:372:in `synchronize'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:77:in `build_message'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+/home/brian/tree/sup/lib/sup/thread.rb:332:in `call'
+/home/brian/tree/sup/lib/sup/thread.rb:332:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each_id'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each_id'
+/home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+/home/brian/tree/sup/lib/sup/thread.rb:328:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:630:in 
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:614:in 
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+/home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+/home/brian/tree/sup/lib/sup.rb:75:in `new'
+/home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:613:in 
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:684:in 
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/brian/tree/sup/bin/sup:226
+
+Brian May
+
+----------
+messages: 155
+nosy: anonymous
+priority: bug
+ruby_version: 4.2
+status: unread
+sup_version: git
+title: Crash on sup start
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue64>
+_________________________________________
+
+From tero at tilus.net  Tue Feb  9 02:16:34 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 09 Feb 2010 09:16:34 +0200
+Subject: [sup-devel] [issue64] Crash on sup start
+In-Reply-To: <1265688194.03.0.035958787068.issue64@masanjin.net>
+References: <1265688194.03.0.035958787068.issue64@masanjin.net>
+Message-ID: <1265699020-sup-3244@tilus.net>
+
+anonymous, 2010-02-09 06:03:
+> sup crashed after I sent an email, and won't start anymore.
+
+I expect the exception log is the failing start?  Index seems to be in
+inconsistent state.
+
+Could you describe in more detail how exactly sup crashed after
+sending mail.  When exactly it crashed?  What did it say?
+
+You can try to get back on your feet by recreating your index.  Try
+creating sup-dump (back up index) first so that you can preserve
+labels.  If that doesn't work, you unfortunately can't preserve your
+message states.  But don't throw your old index away just yet, before
+sup-sync do cd ~/.sup/; mv xapian xapian.bak .  We might find another
+way to recover.
+
+Quoting from http://sup.rubyforge.org/FAQ.txt
+
+Q: How do I back up my index?
+A: Since the contents of the messages are recoverable from their
+   sources using sup-sync, all you need to back up is the message
+   state. To do this, simply run:
+      sup-dump > <dumpfile>
+   This will save all message state in a big text file, which you
+   should probably compress.
+
+Q: How do I restore the message state I saved in my state dump?
+A: Run:
+     sup-sync [<source>+] --restored --restore <dumpfile>
+   where <dumpfile> was created as above.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Tue Feb  9 02:41:31 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 09 Feb 2010 09:41:31 +0200
+Subject: [sup-devel] [issue64] Crash on sup start
+In-Reply-To: <1265688194.03.0.035958787068.issue64@masanjin.net>
+References: <1265688194.03.0.035958787068.issue64@masanjin.net>
+Message-ID: <1265701233-sup-895@tilus.net>
+
+Sorry, I replied using mail before I checked further messages in this
+tracker.
+
+Could you be able to identify the offending docid and maybe the
+mail(s) that docid points to?  Just to get a hint on what happened.
+Hit ~ to get console buffer where you can play just like in
+devel/console.sh, see
+<http://sup.rubyforge.org/wiki/wiki.pl?ProgrammaticallyAccessingSupsIndex>
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sup-bugs at masanjin.net  Tue Feb  9 02:49:09 2010
+From: sup-bugs at masanjin.net (Tero Tilus)
+Date: Tue, 09 Feb 2010 07:49:09 +0000
+Subject: [sup-devel] [issue65] tput: No value for $TERM and no -T specified
+In-Reply-To: <1265701749.73.0.531351997652.issue65@masanjin.net>
+Message-ID: <1265701749.73.0.531351997652.issue65@masanjin.net>
+
+
+New submission from Tero Tilus <tero at tilus.net>:
+
+Sup-dump complains
+
+  tput: No value for $TERM and no -T specified
+
+when run from cron.  This is caused by terminal colors monkeypatch to Curses in
+sup/colormap.rb.  Either sup.rb should not expect $TERM or sup-dump should not
+`require "sup"`.  Which way to go?
+
+----------
+messages: 161
+nosy: terotil
+priority: bug
+ruby_version: ruby 1.8.7 (2008-08-11 patchlevel 72)
+status: unread
+sup_version: git next
+title: tput: No value for $TERM and no -T specified
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue65>
+_________________________________________
+
+From scott at foolishpride.org  Tue Feb  9 15:39:54 2010
+From: scott at foolishpride.org (Scott Henson)
+Date: Tue, 9 Feb 2010 15:39:54 -0500
+Subject: [sup-devel] Maildir work
+Message-ID: <6c0c31751002091239g6002c7fl6bfa93908c4d4301@mail.gmail.com>
+
+I've been working on maildirs cause I wanted to improve how sup works on
+maildirs.  This includes some sync-back support for maildirs.  I've had my
+head inside the maildir source and I've noticed something.  The maildir
+source can easily lose messages because there is nothing guaranteeing that
+the souce_id is monotonically increasing.
+
+So I would like to be able to search the sup index to see what source_ids it
+knows about and compare that to what is currently in the maildir and create
+a list of ids that are new or even ones that are deleted (making sup-sync
+--changed a lot quicker).  Is there a way for the source to search the
+index, or is what I'm thinking not possible within sup?  Thanks.
+
+-- 
+Scott Henson
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100209/d61de45f/attachment.html>
+
+From bwalton at artsci.utoronto.ca  Tue Feb  9 16:33:26 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 09 Feb 2010 16:33:26 -0500
+Subject: [sup-devel] Maildir work
+In-Reply-To: <6c0c31751002091239g6002c7fl6bfa93908c4d4301@mail.gmail.com>
+References: <6c0c31751002091239g6002c7fl6bfa93908c4d4301@mail.gmail.com>
+Message-ID: <1265751093-sup-9942@ntdws12.chass.utoronto.ca>
+
+Excerpts from Scott Henson's message of Tue Feb 09 15:39:54 -0500 2010:
+
+Hi Scott,
+
+> I've been working on maildirs cause I wanted to improve how sup works on
+> maildirs.  This includes some sync-back support for maildirs.  I've had my
+> head inside the maildir source and I've noticed something.  The maildir
+> source can easily lose messages because there is nothing guaranteeing that
+> the souce_id is monotonically increasing.
+
+This was noted some time back, but nothing has been done to correct
+it.  William had some thoughts on it, but I don't know if he put hand
+to keyboard on it...
+
+I can't help you with the rest of your question as I'm not familiar
+with that code at all.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100209/5848abd5/attachment-0001.bin>
+
+From marka at pobox.com  Wed Feb 10 15:50:42 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 10 Feb 2010 15:50:42 -0500
+Subject: [sup-devel] Maildir work
+In-Reply-To: <6c0c31751002091239g6002c7fl6bfa93908c4d4301@mail.gmail.com>
+References: <6c0c31751002091239g6002c7fl6bfa93908c4d4301@mail.gmail.com>
+Message-ID: <a412e2a71002101250hff7efa3i1290c01ba8874f81@mail.gmail.com>
+
+On Tue, Feb 9, 2010 at 3:39 PM, Scott Henson <scott at foolishpride.org> wrote:
+>The maildir source can easily lose messages because there is nothing guaranteeing that
+> the source_id is monotonically increasing.
+
+I reported this on Apr 16 2009:
+
+  http://old.nabble.com/Possible-problem-with-maildir-ID-generation-ts23087464.html
+
+From gregor at hoffleit.de  Wed Feb 10 16:04:57 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Wed, 10 Feb 2010 22:04:57 +0100
+Subject: [sup-devel] Person.from_address and Contacts (or
+	John.Smith@example.com)
+Message-ID: <1265828498-sup-6054@sam.mediasupervision.de>
+
+I have quite a few contacts that send their mails without a display
+name, i.e. something like "From: John.Smith at example.com".
+
+Sup does some magic (in Person.from_address) to derive something like a
+display name from the local-part of the e-mail address. That's fine so
+far.
+
+But, if the person is in my list of contacts, I want Sup to show the
+display name definied in the contacts entry. In the above case, that
+might be "John Smith" or "John E. Smith" or whatever. Instead, Sup
+sticks to the display name derived from the local part, "john.smith".
+
+It's especially odd in the detailed header view of the thread-view-mode,
+where Sup resolves and shows the alias, but still sticks to the derived
+display name:
+
+    From: john.smith <john.smith at example.com> (Johnny Boy)
+
+
+The obvious place to start a fix would be Person.from_address, where the
+(display) name, if missing, is derived from the email address.
+
+I wanted to modify Person.from_address in order to use, in the case of
+an empty display name, the ContactManager, to look up any alias in the
+contact list, but somehow I didn't succeed integrating ContactManager in
+person.rb.
+
+Any better idea? Should I file a bug about this?
+
+Regards,
+    Gregor Hoffleit
+
+From s2532038 at inf.tu-dresden.de  Thu Feb 11 03:43:52 2010
+From: s2532038 at inf.tu-dresden.de (Michael Raitza)
+Date: Thu, 11 Feb 2010 09:43:52 +0100
+Subject: [sup-devel] [PATCH] Added support for multiple sent sources.
+Message-ID: <1265877393-sup-3156@leandros>
+
+Hi,
+
+I just wondered if it was possible to use several different sources to
+store sent mail. After I read the recent posts on the mailing list and
+did not find any progress in the HEAD of mainline.git I just implemented
+a solution. I took the configuration file based approach.  Because of
+laziness I think?
+
+Here you are (see also spacefroggs-clone on gitorious):
+
+diff --git a/bin/sup b/bin/sup
+index 7824aca..45693b5 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -180,10 +180,12 @@ begin
+     Redwood::SourceManager.add_source DraftManager.new_source
+   end
+ 
+-  if(s = Redwood::SourceManager.source_for SentManager.source_uri)
+-    SentManager.source = s
+-  else
+-    Redwood::SourceManager.add_source SentManager.default_source
++  Redwood::AccountManager.user_accounts.each do |account|
++    if(s = Redwood::SourceManager.source_for account.sentmanager.source_uri)
++      account.sentmanager.source = s
++    else
++      Redwood::SourceManager.add_source account.sentmanager.default_source
++    end
+   end
+ 
+   HookManager.run "startup"
+diff --git a/bin/sup-config b/bin/sup-config
+index bc58a59..4373822 100755
+--- a/bin/sup-config
++++ b/bin/sup-config
+@@ -207,7 +207,7 @@ say "Only sources capable of storing mail will be listed.\n\n"
+ Redwood::SourceManager.load_sources
+ if Redwood::SourceManager.sources.empty?
+   say "\nUsing the default sup://sent, since you haven't configured other sources yet."
+-  $config[:sent_source] = 'sup://sent'
++  $config[:accounts][:default][:sent_source] = 'sup://sent'
+ else
+   # this handles the event that source.yaml already contains the SentLoader
+   # source.
+@@ -216,11 +216,11 @@ else
+   choose do |menu|
+     menu.prompt = "Store my sent mail in? "
+ 
+-    menu.choice('Default (an mbox in ~/.sup, aka sup://sent)') { $config[:sent_source] = 'sup://sent'} unless have_sup_sent
++    menu.choice('Default (an mbox in ~/.sup, aka sup://sent)') { $config[:accounts][:default][:sent_source] = 'sup://sent'} unless have_sup_sent
+ 
+     valid_sents = Redwood::SourceManager.sources.each do |s|
+       have_sup_sent = true if s.to_s.eql?('sup://sent')
+-      menu.choice(s.to_s) { $config[:sent_source] = s.to_s } if s.respond_to? :store_message
++      menu.choice(s.to_s) { $config[:accounts][:default][:sent_source] = s.to_s } if s.respond_to? :store_message
+     end
+   end
+ end
+diff --git a/lib/sup.rb b/lib/sup.rb
+index e03a35d..704be07 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -121,7 +121,6 @@ module Redwood
+   end
+ 
+   def start
+-    Redwood::SentManager.init $config[:sent_source] || 'sup://sent'
+     Redwood::ContactManager.init Redwood::CONTACT_FN
+     Redwood::LabelManager.init Redwood::LABEL_FN
+     Redwood::AccountManager.init $config[:accounts]
+diff --git a/lib/sup/account.rb b/lib/sup/account.rb
+index bf8a8a0..c284719 100644
+--- a/lib/sup/account.rb
++++ b/lib/sup/account.rb
+@@ -1,16 +1,22 @@
+ module Redwood
+ 
+ class Account < Person
+-  attr_accessor :sendmail, :signature
++  attr_accessor :sendmail, :signature, :sentmanager
+ 
+   def initialize h
+     raise ArgumentError, "no name for account" unless h[:name]
+     raise ArgumentError, "no email for account" unless h[:email]
+     super h[:name], h[:email]
++
++    @sentmanager = Redwood::SentManager.new h[:sent_source]
+     @sendmail = h[:sendmail]
+     @signature = h[:signature]
+   end
+ 
++  def sent_source
++    @sentmanager.source_uri
++  end
++
+   # Default sendmail command for bouncing mail,
+   # deduced from #sendmail
+   def bounce_sendmail
+@@ -46,10 +52,12 @@ class AccountManager
+   def add_account hash, default=false
+     raise ArgumentError, "no email specified for account" unless hash[:email]
+     unless default
+-      [:name, :sendmail, :signature].each { |k| hash[k] ||= @default_account.send(k) }
++      [:name, :sendmail, :signature, :sent_source].each { |k| hash[k] ||= @default_account.send(k) }
+     end
+     hash[:alternates] ||= []
+ 
++    hash[:sent_source] ||= 'sup://sent'
++
+     a = Account.new hash
+     @accounts[a] = true
+ 
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 8849271..7d7618b 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -322,7 +322,7 @@ protected
+       m = build_message date
+       IO.popen(acct.sendmail, "w") { |p| p.puts m }
+       raise SendmailCommandFailed, "Couldn't execute #{acct.sendmail}" unless $? == 0
+-      SentManager.write_sent_message(date, from_email) { |f| f.puts sanitize_body(m.to_s) }
++      acct.sentmanager.write_sent_message(date, from_email) { |f| f.puts sanitize_body(m.to_s) }
+       BufferManager.kill_buffer buffer
+       BufferManager.flash "Message sent!"
+       true
+diff --git a/lib/sup/sent.rb b/lib/sup/sent.rb
+index 87ca6c6..1fe398c 100644
+--- a/lib/sup/sent.rb
++++ b/lib/sup/sent.rb
+@@ -1,7 +1,6 @@
+ module Redwood
+ 
+ class SentManager
+-  include Singleton
+ 
+   attr_reader :source, :source_uri
+ 
+@@ -14,7 +13,7 @@ class SentManager
+ 
+   def source= s
+     raise FatalSourceError.new("Configured sent_source [#{s.uri}] can't store mail.  Correct your configuration.") unless s.respond_to? :store_message
+-    @souce_uri = s.uri
++    @source_uri = s.uri
+     @source = s
+   end
+ 
+
+
+From sup-bugs at masanjin.net  Fri Feb 12 11:17:47 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 12 Feb 2010 16:17:47 +0000
+Subject: [sup-devel] [issue66] Occasional crash
+In-Reply-To: <1265991467.23.0.295613281978.issue66@masanjin.net>
+Message-ID: <1265991467.23.0.295613281978.issue66@masanjin.net>
+
+
+New submission from anonymous:
+
+--- IOError from thread: main
+closed stream
+/usr/lib/ruby/1.9.1/openssl/buffering.rb:240:in `close'
+/usr/lib/ruby/1.9.1/openssl/buffering.rb:240:in `sysclose'
+/usr/lib/ruby/1.9.1/openssl/buffering.rb:240:in `close'
+/usr/lib/ruby/1.9.1/net/imap.rb:968:in `block in receive_responses'
+/usr/lib/ruby/1.9.1/monitor.rb:190:in `mon_synchronize'
+/usr/lib/ruby/1.9.1/net/imap.rb:967:in `rescue in receive_responses'
+/usr/lib/ruby/1.9.1/net/imap.rb:964:in `receive_responses'
+/usr/lib/ruby/1.9.1/net/imap.rb:955:in `block in initialize'
+
+This happens to me about once or twice a week. Installed via the AUR. ( 
+http://aur.archlinux.org/packages.php?ID=26439&detail=1 )
+
+----------
+messages: 166
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1_p378-1
+status: unread
+sup_version: 0.10.1-1
+title: Occasional crash
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue66>
+_________________________________________
+
+From sup-bugs at masanjin.net  Fri Feb 12 22:07:00 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 13 Feb 2010 03:07:00 +0000
+Subject: [sup-devel] [issue67] sup-config crashes at start
+In-Reply-To: <1266030419.97.0.799946608385.issue67@masanjin.net>
+Message-ID: <1266030419.97.0.799946608385.issue67@masanjin.net>
+
+
+New submission from anonymous:
+
+I've just installed sup from AUR (Archlinux User Repository). I'm trying to run 
+sup-config but I'm getting the following error. It may hasve to do with the fact 
+that my name contains Unicode characters (and this is how my linux account name, 
+not username, is configured):
+
+$ sup-config 
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/person.rb:10:in `strip': 
+invalid byte sequence in UTF-8 (ArgumentError)
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/person.rb:10:in 
+`initialize'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/account.rb:9:in 
+`initialize'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/account.rb:53:in 
+`new'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/account.rb:53:in 
+`add_account'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/account.rb:37:in 
+`initialize'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/util.rb:557:in 
+`new'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup/util.rb:557:in 
+`init'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/lib/sup.rb:127:in `start'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.10.1/bin/sup-config:149:in 
+`<top (required)>'
+	from /usr/bin/sup-config:19:in `load'
+	from /usr/bin/sup-config:19:in `<main>'
+
+----------
+messages: 167
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1
+status: unread
+sup_version: 0.10.1
+title: sup-config crashes at start
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue67>
+_________________________________________
+
+From michael at content-space.de  Sat Feb 13 08:51:53 2010
+From: michael at content-space.de (Michael Hamann)
+Date: Sat, 13 Feb 2010 14:51:53 +0100
+Subject: [sup-devel] [PATCH] utf-8 script encoding
+In-Reply-To: <1264250655-sup-3062@masanjin.net>
+References: <1262533823-sup-5348@dolk>
+	<1262534836-29113-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262535218-sup-9718@dolk> <1264250655-sup-3062@masanjin.net>
+Message-ID: <1266066673-sup-5419@mithink>
+
+Hi,
+
+Excerpts from William Morgan's message of 2010-01-23 13:44:39 +0100:
+> Reformatted excerpts from Gaute Hope's message of 2010-01-03:
+> > No. Tab completion fails, and sending fails, I can add names with
+> > UTF-8 chars to the recipient list, but it fails with the last attached
+> > exception. This is the same behaviour as earlier.
+> 
+> That's weird, I would've expected this to help. What's the alternative,
+> adding "u" to the end of every regexp?
+
+Has there been any progress on this subject? This is imho a quite annoying bug
+as it makes me regularly recover mails from the buffer of screen when having
+written a reply to a message with a subject containing utf-8 chars without
+noticing that.
+
+Sorry if this should have been fixed already, I'm currently using git next and
+there the problem still exists.
+
+Greetings
+Michael Hamann
+
+From sup-bugs at masanjin.net  Mon Feb 15 00:09:52 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 15 Feb 2010 05:09:52 +0000
+Subject: [sup-devel] [issue68] stack level too deep crash on startup after
+	loading large	source
+In-Reply-To: <1266210592.75.0.0708955030256.issue68@masanjin.net>
+Message-ID: <1266210592.75.0.0708955030256.issue68@masanjin.net>
+
+
+New submission from anonymous:
+
+I have an OfflineIMAP source that mirrors my Gmail All Mail. After running sup-
+config and trying to launch sup I get the attached exception logged in the 
+exception log.
+
+----------
+files: exception-log.txt
+messages: 168
+nosy: anonymous
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: 0.10.2
+title: stack level too deep crash on startup after loading large source
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue68>
+_________________________________________
+-------------- next part --------------
+--- SystemStackError from thread: load threads for thread-index-mode
+stack level too deep
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in `each_with_stuff'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in `each_with_stuff'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each_with_stuff'
+...
+A whole bunch more of these
+...
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each_with_stuff'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:170:in `each_with_stuff'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:169:in `each_with_stuff'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:67:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:89:in `map'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:89:in `date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:226:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/hook.rb:122:in `sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:226:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:226:in `sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:226:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:224:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:224:in `update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:633:in `__unprotected_load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:334:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:114:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:114:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:114:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/thread.rb:328:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:630:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:614:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:75:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:75:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:613:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/modes/thread-index-mode.rb:684:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:226
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From michael+sup at stapelberg.de  Mon Feb 15 13:30:59 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 15 Feb 2010 19:30:59 +0100
+Subject: [sup-devel] [PATCH] catch xapian query parser exceptions and
+	display them to the user
+Message-ID: <1266258536-sup-3345@midna.zekjur.net>
+
+Hi,
+
+a query such as "NOT label:debian" will generate an error in the xapian query
+parser. Instead of crashing, the user should see the error message to get his
+query right. The attached patch fixes this.
+
+Please note that the appropriate type instead of RuntimeError would be
+Xapian::QueryParserError, but the latter is not defined for some reason. A
+problem with the xapian ruby bindings?
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-xapian.patch
+Type: application/octet-stream
+Size: 1307 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100215/ac63d42a/attachment-0001.obj>
+
+From michael+sup at stapelberg.de  Mon Feb 15 17:13:00 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 15 Feb 2010 23:13:00 +0100
+Subject: [sup-devel] [PATCH] Bugfix: Create dynamically growing fields (long
+	filenames are now supported)
+Message-ID: <1266271874-sup-6404@midna.zekjur.net>
+
+Hi,
+
+the attached patch modifies textfield.rb to create a dynamically growable field
+instead of one with a fixed size. The text field can now hold a dynamic amount
+of characters which is often necessary if you have long file names.
+
+How to reproduce the bug:
+1) mkdir -p /tmp/very/long-folder-name-foo-bar-baz/longer-than-one-line-foo-bar-bleh-bleh/maw-maw-maw-maw-maw-maw-maw-maw-maw-maw-maw
+2) echo foo > /tmp/very/long-folder-name-foo-bar-baz/longer-than-one-line-foo-bar-bleh-bleh/maw-maw-maw-maw-maw-maw-maw-maw-maw-maw-maw/foo.txt
+3) create a new message in sup and try to add the new file as an attachment
+
+Please merge this one for the next release.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-tf-dynamic-grow.patch
+Type: application/octet-stream
+Size: 1015 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100215/d5c78bb3/attachment.obj>
+
+From olly at survex.com  Tue Feb 16 06:10:14 2010
+From: olly at survex.com (Olly Betts)
+Date: Tue, 16 Feb 2010 11:10:14 +0000 (UTC)
+Subject: [sup-devel] [PATCH] catch xapian query parser exceptions and
+	display them to the user
+References: <1266258536-sup-3345@midna.zekjur.net>
+Message-ID: <loom.20100216T120754-634@post.gmane.org>
+
+Michael Stapelberg writes:
+> Please note that the appropriate type instead of RuntimeError would be
+> Xapian::QueryParserError, but the latter is not defined for some reason. A
+> problem with the xapian ruby bindings?
+
+Currently Xapian's exception hierarchy isn't wrapped for Ruby.  I suspect my
+Ruby skills aren't up to fixing that, though I'm certainly happy to help if
+anyone wants to tackle it.
+
+Cheers,
+    Olly
+
+
+From michael+sup at stapelberg.de  Wed Feb 17 17:30:24 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 17 Feb 2010 23:30:24 +0100
+Subject: [sup-devel] [PATCH] Add hook gpg-args to allow the user to
+	add/remove flags
+Message-ID: <1266445763-sup-8545@midna.zekjur.net>
+
+Hi,
+
+attached you find a patch allowing the user to add/remove flags before running
+GPG.  This is useful for specifying "--trust-model always" only for certain
+GPG calls without introducing a whole bunch of new configuration options.
+An example hook (which will add the ability to send encrypted email to
+people to whom you have no trust relation):
+
+  if args =~ /--encrypt/
+    "--trust-model always #{args}"
+  else
+    args
+  end
+
+Please merge this patch for the next release
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Add-hook-gpg-args-to-allow-the-user-to-add-remove-fl.patch
+Type: application/octet-stream
+Size: 1551 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100217/3d1926fa/attachment.obj>
+
+From sup-bugs at masanjin.net  Thu Feb 18 02:50:08 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 18 Feb 2010 07:50:08 +0000
+Subject: [sup-devel] [issue69] SSL_read:: internal error
+In-Reply-To: <1266479408.53.0.109095722428.issue69@masanjin.net>
+Message-ID: <1266479408.53.0.109095722428.issue69@masanjin.net>
+
+
+New submission from anonymous:
+
+--- SystemExit from thread: main
+SSL_read:: internal error
+/usr/lib/ruby/1.8/net/imap.rb:935:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/buffer.rb:38:in `nonblocking_getch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup:246
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+----------
+messages: 171
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: 0.10.2
+title: SSL_read:: internal error
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue69>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu Feb 18 02:58:05 2010
+From: sup-bugs at masanjin.net (James Turnbull)
+Date: Thu, 18 Feb 2010 07:58:05 +0000
+Subject: [sup-devel] [issue70] Sync fails
+In-Reply-To: <1266479885.81.0.515177021489.issue70@masanjin.net>
+Message-ID: <1266479885.81.0.515177021489.issue70@masanjin.net>
+
+
+New submission from James Turnbull <james at lovedthanlost.net>:
+
+## read 5m (~17%) @ 0.1m/s. 0:00:42 elapsed, ~0:03:21 remaining, offset
+12621960456559605
+## read 15m (~61%) @ 0.2m/s. 0:01:10 elapsed, ~0:00:45 remaining, offset
+12662778380989211
+[Thu Feb 18 18:57:02 +1100 2010] WARNING: problem getting messages from
+imaps://imap.gmail.com/INBOX: no IMAP response for 25..23 containing all fields
+RFC822.SIZE, INTERNALDATE, FLAGS (got 1 results)
+/usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:572:in `mkterm':
+undefined method `[]' for nil:NilClass (NoMethodError)
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:347:in
+`find_docid'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:353:in
+`find_doc'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:363:in
+`get_entry'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:77:in
+`build_message'
+	from /usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:372:in
+`synchronize'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/xapian_index.rb:77:in
+`build_message'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-sync:150
+	 ... 11 levels...
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-sync:142:in `each'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-sync:142
+	from /usr/bin/sup-sync:19:in `load'
+	from /usr/bin/sup-sync:19
+Rats, that failed. You may have to do it manually.
+
+----------
+messages: 173
+nosy: jamtur01
+priority: bug
+ruby_version: 1.8.6
+status: unread
+sup_version: 10.0.2
+title: Sync fails
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue70>
+_________________________________________
+
+From michael+sup at stapelberg.de  Thu Feb 18 06:40:45 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 18 Feb 2010 12:40:45 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+Message-ID: <1266493070-sup-7733@midna.zekjur.net>
+
+Hi,
+
+as my previous patch was not merged, I have updated the patch to apply against
+the current code. Furthermore, it now correctly handles character sets for the
+GPG encrypted part.
+
+The patch has been tested by me and another user and seems to work fine.
+
+Please merge it for the next release.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-inline-GPG.patch
+Type: application/octet-stream
+Size: 7629 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100218/890032f9/attachment.obj>
+
+From wking at drexel.edu  Thu Feb 18 06:49:44 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Thu, 18 Feb 2010 06:49:44 -0500
+Subject: [sup-devel] email threading - tree vs. graph
+Message-ID: <20100218114943.GB911@mjolnir>
+
+Hey all,
+
+I thought I'd ask this on sup-devel, since you guys have been thinking
+about email organization and "a better mutt" sounds pretty awesome ;).
+Sorry if it's too far off topic.
+
+Since email can have multiple parents [1], why does everyone make
+threads trees rather than directed, acyclic graphs (DAGs)?  DAGs seem
+really common for version control systems, and completely missing for
+email clients, even though the inheritence structure is identical.
+For example, here's a slice from the recent be-devel list as a graph:
+  ...............
+  | *-|-\     | | Mon Jan 25  W. Trevor King  Re: Project releases
+  | * | |     | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+  | | | | t   | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+  | *-|-|-|-\ | | Fri Jan 22  Ben Finney  Re: Project releases
+  | | | * | | | | Fri Jan 22  W. Trevor King  Re: Project releases
+  | | | *-/ | | | Thu Jan 21  Ben Finney  Re: Project releases
+  | * | |   | | | Thu Jan 21  Gianluca Montecchi  Re: Project releases
+  *-|-|-/   | | | Thu Jan 21  W. Trevor King  Re: Project releases
+  ...............
+         ^--- inheritence graph.
+You can see that Ben's Fri message and my Mon message both have two
+parents.
+
+On a sup-specific level, problems with the graph (vs. tree) is that it
+may make threads too 'sticky'.  With your thread-centric approach,
+you'll want to break threads when the topic mutates too far from the
+original, and that could be difficult for meshy-graphs.  Perhaps you
+will want to leave the sup guts unchanged, tack on an optional graph
+view, and add an 'other-parents' option when browsing from messages
+with multiple parents.
+
+On an implementation level, I've got the above graph browser going
+in python/curses, so it should be easy to port to ruby/curses.
+
+Thoughs?
+
+Thanks,
+Trevor
+
+
+[1] RFC 2822, section 3.6.4, http://www.faqs.org/rfcs/rfc2822.html
+
+  The "In-Reply-To:" field will contain the contents of the
+  "Message-ID:" field of the message to which this one is a reply (the
+  "parent message").  If there is more than one parent message, then
+  the "In-Reply-To:" field will contain the contents of all of the
+  parents' "Message-ID:" fields.
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100218/563c8bf9/attachment-0001.bin>
+
+From michael+sup at stapelberg.de  Thu Feb 18 22:26:37 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 19 Feb 2010 04:26:37 +0100
+Subject: [sup-devel]
+	=?utf-8?q?[PATCH]_Bugfix:_Don=E2=80=99t_call_Ncurses.getch_when_in_shell=96out_mode?=
+Message-ID: <1266549876-sup-2041@midna.zekjur.net>
+
+Hi,
+
+(at least for me) the attached patch finally fixes the pinentry-ncurses
+problems we were still having (as soon as you press a key, the screen is
+garbage).
+
+To quote the commit message:
+
+  Previously, when using threads, Ncurses.getch was called while
+  the gpg pinentry was running (as an example of using the shell_out
+  method). Now, the Ncurses mutex will be used to wait until shell_out
+  mode is finished.
+
+Please have a look if this patch is working for you and merge it for the next
+release.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Don-t-call-Ncurses.getch-when-in-shell_out-mo.patch
+Type: application/octet-stream
+Size: 2207 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100219/038422fa/attachment.obj>
+
+From tero at tilus.net  Sun Feb 21 01:38:35 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 21 Feb 2010 08:38:35 +0200
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100218114943.GB911@mjolnir>
+References: <20100218114943.GB911@mjolnir>
+Message-ID: <1266730498-sup-78@tilus.net>
+
+W. Trevor King, 2010-02-18 13:49:
+> Since email can have multiple parents [1], why does everyone make
+> threads trees rather than directed, acyclic graphs (DAGs)?
+
+Trees are easier to render and multi-parent messages are a rare
+exception, not the rule.  Heck, many widely used mailclients are
+totally missing the option to reply to many messages at once.
+
+> DAGs seem really common for version control systems, and completely
+> missing for email clients, even though the inheritence structure is
+> identical.
+
+Failing to visually present merges would be far more fundamental
+failure than failing to present multi-parent mails.
+
+> For example, here's a slice from the recent be-devel list as a graph:
+>   ...............
+>   | *-|-\     | | Mon Jan 25  W. Trevor King  Re: Project releases
+>   | * | |     | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+>   | | | | t   | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+>   | *-|-|-|-\ | | Fri Jan 22  Ben Finney  Re: Project releases
+>   | | | * | | | | Fri Jan 22  W. Trevor King  Re: Project releases
+>   | | | *-/ | | | Thu Jan 21  Ben Finney  Re: Project releases
+>   | * | |   | | | Thu Jan 21  Gianluca Montecchi  Re: Project releases
+>   *-|-|-/   | | | Thu Jan 21  W. Trevor King  Re: Project releases
+>   ...............
+>          ^--- inheritence graph.
+> You can see that Ben's Fri message and my Mon message both have two
+> parents.
+
+Honestly.  That took fair bit of staring and prolly wouldn't have
+opened to me without your explanation.  :) But that might only be due
+to the external noise in the graph.  Without those extra through-lines
+it looks a bit more readable.
+
+ .........
+ | *-\     Mon Jan 25  W. Trevor King  Re: Project releases
+ | * |     Sat Jan 23  Gianluca Montecchi  Re: Project releases
+ | | | t   Sat Jan 23  Gianluca Montecchi  Re: Project releases
+ | *-|-|-\ Fri Jan 22  Ben Finney  Re: Project releases
+ | | * | | Fri Jan 22  W. Trevor King  Re: Project releases
+ | | *-/ | Thu Jan 21  Ben Finney  Re: Project releases
+ | * |   | Thu Jan 21  Gianluca Montecchi  Re: Project releases
+ *-|-/   | Thu Jan 21  W. Trevor King  Re: Project releases
+ .........
+
+> On a sup-specific level, problems with the graph (vs. tree) is that
+> it may make threads too 'sticky'.
+
+I can't really see how this would lump significantly more mail into
+one thread.  Do you have examples of otherwise disconnected trees
+connected only by multi-parent mail?
+
+> With your thread-centric approach, you'll want to break threads when
+> the topic mutates too far from the original, and that could be
+> difficult for meshy-graphs.
+
+Topic-mutation happens within a tree as well.  And pruning (boy I've
+wanted to do that quite a few times, I notice) afaik essentially
+requires scanning (and potentially modifying) all the messages in the
+thread.  Technically I don't see how this is very different.
+"Politically" it however could be.  If your mail graph is one big lump
+of spaghetti, it might be difficult to decide where to cut it off.  ;)
+
+> On an implementation level, I've got the above graph browser going
+> in python/curses, so it should be easy to port to ruby/curses.
+
+Have a pointer to code?
+
+I would love to see sup being able to do something usefull with
+multiple parent messages.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Sun Feb 21 04:09:39 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 21 Feb 2010 11:09:39 +0200
+Subject: [sup-devel] [PATCH] Make automatic jumping to first/next open
+	message configurable
+Message-ID: <1266742955-sup-7923@tilus.net>
+
+Automatic jumping to first/next open message when opening/collapsing
+messages on thread view more got annoying.  I made it configurable.
+Patch attached and feature branch also available on github.
+
+http://github.com/terotil/sup/tree/feature-configurable-auto-jump-to-msg
+
+I first had the configuration key other way round so missing it from
+conf file would not have changed sup behavior, but it looked pretty
+convoluted that way so I just dropped "backwards compatibility".
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Make-automatic-jumping-to-first-next-open-message-co.patch
+Type: application/octet-stream
+Size: 1931 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100221/2d6de072/attachment.obj>
+
+From wking at drexel.edu  Sun Feb 21 08:42:49 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Sun, 21 Feb 2010 08:42:49 -0500
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <1266730498-sup-78@tilus.net>
+References: <20100218114943.GB911@mjolnir>
+ <1266730498-sup-78@tilus.net>
+Message-ID: <20100221134249.GA11429@mjolnir>
+
+On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> > For example, here's a slice from the recent be-devel list as a graph:
+> >   ...............
+> >   | *-|-\     | | Mon Jan 25  W. Trevor King  Re: Project releases
+> >   | * | |     | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+> >   | | | | t   | | Sat Jan 23  Gianluca Montecchi  Re: Project releases
+> >   | *-|-|-|-\ | | Fri Jan 22  Ben Finney  Re: Project releases
+> >   | | | * | | | | Fri Jan 22  W. Trevor King  Re: Project releases
+> >   | | | *-/ | | | Thu Jan 21  Ben Finney  Re: Project releases
+> >   | * | |   | | | Thu Jan 21  Gianluca Montecchi  Re: Project releases
+> >   *-|-|-/   | | | Thu Jan 21  W. Trevor King  Re: Project releases
+> >   ...............
+> >          ^--- inheritence graph.
+> > You can see that Ben's Fri message and my Mon message both have two
+> > parents.
+> 
+> Honestly.  That took fair bit of staring and prolly wouldn't have
+> opened to me without your explanation.  :) But that might only be due
+> to the external noise in the graph.  Without those extra through-lines
+> it looks a bit more readable.
+
+It's a snip from the full list sorted by date, so there are a bunch of
+through-lines when threads went out of fasion for a while ;).
+If you sorted by oldest parent date first, you would probably have
+fewer.
+
+> I can't really see how this would lump significantly more mail into
+> one thread.  Do you have examples of otherwise disconnected trees
+> connected only by multi-parent mail?
+
+  *-\-\-\-\-\-\-\-\ Fri May 16  Chris Ball  how to use the git backend?
+  r | | | | | | | | Fri May 16  Christian Garbs  how to use the git backend?
+  r-/ | | | | | | | Wed May 14  Jelmer Vernooij  [MERGE] Two tiny fixes
+  r---/ | | | | | | Mon Apr 21  Ben Finney  [MERGE] Manual page for 'be' command.
+  *-----/ | | | | | Mon Apr 21  Ben Finney  [MERGE] Makefile: add skeleton 'build' ..
+  r       | | | | | Mon Apr 21  Ben Finney  [MERGE] Makefile: Add with 'clean' targ..
+  *-------/ | | | | Fri Apr 18  Ben Finney  [MERGE] Add bug 00f (now fixed)
+  r         | | | | Fri Apr 18  Ben Finney  [MERGE] Updated GPLv2 text and FSF addr..
+  r---------/ | | | Fri Apr 18  Ben Finney  [MERGE] Bugs-Everywhere-Web/libbe: Fix ..
+  *-----------/ | | Mon Apr 14  j at oil21.org  [PATCH] Bugs-Everywhere-Web identity
+  r             | | Mon Apr 14  j at oil21.org  [PATCH] Bugs-Everywhere-Web identity
+  r-------------/ | Mon Apr 14  j at oil21.org  [MERGE] update about
+  r---------------/ Mon Apr 14  j at oil21.org  [MERGE] Bugs-Everywhere-Web works with .
+
+Where Chris' mail was "...  I also merged patches from...".  Another
+case that comes up is that a user will post with a problem that's been
+discussed before, and we reply and link to the previous discussion.
+These are both software mailing list specific though.  I don't have
+examples from other settings.
+
+> > With your thread-centric approach, you'll want to break threads when
+> > the topic mutates too far from the original, and that could be
+> > difficult for meshy-graphs.
+> 
+> Topic-mutation happens within a tree as well.  And pruning (boy I've
+> wanted to do that quite a few times, I notice) afaik essentially
+> requires scanning (and potentially modifying) all the messages in the
+> thread.  Technically I don't see how this is very different.
+> "Politically" it however could be.  If your mail graph is one big lump
+> of spaghetti, it might be difficult to decide where to cut it off.  ;)
+
+My infant be.mailing-list branch (link below) is an attempt to address
+this by leaving the spaghetti alone, and attaching entry-point tags
+wherever you feel the subject makes a significant shift.  Really, you
+*want* the spaghetti, since its human-generated cross-linking that
+reduces duplication-of-search effort.  Assuming you trust the human in
+question ;).
+
+> > On an implementation level, I've got the above graph browser going
+> > in python/curses, so it should be easy to port to ruby/curses.
+> 
+> Have a pointer to code?
+
+My code is currently stuffed into an in-transition BE project, but it
+should be easy to separate.  Grab the whole repo with Bazaar:
+  bzr branch http://www.physics.drexel.edu/~wking/code/bzr/be.mailing-list
+Graphing module is libbe/util/graph.py.  My very minimal browser is
+misc/mailbox-tools/mailgraph.py.  Set up the BE version file with
+  cd be.mailing-list
+  make libbe/_version.py
+and run the browser with
+  misc/mailbox-tools/mailgraph.py *.mbox
+Press 'h' for help.
+
+The graph module is pretty clean, but the others are not ;).
+
+> I would love to see sup being able to do something usefull with
+> multiple parent messages.
+
+If you want to use this in the wild, you'll need to figure out how to
+integrate multiple-parent In-Reply-To\s with your current JWZ
+threading which only uses References.  From RFC 2822, section 3.6.4:
+
+   Note: Some implementations parse the "References:" field to display
+   the "thread of the discussion".  These implementations assume that
+   each new message is a reply to a single parent and hence that they
+   can walk backwards through the "References:" field to find the parent
+   of each message listed there.  Therefore, trying to form a
+   "References:" field for a reply that has multiple parents is
+   discouraged and how to do so is not defined in this document.
+
+On major benefit of JWZ-threading is that it's self-healing.  If some
+users don't thread their replies, you can thread them locally and
+reply, fixing the threading for others recieving your reply.  The
+In-Reply-To alternative is to reply to both the broken message and the
+original thread:
+  *-\ fixing response
+  | r broken message
+  * original thread
+which is needlessly uglier than
+  * fixing response
+  * broken message
+  * original thread
+if it is clear from the content of the broken message that it really
+was a reply.
+
+I think it would be best to leave view-graph and
+browse-to-other-parent as peripheral options, to be used on curated
+archives where you can trust In-Reply-To to be RFC 2822 compliant
+(e.g. the eventual be.mailing-list ;).
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100221/d202fb91/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Sun Feb 21 12:52:28 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Sun, 21 Feb 2010 09:52:28 -0800 (PST)
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100221134249.GA11429@mjolnir>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100221134249.GA11429@mjolnir>
+Message-ID: <4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+
+On Sun, 21 Feb 2010 08:42:49 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+[...]
+> > Have a pointer to code?
+> 
+> My code is currently stuffed into an in-transition BE project, but it
+> should be easy to separate.  Grab the whole repo with Bazaar:
+>   bzr branch http://www.physics.drexel.edu/~wking/code/bzr/be.mailing-list
+> Graphing module is libbe/util/graph.py.  My very minimal browser is
+> misc/mailbox-tools/mailgraph.py.  Set up the BE version file with
+>   cd be.mailing-list
+>   make libbe/_version.py
+> and run the browser with
+>   misc/mailbox-tools/mailgraph.py *.mbox
+> Press 'h' for help.
+
+I've tried your program on a 100 messages mbox and got this:
+
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+missing Message-ID: <HIDDEN>
+Traceback (most recent call last):
+  File "misc/mailbox-tools/mailgraph.py", line 194, in <module>
+    app.run()
+  File "/home/ertai/w/a/be.mailing-list/libbe/ui/util/curses_framework.py", line 487, in run
+    return curses.wrapper(self._run, list(keys))
+  File "/usr/lib/python2.6/curses/wrapper.py", line 44, in wrapper
+    return func(stdscr, *args, **kwds)
+  File "/home/ertai/w/a/be.mailing-list/libbe/ui/util/curses_framework.py", line 494, in _run
+    self._run_init(stdscr)
+  File "/home/ertai/w/a/be.mailing-list/libbe/ui/util/curses_framework.py", line 520, in _run_init
+    window.initialize()
+  File "/home/ertai/w/a/be.mailing-list/libbe/ui/util/curses_framework.py", line 172, in initialize
+    self._setup_buffer()
+  File "misc/mailbox-tools/mailgraph.py", line 51, in _setup_buffer
+    self._buffer = self._graph.ascii_graph().splitlines()
+  File "/home/ertai/w/a/be.mailing-list/libbe/util/graph.py", line 379, in ascii_graph
+    for row,node in self.graph_rows():
+  File "/home/ertai/w/a/be.mailing-list/libbe/util/graph.py", line 367, in graph_rows
+    self.topological_sort()
+  File "/home/ertai/w/a/be.mailing-list/libbe/util/graph.py", line 355, in topological_sort
+    % (orig_len - final_len, orig_len))
+libbe.util.graph.CyclicGraph: 3 of 100 elements not reachable from tips
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wking at drexel.edu  Sun Feb 21 14:29:47 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Sun, 21 Feb 2010 14:29:47 -0500
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100221134249.GA11429@mjolnir>
+	<4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+Message-ID: <20100221192947.GA16075@mjolnir>
+
+On Sun, Feb 21, 2010 at 09:52:28AM -0800, Nicolas Pouillard wrote:
+> On Sun, 21 Feb 2010 08:42:49 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> > On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> [...]
+> > > Have a pointer to code?
+> > 
+> > My code is currently stuffed into an in-transition BE project, but it
+> > should be easy to separate.  Grab the whole repo with Bazaar:
+> >   bzr branch http://www.physics.drexel.edu/~wking/code/bzr/be.mailing-list
+> > Graphing module is libbe/util/graph.py.  My very minimal browser is
+> > misc/mailbox-tools/mailgraph.py.  Set up the BE version file with
+> >   cd be.mailing-list
+> >   make libbe/_version.py
+> > and run the browser with
+> >   misc/mailbox-tools/mailgraph.py *.mbox
+> > Press 'h' for help.
+> 
+> I've tried your program on a 100 messages mbox and got this:
+> 
+> missing Message-ID: <HIDDEN>
+> ...
+
+You probably had a bunch of emails in you mbox with
+  In-Reply-To: <HIDDEN>
+But no message(s) with
+  Message-ID: <HIDDEN>
+
+If mailgraph.py can't find the parent message, it prints that warning
+and continues, so you can probably just ignore it.
+
+> Traceback (most recent call last):
+>   ...
+> libbe.util.graph.CyclicGraph: 3 of 100 elements not reachable from tips
+
+You have a cyclic reference in your mbox somewhere.  I've added some
+really inefficient code to actually *find* cycles (rather than just
+deducing their existence) and print useful error messages.  Pull my
+current repo and try:
+
+  $ misc/mailbox-tools/mailgraph.py --check-for-cycle *.mbox
+
+Then you'll have to go through the mbox (or a copy) by hand and break
+the cycle.  The check only finds one cycle at a time, so you may need
+to iterate...
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100221/edb4b8e2/attachment-0001.bin>
+
+From tero at tilus.net  Sun Feb 21 15:24:17 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 21 Feb 2010 22:24:17 +0200
+Subject: [sup-devel] [PATCH] Publish hook
+Message-ID: <1266783512-sup-8493@tilus.net>
+
+Quite a few times I've found myself wanting to send a mail text to
+etherpad/pastebin/etc or attachment doc to flicr/evernote/etc.  I went
+to drill an appropriately small hole to sup to enable just that.
+
+Patch attached and online
+http://github.com/terotil/sup/tree/feature-publish-attachment
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Publishing-hook.patch
+Type: application/octet-stream
+Size: 1782 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100221/134261d6/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Sun Feb 21 19:20:52 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 21 Feb 2010 19:20:52 -0500
+Subject: [sup-devel] updated edge branch
+Message-ID: <1266797479-sup-3532@zyrg.net>
+
+There are a bunch of patches that haven't been merged to mainline yet,
+so I merged them to my edge branch. I didn't look too hard at them so
+don't assume that this branch could be merged to mainline as-is.
+
+git://github.com/rlane/sup.git
+
+git log --no-merges --abbrev-commit --pretty=oneline mainline/next...edge
+e3821be... Added support for multiple sent sources.
+21070d5... index-mode-date-widget hook for rendering dates in thread index
+5f67e69... Implement inline GPG
+0d1fe80... Make automatic jumping to first/next open message configurable
+f6c0f29... Bugfix: Don<E2><80><99>t call Ncurses.getch when in shell_out mode
+c8f83d6... Add hook gpg-args to allow the user to add/remove flags
+3aabf1a... Added crypto-settings hook
+411b7ce... Publishing hook
+287c281... Use multiple body arrays when calling before-edit for each reply type
+3da9c18... Add config option to limit text wrapping width
+b942caf... prevent "year too big to marshal" crashes
+9819900... flush index on idle
+8246259... catch xapian query parser exceptions and display them to the user
+31141e2... fix missing parentheses warning
+923521d... fix participants queries
+c30d2fe... Conditionally define Fixnum#ord
+7f4830a... poll updates accumulate while idle
+9951acf... idle and unidle updates
+a76c577... fix textfield truncation
+979f64a... show (recipients) instead of lone "me"
+a074184... dont restrict colors to those in Colormap::DEFAULT_COLORS
+3a96053... configurable color highlights
+02b1926... dont check thread-index-mode dirtiness on every keypress
+afe8eb8... enable ruby-prof with SUP_PROFILE environment variable
+4af9a93... keybindings hook
+1fb13f5... add keymap rebinding support
+23e872a... make mode keymap easily accessible to hooks
+
+From tero at tilus.net  Mon Feb 22 00:48:30 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 22 Feb 2010 07:48:30 +0200
+Subject: [sup-devel] updated edge branch
+In-Reply-To: <1266797479-sup-3532@zyrg.net>
+References: <1266797479-sup-3532@zyrg.net>
+Message-ID: <1266817465-sup-993@tilus.net>
+
+Rich Lane, 2010-02-22 02:20:
+> There are a bunch of patches that haven't been merged to mainline
+> yet, so I merged them to my edge branch.
+
+Thanks.  Now I don't have to (re)integrate them to my daily sup all
+the time.
+
+> I didn't look too hard at them so don't assume that this branch
+> could be merged to mainline as-is.
+
+Was hookifying missing attachment detector intentionally left out?
+http://github.com/terotil/sup/commit/ae317d351b9b1e4210d472cfe43b8e60cd4257c4
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rlane at club.cc.cmu.edu  Mon Feb 22 02:22:25 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 22 Feb 2010 02:22:25 -0500
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1264123657-sup-4929@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net> <1264123657-sup-4929@tilus.net>
+Message-ID: <1266822897-sup-8818@zyrg.net>
+
+Excerpts from Tero Tilus's message of 2010-01-21 20:32:00 -0500:
+> William Morgan, 2009-12-21 15:38:
+> > Reformatted excerpts from Tero Tilus's message of 2009-12-19:
+> > > The detect-missing-attachment hook is pretty self evident but what you
+> > > had in mind for the dates?  Formatter for the thread-index-mode date
+> > > widget maybe?
+> > 
+> > Exactly. We already have index-mode-size-widget, so
+> > index-mode-date-widget would be analogous.
+> 
+> Here they are, finally...
+
+Wouldn't the detect-missing-attachment hook patch cause a regression for
+people who don't write their own hook?
+
+From tero at tilus.net  Mon Feb 22 03:07:34 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 22 Feb 2010 10:07:34 +0200
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1266822897-sup-8818@zyrg.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net>
+	<1264123657-sup-4929@tilus.net> <1266822897-sup-8818@zyrg.net>
+Message-ID: <1266825994-sup-5466@tilus.net>
+
+Rich Lane, 2010-02-22 09:22:
+> Wouldn't the detect-missing-attachment hook patch cause a regression
+> for people who don't write their own hook?
+
+Oops.  It definitely would.  Amended patch attached.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Mon Feb 22 03:09:24 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Mon, 22 Feb 2010 10:09:24 +0200
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1266825994-sup-5466@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net>
+	<1264123657-sup-4929@tilus.net> <1266822897-sup-8818@zyrg.net>
+	<1266825994-sup-5466@tilus.net>
+Message-ID: <1266826098-sup-4481@tilus.net>
+
+Tero Tilus, 2010-02-22 10:07:
+> Amended patch attached.
+
+Didn't pass my own test.  :D
+Better luck this time with the attachment.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-mentions-attachments-hook-to-detect-missing-attachme.patch
+Type: application/octet-stream
+Size: 1423 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100222/16eadfd4/attachment.obj>
+
+From nicolas.pouillard at gmail.com  Mon Feb 22 09:00:53 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 22 Feb 2010 06:00:53 -0800 (PST)
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100221192947.GA16075@mjolnir>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100221134249.GA11429@mjolnir>
+	<4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+	<20100221192947.GA16075@mjolnir>
+Message-ID: <4b828e15.0e67f10a.21cd.ffffc19d@mx.google.com>
+
+On Sun, 21 Feb 2010 14:29:47 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> On Sun, Feb 21, 2010 at 09:52:28AM -0800, Nicolas Pouillard wrote:
+> > On Sun, 21 Feb 2010 08:42:49 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> > > On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> > [...]
+> > > > Have a pointer to code?
+> > > 
+> > > My code is currently stuffed into an in-transition BE project, but it
+> > > should be easy to separate.  Grab the whole repo with Bazaar:
+> > >   bzr branch http://www.physics.drexel.edu/~wking/code/bzr/be.mailing-list
+> > > Graphing module is libbe/util/graph.py.  My very minimal browser is
+> > > misc/mailbox-tools/mailgraph.py.  Set up the BE version file with
+> > >   cd be.mailing-list
+> > >   make libbe/_version.py
+> > > and run the browser with
+> > >   misc/mailbox-tools/mailgraph.py *.mbox
+> > > Press 'h' for help.
+> > 
+> > I've tried your program on a 100 messages mbox and got this:
+> > 
+> > missing Message-ID: <HIDDEN>
+> > ...
+> 
+> You probably had a bunch of emails in you mbox with
+>   In-Reply-To: <HIDDEN>
+> But no message(s) with
+>   Message-ID: <HIDDEN>
+> 
+> If mailgraph.py can't find the parent message, it prints that warning
+> and continues, so you can probably just ignore it.
+> 
+> > Traceback (most recent call last):
+> >   ...
+> > libbe.util.graph.CyclicGraph: 3 of 100 elements not reachable from tips
+> 
+> You have a cyclic reference in your mbox somewhere.  I've added some
+> really inefficient code to actually *find* cycles (rather than just
+> deducing their existence) and print useful error messages.  Pull my
+> current repo and try:
+> 
+>   $ misc/mailbox-tools/mailgraph.py --check-for-cycle *.mbox
+> 
+> Then you'll have to go through the mbox (or a copy) by hand and break
+> the cycle.  The check only finds one cycle at a time, so you may need
+> to iterate...
+
+I get:
+
+...
+libbe.util.graph.CyclicGraphError: cycle detected:
+  Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+  Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+
+Actually the mentioned mail have Message-ID equals to In-Reply-To.
+
+While I'm reporting this issue and thus won't get any such messages, it would be
+"nice" to have a more robust behavior in case of cycles. In particular these
+auto-cycles can be just ignored.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wking at drexel.edu  Mon Feb 22 10:54:19 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Mon, 22 Feb 2010 10:54:19 -0500
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <4b828e15.0e67f10a.21cd.ffffc19d@mx.google.com>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100221134249.GA11429@mjolnir>
+	<4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+	<20100221192947.GA16075@mjolnir>
+	<4b828e15.0e67f10a.21cd.ffffc19d@mx.google.com>
+Message-ID: <20100222155419.GC26338@mjolnir>
+
+On Mon, Feb 22, 2010 at 06:00:53AM -0800, Nicolas Pouillard wrote:
+> ...
+> libbe.util.graph.CyclicGraphError: cycle detected:
+>   Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+>   Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+> 
+> Actually the mentioned mail have Message-ID equals to In-Reply-To.
+
+Hah.  That is great :p.
+
+> While I'm reporting this issue and thus won't get any such messages,
+> it would be "nice" to have a more robust behavior in case of
+> cycles. In particular these auto-cycles can be just ignored.
+
+Added a 'correct-mailbox.py' script that tries to handle all of these
+(and probably more in the future) issues in one shot.
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100222/842fc172/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Mon Feb 22 11:04:20 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 22 Feb 2010 08:04:20 -0800 (PST)
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100222155419.GC26338@mjolnir>
+References: <20100218114943.GB911@mjolnir> <1266730498-sup-78@tilus.net>
+	<20100221134249.GA11429@mjolnir>
+	<4b8172dc.0f67f10a.4111.7dce@mx.google.com>
+	<20100221192947.GA16075@mjolnir>
+	<4b828e15.0e67f10a.21cd.ffffc19d@mx.google.com>
+	<20100222155419.GC26338@mjolnir>
+Message-ID: <4b82ab04.1067f10a.2460.ffffc8a4@mx.google.com>
+
+On Mon, 22 Feb 2010 10:54:19 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> On Mon, Feb 22, 2010 at 06:00:53AM -0800, Nicolas Pouillard wrote:
+> > ...
+> > libbe.util.graph.CyclicGraphError: cycle detected:
+> >   Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+> >   Sun, 21 Fe  Reinier Lamers    [darcs-users] [patch167] Reintroduce UTF-8 tagging...
+> > 
+> > Actually the mentioned mail have Message-ID equals to In-Reply-To.
+> 
+> Hah.  That is great :p.
+> 
+> > While I'm reporting this issue and thus won't get any such messages,
+> > it would be "nice" to have a more robust behavior in case of
+> > cycles. In particular these auto-cycles can be just ignored.
+> 
+> Added a 'correct-mailbox.py' script that tries to handle all of these
+> (and probably more in the future) issues in one shot.
+
+Tried it (correct-mailbox.py) on a bigger part of my mail box and got:
+
+libbe.util.graph.CyclicGraphError: 17 of 1000 elements not reachable from tips
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wking at drexel.edu  Mon Feb 22 11:48:39 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Mon, 22 Feb 2010 11:48:39 -0500
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <4b82ab04.1067f10a.2460.ffffc8a4@mx.google.com>
+	<1266730498-sup-78@tilus.net>
+Message-ID: <20100222164836.GB27306@mjolnir>
+
+On Mon, Feb 22, 2010 at 08:04:20AM -0800, Nicolas Pouillard wrote:
+> ...
+> Tried it (correct-mailbox.py) on a bigger part of my mail box and got:
+> 
+> libbe.util.graph.CyclicGraphError: 17 of 1000 elements not reachable from tips
+
+I've moved the correct-mailbox.py/mailgraph.py bugs portion of this
+thread off-list, since they are not sup-related.  Feel free to send
+more bugs directly to me.
+
+On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> I would love to see sup being able to do something usefull with
+> multiple parent messages.
+
+Any more comments along this line? ;).  I don't know much ruby yet,
+but I can probably patch my graph code into sup if someone can tell me
+where it should go (sup/graph.rb and sup/modes/thread-index-mode.rb?).
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100222/63c8408f/attachment.bin>
+
+From nicolas.pouillard at gmail.com  Tue Feb 23 05:29:20 2010
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 23 Feb 2010 02:29:20 -0800 (PST)
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <20100222164836.GB27306@mjolnir>
+References: <20100222164836.GB27306@mjolnir>
+Message-ID: <4b83ae00.0637560a.7d67.ffffeca4@mx.google.com>
+
+On Mon, 22 Feb 2010 11:48:39 -0500, "W. Trevor King" <wking at drexel.edu> wrote:
+> On Mon, Feb 22, 2010 at 08:04:20AM -0800, Nicolas Pouillard wrote:
+> > ...
+> > Tried it (correct-mailbox.py) on a bigger part of my mail box and got:
+> > 
+> > libbe.util.graph.CyclicGraphError: 17 of 1000 elements not reachable from tips
+> 
+> I've moved the correct-mailbox.py/mailgraph.py bugs portion of this
+> thread off-list, since they are not sup-related.  Feel free to send
+> more bugs directly to me.
+> 
+> On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> > I would love to see sup being able to do something usefull with
+> > multiple parent messages.
+> 
+> Any more comments along this line? ;).  I don't know much ruby yet,
+> but I can probably patch my graph code into sup if someone can tell me
+> where it should go (sup/graph.rb and sup/modes/thread-index-mode.rb?).
+
+I find that this is a nice idea. If it can be done without changing
+to much of the current code of sup, and without performance loss for those
+who don't want to use it, I think it could be a nice addition.
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From sup-bugs at masanjin.net  Tue Feb 23 17:17:36 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 23 Feb 2010 22:17:36 +0000
+Subject: [sup-devel] [issue71] Move sources last update from
+	.sup/sources.yaml
+In-Reply-To: <1266963456.92.0.651747611938.issue71@masanjin.net>
+Message-ID: <1266963456.92.0.651747611938.issue71@masanjin.net>
+
+
+New submission from anonymous:
+
+I save sup configuration files on sources control so I can move freely between
+computers. .sup/sources.yaml is updated on every pull - makes it very annoying
+to commit all the time.
+
+Can you separate the "where" in sources from the "when"? This way I can track
+only the "where" file.
+
+Thanks,
+--
+Miki
+
+----------
+messages: 178
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.10.1
+title: Move sources last update from .sup/sources.yaml
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue71>
+_________________________________________
+
+From bwalton at artsci.utoronto.ca  Tue Feb 23 19:34:29 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 23 Feb 2010 19:34:29 -0500
+Subject: [sup-devel] [issue71] Move sources last update from
+	.sup/sources.yaml
+In-Reply-To: <1266963456.92.0.651747611938.issue71@masanjin.net>
+References: <1266963456.92.0.651747611938.issue71@masanjin.net>
+Message-ID: <1266971475-sup-5748@ntdws12.chass.utoronto.ca>
+
+Excerpts from anonymous's message of Tue Feb 23 17:17:36 -0500 2010:
+
+> Can you separate the "where" in sources from the "when"? This way I
+> can track only the "where" file.
+
+In general, I support this idea[1].  Storing state with configuration
+isn't ideal for many reasons.
+
+That being said, there is some tight coupling that would need some
+attention to overcome this.
+
+Just my $0.02 CDN.
+-Ben
+
+[1] See Sun's (Oracle's) NIH reimplementation of log rotation (logadm)
+    for one of my personal favourite Solaris gripes.
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100223/493c3240/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Thu Feb 25 09:51:55 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 25 Feb 2010 09:51:55 -0500
+Subject: [sup-devel] sup for sale
+Message-ID: <1267109223-sup-351@masanjin.net>
+
+Hi all,
+
+As has probably become painfully obvious to you all, my motivation for
+developing and maintaing Sup has been waning over the past year.
+
+I use Sup every day as my primary email client, so its bugs, problems
+and misfeatures irritate me every day.  This provides just enough
+motivation for the current glacial pace of maintainership, which I'm
+happy to continue doing. Sup will not die so long as I am around to use
+it.
+
+But if someone wants to take the ball and be an official maintainer, I
+will give you my blessing and the power to gem push new releases. You
+don't even have to maintain my current crazy branching scheme!
+
+Otherwise, things will continue as they do now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From stettberger at dokucode.de  Thu Feb 25 10:32:39 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Thu, 25 Feb 2010 16:32:39 +0100
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267109223-sup-351@masanjin.net>
+References: <1267109223-sup-351@masanjin.net>
+Message-ID: <1267111506-sup-1389@peer.zerties.org>
+
+Excerpts from William Morgan's message of Thu Feb 25 15:51:55 +0100 2010:
+> But if someone wants to take the ball and be an official maintainer, I
+> will give you my blessing and the power to gem push new releases. You
+> don't even have to maintain my current crazy branching scheme!
+
+Hi, 
+i haven't contributed much to sup yet (except one patch, that wasn't
+applied) but i thinks its a really great mailer, that is it worth to
+be activly continued. 
+
+In the last half year i made the experience that it is easier for
+the single programmer (pusher) if he isn't the only one who is
+allowed to push the upstream repository. Because there you have
+always the possibility to say: Hm, i don't have the time in the next
+3 weeks or so, but there is somebody else, who does merging/patching
+and bugfixing. Perhaps it isn't that bad to give push right to a
+group of people, who activly developed sup in the past.
+
+Just my 2 cents
+
+greetz didi
+
+> Otherwise, things will continue as they do now.
+
+I would really like to do more developing in sup, but without
+getting your patches applied its a little bit frustrating.
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100225/1d13e8c2/attachment.bin>
+
+From stettberger at dokucode.de  Thu Feb 25 11:52:57 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Thu, 25 Feb 2010 17:52:57 +0100
+Subject: [sup-devel] Adding a default_crypto option to autosign
+Message-ID: <1267116669-sup-19@peer.zerties.org>
+
+Hi,
+I added[1] a :default_crypt option to make it possible to say:
+"normally i want messages to be signed"
+
+greetz didi
+
+[1] http://github.com/stettberger/sup-mail/commit/8c6d66eaf0e681fe8b0936a72036c2fece65d69a
+
+
+
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100225/99db366f/attachment.bin>
+
+From stettberger at dokucode.de  Thu Feb 25 12:09:06 2010
+From: stettberger at dokucode.de (Christian Dietrich)
+Date: Thu, 25 Feb 2010 18:09:06 +0100
+Subject: [sup-devel] Searching unread messages in label-search-mode
+Message-ID: <1267117624-sup-7108@peer.zerties.org>
+
+Hi,
+i just added the keystroke 'U' to the label search mode, so you just
+jump into a search with "AND is:unread" directly from the
+label-search-mode
+
+greetz didi
+
+http://github.com/stettberger/sup-mail/commit/fbf0f92a6e65ea2e5c56565a92166af2b0c07446
+-- 
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100225/6bd75541/attachment.bin>
+
+From tero at tilus.net  Thu Feb 25 15:04:25 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 25 Feb 2010 22:04:25 +0200
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267109223-sup-351@masanjin.net>
+References: <1267109223-sup-351@masanjin.net>
+Message-ID: <1267126809-sup-9599@tilus.net>
+
+William Morgan, 2010-02-25 16:51:
+> But if someone wants to take the ball and be an official maintainer,
+> I will give you my blessing and the power to gem push new releases.
+
+One in particular comes into my mind.  Rich Lane has done an awesome
+job with sup and shown exceptional vision with his work on sup-server.
+IMHO, if Rich wants to catch the ball, he would make a great lead
+maintainer.
+
+> Otherwise, things will continue as they do now.
+
+Which, I have to say, is not really bad at all.  People develop,
+patches get merged and released.  Cycle could always be tighter, of
+course.  But sup is alive and strong.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rlane at club.cc.cmu.edu  Thu Feb 25 16:55:36 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 25 Feb 2010 16:55:36 -0500
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267109223-sup-351@masanjin.net>
+References: <1267109223-sup-351@masanjin.net>
+Message-ID: <1267132217-sup-2260@zyrg.net>
+
+I'm willing to do it. I've been working on other projects lately, but I
+can make time for Sup. I created accounts (rlane) at gitorious and
+rubyforge.
+
+From wmorgan-sup at masanjin.net  Thu Feb 25 18:26:54 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 25 Feb 2010 18:26:54 -0500
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267132217-sup-2260@zyrg.net>
+References: <1267109223-sup-351@masanjin.net> <1267132217-sup-2260@zyrg.net>
+Message-ID: <1267140372-sup-1058@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-02-25:
+> I'm willing to do it. I've been working on other projects lately, but
+> I can make time for Sup. I created accounts (rlane) at gitorious and
+> rubyforge.
+
+Awesome. I have added you to RubyForge and Gitorious. For Gemcutter, I
+think I will need the secret email address that you signed up with to
+add you as someone who can push new releases.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Feb 26 09:05:57 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 26 Feb 2010 09:05:57 -0500
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267140372-sup-1058@masanjin.net>
+References: <1267109223-sup-351@masanjin.net> <1267132217-sup-2260@zyrg.net>
+	<1267140372-sup-1058@masanjin.net>
+Message-ID: <1267193151-sup-3060@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2010-02-25:
+> For Gemcutter, I think I will need the secret email address that you
+> signed up with to add you as someone who can push new releases.
+
+Ok, you're able to push new gems as well. Please go crazy, and thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Fri Feb 26 11:07:40 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 26 Feb 2010 18:07:40 +0200
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1267132217-sup-2260@zyrg.net>
+References: <1267109223-sup-351@masanjin.net> <1267132217-sup-2260@zyrg.net>
+Message-ID: <1267200220-sup-4454@tilus.net>
+
+Rich Lane, 2010-02-25 23:55:
+> I'm willing to do it.
+
+Awesome!  We love you Rich!  ;)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From rlane at club.cc.cmu.edu  Fri Feb 26 16:24:08 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 26 Feb 2010 16:24:08 -0500
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1266493070-sup-7733@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+Message-ID: <1267219197-sup-2428@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-18 06:40:45 -0500:
+> Hi,
+> 
+> as my previous patch was not merged, I have updated the patch to apply against
+> the current code. Furthermore, it now correctly handles character sets for the
+> GPG encrypted part.
+> 
+> The patch has been tested by me and another user and seems to work fine.
+> 
+> Please merge it for the next release.
+> 
+> Best regards,
+> Michael
+
+Not a full review yet, just a bug that bit me:
+
+message.rb:531 assumes the text will be on its own line, while the
+regex on 530 does not. (check my edge branch for line numbers)
+
+From sup-bugs at masanjin.net  Fri Feb 26 18:05:00 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 26 Feb 2010 23:05:00 +0000
+Subject: [sup-devel] [issue72] xapian_index.rb: undefined method `[]' for
+	nil:NilClass
+In-Reply-To: <1267225500.12.0.0154738713854.issue72@masanjin.net>
+Message-ID: <1267225500.12.0.0154738713854.issue72@masanjin.net>
+
+
+New submission from anonymous:
+
+I think this was triggered by a "shift-p".  I'm at version 
+117b4f08efb948c8aabf432beb64c74ee18c3aeb in mainline/next.
+
+[Fri Feb 26 15:01:53 -0800 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/emarinelli/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+k--- NoMethodError from thread: user-invoked poll
+undefined method `[]' for nil:NilClass
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:580:in `mkterm'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:358:in 
+`find_docid'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:364:in `find_doc'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:374:in `get_entry'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:80:in 
+`build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:383:in 
+`synchronize'
+/home/emarinelli/sup_experimental/sup/lib/sup/xapian_index.rb:80:in 
+`build_message'
+/home/emarinelli/sup_experimental/sup/lib/sup/index.rb:236:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/index.rb:236:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:110:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:169:in `each_message_from'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:160:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:157:in `upto'
+/home/emarinelli/sup_experimental/sup/lib/sup/maildir.rb:157:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:599:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:599:in `__pass'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:586:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:157:in `each_message_from'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:109:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:97:in `each'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:97:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:96:in `synchronize'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:96:in `do_poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:559:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:559:in `method_missing'
+/home/emarinelli/sup_experimental/sup/lib/sup/modes/poll-mode.rb:15:in `poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:47:in `poll_with_sources'
+/home/emarinelli/sup_experimental/sup/lib/sup/poll.rb:62:in `poll'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:559:in `send'
+/home/emarinelli/sup_experimental/sup/lib/sup/util.rb:559:in `method_missing'
+/home/emarinelli/sup_experimental/sup/bin/sup:329
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:78:in `reporting_thread'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:76:in `initialize'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:76:in `new'
+/home/emarinelli/sup_experimental/sup/lib/sup.rb:76:in `reporting_thread'
+/home/emarinelli/sup_experimental/sup/bin/sup:329
+
+----------
+messages: 179
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+status: unread
+sup_version: 117b4f08efb948c8aabf432beb64c74ee18c3aeb
+title: xapian_index.rb: undefined method `[]' for nil:NilClass
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue72>
+_________________________________________
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:28:01 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:28:01 -0500
+Subject: [sup-devel] merged into master: colors, xapian-updates, saved-search
+Message-ID: <1267254620-sup-3470@zyrg.net>
+
+Also some random stray diffs that had accumulated in next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:34:17 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:34:17 -0500
+Subject: [sup-devel] [PATCH 3/3] keybindings hook
+In-Reply-To: <1264388973-5804-3-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264388973-5804-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1264388973-5804-2-git-send-email-rlane@club.cc.cmu.edu>
+	<1264388973-5804-3-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267256024-sup-9116@zyrg.net>
+
+Branch keybindings, merged into next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:44:36 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:44:36 -0500
+Subject: [sup-devel] [PATCH] fix textfield truncation
+In-Reply-To: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264146400-2101-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267256338-sup-2977@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:45:04 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:45:04 -0500
+Subject: [sup-devel] [PATCH] enable ruby-prof with SUP_PROFILE
+	environment variable
+In-Reply-To: <1264302960-17337-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264302960-17337-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267256689-sup-2967@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:46:40 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:46:40 -0500
+Subject: [sup-devel] [PATCH] catch xapian query parser exceptions and
+	display them to the user
+In-Reply-To: <1266258536-sup-3345@midna.zekjur.net>
+References: <1266258536-sup-3345@midna.zekjur.net>
+Message-ID: <1267256753-sup-57@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:48:00 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:48:00 -0500
+Subject: [sup-devel] [PATCH] dont check thread-index-mode dirtiness on
+	every keypress
+In-Reply-To: <1264303037-17440-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264303037-17440-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267256852-sup-4469@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:48:52 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:48:52 -0500
+Subject: [sup-devel] [PATCH] prevent "year too big to marshal" crashes
+In-Reply-To: <1265386698-sup-8060@changeling.local>
+References: <1265386698-sup-8060@changeling.local>
+Message-ID: <1267256913-sup-1020@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:54:01 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:54:01 -0500
+Subject: [sup-devel] [PATCH] show (recipients) instead of lone "me"
+In-Reply-To: <1264087996-sup-5125@changeling.local>
+References: <1264087996-sup-5125@changeling.local>
+Message-ID: <1267257207-sup-6406@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 02:56:31 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 02:56:31 -0500
+Subject: [sup-devel] [PATCH] dont restrict colors to those in
+	Colormap::DEFAULT_COLORS
+In-Reply-To: <1264361820-4176-1-git-send-email-rlane@club.cc.cmu.edu>
+References: <1264204034-7088-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1264361820-4176-1-git-send-email-rlane@club.cc.cmu.edu>
+Message-ID: <1267257337-sup-6666@zyrg.net>
+
+Branch highlights, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:06:50 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:06:50 -0500
+Subject: [sup-devel] [PATCHv3] idle and unidle updates
+In-Reply-To: <1264225074-sup-7366@changeling.local>
+References: <1264225074-sup-7366@changeling.local>
+Message-ID: <1267257972-sup-6980@zyrg.net>
+
+Branch idle, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:07:13 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:07:13 -0500
+Subject: [sup-devel] [PATCHv5] [issue14] poll updates accumulate while
+	idle
+In-Reply-To: <1263560293-sup-9529@changeling.local>
+References: <1263560293-sup-9529@changeling.local>
+Message-ID: <1267258020-sup-7311@zyrg.net>
+
+Branch idle, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:07:37 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:07:37 -0500
+Subject: [sup-devel] [PATCH] flush index on idle
+In-Reply-To: <1264047274-sup-6830@changeling.local>
+References: <1264047274-sup-6830@changeling.local>
+Message-ID: <1267258040-sup-5629@zyrg.net>
+
+Branch idle, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:11:54 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:11:54 -0500
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1266826098-sup-4481@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net>
+	<1264123657-sup-4929@tilus.net> <1266822897-sup-8818@zyrg.net>
+	<1266825994-sup-5466@tilus.net> <1266826098-sup-4481@tilus.net>
+Message-ID: <1267258283-sup-6324@zyrg.net>
+
+Branch mentions-attachments-hook, merged into next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:16:48 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:16:48 -0500
+Subject: [sup-devel] [PATCH] I can haz moar hooks: attachment-mentioned,
+	index-mode-date-widget
+In-Reply-To: <1264123657-sup-4929@tilus.net>
+References: <1261167840-sup-592@orion> <1261179239-sup-9258@tilus.net>
+	<1261246334-sup-1438@masanjin.net> <1261276156-sup-5510@tilus.net>
+	<1261402666-sup-8068@masanjin.net> <1264123657-sup-4929@tilus.net>
+Message-ID: <1267258458-sup-1517@zyrg.net>
+
+Branch date-widget-hook, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:18:17 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:18:17 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Create dynamically growing fields
+	(long filenames are now supported)
+In-Reply-To: <1266271874-sup-6404@midna.zekjur.net>
+References: <1266271874-sup-6404@midna.zekjur.net>
+Message-ID: <1267258647-sup-2076@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-15 17:13:00 -0500:
+> Hi,
+> 
+> the attached patch modifies textfield.rb to create a dynamically growable field
+> instead of one with a fixed size. The text field can now hold a dynamic amount
+> of characters which is often necessary if you have long file names.
+> 
+> How to reproduce the bug:
+> 1) mkdir -p /tmp/very/long-folder-name-foo-bar-baz/longer-than-one-line-foo-bar-bleh-bleh/maw-maw-maw-maw-maw-maw-maw-maw-maw-maw-maw
+> 2) echo foo > /tmp/very/long-folder-name-foo-bar-baz/longer-than-one-line-foo-bar-bleh-bleh/maw-maw-maw-maw-maw-maw-maw-maw-maw-maw-maw/foo.txt
+> 3) create a new message in sup and try to add the new file as an attachment
+> 
+> Please merge this one for the next release.
+> 
+> Best regards,
+> Michael
+
+Is this still necessary on latest master?
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:23:39 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:23:39 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call Ncurses.getch
+	when in shell\x96out mode
+In-Reply-To: <1266549876-sup-2041@midna.zekjur.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+Message-ID: <1267258772-sup-9178@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-18 22:26:37 -0500:
+> Hi,
+> 
+> (at least for me) the attached patch finally fixes the pinentry-ncurses
+> problems we were still having (as soon as you press a key, the screen is
+> garbage).
+> 
+> To quote the commit message:
+> 
+>   Previously, when using threads, Ncurses.getch was called while
+>   the gpg pinentry was running (as an example of using the shell_out
+>   method). Now, the Ncurses mutex will be used to wait until shell_out
+>   mode is finished.
+> 
+> Please have a look if this patch is working for you and merge it for the next
+> release.
+> 
+> Best regards,
+> Michael
+
+What's the reason for passing the BufferManager singleton as an
+argument?
+
+What does "drop the input" mean?
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:26:27 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:26:27 -0500
+Subject: [sup-devel] [PATCH] Publish hook
+In-Reply-To: <1266783512-sup-8493@tilus.net>
+References: <1266783512-sup-8493@tilus.net>
+Message-ID: <1267259141-sup-1539@zyrg.net>
+
+Branch publish-hook, merged to next.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:29:29 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:29:29 -0500
+Subject: [sup-devel] [PATCH] Make automatic jumping to first/next open
+	message configurable
+In-Reply-To: <1266742955-sup-7923@tilus.net>
+References: <1266742955-sup-7923@tilus.net>
+Message-ID: <1267259356-sup-2283@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:32:44 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:32:44 -0500
+Subject: [sup-devel] [PATCH] Add config option to limit text wrapping
+	width
+In-Reply-To: <1265228195-4063-1-git-send-email-daniel.schoepe@googlemail.com>
+References: <1265228195-4063-1-git-send-email-daniel.schoepe@googlemail.com>
+Message-ID: <1267259545-sup-2593@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:34:24 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:34:24 -0500
+Subject: [sup-devel] [PATCH] in thread-view-mode,
+	doubling up on the multi-keys now DTRT
+In-Reply-To: <1265052650-6641-1-git-send-email-pi+sup@pihost.us>
+References: <1265052650-6641-1-git-send-email-pi+sup@pihost.us>
+Message-ID: <1267259649-sup-120@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 03:37:56 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 03:37:56 -0500
+Subject: [sup-devel] [PATCH] Add hook gpg-args to allow the user to
+	add/remove flags
+In-Reply-To: <1266445763-sup-8545@midna.zekjur.net>
+References: <1266445763-sup-8545@midna.zekjur.net>
+Message-ID: <1267259783-sup-4169@zyrg.net>
+
+Applied to master.
+
+From michael+sup at stapelberg.de  Sat Feb 27 07:45:17 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 27 Feb 2010 13:45:17 +0100
+Subject: [sup-devel] [PATCH] Bugfix: Create dynamically growing fields
+	(long filenames are now supported)
+In-Reply-To: <1267258647-sup-2076@zyrg.net>
+References: <1266271874-sup-6404@midna.zekjur.net>
+	<1267258647-sup-2076@zyrg.net>
+Message-ID: <1267274681-sup-9531@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Sa Feb 27 09:18:17 +0100 2010:
+> Is this still necessary on latest master?
+I just saw that you already posted and merged a patch which does the same,
+so it should not be necessary.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Sat Feb 27 07:48:39 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 27 Feb 2010 13:48:39 +0100
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call Ncurses.getch
+	when in shell\x96out mode
+In-Reply-To: <1267258772-sup-9178@zyrg.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+Message-ID: <1267274808-sup-1569@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Sa Feb 27 09:23:39 +0100 2010:
+> What's the reason for passing the BufferManager singleton as an
+> argument?
+I am passing the BufferManager because I could not figure out how to access
+it from inside the Ncurses module. Maybe there is a better way, if so, please
+tell me :-).
+
+> What does "drop the input" mean?
+It means returning nil instead of Ncurses.getch, so maybe a better way of
+saying it is "We do not check for input because it would restart Ncurses
+while in shell-out mode".
+
+Best regards,
+Michael
+
+From sup-bugs at masanjin.net  Sat Feb 27 08:05:58 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Sat, 27 Feb 2010 13:05:58 +0000
+Subject: [sup-devel] [issue73] Missing dependency "sup/idle"
+In-Reply-To: <1267275958.68.0.129062700378.issue73@masanjin.net>
+Message-ID: <1267275958.68.0.129062700378.issue73@masanjin.net>
+
+
+New submission from anonymous:
+
+I'm tracking  mainline/next branch and since yesterday,
+more exactly since:
+
+commit 4c49c32ead797518bd96d24ef88391b2b555aecc
+Merge: 0acbe14 807fd49
+Author: Rich Lane <rlane at club.cc.cmu.edu>
+Date:   Sat Feb 27 00:05:17 2010 -0800
+
+    Merge branch 'idle' into next
+
+i am seeing this, when trying to start sup:
+
+$ start-sup
+/opt/ruby1.8/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`gem_original_require': no such file to load -- sup/idle (LoadError)
+        from 
+/opt/ruby1.8/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+        from ./lib/sup.rb:352
+        from 
+/opt/ruby1.8/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`gem_original_require'
+        from 
+/opt/ruby1.8/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+        from bin/sup:15
+
+I searched around the history and found this commit to introduce the dependency:
+
+commit 920f40d6c5ba04af2e79cf8c5350bb91e00d712f
+Author: Eric Sherman <hyperbolist at gmail.com>
+Date:   Sat Jan 23 00:42:56 2010 -0500
+
+    idle and unidle updates
+    
+    Now handled outside of the main thread to accommodate shelling out to
+    the editor.
+    
+    [PATCH] flush index on idle
+    and 
+    [PATCHv5] [issue14] poll updates accumulate while idle
+    will still work with this patch.
+
+I tried the idle branch, but there was no lib/sup/idle.rb either.
+
+Now, I don't know my way around ruby and i am no git guru, so maybe
+this is my fault, but my guess is the file has been forgotten to be
+added?
+
+Ciao,
+ Sven
+
+----------
+messages: 180
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.7 (2010-01-10 patchlevel 249) [x86_64-linux]
+status: unread
+sup_version: 4c49c32ead797518bd96d24ef88391b2b555aecc
+title: Missing dependency "sup/idle"
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue73>
+_________________________________________
+
+From michael+sup at stapelberg.de  Sat Feb 27 08:11:28 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 27 Feb 2010 14:11:28 +0100
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267219197-sup-2428@zyrg.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+Message-ID: <1267276103-sup-6406@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Fr Feb 26 22:24:08 +0100 2010:
+> message.rb:531 assumes the text will be on its own line, while the
+> regex on 530 does not. (check my edge branch for line numbers)
+Right. RFC 2440 is not really clear about that. In 6.2 it only says:
+
+"An Armor Header Line consists of the appropriate header line text
+ surrounded by five (5) dashes ('-', 0x2D) on either side of the
+ header line text."
+
+But I guess that no client would put any data before/after these lines,
+so adding ^ and $ to the regex in 530 seems right.
+
+Let me know if you need any help validating this patch.
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:00:55 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:00:55 -0500
+Subject: [sup-devel] [issue73] Missing dependency "sup/idle"
+In-Reply-To: <1267275958.68.0.129062700378.issue73@masanjin.net>
+References: <1267275958.68.0.129062700378.issue73@masanjin.net>
+Message-ID: <1267293504-sup-3668@zyrg.net>
+
+Excerpts from anonymous's message of 2010-02-27 08:05:58 -0500:
+> Now, I don't know my way around ruby and i am no git guru, so maybe
+> this is my fault, but my guess is the file has been forgotten to be
+> added?
+
+Yep, I forgot to add the file. Sorry about that. Should be fixed now.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:05:58 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:05:58 -0500
+Subject: [sup-devel] [PATCH] Implement inline GPG
+In-Reply-To: <1267276103-sup-6406@midna.zekjur.net>
+References: <1266493070-sup-7733@midna.zekjur.net>
+	<1267219197-sup-2428@zyrg.net>
+	<1267276103-sup-6406@midna.zekjur.net>
+Message-ID: <1267293663-sup-2241@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-27 08:11:28 -0500:
+> But I guess that no client would put any data before/after these lines,
+> so adding ^ and $ to the regex in 530 seems right.
+
+The problem is sign_start will be nil if the text isn't on a line by
+itself, causing a crash a few lines later. This happened to me when I
+was running with this patch on my edge branch. I'd remove the
+duplication by making the condition of the if the sign_start assignment.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:12:19 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:12:19 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call Ncurses.getch
+	when in shell\x96out mode
+In-Reply-To: <1267274808-sup-1569@midna.zekjur.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+Message-ID: <1267293975-sup-6753@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-27 07:48:39 -0500:
+> Hi Rich,
+> 
+> Excerpts from Rich Lane's message of Sa Feb 27 09:23:39 +0100 2010:
+> > What's the reason for passing the BufferManager singleton as an
+> > argument?
+> I am passing the BufferManager because I could not figure out how to access
+> it from inside the Ncurses module. Maybe there is a better way, if so, please
+> tell me :-).
+
+The reason we use these ugly singleton *Manager objects is to avoid
+exactly this kind of plumbing. Since Ncurses is outside the Redwood
+namespace you'll need to refer to it as Redwood::BufferManager.
+
+> > What does "drop the input" mean?
+> It means returning nil instead of Ncurses.getch, so maybe a better way of
+> saying it is "We do not check for input because it would restart Ncurses
+> while in shell-out mode".
+
+Ok, that's how I read the code. When I saw "drop" in the comment I
+thought it was going to read input and throw it away.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:29:27 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:29:27 -0500
+Subject: [sup-devel] [PATCH] Use multiple body arrays when calling
+	before-edit for each reply type
+In-Reply-To: <1264026370-sup-8092@midna.zekjur.net>
+References: <1264026370-sup-8092@midna.zekjur.net>
+Message-ID: <1267295207-sup-7090@zyrg.net>
+
+What happens when you edit the message and then select another reply type?
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 13:46:11 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 13:46:11 -0500
+Subject: [sup-devel] [PATCH] Added support for multiple sent sources.
+In-Reply-To: <1265877393-sup-3156@leandros>
+References: <1265877393-sup-3156@leandros>
+Message-ID: <1267295844-sup-2000@zyrg.net>
+
+I don't see any backwards compatibility code for people who previously
+used a different sent source.
+
+I'm not sure there's much of a reason to have a number of SentManager
+objects lightly wrapping a source. I'd just store the source directly.
+I'd like to keep a tiny SentManager singleton around for its
+default_source method.
+
+From wmorgan-sup at masanjin.net  Sat Feb 27 13:58:13 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 27 Feb 2010 13:58:13 -0500
+Subject: [sup-devel] it's like christmas!
+Message-ID: <1267297079-sup-5671@masanjin.net>
+
+Thanks, Rich. Should've done this long ago.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Feb 27 14:00:30 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 27 Feb 2010 14:00:30 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don't call Ncurses.getch when in
+	shell-out mode
+In-Reply-To: <1267293975-sup-6753@zyrg.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+	<1267293975-sup-6753@zyrg.net>
+Message-ID: <1267297110-sup-6991@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-02-27:
+> The reason we use these ugly singleton *Manager objects is to avoid
+> exactly this kind of plumbing. Since Ncurses is outside the Redwood
+> namespace you'll need to refer to it as Redwood::BufferManager.
+
+I know it's fashionable to call singletons ugly nowadays, but I've never
+quite bought into it. Classes are singletons too, and no one calls them
+ugly...
+
+(Well, I do, but for different reasons.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 14:03:31 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 14:03:31 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don't call Ncurses.getch when in
+	shell-out mode
+In-Reply-To: <1267297110-sup-6991@masanjin.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+	<1267293975-sup-6753@zyrg.net> <1267297110-sup-6991@masanjin.net>
+Message-ID: <1267297285-sup-3569@zyrg.net>
+
+Excerpts from William Morgan's message of 2010-02-27 14:00:30 -0500:
+> Reformatted excerpts from Rich Lane's message of 2010-02-27:
+> > The reason we use these ugly singleton *Manager objects is to avoid
+> > exactly this kind of plumbing. Since Ncurses is outside the Redwood
+> > namespace you'll need to refer to it as Redwood::BufferManager.
+> 
+> I know it's fashionable to call singletons ugly nowadays, but I've never
+> quite bought into it. Classes are singletons too, and no one calls them
+> ugly...
+> 
+> (Well, I do, but for different reasons.)
+
+You've never tried to write an Index testsuite :).
+
+From wmorgan-sup at masanjin.net  Sat Feb 27 14:29:48 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 27 Feb 2010 14:29:48 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don't call Ncurses.getch when in
+	shell-out mode
+In-Reply-To: <1267297285-sup-3569@zyrg.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+	<1267293975-sup-6753@zyrg.net> <1267297110-sup-6991@masanjin.net>
+	<1267297285-sup-3569@zyrg.net>
+Message-ID: <1267297753-sup-2038@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2010-02-27:
+> You've never tried to write an Index testsuite :).
+
+What is complicated about it?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael at stapelberg.de  Sat Feb 27 14:27:45 2010
+From: michael at stapelberg.de (Michael Stapelberg)
+Date: Sat, 27 Feb 2010 20:27:45 +0100
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call Ncurses.getch
+	when in shell\x96out mode
+In-Reply-To: <1267293975-sup-6753@zyrg.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+	<1267293975-sup-6753@zyrg.net>
+Message-ID: <1267298816-sup-2432@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of Sa Feb 27 19:12:19 +0100 2010:
+> The reason we use these ugly singleton *Manager objects is to avoid
+> exactly this kind of plumbing. Since Ncurses is outside the Redwood
+> namespace you'll need to refer to it as Redwood::BufferManager.
+Alright. Should I change the patch and re-send it or can you change
+these little details?
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 15:14:27 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 15:14:27 -0500
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call Ncurses.getch
+	when in shell\x96out mode
+In-Reply-To: <1267298816-sup-2432@midna.zekjur.net>
+References: <1266549876-sup-2041@midna.zekjur.net>
+	<1267258772-sup-9178@zyrg.net>
+	<1267274808-sup-1569@midna.zekjur.net>
+	<1267293975-sup-6753@zyrg.net>
+	<1267298816-sup-2432@midna.zekjur.net>
+Message-ID: <1267301596-sup-8948@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-02-27 14:27:45 -0500:
+> Excerpts from Rich Lane's message of Sa Feb 27 19:12:19 +0100 2010:
+> > The reason we use these ugly singleton *Manager objects is to avoid
+> > exactly this kind of plumbing. Since Ncurses is outside the Redwood
+> > namespace you'll need to refer to it as Redwood::BufferManager.
+> Alright. Should I change the patch and re-send it or can you change
+> these little details?
+
+I'll handle it. Applied to master.
+
+From rlane at club.cc.cmu.edu  Sat Feb 27 15:29:35 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 27 Feb 2010 15:29:35 -0500
+Subject: [sup-devel] patch backlog cleared / plans
+Message-ID: <1267296421-sup-7450@zyrg.net>
+
+AFAIK I've applied or replied to all the patches floating on the list.
+If I've ignored one please reply to it to let me know.
+
+My current plan is to nuke ferret, make a few utf8 fixes, and then
+release 0.11 in about a week with what's currently on master (big
+features: saved searches and 256 color support). I'll also add a
+deprecation warning to IMAP/mbox+ssh so that I can kill them on master
+immediately after the release (giving me freedom to refactor the source
+interface).
+
+Once that's done, I'm going to gradually start integrating sup-server
+features. First up is sup-cmd, which is basically an (incompatible)
+notmuch CLI. This could be useful by itself (it outputs YAML, so it's
+surprisingly human readable). Next is a sup-server executable that
+sup-cmd connects to. Then comes an intermediate stage where a sup-server
+can run inside the Ncurses UI, so that sup-cmd and the UI can be used
+simultaneously. Finally, the difficult work of converting the UI to use
+sup-server instead of accessing the index directly.
+
+A major benefit of having a sup-server even if the UI can't use it is to
+get some test coverage on Index internals.
+
+I'll want to have a discussion about how best to change the UI to use
+sup-server closer to that time. sup-server uses Actors and in the long
+run I'd like to move the UI to that if only to kill our locking bugs. It
+probably isn't necessary to actorify the UI to get it to use sup-server.
+
+The release schedule for 0.12 will mostly depend on incoming patches. I
+want to include sup-cmd at least so that people can figure out cool
+things to do with it (more UIs).
+
+I also hope to see maildir sync-back support in 0.12. Many people I've
+tried to convert use mobile clients and tell me this is a dealbreaker,
+so I think this is a very important feature. Is anyone currently working
+on it?
+
+From rlane at club.cc.cmu.edu  Sun Feb 28 16:20:00 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Feb 2010 16:20:00 -0500
+Subject: [sup-devel] now in next: fix-utf8, ferret-removal,
+	and remote-source-deprecation
+Message-ID: <1267389645-sup-7736@zyrg.net>
+
+I fixed a couple of bugs related to sending utf8 mail. If you've been
+having problems with that please try latest next.
+
+Ferret is gone. If you've ignored the deprecation warning until now
+you'll need to run sup-convert-ferret-index before upgrading Sup.
+
+I've removed the code in sup-config and sup-add for adding imap and
+mbox+ssh sources. I also added a deprecation warning on sup startup.
+These sources will be removed from master immediately following the
+release of 0.11, so please switch to rsync/offlineimap/fetchmail/etc
+before then.
+
+If no one reports problems with these branches I'll merge them to master
+before releasing 0.11.
+
+From michael at content-space.de  Sun Feb 28 16:58:25 2010
+From: michael at content-space.de (Michael Hamann)
+Date: Sun, 28 Feb 2010 22:58:25 +0100
+Subject: [sup-devel] now in next: fix-utf8, ferret-removal,
+	and remote-source-deprecation
+In-Reply-To: <1267389645-sup-7736@zyrg.net>
+References: <1267389645-sup-7736@zyrg.net>
+Message-ID: <1267393803-sup-784@mithink>
+
+Hi,
+
+thanks for your work, it seems I am able to send messages with UTF-8 subjects,
+recipients, ...  again, but after pulling from next I first had to do the
+following fixes in order to get sup working again (I don't know if there are
+more, these are just the two ones that made sup unusable):
+
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 548daf0..79bd1af 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -216,10 +216,10 @@ EOS
+ 
+   ## Given an array of email addresses, return an array of Person objects that
+   ## have sent mail to or received mail from any of the given addresses.
+-  def load_contacts email_addresses, h={}
++  def load_contacts email_addresses, opts={}
+     contacts = Set.new
+     num = opts[:num] || 20
+-    each_id_by_date :participants => emails do |id,b|
++    each_id_by_date :participants => email_addresses do |id,b|
+       break if contacts.size >= num
+       m = b.call
+       ([m.from]+m.to+m.cc+m.bcc).compact.each { |p| contacts << [p.name, p.email] }
+@@ -739,14 +739,14 @@ class Xapian::Document
+ 
+   def index_text text, prefix, weight=1
+     term_generator = Xapian::TermGenerator.new
+-    term_generator.stemmer = Xapian::Stem.new(Redwood::XapianIndex::STEM_LANGUAGE)
++    term_generator.stemmer = Xapian::Stem.new(Redwood::Index::STEM_LANGUAGE)
+     term_generator.document = self
+     term_generator.index_text text, weight, prefix
+   end
+ 
+   alias old_add_term add_term
+   def add_term term
+-    if term.length <= Redwood::XapianIndex::MAX_TERM_LENGTH
++    if term.length <= Redwood::Index::MAX_TERM_LENGTH
+       old_add_term term, 0
+     else
+       warn "dropping excessively long term #{term}"
+
+Greetings
+Michael
+
+From rlane at club.cc.cmu.edu  Sun Feb 28 18:36:26 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 28 Feb 2010 18:36:26 -0500
+Subject: [sup-devel] now in next: fix-utf8, ferret-removal,
+	and remote-source-deprecation
+In-Reply-To: <1267393803-sup-784@mithink>
+References: <1267389645-sup-7736@zyrg.net> <1267393803-sup-784@mithink>
+Message-ID: <1267400161-sup-4307@zyrg.net>
+
+Thanks, applied to ferret-removal and merged to next.
+

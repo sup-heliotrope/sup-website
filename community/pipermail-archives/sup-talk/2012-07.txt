@@ -1,0 +1,29 @@
+From sup at zevv.nl  Thu Jul  5 19:19:50 2012
+From: sup at zevv.nl (Ico)
+Date: Thu, 05 Jul 2012 21:19:50 +0200
+Subject: [sup-talk] Sup crash
+Message-ID: <1341515924-sup-8847@pruts.nl>
+
+Hi,
+
+Sup crashes on me when returning from the editor during a reply. Running the
+latest version from git:
+
+----------------------------------------------------------------
+--- TypeError from thread: main
+no implicit conversion from nil to integer
+./lib/sup/horizontal-selector.rb:18:in `[]'
+./lib/sup/horizontal-selector.rb:18:in `val'
+./lib/sup/modes/edit-message-mode.rb:351:in `update'
+./lib/sup/modes/reply-mode.rb:203:in `handle_new_text'
+./lib/sup/modes/edit-message-mode.rb:213:in `edit_message'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:278:in `handle_input'
+bin/sup:271
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+

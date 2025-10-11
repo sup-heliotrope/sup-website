@@ -1,0 +1,1678 @@
+From wmorgan-sup at masanjin.net  Wed Aug  4 14:20:40 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 04 Aug 2010 14:20:40 -0400
+Subject: [sup-talk] new mail library
+In-Reply-To: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+References: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1280945894-sup-1123@masanjin.net>
+
+Reformatted excerpts from Ben Walton's message of 2010-07-30:
+> I just found this (seemingly) awesome new mail handling library.  I
+> know that rmail has lots of flaws and there has been previously
+> expressed sentiment that something better might be nice.
+
+If it's maintained in the least then it's probaby better than rmail, but
+if Sup started require activesupport I would jump off a bridge.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From reid.thompson at ateb.com  Wed Aug  4 15:16:25 2010
+From: reid.thompson at ateb.com (Reid Thompson)
+Date: Wed, 04 Aug 2010 15:16:25 -0400
+Subject: [sup-talk] new mail library
+In-Reply-To: <1280949075.17490.58.camel@raker.ateb.com>
+References: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+	<1280945894-sup-1123@masanjin.net>
+	<1280949075.17490.58.camel@raker.ateb.com>
+Message-ID: <1280949385.17490.59.camel@raker.ateb.com>
+
+On Wed, 2010-08-04 at 15:11 -0400, Reid Thompson wrote:
+> On Wed, 2010-08-04 at 14:20 -0400, William Morgan wrote:
+> > Reformatted excerpts from Ben Walton's message of 2010-07-30:
+> > > I just found this (seemingly) awesome new mail handling library.  I
+> > > know that rmail has lots of flaws and there has been previously
+> > > expressed sentiment that something better might be nice.
+> > 
+> > If it's maintained in the least then it's probaby better than rmail, but
+> > if Sup started require activesupport I would jump off a bridge.
+> 
+> not listed in the dependencies.txt
+> http://github.com/mikel/mail/blob/master/Dependencies.txt
+
+but it is listed in the gemspec
+  s.add_dependency('activesupport', ">= 2.3.6")
+
+
+From reid.thompson at ateb.com  Wed Aug  4 15:11:15 2010
+From: reid.thompson at ateb.com (Reid Thompson)
+Date: Wed, 04 Aug 2010 15:11:15 -0400
+Subject: [sup-talk] new mail library
+In-Reply-To: <1280945894-sup-1123@masanjin.net>
+References: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+	<1280945894-sup-1123@masanjin.net>
+Message-ID: <1280949075.17490.58.camel@raker.ateb.com>
+
+On Wed, 2010-08-04 at 14:20 -0400, William Morgan wrote:
+> Reformatted excerpts from Ben Walton's message of 2010-07-30:
+> > I just found this (seemingly) awesome new mail handling library.  I
+> > know that rmail has lots of flaws and there has been previously
+> > expressed sentiment that something better might be nice.
+> 
+> If it's maintained in the least then it's probaby better than rmail, but
+> if Sup started require activesupport I would jump off a bridge.
+
+not listed in the dependencies.txt
+http://github.com/mikel/mail/blob/master/Dependencies.txt
+
+From bwalton at artsci.utoronto.ca  Wed Aug  4 15:50:45 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 04 Aug 2010 15:50:45 -0400
+Subject: [sup-talk] new mail library
+In-Reply-To: <1280949385.17490.59.camel@raker.ateb.com>
+References: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+	<1280945894-sup-1123@masanjin.net>
+	<1280949075.17490.58.camel@raker.ateb.com>
+	<1280949385.17490.59.camel@raker.ateb.com>
+Message-ID: <1280951408-sup-6399@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Reid Thompson's message of Wed Aug 04 15:16:25 -0400 2010:
+
+> but it is listed in the gemspec
+>   s.add_dependency('activesupport', ">= 2.3.6")
+
+...and was definitely pulled in when I installed the gem.  As I said,
+it's more heavy weight, but it is very nice to use so far.
+
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From pi+sup at pihost.us  Wed Aug  4 16:01:40 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Wed, 04 Aug 2010 13:01:40 -0700
+Subject: [sup-talk] new mail library
+In-Reply-To: <1280949385.17490.59.camel@raker.ateb.com>
+References: <1280540740-sup-9428@pinkfloyd.chass.utoronto.ca>
+	<1280945894-sup-1123@masanjin.net>
+	<1280949075.17490.58.camel@raker.ateb.com>
+	<1280949385.17490.59.camel@raker.ateb.com>
+Message-ID: <1280951887-sup-1243@home.mrtheplague.net>
+
+Excerpts from Reid Thompson's message of Wed Aug 04 12:16:25 -0700 2010:
+> On Wed, 2010-08-04 at 15:11 -0400, Reid Thompson wrote:
+> > On Wed, 2010-08-04 at 14:20 -0400, William Morgan wrote:
+> > > Reformatted excerpts from Ben Walton's message of 2010-07-30:
+> > > > I just found this (seemingly) awesome new mail handling library.  I
+> > > > know that rmail has lots of flaws and there has been previously
+> > > > expressed sentiment that something better might be nice.
+> > > 
+> > > If it's maintained in the least then it's probaby better than rmail, but
+> > > if Sup started require activesupport I would jump off a bridge.
+> > 
+> > not listed in the dependencies.txt
+> > http://github.com/mikel/mail/blob/master/Dependencies.txt
+> 
+> but it is listed in the gemspec
+>   s.add_dependency('activesupport', ">= 2.3.6")
+> 
+
+Neither of those even resemble a reliable method of checking whether or not the
+thing actually uses activesupport. :P
+
+$ pwd
+/home/pi/mail
+$ egrep -ir require.\*active .
+./lib/mail.rb:  require 'active_support'
+./lib/mail.rb:  require 'active_support/core_ext/hash/indifferent_access'
+./lib/mail.rb:  require 'active_support/core_ext/object/blank'
+./lib/mail.rb:  require 'active_support/core_ext/string'
+
+There you have it.
+
+
+-- 
+Several recent languages have adopted an Intercal-like, asynchronous, computed
+COME-FROM concept. Only they refer to it with funny terms like "exception
+handling". -- Hans Mulder
+
+From brian at microcomaustralia.com.au  Wed Aug  4 22:01:58 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Thu, 5 Aug 2010 12:01:58 +1000
+Subject: [sup-talk] make all messages archived or read?
+Message-ID: <AANLkTikU3BqsdbBDb-WMKm8-GLrHB7jJT1Qv0==ug-+K@mail.gmail.com>
+
+Hello,
+
+Is there any easy way to mark all messages in the search results as
+archived and/or read?
+
+I have tried "T=a", however that has two problems:
+
+* That will only affect messages that are currently loaded in the
+search results. Ideally I want this to happen to all messages, without
+having to load everything into current buffer.
+* All messages currently archived will be unarchived - not what I want.
+
+Similar for "T=N".
+
+Also it isn't even obvious how to tag all messages, "T" is a toggle.
+Seems like "=tT" will work though.
+
+In contrast adding/removing labels is better (supports -label to
+remove label) although even here I got confused (+label syntax adds a
+label that is literally +label; I was expecting it to add a label
+called label).
+
+Thanks.
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From brian at microcomaustralia.com.au  Wed Aug  4 22:14:14 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Thu, 5 Aug 2010 12:14:14 +1000
+Subject: [sup-talk] searches
+Message-ID: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+
+Hello,
+
+Where is the best documentation on performing searches?
+
+I have noticed some quirks:
+
+\label:VLSCI
+
+finds nothing, even though lots of emails are labeled VLSCI.
+
+\label:vlsci
+
+finds all these emails.
+
+\label:vlsci \label:unread
+
+finds all vlsci OR unread emails - I would have assumed that should be AND?
+
+How do I perform and AND operation?
+
+Thanks
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From johnbent at lanl.gov  Thu Aug  5 09:49:38 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 05 Aug 2010 07:49:38 -0600
+Subject: [sup-talk] searches
+In-Reply-To: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+References: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+Message-ID: <1281016089-sup-4418@guava.lanl.gov>
+
+Excerpts from Brian May's message of Wed Aug 04 20:14:14 -0600 2010:
+> Hello,
+> 
+> Where is the best documentation on performing searches?
+> 
+> I have noticed some quirks:
+> 
+> \label:VLSCI
+> 
+> finds nothing, even though lots of emails are labeled VLSCI.
+> 
+> \label:vlsci
+> 
+> finds all these emails.
+> 
+> \label:vlsci \label:unread
+> 
+> finds all vlsci OR unread emails - I would have assumed that should be AND?
+> 
+The above looks like you are doing them one at a time.  If you do this:
+
+\label:vlsci label:unread
+
+that should do what you want.
+
+Also, on the search results view, hitting '|' let you refine the search
+so:
+\label:vlsci | label:unread
+
+should also do what you want.
+-- 
+Thanks,
+
+John 
+
+From gregor at hoffleit.de  Thu Aug  5 10:25:08 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 05 Aug 2010 16:25:08 +0200
+Subject: [sup-talk] searches
+In-Reply-To: <1281016089-sup-4418@guava.lanl.gov>
+References: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+	<1281016089-sup-4418@guava.lanl.gov>
+Message-ID: <1281018239-sup-4803@sam.mediasupervision.de>
+
+* John Bent <johnbent at lanl.gov> [Do Aug 05 15:49:38 +0200 2010]
+> Excerpts from Brian May's message of Wed Aug 04 20:14:14 -0600 2010:
+> > Where is the best documentation on performing searches?
+> > 
+> > I have noticed some quirks:
+> > 
+> > \label:VLSCI
+> > 
+> > finds nothing, even though lots of emails are labeled VLSCI.
+> > 
+> > \label:vlsci
+> > 
+> > finds all these emails.
+> > 
+> > \label:vlsci \label:unread
+> > 
+> > finds all vlsci OR unread emails - I would have assumed that should be AND?
+
+I fell into these traps as well (there was a thread in this list two
+months ago, search for this message: 1276181871-sup-2536 at zyrg.net).
+
+I started to rewrite the page SearchingMail in the Wiki:
+http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail
+
+The information on that page should be correct, but certainly is not
+complete. Neither is it easy to grok.
+
+As a start, the basic query language is described in
+http://xapian.org/docs/queryparser.html.
+
+
+Some stumbling points about searching in Sup:
+
+- By default, query terms are combined with AND
+- Exception: Query terms within the same field type are combined as OR
+
+I.e. a search for "label:ruby-talk subject:\[ANN\]" (without the
+quotes!) is equivalent to "label:ruby-talk AND subject:\[ANN\]".
+
+In contrast, the search "subject:apples subject:oranges" is equivalent
+to "subject:apples OR subject:oranges"!
+
+> The above looks like you are doing them one at a time.  If you do this:
+> 
+> \label:vlsci label:unread
+> 
+> that should do what you want.
+
+Wrong. As these are two queries in the same field type, they are ORed.
+
+The get the result you're expecting, you must search for
+"label:vlsci AND label:unread" (without the quotes).
+
+> Also, on the search results view, hitting '|' let you refine the search
+> so:
+> \label:vlsci | label:unread
+> 
+> should also do what you want.
+
+Again, this is wrong. Refining a search will just let you append or 
+edit the current query. I.e. after hitting '|' you should append
+"AND label:unread" to the query string.
+
+
+I would really welcome if somebody with a little more insight than me
+could take the time to update the documentation about searching in Sup.
+
+
+    Gregor Hoffleit
+
+From marka at pobox.com  Thu Aug  5 10:35:19 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 05 Aug 2010 10:35:19 -0400
+Subject: [sup-talk] searches
+In-Reply-To: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+References: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+Message-ID: <1281018723-sup-977@r61>
+
+Excerpts from Brian May's message of Wed Aug 04 22:14:14 -0400 2010:
+> How do I perform and AND operation?
+
+You use the AND operator :-) .  Apparently it's a known bug that
+Xapian doesn't do AND as the implied operator when there is none
+specified.  So I do things like this:
+
+  is:unread AND is:inbox AND label:widgets
+
+From arstoien at googlemail.com  Thu Aug  5 11:21:58 2010
+From: arstoien at googlemail.com (arstoien)
+Date: Thu, 05 Aug 2010 17:21:58 +0200
+Subject: [sup-talk] color customization
+In-Reply-To: <1280195847-sup-7116@hero>
+References: <1279811550-sup-7833@hero> <1280195847-sup-7116@hero>
+Message-ID: <1281021633-sup-7274@localhost>
+
+
+Hi David,
+thanks for this, I wanted to change the color of horizontal bar for quite
+a while. It worked fine for me except in two places:
+
+  * the space between the date and the sender name in the index view
+    (where the star is when a message is starred) is still highlighted in
+    green, but only when the message is _not_ starred. When the message is
+    starred it is highlighted correctly.
+
+    * when I view a message thread the bar is still in the wrong color when it is
+    on regular body text. When it is on a quote it uses the correct
+    colour.
+
+I added the :highlight: property to all color entries there are.
+Do you have the same issue or does it work for you?
+
+
+
+Excerpts from David Rysdam's message of 2010-07-27 04:02:27 +0200:
+> An agent or agents purporting to be David Rysdam said:
+> > I've customized my colors a bit, but there's a couple things I can't
+> > find.  How do I configure the color the movable horizontal "bar" (I
+> > know there's a term for this but I don't remember it)?  And more
+> > importantly, how do I configure the color the text highlighted by that
+> > bar?  Like, I have my new messages set to red but when the bar is on
+> > them they are black.  I want them red *always*.
+> 
+> Replying to myself again, for the benefit of others and after two
+> nights of hacking the code to try to figure this out:
+> 
+> Each of the colors takes a property called "highlight" that is the
+> name of another color in colors.yaml.  That color's fg/bg indicate how
+> it should display when "highlighted" by the cursor.  For example:
+> 
+> :index_new:
+>   :highlight: index_new_highlight
+>   :attrs:
+>   - bold
+>   :fg: red
+>   :bg: default
+> :index_new_highlight:
+>   :fg: red
+>   :bg: cyan
+> 
+> In this example, new mails are red in the thread view on a white
+> background (for me) and when highlighted by the cursor they are red on
+> a cyan background.
+> 
+> This works with the code currently in the repository but not with
+> .10.2, the default version on Ubuntu.  Since .10.2 also doesn't use
+> ncursesw by default, I'm going to switch the repository pretty soon.
+> Or maybe a few versions back to avoid any Maildir unpleasantness...
+-- 
+
+From gregor at hoffleit.de  Thu Aug  5 12:27:57 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 05 Aug 2010 18:27:57 +0200
+Subject: [sup-talk] color customization
+In-Reply-To: <1281021633-sup-7274@localhost>
+References: <1279811550-sup-7833@hero> <1280195847-sup-7116@hero>
+	<1281021633-sup-7274@localhost>
+	<1264760080.41.0.139357784083.issue58@masanjin.net>
+Message-ID: <1281025435-sup-9074@sam.mediasupervision.de>
+
+
+* arstoien <arstoien at googlemail.com> [Do Aug 05 17:21:58 +0200 2010]
+>   * the space between the date and the sender name in the index view
+>     (where the star is when a message is starred) is still highlighted in
+>     green, but only when the message is _not_ starred. When the message is
+>     starred it is highlighted correctly.
+
+Search the sup-devel archive for issue58 (msg-id
+1264760080.41.0.139357784083.issue58 at masanjin.net, from January).
+
+This was my fix for that problem. Nobody else seemed to care about that
+problem, so it's only included in my private Git branch.
+
+Regards,
+    Gregor
+
+
+
+commit 6551fc3e5373cc9f3a32b28b4335a2de2cd2efa4
+Author: Gregor Hoffleit <gregor at hoffleit.de>
+Date:   Thu May 27 11:40:13 2010 +0200
+
+    Bugfix: Background for starred messages
+
+diff --git a/lib/sup/modes/thread-index-mode.rb
+b/lib/sup/modes/thread-index-mode.rb
+index 5f3499c..f012123 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -887,7 +887,7 @@ protected
+     [ 
+       [:tagged_color, @tags.tagged?(t) ? ">" : " "],
+       [:date_color, date_widget_text],
+-      (starred ? [:starred_color, "*"] : [:none, " "]),
++      [:starred_color, (starred ? "*" : " ")],
+     ] +
+       from +
+       [
+
+From arstoien at googlemail.com  Thu Aug  5 13:34:47 2010
+From: arstoien at googlemail.com (arstoien)
+Date: Thu, 05 Aug 2010 19:34:47 +0200
+Subject: [sup-talk] color customization
+In-Reply-To: <1281029479-sup-2414@localhost>
+References: <1279811550-sup-7833@hero> <1280195847-sup-7116@hero>
+	<1281021633-sup-7274@localhost>
+	<1264760080.41.0.139357784083.issue58@masanjin.net>
+	<1281025435-sup-9074@sam.mediasupervision.de>
+	<1281029479-sup-2414@localhost>
+Message-ID: <1281029663-sup-1555@localhost>
+
+Excerpts from Arian Kuschki's message of 2010-08-05 19:34:01 +0200:
+> Excerpts from Gregor Hoffleit's message of 2010-08-05 18:27:57 +0200:
+> > 
+> > * arstoien <arstoien at googlemail.com> [Do Aug 05 17:21:58 +0200 2010]
+> > >   * the space between the date and the sender name in the index view
+> > >     (where the star is when a message is starred) is still highlighted in
+> > >     green, but only when the message is _not_ starred. When the message is
+> > >     starred it is highlighted correctly.
+> > 
+> > Search the sup-devel archive for issue58 (msg-id
+> > 1264760080.41.0.139357784083.issue58 at masanjin.net, from January).
+> > 
+> > This was my fix for that problem. Nobody else seemed to care about that
+> > problem, so it's only included in my private Git branch.
+> > 
+> > Regards,
+> >     Gregor
+> > 
+> > 
+> > 
+> > commit 6551fc3e5373cc9f3a32b28b4335a2de2cd2efa4
+> > Author: Gregor Hoffleit <gregor at hoffleit.de>
+> > Date:   Thu May 27 11:40:13 2010 +0200
+> > 
+> >     Bugfix: Background for starred messages
+> > 
+> > diff --git a/lib/sup/modes/thread-index-mode.rb
+> > b/lib/sup/modes/thread-index-mode.rb
+> > index 5f3499c..f012123 100644
+> > --- a/lib/sup/modes/thread-index-mode.rb
+> > +++ b/lib/sup/modes/thread-index-mode.rb
+> > @@ -887,7 +887,7 @@ protected
+> >      [ 
+> >        [:tagged_color, @tags.tagged?(t) ? ">" : " "],
+> >        [:date_color, date_widget_text],
+> > -      (starred ? [:starred_color, "*"] : [:none, " "]),
+> > +      [:starred_color, (starred ? "*" : " ")],
+> >      ] +
+> >        from +
+> >        [
+> 
+> 
+> Gregor, that fixes it, thank you. Any idea why this has not been merged? 
+> If it was just an oversight I think it would be better to merge it as 
+> the highlighting customisation mechanism  is slightly broken without it.
+> 
+> Now if I could only find out how to change the highlighting when 
+> viewing a message..
+-- 
+
+From brian at microcomaustralia.com.au  Thu Aug  5 23:54:07 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Fri, 6 Aug 2010 13:54:07 +1000
+Subject: [sup-talk] utf8 support on Ubuntu Karmic
+In-Reply-To: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+References: <o2q3c5cf5261004111608q9ac4dd89v1e8c9cf3bf0ee9b3@mail.gmail.com>
+Message-ID: <AANLkTinqRZV2RViGAj6gPSTdpivaF_DgxUSaHM_y4dc7@mail.gmail.com>
+
+On 12 April 2010 09:08, Brian May <brian at microcomaustralia.com.au> wrote:
+> [Mon Apr 12 08:52:00 +1000 2010] No 'ncursesw' gem detected. Install
+> it for wide character support.
+
+For some reason I was certain I had resolved this issue. It looks like
+it has come back again.
+
+Am using Ubuntu Lucid.
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From matiasaguirre at gmail.com  Fri Aug  6 15:44:39 2010
+From: matiasaguirre at gmail.com (Matias Aguirre)
+Date: Fri, 06 Aug 2010 16:44:39 -0300
+Subject: [sup-talk] Label colors support
+Message-ID: <1281123736-sup-7906@mintaka>
+
+Hi,
+
+Been an user for some time now, congrats for the good work. But there's
+something I've missed from mutt and is the ability to customize inbox
+emails colors, I've used to colorize by source address or domain.
+
+Here's is patchset with needed changes
+http://github.com/omab/sup/commit/865bc2b77038f612ccf0c5174021f001811116a4
+
+Usage is quite simple, only define colors using label names on
+colors.yaml and each email label will be colored.
+
+Cheers,
+Mat?as
+
+PS: I'm posting here since there was not response from sup-devel
+--
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From michael+sup at stapelberg.de  Sun Aug  8 12:36:33 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 08 Aug 2010 18:36:33 +0200
+Subject: [sup-talk] Label colors support
+In-Reply-To: <1281123736-sup-7906@mintaka>
+References: <1281123736-sup-7906@mintaka>
+Message-ID: <1281285349-sup-9040@midna.zekjur.net>
+
+Hi Matias,
+
+Excerpts from Matias Aguirre's message of 2010-08-06 21:44:39 +0200:
+> PS: I'm posting here since there was not response from sup-devel
+Posting to sup-talk won?t make the situation better. You?ll have to wait for
+Rich to merge the existing patches, which he?ll do when he gets to it.
+
+Best regards,
+Michael
+
+From matias at insophia.com  Sun Aug  8 16:16:11 2010
+From: matias at insophia.com (Matias Aguirre)
+Date: Sun, 08 Aug 2010 17:16:11 -0300
+Subject: [sup-talk] Label colors support
+In-Reply-To: <1281285349-sup-9040@midna.zekjur.net>
+References: <1281123736-sup-7906@mintaka>
+	<1281285349-sup-9040@midna.zekjur.net>
+Message-ID: <1281298509-sup-3925@mintaka>
+
+Hi Michael,
+
+Thanks for your reply, I'll wait some feedback if the feature is
+accepted.
+
+Cheers,
+Mat?as
+
+Excerpts from Michael Stapelberg's message of Sun Aug 08 13:36:33 -0300 2010:
+> Hi Matias,
+> 
+> Excerpts from Matias Aguirre's message of 2010-08-06 21:44:39 +0200:
+> > PS: I'm posting here since there was not response from sup-devel
+> Posting to sup-talk won?t make the situation better. You?ll have to wait for
+> Rich to merge the existing patches, which he?ll do when he gets to it.
+> 
+> Best regards,
+> Michael
+--
+Mat?as Aguirre <matias at insophia.com>
+
+From brian at microcomaustralia.com.au  Mon Aug  9 01:59:16 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Mon, 9 Aug 2010 15:59:16 +1000
+Subject: [sup-talk] searches
+In-Reply-To: <1281018239-sup-4803@sam.mediasupervision.de>
+References: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+	<1281016089-sup-4418@guava.lanl.gov>
+	<1281018239-sup-4803@sam.mediasupervision.de>
+Message-ID: <AANLkTin4Zz4RkFrtZOt1_xpx-8mPAuzhGY-nwJ8hgbNT@mail.gmail.com>
+
+On 6 August 2010 00:25, Gregor Hoffleit <gregor at hoffleit.de> wrote:
+> I fell into these traps as well (there was a thread in this list two
+> months ago, search for this message: 1276181871-sup-2536 at zyrg.net).
+>
+> I started to rewrite the page SearchingMail in the Wiki:
+> http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail
+>
+> The information on that page should be correct, but certainly is not
+> complete. Neither is it easy to grok.
+>
+> As a start, the basic query language is described in
+> http://xapian.org/docs/queryparser.html.
+>
+>
+> Some stumbling points about searching in Sup:
+>
+> - By default, query terms are combined with AND
+> - Exception: Query terms within the same field type are combined as OR
+>
+> I.e. a search for "label:ruby-talk subject:\[ANN\]" (without the
+> quotes!) is equivalent to "label:ruby-talk AND subject:\[ANN\]".
+>
+> In contrast, the search "subject:apples subject:oranges" is equivalent
+> to "subject:apples OR subject:oranges"!
+
+Ok, thanks for the information.
+
+How do I search for all messages not containing a label? I tried:
+
+not label:mylabel
+! label:mylabel
+~label:mylabel
+-label:mylabel
+
+The first finds no results. The rest are the same as "label:mylabel".
+
+What am I doing wrong here?
+
+What do the above searchs really do?
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From phorrillo at aurigae.com  Mon Aug  9 06:35:01 2010
+From: phorrillo at aurigae.com (=?utf-8?q?Pedro_F._=C2=ABpancho=C2=BB_Horrillo?=)
+Date: Mon, 09 Aug 2010 12:35:01 +0200
+Subject: [sup-talk] how to unlink a message from a thread?
+Message-ID: <1281349768-sup-7718@aurigae120.hi.inet>
+
+Hi, fellas!
+
+I have mistakenly used the '#' command to force one message into a
+thread.  I want to undo that, but I realized it AFTER quitting sup (so,
+it's too late to use the 'u' command).
+
+Is there a way to 'free' a message from a thread?
+
+
+Thanks a bunch!
+
+
+Happy hacking,
+
+-- 
+Pedro F. ?pancho? Horrillo
+
+From bwalton at artsci.utoronto.ca  Mon Aug  9 09:52:44 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 09 Aug 2010 09:52:44 -0400
+Subject: [sup-talk] how to unlink a message from a thread?
+In-Reply-To: <1281349768-sup-7718@aurigae120.hi.inet>
+References: <1281349768-sup-7718@aurigae120.hi.inet>
+Message-ID: <1281361742-sup-3674@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Pedro F. ?pancho? Horrillo's message of Mon Aug 09 06:35:01 -0400 2010:
+
+> Is there a way to 'free' a message from a thread?
+
+Lucky for you, forced thread joins aren't preserved across restarts of
+sup...unless this has changed and I didn't notice?  (It's not a
+feature I use, so that is possible.)
+
+Out of curiosity, where do people find the most use for this feature?
+I have a few people out there using braindead mail clients that don't
+preserve enough headers when replying that they end up starting a new
+thread in sup...I might use the thread join if it were persisted.
+
+The other feature that would be really cool is to split a thread.  I
+interact with several people that will start a new email conversation
+by opening an old message, changing subject (and maybe recipients) and
+then sending it.  This preserves the old headers, which sees sup
+append the now disjoint new topic to the old thread.
+
+Thanks
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sup at equaeghe.nospammail.net  Mon Aug  9 11:38:05 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Mon, 9 Aug 2010 11:38:05 -0400 (EDT)
+Subject: [sup-talk] how to unlink a message from a thread?
+In-Reply-To: <1281361742-sup-3674@pinkfloyd.chass.utoronto.ca>
+References: <1281349768-sup-7718@aurigae120.hi.inet>
+	<1281361742-sup-3674@pinkfloyd.chass.utoronto.ca>
+Message-ID: <alpine.DEB.2.00.1008091132010.1896@flfbcjrt.naqerj.pzh.rqh>
+
+On Mon, 9 Aug 2010, Ben Walton wrote:
+>
+> The other feature that would be really cool is to split a thread.  I
+> interact with several people that will start a new email conversation
+> by opening an old message, changing subject (and maybe recipients) and
+> then sending it.  This preserves the old headers, which sees sup
+> append the now disjoint new topic to the old thread.
+
+This, and the even more difficult multi-subject-mails that generate 
+different threads (all one big thread by header...). Dealing nicely with 
+that would mean that selected messages can be part of different (split) 
+threads.
+
+Erik
+
+From marc.hartstein at alum.vassar.edu  Mon Aug  9 16:19:02 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Mon, 09 Aug 2010 16:19:02 -0400
+Subject: [sup-talk] searches
+In-Reply-To: <AANLkTin4Zz4RkFrtZOt1_xpx-8mPAuzhGY-nwJ8hgbNT@mail.gmail.com>
+References: <AANLkTikinnXf8FCdBdf3ufKVTn20ZRfi=JDGqHqtmN=N@mail.gmail.com>
+	<1281016089-sup-4418@guava.lanl.gov>
+	<1281018239-sup-4803@sam.mediasupervision.de>
+	<AANLkTin4Zz4RkFrtZOt1_xpx-8mPAuzhGY-nwJ8hgbNT@mail.gmail.com>
+Message-ID: <1281384840-sup-5850@cabinet>
+
+Excerpts from Brian May's message of Mon Aug 09 01:59:16 -0400 2010:
+> How do I search for all messages not containing a label? I tried:
+
+Looking at http://xapian.org/docs/queryparser.html, it looks like "pure
+not" is disabled, at least in my sup installation. It also seems like
+booleans *must* be in ALLCAPS to be recognized.
+
+Thus:
+
+NOT label:mylabel   - gives a syntax error
+not label:mylabel   - is 'not OR label:mylabel' [searching for the word
+                        "not" or for the label]
+
+I'm getting some results from a search on 'label: NOT label:mylabel',
+though I'm not sure if the results I'm getting are correct for what
+you're looking for.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100809/67044288/attachment.bin>
+
+From phorrillo at aurigae.com  Tue Aug 10 05:31:35 2010
+From: phorrillo at aurigae.com (=?utf-8?q?Pedro_F._=C2=ABpancho=C2=BB_Horrillo?=)
+Date: Tue, 10 Aug 2010 11:31:35 +0200
+Subject: [sup-talk] how to unlink a message from a thread?
+In-Reply-To: <1281361742-sup-3674@pinkfloyd.chass.utoronto.ca>
+References: <1281349768-sup-7718@aurigae120.hi.inet>
+	<1281361742-sup-3674@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1281432521-sup-4463@aurigae120.hi.inet>
+
+Excerpts from Ben Walton's message of Mon Aug 09 15:52:44 +0200 2010:
+> Excerpts from Pedro F. ?pancho? Horrillo's message of Mon Aug 09 06:35:01 -0400 2010:
+> 
+> > Is there a way to 'free' a message from a thread?
+> 
+> Lucky for you, forced thread joins aren't preserved across restarts of
+> sup...unless this has changed and I didn't notice?  (It's not a
+> feature I use, so that is possible.)
+> 
+Oh, I just checked to be sure, and definitely the link remains.
+
+> Out of curiosity, where do people find the most use for this feature?
+> I have a few people out there using braindead mail clients that don't
+> preserve enough headers when replying that they end up starting a new
+> thread in sup...I might use the thread join if it were persisted.
+> 
+I use it to join mails that naturally belong in the same ?conversation?,
+even though they were not posted as actual replies to a given email.
+This happens here quite often.
+
+> The other feature that would be really cool is to split a thread.  I
+> interact with several people that will start a new email conversation
+> by opening an old message, changing subject (and maybe recipients) and
+> then sending it.  This preserves the old headers, which sees sup
+> append the now disjoint new topic to the old thread.
+> 
+Same here.
+
+> Thanks
+> -Ben
+> 
+Cheers,
+
+-- 
+Pedro F. ?pancho? Horrillo
+
+From ezyang at MIT.EDU  Sun Aug 15 19:58:03 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 15 Aug 2010 19:58:03 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1281916596-sup-8793@ezyang>
+
+I've tracked down the regression to this merge: 45c3433c0 Merge remote branch 'origin/maildir'
+
+I'd appreciate a quick san-check before I start investigating the merge more
+closely: you can easily test for this bug by renaming your .sup directory away
+and creating a fresh sup directory.
+
+From hollunder at lavabit.com  Thu Aug 19 06:52:56 2010
+From: hollunder at lavabit.com (Philipp)
+Date: Thu, 19 Aug 2010 12:52:56 +0200
+Subject: [sup-talk] mailinglists in CC
+Message-ID: <1282214690-sup-777@eris>
+
+Hi,
+I have some trouble with sups behavior in a certain case.
+
+Some clients seem to put the mailinglist in the CC field.
+
+Apparently if someone with such a client replies to me, sup will
+automatically reply to the person, not to the list.
+
+In cases where such a client replies to another person on the list, sup
+will reply to the list.
+
+Example 1:
+from: A
+to: me
+CC: list
+
+reply:
+from: me
+to: A
+
+
+Example 2:
+from: A
+to: B
+CC: list
+
+reply:
+from: me
+to: list
+
+
+I want it to behave like in Example 2 in the case of Example 1 as well.
+Is there a way to do that?
+It's really annoying to send to single people instead of the list by
+accident.
+
+Regards,
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From isra at herraiz.org  Thu Aug 19 07:58:29 2010
+From: isra at herraiz.org (Israel Herraiz)
+Date: Thu, 19 Aug 2010 07:58:29 -0400
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282214690-sup-777@eris>
+References: <1282214690-sup-777@eris>
+Message-ID: <1282218941-sup-4503@duck>
+
+Excerpts from Philipp's message of Thu Aug 19 06:52:56 -0400 2010:
+> It's really annoying to send to single people instead of the list by
+> accident.
+
+It's really annoying to send a message to the list instead of to a
+single person by accident.
+
+In any case, mailing lists can set a Reply-To header, and I think Sup
+will reply to the address included in that header. If it does not,
+then I think that's a bug :-).
+
+Cheers,
+Israel
+
+From erin.sheldon at gmail.com  Thu Aug 19 08:27:04 2010
+From: erin.sheldon at gmail.com (Erin Sheldon)
+Date: Thu, 19 Aug 2010 08:27:04 -0400
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282218941-sup-4503@duck>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+Message-ID: <1282220819-sup-9512@theshire>
+
+Excerpts from Israel Herraiz's message of Thu Aug 19 07:58:29 -0400 2010:
+> Excerpts from Philipp's message of Thu Aug 19 06:52:56 -0400 2010:
+> > It's really annoying to send to single people instead of the list by
+> > accident.
+> 
+> It's really annoying to send a message to the list instead of to a
+> single person by accident.
+> 
+> In any case, mailing lists can set a Reply-To header, and I think Sup
+> will reply to the address included in that header. If it does not,
+> then I think that's a bug :-).
+> 
+> Cheers,
+> Israel
+
+I partially agree.
+
+I think we can take a lesson from gmail here:  A simple reply always
+replies to the sender. A group reply will include the list of course,
+and in that case you are responsible for trimming the recipients.  I've
+been caught by surprise when in 'sup a simple reply was sent to the list
+*instead* of the sender.  It is hard to predict when it will happen,
+because the Reply-To header is not ordinarily visible.
+
+Erin Scott Sheldon
+
+From hollunder at lavabit.com  Thu Aug 19 08:29:20 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 14:29:20 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282218941-sup-4503@duck>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+Message-ID: <1282220753-sup-7507@eris>
+
+Excerpts from Israel Herraiz's message of 2010-08-19 13:58:29 +0200:
+> Excerpts from Philipp's message of Thu Aug 19 06:52:56 -0400 2010:
+> > It's really annoying to send to single people instead of the list by
+> > accident.
+> 
+> It's really annoying to send a message to the list instead of to a
+> single person by accident.
+> 
+> In any case, mailing lists can set a Reply-To header, and I think Sup
+> will reply to the address included in that header. If it does not,
+> then I think that's a bug :-).
+> 
+> Cheers,
+> Israel
+
+I'm not sure that it's not a header issue. I don't know a lot about
+headers, but I think you can't assume that a reply to is set. It isn't
+on the list were I just experienced the problem and it isn't on this
+list either.
+I found 'In-reply-to' but no 'Reply-to'.
+
+No idea which other headers could be relevant. 'Precedence: list'
+sounded like it could be relevant, but it's there in all cases.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From hollunder at lavabit.com  Thu Aug 19 08:40:23 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 14:40:23 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282220819-sup-9512@theshire>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire>
+Message-ID: <1282221544-sup-9759@eris>
+
+Excerpts from Erin Sheldon's message of 2010-08-19 14:27:04 +0200:
+> Excerpts from Israel Herraiz's message of Thu Aug 19 07:58:29 -0400 2010:
+> > Excerpts from Philipp's message of Thu Aug 19 06:52:56 -0400 2010:
+> > > It's really annoying to send to single people instead of the list by
+> > > accident.
+> > 
+> > It's really annoying to send a message to the list instead of to a
+> > single person by accident.
+> > 
+> > In any case, mailing lists can set a Reply-To header, and I think Sup
+> > will reply to the address included in that header. If it does not,
+> > then I think that's a bug :-).
+> > 
+> > Cheers,
+> > Israel
+> 
+> I partially agree.
+> 
+> I think we can take a lesson from gmail here:  A simple reply always
+> replies to the sender. A group reply will include the list of course,
+> and in that case you are responsible for trimming the recipients.  I've
+> been caught by surprise when in 'sup a simple reply was sent to the list
+> *instead* of the sender.  It is hard to predict when it will happen,
+> because the Reply-To header is not ordinarily visible.
+> 
+> Erin Scott Sheldon
+
+I'd like it the other way around, always reply to list and simply change
+to 'sender' in the (at least for me) rare cases where it's not supposed
+to go to the list.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From tero at tilus.net  Thu Aug 19 08:33:24 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Aug 2010 15:33:24 +0300
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282214690-sup-777@eris>
+References: <1282214690-sup-777@eris>
+Message-ID: <1282220267-sup-5326@tilus.net>
+
+Philipp, 2010-08-19 13:52:
+> Some clients seem to put the mailinglist in the CC field.
+
+Which is pretty annoying.
+
+> Apparently if someone with such a client replies to me, sup will
+> automatically reply to the person, not to the list.
+
+This might (and I really am guessing here) be because sup skips
+duplicates (by message id).  In the first exaple you get the mail
+twice (assuming you are subscribed to lista).  The one you most
+probably get first (and gets indexed first) is the message you get
+directly and which does not have list headers.  The one which makes
+the extra hop via list server (and has the list headers) gets to you
+later and is simply discarded as duplicate.  When you go reply the
+mail, sup is perfectly unaware of it being a list mail.
+
+> It's really annoying to send to single people instead of the list by
+> accident.
+
+I can tell you it is _way_ more annoying to accidentally send private
+mail to list (I've done that, once _really_ badly).  So this behavior
+(automatical selection between list reply and private reply) should
+IMO be conservative in this sense.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Aug 19 08:49:21 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Aug 2010 15:49:21 +0300
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282218941-sup-4503@duck>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+Message-ID: <1282221210-sup-5773@tilus.net>
+
+Israel Herraiz, 2010-08-19 14:58:
+> It's really annoying to send a message to the list instead of to a
+> single person by accident.
+> 
+> In any case, mailing lists can set a Reply-To header
+
+Whoa!
+
+Mailing lists _can_ do that, but they should not.  Ironically you
+happend to mention one of the reasons why they should not.  :D
+
+Let's consider the max damage done by modifying vs. not modifying
+reply-to: If the header is unmangled the user may in certain
+sircumstances accidentally send private mail instead of list mail.
+That's an annoyance at most.  If the header is mangled by list server
+the user may in certain sircumstances accidentally send list mail
+instead of private mail.  That may cost the user a lot of goodwill,
+money or her job.  Ergo, list setting reply-to header violates the
+principle of least damage.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From hollunder at lavabit.com  Thu Aug 19 08:58:38 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 14:58:38 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282220267-sup-5326@tilus.net>
+References: <1282214690-sup-777@eris> <1282220267-sup-5326@tilus.net>
+Message-ID: <1282222230-sup-4129@eris>
+
+Excerpts from Tero Tilus's message of 2010-08-19 14:33:24 +0200:
+> Philipp, 2010-08-19 13:52:
+> > Some clients seem to put the mailinglist in the CC field.
+> 
+> Which is pretty annoying.
+
+Yes, but the chance of having everyone else change that is pretty slim.
+
+> > Apparently if someone with such a client replies to me, sup will
+> > automatically reply to the person, not to the list.
+> 
+> This might (and I really am guessing here) be because sup skips
+> duplicates (by message id).  In the first exaple you get the mail
+> twice (assuming you are subscribed to lista).  The one you most
+> probably get first (and gets indexed first) is the message you get
+> directly and which does not have list headers.  The one which makes
+> the extra hop via list server (and has the list headers) gets to you
+> later and is simply discarded as duplicate.  When you go reply the
+> mail, sup is perfectly unaware of it being a list mail.
+
+That makes sense. Could it check for the presence of list headers and
+discard the one without?
+
+One thing I noticed with the list in CC mails is that replying to
+'recipient' would reply to the list. I don't get that from a semantic
+point.
+
+> > It's really annoying to send to single people instead of the list by
+> > accident.
+> 
+> I can tell you it is _way_ more annoying to accidentally send private
+> mail to list (I've done that, once _really_ badly).  So this behavior
+> (automatical selection between list reply and private reply) should
+> IMO be conservative in this sense.
+
+I see your point. I don't know what conservative behavior would be in
+this case. I think consistency is key though.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From tero at tilus.net  Thu Aug 19 09:07:37 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Aug 2010 16:07:37 +0300
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282221544-sup-9759@eris>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+Message-ID: <1282222218-sup-5975@tilus.net>
+
+Philipp ?berbacher, 2010-08-19 15:40:
+> I'd like it the other way around, always reply to list and simply
+> change to 'sender' in the (at least for me) rare cases where it's
+> not supposed to go to the list.
+
+It is reasonable that replying to list mail defaults to "Mailing list"
+as reply mode.
+
+Sup does pretty good job being list aware.  I think the problem here
+is sup failing to detect a list mail and treating it as "ordinary"
+mail.  There are at least two cases when sup could (afaik) miss a list mail.
+
+1) A mail which is sent to/cc/bcc a list member and the list so that
+list member gets two copies of the mail.  Sup "sees" only the first
+one to arrive, which most probably is the non-list duplicate.
+
+2) A similar mail than previous but the copy via list is not delivered
+at all.  Maybe the list performs delivery magic ("whoa, cc-header
+shows that this list member already got the mail) or whatelse.
+
+You can enumerate mailing lists to mutt and have it consider mails
+to/cc a such address as list mails regardless of the precence of list
+headers.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From isra at herraiz.org  Thu Aug 19 09:39:43 2010
+From: isra at herraiz.org (Israel Herraiz)
+Date: Thu, 19 Aug 2010 09:39:43 -0400
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282221210-sup-5773@tilus.net>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282221210-sup-5773@tilus.net>
+Message-ID: <1282224936-sup-2131@duck>
+
+Excerpts from Tero Tilus's message of Thu Aug 19 08:49:21 -0400 2010:
+> Whoa!
+> 
+> Mailing lists _can_ do that, but they should not.  Ironically you
+> happend to mention one of the reasons why they should not.  :D
+> 
+> Let's consider the max damage done by modifying vs. not modifying
+> reply-to: If the header is unmangled the user may in certain
+> sircumstances accidentally send private mail instead of list mail.
+> That's an annoyance at most.  If the header is mangled by list server
+> the user may in certain sircumstances accidentally send list mail
+> instead of private mail.  That may cost the user a lot of goodwill,
+> money or her job.  Ergo, list setting reply-to header violates the
+> principle of least damage.
+
+Yes, that's one of the endless philosophical debates about email and
+mailing lists. I do actually agree with that, it is better not to set
+the Reply-To header.
+
+I was using as an example to show that Sup is behaving correctly in
+this case :-).
+
+Cheers,
+Israel
+
+From isra at herraiz.org  Thu Aug 19 09:41:33 2010
+From: isra at herraiz.org (Israel Herraiz)
+Date: Thu, 19 Aug 2010 09:41:33 -0400
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282222230-sup-4129@eris>
+References: <1282214690-sup-777@eris> <1282220267-sup-5326@tilus.net>
+	<1282222230-sup-4129@eris>
+Message-ID: <1282225204-sup-8864@duck>
+
+Excerpts from Philipp ?berbacher's message of Thu Aug 19 08:58:38 -0400 2010:
+> That makes sense. Could it check for the presence of list headers and
+> discard the one without?
+
+Are you using GMail? If you are, it is not possible.
+
+GMail also discards duplicated messages, so if you get first the
+message delivered directly to you, you will not see the list message
+ever.
+
+Cheers,
+Israel
+
+From hollunder at lavabit.com  Thu Aug 19 10:10:45 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 16:10:45 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282225204-sup-8864@duck>
+References: <1282214690-sup-777@eris> <1282220267-sup-5326@tilus.net>
+	<1282222230-sup-4129@eris> <1282225204-sup-8864@duck>
+Message-ID: <1282226770-sup-2087@eris>
+
+Excerpts from Israel Herraiz's message of 2010-08-19 15:41:33 +0200:
+> Excerpts from Philipp ?berbacher's message of Thu Aug 19 08:58:38 -0400 2010:
+> > That makes sense. Could it check for the presence of list headers and
+> > discard the one without?
+> 
+> Are you using GMail? If you are, it is not possible.
+> 
+> GMail also discards duplicated messages, so if you get first the
+> message delivered directly to you, you will not see the list message
+> ever.
+> 
+> Cheers,
+> Israel
+
+Nope, I'm not using gmail at all, but thanks. I checked my mail
+providers options and found nothing with regards to deleting duplicates.
+Checking all the mailinglists settings will take a while though.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From hollunder at lavabit.com  Thu Aug 19 10:26:40 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 16:26:40 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282222218-sup-5975@tilus.net>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net>
+Message-ID: <1282227742-sup-874@eris>
+
+Excerpts from Tero Tilus's message of 2010-08-19 15:07:37 +0200:
+> Philipp ?berbacher, 2010-08-19 15:40:
+> > I'd like it the other way around, always reply to list and simply
+> > change to 'sender' in the (at least for me) rare cases where it's
+> > not supposed to go to the list.
+> 
+> It is reasonable that replying to list mail defaults to "Mailing list"
+> as reply mode.
+> 
+> Sup does pretty good job being list aware.  I think the problem here
+> is sup failing to detect a list mail and treating it as "ordinary"
+> mail.  There are at least two cases when sup could (afaik) miss a list mail.
+
+Yep, sup is definitely doing a good job, it seems to be sane in almost
+any case.
+
+> 1) A mail which is sent to/cc/bcc a list member and the list so that
+> list member gets two copies of the mail.  Sup "sees" only the first
+> one to arrive, which most probably is the non-list duplicate.
+> 
+> 2) A similar mail than previous but the copy via list is not delivered
+> at all.  Maybe the list performs delivery magic ("whoa, cc-header
+> shows that this list member already got the mail) or whatelse.
+
+I just checked my most active lists and they all were set to 'avoid
+duplicates if your address is in CC or TO'. I changed that and will see
+what happens. Maybe sup is clever enough to discard the non-list message.
+
+> You can enumerate mailing lists to mutt and have it consider mails
+> to/cc a such address as list mails regardless of the precence of list
+> headers.
+
+I don't know anything about mutt and don't consider using it. I'm fairly
+happy with sup :)
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From helgedt at tihlde.org  Thu Aug 19 09:21:03 2010
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Thu, 19 Aug 2010 15:21:03 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282222218-sup-5975@tilus.net>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net>
+Message-ID: <1282223762-sup-1786@colargol.tihlde.org>
+
+Excerpts from Tero Tilus's message of Thu Aug 19 15:07:37 +0200 2010:
+> I think the problem here is sup failing to detect a list mail and treating it
+> as "ordinary" mail.  There are at least two cases when sup could (afaik) miss
+> a list mail.
+> 
+> 1) A mail which is sent to/cc/bcc a list member and the list so that list
+> member gets two copies of the mail.  Sup "sees" only the first one to arrive,
+> which most probably is the non-list duplicate.
+
+If sup is doing the removal of duplicates, could we get sup to update the
+List-* headers if there are any new ones?
+
+-- 
+77660
+
+From tero at tilus.net  Thu Aug 19 14:24:18 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Aug 2010 21:24:18 +0300
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282227742-sup-874@eris>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net> <1282227742-sup-874@eris>
+Message-ID: <1282241633-sup-6722@tilus.net>
+
+Philipp ?berbacher, 2010-08-19 17:26:
+>> You can enumerate mailing lists to mutt and have it consider mails
+>> to/cc a such address as list mails regardless of the precence of list
+>> headers.
+> 
+> I don't know anything about mutt and don't consider using it. I'm fairly
+> happy with sup :)
+
+I wasn't suggesting you to go mutt yourself. ;)  I was just wondering
+how other mailclients have resolved this problem of duplicate replies
+(one list and one off-list) from ill-behaving mailclients.  
+
+Possible solution would be to maintain list of known mailinglist
+addresses (say mailinglists.txt, just like we now have labels.txt) and
+consider all mails targeted to a list address as list mail even if
+they wouldn't have list headers.
+
+Any considerations on the implications that would have?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Thu Aug 19 14:31:40 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 19 Aug 2010 21:31:40 +0300
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282223762-sup-1786@colargol.tihlde.org>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net>
+	<1282223762-sup-1786@colargol.tihlde.org>
+Message-ID: <1282242449-sup-1456@tilus.net>
+
+Helge Titlestad, 2010-08-19 16:21:
+> If sup is doing the removal of duplicates, could we get sup to
+> update the List-* headers if there are any new ones?
+
+That would help with the off-list dupe getting indexed first, but not
+with the (pretty common) mailinglist setup where the list server plays
+clever and skips delivery to mailinglist members already appearing in
+recipient list.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From hollunder at lavabit.com  Thu Aug 19 15:19:39 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Thu, 19 Aug 2010 21:19:39 +0200
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282241633-sup-6722@tilus.net>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net> <1282227742-sup-874@eris>
+	<1282241633-sup-6722@tilus.net>
+Message-ID: <1282244722-sup-8361@eris>
+
+Excerpts from Tero Tilus's message of 2010-08-19 20:24:18 +0200:
+> Philipp ?berbacher, 2010-08-19 17:26:
+> >> You can enumerate mailing lists to mutt and have it consider mails
+> >> to/cc a such address as list mails regardless of the precence of list
+> >> headers.
+> > 
+> > I don't know anything about mutt and don't consider using it. I'm fairly
+> > happy with sup :)
+> 
+> I wasn't suggesting you to go mutt yourself. ;)  I was just wondering
+> how other mailclients have resolved this problem of duplicate replies
+> (one list and one off-list) from ill-behaving mailclients.  
+
+My guess is that some client use primitive means like the subject, but
+maybe there's some more header information that's useful, like
+reference or in-reply-to. Again, I don't know much about headers.
+
+> Possible solution would be to maintain list of known mailinglist
+> addresses (say mailinglists.txt, just like we now have labels.txt) and
+> consider all mails targeted to a list address as list mail even if
+> they wouldn't have list headers.
+> 
+> Any considerations on the implications that would have?
+
+So it would compare TO and CC with the list, and if it finds it, treats
+it as list mail. Well, I guess for some of the 'treat as list mail'
+things it might need some headers, but I really don't know.
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From wagnerdm at seas.upenn.edu  Thu Aug 19 16:11:25 2010
+From: wagnerdm at seas.upenn.edu (wagnerdm at seas.upenn.edu)
+Date: Thu, 19 Aug 2010 16:11:25 -0400
+Subject: [sup-talk] mailinglists in CC
+In-Reply-To: <1282241633-sup-6722@tilus.net>
+References: <1282214690-sup-777@eris> <1282218941-sup-4503@duck>
+	<1282220819-sup-9512@theshire> <1282221544-sup-9759@eris>
+	<1282222218-sup-5975@tilus.net> <1282227742-sup-874@eris>
+	<1282241633-sup-6722@tilus.net>
+Message-ID: <20100819161125.19162nsavhg7u5tc@webmail.seas.upenn.edu>
+
+Sort of an edge-case, but what would this mean for cross-posted  
+messages, i.e., messages sent to multiple mailing lists?
+~d
+
+Quoting Tero Tilus <tero at tilus.net>:
+
+> Philipp ?berbacher, 2010-08-19 17:26:
+>>> You can enumerate mailing lists to mutt and have it consider mails
+>>> to/cc a such address as list mails regardless of the precence of list
+>>> headers.
+>>
+>> I don't know anything about mutt and don't consider using it. I'm fairly
+>> happy with sup :)
+>
+> I wasn't suggesting you to go mutt yourself. ;)  I was just wondering
+> how other mailclients have resolved this problem of duplicate replies
+> (one list and one off-list) from ill-behaving mailclients.
+>
+> Possible solution would be to maintain list of known mailinglist
+> addresses (say mailinglists.txt, just like we now have labels.txt) and
+> consider all mails targeted to a list address as list mail even if
+> they wouldn't have list headers.
+>
+> Any considerations on the implications that would have?
+>
+> --
+> Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+From mariano.mara at gmail.com  Fri Aug 20 08:34:46 2010
+From: mariano.mara at gmail.com (Mariano Mara)
+Date: Fri, 20 Aug 2010 09:34:46 -0300
+Subject: [sup-talk] Sup crashing
+Message-ID: <AANLkTikSUkOrwHKmyORRZO6sZ+qbnf3vaEyexgAtB9_V@mail.gmail.com>
+
+Hi guys.
+I started my computer this morning and all of the sudden my sup refuses to
+work, crashing seconds after started. It as working ok last time I used it.
+Any idea how can I fix it?
+
+TIA
+Mariano
+
+ This is the log I'm getting:
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:17:in `id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/hook.rb:123:in `sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`sort_by'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:232:in
+`synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:232:in
+`update'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:652:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:231
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100820/da1cb59c/attachment.html>
+
+From vojtech at aschenbrenner.cz  Sat Aug 21 04:04:36 2010
+From: vojtech at aschenbrenner.cz (=?utf-8?q?Vojt=C4=9Bch_Aschenbrenner?=)
+Date: Sat, 21 Aug 2010 10:04:36 +0200
+Subject: [sup-talk] Password handling with gpg-agent
+Message-ID: <1282377608-sup-3154@nb-asch>
+
+Hey folks,
+
+I'd like to know, how to use comfortable gpg-agent with sup. I have
+gpg-agent started, use gpg-agent option in gpg.conf and pinentry program
+saved in gpg-agent.conf. But when I send signed email it everytime asks
+for password, so saving password to agent is not working!?
+
+Thank you for your help.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100821/e43221cc/attachment.bin>
+
+From vojtech at aschenbrenner.cz  Sat Aug 21 04:20:15 2010
+From: vojtech at aschenbrenner.cz (=?utf-8?q?Vojt=C4=9Bch_Aschenbrenner?=)
+Date: Sat, 21 Aug 2010 10:20:15 +0200
+Subject: [sup-talk] Password handling with gpg-agent
+In-Reply-To: <1282377608-sup-3154@nb-asch>
+References: <1282377608-sup-3154@nb-asch>
+Message-ID: <1282378728-sup-9180@nb-asch>
+
+Excerpts from Vojt?ch Aschenbrenner's message of Sat Aug 21 10:04:36 +0200 2010:
+> Hey folks,
+> 
+> I'd like to know, how to use comfortable gpg-agent with sup. I have
+> gpg-agent started, use gpg-agent option in gpg.conf and pinentry program
+> saved in gpg-agent.conf. But when I send signed email it everytime asks
+> for password, so saving password to agent is not working!?
+> 
+> Thank you for your help.
+
+OK, I solved it myself :-). The problem was, that the run-mailcap wasn't
+installed and some error ocurred, so password wasn't saved.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100821/63996393/attachment.bin>
+
+From kardan at brueckenschlaeger.de  Wed Aug 18 08:48:35 2010
+From: kardan at brueckenschlaeger.de (kardan)
+Date: Wed, 18 Aug 2010 12:48:35 +0000 (UTC)
+Subject: [sup-talk] Still having wide character issues on OS X
+References: <t2q2e8d08f1004021654ydf7df351h1693b4b4cf0d4d12@mail.gmail.com>
+Message-ID: <loom.20100818T141746-467@post.gmane.org>
+
+greetings,
+
+Richard Sandilands <richard <at> infoarts.info> writes:
+
+> I'm tracking the next branch of Sup and it's working beautifully.
+> However I still can't work out how to get wide character support  in
+> OS X (Snow Leopard).
+> 
+> I've tried installing the ncursesw gem but the installation fails:
+> 
+> ***
+> Could not create Makefile due to some reason, probably lack of
+> necessary libraries and/or headers.
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+> ***
+ 
+for debian squeeze / ubuntu lucid the following steps were necessary:
+
+# apt-get install libncurses5-dev libncursesw5-dev
+$ mkdir $HOME/.sup
+
+full dependency list:
+ruby="rake rubygems libopenssl-ruby libdevel-logger-ruby libtrollop-ruby
+libgettext-ruby-util liblockfile-ruby libmime-types-ruby "
+ruby18="librmail-ruby1.8 libxapian-ruby1.8"
+ncurses="libncurses-ruby libncursesw5-dev libncurses5-dev"
+
+
+From kevinr at free-dissociation.com  Tue Aug 24 14:51:41 2010
+From: kevinr at free-dissociation.com (Kevin Riggle)
+Date: Tue, 24 Aug 2010 14:51:41 -0400
+Subject: [sup-talk] exception on sup-sync (inline gpg-related?)
+Message-ID: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+
+Hi, I get the following exception on sup-sync'ing (trying to upgrade
+to a v4
+index) with mainline master.
+
+Adding new message
+maildir:///home/kevinr/remote-mail/free-dissociation/INBOX#new/1268044480_0.29269.black-opal,U=133379,FMD5=7e33429f656f1e6e9dd
+./lib/sup/message.rb:568:in `inline_gpg_to_chunks': undefined method
+`+' for nil:NilClass (NoMethodError)
+        from ./lib/sup/message.rb:518:in `message_to_chunks'
+        from ./lib/sup/message.rb:259:in `load_from_source!'
+        from ./lib/sup/message.rb:328:in `build_from_source'
+        from ./lib/sup/poll.rb:157:in `poll_from'
+        from ./lib/sup/maildir.rb:106:in `poll'
+        from ./lib/sup/maildir.rb:105:in `each'
+        from ./lib/sup/maildir.rb:105:in `poll'
+        from ./lib/sup/maildir.rb:90:in `each'
+        from ./lib/sup/maildir.rb:90:in `poll'
+        from ./lib/sup/poll.rb:154:in `poll_from'
+        from ./lib/sup/util.rb:596:in `send'
+        from ./lib/sup/util.rb:596:in `method_missing'
+        from ./bin/sup-sync:123
+        from ./bin/sup-sync:118:in `each'
+        from ./bin/sup-sync:118
+
+I can dig up the potentially-offending message if that would be
+useful.
+
+- Kevin
+-- 
+Kevin Riggle (kevinr at free-dissociation.com)
+

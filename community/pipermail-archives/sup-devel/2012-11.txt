@@ -1,0 +1,98 @@
+From sup-asheesh at asheesh.org  Sun Nov 25 04:45:48 2012
+From: sup-asheesh at asheesh.org (Asheesh Laroia)
+Date: Sat, 24 Nov 2012 23:45:48 -0500 (EST)
+Subject: [sup-devel] Backtrace, and confusion
+Message-ID: <alpine.DEB.2.02.1211242342310.7520@rose.makesad.us>
+
+Hey all,
+
+I presume sup is sort of end-of-life'd at this point, but I wondered if 
+some people here might have an idea for how to address the following 
+crash.
+
+I experience it with current git on my sup database; I just start sup, and 
+get the familiar sup screen only to nearly immediately see it crash with 
+this backtrace:
+
+--- NoMethodError from thread: load threads for thread-index-mode
+undefined method `person_for' for 
+#<Redwood::ContactManager:0x7f123d552570>
+./lib/sup/util.rb:572:in `send'
+./lib/sup/util.rb:572:in `method_missing'
+./lib/sup/person.rb:82:in `from_name_and_email'
+./lib/sup/index.rb:215:in `build_message'
+./lib/sup/index.rb:216:in `[]'
+./lib/sup/index.rb:216:in `build_message'
+./lib/sup/index.rb:155:in `each_id_by_date'
+./lib/sup/thread.rb:338:in `call'
+./lib/sup/thread.rb:338:in `load_n_threads'
+./lib/sup/index.rb:155:in `each_id_by_date'
+./lib/sup/index.rb:252:in `each_id'
+./lib/sup/index.rb:252:in `each'
+./lib/sup/index.rb:252:in `each_id'
+./lib/sup/index.rb:155:in `each_id_by_date'
+./lib/sup/thread.rb:334:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:640:in 
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:624:in 
+`load_n_threads_background'
+./lib/sup.rb:79:in `reporting_thread'
+./lib/sup.rb:77:in `initialize'
+./lib/sup.rb:77:in `new'
+./lib/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:623:in 
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:694:in 
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+bin/sup:223
+
+
+I reproduced it against current git by running:
+
+ruby -I lib -w bin/sup
+
+I also reproduced it wih sup 0.11 as packaged in Debian.
+
+I'm actually a bit confused; I tried to debug it, but it seems the 
+NoMethodError is somewhat unwarranted; the method is defined in 
+lib/sup/person.rb. Unless I don't underestand Ruby, which is actually very 
+likely; I'm more of a Python programmer myself.
+
+So, hope to hear back,
+
+-- Asheesh.
+
+From alvherre at alvh.no-ip.org  Mon Nov 26 12:46:38 2012
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Mon, 26 Nov 2012 09:46:38 -0300
+Subject: [sup-devel] Backtrace, and confusion
+In-Reply-To: <alpine.DEB.2.02.1211242342310.7520@rose.makesad.us>
+References: <alpine.DEB.2.02.1211242342310.7520@rose.makesad.us>
+Message-ID: <20121126124638.GA4227@alvh.no-ip.org>
+
+Asheesh Laroia wrote:
+> Hey all,
+> 
+> I presume sup is sort of end-of-life'd at this point, but I wondered
+> if some people here might have an idea for how to address the
+> following crash.
+> 
+> I experience it with current git on my sup database; I just start
+> sup, and get the familiar sup screen only to nearly immediately see
+> it crash with this backtrace:
+> 
+> --- NoMethodError from thread: load threads for thread-index-mode
+> undefined method `person_for' for
+> #<Redwood::ContactManager:0x7f123d552570>
+
+Due to the EOL state of Sup you mention I didn't pursue a similar crash
+I had, but I observed that parts of the ContactManager used case
+sensitive lookups; so when I entered an address of mine using uppercase
+letters, it caused pretty funky behavior.  I have no patch to offer,
+though.
+
+-- 
+Alvaro Herrera
+

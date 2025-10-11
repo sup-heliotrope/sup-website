@@ -1,0 +1,506 @@
+From matthieu.rakotojaona at gmail.com  Wed Nov  2 19:55:40 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 3 Nov 2011 00:55:40 +0100
+Subject: [sup-devel] heliotrope-syncback
+Message-ID: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+
+Hello everyone,
+
+I am playing around with heliotrope, and I've managed to writo a ruby
+script to sync changes you made there in your IMAP mailbox. It is
+primarily intended to be used with GMail, but nothing prevents it from
+working with others.
+
+Basically, this is how it works :
+- when you make a change in heliotrope, it is written in an external file
+- the script reads the file line by line and applies back any changes
+
+At the moment, I've only logged messages and state changes. When you
+send a mail with GMail, it is automatically added in GMail "Sent"
+mail, so I thought heliotrope could automagically thread it, but I
+haven't tested yet.
+
+The changes in thu imap folder happen like this :
+- search for a thread with the "subject" we are interested in
+- label/unlabel each message in the thread
+- change state of each message as written in the log file
+
+Many problems :
+- first and foremost, the link between a thread in heliotrope and the
+same in GMail is done through a basic IMAP search on the entire
+"subject" string. I don't know about how the threading happens in
+heliotrope, but I hope both are the same
+- the ruby Net::IMAP library doesn't want to send non-ascii characters
+( or I'm too dumb to see how to). So I decided to do it the hard way :
+remove any word (blocks of chars separated by spaces) that contains
+any non-ascii characters. Well, I,ve just removed one character for
+the moment, because I had an error when trying to match a UTF-8 string
+with a Unicode regexp.
+- "states" should be message-centered, as explained in the comments,
+yet I don't know how to link messages in heliotrope and messages in
+GMail. And I don't think searching through the whole body of the
+messages in GMail would be very fast. So, I changed the state of all
+the messages in the thread. After all, when I have an "Unseen" message
+in a thread, seeing the whole thread looks interesting; same for
+"Starred".
+- I've heard the ruby IMAP lib is buggy; what is it exactly ?
+
+All in all, the most important part of the process is just the writing
+of the logfile. (One of) My main problem with switching to heliotrope
+entirely is the fact that it doesn't sync with anything else. So now,
+if I have a log of everything I've done, I can at least do the same
+changes by hand. And the script is to be run apart from everything
+else, because I don't think it's part of heliotrope job to sync with
+other mailserver. In fact, this script is more of a "fiddle around to
+learn ruby" script, so please don't care about the code quality =]
+
+Cya,
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch
+Type: application/octet-stream
+Size: 8853 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111103/92c72780/attachment-0001.obj>
+
+From wmorgan-sup at masanjin.net  Mon Nov  7 01:57:19 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 07 Nov 2011 06:57:19 +0000
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+Message-ID: <1320648596-sup-2551@masanjin.net>
+
+Hi Matthieu,
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-11-02:
+> I am playing around with heliotrope, and I've managed to writo a ruby
+> script to sync changes you made there in your IMAP mailbox.
+
+Cool!
+
+> When you
+> send a mail with GMail, it is automatically added in GMail "Sent"
+> mail, so I thought heliotrope could automagically thread it, but I
+> haven't tested yet.
+
+That should work.
+
+> The changes in thu imap folder happen like this :
+> - search for a thread with the "subject" we are interested in
+
+This is problematic. Message subjects are definitely not unique. You
+should match up the Message-Id fields instead, if that's at all possible
+with IMAP.
+
+If it's not possible, well, IMAP does have a notion of a per-message
+ids, but it's fraught with difficulties...
+
+> I don't know about how the threading happens in heliotrope, but I hope
+> both are the same
+
+They will mostly be the same, but it's not guaranteed and you will see
+some differences.
+
+> - I've heard the ruby IMAP lib is buggy; what is it exactly ?
+
+In my experience, I haven't found any large bugs, just hard-to-debug
+issues in the error-handling, and general slowness (though that is
+probably attributable to the IMAP protocol itself).
+
+Keep up the good work!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael+sup at stapelberg.de  Mon Nov  7 13:56:10 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 07 Nov 2011 18:56:10 +0000
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <1320648596-sup-2551@masanjin.net>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net>
+Message-ID: <1320692090-sup-9935@stapelberg.de>
+
+Hi,
+
+Excerpts from William Morgan's message of 2011-11-07 06:57:19 +0000:
+> > - I've heard the ruby IMAP lib is buggy; what is it exactly ?
+> In my experience, I haven't found any large bugs, just hard-to-debug
+> issues in the error-handling, and general slowness (though that is
+> probably attributable to the IMAP protocol itself).
+When I switched from ruby IMAP to offlineimap, a few "new" messages popped up,
+which were not in the index before. So my suspicion is that the IMAP backend
+has been eating messages. Since I was switching away from it, I did not take
+any time to further investigate, so only take it as an anecdote, not actual
+evidence.
+
+Best regards,
+Michael
+
+From matthieu.rakotojaona at gmail.com  Tue Nov  8 22:22:51 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 9 Nov 2011 04:22:51 +0100
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <1320692090-sup-9935@stapelberg.de>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net> <1320692090-sup-9935@stapelberg.de>
+Message-ID: <CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+
+Okay, forget about buggy syncback, now comes the IMAP interface ! I've
+begun to hack ximapd[0], a ruby IMAP server, to work with heliotrope.
+Unfortunately it is not supported anymore.
+
+So far, I can connect with it (but with no security), list "mailboxes"
+(just like GMail, they are just labels) select one and search for
+something, all using imap4rev1 specs and, of course, heliotrope as a
+backend. The most interesting parts like FETCHing and STORing are
+still a few lines of code away. Of course, the goal is to use
+something like offlineimap, Because It Works, to sync both mail stores
+in a reliable fashion.
+
+Considering the implementation, I've considered only UIDs, which are
+heliotrope's message_ids. Both can and must only go up as messages
+come and go, so it's cool.
+
+So if you want to test it, go to https://github.com/rakoo/ximapd-heliotrope.
+This leads me to the question : what is the license of Heliotrope ?
+Ximapd seems to be something BSD-like, but Heliotrope has none.
+
+Cya !
+
+[0] https://github.com/shugo/ximapd
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Wed Nov  9 18:18:08 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 09 Nov 2011 23:18:08 +0000
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net>
+	<1320692090-sup-9935@stapelberg.de>
+	<CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+Message-ID: <1320880426-sup-9891@masanjin.net>
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-11-09:
+> Okay, forget about buggy syncback, now comes the IMAP interface !
+
+Now THIS is exciting. Thanks for starting on it!
+
+> Considering the implementation, I've considered only UIDs, which are
+> heliotrope's message_ids. Both can and must only go up as messages
+> come and go, so it's cool.
+
+That's right. Thread ids can sometimes be non-increasing, but message
+ids should always be increasing. And the IMAP interface shouldn't have
+anything to do with thread ids anyways.
+
+> This leads me to the question : what is the license of Heliotrope ?
+> Ximapd seems to be something BSD-like, but Heliotrope has none.
+
+Hm, good question. I will probably GPL it. Let me think for a few days.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eg at gaute.vetsj.com  Wed Nov  9 19:12:27 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 10 Nov 2011 01:12:27 +0100
+Subject: [sup-devel] Crash on adding contact
+Message-ID: <1320883863-sup-9753@qwerzila>
+
+Hi,
+
+when adding new contacts (aliases) I get the following error (after
+upgrade to ruby 1.9.3):
+
+--- NoMethodError from thread: main
+undefined method `email' for "":String
+/home/gaute/dev/ruby/sup.git/lib/sup/contact.rb:34:in `update_alias'
+/home/gaute/dev/ruby/sup.git/lib/sup/util.rb:572:in `method_missing'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/contact-list-mode.rb:17:in `alias_contact'
+/home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-view-mode.rb:259:in `alias'
+/home/gaute/dev/ruby/sup.git/lib/sup/mode.rb:59:in `handle_input'
+/home/gaute/dev/ruby/sup.git/lib/sup/buffer.rb:278:in `handle_input'
+bin/sup:271:in `<module:Redwood>'
+bin/sup:80:in `<main>'
+
+The attached patch seems to fix the problem.
+
+Regards,
+Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Working-check-for-alias-on-ruby-1.9.3.patch
+Type: application/octet-stream
+Size: 793 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111110/ced65171/attachment.obj>
+
+From matthieu.rakotojaona at gmail.com  Thu Nov 10 20:25:59 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 11 Nov 2011 02:25:59 +0100
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <1320880426-sup-9891@masanjin.net>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net> <1320692090-sup-9935@stapelberg.de>
+	<CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+	<1320880426-sup-9891@masanjin.net>
+Message-ID: <CAMiZLn1+OFMu-Vht71iEVe6ohkC-kMHV1VE6CumEyvxpbEA2kA@mail.gmail.com>
+
+On Thu, Nov 10, 2011 at 12:18 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Now THIS is exciting. Thanks for starting on it!
+
+Yes it is. I have now finished (sort of) the FETCH operations. You can
+grab it here :
+https://github.com/rakoo/ximapd-heliotrope
+
+I've struggled a lot with the RFC, not understanding half of it. I
+don't know if the FETCH results are exact, but they seem to be. Please
+feel free to test it and tell me what are the problems.
+
+For those of you not aware  : the previous link leads you to a IMAP
+interface for Heliotrope. I've only implemented the "read-only"
+commands, so your messages won't have any problems, but you should be
+able with any IMAP client (again, read-only).
+
+Cya,
+
+-- 
+Matthieu RAKOTOJAONA
+
+From matthieu.rakotojaona at gmail.com  Wed Nov 16 20:33:07 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Nov 2011 02:33:07 +0100
+Subject: [sup-devel] heliotrope-syncback
+In-Reply-To: <CAMiZLn1+OFMu-Vht71iEVe6ohkC-kMHV1VE6CumEyvxpbEA2kA@mail.gmail.com>
+References: <CAMiZLn1tes53sJAdjzDmv+ntUvNNafPCChtOR9Uq7cnKaeOoQA@mail.gmail.com>
+	<1320648596-sup-2551@masanjin.net> <1320692090-sup-9935@stapelberg.de>
+	<CAMiZLn3dsR_sRfpZV9MLKhJpVhfgsSpd6t3DwHDeg5uydY39Ow@mail.gmail.com>
+	<1320880426-sup-9891@masanjin.net>
+	<CAMiZLn1+OFMu-Vht71iEVe6ohkC-kMHV1VE6CumEyvxpbEA2kA@mail.gmail.com>
+Message-ID: <CAMiZLn3kGuzMUxdMT1M0keSkZgggACWSbE3ykW+o6cdi-AiLkw@mail.gmail.com>
+
+Hello,
+
+I'm advancing on the IMAP interface. I can almost use OfflineIMAP, but
+there are a few things :
+
+- I needed an other method in the heliotrope-client file :
+add-message. It is exactly like send_message but doesn't send it.
+- I needed to have the msgid of a msg if it  was already in the store,
+so a few changes
+
+Both of these are in the patch attached.
+
+My problem now is that the addition of messages to the store doesn't
+seem to work. I use the same things as in heliotrope-add :
+force_encode("binary") if ...
+@heliotropeclient.add_message ...
+
+I send the whole rawbody to heliotrope. But when I want to see the
+mail, the body is empty (turnsole says 0b, the web interface displays
+only the header). I even used the RestClient directly, with no luck.
+So where are my mistakes ?
+
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch
+Type: application/octet-stream
+Size: 2625 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111117/04db1efb/attachment.obj>
+
+From matthieu.rakotojaona at gmail.com  Fri Nov 18 14:17:35 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 18 Nov 2011 20:17:35 +0100
+Subject: [sup-devel] rmail gem is faulty
+Message-ID: <CAMiZLn2-xTSReSjgHwkD2ppaNdm6mwwHmig47P6GpuKajiL6tw@mail.gmail.com>
+
+Hello everyone,
+
+I have seen that 'rmail' doesn't parse some of my mails correctly.
+Specifically, it includes the body in the header fields (I don't  know
+how it manages to do that).
+Moreover, last version dates from 2008. So I replaced it with the
+'mail' gem [0], more up-to-date and updated, with some useful methods
+that we don't have to define specifically in heliotrope.
+
+The result is the patch enclosed. All I did was in
+lib/heliotrope/message.rb, so everything else works (mainly).
+
+
+[0] https://github.com/mikel/mail
+
+-- 
+Matthieu RAKOTOJAONA
+
+From matthieu.rakotojaona at gmail.com  Fri Nov 18 14:19:23 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 18 Nov 2011 20:19:23 +0100
+Subject: [sup-devel] rmail gem is faulty
+In-Reply-To: <CAMiZLn2-xTSReSjgHwkD2ppaNdm6mwwHmig47P6GpuKajiL6tw@mail.gmail.com>
+References: <CAMiZLn2-xTSReSjgHwkD2ppaNdm6mwwHmig47P6GpuKajiL6tw@mail.gmail.com>
+Message-ID: <CAMiZLn1v6PQ75Hfdb9PO+Aw4PZNjakkkVUkgScP6CStC8WYAsw@mail.gmail.com>
+
+On Fri, Nov 18, 2011 at 8:17 PM, Matthieu Rakotojaona
+<matthieu.rakotojaona at gmail.com> wrote:
+> The result is the patch enclosed. All I did was in
+> lib/heliotrope/message.rb, so everything else works (mainly).
+
+Hem.
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-modified-message.rb-to-use-mail-gem.patch
+Type: text/x-patch
+Size: 8474 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111118/f7393609/attachment-0001.bin>
+
+From michael+sup at stapelberg.de  Fri Nov 18 16:14:27 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 18 Nov 2011 21:14:27 +0000
+Subject: [sup-devel] Instructions for testing sup with recent ruby/gems
+Message-ID: <1321650789-sup-7136@stapelberg.de>
+
+Hi,
+
+Since I just figured out how to install ruby and sup?s dependencies in a clean
+environment using RVM (no big deal, but?), I thought I?d share the instructions:
+
+bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+rvm reload
+rvm install 1.9.3
+rvm 1.9.3
+rvm gemset create sup2011-11-18
+rvm 1.9.3 at sup2011-11-18
+rvm 1.9.3 at sup2011-11-18 do gem install ncursesw
+rvm 1.9.3 at sup2011-11-18 do gem install trollop
+rvm 1.9.3 at sup2011-11-18 do gem install gettext
+rvm 1.9.3 at sup2011-11-18 do gem install rmail
+rvm 1.9.3 at sup2011-11-18 do gem install lockfile
+rvm 1.9.3 at sup2011-11-18 do gem install mime-types
+rvm 1.9.3 at sup2011-11-18 do gem install xapian-ruby
+git clone git://gitorious.org/sup/mainline
+cd mainline
+ruby -Ilib bin/sup
+
+Best regards,
+Michael
+
+From triumhiz at yandex.ru  Tue Nov 22 10:56:28 2011
+From: triumhiz at yandex.ru (=?utf-8?q?=D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B9_ ?= (Serge))
+Date: Tue, 22 Nov 2011 19:56:28 +0400
+Subject: [sup-devel] [BUG] Failure joining threads
+Message-ID: <1321975663-sup-4280@ss-comp>
+
+Hello there,
+
+'#' key sometimes do not join tagged threads in thread-index-mode. And I am not
+the only one who encountered this problem.
+
+I attach the mbox file with two messages I cannot join into one thread. Could
+someone else try to reproduce the bug with this mbox, please?
+
+Reproducing (in just-installed sup environment):
+
+1. Type:
+$ sup-add mbox:/.../failed_join.mbox
+$ sup
+
+Two one-message threads are in my inbox at the moment. And it looks like it
+should be one thread with two messages instead.
+
+2. Press sequentally tt#
+
+Threads are now untagged but not joined.
+
+I have sup-0.12.1 installed from 'xarthisius' overlay on gentoo linux.
+
+Thanx
+
+-- 
+?????? (Serge)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: failed_join.mbox
+Type: application/octet-stream
+Size: 6921 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111122/931b0c03/attachment.obj>
+
+From triumhiz at yandex.ru  Tue Nov 22 13:40:44 2011
+From: triumhiz at yandex.ru (=?utf-8?q?=D0=A1=D0=B5=D1=80=D0=B3=D0=B5=D0=B9_ ?= (Serge))
+Date: Tue, 22 Nov 2011 22:40:44 +0400
+Subject: [sup-devel] Failure joining threads
+Message-ID: <1321987174-sup-5333@ss-comp>
+
+Hello there,
+
+'#' key sometimes do not join tagged threads in thread-index-mode. And I am not
+the only one who encountered this problem.
+
+I attach the mbox file with two messages I cannot join into one thread. Could
+someone else try to reproduce the bug with this mbox, please?
+
+Reproducing (in just-installed sup environment):
+
+1. Type:
+$ sup-add mbox:/.../failed_join.mbox
+$ sup
+
+Two one-message threads are in my inbox at the moment. And it looks like it
+should be one thread with two messages instead.
+
+2. Press sequentally tt#
+
+Threads are now untagged but not joined.
+Nothing appears in status line or log file.
+
+I have sup-0.12.1 installed from 'xarthisius' overlay on gentoo linux.
+
+Thanx
+
+-- 
+?????? (Serge)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: failed_join.mbox
+Type: application/octet-stream
+Size: 6921 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111122/e2ea5fd6/attachment.obj>
+
+From michael+sup at stapelberg.de  Tue Nov 29 18:20:39 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 29 Nov 2011 23:20:39 +0000
+Subject: [sup-devel] [PATCH] Require gpgme 1.0.8 (v2 breaks API)
+Message-ID: <1322608753-sup-6359@stapelberg.de>
+
+Hi,
+
+The latest version of gpgme breaks its API. Pragmatic fix for now is requiring
+the old version.
+
+Hamish: Is this patch OK with you?
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Require-gpgme-1.0.8-v2-breaks-API.patch
+Type: application/octet-stream
+Size: 934 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20111129/ff5731d0/attachment-0001.obj>
+

@@ -1,0 +1,3384 @@
+From david.guibert at cdcsp.univ-lyon1.fr  Wed Apr  1 04:41:00 2009
+From: david.guibert at cdcsp.univ-lyon1.fr (David Guibert)
+Date: Wed, 01 Apr 2009 10:41:00 +0200
+Subject: [sup-talk] Config in VCS
+In-Reply-To: <1238234052-sup-2032@ausone.home>
+References: <49CD0B3E.9010002@cs.rpi.edu> <1238234052-sup-2032@ausone.home>
+Message-ID: <1238574341-sup-4744@orsine>
+
+Hi,
+
+>From Nicolas Pouillard:
+> Excerpts from Ethan Glasser-Camp's message of Fri Mar 27 18:22:06 +0100 2009:
+> > Hi, long time reader, first time caller.
+> > 
+> > Many years ago I used fetchmail+Mutt to handle my mail, but all my
+> > configuration was lost in a hard drive crash and I didn't have the
+> > energy to recreate it. So as I look at sup, I am judging how difficult
+> > it is to keep its configuration in a git repo (for easier replication
+> > and backup).
+> 
+> About backups, I recommend sup users to make regular sup-dump's, not only
+> because sup still have bugs but also because it's the only (meta)data
+> needed to reconstruct your index.
+
+For backup, I keep my configuration files into a git repository.
+I create the following pre-commit hook to create automatically sup-dump's on
+each commit.
+$ cat > .git/hooks/pre-commit <<EOF
+#/bin/sh
+sup-dump > sup.dump
+git add -f sup.dump
+EOF
+
+For replication, you can also define the post-update hook as
+$ cat > .git/hooks/post-update <<EOF
+#!/bin/sh
+sup-sync --restored --restore sup.dump
+EOF
+which reconstruct your index when you pull new commits.
+-- 
+David
+
+From nicolas.pouillard at gmail.com  Tue Apr  7 14:26:58 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 07 Apr 2009 20:26:58 +0200
+Subject: [sup-talk] Read only mode for sup
+Message-ID: <1239128578-sup-6684@ausone.local>
+
+Hi all,
+
+What about adding such a read only mode to sup?
+
+I see to important usages:
+
+* Running sup in an environment that we don't want
+  to change, like a backup or synchronized index.
+
+* Running a second instance of sup to make searches
+  while we are editing a mail.
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+
+From ismith at MIT.EDU  Tue Apr  7 19:29:04 2009
+From: ismith at MIT.EDU (Ian Smith)
+Date: Tue, 07 Apr 2009 19:29:04 -0400
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239128578-sup-6684@ausone.local>
+References: <1239128578-sup-6684@ausone.local>
+Message-ID: <1239146860-sup-6624@baad>
+
+Excerpts from Nicolas Pouillard's message of Tue Apr 07 14:26:58 -0400 2009:
+> What about adding such a read only mode to sup?
+> * Running a second instance of sup to make searches
+>   while we are editing a mail.
+
+This use case already works using buffers - you can switch between them
+fairly easily.  I need to rewrite my reflexes still, but I run sup in
+screen, so it can't be that hard.
+
+Ian
+-- 
+Ian Smith
+ismith at mit.edu
+ismith at bostonaccess.org
+
+From nicolas.pouillard at gmail.com  Wed Apr  8 04:36:23 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 08 Apr 2009 10:36:23 +0200
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239146860-sup-6624@baad>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+Message-ID: <1239179745-sup-912@ausone.inria.fr>
+
+Excerpts from Ian Smith's message of Wed Apr 08 01:29:04 +0200 2009:
+> Excerpts from Nicolas Pouillard's message of Tue Apr 07 14:26:58 -0400 2009:
+> > What about adding such a read only mode to sup?
+> > * Running a second instance of sup to make searches
+> >   while we are editing a mail.
+> 
+> This use case already works using buffers - you can switch between them
+> fairly easily.  I need to rewrite my reflexes still, but I run sup in
+> screen, so it can't be that hard.
+
+Even when you are editing a mail?
+
+-- 
+Nicolas Pouillard
+
+From ismith at MIT.EDU  Wed Apr  8 08:30:05 2009
+From: ismith at MIT.EDU (Ian Smith)
+Date: Wed, 08 Apr 2009 08:30:05 -0400
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239179745-sup-912@ausone.inria.fr>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239179745-sup-912@ausone.inria.fr>
+Message-ID: <1239193758-sup-8985@baad>
+
+Excerpts from Nicolas Pouillard's message of Wed Apr 08 04:36:23 -0400 2009:
+> Excerpts from Ian Smith's message of Wed Apr 08 01:29:04 +0200 2009:
+> > Excerpts from Nicolas Pouillard's message of Tue Apr 07 14:26:58 -0400 2009:
+> > > What about adding such a read only mode to sup?
+> > > * Running a second instance of sup to make searches
+> > >   while we are editing a mail.
+> > 
+> > This use case already works using buffers - you can switch between them
+> > fairly easily.  I need to rewrite my reflexes still, but I run sup in
+> > screen, so it can't be that hard.
+> 
+> Even when you are editing a mail?
+
+Oh, you're right - you have to switch into reply-mode, out of the
+editor.  Hmm.
+-- 
+Ian Smith
+ismith at mit.edu
+ismith at bostonaccess.org
+
+From andrew at pimlott.net  Wed Apr  8 13:01:08 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Wed, 8 Apr 2009 10:01:08 -0700
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239193758-sup-8985@baad>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239179745-sup-912@ausone.inria.fr> <1239193758-sup-8985@baad>
+Message-ID: <20090408170108.GW11701@pimlott.net>
+
+On Wed, Apr 08, 2009 at 08:30:05AM -0400, Ian Smith wrote:
+> Excerpts from Nicolas Pouillard's message of Wed Apr 08 04:36:23 -0400 2009:
+> > Excerpts from Ian Smith's message of Wed Apr 08 01:29:04 +0200 2009:
+> > > This use case already works using buffers - you can switch between them
+> > > fairly easily.  I need to rewrite my reflexes still, but I run sup in
+> > > screen, so it can't be that hard.
+> > 
+> > Even when you are editing a mail?
+> 
+> Oh, you're right - you have to switch into reply-mode, out of the
+> editor.  Hmm.
+
+I've always wondered, could a mailer use job control, like a shell, to
+allow it to have multiple sub-processes and switch among them?  Then,
+you could suspend your editor and get back to sup, and later resume your
+editor.
+
+Andrew
+
+From marka at pobox.com  Wed Apr  8 13:32:29 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 8 Apr 2009 10:32:29 -0700
+Subject: [sup-talk] More about those lost messages
+Message-ID: <a412e2a70904081032x3438abedw3a23d87973f56d35@mail.gmail.com>
+
+I've been using sup (next branch) for a week or so, and no crashes so
+far.  But I'm still having problems with occasional lost messages.
+Messages that were definitely in the index in the evening are gone
+when I start sup again the next morning.  I've recovered them by doing
+a sup-sync --all, but I'm still puzzled by what's going on.
+
+This has happened twice that I've noticed, and in both cases the
+message that got lost was part of a thread in which I was
+participating, and was in the inbox.  It could be that other messages
+got lost in other threads that I was ignoring, but I didn't notice it
+because I was ignoring those threads :-) .
+
+When I first noticed this a couple of weeks ago, I thought it might
+have something to do with fetchmail running in the background.  I
+changed things around so that fetchmail is only running in the
+background when sup is not running.  When sup is running, it invokes
+fetchmail via the poll hook.  But this doesn't seem to have had any
+effect on the lost message problem.
+
+This is just idle, uninformed speculation, but maybe some records that
+were in the in-memory index didn't get written to disk when sup
+exited?  Would neglecting to use the '$' command do this?
+
+From wirtwolff at gmail.com  Wed Apr  8 15:03:07 2009
+From: wirtwolff at gmail.com (Wirt Wolff)
+Date: Wed, 08 Apr 2009 13:03:07 -0600
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239146860-sup-6624@baad>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+Message-ID: <1239217190-sup-5981@chigamba>
+
+Excerpts from Ian Smith's message of Tue Apr 07 17:29:04 -0600 2009:
+> Excerpts from Nicolas Pouillard's message of Tue Apr 07 14:26:58 -0400 2009:
+> > What about adding such a read only mode to sup?
+> > * Running a second instance of sup to make searches
+> >   while we are editing a mail.
+> 
+> This use case already works using buffers - you can switch between them
+> fairly easily.  I need to rewrite my reflexes still, but I run sup in
+> screen, so it can't be that hard.
+
+In my situation buffers aren't enough sometimes. Aside from having to
+exit the editor, unless I'm mistaken there's no way to view more than
+one buffer at once. Mostly I've appreciated relaxing into that way of
+working, and even found it helpful to concentration and productivity.
+
+However, when for example, composing reviews of unapplied patches, each
+with one or more discussion threads, I often find myself wishing I could
+toggle back and forth between a couple of search buffers and their thread
+views in one frame, while composing in another.
+
+There are surely other solutions, hopefully simpler ones, but I've not
+gotten motivated enough to work them out yet. A read-only second sup
+would get daily usage here. It would be great to not have to switch to
+and from "sup mode" while completing tasks referencing multiple threads.
+
+-- 
+regards,
+wmw
+
+From bm at bjornmichelsen.com  Wed Apr  8 16:44:34 2009
+From: bm at bjornmichelsen.com (=?UNKNOWN?Q?Bj=C3=B8rn?= Michelsen)
+Date: Wed, 08 Apr 2009 22:44:34 +0200
+Subject: [sup-talk] Saving status of merged threads with '#' on next branch
+Message-ID: <1239177702-sup-8165@snowstorm>
+
+Hi all,
+
+For some reason, the '#' command isn't saving the status of tagged
+threads being forced to merge. I get a visual feedback that the threads
+have been put into the same one, but when I come back to the view after
+killing the buffer, they're separated again.
+
+I'm currently running sup from the next branch. But, I also checked the
+command on the 0.7 gem version without any luck.
+
+I'm a bit lost as to where I should begin troubleshooting, so I'm
+wondering if someone else have had the same problem?
+
+Maybe I have misinterpreted the command?
+-- 
+Mvh.
+Bj?rn Michelsen
+MOB: +47 934 55 474
+
+From wmorgan-sup at masanjin.net  Wed Apr  8 17:49:47 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 08 Apr 2009 14:49:47 -0700
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239217190-sup-5981@chigamba>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239217190-sup-5981@chigamba>
+Message-ID: <1239226676-sup-7216@entry>
+
+Reformatted excerpts from Wirt Wolff's message of 2009-04-08:
+> However, when for example, composing reviews of unapplied patches,
+> each with one or more discussion threads, I often find myself wishing
+> I could toggle back and forth between a couple of search buffers and
+> their thread views in one frame, while composing in another.
+
+The curses code was designed to support splitting the screen into
+multiple buffers/frames/windows. I, too, found the initial
+implementation of one buffer at a time to be surprisingly useful, so I
+never took it the rest of the way. I'm certainly open to someone
+fighting curses and making this possible.
+
+As possibly an easier step, I, too, too, find the current buffer-
+switching to be pretty onerous, and would love to hear suggestions on
+how to improve it.
+
+One easy thing to comes to mind would be to have buffer-list-mode (which
+is what you get when you hit B) sort the buffer list by last access.
+Remap that to something like ";" and you have one-handed buffer-
+switching with minimal keystrokes.
+
+> A read-only second sup would get daily usage here. It would be great
+> to not have to switch to and from "sup mode" while completing tasks
+> referencing multiple threads.
+
+I think this would be fine and not too hard to implement.
+
+In fact, I think it might not be too much harder to have multiple
+simultaneous read/write Sups, by locking ~/.sup on a per-operation
+rather than per-process basis. Of course you'd have to be cognizant of
+the fact that they wouldn't be sharing any state except via $ and @.
+It would be like editing a wiki page across multiple tabs. There's no
+merge, there's only overwrite. 
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr  8 18:18:14 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 08 Apr 2009 15:18:14 -0700
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <20090408170108.GW11701@pimlott.net>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239179745-sup-912@ausone.inria.fr> <1239193758-sup-8985@baad>
+	<20090408170108.GW11701@pimlott.net>
+Message-ID: <1239227396-sup-782@entry>
+
+Reformatted excerpts from Andrew Pimlott's message of 2009-04-08:
+> I've always wondered, could a mailer use job control, like a shell, to
+> allow it to have multiple sub-processes and switch among them?  Then,
+> you could suspend your editor and get back to sup, and later resume
+> your editor.
+
+The problem is that when the editor is in the foreground, it has
+control. So I don't think Sup would be able to suspend it. But it might
+be possible to do something like catch SIGTSTP signals when the editor
+is running, and file those process ids away for later resumption. You'd
+have to suspend from within the editor, but the rest of the behavior
+might be close to what you want. Interesting idea.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr  8 18:34:06 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 08 Apr 2009 15:34:06 -0700
+Subject: [sup-talk] More about those lost messages
+In-Reply-To: <a412e2a70904081032x3438abedw3a23d87973f56d35@mail.gmail.com>
+References: <a412e2a70904081032x3438abedw3a23d87973f56d35@mail.gmail.com>
+Message-ID: <1239229590-sup-7235@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-04-08:
+> This has happened twice that I've noticed, and in both cases the
+> message that got lost was part of a thread in which I was
+> participating, and was in the inbox.
+
+Just to confirm: you saw the message in Sup, you quit Sup, and when you
+started Sup again, the message wasn't there?
+
+The next time this happens, would you mind trying this? Before running
+sup-sync --all, find the message id of the missing message (i.e. from
+the mbox file), and run:
+
+  devel/console.sh                                # start the debug console
+  Index.index.search("message_id:XXX").total_hits # from within the console
+
+where XXX is the message id, without the angle brackets. E.g.
+
+  Index.index.search("message_id:a412e2a70904081032x3438abedw3a23d87973f56d35 at mail.gmail.com")
+
+This will tell us whether it's in the index or not, without anything
+of Sup's curses interface getting in the way.
+
+If it is in the index (the total_hits is > 0), then try finding the
+labels:
+
+  docid = Index.index.search("message_id:XXX").hits.first.doc
+  Index.build_message(docid).labels
+
+> This is just idle, uninformed speculation, but maybe some records that
+> were in the in-memory index didn't get written to disk when sup
+> exited?  Would neglecting to use the '$' command do this?
+
+Sup saves all state when you quit. That's why I'm wondering whether the
+messages actually are in the index, or somehow are just hidden from the
+curses interface.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Thu Apr  9 07:55:56 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 09 Apr 2009 13:55:56 +0200
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239226676-sup-7216@entry>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239217190-sup-5981@chigamba> <1239226676-sup-7216@entry>
+Message-ID: <1239278036-sup-7327@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Wed Apr 08 23:49:47 +0200 2009:
+> Reformatted excerpts from Wirt Wolff's message of 2009-04-08:
+> > However, when for example, composing reviews of unapplied patches,
+> > each with one or more discussion threads, I often find myself wishing
+> > I could toggle back and forth between a couple of search buffers and
+> > their thread views in one frame, while composing in another.
+> 
+> The curses code was designed to support splitting the screen into
+> multiple buffers/frames/windows. I, too, found the initial
+> implementation of one buffer at a time to be surprisingly useful, so I
+> never took it the rest of the way. I'm certainly open to someone
+> fighting curses and making this possible.
+> 
+> As possibly an easier step, I, too, too, find the current buffer-
+> switching to be pretty onerous, and would love to hear suggestions on
+> how to improve it.
+> 
+> One easy thing to comes to mind would be to have buffer-list-mode (which
+> is what you get when you hit B) sort the buffer list by last access.
+> Remap that to something like ";" and you have one-handed buffer-
+> switching with minimal keystrokes.
+
+Or some kind of historic like with "cd -42".
+It could be "b1" for the last one, "b2" for the previous... I actually
+use these bindings in my window manager.
+
+> > A read-only second sup would get daily usage here. It would be great
+> > to not have to switch to and from "sup mode" while completing tasks
+> > referencing multiple threads.
+> 
+> I think this would be fine and not too hard to implement.
+> 
+> In fact, I think it might not be too much harder to have multiple
+> simultaneous read/write Sups, by locking ~/.sup on a per-operation
+> rather than per-process basis. Of course you'd have to be cognizant of
+> the fact that they wouldn't be sharing any state except via $ and @.
+> It would be like editing a wiki page across multiple tabs. There's no
+> merge, there's only overwrite. 
+
+Simultaneous read/write Sups would be great too!
+
+-- 
+Nicolas Pouillard
+
+From marka at pobox.com  Thu Apr  9 11:36:54 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 9 Apr 2009 08:36:54 -0700
+Subject: [sup-talk] More about those lost messages
+In-Reply-To: <1239229590-sup-7235@entry>
+References: <a412e2a70904081032x3438abedw3a23d87973f56d35@mail.gmail.com>
+	<1239229590-sup-7235@entry>
+Message-ID: <a412e2a70904090836u2139ae8apf03ddc479f5aa393@mail.gmail.com>
+
+I'm starting to think it may be a user error on my part.  It looks as if
+I might have used the 'd' (delete) command on some messages,
+perhaps accidentally or carelessly in some cases, and that
+prevented them from showing up in threads later.  I'll continue
+studying this.
+
+From marka at pobox.com  Thu Apr  9 11:39:39 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 9 Apr 2009 08:39:39 -0700
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239177702-sup-8165@snowstorm>
+References: <1239177702-sup-8165@snowstorm>
+Message-ID: <a412e2a70904090839k2b63f3f3v1d63c080902bb7ac@mail.gmail.com>
+
+2009/4/8 Bj?rn Michelsen <bm at bjornmichelsen.com>:
+> For some reason, the '#' command isn't saving the status of tagged
+> threads being forced to merge. I get a visual feedback that the threads
+> have been put into the same one, but when I come back to the view after
+> killing the buffer, they're separated again.
+
+I've noticed this as well.  I figured it was a feature, not a bug :-) .
+
+From wmorgan-sup at masanjin.net  Thu Apr  9 13:30:09 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Apr 2009 10:30:09 -0700
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239226676-sup-7216@entry>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239217190-sup-5981@chigamba> <1239226676-sup-7216@entry>
+Message-ID: <1239297831-sup-5831@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-04-08:
+> One easy thing to comes to mind would be to have buffer-list-mode
+> (which is what you get when you hit B) sort the buffer list by last
+> access.  Remap that to something like ";" and you have one-handed
+> buffer- switching with minimal keystrokes.
+
+Ok, I've done this on branch 'better-buffer-list', which I've merged
+into next. Pull and see how you guys like it. Summary:
+
+1. 'b' rolls the buffer forward as usual.
+2. 'B' now rolls the buffer backwards like in the olden days.
+3. ';' pulls up the buffer list, which is now sorted by access time,
+   colorized to show "system" vs non-"system" buffers, and has little
+   stars for buffers with unsaved content.
+4. '+' is now the apply-to-tagged command.
+
+Sorry for changing so many keymappings, but I really wanted ';' so that,
+with 'j' and 'k', you can swap buffers really quickly with just one
+hand. Since that freed up B, I figured I'd reenable the old behavior,
+and '+' kinda makes sense for apply-to-tagged anyways.
+
+Nicolas, I had to revert your "Buffer switching, 'bn' for the next one
+and 'bp' for the previous" change in next. I hope you're not offended! :)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From vikrambkumar at gmail.com  Thu Apr  9 13:34:23 2009
+From: vikrambkumar at gmail.com (Vikram Kumar)
+Date: Thu, 9 Apr 2009 13:34:23 -0400
+Subject: [sup-talk] Sup and Cygwin
+Message-ID: <89041090904091034i420d33e1k6c53440229019039@mail.gmail.com>
+
+Has anybody tried it before?
+
+$ sup
+/usr/lib/ruby/1.8/dl/import.rb:29:in `initialize': No such file or directory
+(RuntimeError)
+        from /usr/lib/ruby/1.8/dl/import.rb:29:in `dlopen'
+        from /usr/lib/ruby/1.8/dl/import.rb:29:in `dlload'
+        from /usr/lib/ruby/1.8/dl/import.rb:27:in `each'
+        from /usr/lib/ruby/1.8/dl/import.rb:27:in `dlload'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:17
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`require'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.7/bin/sup:9
+        from /usr/bin/sup:19:in `load'
+        from /usr/bin/sup:19
+
+I do have all the requirements available in cygwin ruby + gems.
+
+*** LOCAL GEMS ***
+ferret (0.11.6)
+ncurses (0.9.1)
+rmail (1.0.0)
+highline (1.5.0, 1.4.0)
+net-ssh (2.0.11, 1.1.2)
+net-ssh-gateway (1.0.1)
+trollop (1.13)
+lockfile (1.4.3)
+mime-types (1.16, 1.15)
+
+Vikram
+
+P.S - I couldn't find a way to search the message list archives.
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090409/6eb7d14a/attachment.html>
+
+From wmorgan-sup at masanjin.net  Thu Apr  9 13:53:32 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Apr 2009 10:53:32 -0700
+Subject: [sup-talk] brief master update
+Message-ID: <1239299514-sup-1793@entry>
+
+I've merged these branches into master:
+- dont-canonicalize-email-addresses
+- multi-remove-labels
+- merge-labels
+- encoding-misspellings
+- background-save
+
+I'd like to do a little more work on undo, and fix the From problem, and
+then we can start thinking about an 0.8 release!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Apr  9 14:02:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Apr 2009 11:02:08 -0700
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239177702-sup-8165@snowstorm>
+References: <1239177702-sup-8165@snowstorm>
+Message-ID: <1239299963-sup-5933@entry>
+
+Reformatted excerpts from =?UNKNOWN?Q?Bj=C3=B8rn?= Michelsen's message of 2009-04-08:
+> I'm a bit lost as to where I should begin troubleshooting, so I'm
+> wondering if someone else have had the same problem?
+
+It's a known problem. I'm not sure why it isn't saved. If you want to
+start investigating, ThreadSet#join_threads in lib/sup/threads.rb is the
+joining code. Maybe the call to Message#add_ref is wrong somehow.
+
+I'm also curious about your From: line, which is RFC2047-encoded but
+with the "UNKNOWN" charset. What produces that? Surely not Sup!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marka at pobox.com  Thu Apr  9 14:37:40 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 9 Apr 2009 11:37:40 -0700
+Subject: [sup-talk] Sup and Cygwin
+In-Reply-To: <89041090904091034i420d33e1k6c53440229019039@mail.gmail.com>
+References: <89041090904091034i420d33e1k6c53440229019039@mail.gmail.com>
+Message-ID: <a412e2a70904091137x3e62dedcn3a498d22a7ac887d@mail.gmail.com>
+
+On Thu, Apr 9, 2009 at 10:34 AM, Vikram Kumar <vikrambkumar at gmail.com> wrote:
+
+> P.S - I couldn't find a way to search the message list archives.
+
+Try the archive here:
+
+http://www.nabble.com/SUP-Talk-f27890.html
+
+From wmorgan-sup at masanjin.net  Thu Apr  9 15:11:33 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Apr 2009 12:11:33 -0700
+Subject: [sup-talk] Sup and Cygwin
+In-Reply-To: <89041090904091034i420d33e1k6c53440229019039@mail.gmail.com>
+References: <89041090904091034i420d33e1k6c53440229019039@mail.gmail.com>
+Message-ID: <1239304198-sup-9672@entry>
+
+Reformatted excerpts from Vikram Kumar's message of 2009-04-09:
+> Has anybody tried it before?
+> 
+> $ sup
+> /usr/lib/ruby/1.8/dl/import.rb:29:in `initialize': No such file or directory
+> (RuntimeError)
+
+Oh, that's a bug. I think you should be able to get around it by
+changing the 'libc.so.6' on this line:
+>         from /usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:17
+to 'cygwin1.dll'.
+
+I'd be interested to know if that works. If so I'll fix it in git.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Fri Apr 10 04:36:16 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 10 Apr 2009 10:36:16 +0200
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239297831-sup-5831@entry>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239217190-sup-5981@chigamba> <1239226676-sup-7216@entry>
+	<1239297831-sup-5831@entry>
+Message-ID: <1239352575-sup-724@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Thu Apr 09 19:30:09 +0200 2009:
+> Reformatted excerpts from William Morgan's message of 2009-04-08:
+> > One easy thing to comes to mind would be to have buffer-list-mode
+> > (which is what you get when you hit B) sort the buffer list by last
+> > access.  Remap that to something like ";" and you have one-handed
+> > buffer- switching with minimal keystrokes.
+> 
+> Ok, I've done this on branch 'better-buffer-list', which I've merged
+> into next. Pull and see how you guys like it. Summary:
+> 
+> 1. 'b' rolls the buffer forward as usual.
+> 2. 'B' now rolls the buffer backwards like in the olden days.
+> 3. ';' pulls up the buffer list, which is now sorted by access time,
+>    colorized to show "system" vs non-"system" buffers, and has little
+>    stars for buffers with unsaved content.
+> 4. '+' is now the apply-to-tagged command.
+> 
+> Sorry for changing so many keymappings, but I really wanted ';' so that,
+> with 'j' and 'k', you can swap buffers really quickly with just one
+> hand. Since that freed up B, I figured I'd reenable the old behavior,
+> and '+' kinda makes sense for apply-to-tagged anyways.
+> 
+> Nicolas, I had to revert your "Buffer switching, 'bn' for the next one
+> and 'bp' for the previous" change in next. I hope you're not offended! :)
+
+I'm not offended, I just wanted to tend to more scalable bindings, where
+a meaningful letter is kept to be the leading one for more advanced bindings
+on a particular topic.
+
+Moreover optimizing bindings for QUERTY keymap does not make sense for other
+people... Personally I use and prefer DVORAK.
+
+-- 
+Nicolas Pouillard
+
+From nicolas.pouillard at gmail.com  Fri Apr 10 04:40:00 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Fri, 10 Apr 2009 10:40:00 +0200
+Subject: [sup-talk] brief master update
+In-Reply-To: <1239299514-sup-1793@entry>
+References: <1239299514-sup-1793@entry>
+Message-ID: <1239352712-sup-3931@ausone.inria.fr>
+
+Excerpts from William Morgan's message of Thu Apr 09 19:53:32 +0200 2009:
+> I've merged these branches into master:
+> - dont-canonicalize-email-addresses
+> - multi-remove-labels
+> - merge-labels
+> - encoding-misspellings
+> - background-save
+> 
+> I'd like to do a little more work on undo, and fix the From problem, and
+> then we can start thinking about an 0.8 release!
+
+Great!
+
+Just a small administrative question... Do we consider branches merged into
+master as dead. That is making a new one if we want to improve again on this
+topic?
+
+-- 
+Nicolas Pouillard
+
+From wmorgan-sup at masanjin.net  Fri Apr 10 08:23:02 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 10 Apr 2009 05:23:02 -0700
+Subject: [sup-talk] brief master update
+In-Reply-To: <1239352712-sup-3931@ausone.inria.fr>
+References: <1239299514-sup-1793@entry> <1239352712-sup-3931@ausone.inria.fr>
+Message-ID: <1239365949-sup-627@entry>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2009-04-10:
+> Just a small administrative question... Do we consider branches merged
+> into master as dead. That is making a new one if we want to improve
+> again on this topic?
+
+Yes... I don't see a real point in adding more commits to the branch and
+remerging once it's in master. I'm happy to apply trivial changes
+directly to master, and anything non-trivial I prefer to test out in
+next first.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Apr 10 08:24:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 10 Apr 2009 05:24:15 -0700
+Subject: [sup-talk] Read only mode for sup
+In-Reply-To: <1239352575-sup-724@ausone.inria.fr>
+References: <1239128578-sup-6684@ausone.local> <1239146860-sup-6624@baad>
+	<1239217190-sup-5981@chigamba> <1239226676-sup-7216@entry>
+	<1239297831-sup-5831@entry> <1239352575-sup-724@ausone.inria.fr>
+Message-ID: <1239366212-sup-2213@entry>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2009-04-10:
+> Moreover optimizing bindings for QUERTY keymap does not make sense for
+> other people... Personally I use and prefer DVORAK.
+
+Uh oh. Well, time to get working on that configurable keymap patch...
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From lee at writequit.org  Fri Apr 10 15:04:58 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Fri, 10 Apr 2009 13:04:58 -0600
+Subject: [sup-talk] Display size of message or attachments?
+Message-ID: <1239390142-sup-9102@black>
+
+Hey Sup'ers
+Is there a way to display the total size of the message in your inbox?
+(Including attachments). I wasn't able to find a way (other than saving
+everything and doing it manually).
+
+On the same note, is there a way I can see how big an attachment is on an
+email? I know it shows up when sending email, but not on a retrieved email.
+
+Thanks,
+Lee
+
+From wmorgan-sup at masanjin.net  Mon Apr 13 10:56:08 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 13 Apr 2009 07:56:08 -0700
+Subject: [sup-talk] Display size of message or attachments?
+In-Reply-To: <1239390142-sup-9102@black>
+References: <1239390142-sup-9102@black>
+Message-ID: <1239634495-sup-2172@entry>
+
+Reformatted excerpts from Lee Hinman's message of 2009-04-10:
+> Is there a way to display the total size of the message in your inbox?
+> (Including attachments). I wasn't able to find a way (other than
+> saving everything and doing it manually).
+
+This wouldn't be too hard but I'm not sure what the right UI would be.
+Suggestions, anyone?
+
+> On the same note, is there a way I can see how big an attachment is on
+> an email? I know it shows up when sending email, but not on a
+> retrieved email.
+
+I've added this in git. 
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From lee at writequit.org  Mon Apr 13 11:23:23 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Mon, 13 Apr 2009 09:23:23 -0600
+Subject: [sup-talk] Display size of message or attachments?
+In-Reply-To: <1239634495-sup-2172@entry>
+References: <1239390142-sup-9102@black> <1239634495-sup-2172@entry>
+Message-ID: <1239636103-sup-6606@black>
+
+Excerpts from William Morgan's message of Mon Apr 13 08:56:08 -0600 2009:
+> Reformatted excerpts from Lee Hinman's message of 2009-04-10:
+> > Is there a way to display the total size of the message in your inbox?
+> > (Including attachments). I wasn't able to find a way (other than
+> > saving everything and doing it manually).
+> 
+> This wouldn't be too hard but I'm not sure what the right UI would be.
+> Suggestions, anyone?
+
+How about this?:
+ 8:56am [213k] me,William  (2) >[sup-talk] Display size of message or attachments? +list +sup This wouldn't b...
+
+> > On the same note, is there a way I can see how big an attachment is on
+> > an email? I know it shows up when sending email, but not on a
+> > retrieved email.
+> 
+> I've added this in git. 
+
+Thanks!
+
+- Lee
+
+From lee at writequit.org  Mon Apr 13 12:00:56 2009
+From: lee at writequit.org (Lee Hinman)
+Date: Mon, 13 Apr 2009 10:00:56 -0600
+Subject: [sup-talk] Suggestion for '.' keybinding
+Message-ID: <1239638279-sup-6990@black>
+
+Sup,
+Since Sup already emulates vi-bindings, I was wondering if it'd be possible to
+have '.' bound to "do-it-again". So if I added a label to a mail, then wanted
+to apply it to a different mail, I could go to the mail and use '.' to apply
+whatever the last change was. (I know I could tag all the messages ahead of
+time and label them all at once, but sometimes I want to do it a different
+way).
+
+Is this possible with Sup right now? Does it store what the last action was?
+(it might for the undo patch, I haven't looked at it)
+
+- Lee
+
+From wmorgan-sup at masanjin.net  Mon Apr 13 19:19:34 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 13 Apr 2009 16:19:34 -0700
+Subject: [sup-talk] Display size of message or attachments?
+In-Reply-To: <1239636103-sup-6606@black>
+References: <1239390142-sup-9102@black> <1239634495-sup-2172@entry>
+	<1239636103-sup-6606@black>
+Message-ID: <1239664684-sup-2594@entry>
+
+Reformatted excerpts from Lee Hinman's message of 2009-04-13:
+>  8:56am [213k] me,William  (2) >[sup-talk] Display size of message or
+> attachments? +list +sup This wouldn't b...
+
+What does the 213k refer to? The first message in this thread? The
+newest message? All messages together? If you want per-message sizes,
+it's going to have to go somewhere in thread-view-mode, methinks...
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rhomunuq+ml_sup at gmail.com  Tue Apr 14 19:52:13 2009
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Wed, 15 Apr 2009 00:52:13 +0100
+Subject: [sup-talk] Display size of message or attachments?
+In-Reply-To: <1239664684-sup-2594@entry>
+References: <1239390142-sup-9102@black>
+	<1239634495-sup-2172@entry>	<1239636103-sup-6606@black>
+	<1239664684-sup-2594@entry>
+Message-ID: <49E521AD.9070507@gmail.com>
+
+Long time reader; first time poster. Massive thanks to everyone who's 
+worked on sup (in particular to William). I'm dabbling in sup again now 
+with the release of 0.7, which hasn't crashed on me at all so far, hooray!
+
+> What does the 213k refer to? The first message in this thread? The
+> newest message? All messages together? If you want per-message sizes,
+> it's going to have to go somewhere in thread-view-mode, methinks...
+
+Sounds like a potentially neat feature. I'd suggest:
+
+   - When viewing lists of threads (inbox-mode, search-results-mode, 
+etc), the combined size of all messages together in the thread.
+
+   - When viewing a particular thread (thread-view-mode), showing 
+individually for each message.
+
+Alternatively (or in addition?), perhaps even better would be the 
+ability to do searches like size:>200k, which would show all messages 
+(or all threads?) over 200k in size.
+
+This would be useful for people like me who prune excessively large 
+attachments from disk occasionally. (Which at present is a little 
+fiddly, involving messing with the Maildir-stored messages then 
+sup-sync'ing, but that's another story...)
+
+Cheers,
+~Iain
+
+From bm at bjornmichelsen.com  Wed Apr 15 11:58:03 2009
+From: bm at bjornmichelsen.com (Bjorn Michelsen)
+Date: Wed, 15 Apr 2009 17:58:03 +0200
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239299963-sup-5933@entry>
+References: <1239177702-sup-8165@snowstorm> <1239299963-sup-5933@entry>
+Message-ID: <1239810733-sup-5572@snowstorm>
+
+Excerpts from William Morgan's message of to. april 09 20:02:08 +0200 2009:
+
+> > I'm a bit lost as to where I should begin troubleshooting, so I'm
+> > wondering if someone else have had the same problem?
+> 
+> It's a known problem. I'm not sure why it isn't saved. If you want to
+> start investigating, ThreadSet#join_threads in lib/sup/threads.rb is the
+> joining code. Maybe the call to Message#add_ref is wrong somehow.
+
+Thanks for clearing that up, as well as the additional information
+regarding where to start looking.
+
+> I'm also curious about your From: line, which is RFC2047-encoded but
+> with the "UNKNOWN" charset. What produces that? Surely not Sup!
+
+I haven't replied earlier because I've been trying to figure out what
+causes the strange From: address.
+
+locale outputs the following:
+
+  LANG=nb_NO.UTF-8
+  LC_CTYPE=nb_NO.UTF-8
+  LC_NUMERIC="nb_NO.UTF-8"
+  LC_TIME="nb_NO.UTF-8"
+  LC_COLLATE="nb_NO.UTF-8"
+  LC_MONETARY="nb_NO.UTF-8"
+  LC_MESSAGES=en_US.UTF-8
+  LC_PAPER="nb_NO.UTF-8"
+  LC_NAME="nb_NO.UTF-8"
+  LC_ADDRESS="nb_NO.UTF-8"
+  LC_TELEPHONE="nb_NO.UTF-8"
+  LC_MEASUREMENT="nb_NO.UTF-8"
+  LC_IDENTIFICATION="nb_NO.UTF-8"
+  LC_ALL=
+
+And Vim is saying that all files related to sup is encoded as utf8.
+
+So, at the moment I don't know why this is happening. Maybe someone
+using special characters can let me in on their secret?
+-- 
+Mvh.
+Bj?rn Michelsen
+MOB: +47 934 55 474
+
+From rhomunuq+ml_sup at gmail.com  Wed Apr 15 13:29:15 2009
+From: rhomunuq+ml_sup at gmail.com (Iain)
+Date: Wed, 15 Apr 2009 18:29:15 +0100
+Subject: [sup-talk] Lost Maildir Messages
+In-Reply-To: <a412e2a70903191341o744efb9bw3a02ebb1585a9b8b@mail.gmail.com>
+References: <1237224356-sup-1941@entry>	<a412e2a70903171129v22fe7bc0o6174ad3be6af73@mail.gmail.com>	<1237383823-sup-8242@entry>	<a412e2a70903191218x209c1cb1p6f46e718b2f90395@mail.gmail.com>	<1237490703-sup-4095@entry>
+	<a412e2a70903191341o744efb9bw3a02ebb1585a9b8b@mail.gmail.com>
+Message-ID: <49E6196B.504@gmail.com>
+
+> Hm, that would be bad. The right way to debug this is to wait for it to
+> happen again (!) and examine the contents of the poll-mode and log-mode
+> buffers, which should describe what Sup thinks it was doing at the time.
+
+I've noticed what seems to be the same problem.
+
+I've been using getmail (no procmail or fetchmail), to grab messages 
+into Maildir folders. Occasionally, messages don't show up in Sup. They 
+appear only when I do a manual sup-sync --changed.
+
+I discovered by accident (by impatiently trying to read an email that I 
+knew was being delivered by getmail into Sup) that I can reliably 
+replicate the problem, or at least a similar problem. It seems to occur 
+when Sup polls the Maildir at the same time as getmail is retrieving the 
+message.
+
+I can replicate the problem by pressing P repeatedly in Sup to manually 
+poll for messages, while getmail is in the process of retrieving. (It 
+takes about 4 seconds for getmail to go from initialising a retrieval to 
+dropping the mail in the Maildir, so there is a big window for when I 
+press P, and I can replicate the problem reliably.) Every time, Sup 
+doesn't retrieve the new messages.
+
+The log-mode buffer doesn't show anything relevant in my 
+artifically-produced replication of the problem, because it doesn't log 
+when you manually poll.
+
+The poll-mode buffer for the source in question displays the exact same 
+message on every poll of the source (before getmail runs, during the 
+getmail run, after the getmail run) when repeatedly polling before and 
+during the getmail run:
+
+Loading from maildir:///home/user/Mail/address at example.com/... 
+
+Found message at 12398138490002177 with labels {mylabel}
+
+-- the timestamp never changes.
+
+If I had to guess, I'd say that it looks like the shortcut taken 
+(looking at the mtime of the directory to see if scanning for a new 
+Maildir message is required) has a race condition. A weird race 
+condition, because I've verified (ls -l --time-style=+%s) that the "new" 
+and "tmp" folders are indeed having their timestamps updated when the 
+mail drops in (they are).
+
+This might explain the infrequent lost messages: when not hitting P 
+repeatedly, this race condition is unlikely to occur, only happening 
+when the Sup poll occurs within the few seconds window during which 
+getmail is working and working with a new message to deliver.
+
+~Iain
+
+From wmorgan-sup at masanjin.net  Wed Apr 15 13:33:24 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 15 Apr 2009 10:33:24 -0700
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239810733-sup-5572@snowstorm>
+References: <1239177702-sup-8165@snowstorm> <1239299963-sup-5933@entry>
+	<1239810733-sup-5572@snowstorm>
+Message-ID: <1239816596-sup-2531@entry>
+
+Reformatted excerpts from Bjorn Michelsen's message of 2009-04-15:
+> I haven't replied earlier because I've been trying to figure out what
+> causes the strange From: address.
+
+Is the weird encoding also present in the files in ~/.sup/sent.mbox? If
+so, it's could be Rubymail... AFAICT, Rubymail doesn't do anything with
+rfc2047, but I could have missed it.
+
+If not, are you using some funky sendmail?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bm at bjornmichelsen.com  Thu Apr 16 05:53:31 2009
+From: bm at bjornmichelsen.com (Bjorn Michelsen)
+Date: Thu, 16 Apr 2009 11:53:31 +0200
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239816596-sup-2531@entry>
+References: <1239177702-sup-8165@snowstorm> <1239299963-sup-5933@entry>
+	<1239810733-sup-5572@snowstorm> <1239816596-sup-2531@entry>
+Message-ID: <1239875483-sup-5697@snowstorm>
+
+Excerpts from William Morgan's message of on. april 15 19:33:24 +0200 2009:
+
+> > I haven't replied earlier because I've been trying to figure out what
+> > causes the strange From: address.
+> 
+> Is the weird encoding also present in the files in ~/.sup/sent.mbox? If
+> so, it's could be Rubymail... AFAICT, Rubymail doesn't do anything with
+> rfc2047, but I could have missed it.
+
+No, everything is encoded correctly in ~/.sup/sent.mbox
+
+> If not, are you using some funky sendmail?
+
+I'm using sSMTP at the moment. Maybe it has something to do with the
+following bug
+
+  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=341952#10  ?
+-- 
+Mvh.
+Bj?rn Michelsen
+MOB: +47 934 55 474
+
+From nicolas.pouillard at gmail.com  Thu Apr 16 15:47:31 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 16 Apr 2009 21:47:31 +0200
+Subject: [sup-talk] Suggestion for '.' keybinding
+In-Reply-To: <1239638279-sup-6990@black>
+References: <1239638279-sup-6990@black>
+Message-ID: <1239911250-sup-9394@ausone>
+
+Excerpts from Lee Hinman's message of Mon Apr 13 18:00:56 +0200 2009:
+> Sup,
+> Since Sup already emulates vi-bindings, I was wondering if it'd be possible to
+> have '.' bound to "do-it-again". So if I added a label to a mail, then wanted
+> to apply it to a different mail, I could go to the mail and use '.' to apply
+> whatever the last change was. (I know I could tag all the messages ahead of
+> time and label them all at once, but sometimes I want to do it a different
+> way).
+> 
+> Is this possible with Sup right now? Does it store what the last action was?
+> (it might for the undo patch, I haven't looked at it)
+
+I greatly support this idea!
+
+-- 
+Nicolas Pouillard
+
+From marka at pobox.com  Thu Apr 16 18:05:59 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 16 Apr 2009 15:05:59 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+Message-ID: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+
+I've been studying maildir.rb (and adding some debug code) while
+trying to figure out my lost message problem.  I think there may be a
+problem with the way the internal message IDs are generated.  The
+make_id method glues together the file timestamp and size.  But I
+think this could lead to an out-of-order problem in the @ids array.
+
+Consider two messages that arrive in the same second, but the second
+message is smaller than the first.  Because the message size makes up
+the low seven (decimal) digits of the ID, the second message, even
+though it arrived later, will have an ID that is less than the first
+message.
+
+Then suppose that sup polls the maildir directory after the first
+message arrives, but before the second message arrives, and sets the
+cur_offset to the ID of the first message.  Then, the next time it
+polls, it will see the second message, but because its ID is less than
+that of the first message, it will appear before the first in the @ids
+array after it is sorted.  So then the each method will skip the
+second message, because cur_offset (the ID of the first message) will
+be found in @ids after it.
+
+Does this scenario make sense?  I have seen what appears to be one
+instance of this happening, though I'm still watching closely and
+adding more debugging code to make sure that it explains all of the
+lost messages.
+
+From reid.thompson at ateb.com  Fri Apr 17 15:41:12 2009
+From: reid.thompson at ateb.com (Reid Thompson)
+Date: Fri, 17 Apr 2009 15:41:12 -0400
+Subject: [sup-talk] Two questions
+Message-ID: <1239997272.5948.104.camel@localhost>
+
+>From the readme:
+Note that Sup never changes the contents of any mailboxes; it only
+  indexes in to them. So it shouldn't ever corrupt your mail. The flip
+  side is that if you change a mailbox (e.g. delete messages, or, in
+  the case of mbox files, read an unread message) then Sup will be
+  unable to load messages from that source and will ask you to run
+  sup-sync --changed.
+
+So, in order to actually manage my email, I have to utilize a different email client to delete unwanted mail - essentially doing the same work twice, or am I missing something?
+
+Could sup-sync --changed be incorporated into sup, and triggered automatically by sup itself?
+
+
+
+From btricha at gmail.com  Mon Apr 20 17:52:24 2009
+From: btricha at gmail.com (Bryan Richardson)
+Date: Mon, 20 Apr 2009 15:52:24 -0600
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+Message-ID: <3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+
+BUMP!!!
+
+So... no one uses Sup with Microsoft Exchange?!  :(
+
+--
+Bryan
+
+On 4/14/09, Bryan Richardson <btricha at gmail.com> wrote:
+> Hello all,
+>
+> Has anyone had success using Sup with Microsoft Exchange 2007?  I'm able to
+> download email no problem, and I'm also able to send email through my
+> exchange server.  However, my problem lies in the fact that when I send an
+> email from Sup, it doesn't show up in the Sent Items folder of my exchange
+> account.  I'm not that familiar with IMAP, but I'm guessing this is maybe
+> due to the fact that I haven't subscribed to the Sent Items folder in Sup.
+> In response to this, another hurdle I'm trying to get over is how to even
+> tell what folders are available on my exchange account for subscribing to.
+> Is there a way to use Sup to query for available folders?
+>
+> Thanks in advance!
+>
+> --
+> Bryan
+>
+
+From marka at pobox.com  Mon Apr 20 18:54:57 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 20 Apr 2009 15:54:57 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+Message-ID: <1240267632-sup-2023@r50p>
+
+Excerpts from Bryan Richardson's message of Mon Apr 20 14:52:24 -0700 2009:
+> So... no one uses Sup with Microsoft Exchange?!  :(
+
+Unfortunately, we use Exchange at work.  But I hide that unpleasant
+fact from myself by using fetchmail and postfix on a Linux box.  I
+have never used Outlook or the web interface that Exchange provides.
+Instead, I've always used mutt -- and more recently, sup.  So I have
+no idea if I'm having the same problem you are.  Sorry!
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 09:02:35 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 06:02:35 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+Message-ID: <1240318807-sup-3080@entry>
+
+Hi Bryan,
+
+Reformatted excerpts from Bryan Richardson's message of 2009-04-20:
+> Is it possible to specify where my sent mail gets saved?  I'd like to
+> be able to specify that it gets saved in one of my IMAP folders ('Sent
+> Items' in my Microsoft Exchange account).  This way, if for some
+> reason I do ever have to access my mail via Microsoft Exchange Web
+> Access, I'll still have access to all my sent emails.
+
+This is currently not possible with Sup, which as a rule doesn't play
+nicely with other mail clients. It wouldn't be terribly hard to add if
+you were so inclined (we have an IMAP library in there already) and I'd
+be happy to point you in the right direction, but it's not on my
+near-term list of things to do.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 09:06:24 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 06:06:24 -0700
+Subject: [sup-talk] Two questions
+In-Reply-To: <1239997272.5948.104.camel@localhost>
+References: <1239997272.5948.104.camel@localhost>
+Message-ID: <1240318974-sup-6743@entry>
+
+Reformatted excerpts from Reid Thompson's message of 2009-04-17:
+> So, in order to actually manage my email, I have to utilize a
+> different email client to delete unwanted mail - essentially doing the
+> same work twice, or am I missing something?
+
+For the two special cases of "physically" removing messages marked as
+deleted or spam, you can use sup-sync-back, which is a batch operation
+operating on an entire mail source at a time. Currently it only applies
+to mbox sources and can't be run while Sup is also running.
+
+> Could sup-sync --changed be incorporated into sup, and triggered
+> automatically by sup itself?
+
+You could certainly do that via Sup's hook mechanism, but it's a very
+slow operation (it has to scan over the entire mailbox).
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From reid.thompson at ateb.com  Tue Apr 21 09:13:54 2009
+From: reid.thompson at ateb.com (Reid Thompson)
+Date: Tue, 21 Apr 2009 09:13:54 -0400
+Subject: [sup-talk] Two questions
+In-Reply-To: <1240318974-sup-6743@entry>
+References: <1239997272.5948.104.camel@localhost> <1240318974-sup-6743@entry>
+Message-ID: <1240319634.11793.11.camel@localhost>
+
+On Tue, 2009-04-21 at 06:06 -0700, William Morgan wrote:
+> Reformatted excerpts from Reid Thompson's message of 2009-04-17:
+> > So, in order to actually manage my email, I have to utilize a
+> > different email client to delete unwanted mail - essentially doing the
+> > same work twice, or am I missing something?
+> 
+> For the two special cases of "physically" removing messages marked as
+> deleted or spam, you can use sup-sync-back, which is a batch operation
+> operating on an entire mail source at a time. Currently it only applies
+> to mbox sources and can't be run while Sup is also running.
+> 
+> > Could sup-sync --changed be incorporated into sup, and triggered
+> > automatically by sup itself?
+> 
+> You could certainly do that via Sup's hook mechanism, but it's a very
+> slow operation (it has to scan over the entire mailbox).
+
+OK -- so to 'manage' an imap store, i'd need to setup a mechanism to
+fetch all the email to a local store, deleting from the imap store, and
+then do something like schedule an overnight run of sup-sync-back,
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 09:28:41 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 06:28:41 -0700
+Subject: [sup-talk] Saving status of merged threads with '#' on next
+	branch
+In-Reply-To: <1239875483-sup-5697@snowstorm>
+References: <1239177702-sup-8165@snowstorm> <1239299963-sup-5933@entry>
+	<1239810733-sup-5572@snowstorm> <1239816596-sup-2531@entry>
+	<1239875483-sup-5697@snowstorm>
+Message-ID: <1240320083-sup-2514@entry>
+
+Reformatted excerpts from Bjorn Michelsen's message of 2009-04-16:
+> No, everything is encoded correctly in ~/.sup/sent.mbox
+
+Then this is almost definitely your MTA, not Sup. But you could also try
+sending a message to yourself with another MUA and see what happens.
+
+(Probably what will happen is that the MUA will RFC2047-encode your
+headers, and sSMTP will see that and leave them alone, and this problem
+will be hidden. So the right answer is really for Sup to RFC2047-encode
+headers in outgoing email.)
+
+> I'm using sSMTP at the moment. Maybe it has something to do with the
+> following bug
+> 
+>   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=341952#10  ?
+
+The problem could be someone trying to fix that bug (which is basically
+"we should add RFC2047 support"). Somehow it's not picking up your
+locale settings.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From andrew at pimlott.net  Tue Apr 21 09:48:39 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Tue, 21 Apr 2009 06:48:39 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+Message-ID: <20090421134839.GY11701@pimlott.net>
+
+On Tue, Apr 21, 2009 at 07:42:42AM -0600, Bryan Richardson wrote:
+> One question I do have though is why my sent messages get saved to my 'Sent
+> Mail' folder on my GMail account automatically (without the patch I
+> mentioned above) when I use Sup with GMail...
+
+GMail's SMTP server does this.
+
+Andrew
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 10:00:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 07:00:30 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+Message-ID: <1240320547-sup-6957@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-04-16:
+> Consider two messages that arrive in the same second, but the second
+> message is smaller than the first.  Because the message size makes up
+> the low seven (decimal) digits of the ID, the second message, even
+> though it arrived later, will have an ID that is less than the first
+> message.
+
+I think you could be right. Using the size as part of the ID was
+supposed to differentiate messages with the same timestamp, but it would
+result in exactly the behavior you describe when polling.
+
+I think there's a much simpler scheme we can use that will also fix
+this. I'll post a patch soon and we can see if it addresses the
+problem.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 10:13:48 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 07:13:48 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+Message-ID: <1240323082-sup-1515@entry>
+
+Reformatted excerpts from Bryan Richardson's message of 2009-04-21:
+> First off, I want to say 'Thank You' for creating such a great
+> application here.  Text-based is the way to go! :)
+
+Glad you like it!
+
+> As for saving sent mail in an IMAP folder, I did find a patch that I
+> was able to use to provide me with this functionality.
+
+Interesting. Would you mind reposting it here, if you get a chance? 
+
+> One question I do have though is why my sent messages get saved to my
+> 'Sent Mail' folder on my GMail account automatically (without the
+> patch I mentioned above) when I use Sup with GMail...
+
+As someone else pointed out, this is because GMail's MTA is clever.
+
+> As a side note, does Sup have any sort of plugin architecture?  I'm
+> thinking of maybe developing a text-based calendar app in Ruby at some
+> point... :)
+
+It doesn't have plugins per se. It has a pretty good hook system, but
+that's probably not useful to you. What are you interested in using? The
+ncurses interface? The full-text search index?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Apr 21 10:26:20 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Apr 2009 07:26:20 -0700
+Subject: [sup-talk] Two questions
+In-Reply-To: <1240319634.11793.11.camel@localhost>
+References: <1239997272.5948.104.camel@localhost> <1240318974-sup-6743@entry>
+	<1240319634.11793.11.camel@localhost>
+Message-ID: <1240323252-sup-1276@entry>
+
+Reformatted excerpts from Reid Thompson's message of 2009-04-21:
+> OK -- so to 'manage' an imap store, i'd need to setup a mechanism to
+> fetch all the email to a local store, deleting from the imap store,
+> and then do something like schedule an overnight run of sup-sync-back,
+
+There are a couple issues at play. First, if you're serious about Sup
+with IMAP, many people have gone the route of mirroring their IMAP
+folders locally using something like offlineimap. The Ruby IMAP
+libraries, and possibly IMAP itself, is otherwise too slow for how Sup
+likes to treat its mailstores.
+
+But that's not strictly necessary.
+
+Second, if you're serious about deleting email from your IMAP server (as
+opposed to just letting it stay there forever, since storage is cheap
+and the too-fleeting moments of your precious mortality are not), you'll
+need to periodically run sup-sync-back with the appropriate flags.
+
+This all stems from design decisions around Sup's target environment,
+which is that you have too much email to scan every message except in an
+offline manner. I have 229k emails in my inbox. Sup's the only client
+I know of that can scale to that. (Besides GMail of course.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bdwalton at gmail.com  Tue Apr 21 10:37:25 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Tue, 21 Apr 2009 10:37:25 -0400
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+Message-ID: <f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+
+I abandoned that patch for my own use after a while.  [I moved my .sup
+to local storage from nfs and now use the mbox sent folder.]  I still
+like the idea, but that patch would need much work before it became
+integration worthy.  If there is sufficient interest, I'd invest the
+time.
+
+William, what requirements would need to be met from your side to see
+this added?
+
+Thanks
+-Ben
+
+
+On Tue, Apr 21, 2009 at 10:32 AM, Bryan Richardson <btricha at gmail.com> wrote:
+> The patch for what the author (Ben Walton) calls 'Flexible Sent Source' can
+> be found at the following URL.? It would be nice to have this integrated
+> into the official Sup source code... :)
+>
+> http://www.nabble.com/-PATCH--flexible-sent-source-td16960901.html#a16960901
+>
+> One more question: I noticed when I use Sup with my Exchange account that it
+> marks all my messages on the Exchange server as read when it syncs.? Is this
+> normal?
+>
+> On Tue, Apr 21, 2009 at 8:29 AM, Bryan Richardson <btricha at gmail.com> wrote:
+>>
+>> Yeah, I'll find the patch and post it here.
+>>
+>> As for the calendaring app, I figured having it integrated with Sup might
+>> be kinda cool.? The search index might help too. :)
+>>
+>> On Tue, Apr 21, 2009 at 8:13 AM, William Morgan <wmorgan-sup at masanjin.net>
+>> wrote:
+>>>
+>>> Reformatted excerpts from Bryan Richardson's message of 2009-04-21:
+>>> > First off, I want to say 'Thank You' for creating such a great
+>>> > application here. ?Text-based is the way to go! :)
+>>>
+>>> Glad you like it!
+>>>
+>>> > As for saving sent mail in an IMAP folder, I did find a patch that I
+>>> > was able to use to provide me with this functionality.
+>>>
+>>> Interesting. Would you mind reposting it here, if you get a chance?
+>>>
+>>> > One question I do have though is why my sent messages get saved to my
+>>> > 'Sent Mail' folder on my GMail account automatically (without the
+>>> > patch I mentioned above) when I use Sup with GMail...
+>>>
+>>> As someone else pointed out, this is because GMail's MTA is clever.
+>>>
+>>> > As a side note, does Sup have any sort of plugin architecture? ?I'm
+>>> > thinking of maybe developing a text-based calendar app in Ruby at some
+>>> > point... :)
+>>>
+>>> It doesn't have plugins per se. It has a pretty good hook system, but
+>>> that's probably not useful to you. What are you interested in using? The
+>>> ncurses interface? The full-text search index?
+>>> --
+>>> William <wmorgan-sup at masanjin.net>
+>>> _______________________________________________
+>>> sup-talk mailing list
+>>> sup-talk at rubyforge.org
+>>> http://rubyforge.org/mailman/listinfo/sup-talk
+>>
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+
+
+
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From marka at pobox.com  Tue Apr 21 11:33:17 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 21 Apr 2009 08:33:17 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <1240320547-sup-6957@entry>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+Message-ID: <a412e2a70904210833r48c78a8ah5c19779cd8b99b53@mail.gmail.com>
+
+On Tue, Apr 21, 2009 at 7:00 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> I think you could be right. Using the size as part of the ID was
+> supposed to differentiate messages with the same timestamp, but it would
+> result in exactly the behavior you describe when polling.
+>
+> I think there's a much simpler scheme we can use that will also fix
+> this. I'll post a patch soon and we can see if it addresses the
+> problem.
+
+I'd be very interested in this patch.
+
+In the meantime, I made some minor changes to maildir.rb, without
+changing the ID scheme.  One problem was every time a maildir was
+polled, the most recent message (i.e., the one at cur_offset) would be
+treated as a new message again.  I also changed last_offset to return
+an ID that would be one second later than the last message seen.
+
+These changes seem to have mostly fixed the lost message problem I was
+having, though I'm not exactly sure why.  I've only had one lost
+message over the last couple of days, instead of the expected 10 or
+20.  I can't explain this one lost message, but I think it must be due
+to a different problem, unrelated to maildir handling.  I was able to
+get sup to see this message again by doing a 'touch' on both the
+message itself and the containing maildir.
+
+I doubt that my changes would fix the race condition I described
+earlier, but I've avoided this problem by not running fetchmail
+in the background while sup is running.
+
+I'll send out my patch in a separate email.
+
+From marka at pobox.com  Tue Apr 21 11:43:44 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 21 Apr 2009 08:43:44 -0700
+Subject: [sup-talk] [PATCH] Bug fixes and speed improvements for maildir
+	handling.
+Message-ID: <a412e2a70904210843p6410e83dyabccb3dec5c9fd0a@mail.gmail.com>
+
+---
+ lib/sup/maildir.rb |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index 3d584f7..d74279a 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -10,6 +10,7 @@ module Redwood
+
+ class Maildir < Source
+   SCAN_INTERVAL = 30 # seconds
++  TIME_SCALE = 10000000
+
+   ## remind me never to use inheritance again.
+   yaml_properties :uri, :cur_offset, :usual, :archived, :id, :labels, :mtimes
+@@ -123,8 +124,11 @@ class Maildir < Source
+     return unless start_offset
+
+     start = @ids.index(cur_offset || start_offset) or raise
+OutOfSyncSourceError, "Unknown message id #{cur_offset ||
+start_offset}." # couldn't find the most recent email
++    if cur_offset
++       start += 1
++    end
+
+-    start.upto(@ids.length - 1) do |i|
++    (start... at ids.length).each do |i|
+       id = @ids[i]
+       self.cur_offset = id
+       yield id, @labels + (seen?(id) ? [] : [:unread]) +
+(trashed?(id) ? [:deleted] : []) + (flagged?(id) ? [:starred] : [])
+@@ -138,7 +142,7 @@ class Maildir < Source
+
+   def end_offset
+     scan_mailbox :rescan => true
+-    @ids.last + 1
++    ((@ids.last / TIME_SCALE) + 1) * TIME_SCALE
+   end
+
+   def pct_done; 100.0 * (@ids.index(cur_offset) || 0).to_f /
+(@ids.length - 1).to_f; end
+@@ -164,7 +168,7 @@ private
+     #makes a noticeable difference on nfs.
+     stat = File.stat(fn)
+     # use 7 digits for the size. why 7? seems nice.
+-    sprintf("%d%07d", stat.mtime, stat.size % 10000000).to_i
++    (stat.mtime.to_i * TIME_SCALE) + (stat.size % TIME_SCALE)
+   end
+
+   def with_file_for id
+-- 
+1.6.1.28.gc32f76
+
+From reid.thompson at ateb.com  Tue Apr 21 12:15:59 2009
+From: reid.thompson at ateb.com (Reid Thompson)
+Date: Tue, 21 Apr 2009 12:15:59 -0400
+Subject: [sup-talk] Two questions
+In-Reply-To: <1240323252-sup-1276@entry>
+References: <1239997272.5948.104.camel@localhost>
+	<1240318974-sup-6743@entry> <1240319634.11793.11.camel@localhost>
+	<1240323252-sup-1276@entry>
+Message-ID: <1240330559.11793.52.camel@localhost>
+
+On Tue, 2009-04-21 at 07:26 -0700, William Morgan wrote:
+> Reformatted excerpts from Reid Thompson's message of 2009-04-21:
+> > OK -- so to 'manage' an imap store, i'd need to setup a mechanism to
+> > fetch all the email to a local store, deleting from the imap store,
+> > and then do something like schedule an overnight run of sup-sync-back,
+> 
+> There are a couple issues at play. First, if you're serious about Sup
+> with IMAP, many people have gone the route of mirroring their IMAP
+> folders locally using something like offlineimap. The Ruby IMAP
+> libraries, and possibly IMAP itself, is otherwise too slow for how Sup
+> likes to treat its mailstores.
+> 
+> But that's not strictly necessary.
+> 
+> Second, if you're serious about deleting email from your IMAP server (as
+> opposed to just letting it stay there forever, since storage is cheap
+> and the too-fleeting moments of your precious mortality are not), you'll
+> need to periodically run sup-sync-back with the appropriate flags.
+> 
+> This all stems from design decisions around Sup's target environment,
+> which is that you have too much email to scan every message except in an
+> offline manner. I have 229k emails in my inbox. Sup's the only client
+> I know of that can scale to that. (Besides GMail of course.)
+
+for 'fun', i setup a fastmail.fm account, to which i'm using rss2email
+to push a number of feeds to.  I setup offlineimap to pull these feeds
+down for sup, so that I could 'manage' the imap store via sup.
+
+
+
+Why is it expecting mbox format?
+
+rthompso at raker ~/.sup $ sup-sync-back -d  maildir:~/.fastmaildotfm/INBOX
+[Tue Apr 21 12:10:07 -0400 2009] using character set encoding "UTF-8"
+[Tue Apr 21 12:10:08 -0400 2009] crypto: detected gpg binary
+in /usr/bin/gpg
+[Tue Apr 21 12:10:08 -0400 2009] locking /home/rthompso/.sup/lock...
+[Tue Apr 21 12:10:08 -0400 2009] loading index...
+[Tue Apr 21 12:10:08 -0400 2009] loaded index of 920 messages
+Error: maildir:~/.fastmaildotfm/INBOX is not an mbox source.
+[Tue Apr 21 12:10:08 -0400 2009] unlocking /home/rthompso/.sup/lock...
+
+
+offlineimap is populating ~/.fastmaildotfm/INBOX
+
+rthompso at raker ~/.sup $ cat sources.yaml
+--- 
+....
+- !masanjin.net,2006-10-01/Redwood/Maildir 
+  uri: maildir:~/.fastmaildotfm/INBOX
+  cur_offset: 12403255620003971
+  usual: true
+  archived: false
+  id: 4
+  labels: 
+  - rssmail
+  mtimes: 
+    cur: 2009-04-21 11:47:05 -04:00
+    new: 2009-04-21 11:47:08 -04:00
+- !masanjin.net,2006-10-01/Redwood/SentLoader 
+  cur_offset: 19809
+- !masanjin.net,2006-10-01/Redwood/DraftLoader 
+  cur_offset: 0
+
+rthompso at raker ~ $ find .fastmaildotfm/
+.fastmaildotfm/
+.fastmaildotfm/INBOX.Trash
+.fastmaildotfm/INBOX.Trash/cur
+.fastmaildotfm/INBOX.Trash/new
+.fastmaildotfm/INBOX.Trash/tmp
+.fastmaildotfm/INBOX.Sent Items
+.fastmaildotfm/INBOX.Sent Items/cur
+.fastmaildotfm/INBOX.Sent Items/new
+.fastmaildotfm/INBOX.Sent Items/tmp
+.fastmaildotfm/INBOX
+.fastmaildotfm/INBOX/cur
+.fastmaildotfm/INBOX/cur/1240328825_0.15391.raker,U=1,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,S
+.fastmaildotfm/INBOX/new
+.fastmaildotfm/INBOX/new/1240328827_7.15391.raker,U=29,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_5.15391.raker,U=6,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_6.15391.raker,U=28,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_0.15391.raker,U=8,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_5.15391.raker,U=27,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_9.15391.raker,U=17,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_4.15391.raker,U=26,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_8.15391.raker,U=16,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_6.15391.raker,U=7,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_3.15391.raker,U=25,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_7.15391.raker,U=15,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_2.15391.raker,U=24,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_1.15391.raker,U=9,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_6.15391.raker,U=14,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_1.15391.raker,U=23,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_13.15391.raker,U=21,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_5.15391.raker,U=13,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_1.15391.raker,U=2,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_0.15391.raker,U=22,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_12.15391.raker,U=20,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_4.15391.raker,U=12,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_3.15391.raker,U=11,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_2.15391.raker,U=10,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_2.15391.raker,U=3,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_11.15391.raker,U=19,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328828_0.15391.raker,U=32,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328826_10.15391.raker,U=18,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_3.15391.raker,U=4,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_9.15391.raker,U=31,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328825_4.15391.raker,U=5,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/new/1240328827_8.15391.raker,U=30,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+.fastmaildotfm/INBOX/tmp
+.fastmaildotfm/INBOX.Drafts
+.fastmaildotfm/INBOX.Drafts/cur
+.fastmaildotfm/INBOX.Drafts/new
+.fastmaildotfm/INBOX.Drafts/tmp
+
+
+From saku at ytti.fi  Wed Apr 22 03:29:56 2009
+From: saku at ytti.fi (Saku Ytti)
+Date: Wed, 22 Apr 2009 00:29:56 -0700 (PDT)
+Subject: [sup-talk] IMAP folder/label integration and playing better with
+	changed sources?
+Message-ID: <0c334e4c-0480-4def-b64a-b4996431f5c9@x3g2000yqa.googlegroups.com>
+
+First, thank you for sup-mail. I thought I just wanted mutt with
+indexed searches, but turns out the stuff copied
+from gmail are brilliant and the novel(?) idea of buffers really makes
+things simpler.
+Problem for me is, I want to use also mobile phone email client and
+webmail, so I'm kinda stuck with mutt. Is it likely that this could be
+addressed in future?
+
+And for the actual subject related matter, could it be possible to
+store labels as folders optionally? This would
+play along really well for those who use gmail, as you would
+essentially get synchronised labeling between
+sup and webclient.
+
+Thanks again.
+
+From wmorgan-sup at masanjin.net  Wed Apr 22 11:02:15 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Apr 2009 08:02:15 -0700
+Subject: [sup-talk] sup crashes when starting, here is the exception-log
+In-Reply-To: <20090414165314.GA19668@gmail.com>
+References: <20090414165314.GA19668@gmail.com>
+Message-ID: <1240412232-sup-8540@entry>
+
+Hi Sean,
+
+Reformatted excerpts from Sean Escriva's message of 2009-04-14:
+> --- NoMethodError from thread: call #connect on
+> mbox+ssh://optimus//var/mail/seane
+> undefined method `synchronize' for nil:NilClass
+> /home/webframp/.gem/ruby/1.8/gems/sup-0.7/lib/sup/mbox/ssh-file.rb:181:in
+
+Sorry to report this, but the mbox-ssh stuff hasn't been working for a
+while and fixing it is pretty low priority at the moment. You're welcome
+to investigate, of course, or you might consider another source type.
+(mbox+ssh was never was quite fast enough IMO anyways.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 22 11:07:22 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Apr 2009 08:07:22 -0700
+Subject: [sup-talk] Suggestion for '.' keybinding
+In-Reply-To: <1239638279-sup-6990@black>
+References: <1239638279-sup-6990@black>
+Message-ID: <1240412747-sup-2285@entry>
+
+Reformatted excerpts from Lee Hinman's message of 2009-04-13:
+> Is this possible with Sup right now? Does it store what the last
+> action was?  (it might for the undo patch, I haven't looked at it)
+
+It's not possible right now, but the undo patch does something similar
+to this. The best approach might be to extend UndoManager to be able to
+redo as well as undo.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 22 11:12:40 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Apr 2009 08:12:40 -0700
+Subject: [sup-talk] Two questions
+In-Reply-To: <1240330559.11793.52.camel@localhost>
+References: <1239997272.5948.104.camel@localhost> <1240318974-sup-6743@entry>
+	<1240319634.11793.11.camel@localhost> <1240323252-sup-1276@entry>
+	<1240330559.11793.52.camel@localhost>
+Message-ID: <1240412894-sup-3091@entry>
+
+Reformatted excerpts from Reid Thompson's message of 2009-04-21:
+> Why is it expecting mbox format?
+
+Sorry, I gave you kind of a crappy answer above. sup-sync-back currently
+only works on mbox files, though not for any reason other than no one's
+gotten around to extending it yet. Deleting files from a Maildir is
+significantly easier than removing them from an mbox, so the bar's not
+very high on this one.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ezyang at MIT.EDU  Wed Apr 22 11:56:30 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Apr 2009 11:56:30 -0400
+Subject: [sup-talk] First time user of sup; some questions
+Message-ID: <1240415555-sup-5859@javelin>
+
+Hello all,
+
+I recently switched over to Sup, and I have a favorable first impression.
+However, I have a few questions:
+
+1. How do I get date searches to work? I've tried the strings on the
+   wiki, namely before:, on:, after: and during:, and they consistently
+   return no results. I'm using sup v0.7.
+
+2. I'd like to archive all of my email older than two weeks (in an
+   attempt to keep my inbox "as clean as possible"). How might I
+   go about doing this?
+
+3. I am currently running sup client-side, but it seems to me that,
+   given its index-centric operation nature, and the fact that this
+   index does not get propagated back to the mailserver, it would
+   be more appropriate to run this on a server (this also seems to
+   jive with the recent "Sup as a Service" postings). Should I toss
+   sup on a remote machine I have SSH access to, and if I do, how might
+   I migrate the index I already have?
+
+Cheers,
+Edward
+-- 
+
+From ezyang at MIT.EDU  Wed Apr 22 16:40:06 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Apr 2009 16:40:06 -0400
+Subject: [sup-talk] First time user of sup; some questions
+In-Reply-To: <1240415555-sup-5859@javelin>
+References: <1240415555-sup-5859@javelin>
+Message-ID: <1240432739-sup-2328@javelin>
+
+Excerpts from Edward Z. Yang's message of Wed Apr 22 11:56:30 -0400 2009:
+> 2. I'd like to archive all of my email older than two weeks (in an
+>    attempt to keep my inbox "as clean as possible"). How might I
+>    go about doing this?
+
+Ended up fixing this by !!, T, t (for messages I didn't want to remove), and then ;a
+
+Kind of took a while, since I had 5000+ conversations in my inbox.
+
+Cheers,
+Edward
+-- 
+
+From wmorgan-sup at masanjin.net  Wed Apr 22 18:26:43 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Apr 2009 15:26:43 -0700
+Subject: [sup-talk] First time user of sup; some questions
+In-Reply-To: <1240415555-sup-5859@javelin>
+References: <1240415555-sup-5859@javelin>
+Message-ID: <1240439191-sup-6622@entry>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-04-22:
+> 1. How do I get date searches to work? I've tried the strings on the
+>    wiki, namely before:, on:, after: and during:, and they consistently
+>    return no results. I'm using sup v0.7.
+
+Do you have the chronic gem installed? It's an optional gem but the date
+search stuff requires it.
+
+> 2. I'd like to archive all of my email older than two weeks (in an
+> attempt to keep my inbox "as clean as possible"). How might I go about
+> doing this?
+
+Check out sup-tweak-labels for a way to do this offline (which is really
+what you want). With chronic installed, you should be able to pass the
+date range query and have it remove the inbox label from all matching
+messages. You might want to limit the query a bit so that you don't do
+this to every message in your index, over and over. Something like
+"+before(two weeks ago) +after(15 days ago)" maybe.
+
+> 3. I am currently running sup client-side, but it seems to me that,
+>    given its index-centric operation nature, and the fact that this
+>    index does not get propagated back to the mailserver, it would
+>    be more appropriate to run this on a server (this also seems to
+>    jive with the recent "Sup as a Service" postings). Should I toss
+>    sup on a remote machine I have SSH access to, and if I do, how might
+>    I migrate the index I already have?
+
+Until Sup the Service is ready (and believe it or not, I have actually
+been working on it recently), running it on a globally-accessible server
+is what I do. You should be able to simply copy your .sup directory
+over.  (Although if you're migrating from Windows to a Linux box, I'm
+not entirely certain that will work... I'd be interested to hear if it
+does.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ezyang at MIT.EDU  Wed Apr 22 19:21:11 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Apr 2009 19:21:11 -0400
+Subject: [sup-talk] First time user of sup; some questions
+In-Reply-To: <1240439191-sup-6622@entry>
+References: <1240415555-sup-5859@javelin> <1240439191-sup-6622@entry>
+Message-ID: <1240442350-sup-9277@javelin>
+
+Excerpts from William Morgan's message of Wed Apr 22 18:26:43 -0400 2009:
+> Do you have the chronic gem installed? It's an optional gem but the date
+> search stuff requires it.
+
+Nope. Installing the chronic gem fixed things. I've updated the wiki
+article accordingly.
+
+> Check out sup-tweak-labels for a way to do this offline (which is really
+> what you want). With chronic installed, you should be able to pass the
+> date range query and have it remove the inbox label from all matching
+> messages. You might want to limit the query a bit so that you don't do
+> this to every message in your index, over and over. Something like
+> "+before(two weeks ago) +after(15 days ago)" maybe.
+
+Since I'm pretty good about archiving email when it's no longer relevant,
+this is not strictly necessary, but it's good to know the existence
+of sup-tweak-labels.
+
+> Until Sup the Service is ready (and believe it or not, I have actually
+> been working on it recently), running it on a globally-accessible server
+> is what I do. You should be able to simply copy your .sup directory
+> over.  (Although if you're migrating from Windows to a Linux box, I'm
+> not entirely certain that will work... I'd be interested to hear if it
+> does.)
+
+Excellent. I'm running on Ubuntu Linux and am thinking of setting up
+a little bit of replication framework to make my index accessible
+on multiple machines.
+
+Cheers,
+Edward
+
+From jdugan at es.net  Wed Apr 22 21:35:00 2009
+From: jdugan at es.net (Jon Dugan)
+Date: Wed, 22 Apr 2009 18:35:00 -0700
+Subject: [sup-talk] GSoC Project of Interest
+Message-ID: <1240449619-sup-9301@junction.es.net>
+
+There's an GSoC project that may be of interest to folks on this list.  It's
+aim is to add Gmail/sup like features to the Plan 9 mail system called upas.
+
+This might end up creating something an awful lot like Sup the Service Not
+identical for sure, but there is at least some overlap in terms of aims and
+ideas.
+
+Most services on Plan 9 are implemented as synthetic file systems.  The
+synthetic filesystem that represents email on Plan 9 is known as upas.  upas
+provides a filesytem view of mail boxes regardless of their backend storage
+medium (eg, POP, IMAP, etc) which provides a nice clean separation between the
+code that you use to do useful things to your mail and the code that deals
+with the mail store itself.
+
+To quote the man page:
+
+  The mailbox itself becomes a directory under /mail/fs. Each message in the
+  mailbox becomes a numbered directory in the mailbox directory, and each
+  attachment becomes a numbered directory in the message directory. Since an
+  attachment may itself be a mail message, this structure can recurse ad
+  nauseam.
+
+  Each message and attachment directory contains the files:
+  body            the message minus the RFC822 style headers
+  cc              the address(es) from the CC: header
+  date            the date in the message, or if none, the time of delivery
+  digest          an SHA1 digest of the message contents
+  subject         the contents of the subject line
+   .
+   . etc
+   .
+
+Here's the manpage for upas:
+
+http://plan9.bell-labs.com/magic/man2html/4/upasfs
+
+The GSoC project:
+
+http://socghop.appspot.com/student_project/show/google/gsoc2009/plan9/t124024225207
+
+There's a ton of interesting and powerful stuff in Plan 9.
+
+I'm hoping this will provide some useful ideas for Sup the Service.
+
+Jon
+-- 
+Jon M. Dugan <jdugan at es.net>          | GTalk: jdugan.esnet
+ESnet Network Engineering Group       | http://www.es.net/
+Lawrence Berkeley National Laboratory | http://www.lbl.gov/
+
+From jdugan at es.net  Wed Apr 22 21:11:40 2009
+From: jdugan at es.net (Jon Dugan)
+Date: Wed, 22 Apr 2009 18:11:40 -0700
+Subject: [sup-talk] mime-view hook
+Message-ID: <1240448213-sup-1757@junction.es.net>
+
+I'm running the mainline sup from git.
+
+I have a mime-view.rb hook like this:
+
+case content_type
+when "text/html"
+    Redwood::log("w3m: " + '/opt/local/bin/w3m -dump -T ' + content_type + ' ' + filename)
+    IO.popen('-') {|f| f ? f.read : exec('/opt/local/bin/w3m', '-dump', '-T', content_type, filename)}
+else 
+    Redwood::log("dumbplumb: " + filename)
+    system '/Users/jdugan/projects/dumbplumb/dumbplumb', filename
+end
+
+It's supposed to render HTML in the SUP window and hand everything else off to
+dumbplumb.  It does hand everything else off to dumbplub, however it doesn't
+do what I expect for the HTML attachments.
+
+Whatever gets returned from the hook should be displayed, right? 
+
+I am a Ruby noob so maybe it's my Ruby that's bad.  (Although I've got a lot
+of experience with Python, Perl, etc...)
+
+If I send the output of the IO.popen to Redwood::log I see what I'd expect in
+the log buffer, so I have confidence in the part that is using w3m to render
+the HTML.
+
+Why didn't I use backticks (`) instead of the calls to system and exec?
+To sidestep shell quoting issues.  I started with backticks but attachments
+with spaces and other shell meta characters were problematic.  
+
+Thanks for any suggestions,
+
+Jon
+
+PS: dumbplumb may be of interest.  Here's the README:
+
+dumbplumb is a simple mechanism for displaying files from remote systems
+locally.  it is a brain dead hack that implements something which is something
+like the Plan 9 plumber but not really.
+
+Eventually it may be reworked to actually use the plan9 port plumber, but for
+now it's just dumb.
+
+dumbplumbd listens on port 9937 on your local system for requests.  dumbplumb
+sends requests to dumbplumbd.  ssh port forwarding is used to proxy the two
+together, eg:
+
+ssh -R 9937:localhost:9937 remotehost
+
+You can find dumbplumb at http://bitbucket.org/jdugan/dumbplumb/
+-- 
+Jon M. Dugan <jdugan at es.net>          | GTalk: jdugan.esnet
+ESnet Network Engineering Group       | http://www.es.net/
+Lawrence Berkeley National Laboratory | http://www.lbl.gov/
+
+From wmorgan-sup at masanjin.net  Thu Apr 23 08:47:59 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Apr 2009 05:47:59 -0700
+Subject: [sup-talk] mime-view hook
+In-Reply-To: <1240448213-sup-1757@junction.es.net>
+References: <1240448213-sup-1757@junction.es.net>
+Message-ID: <1240489722-sup-3696@entry>
+
+Reformatted excerpts from Jon Dugan's message of 2009-04-22:
+> It's supposed to render HTML in the SUP window and hand everything
+> else off to dumbplumb.  It does hand everything else off to dumbplub,
+> however it doesn't do what I expect for the HTML attachments.
+> 
+> Whatever gets returned from the hook should be displayed, right? 
+
+Not exactly. There are two MIME hooks, and you'll need them both for
+what you're trying to do: mime-decode, for turning an attachment into
+text (displayed directly in Sup), and mime-view, for launching
+third-party applications to view an attachment. I've updated the docs on
+these two in git to make their relationship a little more clear, but in
+summary: mime-decode should return a string, or nil if uncovertable, and
+mime-view should return true if the application was successful, and
+false otherwise.
+
+Note that by default Sup calls run-mailcap to view attachments it can't
+convert to text, so you can make the dumbplumb behavior global by
+changing your mailcap instead. (If you desire that.)
+
+> dumbplumb is a simple mechanism for displaying files from remote
+> systems locally.  it is a brain dead hack that implements something
+> which is something like the Plan 9 plumber but not really.
+
+That's awesome. Very useful for Sup.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Apr 23 08:52:56 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Apr 2009 05:52:56 -0700
+Subject: [sup-talk] GSoC Project of Interest
+In-Reply-To: <1240449619-sup-9301@junction.es.net>
+References: <1240449619-sup-9301@junction.es.net>
+Message-ID: <1240490917-sup-3402@entry>
+
+Reformatted excerpts from Jon Dugan's message of 2009-04-22:
+> Most services on Plan 9 are implemented as synthetic file systems.
+> The synthetic filesystem that represents email on Plan 9 is known as
+> upas.  upas provides a filesytem view of mail boxes regardless of
+> their backend storage medium (eg, POP, IMAP, etc) which provides a
+> nice clean separation between the code that you use to do useful
+> things to your mail and the code that deals with the mail store
+> itself.
+
+Very interesting and that's a great abstraction. Definitely lots of
+overlap with STS. I suspect the primary differences will be that STS
+uses fielded, full-text search as its primary access mechanism, and
+there's no notion of any kind of filesystem-like mailbox or directory
+hierarchy.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From andrew at pimlott.net  Thu Apr 23 13:53:36 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Thu, 23 Apr 2009 10:53:36 -0700
+Subject: [sup-talk] mime-view hook
+In-Reply-To: <1240448213-sup-1757@junction.es.net>
+References: <1240448213-sup-1757@junction.es.net>
+Message-ID: <20090423175336.GX11701@pimlott.net>
+
+On Wed, Apr 22, 2009 at 06:11:40PM -0700, Jon Dugan wrote:
+> dumbplumbd listens on port 9937 on your local system for requests.  dumbplumb
+> sends requests to dumbplumbd.  ssh port forwarding is used to proxy the two
+> together, eg:
+> 
+> ssh -R 9937:localhost:9937 remotehost
+
+You probably realize this, but...  A well-known port doesn't work for
+this, because you need one plumber per display session.  So the SSH
+forwarding needs to use the right plumber on this end and establish a
+corresponding session on the other end.
+
+The obvious model for this is SSH agent forwarding.  You'd have a
+PLUMBER_SOCK variable containing the path to a unix socket, and ssh
+would create a unix socket on the other end, forward it there, and set a
+new PLUMBER_SOCK variable.  The obstacle is, the SSH developers haven't
+shown any interest in making the SSH agent forward mechanism availble to
+others.  See for example
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=294148
+
+If you don't do this, you'll have plumbers stepping on each other, or
+you'll have to manage ports manually.
+
+Andrew
+
+From jdugan at es.net  Thu Apr 23 14:14:48 2009
+From: jdugan at es.net (Jon Dugan)
+Date: Thu, 23 Apr 2009 11:14:48 -0700
+Subject: [sup-talk] mime-view hook
+In-Reply-To: <20090423175336.GX11701@pimlott.net>
+References: <1240448213-sup-1757@junction.es.net>
+	<20090423175336.GX11701@pimlott.net>
+Message-ID: <1240509574-sup-3576@junction.es.net>
+
+Excerpts from Andrew Pimlott's message of Thu Apr 23 10:53:36 -0700 2009:
+> On Wed, Apr 22, 2009 at 06:11:40PM -0700, Jon Dugan wrote:
+> > dumbplumbd listens on port 9937 on your local system for requests.  dumbplumb
+> > sends requests to dumbplumbd.  ssh port forwarding is used to proxy the two
+> > together, eg:
+> > 
+> > ssh -R 9937:localhost:9937 remotehost
+> 
+> You probably realize this, but...  A well-known port doesn't work for
+> this, because you need one plumber per display session.  So the SSH
+> forwarding needs to use the right plumber on this end and establish a
+> corresponding session on the other end.
+
+That is definitely and issue and I should probably add that to the README.
+However in practice it doesn't seem to be a problem for me, I only forward the
+port for the first connection to my sup box.  When I leave a display I log out
+of the sup box thus freeing the well known port for the next display I sit at.
+(Or if I forget I can log in and kill that ssh process by hand.) However, this
+whole fiasco is part of the reason I call it dumb.
+
+There is also a significant security issue which is anyone on the sup box can
+send a dumbplumb request if they know what port to talk to.  In my case this
+is a fairly minor risk as I am the only person who uses my sup box.  This too
+is part of the reason I call it dumb.
+
+> The obvious model for this is SSH agent forwarding.  You'd have a
+> PLUMBER_SOCK variable containing the path to a unix socket, and ssh
+> would create a unix socket on the other end, forward it there, and set a
+> new PLUMBER_SOCK variable.  The obstacle is, the SSH developers haven't
+> shown any interest in making the SSH agent forward mechanism availble to
+> others.  See for example
+> 
+> http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=294148
+> 
+> If you don't do this, you'll have plumbers stepping on each other, or
+> you'll have to manage ports manually.
+
+I've wanted this kind of forwarding for a long, long time.  I was unaware of
+the patch listed there.  I'll have to take a look.  This would be especially
+cool if it was forwardable like the agent socket, since sometimes I have to
+ssh through intermediate boxes.  (But see my ssh-gw script for a cute trick
+for getting around this:  http://bitbucket.org/jdugan/ssh-gw/).
+
+The unix socket forwarding would make the whole thing much, much cleaner.
+
+One hack to work around the port collision problem is to enable environment
+variable forwarding (see SendEnv in ssh_config(5)) and use that to dynamically
+choose a port per session.  This could be used to forward unix domain sockets
+by combining this with something like socat.  This, however, starts to become
+a huge tangle of duct tape and bailing wire...  Also SendEnv has some security
+implications.
+
+In short I'd love something less dumb, but for now this scratches an itch.
+
+Jon
+-- 
+Jon M. Dugan <jdugan at es.net>          | GTalk: jdugan.esnet
+ESnet Network Engineering Group       | http://www.es.net/
+Lawrence Berkeley National Laboratory | http://www.lbl.gov/
+
+From andrew at pimlott.net  Thu Apr 23 18:59:13 2009
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Thu, 23 Apr 2009 15:59:13 -0700
+Subject: [sup-talk] mime-view hook
+In-Reply-To: <1240509574-sup-3576@junction.es.net>
+References: <1240448213-sup-1757@junction.es.net>
+	<20090423175336.GX11701@pimlott.net>
+	<1240509574-sup-3576@junction.es.net>
+Message-ID: <20090423225913.GY11701@pimlott.net>
+
+On Thu, Apr 23, 2009 at 11:14:48AM -0700, Jon Dugan wrote:
+> I've wanted this kind of forwarding for a long, long time.  I was unaware of
+> the patch listed there.  I'll have to take a look.  This would be especially
+> cool if it was forwardable like the agent socket, since sometimes I have to
+> ssh through intermediate boxes.  (But see my ssh-gw script for a cute trick
+> for getting around this:  http://bitbucket.org/jdugan/ssh-gw/).
+> 
+> The unix socket forwarding would make the whole thing much, much cleaner.
+
+It's sad that this hasn't been picked up.  I looked into it a while
+back, and I can't remember exactly what the impediment is.  It would be
+an extension to the SecSH protocol, and nobody on the ssh side seems to
+get the need for it (baffling to me, given ssh-agent).  Even the code
+that exists (AFAICT) only connects explicitly-named ports on either end.
+
+> One hack to work around the port collision problem is to enable environment
+> variable forwarding (see SendEnv in ssh_config(5)) and use that to dynamically
+> choose a port per session.
+
+Even then, you're manually managing the ports:  You have to assign a
+port number to every session you use; if others use the same machines
+(which is unthinkable in the first place for lack of access control),
+everyone's numbers have to be unique.  That's just dumb--but you know
+that. :-)
+
+> In short I'd love something less dumb, but for now this scratches an itch.
+
+Credit to you for writing it.  As soon as I saw it, I knew the plumber
+was the right thing, but when I ran into the forwarding problem, I gave
+up.  I'm glad you didn't!
+
+Andrew
+
+From ezyang at MIT.EDU  Sat Apr 25 20:47:23 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sat, 25 Apr 2009 20:47:23 -0400
+Subject: [sup-talk] Exception
+Message-ID: <1240706801-sup-2126@javelin>
+
+Hello,
+
+sup gets an uncaught exception if you x out a buffer window while it is
+loading messages:
+
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. If you don't mind, please send the
+contents of ~/.sup/exception-log.txt and a brief report of the
+circumstances to sup-talk at rubyforge dot orgs so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- ArgumentError from thread: load messages for thread-view-mode
+buffer not on stack: #<Redwood::Buffer:0xb6586518>: "New message in forum"
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/buffer.rb:395:in `kill_buffer'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/buffer.rb:386:in `kill_buffer_safely'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/util.rb:499:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/util.rb:499:in `method_missing'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-view-mode.rb:452:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-index-mode.rb:114:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-index-mode.rb:114:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:85:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:83:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:83:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup.rb:83:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-index-mode.rb:94:in `select'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-index-mode.rb:144:in `launch_another_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-index-mode.rb:126:in `launch_next_thread_after'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-view-mode.rb:457:in `dispatch'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-view-mode.rb:429:in `delete_and_then'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/modes/thread-view-mode.rb:404:in `delete_and_next'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/mode.rb:49:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/mode.rb:49:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/lib/sup/buffer.rb:240:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.7/bin/sup:207
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+Cheers,
+Edward
+
+From wmorgan-sup at masanjin.net  Sun Apr 26 20:07:36 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 26 Apr 2009 17:07:36 -0700
+Subject: [sup-talk] message add speedup
+Message-ID: <1240790767-sup-9896@entry>
+
+I've merged a branch 'scanning-speedup' into next that doubles the speed
+of adding messages to the index. There was a lot of time wasted in
+parsing the email headers, which I fixed, and I tweaked a couple other
+things. Various other operations that load data from the message source,
+like viewing a message thread, should now be slightly faster.
+
+I'm able to index around 70 messages/s on my home computer, which is
+still slow, but hey, twice as fast as 35. Time is split about 50/50
+between scanning/parsing and Ferret index writing. Sadly, Ruby has a
+GIL, so I don't think threading these two operations will buy very much.
+(Though there might be complicated ways of getting around that.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Sun Apr 26 23:28:27 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Sun, 26 Apr 2009 21:28:27 -0600
+Subject: [sup-talk] scary exception
+Message-ID: <1240802707-sup-2069@tangerine.lanl.gov>
+
+On Friday, sup stopped loading and crashed with an exception, I also
+couldn't run sup-sync.  At first I was a little scared, but then I
+remembered that sup doesn't actually modify mail data so that I could
+revert to pine, and then I got very, very scared.
+
+I though I would have to do weird things at a ruby prompt but I just
+waited two days and now it works again.  Somewhat strange since I tried
+about five times on Friday.  Oh well, I'm running sup in screen so I'll
+just never quit again.  :)
+
+Here's the error message in case there's something obvious to someone
+else:
+
+tangerine:~/mail>sup-sync
+[Fri Apr 24 16:43:10 -0600 2009] using character set encoding "US-ASCII"
+[Fri Apr 24 16:43:11 -0600 2009] crypto: no gpg binary detected
+[Fri Apr 24 16:43:11 -0600 2009] locking /Users/johnbent/.sup/lock...
+[Fri Apr 24 16:43:11 -0600 2009] loading index...
+[Fri Apr 24 16:43:11 -0600 2009] loaded index of 79908 messages
+Scanning mbox:/Users/johnbent/mail/mbox...
+[Fri Apr 24 16:43:11 -0600 2009] unlocking /Users/johnbent/.sup/lock...
+/opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:768:in
+`search': IO Error occured at <except.c>:93 in xraise (IOError)
+Error occured in fs_store.c:284 - fsi_read_i
+    couldn't read 1024 chars from : <Unknown error: 0>
+
+    from
+/opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:768:in
+`do_search'
+    from
+/opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:339:in
+`search'
+    from /opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+    from
+/opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:338:in
+`search'
+    from
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:422:in
+`load_entry_for_id'
+    from /opt/local/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+    from
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/index.rb:421:in
+`load_entry_for_id'
+    from
+/opt/local/lib/ruby/gems/1.8/gems/sup-999/lib/sup/util.rb:499:in `send'
+     ... 10 levels...
+    from /opt/local/lib/ruby/gems/1.8/gems/sup-999/bin/sup-sync:131:in
+`each'
+    from /opt/local/lib/ruby/gems/1.8/gems/sup-999/bin/sup-sync:131
+    from /opt/local/bin/sup-sync:16:in `load'
+    from /opt/local/bin/sup-sync:16
+
+
+Thanks,
+
+JOHn
+
+From wmorgan-sup at masanjin.net  Mon Apr 27 13:25:19 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Apr 2009 10:25:19 -0700
+Subject: [sup-talk] scary exception
+In-Reply-To: <1240802707-sup-2069@tangerine.lanl.gov>
+References: <1240802707-sup-2069@tangerine.lanl.gov>
+Message-ID: <1240852818-sup-1006@entry>
+
+Hi John,
+
+Reformatted excerpts from John Bent's message of 2009-04-26:
+> /opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:768:in
+> `search': IO Error occured at <except.c>:93 in xraise (IOError)
+> Error occured in fs_store.c:284 - fsi_read_i
+>     couldn't read 1024 chars from : <Unknown error: 0>
+
+It appears that you're running off a gem generated directly from the git
+repo. How recently did you do that? This Ferret error is something I
+though we had kicked quite a while ago, so if you are running from a
+recent git, I'll be worried.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From johnbent at lanl.gov  Mon Apr 27 13:34:54 2009
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 27 Apr 2009 11:34:54 -0600
+Subject: [sup-talk] scary exception
+In-Reply-To: <1240852818-sup-1006@entry>
+References: <1240802707-sup-2069@tangerine.lanl.gov>
+	<1240852818-sup-1006@entry>
+Message-ID: <1240853542-sup-4778@tangerine.lanl.gov>
+
+Excerpts from William Morgan's message of Mon Apr 27 11:25:19 -0600 2009:
+> Hi John,
+> 
+> Reformatted excerpts from John Bent's message of 2009-04-26:
+> > /opt/local/lib/ruby/gems/1.8/gems/ferret-0.11.6/lib/ferret/index.rb:768:in
+> > `search': IO Error occured at <except.c>:93 in xraise (IOError)
+> > Error occured in fs_store.c:284 - fsi_read_i
+> >     couldn't read 1024 chars from : <Unknown error: 0>
+> 
+> It appears that you're running off a gem generated directly from the git
+> repo. How recently did you do that? This Ferret error is something I
+> though we had kicked quite a while ago, so if you are running from a
+> recent git, I'll be worried.
+>
+I'm sorry.  I don't remember.  The timestamp on my sup executable says
+Jan 13 2009.  I'll try to upgrade and see if I ever see this again.  
+
+John
+
+From wmorgan-sup at masanjin.net  Mon Apr 27 13:46:43 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Apr 2009 10:46:43 -0700
+Subject: [sup-talk] scary exception
+In-Reply-To: <1240853542-sup-4778@tangerine.lanl.gov>
+References: <1240802707-sup-2069@tangerine.lanl.gov>
+	<1240852818-sup-1006@entry>
+	<1240853542-sup-4778@tangerine.lanl.gov>
+Message-ID: <1240854270-sup-8870@entry>
+
+Reformatted excerpts from John Bent's message of 2009-04-27:
+> I'm sorry.  I don't remember.  The timestamp on my sup executable says
+> Jan 13 2009.  I'll try to upgrade and see if I ever see this again.  
+
+Yeah, I think it was around March that things got merged in. Try it with
+the latest & greatest and see if it happens again.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Apr 27 14:18:27 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Apr 2009 11:18:27 -0700
+Subject: [sup-talk] IMAP folder/label integration and playing better
+	with changed sources?
+In-Reply-To: <0c334e4c-0480-4def-b64a-b4996431f5c9@x3g2000yqa.googlegroups.com>
+References: <0c334e4c-0480-4def-b64a-b4996431f5c9@x3g2000yqa.googlegroups.com>
+Message-ID: <1240856180-sup-6270@entry>
+
+Reformatted excerpts from Saku Ytti's message of 2009-04-22:
+> Problem for me is, I want to use also mobile phone email client and
+> webmail, so I'm kinda stuck with mutt. Is it likely that this could be
+> addressed in future?
+
+One thing I'd like to do with Sup the Service would be to provide an
+IMAP server interface to it. Then you could use with standard IMAP
+clients. But that's probably a ways off.
+
+> And for the actual subject related matter, could it be possible to
+> store labels as folders optionally? This would play along really well
+> for those who use gmail, as you would essentially get synchronised
+> labeling between sup and webclient.
+
+Sounds like a good idea but a lot of work...
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Mon Apr 27 15:47:00 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Mon, 27 Apr 2009 21:47:00 +0200
+Subject: [sup-talk] redo ideas
+In-Reply-To: <200904271244.n3RCi1VO027803@smtp6.server.rpi.edu>
+References: <200904271244.n3RCi1VO027803@smtp6.server.rpi.edu>
+Message-ID: <1240861270-sup-8603@ausone.local>
+
+Excerpts from Mike S's message of Mon Apr 27 14:43:46 +0200 2009:
+> I'm graduating in a few weeks, so I'll have some free time I can dedicate 
+> to sup again.
+> 
+> Recently redo functionality was suggested, I believe this was meant to be 
+> a solution for something, but I have been thinking about it for a while.
+> I'd like to register Ctrl-R to keep with the vim bindings.
+
+Just some thoughts about this... I was more thinking about the repeat feature
+of Vi/Vim (the '.' command) than the redo one.
+
+Two other ways of doing the undo/redo:
+
+1/ Save the actions using a data type that we can inverse.
+   Example in Ruby syntax
+   a = Action.add_labels(:foo, :bar)
+   a.apply # actually do the job
+   a.invert # equals to Action.remove_labels(:foo, :bar)
+
+2/ Save the state (has to be defined) at each action.
+   This solution would be limited to actions where the state is manageable.
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+
+From helgedt at tihlde.org  Mon Apr 27 16:00:44 2009
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Mon, 27 Apr 2009 22:00:44 +0200
+Subject: [sup-talk] UTF-8 message sending patch
+Message-ID: <1240861799-sup-787@colargol.tihlde.org>
+
+Hi,
+I just installed sup and noticed that it didn't play extremely well
+with utf-8 out of the box.
+
+http://sup.rubyforge.org/wiki/wiki.pl?UTF8 together with the String 
+hack from http://www.nabble.com/UTF-8-woes-td21598658.html#a21598658 
+fixed the viewing parts (I think), but it's still unacceptable to
+send raw utf-8 in email headers.
+
+So I fixed it with another little hack (to edit-message-mode.rb),
+which sets Content-Transfer-Encoding to 8-bit and more importantly
+tries to convert any utf-8 headers to quoted printable.
+
+I think the patch (attached) fixes my problems, but it's probably far
+from complete. It doesn't detect non-utf8-but-still-illegal-strings,
+it assumes every header except Subject is an address, and so on.
+
+Any feedback is welcome. (:
+-- 
+alge
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-utf8-message-sending.patch
+Type: application/octet-stream
+Size: 1904 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20090427/6cae2b53/attachment.obj>
+
+From mailinglist at flasht.de  Tue Apr 28 13:49:04 2009
+From: mailinglist at flasht.de (Christopher Bertels)
+Date: Tue, 28 Apr 2009 19:49:04 +0200
+Subject: [sup-talk] New to Sup and some imap sync questions
+Message-ID: <1240940037-sup-2915@bakkdoor-ubuntu>
+
+Hi!
+I'm new to using Sup and I really like it.
+I know that it works a little different than most mail clients I've used before.
+I'be been using Thunderbird but I#ve always missed a way to view my mails in one big inbox with multiple accounts.
+Fortunately, Sup does this just the way I want it to. And since I like Ruby as well, it's definately another plus to be able to customize it with Ruby.
+I do have one question though:
+Are there any plans on making it sync changes back to the imap server somehow? I'm used to having different mail clients on different machines dealing with
+the same accounts on several imap servers. I'm so used to having all the changes happening on the server itself, that it's something I'm really missing with Sup.
+Just wondering if this is ever planned? Since now, even if I have Sup installed on my different machines, I still need to sync all the settings when I change something (e.g. adding a hook-script or something else). Or is there an easy way to sync my Sup settings  etc?
+I'm new to it, but it seems very promising...
+
+Thanks for any help and keep up the good work!
+
+Christopher.
+
+From sgoldman at tower-research.com  Tue Apr 28 15:19:26 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Tue, 28 Apr 2009 15:19:26 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+Message-ID: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+
+This only started happening after I upgraded to the latest version...
+
+Oftentimes when I quit sup and then restart, my inbox looks different.
+Messages that I had previously archived are back in the inbox.  Has
+anyone else seen this?  I'm losing sleep over it.
+
+Thanks.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From marka at pobox.com  Tue Apr 28 19:29:46 2009
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 28 Apr 2009 19:29:46 -0400
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+	<20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+Message-ID: <a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+
+On Tue, Apr 28, 2009 at 3:18 PM, Marc Hartstein
+<marc.hartstein at alum.vassar.edu> wrote:
+> Isn't part of the maildir scheme that the filenames are guaranteed to be
+> unique? ?It's been a while since I looked at this part of the sup
+> source, but would it be possible to simply use the filename as the ID
+> when working with maildir, rather than generating a new ID? ?Or is there
+> an additional constraint (like ordering?) that needs to be satisfied and
+> isn't by maildir?
+
+Maildir filenames are unique, but they would need to be ordered
+by time, since sup depends on that ordering (look in maildir.rb for
+where it uses sort).  I'm not sure if mail delivery programs
+(I use procmail) guarantee that the filenames are ordered that way.
+
+I will say that the patch I sent out for maildir.rb has made
+my life a lot happier, but it's still not ideal because of
+the race condition I mentioned.
+
+William was talking about using some other scheme to generate IDs.
+We should see what he has to say about this.
+
+From nicolas.pouillard at gmail.com  Wed Apr 29 04:40:13 2009
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 29 Apr 2009 10:40:13 +0200
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+Message-ID: <1240994294-sup-8386@ausone.inria.fr>
+
+Excerpts from Steve Goldman's message of Tue Apr 28 21:19:26 +0200 2009:
+> This only started happening after I upgraded to the latest version...
+> 
+> Oftentimes when I quit sup and then restart, my inbox looks different.
+> Messages that I had previously archived are back in the inbox.  Has
+> anyone else seen this?  I'm losing sleep over it.
+
+ From time to time I also encounter this issue: previously archived emails
+ come back to the inbox.
+
+-- 
+Nicolas Pouillard
+
+From tyberius_prime at coonabibba.de  Wed Apr 29 04:37:08 2009
+From: tyberius_prime at coonabibba.de (Tyberius Prime)
+Date: Wed, 29 Apr 2009 10:37:08 +0200
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1240994294-sup-8386@ausone.inria.fr>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1240994294-sup-8386@ausone.inria.fr>
+Message-ID: <1240994200-sup-9656@h984274.serverkompetenz.net>
+
+I should add, the read status is being kept for me.
+
+Excerpts from Nicolas Pouillard's message of Wed Apr 29 10:40:13 +0200 2009:
+> Excerpts from Steve Goldman's message of Tue Apr 28 21:19:26 +0200 2009:
+> > This only started happening after I upgraded to the latest version...
+> > 
+> > Oftentimes when I quit sup and then restart, my inbox looks different.
+> > Messages that I had previously archived are back in the inbox.  Has
+> > anyone else seen this?  I'm losing sleep over it.
+> 
+>  From time to time I also encounter this issue: previously archived emails
+>  come back to the inbox.
+> 
+
+From tyberius_prime at coonabibba.de  Wed Apr 29 04:17:23 2009
+From: tyberius_prime at coonabibba.de (Tyberius Prime)
+Date: Wed, 29 Apr 2009 10:17:23 +0200
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+Message-ID: <1240992967-sup-2852@h984274.serverkompetenz.net>
+
+Hi,
+
+yes, I see the same, 
+haven't dug into it so far either, simply never restart sup
+if I can avoid it... (yeah, great conflict strategy, but
+life's short).
+
+So long,
+Tyberius Prime
+
+
+Excerpts from Steve Goldman's message of Tue Apr 28 21:19:26 +0200 2009:
+> This only started happening after I upgraded to the latest version...
+> 
+> Oftentimes when I quit sup and then restart, my inbox looks different.
+> Messages that I had previously archived are back in the inbox.  Has
+> anyone else seen this?  I'm losing sleep over it.
+> 
+> Thanks.
+> -- 
+> 
+> Steve Goldman
+> sgoldman at tower-research.com
+> 
+> T: 212.219.6014
+> F: 212.219.6007
+> 
+> Tower Research Capital, LLC
+> 377 Broadway, 11th Fl.
+> New York, NY 10013
+
+From ezyang at MIT.EDU  Wed Apr 29 13:04:40 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 29 Apr 2009 13:04:40 -0400
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1240940037-sup-2915@bakkdoor-ubuntu>
+References: <1240940037-sup-2915@bakkdoor-ubuntu>
+Message-ID: <1241024581-sup-9014@javelin>
+
+Excerpts from Christopher Bertels's message of Tue Apr 28 13:49:04 -0400 2009:
+> Just wondering if this is ever planned? Since now, even if I have Sup installed
+> on my different machines, I still need to sync all the settings when I change
+> something (e.g. adding a hook-script or something else). Or is there an easy
+> way to sync my Sup settings  etc?
+
+Hello Christopher,
+
+My current understanding is that William is not interested in mucking around
+with IMAP any more than he has to, so unless someone steps up and submits
+some patches there will not be syncing back to IMAP.
+
+As for handling Sup on multiple machines, I think the current best practice
+is "don't"; pick one machine, make it ssh'able into, and use that to handle
+all of your mail.
+
+Cheers,
+Edward
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 14:02:06 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 11:02:06 -0700
+Subject: [sup-talk] possible mbox "initial From" fix
+Message-ID: <1241027916-sup-7642@entry>
+
+After a lot of toying with RubyMail, hoping I could get it to behave
+well, I finally gave up and just tweaked the regexp that determines
+whether a line is an mbox separator or not, and bypassed RubyMail mbox
+splitting entirely. It might still be too lenient---I have it looking
+for /^From \S+@\S+ /, so it's not even bothering to parse a date, etc.
+I'm hoping to strike somewhat of a balance between strict and liberal.
+
+So, please try it out and see if it solves your mbox problems.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 14:09:16 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 11:09:16 -0700
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1241024581-sup-9014@javelin>
+References: <1240940037-sup-2915@bakkdoor-ubuntu> <1241024581-sup-9014@javelin>
+Message-ID: <1241028139-sup-8070@entry>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-04-29:
+> My current understanding is that William is not interested in mucking
+> around with IMAP any more than he has to, so unless someone steps up
+> and submits some patches there will not be syncing back to IMAP.
+
+That's pretty much the case, but I hope it's ameliorated by the fact
+that I do plan to get sup-sync-back working with Maildir ("any day
+now"), and then you can use offlineimap to really sync between IMAP and
+Sup.
+
+> As for handling Sup on multiple machines, I think the current best
+> practice is "don't"; pick one machine, make it ssh'able into, and use
+> that to handle all of your mail.
+
+Correct.
+
+Recently I've been thinking about the possibility of storing one's
+mbox/Maildir in git, syncing it between machines (Maildir would probably
+work best for this, as mbox will generate spurious conflicts when
+deleting+adding), and maintaining the Ferret index locally on each
+machine. If we add a notion of an outbound message queue to Sup (i.e.
+each machine knows whether it has the ability to send mail or not), and
+also synchronize that and the drafts and sent folders between machines,
+you could use Sup for completely offline, distributed email. Crazy?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 14:10:53 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 11:10:53 -0700
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+Message-ID: <1241028590-sup-8155@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2009-04-28:
+> Oftentimes when I quit sup and then restart, my inbox looks different.
+> Messages that I had previously archived are back in the inbox.  Has
+> anyone else seen this?  I'm losing sleep over it.
+
+I see it periodically too (I think I also see read messages turned
+unread again) and have been trying to find a pattern---is it email
+that's autosaved when I quit Sup, etc.?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 14:22:41 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 11:22:41 -0700
+Subject: [sup-talk] redo ideas
+In-Reply-To: <200904271244.n3RCi1VO027803@smtp6.server.rpi.edu>
+References: <200904271244.n3RCi1VO027803@smtp6.server.rpi.edu>
+Message-ID: <1241028879-sup-6375@entry>
+
+Reformatted excerpts from Mike S's message of 2009-04-27:
+> I'm graduating in a few weeks, so I'll have some free time I can
+> dedicate to sup again.
+
+Congrats! Great!
+
+> I'd like to register Ctrl-R to keep with the vim bindings.
+
+Sure.
+
+> Ugly method 2: write code in duplicate, register a redo and call redo
+> This saves duplication of code, but it seems unnecessarily complex.
+> 
+> * create undo lambda
+> * create redo lambda
+> * register undo and redo, but 'queue up' redo
+> * UndoManager.redo
+
+Redo is actually a slightly different operation from do. Do has to ask
+for user input (what label do you want to apply?), redo just reuses it.
+Maybe that's not such a big deal though; do/redo can just check to see
+if it already has the value from the user, and ask if not.
+
+> Slightly clever method: have primitives return their own undo/redo.
+> This can be seen in toggle_starred where actually_toggle_starred
+> returns its inverse. This shifts the complexity down and keeps higher
+> level code clean.
+
+That sounds eminently reasonable to me.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From ezyang at MIT.EDU  Wed Apr 29 14:38:13 2009
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 29 Apr 2009 14:38:13 -0400
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1241028139-sup-8070@entry>
+References: <1240940037-sup-2915@bakkdoor-ubuntu>
+	<1241024581-sup-9014@javelin> <1241028139-sup-8070@entry>
+Message-ID: <1241030207-sup-8690@javelin>
+
+Excerpts from William Morgan's message of Wed Apr 29 14:09:16 -0400 2009:
+> Recently I've been thinking about the possibility of storing one's
+> mbox/Maildir in git, syncing it between machines (Maildir would probably
+> work best for this, as mbox will generate spurious conflicts when
+> deleting+adding), and maintaining the Ferret index locally on each
+> machine. If we add a notion of an outbound message queue to Sup (i.e.
+> each machine knows whether it has the ability to send mail or not), and
+> also synchronize that and the drafts and sent folders between machines,
+> you could use Sup for completely offline, distributed email. Crazy?
+
+I was under the impression that the interesting stuff (e.g. tags) was
+stored in the index, so you would have to sync that too?
+
+Cheers,
+Edward
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 16:16:30 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 13:16:30 -0700
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1241030207-sup-8690@javelin>
+References: <1240940037-sup-2915@bakkdoor-ubuntu>
+	<1241024581-sup-9014@javelin> <1241028139-sup-8070@entry>
+	<1241030207-sup-8690@javelin>
+Message-ID: <1241036141-sup-3541@entry>
+
+Reformatted excerpts from Edward Z. Yang's message of 2009-04-29:
+> I was under the impression that the interesting stuff (e.g. tags) was
+> stored in the index, so you would have to sync that too?
+
+That would have to be update to include all new messages every time you
+synced. And the flags would have to be synced too. Not a trivial
+undertaking, but within the realm of possibility.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From mailinglist at flasht.de  Wed Apr 29 16:48:35 2009
+From: mailinglist at flasht.de (Christopher Bertels)
+Date: Wed, 29 Apr 2009 22:48:35 +0200
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1241028139-sup-8070@entry>
+References: <1240940037-sup-2915@bakkdoor-ubuntu>
+	<1241024581-sup-9014@javelin> <1241028139-sup-8070@entry>
+Message-ID: <1241037842-sup-8569@bakkdoor-ubuntu>
+
+Excerpts from William Morgan's message of Mi Apr 29 20:09:16 +0200 2009:
+> Recently I've been thinking about the possibility of storing one's
+> mbox/Maildir in git, syncing it between machines (Maildir would probably
+> work best for this, as mbox will generate spurious conflicts when
+> deleting+adding), and maintaining the Ferret index locally on each
+> machine. If we add a notion of an outbound message queue to Sup (i.e.
+> each machine knows whether it has the ability to send mail or not), and
+> also synchronize that and the drafts and sent folders between machines,
+> you could use Sup for completely offline, distributed email. Crazy?
+
+Actually, that's something I've thought about as well. Seems kinda crazy, but since I don't switch between
+machines too often (mainly laptop & desktop machine - maybe switching once a day) this could be an optoin.
+Or I'll use my server and ssh into it to view my mail.
+Anyhow, I guess I'll stick with Sup - I just like it too much already ;)
+
+Christopher.
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 16:58:01 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 13:58:01 -0700
+Subject: [sup-talk] New to Sup and some imap sync questions
+In-Reply-To: <1241036141-sup-3541@entry>
+References: <1240940037-sup-2915@bakkdoor-ubuntu>
+	<1241024581-sup-9014@javelin> <1241028139-sup-8070@entry>
+	<1241030207-sup-8690@javelin> <1241036141-sup-3541@entry>
+Message-ID: <1241038425-sup-3748@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-04-29:
+> That would have to be update to include all new messages every time
+> you synced. And the flags would have to be synced too. Not a trivial
+> undertaking, but within the realm of possibility.
+
+That wasn't very clear. Let me try again. The Ferret index (a scary
+binary thing) would not be synced. Individual sources would be synced,
+along with some version of the message flags (probably as a
+newline-separated text file, to allow conflict resolution (!)), and then
+the index would be updated on the local machine to reflect those
+changes.
+
+Kinda tantamount to rsyncing your .sup directory and all your sources
+across different machines, but a little more refined.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 18:31:52 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 15:31:52 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+	<20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+	<a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+Message-ID: <1241038730-sup-2939@entry>
+
+Reformatted excerpts from Mark Alexander's message of 2009-04-28:
+> Maildir filenames are unique, but they would need to be ordered by
+> time, since sup depends on that ordering (look in maildir.rb for where
+> it uses sort).  I'm not sure if mail delivery programs (I use
+> procmail) guarantee that the filenames are ordered that way.
+
+That's correct; the name is not sufficient as ids because Sup needs a
+single pointer into the Maildir as a marker for what it has already
+processed, so we have to use something ordinal.  But it can't just be
+any old ordinal, it has to be something that corresponds with the way
+messages are written to the Maildir, in order to be able to divide newer
+messages from older ones.
+
+A timestamp is the obvious choice, but messages can have the same
+timestamp, so then what do you do? The current approach is to sort by
+another arbitrary field (in this cae, message size), which gives a
+unique ordering, but doesn't match up
+
+(All this rigamarole about ordinals and blah blah blah is necessary
+because I don't want Sup to rescan the entire Maildir unless absolutely
+necessary. One day I'll convert my mbox to a Maildir with 250k files in
+it, and a rescan will kill me, especially at Ruby speed.)
+
+> I will say that the patch I sent out for maildir.rb has made my life a
+> lot happier, but it's still not ideal because of the race condition I
+> mentioned.
+> 
+> William was talking about using some other scheme to generate IDs.  We
+> should see what he has to say about this.
+
+Well I haven't quite started on it yet, but my plan is to:
+
+a) Sort files by timestamp, and then by something else (maybe name), and
+   use the position in that array instead of the timestamp. This doesn't
+   solve anything, but it will make the ids prettier, and removes the
+   hideous "%7d" thing.
+b) When polling, if the current "offset" is N, return all messages that
+   have a timestamp >= the Nth message. So this will mean that we'll
+   rescan messages on occasion, but we shouldn't miss any.
+
+Any obvious flaws?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 18:38:23 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 15:38:23 -0700
+Subject: [sup-talk] UTF-8 message sending patch
+In-Reply-To: <1240861799-sup-787@colargol.tihlde.org>
+References: <1240861799-sup-787@colargol.tihlde.org>
+Message-ID: <1241044621-sup-9157@entry>
+
+Reformatted excerpts from Helge Titlestad's message of 2009-04-27:
+> I think the patch (attached) fixes my problems, but it's probably far
+> from complete. It doesn't detect non-utf8-but-still-illegal-strings,
+> it assumes every header except Subject is an address, and so on.
+
+Thanks! Good timing on this; it was near the top of my todo list.
+I will probably edit this a bit and merge it in as part of a bigger
+utf-8 fixing branch.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 18:39:31 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 15:39:31 -0700
+Subject: [sup-talk] Possible problem with maildir ID generation
+In-Reply-To: <1241038730-sup-2939@entry>
+References: <a412e2a70904161505l3e1fdfc9l987013130b3f5ddd@mail.gmail.com>
+	<1240320547-sup-6957@entry>
+	<20090428191822.GB10581@cabinet.hsd1.ma.comcast.net>
+	<a412e2a70904281629n6171bbb6i4c6330e375f8c6ad@mail.gmail.com>
+	<1241038730-sup-2939@entry>
+Message-ID: <1241044743-sup-2889@entry>
+
+Reformatted excerpts from William Morgan's message of 2009-04-29:
+> A timestamp is the obvious choice, but messages can have the same
+> timestamp, so then what do you do? The current approach is to sort by
+> another arbitrary field (in this cae, message size), which gives a
+> unique ordering, but doesn't match up
+
+Sigh.
+
+Doesn't match up with that procmail, or whatever MUA, is giving us.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Apr 29 18:45:29 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Apr 2009 15:45:29 -0700
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<3f81a4240904201452u78abe68bj2a4b9863b850e8a@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+	<f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+Message-ID: <1241045035-sup-1534@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-04-21:
+> William, what requirements would need to be met from your side to see
+> this added?
+
+As far as I'm concerned, if it works, I'll add it. I'd love to have this
+functionality in Sup, and it is frequently requested.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From barton.schaefer at gmail.com  Wed Apr 29 20:51:15 2009
+From: barton.schaefer at gmail.com (Bart Schaefer)
+Date: Wed, 29 Apr 2009 17:51:15 -0700
+Subject: [sup-talk] possible mbox "initial From" fix
+In-Reply-To: <1241027916-sup-7642@entry>
+References: <1241027916-sup-7642@entry>
+Message-ID: <6bb609560904291751n3cc62f46g6a4edcba1f97d6f7@mail.gmail.com>
+
+On Wed, Apr 29, 2009 at 11:02 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> After a lot of toying with RubyMail, hoping I could get it to behave
+> well, I finally gave up and just tweaked the regexp that determines
+> whether a line is an mbox separator or not, and bypassed RubyMail mbox
+> splitting entirely. It might still be too lenient---I have it looking
+> for /^From \S+@\S+ /, so it's not even bothering to parse a date, etc.
+> I'm hoping to strike somewhat of a balance between strict and liberal.
+
+Offering a geezer perspective on this, as one of the primary
+programmers on an old Unix mail reader that originally didn't
+understand any kind of folder *except* mbox ... the "match separator"
+method that worked best for us back in the early '90s went like this:
+
+(1) Check for "From " at start of line; if not found, return "not a separator".
+(2) Skip 5 characters, then skip any whitespace.
+(3) Remember this location.
+(4) Skip everything that is NOT whitespace, ignoring syntax for now.
+(5) Skip any whitespace.
+(6) Attempt to parse a date string in any of a variety of formats.
+(6a) If successful, return "is a separator"
+(6b) If unsuccessful, rewind to the location saved at (3)
+(7) Attempt to parse an email address in full RFC822 (now 5322)
+syntax, including comments, phrases, etc; if unsuccessful, return "not
+a separator"
+(8) Skip any whitespace following the parsed email address
+(9) Attempt again to parse a date; if successful, return "is a separator"
+(10) Return "not a separator"
+
+We found that in most cases this failed at (1) or succeeded very
+quickly at (6a).  Only obscure cases proceed to (7), but if you're
+dealing with anything like old USENET news archives or folders written
+by '80s-era mail clients you need either step (4) or step (7) to get
+past the cruft.
+
+Note that the key is finding "From ... DATE" rather than "From ADDRESS
+..." if you really want to distinguish message separators from stuff
+people type in a message body.  I'm not sure you can do this with a
+regular expression.
+
+If you want details on the variety of date formats that we recognized,
+let me know ...
+
+From tyberius_prime at coonabibba.de  Thu Apr 30 03:11:29 2009
+From: tyberius_prime at coonabibba.de (Tyberius Prime)
+Date: Thu, 30 Apr 2009 09:11:29 +0200
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241028590-sup-8155@entry>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+Message-ID: <1241075456-sup-909@h984274.serverkompetenz.net>
+
+For me it seems to be messages that have been saved 'hours' ago by pressing $.
+
+
+Excerpts from William Morgan's message of Wed Apr 29 20:10:53 +0200 2009:
+> Reformatted excerpts from Steve Goldman's message of 2009-04-28:
+> > Oftentimes when I quit sup and then restart, my inbox looks different.
+> > Messages that I had previously archived are back in the inbox.  Has
+> > anyone else seen this?  I'm losing sleep over it.
+> 
+> I see it periodically too (I think I also see read messages turned
+> unread again) and have been trying to find a pattern---is it email
+> that's autosaved when I quit Sup, etc.?
+
+From sgoldman at tower-research.com  Thu Apr 30 08:51:42 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 30 Apr 2009 08:51:42 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241075456-sup-909@h984274.serverkompetenz.net>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+Message-ID: <1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+
+Excerpts from Tyberius Prime's message of Thu Apr 30 03:11:29 -0400 2009:
+> For me it seems to be messages that have been saved 'hours' ago by pressing $.
+> 
+> Excerpts from William Morgan's message of Wed Apr 29 20:10:53 +0200 2009:
+> > Reformatted excerpts from Steve Goldman's message of 2009-04-28:
+> > > Oftentimes when I quit sup and then restart, my inbox looks different.
+> > > Messages that I had previously archived are back in the inbox.  Has
+> > > anyone else seen this?  I'm losing sleep over it.
+> > 
+> > I see it periodically too (I think I also see read messages turned
+> > unread again) and have been trying to find a pattern---is it email
+> > that's autosaved when I quit Sup, etc.?
+
+I have confirmed that 0.7 is fine, but master is not.  So we just have
+to track down which commit(s) in between broke it...
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+
+From bdwalton at gmail.com  Thu Apr 30 09:10:20 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Thu, 30 Apr 2009 09:10:20 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+Message-ID: <f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+
+On Thu, Apr 30, 2009 at 8:51 AM, Steve Goldman
+<sgoldman at tower-research.com> wrote:
+> Excerpts from Tyberius Prime's message of Thu Apr 30 03:11:29 -0400 2009:
+>> For me it seems to be messages that have been saved 'hours' ago by pressing $.
+>
+> I have confirmed that 0.7 is fine, but master is not. ?So we just have
+> to track down which commit(s) in between broke it...
+
+git-bisect to the rescue?  Anyone experiencing this and comfortable
+with git that wants to track down where the problem was introduced?
+It may take a little while, unless the problem can be recreated at
+will, but the bisect tool is awesome for situations like this.
+
+-Ben
+
+
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From wmorgan-sup at masanjin.net  Thu Apr 30 09:19:20 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 30 Apr 2009 06:19:20 -0700
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+Message-ID: <1241097437-sup-8272@entry>
+
+Reformatted excerpts from Steve Goldman's message of 2009-04-30:
+> I have confirmed that 0.7 is fine, but master is not.  So we just have
+> to track down which commit(s) in between broke it...
+
+Ok, now we're onto something! As an educated guess, I've published a
+branch revert-background-save, which is identical to master except that
+the commits on the background-save branch have been reverted. Can you
+try that branch please?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Apr 30 09:36:22 2009
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 30 Apr 2009 06:36:22 -0700
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+	<f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+Message-ID: <1241098531-sup-1508@entry>
+
+Reformatted excerpts from Ben Walton's message of 2009-04-30:
+> git-bisect to the rescue?  Anyone experiencing this and comfortable
+> with git that wants to track down where the problem was introduced?
+> It may take a little while, unless the problem can be recreated at
+> will, but the bisect tool is awesome for situations like this.
+
+If the educated guesses fall through, then we'll punish Steve for his
+insulin by making him binary search through all commits since 0.7.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bdwalton at gmail.com  Thu Apr 30 10:07:57 2009
+From: bdwalton at gmail.com (Ben Walton)
+Date: Thu, 30 Apr 2009 10:07:57 -0400
+Subject: [sup-talk] Sup with Microsoft Exchange 2007
+In-Reply-To: <1241045035-sup-1534@entry>
+References: <3f81a4240904140559ubd286a5x2f026d6b875dd091@mail.gmail.com>
+	<1240267632-sup-2023@r50p>
+	<3f81a4240904201638v94a7dbdpce0d865cd83d8873@mail.gmail.com>
+	<1240318807-sup-3080@entry>
+	<3f81a4240904210642o9c74049o27e164e317d0842e@mail.gmail.com>
+	<1240323082-sup-1515@entry>
+	<3f81a4240904210729h74ac436bn9e1140cf7021c5ad@mail.gmail.com>
+	<3f81a4240904210732k11366cf7naec562af54ecabac@mail.gmail.com>
+	<f96e0240904210737q71765989of31447a8de20fa62@mail.gmail.com>
+	<1241045035-sup-1534@entry>
+Message-ID: <f96e0240904300707k4d629f33hc660a9792545257e@mail.gmail.com>
+
+On Wed, Apr 29, 2009 at 6:45 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> As far as I'm concerned, if it works, I'll add it. I'd love to have this
+> functionality in Sup, and it is frequently requested.
+
+Ok.  I started cleaning up the original patch last night.  I think it
+was decent for the most part.  The bad parts were the integration into
+sup-config.  I'll have something ready in a day or two, hopefully.
+
+Since I'm back into mucking with this bit, are you open to having the
+maildir scanning code move messages from new/ to cur/?  This could
+help with the unique id vs directory scanning issue.
+
+-Ben
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+---------------------------------------------------------------------------------------------------------------------------
+Ben Walton <bdwalton at gmail.com>
+
+"With or without religion, good people can behave well and bad people
+can do evil; but for good people to do evil?that takes religion. "
+-Steven Weinberg
+---------------------------------------------------------------------------------------------------------------------------
+
+From sgoldman at tower-research.com  Thu Apr 30 10:23:25 2009
+From: sgoldman at tower-research.com (Steve Goldman)
+Date: Thu, 30 Apr 2009 10:23:25 -0400
+Subject: [sup-talk] Inconsistent inbox after restart
+In-Reply-To: <1241098531-sup-1508@entry>
+References: <1240945125-sup-8484@sgoldmanlinux.tower-research.com>
+	<1241028590-sup-8155@entry>
+	<1241075456-sup-909@h984274.serverkompetenz.net>
+	<1241095872-sup-9569@sgoldmanlinux.tower-research.com>
+	<f96e0240904300610n741d83aq95dd0c4b10876243@mail.gmail.com>
+	<1241098531-sup-1508@entry>
+Message-ID: <1241101364-sup-9621@sgoldmanlinux.tower-research.com>
+
+Excerpts from William Morgan's message of Thu Apr 30 09:36:22 -0400 2009:
+> Reformatted excerpts from Ben Walton's message of 2009-04-30:
+> > git-bisect to the rescue?  Anyone experiencing this and comfortable
+> > with git that wants to track down where the problem was introduced?
+> > It may take a little while, unless the problem can be recreated at
+> > will, but the bisect tool is awesome for situations like this.
+> 
+> If the educated guesses fall through, then we'll punish Steve for his
+> insulin by making him binary search through all commits since 0.7.
+
+Bad news.  This new branch is also buggy.
+
+Time to apply the force of brute.
+-- 
+
+Steve Goldman
+sgoldman at tower-research.com
+
+T: 212.219.6014
+F: 212.219.6007
+
+Tower Research Capital, LLC
+377 Broadway, 11th Fl.
+New York, NY 10013
+

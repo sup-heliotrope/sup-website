@@ -1,0 +1,1601 @@
+From bwalton at artsci.utoronto.ca  Tue Jun  1 09:07:57 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 01 Jun 2010 09:07:57 -0400
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275360058-sup-177@sysopweg>
+References: <1275360058-sup-177@sysopweg>
+Message-ID: <1275397644-sup-1664@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Erik Quaeghebeur's message of Mon May 31 22:42:49 -0400 2010:
+
+> WARNING: Problem sending mail: File or folder does not exist -
+> <path/to/maildir/sent/folder>/tmp/1275359009.7145703845.sysopweg:2,S
+
+Sup version?  Ruby version?
+
+That'll help get the ball rolling for diagnosing things.
+
+Thanks
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sup at equaeghe.nospammail.net  Tue Jun  1 11:13:47 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Tue, 1 Jun 2010 11:13:47 -0400 (EDT)
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275397644-sup-1664@pinkfloyd.chass.utoronto.ca>
+References: <1275360058-sup-177@sysopweg>
+	<1275397644-sup-1664@pinkfloyd.chass.utoronto.ca>
+Message-ID: <alpine.DEB.2.00.1006011113190.1659@flfbcjrt.naqerj.pzh.rqh>
+
+> Excerpts from Erik Quaeghebeur's message of Mon May 31 22:42:49 -0400 2010:
+>
+> > WARNING: Problem sending mail: File or folder does not exist -
+> > <path/to/maildir/sent/folder>/tmp/1275359009.7145703845.sysopweg:2,S
+
+On Tue, 1 Jun 2010, Ben Walton wrote:
+>
+> Sup version?  Ruby version?
+
+sup v0.11 (installed the gem)
+
+ruby 1.8.7 (2010-01-10 patchlevel 249) [x86_64-linux] (ubuntu packages)
+
+From truxton at truxton.com  Tue Jun  1 19:16:46 2010
+From: truxton at truxton.com (Truxton Fulton)
+Date: Tue, 01 Jun 2010 16:16:46 -0700
+Subject: [sup-talk] listing archived threads
+Message-ID: <1275433722-sup-8872@terrapin.truxton.com>
+
+'sup sup users!
+I'm new to sup.
+Can anyone tell me how to list archived threads?
+deleted threads get a "deleted" label by which they may be listed
+(with the L command)
+But there is no "archived" label...
+
+Thanks,
+
+-Truxton
+-- 
+
+From pi+sup at pihost.us  Tue Jun  1 19:59:25 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Tue, 01 Jun 2010 16:59:25 -0700
+Subject: [sup-talk] listing archived threads
+In-Reply-To: <1275433722-sup-8872@terrapin.truxton.com>
+References: <1275433722-sup-8872@terrapin.truxton.com>
+Message-ID: <1275436473-sup-2083@home.mrtheplague.net>
+
+Excerpts from Truxton Fulton's message of Tue Jun 01 16:16:46 -0700 2010:
+> 'sup sup users!
+> I'm new to sup.
+> Can anyone tell me how to list archived threads?
+
+An archived thread is just one that isn't marked with an `inbox' label. 
+
+> deleted threads get a "deleted" label by which they may be listed
+> (with the L command)
+> But there is no "archived" label...
+
+Do a search for "!inbox" or "before:tomorrow" or the like.
+
+> Thanks,
+> 
+> -Truxton
+No problem,
+Pi
+
+-- 
+Several recent languages have adopted an Intercal-like, asynchronous, computed
+COME-FROM concept. Only they refer to it with funny terms like "exception
+handling". -- Hans Mulder
+
+From bwalton at artsci.utoronto.ca  Wed Jun  2 09:51:03 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 02 Jun 2010 09:51:03 -0400
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275360058-sup-177@sysopweg>
+References: <1275360058-sup-177@sysopweg>
+Message-ID: <1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Erik Quaeghebeur's message of Mon May 31 22:42:49 -0400 2010:
+
+> WARNING: Problem sending mail: File or folder does not exist -
+> <path/to/maildir/sent/folder>/tmp/1275359009.7145703845.sysopweg:2,S
+
+Is the above <path/to/maildir/...> bit something you did or is it
+actually part of the error message?  What is the value of sent_source
+in your config.yaml?
+
+> However, the mail was sent (and did arrive), but it was not saved as
+> a sent messages in my sent-mail maildir folder (which is totally
+> empty).
+
+This is normal.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sup at equaeghe.nospammail.net  Wed Jun  2 10:03:19 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Wed, 2 Jun 2010 10:03:19 -0400 (EDT)
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+References: <1275360058-sup-177@sysopweg>
+	<1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+Message-ID: <alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+
+> Excerpts from Erik Quaeghebeur's message of Mon May 31 22:42:49 -0400 2010:
+>
+>> WARNING: Problem sending mail: File or folder does not exist -
+>> <path/to/maildir/sent/folder>/tmp/1275359009.7145703845.sysopweg:2,S
+
+On Wed, 2 Jun 2010, Ben Walton wrote:
+>
+> Is the above <path/to/maildir/...> bit something you did or is it
+> actually part of the error message?  What is the value of sent_source
+> in your config.yaml?
+
+<path/to/maildir/sent/folder> is what I replaced the actual path given in 
+the error message with (it was /home/equaeghe/Mail/sent); it now does seem 
+a useless modification
+
+:sent_source: maildir:/home/equaeghe/Mail/sent
+
+>> However, the mail was sent (and did arrive), but it was not saved as
+>> a sent messages in my sent-mail maildir folder (which is totally
+>> empty).
+>
+> This is normal.
+
+Ah. Can I change it so that it does save sent mails? Or should I 
+explicitly set Fcc when sending mail?
+
+
+Best,
+
+Erik
+
+From bwalton at artsci.utoronto.ca  Wed Jun  2 10:08:56 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 02 Jun 2010 10:08:56 -0400
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+References: <1275360058-sup-177@sysopweg>
+	<1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+	<alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+Message-ID: <1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Erik Quaeghebeur's message of Wed Jun 02 10:03:19 -0400 2010:
+
+> <path/to/maildir/sent/folder> is what I replaced the actual path
+> given in the error message with (it was /home/equaeghe/Mail/sent);
+> it now does seem a useless modification
+
+And a dumb question from me: /home/equaeghe/Mail/sent does contain the
+maildir subfolders cur, new and tmp?
+
+> :sent_source: maildir:/home/equaeghe/Mail/sent
+
+Ok, this looks fine as long as /home/equaeghe/Mail/sent is a proper
+maildir setup.
+
+> > This is normal.
+> 
+> Ah. Can I change it so that it does save sent mails? Or should I 
+> explicitly set Fcc when sending mail?
+
+Sorry, I meant normal in the sense that sending the mail and storing
+mail in the sent source are two separate (non-atomic) actions.  When
+you hit the send key, the message is dumped into $sendmail for
+transport.  It's then written to the sent source.  These are
+independent.  One may succeed while the other fails.
+
+Thanks
+-Ben
+
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From seschwar at googlemail.com  Wed Jun  2 11:48:09 2010
+From: seschwar at googlemail.com (Sebastian Schwarz)
+Date: Wed, 2 Jun 2010 17:48:09 +0200
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+References: <1275360058-sup-177@sysopweg>
+	<1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+	<alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+	<1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+Message-ID: <20100602154809.GQ3617@pineapple.q.wohnheim-jahnplatz.de>
+
+On 2010-06-02 at 10:08 -0400, Ben Walton wrote:
+>> :sent_source: maildir:/home/equaeghe/Mail/sent
+>
+> Ok, this looks fine as long as /home/equaeghe/Mail/sent is a proper
+> maildir setup.
+
+Just a guess, but according to NewUserGuide.txt the mailbox
+URIs start with maildir:// or mbox://.  Therefore try:
+
+    :sent_source: maildir:///home/equaeghe/Mail/sent
+
+Note the two extra slashes.
+
+HTH,
+Sebastian
+
+From sup at equaeghe.nospammail.net  Wed Jun  2 15:52:53 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Wed, 2 Jun 2010 15:52:53 -0400 (EDT)
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+References: <1275360058-sup-177@sysopweg>
+	<1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+	<alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+	<1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+Message-ID: <alpine.DEB.2.00.1006021551290.1883@flfbcjrt.naqerj.pzh.rqh>
+
+> Excerpts from Erik Quaeghebeur's message of Wed Jun 02 10:03:19 -0400 2010:
+>
+>> <path/to/maildir/sent/folder> is what I replaced the actual path
+>> given in the error message with (it was /home/equaeghe/Mail/sent);
+>> it now does seem a useless modification
+
+On Wed, 2 Jun 2010, Ben Walton wrote:
+>
+> And a dumb question from me: /home/equaeghe/Mail/sent does contain the
+> maildir subfolders cur, new and tmp?
+
+I did not and that fixed it. I assumed those would be created as-needed.
+
+
+Thanks,
+
+Erik
+
+From bwalton at artsci.utoronto.ca  Wed Jun  2 16:14:13 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 02 Jun 2010 16:14:13 -0400
+Subject: [sup-talk] error when sending mail
+In-Reply-To: <alpine.DEB.2.00.1006021551290.1883@flfbcjrt.naqerj.pzh.rqh>
+References: <1275360058-sup-177@sysopweg>
+	<1275486602-sup-7845@pinkfloyd.chass.utoronto.ca>
+	<alpine.DEB.2.00.1006020958510.1883@flfbcjrt.naqerj.pzh.rqh>
+	<1275487597-sup-8855@pinkfloyd.chass.utoronto.ca>
+	<alpine.DEB.2.00.1006021551290.1883@flfbcjrt.naqerj.pzh.rqh>
+Message-ID: <1275509568-sup-9852@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Erik Quaeghebeur's message of Wed Jun 02 15:52:53 -0400 2010:
+
+> > And a dumb question from me: /home/equaeghe/Mail/sent does contain the
+> > maildir subfolders cur, new and tmp?
+> 
+> I did not and that fixed it. I assumed those would be created as-needed.
+
+This likely stems from the sup philosophy of being a read-only tool
+(sent being an exception).  I think this should be changed...maybe
+only for the source designated as Sent?  Thoughts?
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From andreashappe at snikt.net  Thu Jun  3 09:11:31 2010
+From: andreashappe at snikt.net (Andreas Happe)
+Date: Thu, 3 Jun 2010 13:11:31 +0000 (UTC)
+Subject: [sup-talk] sup web interface
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272644331-sup-1274@zyrg.net>
+Message-ID: <loom.20100603T150837-186@post.gmane.org>
+
+Rich Lane <rlane <at> club.cc.cmu.edu> writes: 
+> This is a great idea. I recommend using the sup-server protocol, either
+> natively or by running sup-cmd. That code has been in master for a while
+> now. I don't have a real opinion on web frameworks, but I'm biased
+> towards something lightweight.
+
+Wouldn't Rails[0] be the most obvious candidate? In addition since merb[1] was
+merged (during the ongoing 3.0 development cycle) it might even count as
+lightweight..
+
+I won't start it (as I don't have nearly enough time on my hand), but might
+contribute -- just put a rough (but working) prototype on github.
+
+cheers, Andreas
+[0] http://www.rubyonrails.org
+[1] http://www.merbivore.com/
+
+
+From rlane at club.cc.cmu.edu  Thu Jun  3 11:16:32 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 03 Jun 2010 11:16:32 -0400
+Subject: [sup-talk] sup web interface
+In-Reply-To: <loom.20100603T150837-186@post.gmane.org>
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272644331-sup-1274@zyrg.net>
+	<loom.20100603T150837-186@post.gmane.org>
+Message-ID: <1275577785-sup-679@zyrg.net>
+
+Excerpts from Andreas Happe's message of 2010-06-03 09:11:31 -0400:
+> Rich Lane <rlane <at> club.cc.cmu.edu> writes: 
+> > This is a great idea. I recommend using the sup-server protocol, either
+> > natively or by running sup-cmd. That code has been in master for a while
+> > now. I don't have a real opinion on web frameworks, but I'm biased
+> > towards something lightweight.
+> 
+> Wouldn't Rails[0] be the most obvious candidate? In addition since merb[1] was
+> merged (during the ongoing 3.0 development cycle) it might even count as
+> lightweight..
+
+Sure. I really don't care what framework is used, I'll be happy just to
+see a working web UI. At the time I was thinking that if the web UI code
+were small enough it would be reasonable to keep it in the main Sup repo,
+but now I'm not even sure that's desirable.
+
+> I won't start it (as I don't have nearly enough time on my hand), but might
+> contribute -- just put a rough (but working) prototype on github.
+
+Link?
+
+From andreashappe at snikt.net  Fri Jun  4 08:01:08 2010
+From: andreashappe at snikt.net (Andreas Happe)
+Date: Fri, 4 Jun 2010 12:01:08 +0000 (UTC)
+Subject: [sup-talk] sup web interface
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272644331-sup-1274@zyrg.net>
+	<loom.20100603T150837-186@post.gmane.org>
+	<1275577785-sup-679@zyrg.net>
+Message-ID: <loom.20100604T135436-725@post.gmane.org>
+
+Rich Lane <rlane <at> club.cc.cmu.edu> writes:
+> Excerpts from Andreas Happe's message of 2010-06-03 09:11:31 -0400:
+> > I won't start it (as I don't have nearly enough time on my hand), but might
+> > contribute -- just put a rough (but working) prototype on github.
+> 
+> Link?
+
+To github[0]? My last sentence could have been clearer: I haven't put anything
+sup-related up on github, but if someone starts with a rough, but working,
+prototype I could help out.
+
+cheers, Andreas
+
+[0] http://www.github.org
+
+
+
+
+
+From jason at petsod.org  Fri Jun  4 11:59:15 2010
+From: jason at petsod.org (Jason Petsod)
+Date: Fri, 04 Jun 2010 10:59:15 -0500
+Subject: [sup-talk] sup web interface
+In-Reply-To: <loom.20100604T135436-725@post.gmane.org>
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272644331-sup-1274@zyrg.net>
+	<loom.20100603T150837-186@post.gmane.org>
+	<1275577785-sup-679@zyrg.net>
+	<loom.20100604T135436-725@post.gmane.org>
+Message-ID: <1275666025-sup-4912@acheron.quadco.net>
+
+On 04/06/2010 at 07:01:08 -0500, Andreas Happe wrote:
+> To github[0]? My last sentence could have been clearer: I haven't put anything
+> sup-related up on github, but if someone starts with a rough, but working,
+> prototype I could help out.
+
+I was able to start working on this a little bit [1] but it's currently
+very rough around the edges. It uses the Sinatra framework, but most of the
+actual logic is framework-agnostic so it could be pretty easily adapted
+for another framework.
+
+For threading, I had to add a new command 'thread' to sup-server, so you'll
+need to apply a patch [2] before it works. The threading logic still needs
+a little work; I roughly adapted sup's thread.rb, but added some bugs for
+good measure :)
+
+Also, it's not evident to me that the sup-server polls for new messages or
+has the ability to add new messages to the index, so checking for new
+messages or sending emails doesn't work yet. That functionality shouldn't
+hard to add though.
+
+Cheers,
+-Jason
+
+[1] http://github.com/jasonpetsod/sup-web
+[2] http://github.com/jasonpetsod/sup-web/raw/master/misc/expose_threading_on_sup-server.diff
+
+From rlane at club.cc.cmu.edu  Fri Jun  4 23:55:03 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 04 Jun 2010 23:55:03 -0400
+Subject: [sup-talk] sup web interface
+In-Reply-To: <1275666025-sup-4912@acheron.quadco.net>
+References: <1272606137-sup-842@acheron.quadco.net>
+	<1272644331-sup-1274@zyrg.net>
+	<loom.20100603T150837-186@post.gmane.org>
+	<1275577785-sup-679@zyrg.net>
+	<loom.20100604T135436-725@post.gmane.org>
+	<1275666025-sup-4912@acheron.quadco.net>
+Message-ID: <1275706760-sup-1122@zyrg.net>
+
+Excerpts from Jason Petsod's message of 2010-06-04 11:59:15 -0400:
+> For threading, I had to add a new command 'thread' to sup-server, so you'll
+> need to apply a patch [2] before it works. 
+
+I've applied this to master. However, I think the final protocol support
+for threading is going to be more complicated. Right now in the best
+case this is going to result in a request for every thread displayed,
+and in the worst case where thread requests are pipelined we could have
+a lot of redundant message responses. The best I've come up with is
+adding a "thread" option to query that mimics ThreadSet#load_n_threads.
+
+> Also, it's not evident to me that the sup-server polls for new messages or
+> has the ability to add new messages to the index, so checking for new
+> messages or sending emails doesn't work yet. That functionality shouldn't
+> hard to add though.
+
+Yeah, I need to add a timer to periodically poll the sources. But it
+should be possible to use the add request already to add sent messages
+to the index.
+
+I took a quick look at sup-web. I think it would be a good idea to spawn
+an EM reactor thread when the webapp starts (if the server isnt already
+using one) instead of starting one per sup protocol request. Similarly,
+you'll probably want to keep a connection pool instead of opening a new
+connection per sup protocol request.
+
+From danielgoldin at gmail.com  Sun Jun  6 15:00:33 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Sun, 06 Jun 2010 12:00:33 -0700
+Subject: [sup-talk] choosing signatures
+Message-ID: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+
+What an amazing and blazingly fast program sup is! But how does one choose
+between different signatures when sending an email?  I couldn't find
+anything on the wiki.
+
+Non-programmer-type here -- so keep it easy, please.
+
+d.
+
+-- 
+Daniel Goldin 
+213.926.1960
+
+From rgh at topikality.com  Mon Jun  7 00:36:02 2010
+From: rgh at topikality.com (Richard Heycock)
+Date: Mon, 07 Jun 2010 14:36:02 +1000
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+Message-ID: <1275884981-sup-4509@roughage.com.au>
+
+Excerpts from Daniel Goldin's message of 2010-06-07 05:00:33 +1000:
+> What an amazing and blazingly fast program sup is! But how does one choose
+> between different signatures when sending an email?  I couldn't find
+> anything on the wiki.
+> 
+> Non-programmer-type here -- so keep it easy, please.
+> 
+> d.
+> 
+
+Just replace :default with a name and repeat that block:
+
+edit $HOME/.sup/config.yaml
+
+  ...
+
+  :accounts:
+    :default:
+      :sendmail: /usr/sbin/sendmail -oem -ti
+      :name: <name>
+      :email: <email address>
+      :signature: <path to signature file>
+    :<name>:
+      :sendmail: /usr/sbin/sendmail -oem -ti
+      :name: <name>
+      :email: <email address>
+      :signature: <path to signature file>
+
+  ...
+
+You can have as many account entries as you like.
+
+Also See:
+    http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply
+
+rgh
+-- 
+Richard Heycock
+
+http://topikality.com
+
++61 (0) 410 646 369
+[e]:  rgh at topikality.com
+[im]: rgh at topikality.com
+
+From danielgoldin at gmail.com  Tue Jun  8 01:16:25 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Mon, 07 Jun 2010 22:16:25 -0700
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1275884981-sup-4509@roughage.com.au>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+Message-ID: <1275973780-sup-5206@ubuntu.ubuntu-domain>
+
+Thanks so much, works like a charm. But is there a way to change the
+"From:" and "In-reply-to:" and "Reply-to:" headers without having to add
+the config option ":ask_for_from: true"?
+
+Excerpts from Richard Heycock's message of Sun Jun 06 21:36:02 -0700 2010:
+> Excerpts from Daniel Goldin's message of 2010-06-07 05:00:33 +1000:
+> > What an amazing and blazingly fast program sup is! But how does one choose
+> > between different signatures when sending an email?  I couldn't find
+> > anything on the wiki.
+> > 
+> > Non-programmer-type here -- so keep it easy, please.
+> > 
+> > d.
+> > 
+> 
+> Just replace :default with a name and repeat that block:
+> 
+> edit $HOME/.sup/config.yaml
+> 
+>   ...
+> 
+>   :accounts:
+>     :default:
+>       :sendmail: /usr/sbin/sendmail -oem -ti
+>       :name: <name>
+>       :email: <email address>
+>       :signature: <path to signature file>
+>     :<name>:
+>       :sendmail: /usr/sbin/sendmail -oem -ti
+>       :name: <name>
+>       :email: <email address>
+>       :signature: <path to signature file>
+> 
+>   ...
+> 
+> You can have as many account entries as you like.
+> 
+> Also See:
+>     http://sup.rubyforge.org/wiki/wiki.pl?MultipleAccountsAndReply
+> 
+> rgh
+-- 
+Daniel Goldin 
+213.926.1960
+
+From hyperbolist at gmail.com  Tue Jun  8 07:57:54 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Tue, 08 Jun 2010 07:57:54 -0400
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1275973780-sup-5206@ubuntu.ubuntu-domain>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+Message-ID: <1275997525-sup-9347@changeling.local>
+
+Excerpts from Daniel Goldin's message of Tue Jun 08 01:16:25 -0400 2010:
+> Thanks so much, works like a charm. But is there a way to change the
+> "From:" and "In-reply-to:" and "Reply-to:" headers without having to add
+> the config option ":ask_for_from: true"?
+
+You may use the before-edit and reply-from hooks.  Here are scrubbed 
+versions of mine:
+
+before-edit.rb:
+if header["To"] =~ /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/
+  header["From"] = "me <me at ultramegacorp.com>"
+elsif header["To"] =~ /somelist|alternalist|otherlist/
+  header["From"] = "me <me at nerdylistemail.org>"
+end
+header["Bcc"] = header["From"]
+
+reply-from.rb:
+val = case [message.recipient_email, message.to, message.cc, message.from].flatten.to_s
+      when /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/ then "me <me at ultramegacorp.com>"
+      when /personal.org/ then "me <me at personal.org>"
+      when /nerdylistemail.org|somelist|alternalist|otherlist/ then "me <me at nerdylistemail.org>"
+      when /newemail/ then "me <me at newemail.com>"
+      when /oldemail/ then "me <me at newemail.com>"
+      end
+Person.from_address val
+
+From danielgoldin at gmail.com  Tue Jun  8 12:57:22 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Tue, 08 Jun 2010 09:57:22 -0700
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1275997525-sup-9347@changeling.local>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+Message-ID: <1276016203-sup-3732@ubuntu.ubuntu-domain>
+
+Thank you so much! Works perfectly.
+
+d.
+
+Excerpts from Eric Sherman's message of Tue Jun 08 04:57:54 -0700 2010:
+> Excerpts from Daniel Goldin's message of Tue Jun 08 01:16:25 -0400 2010:
+> > Thanks so much, works like a charm. But is there a way to change the
+> > "From:" and "In-reply-to:" and "Reply-to:" headers without having to add
+> > the config option ":ask_for_from: true"?
+> 
+> You may use the before-edit and reply-from hooks.  Here are scrubbed 
+> versions of mine:
+> 
+> before-edit.rb:
+> if header["To"] =~ /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/
+>   header["From"] = "me <me at ultramegacorp.com>"
+> elsif header["To"] =~ /somelist|alternalist|otherlist/
+>   header["From"] = "me <me at nerdylistemail.org>"
+> end
+> header["Bcc"] = header["From"]
+> 
+> reply-from.rb:
+> val = case [message.recipient_email, message.to, message.cc, message.from].flatten.to_s
+>       when /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/ then "me <me at ultramegacorp.com>"
+>       when /personal.org/ then "me <me at personal.org>"
+>       when /nerdylistemail.org|somelist|alternalist|otherlist/ then "me <me at nerdylistemail.org>"
+>       when /newemail/ then "me <me at newemail.com>"
+>       when /oldemail/ then "me <me at newemail.com>"
+>       end
+> Person.from_address val
+-- 
+Daniel Goldin 
+213.926.1960
+
+From sup at equaeghe.nospammail.net  Tue Jun  8 23:59:42 2010
+From: sup at equaeghe.nospammail.net (Erik Quaeghebeur)
+Date: Tue, 8 Jun 2010 23:59:42 -0400 (EDT)
+Subject: [sup-talk] accessing hierarchy of maildirs as a sinle source?
+Message-ID: <alpine.DEB.2.00.1006082353460.1838@flfbcjrt.naqerj.pzh.rqh>
+
+Hi,
+
+
+(sup .11 via gem)
+
+I've got a (huge) hierarchy of maildirs I would like to add as a single 
+source. Is this possible, or do I need to specify each maildir separately?
+
+Different solution angle: does offlineimap allow one to easily consolidate 
+an imap mailbox hierarchy into one maildir (necessarily in a one-way 
+fashion)?
+
+
+TIA,
+
+Erik
+
+From brian at microcomaustralia.com.au  Wed Jun  9 20:39:33 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Thu, 10 Jun 2010 10:39:33 +1000
+Subject: [sup-talk] sup exception
+In-Reply-To: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+Message-ID: <AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+
+I am still getting similar results. Unfortunately, if this cannot be
+resolved I will have to look for alternatives to sup; I use sup so I
+can access my old emails easily, but it keeps crashing when I try to
+do so :-(
+
+Latest stack trace:
+
+ [Thu Jun 10 10:39:59 +1000 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/home/brian/tree/sup/lib/sup.rb:17:in `id'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/hook.rb:123:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `each'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `sort_by'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:652:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:624:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+/home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+/home/brian/tree/sup/lib/sup.rb:75:in `new'
+/home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:48:in
+`spawn_from_query'
+/home/brian/tree/sup/bin/sup:295
+
+
+On 20 April 2010 11:08, Brian May <brian at microcomaustralia.com.au> wrote:
+> If I try to search for the string "outage" in my mail, sup crashes, every time:
+>
+>
+> [Tue Apr 20 11:06:59 +1000 2010] ERROR: oh crap, an exception
+> ----------------------------------------------------------------
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/brian/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+>
+> Sincerely,
+> William
+> ----------------------------------------------------------------
+> --- RuntimeError from thread: load threads for thread-index-mode
+> wrong id called on nil
+> /home/brian/tree/sup/lib/sup.rb:17:in `id'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+> /home/brian/tree/sup/lib/sup/hook.rb:123:in `sort_by'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `each'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `sort_by'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:234:in `update'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `update'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:652:in
+> `__unprotected_load_n_threads'
+> (eval):12:in `load_n_threads'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:624:in
+> `load_n_threads_background'
+> /home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+> /home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+> /home/brian/tree/sup/lib/sup.rb:75:in `new'
+> /home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:623:in
+> `load_n_threads_background'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:694:in
+> `__unprotected_load_threads'
+> (eval):12:in `load_threads'
+> /home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:48:in
+> `spawn_from_query'
+> /home/brian/tree/sup/bin/sup:294
+>
+>
+> --
+> Brian May <brian at microcomaustralia.com.au>
+>
+
+
+
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From rlane at club.cc.cmu.edu  Wed Jun  9 21:44:05 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 09 Jun 2010 21:44:05 -0400
+Subject: [sup-talk] sup exception
+In-Reply-To: <AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+Message-ID: <1276134110-sup-3620@zyrg.net>
+
+I've pushed a workaround for this issue to master.
+
+From brian at microcomaustralia.com.au  Wed Jun  9 22:00:16 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Thu, 10 Jun 2010 12:00:16 +1000
+Subject: [sup-talk] sup exception
+In-Reply-To: <1276134110-sup-3620@zyrg.net>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+Message-ID: <AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+
+On 10 June 2010 11:44, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> I've pushed a workaround for this issue to master.
+
+No joy :-(
+
+[Thu Jun 10 12:02:13 +1000 2010] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/brian/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: load threads for thread-index-mode
+undefined method `to_nice_s' for nil:NilClass
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:919:in
+`default_date_widget_for'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:733:in
+`date_widget_for_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:237:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:237:in `map'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:237:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `synchronize'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:232:in `update'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:652:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:624:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+/home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+/home/brian/tree/sup/lib/sup.rb:75:in `new'
+/home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/brian/tree/sup/lib/sup/modes/search-results-mode.rb:48:in
+`spawn_from_query'
+/home/brian/tree/sup/bin/sup:295
+
+
+
+
+Do I need to do anything, e.g. update my indexes, for this to work?
+
+Thanks
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From rlane at club.cc.cmu.edu  Wed Jun  9 22:15:07 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 09 Jun 2010 22:15:07 -0400
+Subject: [sup-talk] sup exception
+In-Reply-To: <AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+	<AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+Message-ID: <1276135857-sup-1888@zyrg.net>
+
+Try it now.
+
+From bwalton at artsci.utoronto.ca  Wed Jun  9 22:42:12 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 09 Jun 2010 22:42:12 -0400
+Subject: [sup-talk] sup exception
+In-Reply-To: <1276135857-sup-1888@zyrg.net>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+	<AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+	<1276135857-sup-1888@zyrg.net>
+Message-ID: <1276137615-sup-4328@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Rich Lane's message of Wed Jun 09 22:15:07 -0400 2010:
+> Try it now.
+
+I needed the following patch to run (old 1.8 here; no
+Symbol#to_proc).
+
+/me goes back to building xapian for ruby 1.9.1 on rhel5.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-symbol-to-proc.patch
+Type: application/octet-stream
+Size: 853 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100609/639e0452/attachment-0001.obj>
+
+From brian at microcomaustralia.com.au  Wed Jun  9 22:47:23 2010
+From: brian at microcomaustralia.com.au (Brian May)
+Date: Thu, 10 Jun 2010 12:47:23 +1000
+Subject: [sup-talk] sup exception
+In-Reply-To: <1276135857-sup-1888@zyrg.net>
+References: <s2i3c5cf5261004191808y193e31ebn87187c27c1d2c392@mail.gmail.com>
+	<AANLkTikHlUdBtI5ZFd9H6WvUounPMn0BXyxyCdp1BHAD@mail.gmail.com>
+	<1276134110-sup-3620@zyrg.net>
+	<AANLkTilq8D7hybcPhDN1x18wMmZCjQ_vu6sPGytSS6Is@mail.gmail.com>
+	<1276135857-sup-1888@zyrg.net>
+Message-ID: <AANLkTilxh-OYsMHsB1eiKosqw1ZxDRcEy7Pfzc27zMq6@mail.gmail.com>
+
+On 10 June 2010 12:15, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> Try it now.
+
+It still... Oh wait forgot to run git merge... My bad.
+
+It doesn't crash anymore!
+
+Thanks for this.
+
+Glad to have assisted making sup more robust.
+-- 
+Brian May <brian at microcomaustralia.com.au>
+
+From gregor at hoffleit.de  Thu Jun 10 06:39:54 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 10 Jun 2010 12:39:54 +0200
+Subject: [sup-talk] Bug with searching for multiple labels at once
+Message-ID: <1276098490-sup-8738@sam.mediasupervision.de>
+
+I have a strange problem with search strings including multiple labels.
+I was at the impression that the search
+
+    label:somelabel label:anotherlabel
+
+should find mail with both labels attached (i.e. an AND search for both
+labels).
+
+But it doesn't work that way for me (I'm using Sup next from Git). It
+returns way more hits than expected.
+
+"label:LABELDOESNTEXIST label:list" returns all mails with the label
+"list" attached, although it should find nothing.
+
+In contrast, "label:LABELDOESNTEXIST from:me" returns zero mails, as
+expected, just as e.g. "label:LABELDOESNTEXIST before:yesterday".
+
+"label:LABELDOESNTEXIST is:unread" on the other hand, gives unexpected
+hits as well (I guess 'is:unread' is converted into a label search?)
+
+
+Regards,
+    Gregor Hoffleit
+
+From marka at pobox.com  Thu Jun 10 07:53:08 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 10 Jun 2010 07:53:08 -0400
+Subject: [sup-talk] Bug with searching for multiple labels at once
+In-Reply-To: <1276098490-sup-8738@sam.mediasupervision.de>
+References: <1276098490-sup-8738@sam.mediasupervision.de>
+Message-ID: <1276170636-sup-6551@r61>
+
+Excerpts from Gregor Hoffleit's message of Thu Jun 10 06:39:54 -0400 2010:
+> I have a strange problem with search strings including multiple labels.
+> I was at the impression that the search
+> 
+>     label:somelabel label:anotherlabel
+
+I ran into this confusing behavior a while back when I upgraded from a
+ferret index to a Xapian index.  It appears that the query language
+now requires you to use an explicit AND operator between search terms.
+Without that, the implied operator appears to be an OR.
+
+From gregor at hoffleit.de  Thu Jun 10 09:05:07 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 10 Jun 2010 15:05:07 +0200
+Subject: [sup-talk] Bug with searching for multiple labels at once
+In-Reply-To: <1276171687-sup-6993@sam.mediasupervision.de>
+References: <1276098490-sup-8738@sam.mediasupervision.de>
+	<1276170636-sup-6551@r61>
+	<1276171687-sup-6993@sam.mediasupervision.de>
+Message-ID: <1276175002-sup-9199@sam.mediasupervision.de>
+
+Indeed, I just noticed that the NewUserGuide.txt is much more up-to-date
+than the Wiki (http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail).
+
+As a start, I copied the information from the NewUserGuide to that Wiki
+page. Still, somebody who knows better should update that page.
+Furthermore, I marked the information in "Testing Xapian" as obsolete in
+the Wiki.
+
+
+Still, it is not clear to me what happens without explicit AND or OR
+operator.
+
+"label:somelabel label:anotherlabel" seems to be equivalent to
+"label:somelabel OR label:anotherlabel".
+
+"label:ruby-talk subject:\[ANN\]" seem to be equivalent to
+"label:ruby-talk AND subject:\[ANN\]".
+
+The Xapian QueryParser documentation (http://xapian.org/docs/queryparser.html)
+is not clear about this either.
+
+
+Regards,
+    Gregor Hoffleit
+
+From rlane at club.cc.cmu.edu  Thu Jun 10 11:01:09 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 10 Jun 2010 11:01:09 -0400
+Subject: [sup-talk] [sup-devel] Bug with searching for multiple labels
+	at once
+In-Reply-To: <1276175002-sup-9199@sam.mediasupervision.de>
+References: <1276098490-sup-8738@sam.mediasupervision.de>
+	<1276170636-sup-6551@r61>
+	<1276171687-sup-6993@sam.mediasupervision.de>
+	<1276175002-sup-9199@sam.mediasupervision.de>
+Message-ID: <1276181871-sup-2536@zyrg.net>
+
+Unless you use an explicit AND, boolean terms of the same field will be OR'd.
+
+http://trac.xapian.org/ticket/402
+
+From gregor at hoffleit.de  Thu Jun 10 11:52:25 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 10 Jun 2010 17:52:25 +0200
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1275997525-sup-9347@changeling.local>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+Message-ID: <1276184688-sup-7287@sam.mediasupervision.de>
+
+Eric,
+
+at first, that looks like a duplication of code. Could you elaborate why
+you use both of these hooks?
+
+    Gregor
+
+
+* Eric Sherman <hyperbolist at gmail.com> [Di Jun 08 13:57:54 +0200 2010]
+> Excerpts from Daniel Goldin's message of Tue Jun 08 01:16:25 -0400 2010:
+> > Thanks so much, works like a charm. But is there a way to change the
+> > "From:" and "In-reply-to:" and "Reply-to:" headers without having to add
+> > the config option ":ask_for_from: true"?
+> 
+> You may use the before-edit and reply-from hooks.  Here are scrubbed 
+> versions of mine:
+> 
+> before-edit.rb:
+> if header["To"] =~ /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/
+>   header["From"] = "me <me at ultramegacorp.com>"
+> elsif header["To"] =~ /somelist|alternalist|otherlist/
+>   header["From"] = "me <me at nerdylistemail.org>"
+> end
+> header["Bcc"] = header["From"]
+> 
+> reply-from.rb:
+> val = case [message.recipient_email, message.to, message.cc, message.from].flatten.to_s
+>       when /megacorp|ultramegacorp|alternacorp|minicorp|othercorp/ then "me <me at ultramegacorp.com>"
+>       when /personal.org/ then "me <me at personal.org>"
+>       when /nerdylistemail.org|somelist|alternalist|otherlist/ then "me <me at nerdylistemail.org>"
+>       when /newemail/ then "me <me at newemail.com>"
+>       when /oldemail/ then "me <me at newemail.com>"
+>       end
+> Person.from_address val
+
+From gregor at hoffleit.de  Thu Jun 10 12:08:34 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 10 Jun 2010 18:08:34 +0200
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1276185501-sup-3012@changeling.local>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+	<1276184688-sup-7287@sam.mediasupervision.de>
+	<1276185501-sup-3012@changeling.local>
+Message-ID: <1276185930-sup-2153@sam.mediasupervision.de>
+
+* Eric Sherman <hyperbolist at gmail.com> [Do Jun 10 18:01:15 +0200 2010]
+> Excerpts from Gregor Hoffleit's message of Thu Jun 10 11:52:25 -0400 2010:
+> > at first, that looks like a duplication of code. Could you elaborate why
+> > you use both of these hooks?
+> 
+> Yes.  The reply-from hook only triggers when replying, whereas the 
+> before-edit hook triggers also when composing a new email.
+
+Wouldn't the before-edit hook work for replying, as well?
+
+    Gregor
+
+
+> In this way I can ensure that for instance when I start a new thread to 
+> recipients at my workplace or its vendors, the correct non-default From 
+> address (and thusly the correct non-default sup account and signature and 
+> so on) is selected.
+
+From hyperbolist at gmail.com  Thu Jun 10 12:01:15 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 10 Jun 2010 12:01:15 -0400
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1276184688-sup-7287@sam.mediasupervision.de>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+	<1276184688-sup-7287@sam.mediasupervision.de>
+Message-ID: <1276185501-sup-3012@changeling.local>
+
+Excerpts from Gregor Hoffleit's message of Thu Jun 10 11:52:25 -0400 2010:
+> Eric,
+> 
+> at first, that looks like a duplication of code. Could you elaborate why
+> you use both of these hooks?
+> 
+>     Gregor
+
+Yes.  The reply-from hook only triggers when replying, whereas the 
+before-edit hook triggers also when composing a new email.
+
+In this way I can ensure that for instance when I start a new thread to 
+recipients at my workplace or its vendors, the correct non-default From 
+address (and thusly the correct non-default sup account and signature and 
+so on) is selected.
+
+From hyperbolist at gmail.com  Thu Jun 10 13:02:45 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 10 Jun 2010 13:02:45 -0400
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1276185930-sup-2153@sam.mediasupervision.de>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+	<1276184688-sup-7287@sam.mediasupervision.de>
+	<1276185501-sup-3012@changeling.local>
+	<1276185930-sup-2153@sam.mediasupervision.de>
+Message-ID: <1276188610-sup-3944@changeling.local>
+
+Excerpts from Gregor Hoffleit's message of Thu Jun 10 12:08:34 -0400 2010:
+> Wouldn't the before-edit hook work for replying, as well?
+
+I imagine so, and peeking quickly at reply-mode.rb seems to confirm this.  
+I probably wrote these way back when starting to use sup when I assumed 
+that before-edit only fired on new emails and reply-from only fired on 
+replies.  The next time I need to change their behavior I'll probably 
+DRY-ify my hooks.  Thanks for pointing this out.
+
+From danielgoldin at gmail.com  Thu Jun 10 13:04:45 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Thu, 10 Jun 2010 10:04:45 -0700
+Subject: [sup-talk] error message running sup
+Message-ID: <AANLkTilOLdBrK50s_r2Kd-WqFGirhQxzWwCI9hmdlCLB@mail.gmail.com>
+
+When I run sup-sync, I get the following message:
+
+Error: the index is locked by another process! User '' on
+host '' is running  with pid.
+The process was alive as of at least 54 minutes ago.
+
+Should I ask that process to kill itself (y/n)? n
+Sorry, couldn't unlock the index.
+
+Couldn't find the process running ps -aux. Any help gratefully appreciated.
+Again I am a non-programmer so go easy.
+
+-- 
+Daniel Goldin
+626.817.2462
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100610/7867c22d/attachment.html>
+
+From hyperbolist at gmail.com  Thu Jun 10 13:15:40 2010
+From: hyperbolist at gmail.com (Eric Sherman)
+Date: Thu, 10 Jun 2010 13:15:40 -0400
+Subject: [sup-talk] error message running sup
+In-Reply-To: <AANLkTilOLdBrK50s_r2Kd-WqFGirhQxzWwCI9hmdlCLB@mail.gmail.com>
+References: <AANLkTilOLdBrK50s_r2Kd-WqFGirhQxzWwCI9hmdlCLB@mail.gmail.com>
+Message-ID: <1276189944-sup-3195@changeling.local>
+
+Excerpts from Daniel Goldin's message of Thu Jun 10 13:04:45 -0400 2010:
+> When I run sup-sync, I get the following message:
+> 
+> Error: the index is locked by another process! User '' on
+
+This usually means that sup was killed unnaturally and left the lockfile 
+laying around.  Sup is reluctant to start multiple instances of itself.  In 
+this case, since you've confirmed that another sup instance isn't running, 
+I believe you can safely answer "y" to this question and the one that will 
+follow it to start sup.
+
+From gregor at hoffleit.de  Mon Jun 14 05:46:47 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Mon, 14 Jun 2010 11:46:47 +0200
+Subject: [sup-talk] choosing signatures
+In-Reply-To: <1276188610-sup-3944@changeling.local>
+References: <1275850632-sup-6402@ubuntu.ubuntu-domain>
+	<1275884981-sup-4509@roughage.com.au>
+	<1275973780-sup-5206@ubuntu.ubuntu-domain>
+	<1275997525-sup-9347@changeling.local>
+	<1276184688-sup-7287@sam.mediasupervision.de>
+	<1276185501-sup-3012@changeling.local>
+	<1276185930-sup-2153@sam.mediasupervision.de>
+	<1276188610-sup-3944@changeling.local>
+Message-ID: <1276508193-sup-213@sam.mediasupervision.de>
+
+* Eric Sherman <hyperbolist at gmail.com> [Do Jun 10 19:02:45 +0200 2010]
+> Excerpts from Gregor Hoffleit's message of Thu Jun 10 12:08:34 -0400 2010:
+> > Wouldn't the before-edit hook work for replying, as well?
+> 
+> I imagine so, and peeking quickly at reply-mode.rb seems to confirm this.  
+> I probably wrote these way back when starting to use sup when I assumed 
+> that before-edit only fired on new emails and reply-from only fired on 
+> replies.  The next time I need to change their behavior I'll probably 
+> DRY-ify my hooks.  Thanks for pointing this out.
+
+Short update: When I tried your code, I couldn't get before-edit work as
+expected. Appearently, the before-edit hook is called multiple times in
+reply-mode, with varying headers, which broke my naive transformations:
+Subsequent calls reverted/overwrote changes made in earlier calls.
+
+I haven't looked in depth at this, though.
+
+    Gregor
+
+From sven.schober at uni-ulm.de  Mon Jun 21 05:12:56 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Mon, 21 Jun 2010 11:12:56 +0200
+Subject: [sup-talk] Messages not displayed correctly
+Message-ID: <1277110729-sup-6070@hysbald>
+
+Hi Folks!
+
+Two things:
+
+1) Since some time (can't remember exactly since when, but it might
+coincide with updating my index) a lot of messages don't get
+displayed correctly any more. Instead, only the first line of the
+message is displayed and then this notice:
+
+
+  ***********************************************************************
+   An error occurred while loading this message.
+  ***********************************************************************
+
+I'm using commit 4e1e5c11fab83179ce611cc90d0b180c574eb3e0 on branch `next'.
+
+The system log only shows:
+
+[2010-06-21 11:02:47 +0200] WARNING: problem reading message AANLkTil-2QHApClKbIW7zMMYZ1mcjH6HmAxknYWYraNq at mail.gmail.com
+
+for each message. Any ideas?
+
+
+2) Is there any support in sup for s/mime-encryption using
+certificates? I suspect not, but wanted to be sure before starting
+to hack some `openssl smime' adapter, or something...
+
+
+Ciao,
+ Sven
+
+From luislupe at gmail.com  Mon Jun 21 07:27:27 2010
+From: luislupe at gmail.com (Luis P. Mendes)
+Date: Mon, 21 Jun 2010 12:27:27 +0100
+Subject: [sup-talk] Sup with several gmail accounts - advice needed
+Message-ID: <AANLkTil0cZbfcajQCrtDdAfWb78dunPlxlqTfosV6xdr@mail.gmail.com>
+
+Hi all,
+
+I just registered to this mailing list and am yet configuring sup.
+Before arriving to sup I was configuring mutt so that I could drop web
+based gmail.
+I have to congratulate the author and contributors of this excellent program.
+
+Although I've searched through the archived mailing list (not
+thoroughly) I need some advice from you.
+I have a main Gmail account and two other minor ones that are
+redirected to the main one.  Mails from the minor ones get tagged
+whenever they arrive to the main one.
+In the main one, I have dozens of filters where some mails get tagged
+and archived whenever they arrive, other get tagged and not archived
+and still others just go to inbox.
+
+Since I began configuring mutt and until I found out sup, I had
+offlineimap synchronizing emails between gmail and my ~/Mail folder
+(Slackware LInux).
+I opened mutt and could browse to any subfolder I wanted.
+
+In Sup, what is the best way?
+Do I just add the '[Gmail].All mail' folder that is being synchronized
+with gmail and then I have to redo in sup all the filters I have in
+web based gmail?
+Or do I have advantages in adding to sup all the subfolders in disk,
+including the 'All mail' and get plenty of email repeated, as they
+already are because of offlineimap synchronization.
+Is there any other method for gmail imap synchronization that is
+preferred by sup users?
+
+I've read that upward imap synchronization is not yet available or is
+limited.  This is also an issue for me.  I can expect that it is going
+to be operational in the near term?  If so, I could live well using
+almost only local based sup to manage my emails.
+When full synchronization is ready, web gmail could get updated like
+local sup. Right or not?
+
+
+Luis
+
+From damien.leone at fensalir.fr  Tue Jun 22 09:10:37 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Tue, 22 Jun 2010 15:10:37 +0200
+Subject: [sup-talk] Sup with several gmail accounts - advice needed
+In-Reply-To: <AANLkTil0cZbfcajQCrtDdAfWb78dunPlxlqTfosV6xdr@mail.gmail.com>
+References: <AANLkTil0cZbfcajQCrtDdAfWb78dunPlxlqTfosV6xdr@mail.gmail.com>
+Message-ID: <1277211466-sup-2479@mailer>
+
+Hello,
+
+Excerpts from Luis P. Mendes's message of lun. juin 21 13:27:27 +0200 2010:
+> In Sup, what is the best way?
+> Do I just add the '[Gmail].All mail' folder that is being synchronized
+> with gmail and then I have to redo in sup all the filters I have in
+> web based gmail?
+> Or do I have advantages in adding to sup all the subfolders in disk,
+> including the 'All mail' and get plenty of email repeated, as they
+> already are because of offlineimap synchronization.
+> Is there any other method for gmail imap synchronization that is
+> preferred by sup users?
+
+I added each subfolder corresponding to a gmail tag as a maildir
+source in sup with the proper label and the auto-archive option. I
+guess it is not necessary to add the All Mails one since adding all
+your tags + the INBOX folder should already cover all your mails. With
+this settings I handle my mails the same way as I did in the web
+interface.
+
+> I've read that upward imap synchronization is not yet available or is
+> limited.  This is also an issue for me.  I can expect that it is going
+> to be operational in the near term?  If so, I could live well using
+> almost only local based sup to manage my emails.
+
+I heard about someone working on it a few weeks ago, but I don't have
+more news. Offlineimap already has upward imap synchronization
+support, what sup need is upward maildir synchronization.
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From shreyankg at gmail.com  Thu Jun 24 13:25:28 2010
+From: shreyankg at gmail.com (shreyankg at gmail.com)
+Date: Thu, 24 Jun 2010 22:55:28 +0530
+Subject: [sup-talk] Sup packaged for Fedora
+Message-ID: <AANLkTikGItA4Y5UkUodAYTjZ-zQym0YWaJNIU8RB2sRC@mail.gmail.com>
+
+Hi,
+
+I have been using sup for quite sometime now.
+I thought its time it was part of my favorite distro now.
+
+sup 0.10.2 is now available on Fedora 13 and Rawhide.
+
+$ yum install sup
+as root.
+
+The package has been built as rubygem-sup, because of the Fedora
+Package naming guidelines.
+
+-- 
+Peace and Love,
+Shreyank Gupta
+Blog: http://allsortsofshrink.blogspot.com
+
+From wmorgan-sup at masanjin.net  Thu Jun 24 13:38:25 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 24 Jun 2010 13:38:25 -0400
+Subject: [sup-talk] Sup packaged for Fedora
+In-Reply-To: <AANLkTikGItA4Y5UkUodAYTjZ-zQym0YWaJNIU8RB2sRC@mail.gmail.com>
+References: <AANLkTikGItA4Y5UkUodAYTjZ-zQym0YWaJNIU8RB2sRC@mail.gmail.com>
+Message-ID: <1277401090-sup-9075@masanjin.net>
+
+Reformatted excerpts from shreyankg at gmail.com's message of 2010-06-24:
+> sup 0.10.2 is now available on Fedora 13 and Rawhide.
+
+Very nice! Thank you!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From marc.hartstein at alum.vassar.edu  Sat Jun 26 12:30:07 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Sat, 26 Jun 2010 12:30:07 -0400
+Subject: [sup-talk] [PATCH] mutt-style pipe to interactive process support
+Message-ID: <1277569807-12085-1-git-send-email-marc.hartstein@alum.vassar.edu>
+
+Adds a new method maybe_interactive_pipe_message to ThreadViewMode which will
+pipe a message to a process in the same manner as the mutt mutt_pipe_message
+command, allowing interactive tools such as 'urlview' to reopen the tty for
+IO.
+
+Terminating your pipe command with the pipe character ('|') for "pipe back to
+sup" will use the original behavior, capturing the output of the pipeline for
+display in a sup buffer. Calling maybe_interactive_pipe_message with
+maybe_interactive=false, or calling pipe_message will always use the old
+behavior.
+
+No keymap is provided in this patch. It is recommended to replace pipe_message
+on '|' in keybindings.rb using a line like:
+
+Redwood::ThreadViewMode::keymap.add! :maybe_interactive_pipe_message, "Pipe
+message or attachment to an interactive shell command", '|'
+---
+ lib/sup/mode.rb                   |   32 ++++++++++++++++++++++++
+ lib/sup/modes/thread-view-mode.rb |   48 +++++++++++++++++++++++++++++-------
+ 2 files changed, 70 insertions(+), 10 deletions(-)
+
+diff --git a/lib/sup/mode.rb b/lib/sup/mode.rb
+index f5aee1c..8d6197d 100644
+--- a/lib/sup/mode.rb
++++ b/lib/sup/mode.rb
+@@ -101,6 +101,38 @@ EOS
+     end
+   end
+ 
++  def pipe_to_interactive_process command
++    read, write = IO.pipe
++
++    child_pid = fork
++    if child_pid
++      # main process
++      begin
++        read.close
++        yield write
++      rescue
++        warn "error writing to #{command}: #{$!}"
++        BufferManager.flash "error writing to #{command}: #{$!}"
++      ensure
++        write.close
++        Process.waitpid(child_pid)
++      end
++    else
++      # child
++      begin
++        write.close
++        $stdin.reopen(read)
++        exec(command)
++      rescue
++        # Can't access logger from child process, but can flash an error
++        BufferManager.flash "error running #{command}: #{$!}"
++      ensure
++        read.close
++        Kernel.exit!(127)
++      end
++    end
++  end
++
+   def pipe_to_process command
+     Open3.popen3(command) do |input, output, error|
+       err, data, * = IO.select [error], [input], nil
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 088529b..bd7908c 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -661,6 +661,10 @@ EOS
+   private :dispatch
+ 
+   def pipe_message
++    maybe_interactive_pipe_message false
++  end
++
++  def maybe_interactive_pipe_message maybe_interactive=true
+     chunk = @chunk_lines[curpos]
+     chunk = nil unless chunk.is_a?(Chunk::Attachment)
+     message = @message_lines[curpos] unless chunk
+@@ -669,20 +673,44 @@ EOS
+ 
+     command = BufferManager.ask(:shell, "pipe command: ")
+     return if command.nil? || command.empty?
++    if maybe_interactive and command[-1,1]=="|"
++      command = command.chop.strip
++      return if command.empty?
++      interactive = false
++    else
++      interactive = maybe_interactive
++    end
++
++    if interactive
++      pipe_to_interactive_process(command) do |stream|
++        if chunk
++          stream.print chunk.raw_content
++        else
++          message.each_raw_message_line { |l| 
++            begin
++              stream.print l
++            rescue
++              warn "error writing to #{command}: #{$!}"
++              BufferManager.flash "error writing to #{command}: #{$!}"
++              break
++            end }
++        end
++      end
++    else
++      output = pipe_to_process(command) do |stream|
++        if chunk
++          stream.print chunk.raw_content
++        else
++          message.each_raw_message_line { |l| stream.print l }
++        end
++      end
+ 
+-    output = pipe_to_process(command) do |stream|
+-      if chunk
+-        stream.print chunk.raw_content
++      if output
++        BufferManager.spawn "Output of '#{command}'", TextMode.new(output.ascii)
+       else
+-        message.each_raw_message_line { |l| stream.print l }
++        BufferManager.flash "'#{command}' done!"
+       end
+     end
+-
+-    if output
+-      BufferManager.spawn "Output of '#{command}'", TextMode.new(output.ascii)
+-    else
+-      BufferManager.flash "'#{command}' done!"
+-    end
+   end
+ 
+ private
+-- 
+1.6.4.4
+
+
+From marc.hartstein at alum.vassar.edu  Sat Jun 26 12:37:06 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Sat, 26 Jun 2010 12:37:06 -0400
+Subject: [sup-talk] [PATCH] mutt-style pipe to interactive process
+	support
+In-Reply-To: <1277569807-12085-1-git-send-email-marc.hartstein@alum.vassar.edu>
+References: <1277569807-12085-1-git-send-email-marc.hartstein@alum.vassar.edu>
+Message-ID: <1277569950-sup-2290@cabinet>
+
+Code review would be highly appreciated on this one. I did some research
+and checking and I'm fairly confident that I got the multiprogramming
+aspects correct, but I haven't done much with forked processes before,
+so I'd appreciate another set of eyes on it.
+
+As always, I'm receptive to style review to best integrate with the
+predominant Sup programming style as well.
+
+The primary motivation for this patch is that the one thing I've missed
+most in moving from mutt is being able to use urlview to quickly open
+urls in my browser. While urxvt helps me with short urls, anything
+longer than my current viewport line gets broken in a way urxvt can't
+detect, so I decided it was time to make the pipe command more powerful.
+
+I've left the old code pathways fully intact.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100626/35ee4b09/attachment.bin>
+

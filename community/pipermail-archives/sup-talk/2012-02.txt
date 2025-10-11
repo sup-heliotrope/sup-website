@@ -1,0 +1,38 @@
+From iamthedata at gmail.com  Wed Feb  1 03:53:38 2012
+From: iamthedata at gmail.com (Gabor Nyitrai)
+Date: Wed, 01 Feb 2012 08:53:38 +0000
+Subject: [sup-talk] keybinding to open link under cursor
+Message-ID: <1328086279-sup-9116@haka>
+
+Hello,
+
+I tried to add a keybinding hook to open a link that is on the current
+line, but I got lost browsing the sup source... can you help how to do
+this?
+
+# keybindings.rb
+
+modes['thread-view-mode'].keymap.add :open_link, "Open link on current line", "Y"
+
+class Redwood::ThreadViewMode
+    def open_link
+        m = @message_lines[curpos] or return
+
+        ## get the link from the current line somehow
+        # link = ...
+        
+        ## testing, just to see some response
+        BufferManager.flash "#{curpos}"
+        ## testing, write content to a file to see what we've got
+        path = "/tmp/sup-temp.txt"
+        File.open(path, 'w') { |io| io.write m.raw_message }
+
+        ## open a browser with the link as argument
+        # spawn "chromium-browser", link, [:in, :out, :err] => "/dev/null"
+    end
+end
+
+
+Thanks,
+Gabor
+

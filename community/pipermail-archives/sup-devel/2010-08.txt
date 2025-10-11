@@ -1,0 +1,1388 @@
+From matias at insophia.com  Tue Aug  3 18:14:13 2010
+From: matias at insophia.com (Matias Aguirre)
+Date: Tue, 03 Aug 2010 19:14:13 -0300
+Subject: [sup-devel] Label colors support
+Message-ID: <1280873473-sup-5265@mintaka>
+
+Hi,
+
+Been an user for some time now, congrats for the good work. But there's
+something I've missed from mutt and is the ability to customize inbox
+emails colors, I've used to colorize by source address or domain.
+
+Attached is a patch (first ruby code in a lot of time) with needed
+changes to allow colors by label and produces a good and quick feedback.
+
+Cheers,
+Mat?as
+--
+Mat?as Aguirre <matias at insophia.com>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: color_labels.diff
+Type: application/octet-stream
+Size: 1064 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100803/dcdd4e6e/attachment.obj>
+
+From sup-bugs at masanjin.net  Wed Aug  4 08:31:13 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Wed, 04 Aug 2010 12:31:13 +0000
+Subject: [sup-devel] [issue114] Better quoted-text / top-post stripping
+In-Reply-To: <1280925073.15.0.143313290118.issue114@masanjin.net>
+Message-ID: <1280925073.15.0.143313290118.issue114@masanjin.net>
+
+
+New submission from anonymous:
+
+Redwood::Message splits a message into chunks and hides quoted text from a
+previous message.
+
+Top-posted responses are supported with BLOCK_QUOTE_PATTERN.  This patch i) adds
+a new pattern to hide top-posted text from Microsoft Entourage, ii) adds a fix
+for Mozilla-based mail users who top post and iii) adds a new array-based config
+option "block_quote_patterns" for adding additional patterns to treat as marking
+the top of a top-posted response.
+
+----------
+files: patch.better-top-post-stripping
+messages: 261
+nosy: anonymous
+priority: feature request
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: Better quoted-text / top-post stripping
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue114>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: patch.better-top-post-stripping
+Type: application/octet-stream
+Size: 1483 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100804/72bfa08d/attachment.obj>
+
+From alvherre at alvh.no-ip.org  Wed Aug  4 10:22:26 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 04 Aug 2010 10:22:26 -0400
+Subject: [sup-devel] [issue114] Better quoted-text / top-post stripping
+In-Reply-To: <1280925073.15.0.143313290118.issue114@masanjin.net>
+References: <1280925073.15.0.143313290118.issue114@masanjin.net>
+Message-ID: <1280931423-sup-2397@alvh.no-ip.org>
+
+Excerpts from anonymous's message of mi? ago 04 08:31:13 -0400 2010:
+
+> Redwood::Message splits a message into chunks and hides quoted text from a
+> previous message.
+> 
+> Top-posted responses are supported with BLOCK_QUOTE_PATTERN.  This patch i) adds
+> a new pattern to hide top-posted text from Microsoft Entourage, ii) adds a fix
+> for Mozilla-based mail users who top post and iii) adds a new array-based config
+> option "block_quote_patterns" for adding additional patterns to treat as marking
+> the top of a top-posted response.
+
++1 for improving the top-posted detection in general.
+
+I think this regex
+
++      # Microsoft Entourage doesn't indent quoted text, but it can be spotted
++      # with this line:
++      #   On 8/2/10 1:23 PM, "John Doe" <edward at facebook.com> wrote:
++      /^On \d+\/\d+\/\d+ .+ wrote:/,
+
+is way too general; it could easily match the attribution line on a
+non-top-posted quoted email.  I didn't try it but I think it would end
+up trimming the whole contents of several emails I have on my inboxes
+(which is pretty annoying --- I have set SIG_PATTERN to be just "^-- "
+to avoid this very problem).
+
+
+There's a small bug here:
+
++      # At least three dashes.  Mozilla mail clients downcase the 'm' in
++      # message.
++      /^----+\s*Original (M|m)essage\s*----+/,
+
+Note that it matches only four or more dashes, not three as the comment says.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From matias at insophia.com  Wed Aug  4 12:41:26 2010
+From: matias at insophia.com (Matias Aguirre)
+Date: Wed, 04 Aug 2010 13:41:26 -0300
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1280873473-sup-5265@mintaka>
+References: <1280873473-sup-5265@mintaka>
+Message-ID: <1280939946-sup-6928@mintaka>
+
+Forgot to mention that colors are defined in colors.yaml using label
+names and common attributes:
+
+    :somelabel:
+        :bg: ...
+        :fg: ...
+        :attrs:
+            ...
+
+Also, I've forked sup on my github account, changeset can be checked here
+http://github.com/omab/sup/commit/a6f9bfb5d1f23aa6376ad725e64a3e2c3066663d
+
+Thanks,
+Mat?as
+
+Excerpts from Matias Aguirre's message of Tue Aug 03 19:14:13 -0300 2010:
+> Hi,
+> 
+> Been an user for some time now, congrats for the good work. But there's
+> something I've missed from mutt and is the ability to customize inbox
+> emails colors, I've used to colorize by source address or domain.
+> 
+> Attached is a patch (first ruby code in a lot of time) with needed
+> changes to allow colors by label and produces a good and quick feedback.
+> 
+> Cheers,
+> Mat?as
+--
+Mat?as Aguirre <matias at insophia.com>
+
+From matias at insophia.com  Wed Aug  4 12:50:00 2010
+From: matias at insophia.com (Matias Aguirre)
+Date: Wed, 04 Aug 2010 13:50:00 -0300
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1280939946-sup-6928@mintaka>
+References: <1280873473-sup-5265@mintaka> <1280939946-sup-6928@mintaka>
+Message-ID: <1280940556-sup-6998@mintaka>
+
+Sorry, wrong github link, this is the correct changeset:
+http://github.com/omab/sup/commit/865bc2b77038f612ccf0c5174021f001811116a4
+
+Excerpts from Matias Aguirre's message of Wed Aug 04 13:41:26 -0300 2010:
+> Forgot to mention that colors are defined in colors.yaml using label
+> names and common attributes:
+> 
+>     :somelabel:
+>         :bg: ...
+>         :fg: ...
+>         :attrs:
+>             ...
+> 
+> Also, I've forked sup on my github account, changeset can be checked here
+> http://github.com/omab/sup/commit/a6f9bfb5d1f23aa6376ad725e64a3e2c3066663d
+> 
+> Thanks,
+> Mat?as
+> 
+> Excerpts from Matias Aguirre's message of Tue Aug 03 19:14:13 -0300 2010:
+> > Hi,
+> > 
+> > Been an user for some time now, congrats for the good work. But there's
+> > something I've missed from mutt and is the ability to customize inbox
+> > emails colors, I've used to colorize by source address or domain.
+> > 
+> > Attached is a patch (first ruby code in a lot of time) with needed
+> > changes to allow colors by label and produces a good and quick feedback.
+> > 
+> > Cheers,
+> > Mat?as
+--
+Mat?as Aguirre <matias at insophia.com>
+
+From sup-bugs at masanjin.net  Thu Aug  5 14:41:23 2010
+From: sup-bugs at masanjin.net (Eugene)
+Date: Thu, 05 Aug 2010 18:41:23 +0000
+Subject: [sup-devel] [issue115] Ability to view inline attached images
+In-Reply-To: <1281033683.59.0.96541200452.issue115@masanjin.net>
+Message-ID: <1281033683.59.0.96541200452.issue115@masanjin.net>
+
+
+New submission from Eugene <eugeneiiim at gmail.com>:
+
+Pain: When I receive an HTML email with attached images included inline in the 
+message and open the sup-attachment-xxx.html attachment, the links to the images 
+in the html file are broken. This makes it difficult to match up the image 
+attachments with their location in the email.
+
+Proposal: Save the attachments to some temporary directory such that the links in 
+the html file work.
+
+----------
+messages: 264
+nosy: eugeneiiim
+priority: feature request
+ruby_version: ruby 1.8.7 (2009-06-12 patchlevel 174) [x86_64-linux]
+status: unread
+sup_version: 8f20211a86a315fb94ff19f463784ad1e139ee47
+title: Ability to view inline attached images
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue115>
+_________________________________________
+
+From sascha-ml-email-sup-devel at silbe.org  Fri Aug  6 05:13:42 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Fri, 06 Aug 2010 11:13:42 +0200
+Subject: [sup-devel] alternative for sup-sync option --restored?
+Message-ID: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+
+Hi!
+
+I'm reading and writing my mails on both my desktop (which has the entire archive, totalling ~ 16GB) and my laptop (recent mails and partial archive, ~ 1-2GB).
+Up to now I used sup-dump and sup-sync --restored to synchronize the two (every time I switched between them, since it's a full dump as opposed to a log file or diff).
+After merging the latest changes (including a full dump + restore for index upgrade, taking about 33 hours), the --restored option to sup-sync is gone (and without it sup-sync doesn't do anything useful). How do I go about "merging" the changes done on the other system now?
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100806/5fc69b04/attachment.bin>
+
+From alvherre at alvh.no-ip.org  Tue Aug 10 19:52:05 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 10 Aug 2010 19:52:05 -0400
+Subject: [sup-devel] use //IGNORE flag to Iconv
+Message-ID: <1281483789-sup-7077@alvh.no-ip.org>
+
+Hi sup-developers,
+
+The following patch makes transcoding failure be nicer by discarding
+broken chars and displaying what can be successfully transcoded, instead
+of punting and displaying the ASCII representation.
+
+This is particularly useful when corporate email appends a disclaimer
+that's encoded in a different encoding than whatever the user has set up
+in the MUA.  (I see it a lot.)
+
+My iconv_open(3) manpage says that the //IGNORE flag is a GNU extension.
+I'm not sure how would this be handled by other platforms, and I have no
+way to test.
+
+
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index d19caca..f7e8a80 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -699,9 +699,9 @@ class Iconv
+     end
+ 
+     begin
+-      returning(Iconv.iconv(target, charset, text + " ").join[0 .. -2]) { |str| str.check }
++      returning(Iconv.iconv(target + "//IGNORE", charset, text + " ").join[0 .. -2]) { |str| str.check }
+     rescue Errno::EINVAL, Iconv::InvalidEncoding, Iconv::InvalidCharacter, Iconv::IllegalSequence, String::CheckError
+-      debug "couldn't transcode text from #{orig_charset} (#{charset}) to #{target}) (#{text[0 ... 20].inspect}...) (got #{$!.message} (#{$!.class}))"
++      debug "couldn't transcode text from #{orig_charset} (#{charset}) to #{target} (#{text[0 ... 20].inspect}...): got #{$!.class} (#{$!.message})"
+       text.ascii
+     end
+   end
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From ezyang at MIT.EDU  Sun Aug 15 19:30:46 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 15 Aug 2010 19:30:46 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1279656544-sup-4931@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net>
+Message-ID: <1281915009-sup-2620@ezyang>
+
+Excerpts from Michael Stapelberg's message of Tue Jul 20 16:09:39 -0400 2010:
+> I was wrong. I just opened an email and it was no longer verified (it is
+> GPG-signed). I will post an updated patch soon.
+
+Hi Michael,
+
+I was hoping to get a copy of the email that broke for you, but it never
+found its way to me. Perhaps you could resend it?
+
+Thanks,
+Edward
+
+From michael+sup at stapelberg.de  Sun Aug 15 21:19:35 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 16 Aug 2010 03:19:35 +0200
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281915009-sup-2620@ezyang>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+Message-ID: <1281921538-sup-8727@midna.zekjur.net>
+
+Hi Edward,
+
+Excerpts from Edward Z. Yang's message of 2010-08-16 01:30:46 +0200:
+> I was hoping to get a copy of the email that broke for you, but it never
+> found its way to me. Perhaps you could resend it?
+Just did so. Message-ID is <1281921493-sup-9947 at midna.zekjur.net>.
+
+Best regards,
+Michael
+
+From ezyang at MIT.EDU  Sun Aug 15 21:40:33 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Sun, 15 Aug 2010 21:40:33 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281921538-sup-8727@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net>
+Message-ID: <1281922808-sup-4140@ezyang>
+
+Excerpts from Michael Stapelberg's message of Sun Aug 15 21:19:35 -0400 2010:
+> Just did so. Message-ID is <1281921493-sup-9947 at midna.zekjur.net>.
+
+What's the subject line?
+
+Edward
+
+From alvherre at alvh.no-ip.org  Mon Aug 16 12:27:15 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Mon, 16 Aug 2010 12:27:15 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281922808-sup-4140@ezyang>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+Message-ID: <1281975941-sup-8114@alvh.no-ip.org>
+
+Excerpts from Edward Z. Yang's message of dom ago 15 21:40:33 -0400 2010:
+> Excerpts from Michael Stapelberg's message of Sun Aug 15 21:19:35 -0400 2010:
+> > Just did so. Message-ID is <1281921493-sup-9947 at midna.zekjur.net>.
+> 
+> What's the subject line?
+
+So it kinda sucks that one can't search for a message by Message-Id, eh?.
+I have a lot of need for that functionality, since the whole PostgreSQL
+patch management workflow is based on them.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From michael+sup at stapelberg.de  Mon Aug 16 13:22:26 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 16 Aug 2010 19:22:26 +0200
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281922808-sup-4140@ezyang>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+Message-ID: <1281979317-sup-3846@midna.zekjur.net>
+
+Hi Edward,
+
+Excerpts from Edward Z. Yang's message of 2010-08-16 03:40:33 +0200:
+> What's the subject line?
+The subject line is:
+"Fwd: Fwd: Re: [RaumZeitLabor] Portalroboter kostenlos bei Selbstabholung - Interesse?"
+
+Best regards,
+Michael
+
+From ezyang at MIT.EDU  Mon Aug 16 15:55:32 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Mon, 16 Aug 2010 15:55:32 -0400
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281979317-sup-3846@midna.zekjur.net>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+	<1281979317-sup-3846@midna.zekjur.net>
+Message-ID: <1281979589-sup-7759@ezyang>
+
+Excerpts from Michael Stapelberg's message of Mon Aug 16 13:22:26 -0400 2010:
+> Hi Edward,
+> 
+> Excerpts from Edward Z. Yang's message of 2010-08-16 03:40:33 +0200:
+> > What's the subject line?
+> The subject line is:
+> "Fwd: Fwd: Re: [RaumZeitLabor] Portalroboter kostenlos bei Selbstabholung - Interesse?"
+
+Fascinatingly enough, I cannot find it in either my inbox or my spam filter. (Dun dun dun.)
+Maybe you should send it as an attachment.
+
+Edward
+
+From sup-bugs at masanjin.net  Mon Aug 16 17:33:45 2010
+From: sup-bugs at masanjin.net (Sascha Silbe)
+Date: Mon, 16 Aug 2010 21:33:45 +0000
+Subject: [sup-devel] [issue116] TypeError when trying to send a PGP signed
+	email with	attachments
+In-Reply-To: <1281994425.75.0.0617788105661.issue116@masanjin.net>
+Message-ID: <1281994425.75.0.0617788105661.issue116@masanjin.net>
+
+
+New submission from Sascha Silbe <sascha-web-masanjin.net-sup-bugs at silbe.org>:
+
+When trying to send an email that is going to get PGP signed and has two attachments (haven't tried with just one), the following exception occurs:
+
+--- TypeError from thread: main
+can't convert Array into String
+./lib/sup/modes/edit-message-mode.rb:407:in `pack'
+./lib/sup/modes/edit-message-mode.rb:407:in `build_message'
+./lib/sup/modes/edit-message-mode.rb:355:in `send_message'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:277:in `handle_input'
+bin/sup:260
+
+The code in question is:
+
+402)     ## do whatever crypto transformation is necessary
+403)     if @crypto_selector && @crypto_selector.val != :none
+404)       from_email = Person.from_address(@header["From"]).email
+405)       to_email = [@header["To"], @header["Cc"], @header["Bcc"]].flatten.compact.map { |p| Person.from_addres
+406)       m.header["Content-Transfer-Encoding"] = 'base64'
+407)       m.body = [m.body].pack('m')
+408) 
+409)       m = CryptoManager.send @crypto_selector.val, from_email, to_email, m
+410)     end
+
+This is with local changes (so the line numbers won't match), but I've checked this particular piece of code is the same on mainline/master.
+
+----------
+keyword: crypto, encoding
+messages: 269
+nosy: sascha_silbe
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: git commit 9be79c3
+title: TypeError when trying to send a PGP signed email with attachments
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue116>
+_________________________________________
+
+From alvherre at alvh.no-ip.org  Mon Aug 16 17:43:45 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Mon, 16 Aug 2010 17:43:45 -0400
+Subject: [sup-devel] crash on text_for_thread_at
+Message-ID: <1281994912-sup-3908@alvh.no-ip.org>
+
+Hi,
+
+Got the following crash yesterday; not sure what to do about it.
+
+--- NoMethodError from thread: load messages for thread-view-mode
+undefined method `has_label?' for nil:NilClass
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:833:in `text_for_thread_at'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+./Code/git/sup-mail/lib/sup/util.rb:431:in `map_with_index'
+./Code/git/sup-mail/lib/sup/hook.rb:55:in `each_with_index'
+./Code/git/sup-mail/lib/sup/util.rb:431:in `each'
+./Code/git/sup-mail/lib/sup/util.rb:431:in `each_with_index'
+./Code/git/sup-mail/lib/sup/util.rb:431:in `map_with_index'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:242:in `update'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:212:in `handle_deleted_update'
+./Code/git/sup-mail/lib/sup/update.rb:26:in `send'
+./Code/git/sup-mail/lib/sup/update.rb:26:in `relay'
+./Code/git/sup-mail/lib/sup/update.rb:26:in `each'
+./Code/git/sup-mail/lib/sup/update.rb:26:in `relay'
+./Code/git/sup-mail/lib/sup/util.rb:596:in `send'
+./Code/git/sup-mail/lib/sup/util.rb:596:in `method_missing'
+./Code/git/sup-mail/lib/sup/modes/thread-view-mode.rb:619:in `delete_and_then'
+./Code/git/sup-mail/lib/sup/modes/thread-view-mode.rb:646:in `dispatch'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:129:in `call'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:129:in `select'
+./Code/git/sup-mail/lib/sup.rb:77:in `reporting_thread'
+./Code/git/sup-mail/lib/sup.rb:75:in `initialize'
+./Code/git/sup-mail/lib/sup.rb:75:in `new'
+./Code/git/sup-mail/lib/sup.rb:75:in `reporting_thread'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:109:in `select'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:159:in `launch_another_thread'
+./Code/git/sup-mail/lib/sup/modes/thread-index-mode.rb:141:in `launch_next_thread_after'
+./Code/git/sup-mail/lib/sup/modes/thread-view-mode.rb:652:in `dispatch'
+./Code/git/sup-mail/lib/sup/modes/thread-view-mode.rb:617:in `delete_and_then'
+./Code/git/sup-mail/lib/sup/modes/thread-view-mode.rb:580:in `delete_and_next'
+./Code/git/sup-mail/lib/sup/mode.rb:59:in `send'
+./Code/git/sup-mail/lib/sup/mode.rb:59:in `handle_input'
+./Code/git/sup-mail/lib/sup/buffer.rb:277:in `handle_input'
+Code/git/sup-mail/bin/sup:260
+
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From adam at alloy-d.net  Mon Aug 16 21:18:43 2010
+From: adam at alloy-d.net (Adam Lloyd)
+Date: Mon, 16 Aug 2010 21:18:43 -0400
+Subject: [sup-devel] [PATCH] s/@filename/@path/ in MBox#store_message
+Message-ID: <b0b250b7da6262f6fe11.1282007923@nagato.alloy-d.net>
+
+ lib/sup/mbox.rb |  4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+
+@filename is undefined in MBox, so trying to store a message to an mbox
+source results in a crash.  @path contains the needed information.
+
+This fixes issues 79 and 89, related to crashes on sending mail.
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -90,8 +90,8 @@
+   end
+ 
+   def store_message date, from_email, &block
+-    need_blank = File.exists?(@filename) && !File.zero?(@filename)
+-    File.open(@filename, "ab") do |f|
++    need_blank = File.exists?(@path) && !File.zero?(@path)
++    File.open(@path, "ab") do |f|
+       f.puts if need_blank
+       f.puts "From #{from_email} #{date.asctime}"
+       yield f
+
+From michael+sup at stapelberg.de  Tue Aug 17 18:46:32 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 18 Aug 2010 00:46:32 +0200
+Subject: [sup-devel] [PATCH] Return nothing between if end index is not
+	found.
+In-Reply-To: <1281979589-sup-7759@ezyang>
+References: <1279475566-sup-7173@ezyang> <1279579814-sup-4745@midna.zekjur.net>
+	<1279656544-sup-4931@midna.zekjur.net> <1281915009-sup-2620@ezyang>
+	<1281921538-sup-8727@midna.zekjur.net> <1281922808-sup-4140@ezyang>
+	<1281979317-sup-3846@midna.zekjur.net> <1281979589-sup-7759@ezyang>
+Message-ID: <1282085130-sup-6401@midna.zekjur.net>
+
+Hi Edward,
+
+Excerpts from Edward Z. Yang's message of 2010-08-16 21:55:32 +0200:
+> Fascinatingly enough, I cannot find it in either my inbox or my spam filter. (Dun dun dun.)
+> Maybe you should send it as an attachment.
+Interesting. I gzipped it (to make sure it does not get touched in any way on
+its way to you) and attached it to this mail.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: fwd.gz
+Type: application/x-gzip
+Size: 3130 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100818/b4b2346f/attachment.gz>
+
+From sup-bugs at masanjin.net  Thu Aug 19 03:58:42 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 19 Aug 2010 07:58:42 +0000
+Subject: [sup-devel] [issue117] Problem with "special" characters (space
+	etc.) in source	uri (filesystem path).
+In-Reply-To: <1282204722.55.0.502666868043.issue117@masanjin.net>
+Message-ID: <1282204722.55.0.502666868043.issue117@masanjin.net>
+
+
+New submission from anonymous:
+
+Hey there,
+
+sup has problems with "non-standard", but allowed, characters in the source uri.
+My example: I have maildir storages I want to add, and they contain spaces
+(which are allowed characters on the filesystem). Here's the error message:
+
+===>
+$ sup-add 'maildir:~/maildir-Mail/Inbox/Dresden-Initiativen (Tauschnetz,
+Evoluzzer, Vernetzungstreffen ...)'
+[Thu Aug 19 09:47:57 +0200 2010] Flushing Xapian updates to disk. This may take
+a while...
+/usr/lib/ruby/1.8/uri/common.rb:436:in `split': bad URI(is not URI?):
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen (Tauschnetz, Evoluzzer,
+Vernetzungstreffen ...) (URI::InvalidURIError)
+        from /usr/lib/ruby/1.8/uri/common.rb:485:in `parse'
+        from /usr/lib/ruby/1.8/uri/common.rb:608:in `URI'
+        from /usr/bin/sup-add:94
+        from /usr/bin/sup-add:86:in `each'
+        from /usr/bin/sup-add:86
+<===
+
+I can circumvent that problem by adding the line marked in the following code
+with a comment into /usr/bin/sup-add (it was inserted after line 86 in my
+version of the code):
+
+===>
+begin
+  Redwood::SourceManager.load_sources
+
+  ARGV.each do |uri|
+    uri=URI.encode(uri) ### <--- Added this line in order to encode "special"
+characters within the uri.
+    labels = $opts[:labels] ? $opts[:labels].split(/\s*,\s*/).uniq : []
+
+    if !$opts[:force_new] && Redwood::SourceManager.source_for(uri)
+      say "Already know about #{uri}; skipping."
+      next
+    end
+<===
+(I don't know anything about ruby; I got this idea from a similar problem with
+another program by searching the web.)
+
+This makes sup-add work, it encodes the non-standard characters (like "%20" for
+" "). They appear as such in sources.yaml. But this breaks another part:
+sup-sync now looks for files containing "%20" instead of " " on the disk, which
+obviously don't exist:
+
+===>
+$ sup-add 'maildir:~/maildir-Mail/Inbox/Dresden-Initiativen (Tauschnetz,
+Evoluzzer, Vernetzungstreffen ...)'
+Adding
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...)...
+[Thu Aug 19 09:45:29 +0200 2010] Flushing Xapian updates to disk. This may take
+a while...
+
+# Works.
+
+$ cat ~/.sup/sources.yaml
+---
+- !masanjin.net,2006-10-01/Redwood/Maildir
+  uri:
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...)
+  cur_offset:
+  usual: true
+  archived: false
+  id: 1
+  labels: []
+
+  mtimes:
+    cur: 1970-01-01 01:00:00 +01:00
+    new: 1970-01-01 01:00:00 +01:00
+
+# "Special" characters are Encoded.
+
+$ sup-sync
+Scanning
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...)...
+[Thu Aug 19 09:45:59 +0200 2010] WARNING: problem getting messages from
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...):
+/home/felics/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...)/cur
+not a directory
+Scanned 0, added 0, updated 0 messages from
+maildir:~/maildir-Mail/Inbox/Dresden-Initiativen%20(Tauschnetz,%20Evoluzzer,%20Vernetzungstreffen%20...).
+[Thu Aug 19 09:45:59 +0200 2010] Flushing Xapian updates to disk. This may take
+a while...
+
+# That directory does not exist. How should it, it has " " within it's name, not
+"%20".
+<===
+
+Next try: Exchanging back in sources.yaml all "%20" to " ". But that breaks
+again sup-sync (the "URI::InvalidURIError" as above). This I was unable to fix,
+since I did not find a point where a simple insertion of a URI.encode statement
+could help.
+
+This problems are also there for paths containing only "normal" characters and
+spaces, i.e. no parentheses. And there are also other special characters that
+make problems: '<', '>', '"'. Probably umlauts.
+
+Clean solution would be to make sup safe for any character (in any encoding)
+that is allowed to appear within the sources.
+
+For me, that's an KO-argument not to use sup, since I still need that directory
+structure to represent some email organisation on filesystem level, and I will
+not rename every single directory just for sup (it's part of a bigger email setup).
+
+Bye,
+Felix.
+
+----------
+keyword: encoding, maildir
+messages: 271
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7 (2008-08-11 patchlevel 72) [i486-linux] (Debian)
+status: unread
+sup_version: 0.11-2 (Debian)
+title: Problem with "special" characters (space etc.) in source uri (filesystem path).
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue117>
+_________________________________________
+
+From marc.hartstein at alum.vassar.edu  Thu Aug 19 13:44:49 2010
+From: marc.hartstein at alum.vassar.edu (Marc Hartstein)
+Date: Thu, 19 Aug 2010 13:44:49 -0400
+Subject: [sup-devel] [issue117] Problem with "special" characters (space
+	etc.) in source uri (filesystem path).
+In-Reply-To: <1282204722.55.0.502666868043.issue117@masanjin.net>
+References: <1282204722.55.0.502666868043.issue117@masanjin.net>
+Message-ID: <1282239630-sup-7131@cabinet>
+
+Excerpts from anonymous's message of Thu Aug 19 03:58:42 -0400 2010:
+> 
+>     uri=URI.encode(uri) ### <--- Added this line in order to encode "special"
+> characters within the uri.
+> 
+> This makes sup-add work, it encodes the non-standard characters (like
+> "%20" for " "). They appear as such in sources.yaml. But this breaks
+> another part: sup-sync now looks for files containing "%20" instead of
+> " " on the disk, which obviously don't exist:
+
+If you're going to URI encode the source URIs (makes sense if they're
+truly URIs), you're going to have to URI decode them before use.
+
+I'm not sure if this is the best approach, but you should be able to
+turn what you've done into a working patch by finding the places where
+sup uses the URIs and using URI.decode(uri) to turn them back into
+normal strings at the right moment.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100819/959b2166/attachment.bin>
+
+From sascha-ml-email-sup-devel at silbe.org  Thu Aug 19 04:13:34 2010
+From: sascha-ml-email-sup-devel at silbe.org (Sascha Silbe)
+Date: Thu, 19 Aug 2010 10:13:34 +0200
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1280873473-sup-5265@mintaka>
+References: <1280873473-sup-5265@mintaka>
+Message-ID: <1282204477-sup-4766@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Matias Aguirre's message of Wed Aug 04 00:14:13 +0200 2010:
+
+> Attached is a patch (first ruby code in a lot of time) with needed
+> changes to allow colors by label and produces a good and quick feedback.
+Nice idea! Would you mind prefixing (or suffixing) the color name with
+"label" to prevent name clashes and make it clearer what the colors are
+used for?
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100819/e43b9dd1/attachment-0001.bin>
+
+From matiasaguirre at gmail.com  Thu Aug 19 17:04:36 2010
+From: matiasaguirre at gmail.com (Matias Aguirre)
+Date: Thu, 19 Aug 2010 18:04:36 -0300
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1282204477-sup-4766@xo15-sascha.sascha.silbe.org>
+References: <1280873473-sup-5265@mintaka>
+	<1282204477-sup-4766@xo15-sascha.sascha.silbe.org>
+Message-ID: <1282251819-sup-3517@mintaka>
+
+Excerpts from Sascha Silbe's message of Thu Aug 19 05:13:34 -0300 2010:
+> Excerpts from Matias Aguirre's message of Wed Aug 04 00:14:13 +0200 2010:
+> 
+> > Attached is a patch (first ruby code in a lot of time) with needed
+> > changes to allow colors by label and produces a good and quick feedback.
+> Nice idea! Would you mind prefixing (or suffixing) the color name with
+> "label" to prevent name clashes and make it clearer what the colors are
+> used for?
+
+Indeed that will be clearer, here's the changeset:
+http://github.com/omab/sup/commit/1a96a0ae856076d645a11e0b7d94858851343e27
+
+Thanks,
+Mat?as
+
+> Sascha
+--
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From sup-bugs at masanjin.net  Fri Aug 20 23:39:43 2010
+From: sup-bugs at masanjin.net (kardan)
+Date: Sat, 21 Aug 2010 03:39:43 +0000
+Subject: [sup-devel] [issue118] index.rb:111:`load_index' expects v2 index
+	instead of v4
+In-Reply-To: <1282361983.73.0.624659768679.issue118@masanjin.net>
+Message-ID: <1282361983.73.0.624659768679.issue118@masanjin.net>
+
+
+New submission from kardan <kardan at brueckenschlaeger.de>:
+
+sup.
+
+I am using Claws-Mail at the moment. Most of the work does the automatic
+filtering of lists to topic folders. From the leftovers mails which address me
+directly are moved to "to me". From there I move manually to either "todo", any
+special topic folder or drop them. There even is a "done" folder but I have the
+feeling this does not scale and will be replaced by tags someday.
+
+So far I am satisfied, at least as long I can use a computer with a private home
+and X.
+Some of the time when I travel without a laptop or mobile phone etc. webmail
+(roundcube / horde) does the job, but without filterung, which gets quite messy
+during longer trips and heaviliy reduces my ability to keep on top of things.
+
+(Mentioning this I tried several console clients (cone, mew, mutt) but somehow
+came back to claws which I used before, maybe because of comfortability.)
+
+Switching to sup would mean, to completely skip every other mail client and only
+trust in sup. This makes me somehow suspicious as it conflicts with my paradigm
+to always keep several ways to archieve things. By the way relyable gpg support
+is a must have before I would leave claws.
+
+However I am very confident that I found a roundup ready organizing tool in my
+hands to survive even where no X has gone before.
+
+After a friend send me a link to sup and I read the philosophy I
+enthusiastically downloaded the source and as it is written in ruby which I was
+developing with a bit I was happy, no compilation was necessary.
+I wrote a little script[1] to do necessary preparations as I always do, when I
+try new software (just in case I wake up with amnesia someday and need to
+resetup my tools) and started sup, to read the help.
+
+~/dev/sup> sup
+./lib/sup/util.rb:316: warning: `&' interpreted as argument prefix
+/usr/lib/ruby/1.8/pathname.rb:263: warning: `*' interpreted as argument prefix
+./lib/sup/util.rb:19: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:30: warning: method redefined; discarding old dump_lock_id
+./lib/sup/message-chunks.rb:36: warning: method redefined; discarding old
+make_tmpname
+./lib/sup/message.rb:285: warning: `&' interpreted as argument prefix
+./lib/sup/index.rb:553: warning: `&' interpreted as argument prefix
+[Sa Aug 21 04:35:04 +0200 2010] Flushing Xapian updates to disk. This may take a
+while...
+
+After learning the quite handy list of keystrokes, I was eager to configure my
+mailboxes and start the indication process. But:
+
+~/dev/sup> bin/sup-config 
+/usr/local/lib/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require': no such file to load -- sup (LoadError)
+	from /usr/local/lib/site_ruby/1.8/rubygems/custom_require.rb:31:in `require'
+	from bin/sup-config:7
+
+Ok then, even being more addicted to apt than gem, I am no beast and ran
+
+~/dev/sup> sudo gem install sup
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+---------- SNIP ----------
+
+It did, but finally sup-config worked and suggested to do a syndication, which
+unfortunately failed
+
+Run sup-sync to import all messages now? (enter for "n"): 
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:111:in `load_index': This
+Sup version expects a v2 index, but you have an existing v4 index. Please
+downgrade to your previous version and dump your labels before upgrading to this
+version (then run sup-sync --restore). (RuntimeError)
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:91:in `load'
+	from /usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup-config:221
+	from /usr/bin/sup-config:19:in `load'
+	from /usr/bin/sup-config:19
+
+I was said as if I had lost a friend and asked myself what I did wrong. There
+was no such issue in the community platform, so I decided to add a new one.
+After registering I was shocked developer list including their email adresses is
+world readable (I was not used that), but decided to continue.
+
+So here you are. I hope you can help and this little story helps as well.
+
+Thanks for this neat peace of software and I wish, that all the needed
+development work will be done soon. Maybe I can help.
+
+And please feel free to ask for every detail you need to know.
+
+[1]
+# install script for ubuntu / lucid
+gems="ncursesw sup"
+ruby="rake rubygems libopenssl-ruby libdevel-logger-ruby libtrollop-ruby
+libgettext-ruby-util liblockfile-ruby libmime-types-ruby "
+ruby18="librmail-ruby1.8 libxapian-ruby1.8"
+ncurses="libncurses-ruby libncursesw5-dev libncurses5-dev"
+sudo apt-get install $ruby $ruby18 $ncurses
+echo "Will install gems $gems"
+sudo gem install $gems
+mkdir $HOME/.sup # sup complained, that it missed
+echo "run sup with: 'ruby -I lib -w bin/sup'" # after installing the sup gem
+this no longer is needed
+
+ii  libart2-ruby                                    0.19.3-1ubuntu3            
+                    Libart 2 bindings for the Ruby language
+ii  libart2-ruby1.8                                 0.19.3-1ubuntu3            
+                    Libart 2 bindings for the Ruby language
+ii  libatk1-ruby                                    0.19.3-1ubuntu3            
+                    ATK bindings for the Ruby language
+ii  libatk1-ruby1.8                                 0.19.3-1ubuntu3            
+                    ATK bindings for the Ruby language
+ii  libcairo-ruby1.8                                1.8.1-1                    
+                    Cairo bindings for the Ruby language
+ii  libdevel-logger-ruby                            1.2.6-1                    
+                    log dumping utility for ruby
+ii  libgconf2-ruby                                  0.19.3-1ubuntu3            
+                    GConf 2 bindings for the Ruby language
+ii  libgconf2-ruby1.8                               0.19.3-1ubuntu3            
+                    GConf 2 bindings for the Ruby language
+ii  libgdk-pixbuf2-ruby                             0.19.3-1ubuntu3            
+                    Gdk-Pixbuf 2 bindings for the Ruby language
+ii  libgdk-pixbuf2-ruby1.8                          0.19.3-1ubuntu3            
+                    Gdk-Pixbuf 2 bindings for the Ruby language
+ii  libgettext-ruby-util                            2.1.0-1ubuntu1             
+                    Gettext utilities for ruby (dummy package)
+ii  libgettext-ruby1.8                              2.1.0-1ubuntu1             
+                    Gettext for ruby1.8
+ii  libglade2-ruby                                  0.19.3-1ubuntu3            
+                    Libglade 2 bindings for the Ruby language
+ii  libglade2-ruby1.8                               0.19.3-1ubuntu3            
+                    Libglade 2 bindings for the Ruby language
+ii  libglib2-ruby1.8                                0.19.3-1ubuntu3            
+                    Glib 2 bindings for the Ruby language
+ii  libgnome2-ruby                                  0.19.3-1ubuntu3            
+                    GNOME 2 bindings for the Ruby language
+ii  libgnome2-ruby1.8                               0.19.3-1ubuntu3            
+                    GNOME 2 bindings for the Ruby language
+ii  libgnomecanvas2-ruby                            0.19.3-1ubuntu3            
+                    GNOME Canvas 2 bindings for the Ruby languag
+ii  libgnomecanvas2-ruby1.8                         0.19.3-1ubuntu3            
+                    GNOME Canvas 2 bindings for the Ruby languag
+ii  libgnomevfs2-ruby                               0.19.3-1ubuntu3            
+                    GNOME VFS 2 bindings for the Ruby language
+ii  libgnomevfs2-ruby1.8                            0.19.3-1ubuntu3            
+                    GNOME VFS 2 bindings for the Ruby language
+ii  libgtk-mozembed-ruby                            0.19.3-1ubuntu3            
+                    ruby binding of GtkMozEmbed, gecko renderer
+ii  libgtk-mozembed-ruby1.8                         0.19.3-1ubuntu3            
+                    ruby binding of GtkMozEmbed, gecko renderer
+ii  libgtk2-ruby                                    0.19.3-1ubuntu3            
+                    GTK+ bindings for the Ruby language
+ii  libgtk2-ruby1.8                                 0.19.3-1ubuntu3            
+                    GTK+ bindings for the Ruby language
+ii  libgtkglext1-ruby                               0.19.3-1ubuntu3            
+                    GTK+ GL extension bindings for the Ruby lang
+ii  libgtkglext1-ruby1.8                            0.19.3-1ubuntu3            
+                    GTK+ GL extension bindings for the Ruby lang
+ii  liblocale-ruby1.8                               2.0.5-2                    
+                    pure ruby locale library
+ii  liblockfile-ruby                                1.4.3-2.1                  
+                    create NFS-safe lockfiles
+ii  libmime-types-ruby                              1.16-2                     
+                    guess MIME type of files
+ii  libncurses-ruby                                 1.2.4-2                    
+                    ruby Extension for the ncurses C library
+ii  libncurses-ruby1.8                              1.2.4-2                    
+                    ruby Extension for the ncurses C library
+ii  libopengl-ruby                                  0.60.0-0ubuntu3            
+                    OpenGL binding for Ruby
+ii  libopengl-ruby1.8                               0.60.0-0ubuntu3            
+                    OpenGL binding for Ruby
+ii  libopenssl-ruby                                 4.2                        
+                    OpenSSL interface for Ruby
+ii  libopenssl-ruby1.8                              1.8.7.249-2                
+                    OpenSSL interface for Ruby 1.8
+ii  libpanel-applet2-ruby                           0.19.3-1ubuntu3            
+                    GNOME 2 panel applet library bindings for th
+ii  libpanel-applet2-ruby1.8                        0.19.3-1ubuntu3            
+                    GNOME 2 panel applet library bindings for th
+ii  libpango1-ruby                                  0.19.3-1ubuntu3            
+                    Pango bindings for the Ruby language
+ii  libpango1-ruby1.8                               0.19.3-1ubuntu3            
+                    Pango bindings for the Ruby language
+ii  libreadline-ruby1.8                             1.8.7.249-2                
+                    Readline interface for Ruby 1.8
+ii  librmail-ruby1.8                                0.17-1.1                   
+                    lightweight mail library for Ruby 1.8
+ii  librsvg2-ruby                                   0.19.3-1ubuntu3            
+                    RSVG renderer bindings for the Ruby language
+ii  librsvg2-ruby1.8                                0.19.3-1ubuntu3            
+                    RSVG renderer bindings for the Ruby language
+ii  libruby                                         4.2                        
+                    Libraries necessary to run Ruby 1.8.x
+ii  libruby1.8                                      1.8.7.249-2                
+                    Libraries necessary to run Ruby 1.8
+ii  libtrollop-ruby                                 1.9-1                      
+                    command-line argument processing library
+ii  libvte-ruby                                     0.19.3-1ubuntu3            
+                    VTE widget bindings for the Ruby language
+ii  libvte-ruby1.8                                  0.19.3-1ubuntu3            
+                    VTE widget bindings for the Ruby language
+ii  libxapian-ruby1.8                               1.0.17-1ubuntu1            
+                    Xapian search engine interface for Ruby 1.8
+ii  rake                                            0.8.7-1                    
+                    a ruby build program
+ii  ruby                                            4.2                        
+                    An interpreter of object-oriented scripting 
+ii  ruby-gnome2                                     0.19.3-1ubuntu3            
+                    GNOME-related bindings for the Ruby language
+ii  ruby1.8                                         1.8.7.249-2                
+                    Interpreter of object-oriented scripting lan
+ii  ruby1.8-dev                                     1.8.7.249-2                
+                    Header files for compiling extension modules
+ii  rubygems                                        1.3.5-1ubuntu2             
+                    package management framework for Ruby librar
+ii  rubygems1.8                                     1.3.5-1ubuntu2             
+                    package management framework for Ruby librar
+
+----------
+keyword: index
+messages: 274
+nosy: kardan
+priority: bug
+ruby_version: ruby 1.8.7 (2010-01-10 patchlevel 249) [i486-linux]
+status: unread
+sup_version: gem [sup (0.11)]
+title: index.rb:111:`load_index'  expects v2 index instead of v4
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue118>
+_________________________________________
+
+From sascha-ml-reply-to-2010-2 at silbe.org  Sun Aug 22 09:40:45 2010
+From: sascha-ml-reply-to-2010-2 at silbe.org (Sascha Silbe)
+Date: Sun, 22 Aug 2010 15:40:45 +0200
+Subject: [sup-devel] alternative for sup-sync option --restored?
+In-Reply-To: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+References: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+Message-ID: <1282484196-sup-4382@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Sascha Silbe's message of Fri Aug 06 11:13:42 +0200 2010:
+
+> I'm reading and writing my mails on both my desktop (which has the entire archive, totalling ~ 16GB) and my laptop (recent mails and partial archive, ~ 1-2GB).
+> Up to now I used sup-dump and sup-sync --restored to synchronize the two (every time I switched between them, since it's a full dump as opposed to a log file or diff).
+> After merging the latest changes (including a full dump + restore for index upgrade, taking about 33 hours), the --restored option to sup-sync is gone (and without it sup-sync doesn't do anything useful). How do I go about "merging" the changes done on the other system now?
+
+Any suggestion? This is preventing me from updating to git master and rebasing my outstanding patches.
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100822/37ed4e9e/attachment.bin>
+
+From sup-bugs at masanjin.net  Mon Aug 23 02:41:31 2010
+From: sup-bugs at masanjin.net (David)
+Date: Mon, 23 Aug 2010 06:41:31 +0000
+Subject: [sup-devel] [issue119] RuntimeError from thread: load threads
+	for	thread-index-mode
+In-Reply-To: <1282545691.31.0.209619542822.issue119@masanjin.net>
+Message-ID: <1282545691.31.0.209619542822.issue119@masanjin.net>
+
+
+New submission from David <zxvdr.au at gmail.com>:
+
+I'm using the latest version of Sup from GIT (last commit was
+45c3433c036446455e63142d2d2db4e37557a260). Sup starts up and polls for new mail
+ok (using getmail to suck down mail to a local maildir), but when I list all
+labels (47 of them atm) then try to show threads with the label Spam (~11000 of
+them total, ~9300 unread), I get this exception:
+
+--- RuntimeError from thread: load threads for thread-index-mode
+
+./lib/sup/index.rb:529:in `find_docid'
+./lib/sup/index.rb:534:in `find_doc'
+./lib/sup/index.rb:544:in `get_entry'
+./lib/sup/index.rb:195:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+./lib/sup/index.rb:553:in `synchronize'
+./lib/sup/index.rb:195:in `build_message'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/thread.rb:338:in `call'
+./lib/sup/thread.rb:338:in `load_n_threads'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/index.rb:245:in `each_id'
+./lib/sup/index.rb:245:in `each'
+./lib/sup/index.rb:245:in `each_id'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/thread.rb:334:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+./lib/sup.rb:77:in `reporting_thread'
+./lib/sup.rb:75:in `initialize'
+./lib/sup.rb:75:in `new'
+./lib/sup.rb:75:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+./lib/sup/modes/label-search-results-mode.rb:33:in `spawn_nicely'
+./lib/sup/modes/label-list-mode.rb:134:in `select_label'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:277:in `handle_input'
+bin/sup:260
+
+If I start sup with the --no-threads option then try to show the Spam threads I
+get this exception:
+
+--- RuntimeError from thread: main
+
+./lib/sup/index.rb:529:in `find_docid'
+./lib/sup/index.rb:534:in `find_doc'
+./lib/sup/index.rb:544:in `get_entry'
+./lib/sup/index.rb:195:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+./lib/sup/index.rb:553:in `synchronize'
+./lib/sup/index.rb:195:in `build_message'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/thread.rb:338:in `call'
+./lib/sup/thread.rb:338:in `load_n_threads'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/index.rb:245:in `each_id'
+./lib/sup/index.rb:245:in `each'
+./lib/sup/index.rb:245:in `each_id'
+./lib/sup/index.rb:150:in `each_id_by_date'
+./lib/sup/thread.rb:334:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+./lib/sup.rb:73:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+./lib/sup/modes/label-search-results-mode.rb:33:in `spawn_nicely'
+./lib/sup/modes/label-list-mode.rb:134:in `select_label'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:277:in `handle_input'
+bin/sup:260
+
+----------
+messages: 275
+nosy: zxvdr
+priority: bug
+ruby_version: 1.8.6.399
+status: unread
+sup_version: 45c3433c036446455e63142d2d2db4e37557a260
+title: RuntimeError from thread: load threads for thread-index-mode
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue119>
+_________________________________________
+
+From eg at gaute.vetsj.com  Tue Aug 24 17:21:10 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 24 Aug 2010 23:21:10 +0200
+Subject: [sup-devel] [issue64] Crash on sup start
+In-Reply-To: <1265688194.03.0.035958787068.issue64@masanjin.net>
+References: <1265688194.03.0.035958787068.issue64@masanjin.net>
+Message-ID: <1282684816-sup-340@dolk>
+
+Excerpts from anonymous's message of 2010-02-09 05:03:14 +0100:
+> 
+> New submission from anonymous:
+> 
+> sup crashed after I sent an email, and won't start anymore.
+> 
+> This is with the latest git version. Ubuntu/Karmic.
+> 
+> [Tue Feb 09 14:59:30 +1100 2010] ERROR: oh crap, an exception
+> ----------------------------------------------------------------
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/brian/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+> 
+> Sincerely,
+> William
+> ----------------------------------------------------------------
+> --- RuntimeError from thread: load threads for thread-index-mode
+> 
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:348:in `find_docid'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:353:in `find_doc'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:363:in `get_entry'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:77:in `build_message'
+> /usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:372:in `synchronize'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:77:in `build_message'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+> /home/brian/tree/sup/lib/sup/thread.rb:332:in `call'
+> /home/brian/tree/sup/lib/sup/thread.rb:332:in `load_n_threads'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each_id'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:114:in `each_id'
+> /home/brian/tree/sup/lib/sup/xapian_index.rb:121:in `each_id_by_date'
+> /home/brian/tree/sup/lib/sup/thread.rb:328:in `load_n_threads'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:630:in 
+> `__unprotected_load_n_threads'
+> (eval):12:in `load_n_threads'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:614:in 
+> `load_n_threads_background'
+> /home/brian/tree/sup/lib/sup.rb:77:in `reporting_thread'
+> /home/brian/tree/sup/lib/sup.rb:75:in `initialize'
+> /home/brian/tree/sup/lib/sup.rb:75:in `new'
+> /home/brian/tree/sup/lib/sup.rb:75:in `reporting_thread'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:613:in 
+> `load_n_threads_background'
+> /home/brian/tree/sup/lib/sup/modes/thread-index-mode.rb:684:in 
+> `__unprotected_load_threads'
+> (eval):12:in `load_threads'
+> /home/brian/tree/sup/bin/sup:226
+> 
+> Brian May
+> 
+> ----------
+> messages: 155
+> nosy: anonymous
+> priority: bug
+> ruby_version: 4.2
+> status: unread
+> sup_version: git
+> title: Crash on sup start
+> 
+
+This just happened to me as well. Commenting out the fail lets me start up.
+
+- gaute
+
+From spacefrogg-devel at instandbesetzt.net  Mon Aug 30 06:25:52 2010
+From: spacefrogg-devel at instandbesetzt.net (Michael Raitza)
+Date: Mon, 30 Aug 2010 12:25:52 +0200
+Subject: [sup-devel] [PATCH] fix problem with Content-Type in mail header
+Message-ID: <1283163832-sup-5606@leandros>
+
+Hi,
+
+i found a problem in crypto.rb. RMail seemes to add quotes around
+arguments in the Content-Type field even if quotes are already given.
+This lead to double double quotes and confused other mail clients.
+
+Diff attached.
+
+
+Regards,
+
+Michael
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 7324ad4..04ca1c1 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -88,7 +88,7 @@ EOS
+     control.body = "Version: 1\n"
+ 
+     envelope = RMail::Message.new
+-    envelope.header["Content-Type"] = 'multipart/encrypted; protocol="application/pgp-encrypted"'
++    envelope.header["Content-Type"] = 'multipart/encrypted; protocol=application/pgp-encrypted'
+ 
+     envelope.add_part control
+     envelope.add_part encrypted_payload
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100830/bfcc1e58/attachment.bin>
+
+From spacefrogg-devel at instandbesetzt.net  Mon Aug 30 06:29:30 2010
+From: spacefrogg-devel at instandbesetzt.net (Michael Raitza)
+Date: Mon, 30 Aug 2010 12:29:30 +0200
+Subject: [sup-devel] [PATCH] fix for problem with gpg verifying signatures
+Message-ID: <1283164026-sup-6827@leandros>
+
+Hi,
+
+GPG seems to have a problem with verifying signatures if it doesn't know
+the file name extension (!?). I fixed the problem with adding .asc as
+extension to the temporary file names.
+
+Diff attached.
+
+Regards,
+
+Michael.
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 04ca1c1..954d5c2 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -117,12 +117,12 @@ EOS
+     return unknown_status(cant_find_binary) unless @cmd
+ 
+     if detached
+-      payload_fn = Tempfile.new "redwood.payload"
++      payload_fn = Tempfile.new "redwood.payload.asc"
+       payload_fn.write format_payload(payload)
+       payload_fn.close
+     end
+ 
+-    signature_fn = Tempfile.new "redwood.signature"
++    signature_fn = Tempfile.new "redwood.signature.asc"
+     signature_fn.write signature.decode
+     signature_fn.close
+ 
+@@ -139,11 +139,11 @@ EOS
+   def decrypt payload, armor=false # a RubyMail::Message object
+     return unknown_status(cant_find_binary) unless @cmd
+ 
+-    payload_fn = Tempfile.new "redwood.payload"
++    payload_fn = Tempfile.new "redwood.payload.asc"
+     payload_fn.write payload.to_s
+     payload_fn.close
+ 
+-    output_fn = Tempfile.new "redwood.output"
++    output_fn = Tempfile.new "redwood.output.asc"
+     output_fn.close
+ 
+     message = run_gpg "--output #{output_fn.path} --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100830/98dfedfa/attachment.bin>
+
+From sup-bugs at masanjin.net  Mon Aug 30 18:43:52 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 30 Aug 2010 22:43:52 +0000
+Subject: [sup-devel] [issue120] Email visible in Maildir but not in sup
+In-Reply-To: <1283208232.61.0.188242237088.issue120@masanjin.net>
+Message-ID: <1283208232.61.0.188242237088.issue120@masanjin.net>
+
+
+New submission from anonymous:
+
+There's an e-mail in my Maildir, which I can read with mutt, but that I can't
+read with sup.  This is the first time I've seen this happening.  The message
+file is attached.  There is a password in it, but it's not relevant anymore,
+since I've changed it on the website.
+
+Greetings.
+
+----------
+messages: 278
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: Email visible in Maildir but not in sup
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue120>
+_________________________________________
+

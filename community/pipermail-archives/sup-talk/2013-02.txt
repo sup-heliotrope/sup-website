@@ -1,0 +1,112 @@
+From eg at gaute.vetsj.com  Fri Feb  1 09:54:02 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 01 Feb 2013 10:54:02 +0100
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+Message-ID: <510B90BA.30007@gaute.vetsj.com>
+
+On 13. jan. 2013 16:22, Hamish D wrote:
+> Hello
+> 
+> I've set up a wiki we can use as a replacement for the old unloved
+> wiki - http://foobacca.co.uk/sup/
+> 
+> Unfortunately, most of the old wiki appears to be lost. The wiki
+> software (usemod) only appears to keep the last 10 revisions of each
+> page. But most pages have been vandalised far more than that, and so
+> the content appears lost. I have checked the wayback machine but it
+> doesn't have anything from the wiki. I also note that the wiki is
+> covered by a Disallow line in the robots.txt - not sure how long
+> that's been there.
+> 
+> Anyway, please feel free to go and recreate the lost pages, or add new
+> content. The new wiki is ikiwiki, which is based on git, so all
+> history will remain available. At some point the spammers will start
+> hitting it, at which point I'll disable registration, but try
+> publishing an account on the front page and see if that foxes the
+> spammers. We'll see.
+> 
+> Hamish
+
+Sup,
+
+I just tried to edit an page and got an Internal Server Error. I think
+we should make the decision as soon as possible about where to keep the
+wiki to avoid the extra work and de-motivating/confusing moving/re-creation.
+
+Then direct people to the wiki from the README and either remove the
+WIKI tab on github or use it.
+
+Great work on setting up a new wiki, but I think it is even better to
+keep it all in one place so I vote for using the github wiki and to set
+up a sup/heliotrope site there when the time is ripe. What do you think?
+
+By the way.. at the moment I am the only public member of the github
+organization, is that by design.. ? And you could also make me an owner
+(as you previously mentioned) if that gives me the possibility to manage
+more of those things!
+
+Regards, Gaute
+
+From dmishd at gmail.com  Sun Feb  3 19:10:12 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 3 Feb 2013 19:10:12 +0000
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <510B90BA.30007@gaute.vetsj.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+	<510B90BA.30007@gaute.vetsj.com>
+Message-ID: <CAOxvSbcpfxPrQSsMkxKqF9PFbLV8GtZvNfSKf09OfAbGaxwujw@mail.gmail.com>
+
+>> I've set up a wiki we can use as a replacement for the old unloved
+>> wiki - http://foobacca.co.uk/sup/
+>
+> I just tried to edit an page and got an Internal Server Error.
+
+Oops - I've been moving the server and hadn't tested that - fixed now.
+
+> Great work on setting up a new wiki, but I think it is even better to
+> keep it all in one place so I vote for using the github wiki and to set
+> up a sup/heliotrope site there when the time is ripe. What do you think?
+
+Just re-checked and anyone with a github account can edit the wiki
+through the front end, which was my main concern. So given using the
+github wiki does mean everything is in one place I would now lean
+towards the github wiki as the way to go.  I have pushed my wiki
+contents to the github wiki to try it out and seems fine:
+
+https://github.com/sup-heliotrope/sup/wiki
+
+Matthieu - do you still have a strong preference for ikiwiki?
+
+> By the way.. at the moment I am the only public member of the github
+> organization, is that by design.. ? And you could also make me an owner
+> (as you previously mentioned) if that gives me the possibility to manage
+> more of those things!
+
+I've made you an owner and made myself public - the public/private
+thing wasn't deliberate, just an accident of how people were added I
+think.
+
+Hamish
+
+From matthieu.rakotojaona at gmail.com  Mon Feb  4 13:35:52 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Mon, 4 Feb 2013 14:35:52 +0100
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <CAOxvSbcpfxPrQSsMkxKqF9PFbLV8GtZvNfSKf09OfAbGaxwujw@mail.gmail.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+	<510B90BA.30007@gaute.vetsj.com>
+	<CAOxvSbcpfxPrQSsMkxKqF9PFbLV8GtZvNfSKf09OfAbGaxwujw@mail.gmail.com>
+Message-ID: <CAMiZLn354GOy+PiWjemDvEgQ9v18y5Kp1WQH99G_RxuiqAL46g@mail.gmail.com>
+
+On Sun, Feb 3, 2013 at 8:10 PM, Hamish D <dmishd at gmail.com> wrote:
+> Matthieu - do you still have a strong preference for ikiwiki?
+
+I've been convinced : centralizing all the resources is the best move
+at the moment. My only complaint was about the lack of a search
+engine. Let's hope it won't be that bad.
+
+--
+Matthieu RAKOTOJAONA
+

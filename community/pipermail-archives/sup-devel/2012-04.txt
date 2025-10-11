@@ -1,0 +1,133 @@
+From michael+sup at stapelberg.de  Fri Apr 13 13:01:17 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 13 Apr 2012 15:01:17 +0200
+Subject: [sup-devel] Heliotrope: Pull requests waiting for months
+Message-ID: <1334321955-sup-1412@stapelberg.de>
+
+Hi William,
+
+there are pull requests on github.com/wmorgan/heliotrope which did not receive
+any reply whatsoever from you for more than a month.
+
+This is massively holding back development on heliotrope/turnsole. Since you
+apparently don?t have enough time to deal with all of this yourself, can you
+give other people permission to commit to the main repository?
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Fri Apr 13 12:59:04 2012
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 13 Apr 2012 14:59:04 +0200
+Subject: [sup-devel] heliotrope: new version of whistlepig
+Message-ID: <1334321826-sup-5282@stapelberg.de>
+
+Hi William,
+
+you released a new version of whistlepig. Its index format is incompatible with
+the old version of whistlepig.
+
+Can you please instruct us on how to migrate from whistlepig 0.7 to 0.11
+without losing any data and preserving the exact inbox state?
+
+Best regards,
+Michael
+
+From np at nicolaspouillard.fr  Fri Apr 13 13:47:05 2012
+From: np at nicolaspouillard.fr (Nicolas Pouillard)
+Date: Fri, 13 Apr 2012 15:47:05 +0200
+Subject: [sup-devel]  Heliotrope: Pull requests waiting for months
+In-Reply-To: <1334321955-sup-1412@stapelberg.de>
+References: <1334321955-sup-1412@stapelberg.de>
+Message-ID: <1334324812-turnsole-11958@ss>
+
+Excerpts from Michael Stapelberg's message of 2012-04-13 15:01:17 +0200:
+> Hi William,
+> 
+> there are pull requests on github.com/wmorgan/heliotrope which did not receive
+> any reply whatsoever from you for more than a month.
+> 
+> This is massively holding back development on heliotrope/turnsole. Since you
+> apparently don?t have enough time to deal with all of this yourself, can you
+> give other people permission to commit to the main repository?
+
++1
+
+From np at nicolaspouillard.fr  Fri Apr 13 13:48:08 2012
+From: np at nicolaspouillard.fr (Nicolas Pouillard)
+Date: Fri, 13 Apr 2012 15:48:08 +0200
+Subject: [sup-devel]  heliotrope: new version of whistlepig
+In-Reply-To: <1334321826-sup-5282@stapelberg.de>
+References: <1334321826-sup-5282@stapelberg.de>
+Message-ID: <1334324833-turnsole-31795@ss>
+
+Excerpts from Michael Stapelberg's message of 2012-04-13 14:59:04 +0200:
+> Hi William,
+> 
+> you released a new version of whistlepig. Its index format is incompatible with
+> the old version of whistlepig.
+
+Ouch.
+
+> Can you please instruct us on how to migrate from whistlepig 0.7 to 0.11
+> without losing any data and preserving the exact inbox state?
+
++1
+
+Have a command to dump the state information would be very nice as well.
+
+From wmorgan at masanjin.net  Fri Apr 13 21:03:40 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Fri, 13 Apr 2012 14:03:40 -0700
+Subject: [sup-devel] heliotrope: new version of whistlepig
+In-Reply-To: <1334321826-sup-5282@stapelberg.de>
+References: <1334321826-sup-5282@stapelberg.de>
+Message-ID: <1334350766-turnsole-82639@terminus-est>
+
+Excerpts from Michael Stapelberg's message of 2012-04-13 05:59:04 -0700:
+> Can you please instruct us on how to migrate from whistlepig 0.7 to 0.11
+> without losing any data and preserving the exact inbox state?
+
+Sorry about that. I meant to send a notice to this list but forgot.
+
+I have been working hard on Whistlepig recently, fixing some performance
+bugs and adding features. I will probably release another breaking index
+change, or two, within the next few months.
+
+You can rebuild your index by killing your server and running:
+
+  ruby -Ilib bin/heliotrope-reindex
+
+And then following the instructions about renaming the directory.
+
+Let me know if you have any problems with that.
+
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan at masanjin.net  Fri Apr 13 22:37:04 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Fri, 13 Apr 2012 15:37:04 -0700
+Subject: [sup-devel] Heliotrope: Pull requests waiting for months
+In-Reply-To: <1334321955-sup-1412@stapelberg.de>
+References: <1334321955-sup-1412@stapelberg.de>
+Message-ID: <1334351849-turnsole-32425@typhon>
+
+Excerpts from Michael Stapelberg's message of 2012-04-13 06:01:17 -0700:
+> This is massively holding back development on heliotrope/turnsole.
+> Since you apparently don?t have enough time to deal with all of this
+> yourself, can you give other people permission to commit to the main
+> repository?
+
+I'm sorry for delay. You are right that I don't have the time to deal
+with pull requests and bug reports as fast as I should.
+
+Unfortunately I'm not yet willing to open the repo up to other
+committers. Instead, I encourage you to fork the project and continue
+development at your own pace. I will provide as much assistance as I can
+over this list, and hopefully we will be able to share code in both
+directions.
+
+-- 
+William <wmorgan at masanjin.net>
+

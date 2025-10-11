@@ -1,0 +1,297 @@
+From sankeytms at gmail.com  Sat May 10 08:23:11 2014
+From: sankeytms at gmail.com (Troy Sankey)
+Date: Sat, 10 May 2014 01:23:11 -0700
+Subject: [sup-devel] check keys before sending
+Message-ID: <1399708417-sup-4178@ultralap.site>
+
+Hi sup developers,
+
+Recently I sent an encrypted message to a group of recipients, thinking
+that all their keys were still valid.  However, one of them had an
+expired key, so the message was not encrypted to that recipient and he
+could not read it.
+
+I want sup to prompt the user about potentially invalid keys before
+sending a message.  I think the code will look something like this:
+
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index fd8f824..88ae3cc 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -167,6 +167,14 @@ EOS
+                                {:operation => "encrypt", :options => gpg_opts}) || gpg_opts
+     recipients = to + [from]
+     recipients = HookManager.run("gpg-expand-keys", { :recipients => recipients }) || recipients
++
++    # make sure all recipients can be encrypted-to
++    recipients.each do |recipient|
++      if GPGME::Key.find(:public, recipient).length == 0 and !BufferManager.ask_yes_or_no("Could not encrypt to #{recipient}. Really send?")
++        raise Error, "Send message cancelled."
++      end
++    end
++
+     begin
+       if GPGME.respond_to?('encrypt')
+         cipher = GPGME.encrypt(recipients, format_payload(payload), gpg_opts)
+
+
+I have not tested this patch, so if it looks wrong then it probably is!
+Does anybody have any thoughts on this feature?
+
+Troy
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140510/883525da/attachment.bin>
+
+From eg at gaute.vetsj.com  Sat May 10 16:54:58 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 10 May 2014 18:54:58 +0200
+Subject: [sup-devel] check keys before sending
+In-Reply-To: <1399708417-sup-4178@ultralap.site>
+References: <1399708417-sup-4178@ultralap.site>
+Message-ID: <CABKe4Msvczo6zDWpBCT9OZspuNObDpVdeTZ0qSDrR4Zv9djDXQ@mail.gmail.com>
+
+I think this can be included if you test and verify the patch. Definetely
+very useful.
+
+
+On Sat, May 10, 2014 at 10:23 AM, Troy Sankey <sankeytms at gmail.com> wrote:
+
+> Hi sup developers,
+>
+> Recently I sent an encrypted message to a group of recipients, thinking
+> that all their keys were still valid.  However, one of them had an
+> expired key, so the message was not encrypted to that recipient and he
+> could not read it.
+>
+> I want sup to prompt the user about potentially invalid keys before
+> sending a message.  I think the code will look something like this:
+>
+>
+> diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+> index fd8f824..88ae3cc 100644
+> --- a/lib/sup/crypto.rb
+> +++ b/lib/sup/crypto.rb
+> @@ -167,6 +167,14 @@ EOS
+>                                 {:operation => "encrypt", :options =>
+> gpg_opts}) || gpg_opts
+>      recipients = to + [from]
+>      recipients = HookManager.run("gpg-expand-keys", { :recipients =>
+> recipients }) || recipients
+> +
+> +    # make sure all recipients can be encrypted-to
+> +    recipients.each do |recipient|
+> +      if GPGME::Key.find(:public, recipient).length == 0 and
+> !BufferManager.ask_yes_or_no("Could not encrypt to #{recipient}. Really
+> send?")
+> +        raise Error, "Send message cancelled."
+> +      end
+> +    end
+> +
+>      begin
+>        if GPGME.respond_to?('encrypt')
+>          cipher = GPGME.encrypt(recipients, format_payload(payload),
+> gpg_opts)
+>
+>
+> I have not tested this patch, so if it looks wrong then it probably is!
+> Does anybody have any thoughts on this feature?
+>
+> Troy
+>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140510/a10234d4/attachment.html>
+
+From eg at gaute.vetsj.com  Mon May 19 11:02:40 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 19 May 2014 13:02:40 +0200
+Subject: [sup-devel] sup 0.18.0 released
+Message-ID: <1400497068-astroid-0-zja6wv13cb-10572@strange>
+
+Greetings,
+
+Sup 0.18.0 has just been released. Get it at rubygems!
+
+Regards, Gaute
+
+
+From sankeytms at gmail.com  Tue May 20 05:36:36 2014
+From: sankeytms at gmail.com (Troy Sankey)
+Date: Mon, 19 May 2014 22:36:36 -0700
+Subject: [sup-devel] Emacs Integration wiki page
+Message-ID: <1400562885-sup-1119@ultralap.site>
+
+Emacs!
+
+The following changes since commit 96c7fdd5fb4d9bc99e70a050eba72c31e445:
+
+  Template (2014-04-24 01:01:53 -0700)
+
+are available in the git repository at:
+
+  https://linux.ucla.edu/~sankeytm/repos/sup.wiki.git master
+
+for you to fetch changes up to a61957168fb14fc45926c8e4ac78ea9e35b36aa0:
+
+  added page for Emacs Integration (2014-05-19 21:57:21 -0700)
+
+----------------------------------------------------------------
+Troy Sankey (1):
+      added page for Emacs Integration
+
+ Emacs-Integration.md | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 Emacs-Integration.md
+
+diff --git a/Emacs-Integration.md b/Emacs-Integration.md
+new file mode 100644
+index 0000000..ecfcc59
+--- /dev/null
++++ b/Emacs-Integration.md
+@@ -0,0 +1,37 @@
++# Emacs Integration
++
++To configure Sup to use Emacs as an editor, set _:editor:_ in
++_~/.sup/config.yaml_ to the `emacs` command.  Alternatively, use `emacs
++-nw` to run Emacs in text mode.
++
++Excerpt from _~/.sup/config.yaml_:
++
++```yaml
++:editor: emacs -nw
++```
++
++To configure emacs for writing mail, enable message-mode on files
++matching the regex "/sup.*eml$".  Add this to your _~/.emacs_:
++
++```elisp
++(add-to-list 'auto-mode-alist '("/sup.*eml$" . message-mode))
++```
++
++If you want to enable some minor modes for convenience
++(e.g. auto-fill-mode, flyspell-mode) use a message-mode hook:
++
++```elisp
++(add-hook 'message-mode-hook (lambda ()
++  (auto-fill-mode 1)
++  (flyspell-mode 1)))
++```
++
++To move the cursor down to the first empty line, add to the hook like
++this:
++
++```elisp
++(add-hook 'message-mode-hook (lambda ()
++  (auto-fill-mode 1)
++  (flyspell-mode 1)
++  (search-forward-regexp "^$")))
++```
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140519/46ce4458/attachment.bin>
+
+From eg at gaute.vetsj.com  Tue May 20 06:53:42 2014
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 20 May 2014 08:53:42 +0200
+Subject: [sup-devel] Emacs Integration wiki page
+In-Reply-To: <1400562885-sup-1119@ultralap.site>
+References: <1400562885-sup-1119@ultralap.site>
+Message-ID: <CABKe4Mudd=udT1w26fp5+yJVWuH2hTEfWc3JnJ6UhirM6WDP1w@mail.gmail.com>
+
+Thanks, merged.
+
+
+On Tue, May 20, 2014 at 7:36 AM, Troy Sankey <sankeytms at gmail.com> wrote:
+
+> Emacs!
+>
+> The following changes since commit 96c7fdd5fb4d9bc99e70a050eba72c31e445:
+>
+>   Template (2014-04-24 01:01:53 -0700)
+>
+> are available in the git repository at:
+>
+>   https://linux.ucla.edu/~sankeytm/repos/sup.wiki.git master
+>
+> for you to fetch changes up to a61957168fb14fc45926c8e4ac78ea9e35b36aa0:
+>
+>   added page for Emacs Integration (2014-05-19 21:57:21 -0700)
+>
+> ----------------------------------------------------------------
+> Troy Sankey (1):
+>       added page for Emacs Integration
+>
+>  Emacs-Integration.md | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Emacs-Integration.md
+>
+> diff --git a/Emacs-Integration.md b/Emacs-Integration.md
+> new file mode 100644
+> index 0000000..ecfcc59
+> --- /dev/null
+> +++ b/Emacs-Integration.md
+> @@ -0,0 +1,37 @@
+> +# Emacs Integration
+> +
+> +To configure Sup to use Emacs as an editor, set _:editor:_ in
+> +_~/.sup/config.yaml_ to the `emacs` command.  Alternatively, use `emacs
+> +-nw` to run Emacs in text mode.
+> +
+> +Excerpt from _~/.sup/config.yaml_:
+> +
+> +```yaml
+> +:editor: emacs -nw
+> +```
+> +
+> +To configure emacs for writing mail, enable message-mode on files
+> +matching the regex "/sup.*eml$".  Add this to your _~/.emacs_:
+> +
+> +```elisp
+> +(add-to-list 'auto-mode-alist '("/sup.*eml$" . message-mode))
+> +```
+> +
+> +If you want to enable some minor modes for convenience
+> +(e.g. auto-fill-mode, flyspell-mode) use a message-mode hook:
+> +
+> +```elisp
+> +(add-hook 'message-mode-hook (lambda ()
+> +  (auto-fill-mode 1)
+> +  (flyspell-mode 1)))
+> +```
+> +
+> +To move the cursor down to the first empty line, add to the hook like
+> +this:
+> +
+> +```elisp
+> +(add-hook 'message-mode-hook (lambda ()
+> +  (auto-fill-mode 1)
+> +  (flyspell-mode 1)
+> +  (search-forward-regexp "^$")))
+> +```
+>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20140520/1bf1df68/attachment-0001.html>
+

@@ -1,0 +1,129 @@
+From steven at schmeiser.org  Mon Jul  1 19:47:36 2013
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Mon, 1 Jul 2013 15:47:36 -0400
+Subject: [sup-talk] ignore replies when calculating thread date
+Message-ID: <72BA4B26-CC25-4DE7-9E05-D93E451F526E@schmeiser.org>
+
+Hi all,
+Is there an option to ignore replies when calculating the date of a thread?  I would like it if replying to a thread did not bump it to the top of the index.
+
+Cheers,
+Steve
+
+
+From matthieu.rakotojaona at gmail.com  Mon Jul  1 22:26:48 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 02 Jul 2013 00:26:48 +0200
+Subject: [sup-talk] ignore replies when calculating thread date
+In-Reply-To: <72BA4B26-CC25-4DE7-9E05-D93E451F526E@schmeiser.org>
+References: <72BA4B26-CC25-4DE7-9E05-D93E451F526E@schmeiser.org>
+Message-ID: <1372717304-sup-142@kpad>
+
+Excerpts from Steven Schmeiser's message of 2013-07-01 21:47:36 +0200:
+> Is there an option to ignore replies when calculating the date of a
+> thread?  I would like it if replying to a thread did not bump it to
+> the top of the index.
+
+Basically, you would like to change the sorting order from
+date-of-last-message to date-of-first-message ?
+
+There is nothing currently implemented for this, at least that I know
+of. If you're aventurous enough, you can have some option modify the
+ThreadSet#sort_key method. Here's the current content:
+
+```
+def sort_key
+  m = latest_message
+  m ? [-m.date.to_i, m.id] : [-Time.now.to_i, ""]
+end
+```
+
+Pretty straightforward, you'd have to fetch first_message and keep the
+same logic.
+
+However, if you only want to keep the same order independently from
+_your_ replies, I don't know how you would do it.
+
+-- 
+Matthieu Rakotojaona
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130702/5b28c674/attachment.bin>
+
+From steven at schmeiser.org  Tue Jul  2 12:39:00 2013
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Tue, 02 Jul 2013 08:39:00 -0400
+Subject: [sup-talk] ignore replies when calculating thread date
+In-Reply-To: <1372717304-sup-142@kpad>
+References: <72BA4B26-CC25-4DE7-9E05-D93E451F526E@schmeiser.org>
+	<1372717304-sup-142@kpad>
+Message-ID: <1372768563-sup-3752@indy.local>
+
+I meant your second interpretation: keep the same order, but not have
+*my* sent messages enter into the date calculation.  Maybe it would be
+possible to create a "latest_received_message" and use that in the sort
+key.
+
+Maybe this will get me to learn a little Ruby...
+ 
+> Excerpts from Steven Schmeiser's message of 2013-07-01 21:47:36 +0200:
+> > Is there an option to ignore replies when calculating the date of a
+> > thread?  I would like it if replying to a thread did not bump it to
+> > the top of the index.
+> 
+> Basically, you would like to change the sorting order from
+> date-of-last-message to date-of-first-message ?
+> 
+> There is nothing currently implemented for this, at least that I know
+> of. If you're aventurous enough, you can have some option modify the
+> ThreadSet#sort_key method. Here's the current content:
+> 
+> ```
+> def sort_key
+>   m = latest_message
+>   m ? [-m.date.to_i, m.id] : [-Time.now.to_i, ""]
+> end
+> ```
+> 
+> Pretty straightforward, you'd have to fetch first_message and keep the
+> same logic.
+> 
+> However, if you only want to keep the same order independently from
+> _your_ replies, I don't know how you would do it.
+> 
+
+From steven at schmeiser.org  Wed Jul 10 02:44:59 2013
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Wed, 10 Jul 2013 02:44:59 -0000
+Subject: [sup-talk] always use async editing?
+Message-ID: <1373410624-sup-1657@indy.local>
+
+
+Is there a way to always use async editing when composing a reply or new
+message?  Right now, when I reply to a message, I hit 'E' then 'H' to
+launch my async editor.  Can this be configured as the default
+behavior and can asyn mode be used to compose new messages (without
+going back and editing a draft?)
+
+Steve
+
+From steven at schmeiser.org  Mon Jul 15 19:09:58 2013
+From: steven at schmeiser.org (Steven Schmeiser)
+Date: Mon, 15 Jul 2013 19:09:58 -0000
+Subject: [sup-talk] always use async mode
+Message-ID: <1373915207-sup-8940@indy.local>
+
+Hi all,
+Is there a way to always launch the async editor when replying to or
+composing a new message?  For replies, I always hit 'E' then 'H' and it
+would be nice for this to be a configurable default.  And I haven't
+found a way to async edit a new message other than close the default
+editor, then open the message back up with 'E' and 'H'.
+
+Thanks,
+Steve
+

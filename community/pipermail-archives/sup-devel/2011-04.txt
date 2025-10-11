@@ -1,0 +1,1036 @@
+From wmorgan-sup at masanjin.net  Sat Apr  2 14:15:48 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 02 Apr 2011 18:15:48 +0000
+Subject: [sup-devel] turnsole alpha preview
+Message-ID: <1301767622-sup-4907@masanjin.net>
+
+Ok, if you've managed to get Heliotrope running, you can now try a super-alpha
+preview of Turnsole, the curses client.
+
+Get it by cloning
+  https://wmorgan at github.com/wmorgan/turnsole.git
+and then following the instructions in HACKING. You will have to update your
+Heliotrope repo to the latest master as well.
+
+Things that work: searching, getting results from the server, viewing threads,
+changing labels in thread-view-mode. (The very, very basics.)
+
+Things that don't work: almost everything else. Any by "don't work" I mean will
+crash with a backtrace. Lots of code still needs to be updated. I've also
+ripped out various hooks and config options when they've gotten in my way.
+
+But generally this should be a faster, leaner experience. It's at roughly 1/3
+the sup codebase and I'm hoping it won't grow too much more.
+
+For fun, run two turnsoles at the same time and marvel at your power.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael+sup at stapelberg.de  Sat Apr  2 15:00:55 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 02 Apr 2011 21:00:55 +0200
+Subject: [sup-devel] turnsole alpha preview
+In-Reply-To: <1301767622-sup-4907@masanjin.net>
+References: <1301767622-sup-4907@masanjin.net>
+Message-ID: <1301770677-sup-9153@midna.zekjur.net>
+
+Hi William,
+
+I just tried turnsole/heliotrope and was able to import one of my maildirs.
+After fixing a complaint in lib/turnsole/accounts.rb:39 about calling gpgkey on
+nil, I could run it.
+
+It looks very promising! It?s fast and I very much like the parallel loading of
+threads for example. So, keep it up, I?m looking forward to actually using it :).
+
+Best regards,
+Michael
+
+BTW: I still get some UTF-8 stacktraces in heliotrope (with latest master). Is
+that something you are interested in fixing right now or should I report these
+later (should they still exist then)?
+
+From wmorgan-sup at masanjin.net  Sat Apr  2 16:40:39 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 02 Apr 2011 20:40:39 +0000
+Subject: [sup-devel] turnsole alpha preview
+In-Reply-To: <1301770677-sup-9153@midna.zekjur.net>
+References: <1301767622-sup-4907@masanjin.net>
+	<1301770677-sup-9153@midna.zekjur.net>
+Message-ID: <1301776782-sup-4638@masanjin.net>
+
+Reformatted excerpts from Michael Stapelberg's message of 2011-04-02:
+> It looks very promising! It?s fast and I very much like the parallel loading of
+> threads for example. So, keep it up, I?m looking forward to actually using it :).
+
+Great!
+
+> BTW: I still get some UTF-8 stacktraces in heliotrope (with latest master). Is
+> that something you are interested in fixing right now or should I report these
+> later (should they still exist then)?
+
+I've love a stacktrace for both that and the gpg key thing in turnsole. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Sat Apr  2 18:39:41 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sun, 3 Apr 2011 00:39:41 +0200
+Subject: [sup-devel] [sup-talk] turnsole alpha preview
+In-Reply-To: <1301767622-sup-4907@masanjin.net>
+References: <1301767622-sup-4907@masanjin.net>
+Message-ID: <AANLkTimv9yUTMQ+Xc8bshBFU-eogs-K-6QVWLY+_J3aY@mail.gmail.com>
+
+Hello there,
+
+I'd like to give you some backtraces of the problems that occur when I
+use heliotrope/turnsole. I have absolutely no knowledge in ruby, so I
+hope this will help everyone who is developing
+
+I'd like to point out a few problems about turnsole :
+- you need to install the 'locale' gem
+- I happen to have a 256colors terminal (rxvt-unicode-256color), and
+the "color!" method in ncurses-patch.rb seems to fail :
+
+>rakoo at Otokar % ruby -Ilib -I ../heliotrope/lib bin/turnsole
+>/home/rakoo/src/turnsole/lib/turnsole/ncurses-patches.rb:19:in `block in <module:Curses>': undefined method `color!' for Curses:Module (NoMethodError)
+>	from /home/rakoo/src/turnsole/lib/turnsole/ncurses-patches.rb:19:in `times'
+>	from /home/rakoo/src/turnsole/lib/turnsole/ncurses-patches.rb:19:in `<module:Curses>'
+>	from /home/rakoo/src/turnsole/lib/turnsole/ncurses-patches.rb:1:in `<top (required)>'
+>	from <internal:lib/rubygems/custom_require>:29:in `require'
+>	from <internal:lib/rubygems/custom_require>:29:in `require'
+>	from /home/rakoo/src/turnsole/lib/turnsole.rb:16:in `<top (required)>'
+>	from <internal:lib/rubygems/custom_require>:29:in `require'
+>	from <internal:lib/rubygems/custom_require>:29:in `require'
+>	from bin/turnsole:5:in `<main>'
+
+- When I switch back to xterm with 8 colors, the previous error
+doesn't occur (the if test fais), but I have a problem with "gpgkey" :
+
+rakoo at Otokar % ruby -I lib -I ../heliotrope/lib bin/turnsole
+>/home/rakoo/src/turnsole/lib/turnsole/accounts.rb:39:in `block in add_account': undefined method `gpgkey' for nil:NilClass (NoMethodError)
+>        from /home/rakoo/src/turnsole/lib/turnsole/accounts.rb:39:in `each'
+>        from /home/rakoo/src/turnsole/lib/turnsole/accounts.rb:39:in `add_account'
+>        from /home/rakoo/src/turnsole/lib/turnsole/accounts.rb:25:in `initialize'
+>        from /home/rakoo/src/turnsole/lib/turnsole.rb:96:in `new'
+>        from /home/rakoo/src/turnsole/lib/turnsole.rb:96:in `setup!'
+>        from bin/turnsole:75:in `<main>'
+
+These happened with ruby v1.8 and 1.9.2, and gems v1.3.7.
+
+Now with heliotrope, I have the problems with the encoding :
+- When I search for words with "?", I have an error :
+
+>HeliotropeServer::RequestError - can't parse query: parse error: line 1: syntax error, unexpected $end, expecting WORD:
+> bin/heliotrope-server:137:in `rescue in block in <class:HeliotropeServer>'
+> bin/heliotrope-server:114:in `block in <class:HeliotropeServer>'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:1126:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:1126:in `block in compile!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:709:in `instance_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:709:in `route_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:693:in `block (2 levels) in route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:741:in `block in process_route'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:738:in `catch'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:738:in `process_route'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:692:in `block in route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:691:in `each'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:691:in `route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:826:in `dispatch!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:619:in `block in call!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `instance_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `block in invoke'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `catch'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `invoke'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:619:in `call!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:604:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/showexceptions.rb:21:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+> /usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+> /usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+> /usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+>127.0.0.1 - - [03/Apr/2011 00:24:50] "GET /search?q=%22%C3%A9%22 HTTP/1.1" 500 82586 0.0504
+>Otokar - - [03/Apr/2011:00:24:50 CEST] "GET /search?q=%22%C3%A9%22 HTTP/1.1" 500 82586
+>http://localhost:8042/search?q=%22zegzaegsg%22 -> /search?q=%22%C3%A9%22
+
+- an error also happens when I want to see some messages, that doesn't
+happen when I use ruby v1.8 instead :
+
+>ArgumentError - invalid byte sequence in UTF-8:
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:217:in `split'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:217:in `parse_header'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:194:in `parse_low'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:183:in `parse'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:331:in `parse'
+> /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:345:in `read'
+> /home/rakoo/src/heliotrope/lib/heliotrope/message.rb:17:in `parse!'
+> bin/heliotrope-server:292:in `load_actual_message'
+> bin/heliotrope-server:297:in `message_to_html'
+> bin/heliotrope-server:209:in `block in <class:HeliotropeServer>'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:1125:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:1125:in `block in compile!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:709:in `instance_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:709:in `route_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:693:in `block (2 levels) in route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:741:in `block in process_route'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:738:in `catch'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:738:in `process_route'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:692:in `block in route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:691:in `each'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:691:in `route!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:826:in `dispatch!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:619:in `block in call!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `instance_eval'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `block in invoke'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `catch'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:791:in `invoke'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:619:in `call!'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/base.rb:604:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/sinatra-1.2.1/lib/sinatra/showexceptions.rb:21:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+> /usr/lib/ruby/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+> /usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+> /usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+> /usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+
+These problems seem to happen because of my mails being encoded in
+UTF-8. When the charset is "ISO-8859-1" or "US-ASCII", they appear
+fine. But I do think everyone should use UTF-8.
+
+In a totallly unrelated note, do you plan on syncing back heliotrope
+work with the maildir directory ? Just to know.
+
+Thank you for your sweet coding,
+
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Sun Apr  3 16:44:17 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Apr 2011 20:44:17 +0000
+Subject: [sup-devel] turnsole alpha preview
+In-Reply-To: <1301776782-sup-4638@masanjin.net>
+References: <1301767622-sup-4907@masanjin.net>
+	<1301770677-sup-9153@midna.zekjur.net>
+	<1301776782-sup-4638@masanjin.net>
+Message-ID: <1301863418-sup-788@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-04-02:
+> I've love a stacktrace for both that and the gpg key thing in turnsole.
+> Thanks!
+
+I think I've fixed both of these. Can you try with the latest heliotrope
+and the latest turnsole master?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Apr  3 16:52:08 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 03 Apr 2011 20:52:08 +0000
+Subject: [sup-devel] [sup-talk] turnsole alpha preview
+In-Reply-To: <AANLkTimv9yUTMQ+Xc8bshBFU-eogs-K-6QVWLY+_J3aY@mail.gmail.com>
+References: <1301767622-sup-4907@masanjin.net>
+	<AANLkTimv9yUTMQ+Xc8bshBFU-eogs-K-6QVWLY+_J3aY@mail.gmail.com>
+Message-ID: <1301863573-sup-881@masanjin.net>
+
+Hi Matthieu,
+
+Thanks for the detailed bug reports.
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-04-02:
+> >/home/rakoo/src/turnsole/lib/turnsole/ncurses-patches.rb:19:in `block in <module:Curses>': undefined method `color!' for Curses:Module (NoMethodError)
+
+I think this is fixed in the latest turnsole master. Can you please try it?
+
+> >/home/rakoo/src/turnsole/lib/turnsole/accounts.rb:39:in `block in add_account': undefined method `gpgkey' for nil:NilClass (NoMethodError)
+
+Also should be fixed in the latest turnsole master.
+
+> Now with heliotrope, I have the problems with the encoding :
+> - When I search for words with "?", I have an error :
+> 
+> >HeliotropeServer::RequestError - can't parse query: parse error: line 1: syntax error, unexpected $end, expecting WORD:
+
+Good bug! I didn't test this at all. This one I am going to have to spend a
+little bit of time on.
+
+> >ArgumentError - invalid byte sequence in UTF-8:
+> > /usr/lib/ruby/gems/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb:217:in `split'
+
+Can you try the latest heliotrope master? I think I've fixed this.
+
+> But I do think everyone should use UTF-8.
+
+I kind of agree. Heliotrope is utf-8 specific. But in Turnsole I am trying to
+be nice and support the system encoding.
+
+> In a totallly unrelated note, do you plan on syncing back heliotrope work
+> with the maildir directory ? Just to know.
+
+No. Since Heliotrope is a server, I plan on avoiding that class of problem
+entirely by a) making it easy to extract your email from Heliotrope, if you
+decide to not use it any more, and b) eventually adding an IMAP emulation
+layer, if you want to use other clients.
+
+So you would entrust Heliotrope to both store, as well as index, your email, in
+whatever way it wants to.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Mon Apr  4 19:01:18 2011
+From: dmishd at gmail.com (Hamish)
+Date: Tue, 05 Apr 2011 00:01:18 +0100
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298833983-sup-4830@pruts.nl>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org>
+	<1298774629-sup-4062@medusa> <1298819507-sup-8138@pruts.nl>
+	<1298826314-sup-276@whisper> <1298833983-sup-4830@pruts.nl>
+Message-ID: <1301957971-sup-1165@whisper>
+
+Excerpts from Ico Doornekamp's message of Sun Feb 27 19:44:15 +0000 2011:
+> > Excerpts from Ico Doornekamp's message of Sun Feb 27 15:31:14 +0000 2011:
+> > > > Hamish, definitely thank you for doing something about this.  I
+> > > > actually had a general question about this problem a while back - if
+> > > > it is possible to edit the message independently via the approach you
+> > > > took in this patch, why can't the editor be fired up in a
+> > > > "nonblocking" kind of mode in the first place?  Something like a
+> > > > fork()/exec() to start the editor, and then handling SIGCHLD rather
+> > > > than calling a variant of wait() immediately.  The SIGCHLD handling
+> > > > could check the return code from the editor, and then update the
+> > > > message sending buffer appropriately.
+> 
+> When the infrastructure for background-editor hooks is there, I'm ready
+> to try to make the hook!
+
+OK, I've pushed a change to allow hooks for this functionality. For now
+it is just on the async_message_edit branch (in the main gitorious
+repo).
+
+To quote from the hook text:
+
+  Runs when 'H' is pressed in async edit mode. You can run whatever code
+  you want here - though the default case would be launching a text
+  editor. Your hook is assumed to not block, so you should use exec() or
+  fork() to launch the editor.
+
+  Once the hook has returned then sup will be responsive as usual. You will
+  still need to press 'E' to exit this buffer and send the message.
+
+  Variables:
+  file_path: The full path to the file containing the message to be edited.
+
+  Return value: None
+
+
+If the hook did block then sup would be unresponsive, which would kind
+of ruin the point of the exercise.
+
+So this should work fine to launch a GUI text editor - your hook could
+just be:
+
+  fork { system "/usr/bin/gedit #{file_path} > /dev/null 2>&1" }
+
+(Note that if you don't redirect all output to /dev/null then you can end
+up with the screen being written all over, which gets a bit messy ...)
+
+The next step would be to have the async mode exit as soon as the forked
+hook code has finished. The best way I've thought of to do this is to
+trap SIGUSR1. As long as there was only one async mode active this would
+work fine, but if there were two there would be trouble. I guess I could
+add a return value to the hook about whether to pay attention to
+SIGUSR1. Then the BufferManager could know which buffer was waiting for
+SIGUSR1. If a second buffer called the same hook while the first was
+still waiting for the signal, then it should refuse to honour it. It
+does feel a bit messy ... I might have a go at it at some point, but if
+anyone has other ideas, then please shout out.
+
+Hamish
+
+From sup at zevv.nl  Tue Apr  5 00:38:06 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Tue, 05 Apr 2011 06:38:06 +0200
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1301957971-sup-1165@whisper>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org>
+	<1298774629-sup-4062@medusa> <1298819507-sup-8138@pruts.nl>
+	<1298826314-sup-276@whisper> <1298833983-sup-4830@pruts.nl>
+	<1301957971-sup-1165@whisper>
+Message-ID: <1301977961-sup-9660@pruts.nl>
+
+* On Tue Apr 05 01:01:18 +0200 2011, Hamish wrote:
+ 
+> > When the infrastructure for background-editor hooks is there, I'm ready
+> > to try to make the hook!
+> 
+> OK, I've pushed a change to allow hooks for this functionality. For now
+> it is just on the async_message_edit branch (in the main gitorious
+> repo).
+> 
+> To quote from the hook text:
+> 
+>   Runs when 'H' is pressed in async edit mode. You can run whatever code
+>   you want here - though the default case would be launching a text
+>   editor. Your hook is assumed to not block, so you should use exec() or
+>   fork() to launch the editor.
+> 
+>   Once the hook has returned then sup will be responsive as usual. You will
+>   still need to press 'E' to exit this buffer and send the message.
+
+Sounds very useful to me!
+
+> The next step would be to have the async mode exit as soon as the forked
+> hook code has finished. The best way I've thought of to do this is to
+> trap SIGUSR1. As long as there was only one async mode active this would
+> work fine, but if there were two there would be trouble. I guess I could
+> add a return value to the hook about whether to pay attention to
+> SIGUSR1. Then the BufferManager could know which buffer was waiting for
+> SIGUSR1. If a second buffer called the same hook while the first was
+> still waiting for the signal, then it should refuse to honour it. It
+> does feel a bit messy ... I might have a go at it at some point, but if
+> anyone has other ideas, then please shout out.
+
+I might have understood the details of your implementation wrong, but
+why would it not just be possible to act on a SIGCHLD and use wait() to
+retreive the pid and exitstatus of the finished process ? The pid would
+distinguish the different async handlers, resolving the ambiguity ?
+
+Thanks!
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From alvherre at alvh.no-ip.org  Wed Apr 13 16:18:24 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 13 Apr 2011 17:18:24 -0300
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <1302724410-sup-5965@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of dom mar 27 17:41:59 -0300 2011:
+
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+Hi,
+
+I find this to be great.  Thanks for writing it.
+
+I just tried to follow the instructions on a Debian machine and noticed
+that you need to install the package ruby1.9.1-dev in order for the
+whistlepig and oklahoma_mixer gems.  Probably most Ruby-addicted people
+already have it so they don't see that problem, but since I'm not one of
+those, it did bit me.  I suggest this should be in the README file.
+
+I ran into a problem importing email that has Latin1 headers.  The crash
+I got was:
+
+/home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:44:in `block in get_date_in_file': invalid byte sequence in UTF-8 (ArgumentError)
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:42:in `open'
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:42:in `get_date_in_file'
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:35:in `block in get_files'
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:35:in `map'
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:35:in `get_files'
+        from /home/alvherre/Code/heliotrope/lib/heliotrope/maildir-walker.rb:21:in `done?'
+        from bin/heliotrope-add:98:in `<main>'
+
+I added a debugging rescue to that block and found that the message has
+this header:
+List-Id: Consultas T<E9>cnicas sobre Linux y Software Libre <l-linux.velug.org.ve>
+
+Note that the <E9> is actually a Latin-1 "?".  (The message has a valid Date:
+header).
+
+This is obviously a bogus message; you're not supposed to use non-ASCII
+chars in the header.  But these guys did it anyway.  I'm not sure what
+would be a good fix for this problem.  I guess it involves discarding
+the failing line so that it can index the message using the proper date
+instead of "0".
+
+I haven't tried Turnsole yet.  I checked the WEBrick thingy and it seems
+pretty neat.
+
+Thanks!
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From sup at zevv.nl  Thu Apr 14 03:39:44 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 14 Apr 2011 09:39:44 +0200
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <1302766464-sup-8275@pruts.nl>
+
+* On Sun Mar 27 22:41:59 +0200 2011, William Morgan wrote:
+ 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+Heliotrope (Actually Time.parse()) crashes on some illegaly formatted dates:
+
+  /usr/lib/ruby/1.9.1/time.rb:137:in `apply_offset': undefined method `<' for nil:NilClass (NoMethodError)
+  	from /usr/lib/ruby/1.9.1/time.rb:197:in `make_time'
+  	from /usr/lib/ruby/1.9.1/time.rb:261:in `parse'
+  	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:27:in `parse!'
+  	from bin/heliotrope-add:108:in `<main>'
+
+The date of the message was "Wed, 7  2005 22:55: 1  -0180".
+
+Fixed by adding a NoMethodError catch:
+
+diff --git a/lib/heliotrope/message.rb b/lib/heliotrope/message.rb
+index 1682062..d63e411 100644
+--- a/lib/heliotrope/message.rb
++++ b/lib/heliotrope/message.rb
+@@ -23,7 +23,7 @@ class Message
+     @from = Person.from_string decode_header(validate_field(:from, @m.header["from"]))
+     @date = begin
+       Time.parse(validate_field(:date, @m.header["date"])).to_i
+-    rescue ArgumentError
++    rescue ArgumentError, NoMethodError
+       #puts "warning: invalid date field #{@m.header['date']}"
+       Time.at 0
+     end
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From sup at zevv.nl  Thu Apr 14 03:51:50 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 14 Apr 2011 09:51:50 +0200
+Subject: [sup-devel] sup v2 progress report
+In-Reply-To: <1301257195-sup-9486@masanjin.net>
+References: <1301257195-sup-9486@masanjin.net>
+Message-ID: <1302767233-sup-1329@pruts.nl>
+
+* On Sun Mar 27 22:41:59 +0200 2011, William Morgan wrote:
+ 
+> Heliotrope, the server component, is close to ready for a version 1 release.
+> You can find it at https://github.com/wmorgan/heliotrope/.
+
+Here's another crash, but I've not been able yet to find out what exactly is
+happening. The problem seems to be caused by a mismatch of multipart mime
+boundary strings. 
+
+/home/ico/external/heliotrope/lib/heliotrope/message.rb:151:in `decode_mime_parts': undefined method `multipart?' for nil:NilClass (NoMethodError)
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:154:in `decode_mime_parts'
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:130:in `mime_parts'
+	from /home/ico/external/heliotrope/lib/heliotrope/message.rb:116:in `has_attachment?'
+	from /home/ico/external/heliotrope/lib/heliotrope/index.rb:77:in `add_message'
+	from bin/heliotrope-add:113:in `<main>'
+You have new mail in /home/ico/Maildir
+
+
+I've stripped the offending mail down to the following minimal mbox which causes the crash:
+
+
+>From foo at bar.com  Tue May  9 11:22:38 2006
+Date: Tue, 09 May 2006 02:22:18 -0800
+From: foo at bar.com
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary="one"
+Message-Id: <1>
+
+--two
+
+Part 
+
+--three
+
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From gregor at hoffleit.de  Fri Apr 15 06:46:40 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Fri, 15 Apr 2011 12:46:40 +0200
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1299179837-sup-4675@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+	<1299179837-sup-4675@masanjin.net>
+Message-ID: <1302789095-sup-9782@sam.mediasupervision.de>
+
+* William Morgan <wmorgan-sup at masanjin.net> [Do M?r 03 20:17:36 +0100 2011]
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-03-03:
+> > William, I was able to isolate my problem: For me, heliotrope-add hangs
+> > for messages with more than 32768 content lines.
+> 
+> Crazy! I will take a look. Thanks for the good debugging.
+
+William, I noticed that heliotrope still has a problem with mails with
+my mail with more than 32768 lines of content.
+
+The source of this problem is in whistlepig's tokenizer. I'm hurt by an
+overflow in posarray->next and posarray->size, which are defined as
+uint16_t. I was able to fix my problem by defining these to uint32_t:
+
+
+commit 42dbc087260074513af22078b77e65b91d3318d9
+Author: Gregor Hoffleit <gregor at hoffleit.de>
+Date:   Fri Apr 15 12:19:10 2011 +0200
+
+    Bugfix: uint16_t is too small for posarray->size and posarray->next
+    
+    Change the type of posarray->size and posarray->next from uint16_t
+    to uint32_t. 16 bits are not enough to hold really large messages.
+
+diff --git a/entry.h b/entry.h
+index 9799e15..56673a0 100644
+--- a/entry.h
++++ b/entry.h
+@@ -15,8 +15,8 @@
+ #include "khash.h"
+ 
+ typedef struct posarray {
+-  uint16_t size;
+-  uint16_t next;
++  uint32_t size;
++  uint32_t next;
+   pos_t* data;
+ } posarray;
+ 
+
+
+Regards,
+    Gregor Hoffleit
+
+From wmorgan-sup at masanjin.net  Fri Apr 15 13:16:43 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 15 Apr 2011 17:16:43 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1302789095-sup-9782@sam.mediasupervision.de>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+	<1299179837-sup-4675@masanjin.net>
+	<1302789095-sup-9782@sam.mediasupervision.de>
+Message-ID: <1302887129-sup-7325@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-04-15:
+> The source of this problem is in whistlepig's tokenizer. I'm hurt by an
+> overflow in posarray->next and posarray->size, which are defined as
+> uint16_t. I was able to fix my problem by defining these to uint32_t:
+
+Thanks! This is totally good. I will admit I got distracted by some
+other tasks and forgot to come back to this. Maybe that's a sign I
+should start using Github's vaunted issue tracker.
+
+What I don't understand is that the posarray stuff is all for token
+offsets, isn't it? So why would the number of lines actually matter?
+Large messages can overflow this but it should be in terms of tokens,
+not lines.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From gregor at hoffleit.de  Fri Apr 15 16:53:21 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Fri, 15 Apr 2011 22:53:21 +0200
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1302887129-sup-7325@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+	<1299179837-sup-4675@masanjin.net>
+	<1302789095-sup-9782@sam.mediasupervision.de>
+	<1302887129-sup-7325@masanjin.net>
+Message-ID: <1302900208-sup-1898@sam.mediasupervision.de>
+
+* William Morgan <wmorgan-sup at masanjin.net> [Fr Apr 15 19:16:43 +0200 2011]
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-04-15:
+> > The source of this problem is in whistlepig's tokenizer. I'm hurt by an
+> > overflow in posarray->next and posarray->size, which are defined as
+> > uint16_t. I was able to fix my problem by defining these to uint32_t:
+> 
+> Thanks! This is totally good. I will admit I got distracted by some
+> other tasks and forgot to come back to this. Maybe that's a sign I
+> should start using Github's vaunted issue tracker.
+> 
+> What I don't understand is that the posarray stuff is all for token
+> offsets, isn't it? So why would the number of lines actually matter?
+> Large messages can overflow this but it should be in terms of tokens,
+> not lines.
+
+Yep. In fact the number of lines is a pure coincidence.
+
+The mail that got stuck was a logcheck report, which had 35.000 lines
+all starting with the current date. I guess whistlepig tried to append
+some 35.000 instances of "Feb" to the posarray, which lead to an
+infinite loop.
+
+Regards,
+    Gregor
+
+From wmorgan-sup at masanjin.net  Sun Apr 17 12:58:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 17 Apr 2011 16:58:06 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1302789095-sup-9782@sam.mediasupervision.de>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+	<1299179837-sup-4675@masanjin.net>
+	<1302789095-sup-9782@sam.mediasupervision.de>
+Message-ID: <1303022861-sup-8661@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-04-15:
+> Bugfix: uint16_t is too small for posarray->size and posarray->next
+
+Applied. Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Apr 17 13:55:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 17 Apr 2011 17:55:06 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1303022861-sup-8661@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+	<1298762120-sup-1118@masanjin.net> <1299008245-sup-5110@whisper>
+	<1299062215-sup-8517@sam.mediasupervision.de>
+	<1299091467-sup-7084@masanjin.net>
+	<1299172989-sup-8183@sam.mediasupervision.de>
+	<1299179837-sup-4675@masanjin.net>
+	<1302789095-sup-9782@sam.mediasupervision.de>
+	<1303022861-sup-8661@masanjin.net>
+Message-ID: <1303062778-sup-7536@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-04-17:
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-04-15:
+> > Bugfix: uint16_t is too small for posarray->size and posarray->next
+> 
+> Applied. Thanks!
+
+I have released this as 0.5. Also, I have pushed a forced update to
+whistlepig master in order to correct some erroneous email addresses in
+the commit logs, so you'll have to reset your local master branch next
+time you fetch.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From gregor at hoffleit.de  Thu Apr 21 06:18:52 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 21 Apr 2011 12:18:52 +0200
+Subject: [sup-devel] heliotrope: Crash with empty message.recipients
+Message-ID: <1303381090-sup-9904@sam.mediasupervision.de>
+
+I noticed that heliotrope-add bangs out on message
+<E1JZvDB-0000vf-17 at faramir.fjphome.nl> from the debian-vote list:
+http://lists.debian.org/debian-vote/2008/03/msg00130.html
+
+# ruby1.9.1 -Ilib ./bin/heliotrope-add -m debian-vote-2008 -d test
+/home/test/GIT/heliotrope/lib/heliotrope/index.rb:482:in `block in index!': undefined method `indexable_text' for nil:NilClass (NoMethodError)
+    from /home/test/GIT/heliotrope/lib/heliotrope/index.rb:482:in `map'
+    from /home/test/GIT/heliotrope/lib/heliotrope/index.rb:482:in `index!'
+    from /home/test/GIT/heliotrope/lib/heliotrope/index.rb:80:in `add_message'
+    from ./bin/heliotrope-add:113:in `<main>'
+
+As you can see even in the HTML representation of the message linked
+above:
+
+    To: , debian-vote at lists.debian.org
+
+This code in line 482 of lib/heliotrope/index.rb will fail work if any
+recipient is empty:
+
+    message.recipients.map { |x| x.indexable_text }.join(" ").downcase
+
+Sadly, I'm lacking the Ruby skills to make heliotrope cope with such
+pathological messages. In Python, I would fix it like this:
+
+    [x.indexable_text for x in message.recipients if x]
+
+Regards,
+    Gregor
+
+From vnhnsn at gmail.com  Sat Apr 23 20:46:59 2011
+From: vnhnsn at gmail.com (Evan Hanson)
+Date: Sat, 23 Apr 2011 19:46:59 -0500
+Subject: [sup-devel] [PATCH] toggle killed status
+Message-ID: <1303605889-sup-5283@Apollo.local>
+
+Attached allows toggling 'killed' status of a thread. If there was a way to do
+this previously, please ignore.
+
+UpdateManager didn't seem responsive to 'killed'/'unkilled' so uses 'labeled'.
+
+Evan
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: toggle-killed-status.patch
+Type: application/octet-stream
+Size: 1464 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110423/fb5001da/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 487 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110423/fb5001da/attachment.bin>
+
+From hsanson at gmail.com  Sun Apr 24 21:23:19 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 25 Apr 2011 10:23:19 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+Message-ID: <201104251023.19659.hsanson@gmail.com>
+
+I like sup's idea and have a lot of hope in heliotrope but unfortunately both 
+have problems when dealing with my language: Japanese. 
+
+When I put a search string like this "subject: ??" I get the following crash:
+
+27.0.0.1 - - [25/Apr/2011 10:17:17] "GET /search?q=%E6%89%8B%E7%B4%99 
+HTTP/1.1" 200 12306 0.0169
+localhost.localdomain - - [25/Apr/2011:10:17:17 JST] "GET 
+/search?q=%E6%89%8B%E7%B4%99 HTTP/1.1" 200 12306
+http://localhost:8042/search?q=%E6%89%8B%E7%B4%99 -> 
+/search?q=%E6%89%8B%E7%B4%99
+127.0.0.1 - - [25/Apr/2011 10:17:17] "GET /favicon.ico HTTP/1.1" 404 441 
+0.0007
+localhost.localdomain - - [25/Apr/2011:10:17:17 JST] "GET /favicon.ico 
+HTTP/1.1" 404 441
+- -> /favicon.ico
+HeliotropeServer::RequestError - can't parse query: parse error: line 1: 
+syntax error, unexpected $end, expecting WORD or '"' or '(':
+ bin/heliotrope-server:161:in `rescue in block in <class:HeliotropeServer>'
+ bin/heliotrope-server:138:in `block in <class:HeliotropeServer>'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:1165:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:1165:in `block in 
+compile!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:738:in 
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:738:in 
+`route_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:722:in `block (2 
+levels) in route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:772:in `block in 
+process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:769:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:769:in 
+`process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:721:in `block in 
+route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:720:in `each'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:720:in `route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:857:in `dispatch!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:648:in `block in 
+call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:822:in 
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:822:in `block in 
+invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:822:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:822:in `invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:648:in `call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/base.rb:633:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.3/lib/sinatra/showexceptions.rb:21:in 
+`call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in 
+`service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+ /usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+127.0.0.1 - - [25/Apr/2011 10:17:28] "GET 
+/search?q=subject%3A+%E6%89%8B%E7%B4%99 HTTP/1.1" 500 92955 0.0266
+localhost.localdomain - - [25/Apr/2011:10:17:28 JST] "GET 
+/search?q=subject%3A+%E6%89%8B%E7%B4%99 HTTP/1.1" 500 92955
+http://localhost:8042/search?q=%E6%89%8B%E7%B4%99 -> 
+/search?q=subject%3A+%E6%89%8B%E7%B4%99
+127.0.0.1 - - [25/Apr/2011 10:17:28] "GET /__sinatra__/500.png HTTP/1.1" 304 - 
+0.0006
+localhost.localdomain - - [25/Apr/2011:10:17:28 JST] "GET /__sinatra__/500.png 
+HTTP/1.1" 304 0
+http://localhost:8042/search?q=subject%3A+%E6%89%8B%E7%B4%99 -> 
+/__sinatra__/500.png
+127.0.0.1 - - [25/Apr/2011 10:17:28] "GET /favicon.ico HTTP/1.1" 404 441 
+0.0008
+localhost.localdomain - - [25/Apr/2011:10:17:28 JST] "GET /favicon.ico 
+HTTP/1.1" 404 441
+
+
+
+I am running the latest heliotrope from git with ruby 1.9.2 from the default 
+Kubuntu 10.10 distribution.
+
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From hsanson at gmail.com  Sun Apr 24 22:25:04 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 25 Apr 2011 11:25:04 +0900
+Subject: [sup-devel] turnsole cannot handle Japanese labels.
+Message-ID: <201104251125.04792.hsanson@gmail.com>
+
+Any attempt to add a label with Japanese characters crashes the application. 
+Seems this is a common problem to all Ruby 1.9 applications. I can see Rails 
+had or has a lot of problems with this:
+
+http://yehudakatz.com/2010/05/05/ruby-1-9-encodings-a-primer-and-the-solution-
+for-rails/
+
+https://rails.lighthouseapp.com/projects/8994/tickets/4683-ascii-8bit-and-
+utf-8-in-hell
+
+
+The backtrace I get follows:
+
+/var/lib/gems/1.9.1/gems/console-0.3/lib/console/string.rb:27:in 
+`display_width': "\xE3" from ASCII-8BIT to UTF-8 
+(Encoding::UndefinedConversionError)
+        from /var/lib/gems/1.9.1/gems/console-0.3/lib/console/string.rb:27:in 
+`display_width'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/textfield.rb:129:in 
+`handle_input'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:108:in `ask'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:141:in 
+`ask_many_with_completions'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:198:in 
+`ask_for_labels'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/modes/thread-index-
+mode.rb:585:in `block in edit_labels'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:42:in `asking'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/modes/thread-index-
+mode.rb:584:in `edit_labels'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/input.rb:92:in `handle'
+        from /home/ryujin/Apps/turnsole/lib/turnsole/ui.rb:73:in `step'
+        from bin/turnsole:134:in `<main>'
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Tue Apr 26 00:47:53 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 26 Apr 2011 04:47:53 +0000
+Subject: [sup-devel] turnsole cannot handle Japanese labels.
+In-Reply-To: <201104251125.04792.hsanson@gmail.com>
+References: <201104251125.04792.hsanson@gmail.com>
+Message-ID: <1303793197-sup-8060@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-04-25:
+> Any attempt to add a label with Japanese characters crashes the
+> application.
+
+Thanks for the bug report. This is a bit tricky. The problem is actually
+that ncurses is giving me the characters one byte at a time. I'll see
+what I can do to fix this.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Apr 26 00:49:04 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 26 Apr 2011 04:49:04 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <201104251023.19659.hsanson@gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+Message-ID: <1303793294-sup-688@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-04-25:
+> I like sup's idea and have a lot of hope in heliotrope but unfortunately both
+> have problems when dealing with my language: Japanese. 
+> 
+> When I put a search string like this "subject: ??" I get the following
+> crash:
+
+Thanks for the bug report on this one too. It's great to have someone testing
+this stuff with non-ASCII code. This is a known bug in Whistlepig and I should
+be releasing a fix soon.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From john.wyzer at gmx.de  Tue Apr 26 05:52:06 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Tue, 26 Apr 2011 11:52:06 +0200
+Subject: [sup-devel] odd - mime-decode not working on some text/html mails
+Message-ID: <1303810927-sup-9051@localhost>
+
+I tried that with and without having the mime-decode.rb
+
+## turn text/html attachments into plain text, unless they are part
+## of a multipart/alternative pair
+unless sibling_types.member? "text/plain"
+  case content_type
+  when "text/html"
+    `/usr/bin/w3m -dump -T #{content_type} '#{filename}'`
+  end
+end
+
+in .sup/hooks
+
+Some html emails that I receive work fine - I can read them as text.
+
+But some are just displayed as an attachment every time. I can open them with
+mime-view - but I would prefer to have the text displayed without further
+interaction...
+
+Attached is one of those messages - perhaps someone more enlightened than me
+could have a short look and knows instantly why sup does not do the correct
+thing? ;-)
+
+Many thanks!
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: anonymised-html-message.txt
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110426/12721d76/attachment.txt>
+
+From wmorgan-sup at masanjin.net  Fri Apr 29 00:52:47 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 29 Apr 2011 04:52:47 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <1303793294-sup-688@masanjin.net>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+Message-ID: <1304052708-sup-4240@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-04-26:
+> Thanks for the bug report on this one too. It's great to have someone
+> testing this stuff with non-ASCII code. This is a known bug in
+> Whistlepig and I should be releasing a fix soon.
+
+This is fixed in Whistlepig 0.6. Heliotrope should now be fine with
+utf-8 input. I'm still working on this issue in turnsole.
+
+Let me know if you have any more issues!
+-- 
+William <wmorgan-sup at masanjin.net>
+

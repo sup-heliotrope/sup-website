@@ -1,0 +1,335 @@
+From naveen at lastninja.net  Wed Sep 19 21:15:00 2012
+From: naveen at lastninja.net (Naveen Nathan)
+Date: Wed, 19 Sep 2012 14:15:00 -0700
+Subject: [sup-talk] any testimonials from users who transitioned from mutt?
+Message-ID: <20120919211500.GH48050@armakuni.lastninja.net>
+
+Hi,
+
+Mutt and mail savvy user here. It's my daily use client, I use a lot of
+it's features such as threading, tagging, header caching (for imap).
+
+What it truly lacks, even though slightly supported by IMAP, is full-body
+search of email, indexing, etc.
+
+I was wondering if any mutt users who use some of the above features
+mentioned would mind sharing their experience after transitioning to Sup.
+Although I wouldn't be surprised if people still continue to use both.
+
+- Naveen
+
+
+From masterkorp at masterkorp.net  Wed Sep 19 21:47:19 2012
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Wed, 19 Sep 2012 23:47:19 +0200
+Subject: [sup-talk] any testimonials from users who transitioned from
+	mutt?
+In-Reply-To: <20120919211500.GH48050@armakuni.lastninja.net>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+Message-ID: <1348090678-sup-2446@masterkorp.net>
+
+Excerpts from Naveen Nathan's message of Wed Sep 19 23:15:00 +0200 2012:
+> Hi,
+> 
+> Mutt and mail savvy user here. It's my daily use client, I use a lot of
+> it's features such as threading, tagging, header caching (for imap).
+> 
+> What it truly lacks, even though slightly supported by IMAP, is full-body
+> search of email, indexing, etc.
+What i notice the most, is *speed*, mutt gets unbearable on big mailboxes.
+Also the label is approach is much better, just because having more than one label
+in an thread can be very usefull.
+Also prefer the UI, tudier for tilling WMs and smarthphones (altough mutt can be
+customized)
+
+> I was wondering if any mutt users who use some of the above features
+> mentioned would mind sharing their experience after transitioning to Sup.
+> Although I wouldn't be surprised if people still continue to use both.
+One thing about sup, is that you have to go cold turkey, sup does not sync
+back to the mailbox. I solved that problem by placing it under tmux on a 
+24/7 avaliable server, so i just ssh to tmux, from the computer, cellphone,
+public machine whatever.
+
+I eventually want to migrate to heliotrope once a decent client shows up.
+
+But if you're on mutt and dont bother about using only one client for email,
+Sup is awesome
+
+--
+Regards,
+Alfredo Palhares
+
+From allan_wind at lifeintegrity.com  Wed Sep 19 21:56:57 2012
+From: allan_wind at lifeintegrity.com (Allan Wind)
+Date: Wed, 19 Sep 2012 17:56:57 -0400
+Subject: [sup-talk] any testimonials from users who transitioned from
+ mutt?
+In-Reply-To: <20120919211500.GH48050@armakuni.lastninja.net>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+Message-ID: <20120919215657.GA17624@lifeintegrity.com>
+
+On 2012-09-19 14:15:00, Naveen Nathan wrote:
+> I was wondering if any mutt users who use some of the above features
+> mentioned would mind sharing their experience after transitioning to Sup.
+> Although I wouldn't be surprised if people still continue to use both.
+
+sup, afaik, is dead <http://masanjin.net/>:
+
+I leave behind me the wreckage of unmaintained or handed-off 
+projects: 
+...
+Sup, an email client for people with lots of mail.
+
+You may, however, want to check out <http://notmuchmail.org/> and
+<https://github.com/karelzak/mutt-kz>
+
+
+/Allan
+-- 
+Allan Wind
+Life Integrity, LLC
+<http://lifeintegrity.com>
+
+From jim at gonzul.net  Thu Sep 20 00:12:54 2012
+From: jim at gonzul.net (Jim Cheetham)
+Date: Thu, 20 Sep 2012 12:12:54 +1200
+Subject: [sup-talk] any testimonials from users who transitioned from
+	mutt?
+In-Reply-To: <20120919215657.GA17624@lifeintegrity.com>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+	<20120919215657.GA17624@lifeintegrity.com>
+Message-ID: <CA+2knquXHSnK=uBoNCFDG6q58o4+S4k5AHNi86dVnH6PQmDsuA@mail.gmail.com>
+
+On Thu, Sep 20, 2012 at 9:56 AM, Allan Wind
+<allan_wind at lifeintegrity.com> wrote:
+> On 2012-09-19 14:15:00, Naveen Nathan wrote:
+> sup, afaik, is dead <http://masanjin.net/>:
+>
+> I leave behind me the wreckage of unmaintained or handed-off
+> projects:
+> ...
+> Sup, an email client for people with lots of mail.
+>
+> You may, however, want to check out <http://notmuchmail.org/> and
+> <https://github.com/karelzak/mutt-kz>
+
+Well, I've moved on from sup because of the non-maintained status, and
+problems with gpgme versions.
+Now running heliotrope/turnsole, and in general it's fine, almost as
+good as sup but with many more rough edges. Turnsole crashes a lot,
+which isn't a big problem because state is in heliotrope & not the
+client; but some features seem to be missing completely -- I haven't
+figured out GPG signing yet. I expect that before_add hooks would need
+in heliotrope and I haven't looked for them yet.
+
+However, looking at the original post, perhaps notmuch with mutt
+integration (i.e. it creates temporary folders based on searches)
+would suit well?
+
+-jim
+
+From sup at zevv.nl  Thu Sep 20 06:43:53 2012
+From: sup at zevv.nl (Ico)
+Date: Thu, 20 Sep 2012 08:43:53 +0200
+Subject: [sup-talk] any testimonials from users who transitioned from
+	mutt?
+In-Reply-To: <20120919211500.GH48050@armakuni.lastninja.net>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+Message-ID: <1348123080-sup-7217@pruts.nl>
+
+> Mutt and mail savvy user here. It's my daily use client, I use a lot of
+> it's features such as threading, tagging, header caching (for imap).
+> 
+> What it truly lacks, even though slightly supported by IMAP, is full-body
+> search of email, indexing, etc.
+
+I've been a long time mutt user before switching to sup a few years ago. Mutt
+indeed lacks proper searching and indexing, but for this I found mairix [1],
+which with some scripting [2], .muttrc [3] configuration and a cronjob [4] can
+be integrated into mutt pretty seamless.
+
+I eventually switched to sup not mainly for of the indexing/searching, but
+because of the unique way sup keeps track of threads.
+
+Now that sup is pretty much dead I find myself poking around in the
+source more and more often, but maybe it is about time to switch back to
+mutt for more stability :(
+
+
+
+1. http://www.rpcurnow.force9.co.uk/mairix/
+
+2. ~/bin/searchmail
+
+   #!/bin/sh
+   
+   echo -n "Search for: "
+   read expr
+   
+   echo $expr
+   
+   if [ "$expr" = "" ]; then
+           clear
+           mairix --help
+           read
+           exit
+   fi
+   
+   mairix $expr
+
+3. .muttrc
+
+   macro index <esc>s !searchmail\nc=searched\n
+   macro pager <esc>s !searchmail\nc=searched\n
+
+4. crontab
+ 
+   */10 * * * *   ~/bin/mairix
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From sdothum at gmail.com  Thu Sep 20 22:25:23 2012
+From: sdothum at gmail.com (Steven Hum)
+Date: Thu, 20 Sep 2012 18:25:23 -0400
+Subject: [sup-talk] any testimonials from users who transitioned from
+	mutt?
+In-Reply-To: <1348123080-sup-7217@pruts.nl>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+	<1348123080-sup-7217@pruts.nl>
+Message-ID: <1348177473-sup-7941@monad>
+
+I have used mutt with notmuch for ages and thought I would never switch 
+until I came across sup recently. (notmuch, by the way is a very 
+competent search mechanism - I believe there is even a mutt fork afoot 
+to integrate it more seamlessly into mutt).
+
+sup does not back sync to maildir which for me should be a deal breaker 
+as I like using offlineimap/imapfilter to maintain persistent mail on my 
+desktop and laptop which allows me to peruse and respond to emails even 
+when I am not connected to the Internet.
+
+Alas, I find sup so compelling a mail client that I am, for now, willing 
+to put up with that serious lack. There are sup forks I have been 
+looking into that appear to address this issue - but I am not sure if 
+anyone is going to spearhead taking sup over officially to merge the 
+work done in this area. 
+
+The heliotrope/turnsole project is still not ready for prime time 
+- beyond installation for me at least, the turnsole client crashes 
+a lot.  Even then, I am not sure if heliotrope will address the maildir 
+back sync issue (there is an imaptrope fork which may address this). If 
+it doesn't, it may not provide me with any benefit towards my offline 
+mail usage.
+
+Like earlier posts, sup's tagging, smart conversation view (with only 
+unread messages expanded - I am not sure if even Google's web gmail 
+interface offers that) and facility to auto archive 
+threads/folders/whatever rules you wish, just makes the email process 
+more compelling and effective (for me) by eliminating inbox noise.
+
+The big back sync issue, however, does mean sup is non-destructive, so 
+is worth a look if you are one of those people who is forever looking 
+for the perfect email client (that sucks less :-) mutt will stay on my 
+system if sup's maildir deficiency becomes intolerable - for now, 
+I foresee using it to periodically prune and manage my maildirs.
+
+Steven
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From matthieu.rakotojaona at gmail.com  Thu Sep 20 23:58:34 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 21 Sep 2012 01:58:34 +0200
+Subject: [sup-talk] any testimonials from users who transitioned from
+	mutt?
+In-Reply-To: <1348177473-sup-7941@monad>
+References: <20120919211500.GH48050@armakuni.lastninja.net>
+	<1348123080-sup-7217@pruts.nl> <1348177473-sup-7941@monad>
+Message-ID: <CAMiZLn3pLumCw2Zmm6i+5hV8y_FtgjDBtDjJH57qhVoRONWT5g@mail.gmail.com>
+
+On Fri, Sep 21, 2012 at 12:25 AM, Steven Hum <sdothum at gmail.com> wrote:
+> Even then, I am not sure if heliotrope will address the maildir
+> back sync issue (there is an imaptrope fork which may address this). If
+> it doesn't, it may not provide me with any benefit towards my offline
+> mail usage.
+
+I guess you're talking about https://github.com/rakoo/imaptrope. This
+was actually the only reason why I didn't use heliotrope/turnsole (and
+sup before it) full-time : I didn't want to do some gymnastics back
+and forth for my mail, like everyone here. That's why I started
+imaptrope. Unfortunately, I arrived to a point where using http
+doesn't give me sufficient speed for the task. So I set out to
+integrate it directly in heliotrope.
+
+The result of my work is at
+https://github.com/rakoo/heliotrope/tree/imap. You can now run an imap
+server along the http one with the following command :
+
+  ruby -Ilib bin/heliotrope-server -d /path/to/data --with-imap
+
+and connect to it on localhost:10142. As I explain in the README, the
+goal is not to do a fully functional IMAP server, but just enough bits
+to work with OfflineIMAP. This software does a great job, and will be
+a very helpful tool for a smooth transition. This will be better than
+reimplementing some 2-way-syncing-magic once again.
+
+For the moment, heliotrope -> maildir works with a standard
+offlineimap installation. Yay ! Don't do it on big mailboxes though,
+because it will be horribly long (and by big I mean 100 messages. Yes,
+that's not big, I'm working on it)
+
+It is saddening to see that many people are interested in this great
+project yet seems to be dying. I was thinking this may be due to
+William abandoning sup in favor of heliotrope, and everyone still
+following the former ? Anyway, I'll be happily hacking on heliotrope,
+so everyone who is willing to continue is warmly invited to test
+things out !
+
+
+-- 
+Matthieu RAKOTOJAONA
+
+From matthieu.rakotojaona at gmail.com  Mon Sep 24 22:13:57 2012
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 25 Sep 2012 00:13:57 +0200
+Subject: [sup-talk] Update in heliotrope !
+Message-ID: <CAMiZLn3ipaH=j+-hZBmnb-XhFc1QwQFG7J-Mqw2oHmvuuKRKzw@mail.gmail.com>
+
+Hello everyone,
+
+I have updated my version of heliotrope on my imap branch
+(https://github.com/rakoo/heliotrope/tree/imap). You just have to
+clone it and checkout the branch.
+You may now synchronize your mails between heliotrope and a maildir
+with offlineimap. I tested most of  the situations that can happen
+when using it (Adding/removing a label on heliotrope side,
+adding/removing a mail on maildir side)
+
+A few notes :
+
+* It is not "multi-write-safe", in the sense that you should stop all
+other activity with heliotrope while you sync with offlinimap.
+Concurrent access will have unknown outcome.
+* To continue on this point, use offlineimap with the `-1` flag, which
+will turn off multithreading. It should work without it though,
+because AFAIK offlineimap threads do not share mailboxes. But I'm not
+sure.
+* There are a few hardcoded labels/dir that you should find in your
+maildir, such as INBOX/inbox and "All Mail", which has no equivalent
+in heliotrope. Fear not, this one is taken care of.
+* Syncing with another IMAP server should also work,because it is
+transparent to offlineimap (at least from the outside)
+
+Have fun !
+
+-- 
+Matthieu RAKOTOJAONA
+

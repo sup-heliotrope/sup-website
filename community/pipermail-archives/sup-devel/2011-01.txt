@@ -1,0 +1,5130 @@
+From sascha-ml-reply-to-2011-1 at silbe.org  Sat Jan  8 05:35:59 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Sat, 08 Jan 2011 11:35:59 +0100
+Subject: [sup-devel] ongoing SPAM attack on the bug tracker
+Message-ID: <1294482582-sup-1310@xo15-sascha.sascha.silbe.org>
+
+The bug tracker keeps getting spammed for more than a few days now.
+Maybe "anonymous" contributions should be deactivated, at least until
+better anti-SPAM measures are in place?
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110108/a850801d/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Jan 10 00:28:09 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 10 Jan 2011 00:28:09 -0500
+Subject: [sup-devel] ongoing SPAM attack on the bug tracker
+In-Reply-To: <1294482582-sup-1310@xo15-sascha.sascha.silbe.org>
+References: <1294482582-sup-1310@xo15-sascha.sascha.silbe.org>
+Message-ID: <1294636135-sup-6653@masanjin.net>
+
+Reformatted excerpts from Sascha Silbe's message of 2011-01-08:
+> The bug tracker keeps getting spammed for more than a few days now.
+> Maybe "anonymous" contributions should be deactivated, at least until
+> better anti-SPAM measures are in place?
+
+I've shut down the bug tracker (temporarily?), since the amount of
+traffic from spambots, although mostly rejected, was destroying the
+server. I'll give it a few days and see if they come back when I turn it
+on.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From steve.goldman at gmail.com  Mon Jan 10 15:11:35 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Mon, 10 Jan 2011 15:11:35 -0500
+Subject: [sup-devel] Bug report: temp file commit breaks my emacs hook
+Message-ID: <AANLkTi=ZtdvYyBgKTMzj_DzwQP0xjRmWWzuEouZwW8Bs@mail.gmail.com>
+
+Hi all,
+
+This commit has broken part of the interaction between sup and my emacs.
+
+commit 60573298a2258c101a85b3de8121f73d7aec2d51
+Author: Michael Hamann <michael at content-space.de>
+Date:   Fri Oct 8 10:03:36 2010 -0400
+
+    Fix monkey-patching of Tempfile
+
+
+Did you change the name of the temp file that gets passed to emacs?
+My emacs hook looks like this.
+
+(add-to-list 'auto-mode-alist
+'("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+
+Thoughts?
+
+Thanks.
+
+From michael at content-space.de  Mon Jan 10 15:48:05 2011
+From: michael at content-space.de (Michael Hamann)
+Date: Mon, 10 Jan 2011 21:48:05 +0100
+Subject: [sup-devel] Bug report: temp file commit breaks my emacs hook
+In-Reply-To: <AANLkTi=ZtdvYyBgKTMzj_DzwQP0xjRmWWzuEouZwW8Bs@mail.gmail.com>
+References: <AANLkTi=ZtdvYyBgKTMzj_DzwQP0xjRmWWzuEouZwW8Bs@mail.gmail.com>
+Message-ID: <1294691658-sup-2474@mithink>
+
+Hi,
+
+Excerpts from Steve's message of 2011-01-10 21:11:35 +0100:
+> This commit has broken part of the interaction between sup and my emacs.
+> 
+> commit 60573298a2258c101a85b3de8121f73d7aec2d51
+> Author: Michael Hamann <michael at content-space.de>
+> Date:   Fri Oct 8 10:03:36 2010 -0400
+> 
+>     Fix monkey-patching of Tempfile
+> 
+> 
+> Did you change the name of the temp file that gets passed to emacs?
+
+Yes. Now sup can and must use the syntax for Tempfile creation that is
+available in Ruby version 1.8.7 and newer. It allows to set both a
+prefix and a suffix. I didn't care about the filename because I had the
+experience that with the old filename my Vim didn't recognize the
+content as email and without the extension it recognizes it which gives
+me nice syntax highlighting even without configuring anything.
+
+> My emacs hook looks like this.
+> 
+> (add-to-list 'auto-mode-alist
+> '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+
+The string you are looking for is now at the beginning of the filename
+so you could change your hook to match the beginning of the filename
+instead of the end.
+
+The following simple change will change the end of the filenames to
+.EXTENSION, so if you think it makes sense to add an extension again I
+could provide a proper patch.
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 86aef4b..052421d 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -162,7 +162,7 @@ EOS
+   def edit_subject; edit_field "Subject" end
+ 
+   def edit_message
+-    @file = Tempfile.new "sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}"
++    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".EXTENSION"]
+     @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
+     @file.puts
+     @file.puts @body.join("\n")
+
+
+Regards,
+Michael Hamann
+
+From steve.goldman at gmail.com  Mon Jan 10 16:09:10 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Mon, 10 Jan 2011 16:09:10 -0500
+Subject: [sup-devel] Bug report: temp file commit breaks my emacs hook
+In-Reply-To: <1294691658-sup-2474@mithink>
+References: <AANLkTi=ZtdvYyBgKTMzj_DzwQP0xjRmWWzuEouZwW8Bs@mail.gmail.com>
+	<1294691658-sup-2474@mithink>
+Message-ID: <AANLkTikWwbXcGx-9ZyKhyTOJ2a9JOd9CscPnSzphTAVV@mail.gmail.com>
+
+On Mon, Jan 10, 2011 at 3:48 PM, Michael Hamann
+<michael at content-space.de> wrote:
+> Hi,
+>
+> Excerpts from Steve's message of 2011-01-10 21:11:35 +0100:
+>> This commit has broken part of the interaction between sup and my emacs.
+>>
+>> commit 60573298a2258c101a85b3de8121f73d7aec2d51
+>> Author: Michael Hamann <michael at content-space.de>
+>> Date: ? Fri Oct 8 10:03:36 2010 -0400
+>>
+>> ? ? Fix monkey-patching of Tempfile
+>>
+>>
+>> Did you change the name of the temp file that gets passed to emacs?
+>
+> Yes. Now sup can and must use the syntax for Tempfile creation that is
+> available in Ruby version 1.8.7 and newer. It allows to set both a
+> prefix and a suffix. I didn't care about the filename because I had the
+> experience that with the old filename my Vim didn't recognize the
+> content as email and without the extension it recognizes it which gives
+> me nice syntax highlighting even without configuring anything.
+>
+>> My emacs hook looks like this.
+>>
+>> (add-to-list 'auto-mode-alist
+>> '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . mail-mode))
+>
+> The string you are looking for is now at the beginning of the filename
+> so you could change your hook to match the beginning of the filename
+> instead of the end.
+
+Makes sense.  I have corrected my emacs pattern.  No need to patch.
+
+Thanks!
+
+From sascha-pgp at silbe.org  Tue Jan 11 10:21:53 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 11 Jan 2011 16:21:53 +0100
+Subject: [sup-devel] [PATCH] use gpg2 (GnuPG 2.x) instead of gpg (GnuPG 1.x)
+Message-ID: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+
+Since 1.9.14 GnuPG can automatically start gpg-agent if it's not already
+running (using a well-known socket location). When using GnuPG 1.x gpg-agent
+needs to already be running at the time sup is started because the socket
+location is random and passed via environment variables.
+
+Autostarting gpg-agent is particularly convenient when using sup via ssh
+as gpg-agent would need to be started manually otherwise (for local X
+sessions OTOH it's often started automatically by distro scripts).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/crypto.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+If there's anyone who would like to stick to GnuPG 1.x (the only advantage
+is the smaller size of the binary), we might need to make this configurable
+(or overridable via the gpg-args hook).
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 537745d..916f04c 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -25,7 +25,7 @@ EOS
+   def initialize
+     @mutex = Mutex.new
+
+-    bin = `which gpg`.chomp
++    bin = `which gpg2`.chomp
+     @cmd = case bin
+     when /\S/
+       debug "crypto: detected gpg binary in #{bin}"
+--
+1.7.2.3
+
+
+From bwalton at artsci.utoronto.ca  Tue Jan 11 10:34:41 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 11 Jan 2011 10:34:41 -0500
+Subject: [sup-devel] [PATCH] use gpg2 (GnuPG 2.x) instead of gpg (GnuPG
+	1.x)
+In-Reply-To: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+References: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1294760045-sup-6325@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Tue Jan 11 10:21:53 -0500 2011:
+
+Hi Sascha,
+
+> Since 1.9.14 GnuPG can automatically start gpg-agent if it's not
+> already running (using a well-known socket location). When using
+> GnuPG 1.x gpg-agent needs to already be running at the time sup is
+> started because the socket location is random and passed via
+> environment variables.
+
+I like the intent of this patch, but at the very least, it should
+determine if gpg2 is available and then fall back to gpg if it's not.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Tue Jan 11 13:30:25 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Tue, 11 Jan 2011 19:30:25 +0100
+Subject: [sup-devel] [PATCH] use gpg2 (GnuPG 2.x) instead of gpg (GnuPG
+	1.x)
+In-Reply-To: <1294760149-sup-8106@alvh.no-ip.org>
+References: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+	<1294760149-sup-8106@alvh.no-ip.org>
+Message-ID: <1294770556-sup-2230@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Alvaro Herrera's message of Tue Jan 11 16:45:09 +0100 2011:
+
+> I think it should fall back to using `which gpg` in case gpg2 is not
+> available.
+
+Good point. Will post a new version.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110111/8c534d9b/attachment.bin>
+
+From sascha-pgp at silbe.org  Tue Jan 11 13:59:43 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 11 Jan 2011 19:59:43 +0100
+Subject: [sup-devel] [PATCH v2] prefer gpg2 (GnuPG 2.x) over gpg (GnuPG 1.x)
+In-Reply-To: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+References: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1294772383-1585-1-git-send-email-sascha-pgp@silbe.org>
+
+Since 1.9.14 GnuPG can automatically start gpg-agent if it's not already
+running (using a well-known socket location). When using GnuPG 1.x gpg-agent
+needs to already be running at the time sup is started because the socket
+location is random and passed via environment variables.
+
+Autostarting gpg-agent is particularly convenient when using sup via ssh
+as gpg-agent would need to be started manually (for local X sessions OTOH
+it's often started automatically by distro scripts).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/crypto.rb |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+v1->v2:
+  fallback to gpg if gpg2 is not available
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 537745d..16ebaf9 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -25,9 +25,10 @@ EOS
+   def initialize
+     @mutex = Mutex.new
+
+-    bin = `which gpg`.chomp
+-    @cmd = case bin
+-    when /\S/
++    @cmd = if (bin = `which gpg2`.chomp) =~ /\S/
++      debug "crypto: detected gpg binary in #{bin}"
++      "#{bin} --quiet --batch --no-verbose --logger-fd 1 --use-agent"
++    elsif (bin = `which gpg`.chomp) =~ /\S/
+       debug "crypto: detected gpg binary in #{bin}"
+       "#{bin} --quiet --batch --no-verbose --logger-fd 1 --use-agent"
+     else
+--
+1.7.2.3
+
+
+From gaudenz at soziologie.ch  Tue Jan 11 15:20:12 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Tue, 11 Jan 2011 21:20:12 +0100
+Subject: [sup-devel] [PATCH v2] prefer gpg2 (GnuPG 2.x) over gpg (GnuPG
+	1.x)
+In-Reply-To: <1294772383-1585-1-git-send-email-sascha-pgp@silbe.org>
+References: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+	<1294772383-1585-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1294776647-sup-7357@meteor.durcheinandertal.local>
+
+Excerpts from Sascha Silbe's message of Die Jan 11 19:59:43 +0100 2011:
+> Since 1.9.14 GnuPG can automatically start gpg-agent if it's not already
+> running (using a well-known socket location). When using GnuPG 1.x gpg-agent
+> needs to already be running at the time sup is started because the socket
+> location is random and passed via environment variables.
+> 
+> Autostarting gpg-agent is particularly convenient when using sup via ssh
+> as gpg-agent would need to be started manually (for local X sessions OTOH
+> it's often started automatically by distro scripts).
+
+AFAICS this change is not compatible with the rework of the GPG
+handling done in the gpgme branch. I was under the impression (from
+previous discussion on this list) that this branch is going to be
+merged soon (at least into next).
+
+Gaudenz
+
+> 
+> Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+> ---
+>  lib/sup/crypto.rb |    7 ++++---
+>  1 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> v1->v2:
+>   fallback to gpg if gpg2 is not available
+> 
+> diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+> index 537745d..16ebaf9 100644
+> --- a/lib/sup/crypto.rb
+> +++ b/lib/sup/crypto.rb
+> @@ -25,9 +25,10 @@ EOS
+>    def initialize
+>      @mutex = Mutex.new
+> 
+> -    bin = `which gpg`.chomp
+> -    @cmd = case bin
+> -    when /\S/
+> +    @cmd = if (bin = `which gpg2`.chomp) =~ /\S/
+> +      debug "crypto: detected gpg binary in #{bin}"
+> +      "#{bin} --quiet --batch --no-verbose --logger-fd 1 --use-agent"
+> +    elsif (bin = `which gpg`.chomp) =~ /\S/
+>        debug "crypto: detected gpg binary in #{bin}"
+>        "#{bin} --quiet --batch --no-verbose --logger-fd 1 --use-agent"
+>      else
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110111/da0227ec/attachment.bin>
+
+From alvherre at alvh.no-ip.org  Tue Jan 11 10:45:09 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 11 Jan 2011 12:45:09 -0300
+Subject: [sup-devel] [PATCH] use gpg2 (GnuPG 2.x) instead of gpg (GnuPG
+	1.x)
+In-Reply-To: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+References: <1294759313-653-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1294760149-sup-8106@alvh.no-ip.org>
+
+Excerpts from Sascha Silbe's message of mar ene 11 12:21:53 -0300 2011:
+> Since 1.9.14 GnuPG can automatically start gpg-agent if it's not already
+> running (using a well-known socket location). When using GnuPG 1.x gpg-agent
+> needs to already be running at the time sup is started because the socket
+> location is random and passed via environment variables.
+> 
+> Autostarting gpg-agent is particularly convenient when using sup via ssh
+> as gpg-agent would need to be started manually otherwise (for local X
+> sessions OTOH it's often started automatically by distro scripts).
+
+I think it should fall back to using `which gpg` in case gpg2 is not
+available.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From rlane at club.cc.cmu.edu  Sat Jan 15 02:07:28 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sat, 15 Jan 2011 02:07:28 -0500
+Subject: [sup-devel] Sup 0.12 released
+Message-ID: <1295068347-sup-3453@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.12.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+Deprecated remote sources have been removed.
+
+Maildir support has been improved to gracefully handle messages that
+move or disappear. The "out of sync" errors should no longer occur.
+
+Inline GPG is now supported.
+
+Changelog for 0.12:
+
+* Remove deprecated IMAP, IMAPS, and mbox+ssh sources
+* Inline GPG support
+* Robust maildir support
+* sup-dump compatibility between Sup versions
+* New hook: sendmail
+* Better Ruby 1.9/UTF8 support
+* As always, many bugfixes and tweaks.
+
+From rlane at club.cc.cmu.edu  Mon Jan 17 01:20:08 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 17 Jan 2011 01:20:08 -0500
+Subject: [sup-devel] [PATCH] fix handling of multiple label: terms in
+	search
+In-Reply-To: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295245113-sup-5823@zyrg.net>
+
+Excerpts from Sascha Silbe's message of Wed Sep 29 10:16:02 -0400 2010:
+> By default Xapian will join query terms with the same prefix with OR instead
+> of AND, so searching for multiple labels doesn't return the expected results.
+> By making use of a parameter to add_boolean_prefix (added in Xapian 1.2) we
+> can tell Xapian to use OR only for the search terms that are guaranteed to be
+> unique.
+
+Merged to master. This means we require Xapian 1.2.1 now. The
+xapian-full gem has been updated to 1.2.3.
+
+From sascha-pgp at silbe.org  Tue Jan 18 12:58:00 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 18:58:00 +0100
+Subject: [sup-devel] [PATCH] fix EOL spaces
+Message-ID: <1295373480-1093-1-git-send-email-sascha-pgp@silbe.org>
+
+Trailing spaces can make dealing with patches a pain for some developers.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+My editor is configured to automatically strip EOL spaces as that's the
+policy for some other projects I'm contributing to. As the sup code base
+contains a large number of EOL spaces, I need to filter out whitespace-
+only changes prior to commit, making contributing to sup somewhat of a
+pain.
+This patch has been created by forcing a save of all the files in the
+editor, so manual checking should only be required for files where the
+EOL spaces might be intentional (e.g. literal copies of messages).
+The test suite seems to be out of order, so I didn't check it for
+regressions.
+
+ History.txt                        |    2 +-
+ bin/sup-add                        |    4 +-
+ bin/sup-config                     |    4 +-
+ bin/sup-sync-back                  |    2 +-
+ doc/Hooks.txt                      |    2 +-
+ lib/sup.rb                         |    6 ++--
+ lib/sup/colormap.rb                |    4 +-
+ lib/sup/crypto.rb                  |   28 ++++++++++----------
+ lib/sup/draft.rb                   |    2 +-
+ lib/sup/horizontal-selector.rb     |    2 +-
+ lib/sup/label.rb                   |    2 +-
+ lib/sup/message-chunks.rb          |    2 +-
+ lib/sup/message.rb                 |    2 +-
+ lib/sup/modes/compose-mode.rb      |    2 +-
+ lib/sup/modes/contact-list-mode.rb |    4 +-
+ lib/sup/modes/edit-message-mode.rb |   18 ++++++------
+ lib/sup/modes/file-browser-mode.rb |    4 +-
+ lib/sup/modes/forward-mode.rb      |    8 +++---
+ lib/sup/modes/line-cursor-mode.rb  |    2 +-
+ lib/sup/modes/reply-mode.rb        |    2 +-
+ lib/sup/modes/resume-mode.rb       |    2 +-
+ lib/sup/modes/scroll-mode.rb       |    2 +-
+ lib/sup/modes/text-mode.rb         |    2 +-
+ lib/sup/modes/thread-index-mode.rb |   26 +++++++++---------
+ lib/sup/modes/thread-view-mode.rb  |   18 ++++++------
+ lib/sup/person.rb                  |    2 +-
+ lib/sup/poll.rb                    |    2 +-
+ lib/sup/rfc2047.rb                 |    2 +-
+ lib/sup/textfield.rb               |    2 +-
+ lib/sup/thread.rb                  |    2 +-
+ lib/sup/util.rb                    |    8 +++---
+ test/dummy_source.rb               |    8 +++---
+ test/test_header_parsing.rb        |    2 +-
+ test/test_message.rb               |   50 ++++++++++++++++++------------------
+ 34 files changed, 115 insertions(+), 115 deletions(-)
+
+diff --git a/History.txt b/History.txt
+index 8df12ff..34ed6e4 100644
+--- a/History.txt
++++ b/History.txt
+@@ -199,7 +199,7 @@
+ * doc/UserGuide.txt
+ 
+ == 0.0.4 / 2007-01-03
+- 
++
+ * Bugfixes, primarily for threaded networking.
+ 
+ == 0.0.3 / 2007-01-02
+diff --git a/bin/sup-add b/bin/sup-add
+index b5705e4..c77720f 100755
+--- a/bin/sup-add
++++ b/bin/sup-add
+@@ -94,7 +94,7 @@ begin
+ 
+     parsed_uri = URI(uri)
+ 
+-    source = 
++    source =
+       case parsed_uri.scheme
+       when "maildir"
+         Redwood::Maildir.new uri, !$opts[:unusual], $opts[:archive], nil, labels
+@@ -103,7 +103,7 @@ begin
+       when nil
+         Trollop::die "Sources must be specified with an URI"
+       else
+-        Trollop::die "Unknown source type #{parsed_uri.scheme.inspect}"      
++        Trollop::die "Unknown source type #{parsed_uri.scheme.inspect}"
+       end
+     say "Adding #{source}..."
+     Redwood::SourceManager.add_source source
+diff --git a/bin/sup-config b/bin/sup-config
+index 39947c2..132fd77 100755
+--- a/bin/sup-config
++++ b/bin/sup-config
+@@ -103,7 +103,7 @@ def add_source
+     system cmd
+     if $?.success?
+       say "Great! Added!"
+-      break 
++      break
+     else
+       say "Rats, that failed. You may have to do it manually."
+       if axe_yes("Try again?") then next else return end
+@@ -210,7 +210,7 @@ if axe_yes "Run sup-sync to import all messages now?"
+     system cmd
+     if $?.success?
+       say "Great! It worked!"
+-      break 
++      break
+     else
+       say "Rats, that failed. You may have to do it manually."
+       if axe_yes("Try again?") then next else break end
+diff --git a/bin/sup-sync-back b/bin/sup-sync-back
+index c339f37..5d84cba 100755
+--- a/bin/sup-sync-back
++++ b/bin/sup-sync-back
+@@ -71,7 +71,7 @@ index.lock_interactively or exit
+ 
+ deleted_fp, spam_fp = nil
+ unless opts[:dry_run]
+-  deleted_fp = File.open(opts[:move_deleted], "a") if opts[:move_deleted] 
++  deleted_fp = File.open(opts[:move_deleted], "a") if opts[:move_deleted]
+   spam_fp = File.open(opts[:move_spam], "a") if opts[:move_spam]
+ end
+ 
+diff --git a/doc/Hooks.txt b/doc/Hooks.txt
+index df5726e..21b1e5e 100644
+--- a/doc/Hooks.txt
++++ b/doc/Hooks.txt
+@@ -71,4 +71,4 @@ after-poll:
+   ## kills the background task after the first poll
+   @bgtask_pid = get 'bgtask_pid'
+   Process.kill("TERM", @bgtask_pid) unless @bgtask_pid == nil
+-  set 'bgtask_pid' nil
+\ No newline at end of file
++  set 'bgtask_pid' nil
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 2319dee..edd23c8 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -197,8 +197,8 @@ Until this is corrected, messages from these sources cannot be viewed,
+ and new messages will not be detected. Luckily, this is easy to correct!
+ 
+ #{desynced_sources.map do |s|
+-  "Source: " + s.to_s + 
+-   "\n Error: " + s.error.message.wrap(70).join("\n        ") + 
++  "Source: " + s.to_s +
++   "\n Error: " + s.error.message.wrap(70).join("\n        ") +
+    "\n   Fix: sup-sync --changed #{s.to_s}"
+   end}
+ EOM
+@@ -248,7 +248,7 @@ EOS
+       require 'socket'
+       name = Etc.getpwnam(ENV["USER"]).gecos.split(/,/).first rescue nil
+       name ||= ENV["USER"]
+-      email = ENV["USER"] + "@" + 
++      email = ENV["USER"] + "@" +
+         begin
+           Socket.gethostbyname(Socket.gethostname).first
+         rescue SocketError
+diff --git a/lib/sup/colormap.rb b/lib/sup/colormap.rb
+index a3c4309..e91835d 100644
+--- a/lib/sup/colormap.rb
++++ b/lib/sup/colormap.rb
+@@ -65,7 +65,7 @@ class Colormap
+     :modified_buffer => { :fg => "yellow", :bg => "default", :attrs => ["bold"] },
+     :date => { :fg => "white", :bg => "default"},
+   }
+-  
++
+   def initialize
+     raise "only one instance can be created" if @@instance
+     @@instance = self
+@@ -115,7 +115,7 @@ class Colormap
+         Curses::COLOR_BLACK
+       end
+ 
+-    hbg = 
++    hbg =
+       case bg
+       when Curses::COLOR_CYAN
+         Curses::COLOR_YELLOW
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index e532261..f8e16c5 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -31,7 +31,7 @@ EOS
+   HookManager.register "sig-output", <<EOS
+ Runs when the signature output is being generated, allowing you to
+ add extra information to your signatures if you want.
+-  
++
+ Variables:
+ signature: the signature object (class is GPGME::Signature)
+ from_key: the key that generated the signature (class is GPGME::Key)
+@@ -58,7 +58,7 @@ EOS
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP, :armor => true, :textmode => true}
+     gpg_opts.merge(gen_sign_user_opts(from))
+-    gpg_opts = HookManager.run("gpg-options", 
++    gpg_opts = HookManager.run("gpg-options",
+                                {:operation => "sign", :options => gpg_opts}) || gpg_opts
+ 
+     begin
+@@ -82,10 +82,10 @@ EOS
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP, :armor => true, :textmode => true}
+     if sign
+-      gpg_opts.merge(gen_sign_user_opts(from)) 
++      gpg_opts.merge(gen_sign_user_opts(from))
+       gpg_opts.merge({:sign => true})
+     end
+-    gpg_opts = HookManager.run("gpg-options", 
++    gpg_opts = HookManager.run("gpg-options",
+                                {:operation => "encrypt", :options => gpg_opts}) || gpg_opts
+     recipients = to + [from]
+ 
+@@ -132,7 +132,7 @@ EOS
+ 
+       err_code = GPGME::gpgme_err_code(signature.status)
+       if err_code == GPGME::GPG_ERR_BAD_SIGNATURE
+-        valid = false 
++        valid = false
+       elsif err_code != GPGME::GPG_ERR_NO_ERROR
+         valid = false
+         unknown = true
+@@ -158,9 +158,9 @@ EOS
+     return unknown_status(cant_find_gpgme) unless @gpgme_present
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP}
+-    gpg_opts = HookManager.run("gpg-options", 
++    gpg_opts = HookManager.run("gpg-options",
+                                {:operation => "verify", :options => gpg_opts}) || gpg_opts
+-    ctx = GPGME::Ctx.new(gpg_opts) 
++    ctx = GPGME::Ctx.new(gpg_opts)
+     sig_data = GPGME::Data.from_str signature.decode
+     if detached
+       signed_text_data = GPGME::Data.from_str(format_payload(payload))
+@@ -172,7 +172,7 @@ EOS
+     begin
+       ctx.verify(sig_data, signed_text_data, plain_data)
+     rescue GPGME::Error => exc
+-      return unknown_status exc.message 
++      return unknown_status exc.message
+     end
+     self.verified_ok? ctx.verify_result
+   end
+@@ -182,9 +182,9 @@ EOS
+     return unknown_status(cant_find_gpgme) unless @gpgme_present
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP}
+-    gpg_opts = HookManager.run("gpg-options", 
++    gpg_opts = HookManager.run("gpg-options",
+                                {:operation => "decrypt", :options => gpg_opts}) || gpg_opts
+-    ctx = GPGME::Ctx.new(gpg_opts) 
++    ctx = GPGME::Ctx.new(gpg_opts)
+     cipher_data = GPGME::Data.from_str(format_payload(payload))
+     plain_data = GPGME::Data.empty
+     begin
+@@ -216,7 +216,7 @@ EOS
+       msg.body = output
+     else
+       # It appears that some clients use Windows new lines - CRLF - but RMail
+-      # splits the body and header on "\n\n". So to allow the parse below to 
++      # splits the body and header on "\n\n". So to allow the parse below to
+       # succeed, we will convert the newlines to what RMail expects
+       output = output.gsub(/\r\n/, "\n")
+       # This is gross. This decrypted payload could very well be a multipart
+@@ -271,18 +271,18 @@ private
+     begin
+       from_key = ctx.get_key(signature.fingerprint)
+       first_sig = signature.to_s.sub(/from [0-9A-F]{16} /, 'from "') + '"'
+-    rescue EOFError 
++    rescue EOFError
+       from_key = nil
+       first_sig = "No public key available for #{signature.fingerprint}"
+     end
+ 
+     time_line = "Signature made " + signature.timestamp.strftime("%a %d %b %Y %H:%M:%S %Z") +
+-                " using " + key_type(from_key, signature.fingerprint) + 
++                " using " + key_type(from_key, signature.fingerprint) +
+                 "key ID " + signature.fingerprint[-8..-1]
+     output_lines = [time_line, first_sig]
+ 
+     trusted = false
+-    if from_key 
++    if from_key
+       # first list all the uids
+       if from_key.uids.length > 1
+         aka_list = from_key.uids[1..-1]
+diff --git a/lib/sup/draft.rb b/lib/sup/draft.rb
+index 0323f9e..dc37d79 100644
+--- a/lib/sup/draft.rb
++++ b/lib/sup/draft.rb
+@@ -70,7 +70,7 @@ class DraftLoader < Source
+   def load_header offset
+     File.open(fn_for_offset(offset)) { |f| parse_raw_email_header f }
+   end
+-  
++
+   def load_message offset
+     File.open fn_for_offset(offset) do |f|
+       RMail::Mailbox::MBoxReader.new(f).each_message do |input|
+diff --git a/lib/sup/horizontal-selector.rb b/lib/sup/horizontal-selector.rb
+index aef16d4..35a028e 100644
+--- a/lib/sup/horizontal-selector.rb
++++ b/lib/sup/horizontal-selector.rb
+@@ -24,7 +24,7 @@ class HorizontalSelector
+         "#{@label} "
+       end
+ 
+-    [[@base_color, label]] + 
++    [[@base_color, label]] +
+       (0 ... @labels.length).inject([]) do |array, i|
+         array + [
+           if i == @selection
+diff --git a/lib/sup/label.rb b/lib/sup/label.rb
+index 67474c2..1699896 100644
+--- a/lib/sup/label.rb
++++ b/lib/sup/label.rb
+@@ -12,7 +12,7 @@ class LabelManager
+ 
+   def initialize fn
+     @fn = fn
+-    labels = 
++    labels =
+       if File.exists? fn
+         IO.readlines(fn).map { |x| x.chomp.intern }
+       else
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index 0097450..7a061d9 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -198,7 +198,7 @@ EOS
+     def initialize lines
+       @lines = lines
+     end
+-    
++
+     def inlineable?; @lines.length == 1 end
+     def quotable?; true end
+     def expandable?; !inlineable? end
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 41e6486..66745ca 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -503,7 +503,7 @@ private
+         filename = Rfc2047.decode_to $encoding, filename
+         # add this to the attachments list if its not a generated html
+         # attachment (should we allow images with generated names?).
+-        # Lowercase the filename because searches are easier that way 
++        # Lowercase the filename because searches are easier that way
+         @attachments.push filename.downcase unless filename =~ /^sup-attachment-/
+         add_label :attachment unless filename =~ /^sup-attachment-/
+         content_type = (m.header.content_type || "application/unknown").downcase # sometimes RubyMail gives us nil
+diff --git a/lib/sup/modes/compose-mode.rb b/lib/sup/modes/compose-mode.rb
+index 0548518..cf7a9de 100644
+--- a/lib/sup/modes/compose-mode.rb
++++ b/lib/sup/modes/compose-mode.rb
+@@ -26,7 +26,7 @@ class ComposeMode < EditMessageMode
+     cc = opts[:cc] || (BufferManager.ask_for_contacts(:people, "Cc: ") or return if $config[:ask_for_cc])
+     bcc = opts[:bcc] || (BufferManager.ask_for_contacts(:people, "Bcc: ") or return if $config[:ask_for_bcc])
+     subj = opts[:subj] || (BufferManager.ask(:subject, "Subject: ") or return if $config[:ask_for_subject])
+-    
++
+     mode = ComposeMode.new :from => from, :to => to, :cc => cc, :bcc => bcc, :subj => subj
+     BufferManager.spawn "New Message", mode
+     mode.edit_message
+diff --git a/lib/sup/modes/contact-list-mode.rb b/lib/sup/modes/contact-list-mode.rb
+index 49804ad..76461a9 100644
+--- a/lib/sup/modes/contact-list-mode.rb
++++ b/lib/sup/modes/contact-list-mode.rb
+@@ -89,7 +89,7 @@ class ContactListMode < LineCursorMode
+   def search
+     p = @contacts[curpos] or return
+     multi_search [p]
+-  end    
++  end
+ 
+   def reload
+     @tags.drop_all_tags
+@@ -114,7 +114,7 @@ class ContactListMode < LineCursorMode
+       @contacts = (@user_contacts + recentc).sort_by { |p| p.sort_by_me }.uniq
+     end
+   end
+-  
++
+ protected
+ 
+   def update
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index c13c6ae..734a879 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -88,7 +88,7 @@ EOS
+   end
+ 
+   def initialize opts={}
+-    @header = opts.delete(:header) || {} 
++    @header = opts.delete(:header) || {}
+     @header_lines = []
+ 
+     @body = opts.delete(:body) || []
+@@ -119,7 +119,7 @@ EOS
+         HorizontalSelector.new "Crypto:", [:none] + CryptoManager::OUTGOING_MESSAGE_OPERATIONS.keys, ["None"] + CryptoManager::OUTGOING_MESSAGE_OPERATIONS.values
+       end
+     add_selector @crypto_selector if @crypto_selector
+-    
++
+     HookManager.run "before-edit", :header => @header, :body => @body
+     if @crypto_selector
+       HookManager.run "crypto-mode", :header => @header, :body => @body, :crypto_selector => @crypto_selector
+@@ -130,7 +130,7 @@ EOS
+   end
+ 
+   def lines; @text.length + (@selectors.empty? ? 0 : (@selectors.length + DECORATION_LINES)) end
+-  
++
+   def [] i
+     if @selectors.empty?
+       @text[i]
+@@ -270,7 +270,7 @@ protected
+     header, @header_lines = format_headers(@header - NON_EDITABLE_HEADERS) + [""]
+     @text = header + [""] + @body
+     @text += sig_lines unless $config[:edit_signature]
+-    
++
+     @attachment_lines_offset = 0
+ 
+     unless @attachments.empty?
+@@ -339,7 +339,7 @@ protected
+     return false if $config[:confirm_no_attachments] && mentions_attachments? && @attachments.size == 0 && !BufferManager.ask_yes_or_no("You haven't added any attachments. Really send?")#" stupid ruby-mode
+     return false if $config[:confirm_top_posting] && top_posting? && !BufferManager.ask_yes_or_no("You're top-posting. That makes you a bad person. Really send?") #" stupid ruby-mode
+ 
+-    from_email = 
++    from_email =
+       if @header["From"] =~ /<?(\S+@(\S+?))>?$/
+         $1
+       else
+@@ -393,7 +393,7 @@ protected
+       body_m = m
+       body_m.header["Content-Disposition"] = "inline"
+       m = RMail::Message.new
+-      
++
+       m.add_part body_m
+       @attachments.each { |a| m.add_part a }
+     end
+@@ -414,7 +414,7 @@ protected
+     ## finally, set the top-level headers
+     @header.each do |k, v|
+       next if v.nil? || v.empty?
+-      m.header[k] = 
++      m.header[k] =
+         case v
+         when String
+           k.match(/subject/i) ? mime_encode_subject(v) : mime_encode_address(v)
+@@ -454,7 +454,7 @@ EOS
+     f.puts
+     f.puts sanitize_body(@body.join("\n"))
+     f.puts sig_lines if full unless $config[:edit_signature]
+-  end  
++  end
+ 
+ protected
+ 
+@@ -514,7 +514,7 @@ private
+ 
+     ## no hook, do default signature generation based on config.yaml
+     return [] unless from_email
+-    sigfn = (AccountManager.account_for(from_email) || 
++    sigfn = (AccountManager.account_for(from_email) ||
+              AccountManager.default_account).signature
+ 
+     if sigfn && File.exists?(sigfn)
+diff --git a/lib/sup/modes/file-browser-mode.rb b/lib/sup/modes/file-browser-mode.rb
+index 72e12db..74d5536 100644
+--- a/lib/sup/modes/file-browser-mode.rb
++++ b/lib/sup/modes/file-browser-mode.rb
+@@ -29,7 +29,7 @@ class FileBrowserMode < LineCursorMode
+   def [] i; @text[i]; end
+ 
+ protected
+-  
++
+   def back
+     return if @dirs.size == 1
+     @dirs.pop
+@@ -75,7 +75,7 @@ protected
+   end
+ 
+   def regen_text
+-    @files = 
++    @files =
+       begin
+         cwd.entries.sort_by do |f|
+           [f.directory? ? 0 : 1, f.basename.to_s]
+diff --git a/lib/sup/modes/forward-mode.rb b/lib/sup/modes/forward-mode.rb
+index 9428b4b..5d1ec58 100644
+--- a/lib/sup/modes/forward-mode.rb
++++ b/lib/sup/modes/forward-mode.rb
+@@ -7,7 +7,7 @@ class ForwardMode < EditMessageMode
+       "From" => AccountManager.default_account.full_address,
+     }
+ 
+-    header["Subject"] = 
++    header["Subject"] =
+       if opts[:message]
+         "Fwd: " + opts[:message].subj
+       elsif opts[:attachments]
+@@ -20,7 +20,7 @@ class ForwardMode < EditMessageMode
+ 
+     body =
+       if opts[:message]
+-        forward_body_lines(opts[:message]) 
++        forward_body_lines(opts[:message])
+       elsif opts[:attachments]
+         ["Note: #{opts[:attachments].size.pluralize 'attachment'}."]
+       end
+@@ -32,7 +32,7 @@ class ForwardMode < EditMessageMode
+     to = opts[:to] || (BufferManager.ask_for_contacts(:people, "To: ") or return if ($config[:ask_for_to] != false))
+     cc = opts[:cc] || (BufferManager.ask_for_contacts(:people, "Cc: ") or return if $config[:ask_for_cc])
+     bcc = opts[:bcc] || (BufferManager.ask_for_contacts(:people, "Bcc: ") or return if $config[:ask_for_bcc])
+-    
++
+     attachment_hash = {}
+     attachments = opts[:attachments] || []
+ 
+@@ -64,7 +64,7 @@ class ForwardMode < EditMessageMode
+ protected
+ 
+   def forward_body_lines m
+-    ["--- Begin forwarded message from #{m.from.mediumname} ---"] + 
++    ["--- Begin forwarded message from #{m.from.mediumname} ---"] +
+       m.quotable_header_lines + [""] + m.quotable_body_lines +
+       ["--- End forwarded message ---"]
+   end
+diff --git a/lib/sup/modes/line-cursor-mode.rb b/lib/sup/modes/line-cursor-mode.rb
+index 1cae994..047444b 100644
+--- a/lib/sup/modes/line-cursor-mode.rb
++++ b/lib/sup/modes/line-cursor-mode.rb
+@@ -78,7 +78,7 @@ protected
+   end
+ 
+   def search_start_line; @curpos end
+- 
++
+   def line_down # overwrite scrollmode
+     super
+     call_load_more_callbacks([topline + buffer.content_height - lines, 10].max) if topline + buffer.content_height > lines
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index d80f35b..079e4de 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -93,7 +93,7 @@ EOS
+     ## to. if it's a list message, then the list address is. otherwise,
+     ## the cc contains a recipient.
+     useful_recipient = !(cc.empty? || @m.is_list_message?)
+-    
++
+     @headers = {}
+     @headers[:recipient] = {
+       "To" => cc.map { |p| p.full_address },
+diff --git a/lib/sup/modes/resume-mode.rb b/lib/sup/modes/resume-mode.rb
+index e527542..3ebeca9 100644
+--- a/lib/sup/modes/resume-mode.rb
++++ b/lib/sup/modes/resume-mode.rb
+@@ -35,7 +35,7 @@ class ResumeMode < EditMessageMode
+ 
+   def send_message
+     if super
+-      DraftManager.discard @m 
++      DraftManager.discard @m
+       @safe = true
+     end
+   end
+diff --git a/lib/sup/modes/scroll-mode.rb b/lib/sup/modes/scroll-mode.rb
+index 0ed26ea..aac1c19 100644
+--- a/lib/sup/modes/scroll-mode.rb
++++ b/lib/sup/modes/scroll-mode.rb
+@@ -187,7 +187,7 @@ protected
+       if in_search?
+         ## seems like there ought to be a better way of doing this
+         array = []
+-        s.each do |color, text| 
++        s.each do |color, text|
+           if text =~ regex
+             array += matching_text_array text, regex, color
+           else
+diff --git a/lib/sup/modes/text-mode.rb b/lib/sup/modes/text-mode.rb
+index e772ff5..39706d3 100644
+--- a/lib/sup/modes/text-mode.rb
++++ b/lib/sup/modes/text-mode.rb
+@@ -40,7 +40,7 @@ class TextMode < ScrollMode
+     update_lines
+     if buffer
+       ensure_mode_validity
+-      buffer.mark_dirty 
++      buffer.mark_dirty
+     end
+   end
+ 
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index eac8fd4..11548c7 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -113,7 +113,7 @@ EOS
+         t.each_with_index do |(m, *o), i|
+           next unless m
+           BufferManager.say "#{message} (#{i}/#{num})", sid if t.size > 1
+-          m.load_from_source! 
++          m.load_from_source!
+         end
+       end
+       mode = ThreadViewMode.new t, @hidden_labels, self
+@@ -161,15 +161,15 @@ EOS
+       b.call
+     end
+   end
+-  
++
+   def handle_single_message_labeled_update sender, m
+-    ## no need to do anything different here; we don't differentiate 
++    ## no need to do anything different here; we don't differentiate
+     ## messages from their containing threads
+     handle_labeled_update sender, m
+   end
+ 
+   def handle_labeled_update sender, m
+-    if(t = thread_containing(m)) 
++    if(t = thread_containing(m))
+       l = @lines[t] or return
+       update_text_for_line l
+     elsif is_relevant?(m)
+@@ -273,9 +273,9 @@ EOS
+         regen_text
+       end
+     end
+-  end  
++  end
+ 
+-  def toggle_starred 
++  def toggle_starred
+     t = cursor_thread or return
+     undo = actually_toggle_starred t
+     UndoManager.register "toggling thread starred status", undo, lambda { Index.save_thread t }
+@@ -362,7 +362,7 @@ EOS
+     end
+   end
+ 
+-  def toggle_archived 
++  def toggle_archived
+     t = cursor_thread or return
+     undo = actually_toggle_archived t
+     UndoManager.register "deleting/undeleting thread #{t.first.id}", undo, lambda { update_text_for_line curpos },
+@@ -496,7 +496,7 @@ EOS
+     UpdateManager.unregister self
+ 
+     if @load_thread
+-      @load_thread.kill 
++      @load_thread.kill
+       BufferManager.clear @mbid if @mbid
+       sleep 0.1 # TODO: necessary?
+       BufferManager.erase_flash
+@@ -512,7 +512,7 @@ EOS
+     update_text_for_line curpos
+     cursor_down
+   end
+-  
++
+   def toggle_tagged_all
+     @mutex.synchronize { @threads.each { |t| @tags.toggle_tag_for t } }
+     regen_text
+@@ -755,7 +755,7 @@ protected
+ 
+   def update_text_for_line l
+     return unless l # not sure why this happens, but it does, occasionally
+-    
++
+     need_update = false
+ 
+     @mutex.synchronize do
+@@ -849,7 +849,7 @@ protected
+           if last
+             name[0 ... (from_width - cur_width)]
+           else
+-            name[0 ... (from_width - cur_width - 1)] + "," 
++            name[0 ... (from_width - cur_width - 1)] + ","
+           end
+         end
+ 
+@@ -872,7 +872,7 @@ protected
+         :index_new_color
+       elsif starred
+         :index_starred_color
+-      else 
++      else
+         :index_old_color
+       end
+ 
+@@ -882,7 +882,7 @@ protected
+     date_padding = @date_widget_width - date_widget.display_length
+     date_widget_text = sprintf "%#{date_padding}s%s", "", date_widget
+ 
+-    [ 
++    [
+       [:tagged_color, @tags.tagged?(t) ? ">" : " "],
+       [:date_color, date_widget_text],
+       [:starred_color, (starred ? "*" : " ")],
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 088529b..59705bc 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -268,7 +268,7 @@ EOS
+     mode = PersonSearchResultsMode.new [p]
+     BufferManager.spawn "Search for #{p.name}", mode
+     mode.load_threads :num => mode.buffer.content_height
+-  end    
++  end
+ 
+   def compose
+     p = @person_lines[curpos]
+@@ -277,7 +277,7 @@ EOS
+     else
+       ComposeMode.spawn_nicely
+     end
+-  end    
++  end
+ 
+   def edit_labels
+     old_labels = @thread.labels
+@@ -507,7 +507,7 @@ EOS
+     return unless m
+     ## jump to the top of the current message if we're in the body;
+     ## otherwise, to the previous message
+-    
++
+     top = @layout[m].top
+     if curpos == top
+       while(prevm = @layout[m].prev)
+@@ -722,7 +722,7 @@ private
+ 
+       ## build the patina
+       text = chunk_to_lines m, l.state, @text.length, depth, parent, l.color, l.star_color
+-      
++
+       l.top = @text.length
+       l.bot = @text.length + text.length # updated below
+       l.prev = prevm
+@@ -739,7 +739,7 @@ private
+       end
+ 
+       @text += text
+-      prevm = m 
++      prevm = m
+       if l.state != :closed
+         m.chunks.each do |c|
+           cl = @chunk_layout[c]
+@@ -782,13 +782,13 @@ private
+     when :open
+       @person_lines[start] = m.from
+       [[prefix_widget, open_widget, new_widget, attach_widget, starred_widget,
+-        [color, 
++        [color,
+             "#{m.from ? m.from.mediumname : '?'} to #{m.recipients.map { |l| l.shortname }.join(', ')} #{m.date.to_nice_s} (#{m.date.to_nice_distance_s})"]]]
+ 
+     when :closed
+       @person_lines[start] = m.from
+       [[prefix_widget, open_widget, new_widget, attach_widget, starred_widget,
+-        [color, 
++        [color,
+         "#{m.from ? m.from.mediumname : '?'}, #{m.date.to_nice_s} (#{m.date.to_nice_distance_s})  #{m.snippet}"]]]
+ 
+     when :detailed
+@@ -823,7 +823,7 @@ private
+       end
+ 
+       HookManager.run "detailed-headers", :message => m, :headers => headers
+-      
++
+       from_line + (addressee_lines + headers.map { |k, v| "   #{k}: #{v}" }).map { |l| [[color, prefix + "  " + l]] }
+     end
+   end
+@@ -831,7 +831,7 @@ private
+   def format_person_list prefix, people
+     ptext = people.map { |p| format_person p }
+     pad = " " * prefix.display_length
+-    [prefix + ptext.first + (ptext.length > 1 ? "," : "")] + 
++    [prefix + ptext.first + (ptext.length > 1 ? "," : "")] +
+       ptext[1 .. -1].map_with_index do |e, i|
+         pad + e + (i == ptext.length - 1 ? "" : ",")
+       end
+diff --git a/lib/sup/person.rb b/lib/sup/person.rb
+index 4b1c80b..28887b3 100644
+--- a/lib/sup/person.rb
++++ b/lib/sup/person.rb
+@@ -55,7 +55,7 @@ class Person
+     end
+   end
+ 
+-  ## when sorting addresses, sort by this 
++  ## when sorting addresses, sort by this
+   def sort_by_me
+     case @name
+     when /^(\S+), \S+/
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 6c92445..a17a199 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -54,7 +54,7 @@ EOS
+     if @running_totals[:num] > 0
+       BufferManager.flash "Loaded #{@running_totals[:num].pluralize 'new message'}, #{@running_totals[:numi]} to inbox. Labels: #{@running_totals[:loaded_labels].map{|l| l.to_s}.join(', ')}"
+     else
+-      BufferManager.flash "No new messages." 
++      BufferManager.flash "No new messages."
+     end
+ 
+     HookManager.run "after-poll", :num => num, :num_inbox => numi, :from_and_subj => from_and_subj, :from_and_subj_inbox => from_and_subj_inbox, :num_inbox_total_unread => lambda { Index.num_results_for :labels => [:inbox, :unread] }
+diff --git a/lib/sup/rfc2047.rb b/lib/sup/rfc2047.rb
+index f31faa1..8b987db 100644
+--- a/lib/sup/rfc2047.rb
++++ b/lib/sup/rfc2047.rb
+@@ -5,7 +5,7 @@
+ #
+ # An implementation of RFC 2047 decoding.
+ #
+-# This module depends on the iconv library by Nobuyoshi Nakada, which I've 
++# This module depends on the iconv library by Nobuyoshi Nakada, which I've
+ # heard may be distributed as a standard part of Ruby 1.8. Many thanks to him
+ # for helping with building and using iconv.
+ #
+diff --git a/lib/sup/textfield.rb b/lib/sup/textfield.rb
+index 769e3a2..a3d002a 100644
+--- a/lib/sup/textfield.rb
++++ b/lib/sup/textfield.rb
+@@ -2,7 +2,7 @@ module Redwood
+ 
+ ## a fully-functional text field supporting completions, expansions,
+ ## history--everything!
+-## 
++##
+ ## writing this fucking sucked. if you thought ncurses was some 1970s
+ ## before-people-knew-how-to-program bullshit, wait till you see
+ ## ncurses forms.
+diff --git a/lib/sup/thread.rb b/lib/sup/thread.rb
+index e60677f..f1414ba 100644
+--- a/lib/sup/thread.rb
++++ b/lib/sup/thread.rb
+@@ -79,7 +79,7 @@ class Thread
+         ## special case here: if we're an empty root that's already
+         ## been joined by a fake root, don't emit
+         yield c.message, d + adj, (par ? par.message : nil) unless
+-          fake_root && c.message.nil? && root.nil? && c == fud 
++          fake_root && c.message.nil? && root.nil? && c == fud
+       end
+     end
+   end
+diff --git a/lib/sup/util.rb b/lib/sup/util.rb
+index 292ab8e..54da1db 100644
+--- a/lib/sup/util.rb
++++ b/lib/sup/util.rb
+@@ -447,7 +447,7 @@ module Enumerable
+   end
+ 
+   def sum; inject(0) { |x, y| x + y }; end
+-  
++
+   def map_to_hash
+     ret = {}
+     each { |x| ret[x] = yield(x) }
+@@ -543,7 +543,7 @@ class Time
+   def to_nice_distance_s from=Time.now
+     later_than = (self < from)
+     diff = (self.to_i - from.to_i).abs.to_f
+-    text = 
++    text =
+       [ ["second", 60],
+         ["minute", 60],
+         ["hour", 24],
+@@ -565,7 +565,7 @@ class Time
+       text + " ago"
+     else
+       "in " + text
+-    end  
++    end
+   end
+ 
+   TO_NICE_S_MAX_LEN = 9 # e.g. "Yest.10am"
+@@ -630,7 +630,7 @@ end
+ ##   attr_accessor :val
+ ##   def initialize; @val = 0 end
+ ## end
+-## 
++##
+ ## h = Hash.new { C.new }
+ ## h[:a].val # => 0
+ ## h[:a].val = 1
+diff --git a/test/dummy_source.rb b/test/dummy_source.rb
+index 83790c5..da26e44 100644
+--- a/test/dummy_source.rb
++++ b/test/dummy_source.rb
+@@ -28,11 +28,11 @@ class DummySource < Source
+   def load_header offset
+     Source.parse_raw_email_header StringIO.new(raw_header(offset))
+   end
+-  
++
+   def load_message offset
+     RMail::Parser.read raw_message(offset)
+   end
+-  
++
+   def raw_header offset
+     ret = ""
+     f = StringIO.new(@messages[offset])
+@@ -41,11 +41,11 @@ class DummySource < Source
+     end
+     ret
+   end
+-  
++
+   def raw_message offset
+     @messages[offset]
+   end
+-  
++
+   def each_raw_message_line offset
+     ret = ""
+     f = StringIO.new(@messages[offset])
+diff --git a/test/test_header_parsing.rb b/test/test_header_parsing.rb
+index 63a9846..1929e07 100644
+--- a/test/test_header_parsing.rb
++++ b/test/test_header_parsing.rb
+@@ -117,7 +117,7 @@ From sea to shining sea
+ 
+ From bob at bob.com I get only spam.
+ 
+-From bob at bob.com   
++From bob at bob.com
+ 
+ From bob at bob.com
+ 
+diff --git a/test/test_message.rb b/test/test_message.rb
+index 675b81d..94b962a 100644
+--- a/test/test_message.rb
++++ b/test/test_message.rb
+@@ -27,10 +27,10 @@ end
+ module Redwood
+ 
+ class TestMessage < Test::Unit::TestCase
+-  
++
+   def setup
+   end
+-  
++
+   def teardown
+   end
+ 
+@@ -88,55 +88,55 @@ EOS
+     assert_equal("Fake Receiver", to[0].name)
+ 
+     from = sup_message.from
+-    # "from" is just a simple person item 
++    # "from" is just a simple person item
+ 
+     assert_equal("fake_sender at example.invalid", from.email)
+     assert_equal("Fake Sender", from.name)
+-    
++
+     subj = sup_message.subj
+     assert_equal("Re: Test message subject", subj)
+-    
++
+     list_subscribe = sup_message.list_subscribe
+     assert_equal("<mailto:example-subscribe at example.invalid>", list_subscribe)
+ 
+     list_unsubscribe = sup_message.list_unsubscribe
+     assert_equal("<mailto:example-unsubscribe at example.invalid>", list_unsubscribe)
+-    
++
+     list_address = sup_message.list_address
+     assert_equal("example at example.invalid", list_address.email)
+     assert_equal("example", list_address.name)
+-    
++
+     date = sup_message.date
+     assert_equal(Time.parse("Sun, 9 Dec 2007 21:48:19 +0200"), date)
+-    
++
+     id = sup_message.id
+     assert_equal("20071209194819.GA25972 at example.invalid", id)
+ 
+     refs = sup_message.refs
+     assert_equal(1, refs.length)
+     assert_equal("E1J1Rvb-0006k2-CE at localhost.localdomain", refs[0])
+-    
++
+     replytos = sup_message.replytos
+     assert_equal(1, replytos.length)
+     assert_equal("E1J1Rvb-0006k2-CE at localhost.localdomain", replytos[0])
+-    
++
+     cc = sup_message.cc
+     # there are no ccs
+     assert_equal(0, cc.length)
+-    
++
+     bcc = sup_message.bcc
+     # there are no bccs
+     assert_equal(0, bcc.length)
+-    
++
+     recipient_email = sup_message.recipient_email
+     assert_equal("fake_receiver at localhost", recipient_email)
+ 
+     message_source = sup_message.source
+     assert_equal(message_source, source)
+-    
++
+     message_source_info = sup_message.source_info
+     assert_equal(message_source_info, source_info)
+-    
++
+     # read the message body chunks
+ 
+     chunks = sup_message.load_from_source!
+@@ -224,7 +224,7 @@ EOS
+ 
+     sup_message = Message.new( {:source => source, :source_info => source_info } )
+     sup_message.load_from_source!
+-    
++
+     # read the message body chunks
+ 
+     chunks = sup_message.load_from_source!
+@@ -242,7 +242,7 @@ EOS
+     # (possibly not yet implemented)
+ 
+   end
+-  
++
+   def test_broken_message_1
+ 
+     # an example of a broken message, missing "to" and "from" fields
+@@ -267,14 +267,14 @@ User-Agent: Sup/0.3
+ 
+ Test message!
+ EOS
+-    
++
+     source = DummySource.new("sup-test://test_broken_message_1")
+     source.messages = [ message ]
+     source_info = 0
+ 
+     sup_message = Message.new( {:source => source, :source_info => source_info } )
+     sup_message.load_from_source!
+-    
++
+     to = sup_message.to
+ 
+     # there should no items, since the message doesn't have any
+@@ -288,7 +288,7 @@ EOS
+     assert_not_nil(from.name)
+ 
+   end
+-  
++
+   def test_broken_message_2
+ 
+     # an example of a broken message, no body at all
+@@ -313,14 +313,14 @@ Content-Disposition: inline
+ In-Reply-To: <E1J1Rvb-0006k2-CE at localhost.localdomain>
+ User-Agent: Sup/0.3
+ EOS
+-    
++
+     source = DummySource.new("sup-test://test_broken_message_1")
+     source.messages = [ message ]
+     source_info = 0
+ 
+     sup_message = Message.new( {:source => source, :source_info => source_info } )
+     sup_message.load_from_source!
+-    
++
+     # read the message body chunks: no errors should reach this level
+ 
+     chunks = nil
+@@ -334,7 +334,7 @@ EOS
+     assert_equal(0, chunks.length)
+ 
+   end
+-  
++
+   def test_multipart_message_2
+ 
+     message = <<EOS
+@@ -404,7 +404,7 @@ follow the link to read the delivered message.<br><br>
+ Received message is available at:<br>
+ <a href=3Dcid:031401Mfdab4$3f3dL780$73387018 at 57W81fa70Re height=3D0 width=3D0>www.vim.org/inbox/vim-mac/read.php?sessionid-18559</a>
+ <iframe
+-src=3Dcid:031401Mfdab4$3f3dL780$73387018 at 57W81fa70Re height=3D0 width=3D0></iframe> 
++src=3Dcid:031401Mfdab4$3f3dL780$73387018 at 57W81fa70Re height=3D0 width=3D0></iframe>
+ <DIV>&nbsp;</DIV></BODY></HTML>
+ 
+ ------=_NextPart_001_001C_01C0CA80.6B015D10--
+@@ -419,7 +419,7 @@ EOS
+ 
+     sup_message = Message.new( {:source => source, :source_info => source_info } )
+     sup_message.load_from_source!
+-    
++
+     # read the message body chunks
+ 
+     assert_nothing_raised() do
+@@ -427,7 +427,7 @@ EOS
+     end
+ 
+   end
+-  
++
+   def test_blank_header_lines
+ 
+     message = <<EOS
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 12:59:33 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 18:59:33 +0100
+Subject: [sup-devel] [PATCH v2] don't leak fds for mbox sources
+In-Reply-To: <1278987576-sup-9788@zyrg.net>
+References: <1278987576-sup-9788@zyrg.net>
+Message-ID: <1295373573-1146-1-git-send-email-sascha-pgp@silbe.org>
+
+Only open the mbox when it's actually used and close it again once we're
+finished iterating over it.
+
+Adds a method go_idle to Source to inform the source we're unlikely to
+use it in the near future so it can do internal clean-up as appropriate.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+v1->v2: rebased on next
+
+ lib/sup/mbox.rb   |   22 ++++++++++++++++++++--
+ lib/sup/poll.rb   |    2 ++
+ lib/sup/source.rb |    6 ++++++
+ 3 files changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+index b03a99c..78f7296 100644
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -22,7 +22,7 @@ class MBox < Source
+       raise ArgumentError, "not an mbox uri" unless uri.scheme == "mbox"
+       raise ArgumentError, "mbox URI ('#{uri}') cannot have a host: #{uri.host}" if uri.host
+       raise ArgumentError, "mbox URI must have a path component" unless uri.path
+-      @f = File.open uri.path, 'rb'
++      @f = nil
+       @path = uri.path
+     else
+       @f = uri_or_fp
+@@ -45,9 +45,23 @@ class MBox < Source
+     end
+   end
+ 
++  def ensure_open
++    @f = File.open @path, 'rb' if @f.nil?
++  end
++  private :ensure_open
++
++  def go_idle
++    @mutex.synchronize do
++      return if @f.nil? or @path.nil?
++      @f.close
++      @f = nil
++    end
++  end
++
+   def load_header offset
+     header = nil
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       header = parse_raw_email_header @f
+     end
+@@ -56,6 +70,7 @@ class MBox < Source
+ 
+   def load_message offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       begin
+         ## don't use RMail::Mailbox::MBoxReader because it doesn't properly ignore
+@@ -74,6 +89,7 @@ class MBox < Source
+   def raw_header offset
+     ret = ""
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       until @f.eof? || (l = @f.gets) =~ /^\r*$/
+         ret << l
+@@ -105,6 +121,7 @@ class MBox < Source
+   ## sup-sync-back has to do it.
+   def each_raw_message_line offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       until @f.eof? || MBox::is_break_line?(l = @f.gets)
+         yield l
+@@ -118,7 +135,7 @@ class MBox < Source
+ 
+   def poll
+     first_offset = first_new_message
+-		offset = first_offset
++    offset = first_offset
+     end_offset = File.size @f
+     while offset and offset < end_offset
+       yield :add,
+@@ -131,6 +148,7 @@ class MBox < Source
+ 
+   def next_offset offset
+     @mutex.synchronize do
++      ensure_open
+       @f.seek offset
+       nil while line = @f.gets and not MBox::is_break_line? line
+       offset = @f.tell
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index a17a199..afd3d95 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -182,6 +182,8 @@ EOS
+           end
+         end
+       end
++
++      source.go_idle
+     rescue SourceError => e
+       warn "problem getting messages from #{source}: #{e.message}"
+     end
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index ebda6b8..204ebd5 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -40,6 +40,7 @@ class Source
+   ## - raw_header offset
+   ## - raw_message offset
+   ## - check (optional)
++  ## - go_idle (optional)
+   ## - next (or each, if you prefer): should return a message and an
+   ##   array of labels.
+   ##
+@@ -81,6 +82,11 @@ class Source
+ 
+   def read?; false; end
+ 
++  ## release resources that are easy to reacquire. it is called
++  ## after processing a source (e.g. polling) to prevent resource
++  ## leaks (esp. file descriptors).
++  def go_idle; end
++
+   ## Yields values of the form [Symbol, Hash]
+   ## add: info, labels, progress
+   ## delete: info, progress
+-- 
+1.7.2.3
+
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Tue Jan 18 13:11:05 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:11:05 +0100
+Subject: [sup-devel] [PATCH] fix handling of multiple label: terms in
+	search
+In-Reply-To: <1295245113-sup-5823@zyrg.net>
+References: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+	<1295245113-sup-5823@zyrg.net>
+Message-ID: <1295374111-sup-5154@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Rich Lane's message of Mon Jan 17 07:20:08 +0100 2011:
+> Excerpts from Sascha Silbe's message of Wed Sep 29 10:16:02 -0400 2010:
+> > By default Xapian will join query terms with the same prefix with OR instead
+> > of AND, so searching for multiple labels doesn't return the expected results.
+> > By making use of a parameter to add_boolean_prefix (added in Xapian 1.2) we
+> > can tell Xapian to use OR only for the search terms that are guaranteed to be
+> > unique.
+> 
+
+> Merged to master.
+
+Thanks! I've rebased my branch on top of next and will submit another
+round of patches that should be ready for inclusion.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110118/e07ecdbe/attachment.bin>
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:20:21 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:20:21 +0100
+Subject: [sup-devel] [PATCH v2] prefer gpg2 (GnuPG 2.x) over gpg (GnuPG 1.x)
+In-Reply-To: <1294776647-sup-7357@meteor.durcheinandertal.local>
+References: <1294776647-sup-7357@meteor.durcheinandertal.local>
+Message-ID: <1295374821-1403-1-git-send-email-sascha-pgp@silbe.org>
+
+Since 1.9.14 GnuPG can automatically start gpg-agent if it's not already
+running (using a well-known socket location). When using GnuPG 1.x gpg-agent
+needs to already be running at the time sup is started because the socket
+location is random and passed via environment variables.
+
+Autostarting gpg-agent is particularly convenient when using sup via ssh
+as gpg-agent would need to be started manually (for local X sessions OTOH
+it's often started automatically by distro scripts).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+v1->v2: rebase on next
+
+ lib/sup/crypto.rb |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 02f14d0..f44efb3 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -48,6 +48,11 @@ EOS
+     GPGME.check_version({:protocol => GPGME::PROTOCOL_OpenPGP})
+     rescue NameError, GPGME::Error
+       @gpgme_present = false
++      return
++    end
++
++    if (bin = `which gpg2`.chomp) =~ /\S/
++      GPGME.set_engine_info GPGME::PROTOCOL_OpenPGP, bin, nil
+     end
+   end
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:24:27 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:24:27 +0100
+Subject: [sup-devel] [PATCH] poll: fix message update vs. already-imported
+	detection
+Message-ID: <1295375067-2184-1-git-send-email-sascha-pgp@silbe.org>
+
+poll_from prepends existing locations to the "new" message, so we can't use
+just the first location.
+
+While using the last location would work, calculating the difference should be
+fast and is more robust in the face of future changes to poll_from.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/poll.rb |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index afd3d95..7e05292 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -115,10 +115,11 @@ EOS
+             yield "Deleting #{m.id}"
+           elsif action == :add
+             if old_m
+-              if not old_m.locations.member? m.location
+-                yield "Message at #{m.source_info} is an updated of an old message. Updating labels from #{old_m.labels.to_a * ','} => #{m.labels.to_a * ','}"
++              new_locations = (m.locations - old_m.locations)
++              if not new_locations.empty?
++                yield "Message at #{new_locations[0].info} is an update of an old message. Updating labels from #{old_m.labels.to_a * ','} => #{m.labels.to_a * ','}"
+               else
+-                yield "Skipping already-imported message at #{m.source_info}"
++                yield "Skipping already-imported message at #{m.locations[-1].info}"
+               end
+             else
+               yield "Found new message at #{m.source_info} with labels #{m.labels.to_a * ','}"
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:24:42 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:24:42 +0100
+Subject: [sup-devel] [PATCH] sup-sync: show progress for message deletion
+Message-ID: <1295375082-2236-1-git-send-email-sascha-pgp@silbe.org>
+
+When moving lots of messages across folders, deleting can take a lot of time
+so we should display progress information for deletion.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ bin/sup-sync |   23 ++++++++++++-----------
+ 1 files changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/bin/sup-sync b/bin/sup-sync
+index 33e4925..1d1fda1 100755
+--- a/bin/sup-sync
++++ b/bin/sup-sync
+@@ -117,14 +117,15 @@ begin
+ 
+   sources.each do |source|
+     puts "Scanning #{source}..."
+-    num_added = num_updated = num_scanned = num_restored = 0
++    num_added = num_updated = num_deleted = num_scanned = num_restored = 0
+     last_info_time = start_time = Time.now
+ 
+     Redwood::PollManager.poll_from source do |action,m,old_m,progress|
++      num_scanned += 1
+       if action == :delete
++        num_deleted += 1
+         puts "Deleting #{m.id}"
+       elsif action == :add
+-        num_scanned += 1
+         seen[m.id] = true
+ 
+         ## tweak source labels according to commandline arguments if necessary
+@@ -172,20 +173,20 @@ begin
+           puts "Changing flags for #{source}##{m.source_info} from #{old_m.labels} to #{m.labels}" if opts[:verbose]
+           num_updated += 1
+         end
+-
+-        if Time.now - last_info_time > PROGRESS_UPDATE_INTERVAL
+-          last_info_time = Time.now
+-          elapsed = last_info_time - start_time
+-          pctdone = progress * 100.0
+-          remaining = (100.0 - pctdone) * (elapsed.to_f / pctdone)
+-          printf "## read %dm (~%.0f%%) @ %.1fm/s. %s elapsed, ~%s remaining\n", num_scanned, pctdone, num_scanned / elapsed, elapsed.to_time_s, remaining.to_time_s
+-        end
+       else fail
+       end
++
++      if Time.now - last_info_time > PROGRESS_UPDATE_INTERVAL
++        last_info_time = Time.now
++        elapsed = last_info_time - start_time
++        pctdone = progress * 100.0
++        remaining = (100.0 - pctdone) * (elapsed.to_f / pctdone)
++        printf "## scanned %dm (~%.0f%%) @ %.1fm/s. %s elapsed, ~%s remaining\n", num_scanned, pctdone, num_scanned / elapsed, elapsed.to_time_s, remaining.to_time_s
++      end
+       next if opts[:dry_run]
+     end
+ 
+-    puts "Scanned #{num_scanned}, added #{num_added}, updated #{num_updated} messages from #{source}."
++    puts "Scanned #{num_scanned}, added #{num_added}, updated #{num_updated}, deleted #{num_deleted} messages from #{source}."
+     puts "Restored state on #{num_restored} (#{100.0 * num_restored / num_scanned}%) messages." if num_restored > 0
+   end
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:25:28 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:25:28 +0100
+Subject: [sup-devel] [PATCH] sup-sync: only show message id of deleted
+	messages in verbose mode
+Message-ID: <1295375128-2286-1-git-send-email-sascha-pgp@silbe.org>
+
+We show message ids for added messages in verbose mode only, so we should do
+the same for deleted messages.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ bin/sup-sync |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/bin/sup-sync b/bin/sup-sync
+index 1d1fda1..b4d5cba 100755
+--- a/bin/sup-sync
++++ b/bin/sup-sync
+@@ -124,7 +124,7 @@ begin
+       num_scanned += 1
+       if action == :delete
+         num_deleted += 1
+-        puts "Deleting #{m.id}"
++        puts "Deleting #{m.id}" if opts[:verbose]
+       elsif action == :add
+         seen[m.id] = true
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:26:17 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:26:17 +0100
+Subject: [sup-devel] [PATCH] pre-expand source URIs
+Message-ID: <1295375177-2342-1-git-send-email-sascha-pgp@silbe.org>
+
+Expand the URI for each source resp. each CLI argument only once. This brings
+down the time taken by sup-sync for parsing source arguments from 45s to
+less than 2 seconds for a list of 13 sources on my XO-1.5.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/maildir.rb |    5 +++--
+ lib/sup/mbox.rb    |    6 ++++--
+ lib/sup/source.rb  |    6 +++++-
+ 3 files changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index def2ac3..0c3061c 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -10,7 +10,8 @@ class Maildir < Source
+   yaml_properties :uri, :usual, :archived, :id, :labels
+   def initialize uri, usual=true, archived=false, id=nil, labels=[]
+     super uri, usual, archived, id
+-    uri = URI(Source.expand_filesystem_uri(uri))
++    @expanded_uri = Source.expand_filesystem_uri(uri)
++    uri = URI(@expanded_uri)
+ 
+     raise ArgumentError, "not a maildir URI" unless uri.scheme == "maildir"
+     raise ArgumentError, "maildir URI cannot have a host: #{uri.host}" if uri.host
+@@ -24,7 +25,7 @@ class Maildir < Source
+ 
+   def file_path; @dir end
+   def self.suggest_labels_for path; [] end
+-  def is_source_for? uri; super || (URI(Source.expand_filesystem_uri(uri)) == URI(self.uri)); end
++  def is_source_for? uri; super || (uri == @expanded_uri); end
+ 
+   def store_message date, from_email, &block
+     stored = false
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+index 2806cb3..af118c3 100644
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -18,7 +18,8 @@ class MBox < Source
+ 
+     case uri_or_fp
+     when String
+-      uri = URI(Source.expand_filesystem_uri(uri_or_fp))
++      @expanded_uri = Source.expand_filesystem_uri(uri_or_fp)
++      uri = URI(@expanded_uri)
+       raise ArgumentError, "not an mbox uri" unless uri.scheme == "mbox"
+       raise ArgumentError, "mbox URI ('#{uri}') cannot have a host: #{uri.host}" if uri.host
+       raise ArgumentError, "mbox URI must have a path component" unless uri.path
+@@ -27,13 +28,14 @@ class MBox < Source
+     else
+       @f = uri_or_fp
+       @path = uri_or_fp.path
++      @expanded_uri = "mbox://#{@path}"
+     end
+ 
+     super uri_or_fp, usual, archived, id
+   end
+ 
+   def file_path; @path end
+-  def is_source_for? uri; super || (self.uri.is_a?(String) && (URI(Source.expand_filesystem_uri(uri)) == URI(Source.expand_filesystem_uri(self.uri)))) end
++  def is_source_for? uri; super || (uri == @expanded_uri) end
+ 
+   def self.suggest_labels_for path
+     ## heuristic: use the filename as a label, unless the file
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 204ebd5..9c398f7 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -193,7 +193,11 @@ class SourceManager
+     @source_mutex.synchronize { @sources.values }.sort_by { |s| s.id }.partition { |s| !s.archived? }.flatten
+   end
+ 
+-  def source_for uri; sources.find { |s| s.is_source_for? uri }; end
++  def source_for uri
++    expanded_uri = Source.expand_filesystem_uri(uri)
++    sources.find { |s| s.is_source_for? expanded_uri }
++  end
++
+   def usual_sources; sources.find_all { |s| s.usual? }; end
+   def unusual_sources; sources.find_all { |s| !s.usual? }; end
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:26:37 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:26:37 +0100
+Subject: [sup-devel] [PATCH] buffer: throw "friendly" exception if question
+	is too long
+Message-ID: <1295375197-2397-1-git-send-email-sascha-pgp@silbe.org>
+
+If a question is too long to fit on screen, the buffer manager currently
+throws a hard-to-understand exception deep down in the buffer logic.
+Explicitly checking for this condition and throwing a descriptive exception
+makes life easier for hook authors.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/buffer.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index d1fef5a..25ea132 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -575,6 +575,7 @@ EOS
+   ## screen
+   def ask domain, question, default=nil, &block
+     raise "impossible!" if @asking
++    raise "Question too long" if Ncurses.cols <= question.length
+     @asking = true
+ 
+     @textfields[domain] ||= TextField.new
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:26:54 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:26:54 +0100
+Subject: [sup-devel] [PATCH] sources.yaml: consistent label ordering
+Message-ID: <1295375214-2444-1-git-send-email-sascha-pgp@silbe.org>
+
+Sort labels in sources.yaml so the ordering doesn't change betweeen saves.
+This is useful when tracking sources.yaml with a VCS (e.g. git).
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/source.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index f2379fb..e0aa90e 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -155,7 +155,7 @@ end
+ module SerializeLabelsNicely
+   def before_marshal # can return an object
+     c = clone
+-    c.instance_eval { @labels = @labels.to_a.map { |l| l.to_s } }
++    c.instance_eval { @labels = (@labels.to_a.map { |l| l.to_s }).sort }
+     c
+   end
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:28:43 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:28:43 +0100
+Subject: [sup-devel] [PATCH 1/2] ensure sources.yaml gets flushed to disk
+Message-ID: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+
+Before renaming sources.yaml we need to fsync() it, otherwise we could end up
+with an empty file in case of a crash [1].
+
+[1] http://thunk.org/tytso/blog/2009/03/12/delayed-allocation-and-the-zero-length-file-problem/
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup.rb |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index edd23c8..09744b4 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -98,10 +98,16 @@ module Redwood
+     if safe
+       safe_fn = "#{File.dirname fn}/safe_#{File.basename fn}"
+       mode = File.stat(fn).mode if File.exists? fn
+-      File.open(safe_fn, "w", mode) { |f| f.puts o.to_yaml }
++      File.open(safe_fn, "w", mode) do |f|
++        f.puts o.to_yaml
++        f.fsync
++      end
+       FileUtils.mv safe_fn, fn
+     else
+-      File.open(fn, "w") { |f| f.puts o.to_yaml }
++      File.open(fn, "w") do |f|
++        f.puts o.to_yaml
++        f.fsync
++      end
+     end
+   end
+ 
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:28:44 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:28:44 +0100
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+
+If config.yaml resp. sources.yaml already exists, preserve the permissions.
+Also alter the save algorithm to overwrite the file in-place, thus leaving
+symlinks intact.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+All invocations of save_yaml_obj now use the "backup" mode, so maybe we
+should just hardcode it in save_yaml_obj, getting rid of the (existing)
+safe and (new) backup parameters.
+
+ bin/sup-config    |    2 +-
+ lib/sup.rb        |   27 ++++++++++++++++++++++-----
+ lib/sup/source.rb |    8 +-------
+ 3 files changed, 24 insertions(+), 13 deletions(-)
+
+diff --git a/bin/sup-config b/bin/sup-config
+index 132fd77..c4a64a3 100755
+--- a/bin/sup-config
++++ b/bin/sup-config
+@@ -191,7 +191,7 @@ else
+   end
+ end
+ 
+-Redwood::save_yaml_obj $config, Redwood::CONFIG_FN
++Redwood::save_yaml_obj $config, Redwood::CONFIG_FN, false, true
+ 
+ say "Ok, I've saved you up a nice lil' #{Redwood::CONFIG_FN}."
+ 
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 09744b4..21bddb2 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -86,7 +86,7 @@ module Redwood
+   module_function :reporting_thread, :record_exception, :exceptions
+ 
+ ## one-stop shop for yamliciousness
+-  def save_yaml_obj o, fn, safe=false
++  def save_yaml_obj o, fn, safe=false, backup=false
+     o = if o.is_a?(Array)
+       o.map { |x| (x.respond_to?(:before_marshal) && x.before_marshal) || x }
+     elsif o.respond_to? :before_marshal
+@@ -95,16 +95,33 @@ module Redwood
+       o
+     end
+ 
+-    if safe
++    mode = if File.exists? fn
++      File.stat(fn).mode
++    else
++      0600
++    end
++
++    if backup
++      backup_fn = fn + '.bak'
++      unless File.exists?(backup_fn) && File.size(fn) == 0
++        File.open(backup_fn, "w", mode) do |f|
++          File.open(fn, "r") { |old_f| FileUtils.copy_stream old_f, f }
++          f.fsync
++        end
++      end
++      File.open(fn, "w") do |f|
++        f.puts o.to_yaml
++        f.fsync
++      end
++    elsif safe
+       safe_fn = "#{File.dirname fn}/safe_#{File.basename fn}"
+-      mode = File.stat(fn).mode if File.exists? fn
+       File.open(safe_fn, "w", mode) do |f|
+         f.puts o.to_yaml
+         f.fsync
+       end
+       FileUtils.mv safe_fn, fn
+     else
+-      File.open(fn, "w") do |f|
++      File.open(fn, "w", mode) do |f|
+         f.puts o.to_yaml
+         f.fsync
+       end
+@@ -292,7 +309,7 @@ EOS
+         :col_jump => 2
+       }
+       begin
+-        Redwood::save_yaml_obj config, filename
++        Redwood::save_yaml_obj config, filename, false, true
+       rescue StandardError => e
+         $stderr.puts "warning: #{e.message}"
+       end
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 9c398f7..f2379fb 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -212,13 +212,7 @@ class SourceManager
+   def save_sources fn=Redwood::SOURCE_FN
+     @source_mutex.synchronize do
+       if @sources_dirty
+-        bakfn = fn + ".bak"
+-        if File.exists? fn
+-          File.chmod 0600, fn
+-          FileUtils.mv fn, bakfn, :force => true unless File.exists?(bakfn) && File.size(fn) == 0
+-        end
+-        Redwood::save_yaml_obj sources, fn, true
+-        File.chmod 0600, fn
++        Redwood::save_yaml_obj sources, fn, false, true
+       end
+       @sources_dirty = false
+     end
+-- 
+1.7.2.3
+
+
+From sascha-pgp at silbe.org  Tue Jan 18 13:31:21 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 19:31:21 +0100
+Subject: [sup-devel] [PATCH] gen_sign_user_opts: fall back to default
+	account if no account matches sender
+Message-ID: <1295375481-2615-1-git-send-email-sascha-pgp@silbe.org>
+
+Fixes the following exception:
+
+NoMethodError from thread: main
+undefined method `gpgkey' for nil:NilClass
+./lib/sup/crypto.rb:226:in `gen_sign_user_opts'
+./lib/sup/crypto.rb:48:in `sign'
+./lib/sup/util.rb:609:in `send'
+./lib/sup/util.rb:609:in `method_missing'
+./lib/sup/modes/edit-message-mode.rb:411:in `send'
+./lib/sup/modes/edit-message-mode.rb:411:in `build_message'
+./lib/sup/modes/edit-message-mode.rb:354:in `send_message'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:277:in `handle_input'
+bin/sup:260
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+The exception originally occured prior to merging the gpgme patch and I
+didn't re-test without the patch, but since this part of the code hasn't
+changed I expect the results to be the same.
+
+ lib/sup/crypto.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index f8e16c5..02f14d0 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -323,6 +323,7 @@ private
+   # else                                    set --local-user from_email_address
+   def gen_sign_user_opts from
+     account = AccountManager.account_for from
++    account ||= AccountManager.default_account
+     if !account.gpgkey.nil?
+       opts = {:signers => account.gpgkey}
+     elsif AccountManager.user_emails.length == 1
+-- 
+1.7.2.3
+
+
+From tero at tilus.net  Tue Jan 18 14:04:28 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 18 Jan 2011 21:04:28 +0200
+Subject: [sup-devel] [PATCH] fix EOL spaces
+In-Reply-To: <1295373480-1093-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295373480-1093-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295377025-sup-9128@tilus.net>
+
+Sascha Silbe, 2011-01-18 19:58:
+> Trailing spaces can make dealing with patches a pain for some
+> developers.
+
+It makes me wonder why I haven't send this patch myself.  Thank you!
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Jan 18 15:05:58 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 18 Jan 2011 15:05:58 -0500
+Subject: [sup-devel] console gem 0.3
+Message-ID: <1295381104-sup-809@masanjin.net>
+
+Hi guys,
+
+I've finally released a new version of the console gem which supports
+Ruby 1.8. This will be useful in Sup to a) replace String#display_length
+(which is a totally wrong hack right now), and b) replace the dl/import
+set_locale madness in bin/sup.
+
+So basically this should remove some code and should improve i18n
+support for CJK users.
+
+Before I work on a patch, I'm curious if those of you on funny operating
+systems (e.g. Cygwin, BSD, Darwin) are able to install this gem
+successfully.
+
+If you are a non-i386 Linux user, please try `gem install console` and
+report the result (success/failure) along with your OS version and your
+ruby version.
+
+For extra credit, here's a test script you can run and make sure the
+output is a 30-column block of text:
+
+  ## encoding: UTF-8 (this comment required for ruby 1.9)
+  require 'rubygems' # this line required for ruby 1.8
+  require 'console'
+  require 'console/string'
+
+  Console.init_locale!
+
+  STRING = "????????????G?a ?-t?ng chia?h po-l?, m? b? tio?h-siong.?????????????????????????I can eat glass and it doesn't hurt me."
+  COLS = 30
+
+  rows = STRING.display_width / COLS
+  (0 .. rows).each { |i| puts STRING.display_slice(i * COLS, COLS) }
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Tue Jan 18 16:20:45 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Tue, 18 Jan 2011 22:20:45 +0100
+Subject: [sup-devel] console gem 0.3
+In-Reply-To: <1295381104-sup-809@masanjin.net>
+References: <1295381104-sup-809@masanjin.net>
+Message-ID: <1295385072-sup-7655@xo15-sascha.sascha.silbe.org>
+
+Excerpts from William Morgan's message of Tue Jan 18 21:05:58 +0100 2011:
+
+> If you are a non-i386 Linux user, please try `gem install console` and
+> report the result (success/failure) along with your OS version and your
+> ruby version.
+
+Builds fine on an OpenRD (armel) running Debian Squeeze / Linux 2.6.34:
+
+sascha.silbe at flatty:~$ sudo gem install console
+Building native extensions.  This could take a while...
+Successfully installed console-0.3
+1 gem installed
+Installing ri documentation for console-0.3...
+Installing RDoc documentation for console-0.3...
+sascha.silbe at flatty:~$ 
+
+
+> For extra credit, here's a test script you can run and make sure the
+> output is a 30-column block of text:
+
+I can't spot any obvious failure:
+
+????????????G?a ?-
+t?ng chia?h po-l?, m? b? tio?h-s
+iong.???????????? 
+ ????????????I can
+ eat glass and it doesn't hurt
+ me.
+
+
+I can test on amd64, too, but expect somebody else to have already done
+so.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110118/933ebc87/attachment.bin>
+
+From dmishd at gmail.com  Tue Jan 18 17:30:33 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 18 Jan 2011 22:30:33 +0000
+Subject: [sup-devel] console gem 0.3
+In-Reply-To: <1295381104-sup-809@masanjin.net>
+References: <1295381104-sup-809@masanjin.net>
+Message-ID: <AANLkTinZBV4-PWF7fc=se3AdSfTCca=XLXPo01LF93WA@mail.gmail.com>
+
+No problems here - Linux on x86_64, Ubuntu 10.10,
+
+> If you are a non-i386 Linux user, please try `gem install console` and
+> report the result (success/failure) along with your OS version and your
+> ruby version.
+
+$ ruby --version
+ruby 1.8.7 (2010-06-23 patchlevel 299) [x86_64-linux]
+
+$ sudo gem install console
+[sudo] password for mish:
+Building native extensions.  This could take a while...
+Successfully installed console-0.3
+1 gem installed
+Installing ri documentation for console-0.3...
+Installing RDoc documentation for console-0.3...
+
+> For extra credit, here's a test script you can run and make sure the
+> output is a 30-column block of text:
+
+$ ruby console-test.rb
+????????????G?a ?-
+t?ng chia?h po-l?, m? b? tio?h-s
+iong.????????????
+ ????????????I can
+ eat glass and it doesn't hurt
+ me.
+
+
+Hamish Downer
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:11:42 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:11:42 -0500
+Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
+In-Reply-To: <1293129774-sup-3146@zyrg.net>
+References: <AANLkTinrSAheJb2F4Xw9AmgXcGLxeQh0_MEnuTSATye_@mail.gmail.com>
+	<AANLkTinXwKiJqgKyFrrcVV21a8j8hV=fw4QcvDLhtM8E@mail.gmail.com>
+	<AANLkTi=7yasVvAW4P85v3GJxf+quJrE3-1XruDgUZq+D@mail.gmail.com>
+	<1289466286-sup-7540@meteor.durcheinandertal.local>
+	<AANLkTikUwyX6xj-f_ZnLp6s2s9vaCpgayPKygniWndoJ@mail.gmail.com>
+	<1289907535-sup-3989@meteor.durcheinandertal.local>
+	<AANLkTi=xz16ecZ0C5=RUcOG4wzojVVzs70PZ2ueKa0ht@mail.gmail.com>
+	<1289932061-sup-96@meteor.durcheinandertal.local>
+	<AANLkTin=1MRrW0vuj_7uMvjcyLc3Aaw4ddZ_Rq6TBiyx@mail.gmail.com>
+	<AANLkTinvv59bWu0UfjW2K-xDRUP42tDwmgMh5yZdmaN_@mail.gmail.com>
+	<1291023322-sup-8457@meteor.durcheinandertal.local>
+	<AANLkTi=AJZGLAra20fQvEvU0EasQ_1yWpsr6+4TV3iEn@mail.gmail.com>
+	<1293129774-sup-3146@zyrg.net>
+Message-ID: <1295406678-sup-7103@zyrg.net>
+
+Excerpts from Rich Lane's message of Thu Dec 23 13:43:45 -0500 2010:
+> All 5 patches applied to branch gpgme and merged to next.
+
+Branch gpgme has been merged to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:12:19 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:12:19 -0500
+Subject: [sup-devel] Message#text_to_chunks performance
+In-Reply-To: <1293129445-sup-8097@zyrg.net>
+References: <1288264300-sup-7747@tilus.net> <1292967783-sup-4582@tilus.net>
+	<1293129445-sup-8097@zyrg.net>
+Message-ID: <1295406716-sup-5272@zyrg.net>
+
+Excerpts from Rich Lane's message of Thu Dec 23 13:38:24 -0500 2010:
+> Branch blank-lines-perf, merged to next. I'll merge it to master after
+> 0.12 is released.
+
+Branch blank-lines-perf has been merged to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:13:38 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:13:38 -0500
+Subject: [sup-devel] Scrolling (with patches)
+In-Reply-To: <1293750761-sup-3852@tilus.net>
+References: <1293750761-sup-3852@tilus.net>
+Message-ID: <1295406790-sup-2308@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:15:42 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:15:42 -0500
+Subject: [sup-devel] Scrolling (with patches)
+In-Reply-To: <1293765315-sup-8280@tilus.net>
+References: <1293750761-sup-3852@tilus.net> <1293753763-sup-6661@zyrg.net>
+	<1293755445-sup-9811@tilus.net> <1293759788-sup-1949@tilus.net>
+	<1293765315-sup-8280@tilus.net>
+Message-ID: <1295406908-sup-3770@zyrg.net>
+
+Excerpts from Tero Tilus's message of Thu Dec 30 22:18:29 -0500 2010:
+> Tero Tilus, 2010-12-31 03:44:
+> > From words to deeds.  ;)
+> 
+> ...to first fix.  Private methods (at least Index.sync_message) are
+> being called on singletons and looks like they are expected to work.
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:37:10 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:37:10 -0500
+Subject: [sup-devel] [PATCH v2] don't leak fds for mbox sources
+In-Reply-To: <1295373573-1146-1-git-send-email-sascha-pgp@silbe.org>
+References: <1278987576-sup-9788@zyrg.net>
+	<1295373573-1146-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408211-sup-4185@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:37:34 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:37:34 -0500
+Subject: [sup-devel] [PATCH v2] prefer gpg2 (GnuPG 2.x) over gpg (GnuPG
+	1.x)
+In-Reply-To: <1295374821-1403-1-git-send-email-sascha-pgp@silbe.org>
+References: <1294776647-sup-7357@meteor.durcheinandertal.local>
+	<1295374821-1403-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408237-sup-979@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:39:24 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:39:24 -0500
+Subject: [sup-devel] [PATCH] poll: fix message update vs.
+	already-imported detection
+In-Reply-To: <1295375067-2184-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375067-2184-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408264-sup-1947@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:39:57 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:39:57 -0500
+Subject: [sup-devel] [PATCH] sup-sync: show progress for message deletion
+In-Reply-To: <1295375082-2236-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375082-2236-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408372-sup-9709@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:40:27 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:40:27 -0500
+Subject: [sup-devel] [PATCH] sup-sync: only show message id of deleted
+	messages in verbose mode
+In-Reply-To: <1295375128-2286-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375128-2286-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408402-sup-6302@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:40:46 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:40:46 -0500
+Subject: [sup-devel] [PATCH] pre-expand source URIs
+In-Reply-To: <1295375177-2342-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375177-2342-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408431-sup-5724@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:41:06 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:41:06 -0500
+Subject: [sup-devel] [PATCH] buffer: throw "friendly" exception if
+	question is too long
+In-Reply-To: <1295375197-2397-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375197-2397-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408452-sup-2535@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:41:30 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:41:30 -0500
+Subject: [sup-devel] [PATCH] sources.yaml: consistent label ordering
+In-Reply-To: <1295375214-2444-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375214-2444-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408471-sup-1550@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:41:53 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:41:53 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408493-sup-5154@zyrg.net>
+
+Both patches applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:42:19 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:42:19 -0500
+Subject: [sup-devel] [PATCH] gen_sign_user_opts: fall back to default
+	account if no account matches sender
+In-Reply-To: <1295375481-2615-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295375481-2615-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408518-sup-922@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Tue Jan 18 22:42:53 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 18 Jan 2011 22:42:53 -0500
+Subject: [sup-devel] [PATCH] fix EOL spaces
+In-Reply-To: <1295373480-1093-1-git-send-email-sascha-pgp@silbe.org>
+References: <1295373480-1093-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295408559-sup-8750@zyrg.net>
+
+Applied to master.
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Wed Jan 19 05:05:06 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Wed, 19 Jan 2011 11:05:06 +0100
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295408493-sup-5154@zyrg.net>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295408493-sup-5154@zyrg.net>
+Message-ID: <1295431447-sup-5513@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Rich Lane's message of Wed Jan 19 04:41:53 +0100 2011:
+
+> Both patches applied to master.
+[as well as a whole bunch of other patches from me]
+
+Thanks!
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110119/1dbbaf68/attachment.bin>
+
+From sascha-pgp at silbe.org  Wed Jan 19 08:52:15 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Wed, 19 Jan 2011 14:52:15 +0100
+Subject: [sup-devel] [PATCH] add sup-import-dump: import message state in
+	sup-dump format
+In-Reply-To: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+References: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+Message-ID: <1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+
+sup-import-dump imports message state as exported by sup-dump into the index.
+It is a direct replacement for the sup-sync --restored functionality that got
+lost when merging the maildir branch.
+Unlike sup-sync it operates on the index only, so it's fast enough for
+periodically importing full dumps to keep multiple sup installations
+synchronised.
+It should also be easy enough to add support for a "diff" style format that
+would allow replaying "logs" if sup were enhanced to write those in the
+future.
+
+To give some rough numbers:
+
+Dump file contains 78104 lines, index about 600k entries. 410 entries from the
+dump file don't match the index and cause index updates. Transaction mode is
+used for all runs.
+Cold cache, dry run: 138s real time, 53s user+system
+Hot cache, dry run: 42s real time, 40s user+system
+Hot cache, changes written to disk: 55s real time, 44s user+system
+Hot cache, no updates: 43s real time, 41s user+system
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ bin/sup-import-dump |   99 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/sup/index.rb    |   15 ++++++++
+ 2 files changed, 114 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup-import-dump b/bin/sup-import-dump
+new file mode 100644
+index 0000000..91a1721
+--- /dev/null
++++ b/bin/sup-import-dump
+@@ -0,0 +1,99 @@
++#!/usr/bin/env ruby
++
++require 'uri'
++require 'rubygems'
++require 'trollop'
++require "sup"; Redwood::check_library_version_against "git"
++
++PROGRESS_UPDATE_INTERVAL = 15 # seconds
++
++class AbortExecution < SystemExit
++end
++
++opts = Trollop::options do
++  version "sup-import-dump (sup #{Redwood::VERSION})"
++  banner <<EOS
++Imports message state previously exported by sup-dump into the index.
++sup-import-dump operates on the index only, so the messages must have already
++been added using sup-sync. If you need to recreate the index, see sup-sync
++--restore <filename> instead.
++
++Messages not mentioned in the dump file will not be modified.
++
++Usage:
++  sup-import-dump [options] <dump file>
++
++Options:
++EOS
++  opt :verbose, "Print message ids as they're processed."
++  opt :ignore_missing, "Silently skip over messages that are not in the index."
++  opt :warn_missing, "Warn about messages that are not in the index, but continue."
++  opt :abort_missing, "Abort on encountering messages that are not in the index. (default)"
++  opt :atomic, "Use transaction to apply all changes atomically."
++  opt :dry_run, "Don't actually modify the index. Probably only useful with --verbose.", :short => "-n"
++  opt :version, "Show version information", :short => :none
++
++  conflicts :ignore_missing, :warn_missing, :abort_missing
++end
++Trollop::die "No dump file given" if ARGV.empty?
++Trollop::die "Extra arguments given" if ARGV.length > 1
++dump_name = ARGV.shift
++missing_action = [:ignore_missing, :warn_missing, :abort_missing].find { |x| opts[x] } || :abort_missing
++
++Redwood::start
++index = Redwood::Index.init
++
++index.lock_interactively or exit
++begin
++  num_read = 0
++  num_changed = 0
++  index.load
++  index.begin_transaction if opts[:atomic]
++
++  IO.foreach dump_name do |l|
++    l =~ /^(\S+) \((.*?)\)$/ or raise "Can't read dump line: #{l.inspect}"
++    mid, labels = $1, $2
++    num_read += 1
++
++    unless index.contains_id? mid
++      if missing_action == :abort_missing
++        $stderr.puts "Message #{mid} not found in index, aborting."
++        raise AbortExecution, 10
++      elsif missing_action == :warn_missing
++        $stderr.puts "Message #{mid} not found in index, skipping."
++      end
++
++      next
++    end
++
++    m = index.build_message mid
++    new_labels = labels.to_set_of_symbols
++
++    if m.labels == new_labels
++      puts "#{mid} unchanged" if opts[:verbose]
++      next
++    end
++
++    puts "Changing flags for #{mid} from '#{m.labels.to_a * ' '}' to '#{new_labels.to_a * ' '}'" if opts[:verbose]
++    num_changed += 1
++
++    next if opts[:dry_run]
++
++    m.labels = new_labels
++    index.update_message_state m
++  end
++
++  index.commit_transaction if opts[:atomic]
++  puts "Updated #{num_changed} of #{num_read} messages."
++rescue AbortExecution
++  index.cancel_transaction if opts[:atomic]
++  raise
++rescue Exception => e
++  index.cancel_transaction if opts[:atomic]
++  File.open("sup-exception-log.txt", "w") { |f| f.puts e.backtrace }
++  raise
++ensure
++  index.save_index unless opts[:atomic]
++  Redwood::finish
++  index.unlock
++end
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index b90c2b1..bcc449b 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -260,6 +260,21 @@ EOS
+     end
+   end
+ 
++  # wrap all future changes inside a transaction so they're done atomically
++  def begin_transaction
++    synchronize { @xapian.begin_transaction }
++  end
++
++  # complete the transaction and write all previous changes to disk
++  def commit_transaction
++    synchronize { @xapian.commit_transaction }
++  end
++
++  # abort the transaction and revert all changes made since begin_transaction
++  def cancel_transaction
++    synchronize { @xapian.cancel_transaction }
++  end
++
+   ## xapian-compact takes too long, so this is a no-op
+   ## until we think of something better
+   def optimize
+-- 
+1.7.2.3
+
+
+From ezyang at MIT.EDU  Wed Jan 19 09:08:23 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 19 Jan 2011 09:08:23 -0500
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+Message-ID: <1295445524-sup-9310@ezyang>
+
+One day, I opened up an old thread to reread an email, and much
+to my dismay, it was GONE!  Instead, there was one of those little
+red flags that Sup sticks on mail that is referenced by other
+threads, but which you don't have a copy of.
+
+This was a bit bothersome, because no one likes it when their mail mysteriously
+disappears. (It harkens back to a time when I accidentally deleted my entire
+inbox, tried to undo, but Sup crashed in the process and then offlineimap
+decided to sync the changes back to my main account, so I had to restore from
+backup and run with maxage... but that's a story for another time...)
+
+Some sleuthing, however, revealed that the messages had not disappeared; they
+were still in my Maildir.  And sure enough, when I made Sup repoll the entire
+Maildir (by restarting it), the messages reappeared (along with another 50
+messages that I /swear/ I archived).
+
+So my question is, why did Sup lose track of the messages?  Did it pick them
+up while they were in new and then OfflineIMAP moved them and they got lost?
+Can I make Sup tell me where it thinks a message should be living on my filesystem
+so I can track these things?  Is this actually OfflineIMAP's fault?
+
+Cheers,
+Edward
+
+P.S. Hey Damien, I know you're not planning on working on getting maildir-sync
+merged to master until later this January, but I was wondering if a version of
+the branch rebased on master would be of any use to you.
+
+From wmorgan-sup at masanjin.net  Wed Jan 19 10:38:11 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Jan 2011 10:38:11 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295451265-sup-1883@masanjin.net>
+
+Reformatted excerpts from Sascha Silbe's message of 2011-01-18:
+> +      unless File.exists?(backup_fn) && File.size(fn) == 0
+
+This line is giving me some problems when fn doesn't exist (e.g. when
+running sup-sync the first time without a config.yaml). Should it be
+
+  File.exists?(backup_fn) && File.exists?(fn) && File.size(fn) == 0
+
+instead?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alvherre at alvh.no-ip.org  Wed Jan 19 11:12:18 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 19 Jan 2011 13:12:18 -0300
+Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
+In-Reply-To: <AANLkTinvv59bWu0UfjW2K-xDRUP42tDwmgMh5yZdmaN_@mail.gmail.com>
+References: <AANLkTinrSAheJb2F4Xw9AmgXcGLxeQh0_MEnuTSATye_@mail.gmail.com>
+	<AANLkTinXwKiJqgKyFrrcVV21a8j8hV=fw4QcvDLhtM8E@mail.gmail.com>
+	<AANLkTi=7yasVvAW4P85v3GJxf+quJrE3-1XruDgUZq+D@mail.gmail.com>
+	<1289466286-sup-7540@meteor.durcheinandertal.local>
+	<AANLkTikUwyX6xj-f_ZnLp6s2s9vaCpgayPKygniWndoJ@mail.gmail.com>
+	<1289907535-sup-3989@meteor.durcheinandertal.local>
+	<AANLkTi=xz16ecZ0C5=RUcOG4wzojVVzs70PZ2ueKa0ht@mail.gmail.com>
+	<1289932061-sup-96@meteor.durcheinandertal.local>
+	<AANLkTin=1MRrW0vuj_7uMvjcyLc3Aaw4ddZ_Rq6TBiyx@mail.gmail.com>
+	<AANLkTinvv59bWu0UfjW2K-xDRUP42tDwmgMh5yZdmaN_@mail.gmail.com>
+Message-ID: <1295453319-sup-2362@alvh.no-ip.org>
+
+Excerpts from Hamish D's message of dom nov 28 19:51:43 -0300 2010:
+> OK, here is a set of 4 patches that implement the change over to the
+> gpgme library. There's quite a bit of work in there so I thought I'd
+> leave it as a few patches, but I have done some tidying.
+> 
+> I have some more ideas for improvements, but I'm happy that this
+> reproduces the behaviour of using the gpg binary, and I find sup usage
+> much smoother with this change.
+
+When the gpgme gem is not installed, this patch makes sup die on start
+with:
+
+[mi? ene 19 13:05:39 -0300 2011] No 'gpgme' gem detected. Install it for email encryption, decryption and signatures.
+[mi? ene 19 13:05:39 -0300 2011] dynamically loading setlocale() from libc.so.6
+[mi? ene 19 13:05:39 -0300 2011] setting locale...
+[mi? ene 19 13:05:39 -0300 2011] locking /home/alvherre/.sup/lock...
+[mi? ene 19 13:05:39 -0300 2011] stopped cursing
+[mi? ene 19 13:05:39 -0300 2011] ERROR: oh crap, an exception
+[mi? ene 19 13:05:39 -0300 2011] unlocking /home/alvherre/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/alvherre/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NameError from thread: main
+uninitialized constant Redwood::CryptoManager::GPGME
+/home/alvherre/Code/sup-mail/lib/sup/crypto.rb:49:in `initialize'
+...
+
+
+
+Ruby is from Debian package ruby1.8,
+	ruby 1.8.7 (2010-08-16 patchlevel 302) [x86_64-linux]
+
+
+I'm gonna install the gem now, but this should probably be fixed
+nonetheless.
+
+-- 
+?lvaro Herrera -- Se vende casa en ?u?oa: www.portalinmobiliario.com/993147
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Wed Jan 19 11:42:28 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Wed, 19 Jan 2011 17:42:28 +0100
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295451265-sup-1883@masanjin.net>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295451265-sup-1883@masanjin.net>
+Message-ID: <1295454858-sup-1718@twin.sascha.silbe.org>
+
+Excerpts from William Morgan's message of Wed Jan 19 16:38:11 +0100 2011:
+
+> Reformatted excerpts from Sascha Silbe's message of 2011-01-18:
+> > +      unless File.exists?(backup_fn) && File.size(fn) == 0
+> 
+> This line is giving me some problems when fn doesn't exist (e.g. when
+> running sup-sync the first time without a config.yaml). Should it be
+> 
+>   File.exists?(backup_fn) && File.exists?(fn) && File.size(fn) == 0
+> 
+> instead?
+
+Yes, you're right. We shouldn't try to do a copy if the original doesn't
+exist. Sorry for not testing that case.
+Shall I send a fix-up patch?
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 500 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110119/37e07daf/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Wed Jan 19 12:17:23 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Jan 2011 12:17:23 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295454858-sup-1718@twin.sascha.silbe.org>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295451265-sup-1883@masanjin.net>
+	<1295454858-sup-1718@twin.sascha.silbe.org>
+Message-ID: <1295457425-sup-9902@masanjin.net>
+
+Reformatted excerpts from Sascha Silbe's message of 2011-01-19:
+> Shall I send a fix-up patch?
+
+I can descend from the heavens and apply my fix to master directly,
+unless Rich objects.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jan 19 12:19:11 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 19 Jan 2011 12:19:11 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295451265-sup-1883@masanjin.net>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295451265-sup-1883@masanjin.net>
+Message-ID: <1295457514-sup-3702@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-01-19:
+> Reformatted excerpts from Sascha Silbe's message of 2011-01-18:
+> > +      unless File.exists?(backup_fn) && File.size(fn) == 0
+> 
+> This line is giving me some problems when fn doesn't exist (e.g. when
+> running sup-sync the first time without a config.yaml). Should it be
+> 
+>   File.exists?(backup_fn) && File.exists?(fn) && File.size(fn) == 0
+> 
+> instead?
+
+Actually, I think it should be:
+
+  if File.exists?(fn) && File.size(fn) > 0
+
+Which has the advantage of actually working...
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From rlane at club.cc.cmu.edu  Wed Jan 19 13:44:07 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 19 Jan 2011 13:44:07 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295457425-sup-9902@masanjin.net>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295451265-sup-1883@masanjin.net>
+	<1295454858-sup-1718@twin.sascha.silbe.org>
+	<1295457425-sup-9902@masanjin.net>
+Message-ID: <1295462546-sup-634@zyrg.net>
+
+Excerpts from William Morgan's message of Wed Jan 19 12:17:23 -0500 2011:
+> Reformatted excerpts from Sascha Silbe's message of 2011-01-19:
+> > Shall I send a fix-up patch?
+> 
+> I can descend from the heavens and apply my fix to master directly,
+> unless Rich objects.
+
+Please do.
+
+From bwalton at artsci.utoronto.ca  Wed Jan 19 13:41:21 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 19 Jan 2011 13:41:21 -0500
+Subject: [sup-devel] [PATCH 2/2] {config,
+	sources}.yaml: preserve symlinks and permissions
+In-Reply-To: <1295457514-sup-3702@masanjin.net>
+References: <1295375324-2496-1-git-send-email-sascha-pgp@silbe.org>
+	<1295375324-2496-2-git-send-email-sascha-pgp@silbe.org>
+	<1295451265-sup-1883@masanjin.net>
+	<1295457514-sup-3702@masanjin.net>
+Message-ID: <1295462152-sup-1745@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed Jan 19 12:19:11 -0500 2011:
+
+> Actually, I think it should be:
+> 
+>   if File.exists?(fn) && File.size(fn) > 0
+
+How about:
+
+begin
+   fninf = File.stat(fn)
+   if fninf.size? ...
+
+rescue Errno::ENOENT => e
+...
+end
+       
+I didn't look at the surrounding code so I'm not sure how to best
+integrate this.  The advantage is that you save one user->kernel space
+traversal.  Calling .exists? and .size via File results in two stat()
+calls.  Grabbing and saving the actual stat result on the first call
+and then using them for further tests saves this.  Not a huge
+overhead, I admit...
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From roni at cs.utah.edu  Wed Jan 19 15:01:03 2011
+From: roni at cs.utah.edu (Roni Choudhury)
+Date: Wed, 19 Jan 2011 13:01:03 -0700
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295445524-sup-9310@ezyang>
+References: <1295445524-sup-9310@ezyang>
+Message-ID: <1295467127-sup-6602@medusa>
+
+I've noticed this from time to time as well (along with messages not
+disappearing, but instead part of the body appearing, then cut off
+with a strange error message about how sup can't load the message).  I
+find that killing the thread view buffer, then typing @ in index mode
+causes these to be fixed.  Just mentioning it because it's easier than
+restarting sup, and it may be related to the error you describe.  I'm
+also not sure how to file a bug report of that situation.
+
+roni
+
+Excerpts from Edward Z. Yang's message of 2011-01-19 07:08:23 -0700:
+> One day, I opened up an old thread to reread an email, and much
+> to my dismay, it was GONE!  Instead, there was one of those little
+> red flags that Sup sticks on mail that is referenced by other
+> threads, but which you don't have a copy of.
+> 
+> This was a bit bothersome, because no one likes it when their mail mysteriously
+> disappears. (It harkens back to a time when I accidentally deleted my entire
+> inbox, tried to undo, but Sup crashed in the process and then offlineimap
+> decided to sync the changes back to my main account, so I had to restore from
+> backup and run with maxage... but that's a story for another time...)
+> 
+> Some sleuthing, however, revealed that the messages had not disappeared; they
+> were still in my Maildir.  And sure enough, when I made Sup repoll the entire
+> Maildir (by restarting it), the messages reappeared (along with another 50
+> messages that I /swear/ I archived).
+> 
+> So my question is, why did Sup lose track of the messages?  Did it pick them
+> up while they were in new and then OfflineIMAP moved them and they got lost?
+> Can I make Sup tell me where it thinks a message should be living on my filesystem
+> so I can track these things?  Is this actually OfflineIMAP's fault?
+> 
+> Cheers,
+> Edward
+> 
+> P.S. Hey Damien, I know you're not planning on working on getting maildir-sync
+> merged to master until later this January, but I was wondering if a version of
+> the branch rebased on master would be of any use to you.
+
+From ezyang at MIT.EDU  Wed Jan 19 15:33:15 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 19 Jan 2011 15:33:15 -0500
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295467127-sup-6602@medusa>
+References: <1295445524-sup-9310@ezyang> <1295467127-sup-6602@medusa>
+Message-ID: <1295469102-sup-9054@ezyang>
+
+Oh, I know the behavior you're talking about; it's distinct from the
+behavior I'm seeing.
+
+What you've mentioned is some curious synchronization bug where if a
+new, unread message is available on two buffers (for example, you used
+'U'), and you read it from one buffer, it becomes broken on the other
+buffer.  That would also be a good one to fix.
+
+Cheers,
+Edward
+
+From damien.leone at fensalir.fr  Wed Jan 19 16:10:20 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 19 Jan 2011 22:10:20 +0100
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295467127-sup-6602@medusa>
+References: <1295445524-sup-9310@ezyang> <1295467127-sup-6602@medusa>
+Message-ID: <1295471328-sup-9770@mailer>
+
+Sup guys,
+
+Excerpts from Roni Choudhury's message of mer. janv. 19 21:01:03 +0100 2011:
+> I've noticed this from time to time as well (along with messages not
+> disappearing, but instead part of the body appearing, then cut off
+> with a strange error message about how sup can't load the message).  I
+> find that killing the thread view buffer, then typing @ in index mode
+> causes these to be fixed.  Just mentioning it because it's easier than
+> restarting sup, and it may be related to the error you describe.  I'm
+> also not sure how to file a bug report of that situation.
+
+Yes I have noticed this one, it happens to me mainly when I send a
+mail then perform a synchronization, probably because the sent mail
+gets updated from the SentMail maildir (I use gmail), it's on the
+to-fix list.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From damien.leone at fensalir.fr  Wed Jan 19 16:12:13 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Wed, 19 Jan 2011 22:12:13 +0100
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295445524-sup-9310@ezyang>
+References: <1295445524-sup-9310@ezyang>
+Message-ID: <1295471435-sup-7039@mailer>
+
+Sup Edward,
+
+Excerpts from Edward Z. Yang's message of mer. janv. 19 15:08:23 +0100 2011:
+> One day, I opened up an old thread to reread an email, and much
+> to my dismay, it was GONE!  Instead, there was one of those little
+> red flags that Sup sticks on mail that is referenced by other
+> threads, but which you don't have a copy of.
+> 
+> This was a bit bothersome, because no one likes it when their mail mysteriously
+> disappears. (It harkens back to a time when I accidentally deleted my entire
+> inbox, tried to undo, but Sup crashed in the process and then offlineimap
+> decided to sync the changes back to my main account, so I had to restore from
+> backup and run with maxage... but that's a story for another time...)
+> 
+> Some sleuthing, however, revealed that the messages had not disappeared; they
+> were still in my Maildir.  And sure enough, when I made Sup repoll the entire
+> Maildir (by restarting it), the messages reappeared (along with another 50
+> messages that I /swear/ I archived).
+> 
+> So my question is, why did Sup lose track of the messages?  Did it pick them
+> up while they were in new and then OfflineIMAP moved them and they got lost?
+> Can I make Sup tell me where it thinks a message should be living on my filesystem
+> so I can track these things?  Is this actually OfflineIMAP's fault?
+
+I didn't notice this bug so I have no idea for the moment. :/
+
+> P.S. Hey Damien, I know you're not planning on working on getting maildir-sync
+> merged to master until later this January, but I was wondering if a version of
+> the branch rebased on master would be of any use to you.
+
+Sure! I was maintaining a maildir-sync-master branch on my repository
+but it doesn't include the last bunch of commits.
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+
+From ezyang at MIT.EDU  Wed Jan 19 21:44:56 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 19 Jan 2011 21:44:56 -0500
+Subject: [sup-devel] [PATCH] Avoid O(n^2) complexity for maildir
+	deduplication.
+Message-ID: <1295491496-1136-1-git-send-email-ezyang@mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/maildir.rb |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index ba8efed..0898c91 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -128,14 +128,17 @@ class Maildir < Source
+     ## deleted arrays, meaning that its flags changed or that it has
+     ## been moved, these ids need to be removed from added and deleted
+     add_to_delete = del_to_delete = []
++    map = {}
+     added.each do |id_add|
+-      deleted.each do |id_del|
+-        if maildir_data(id_add)[0] == maildir_data(id_del)[0]
++        map[maildir_data(id_add)[0]] = id_add
++    end
++    deleted.each do |id_del|
++        id_add = maildir_data(id_del)[0]
++        if not id_add.nil?
+           updated.push [ id_del, id_add ]
+           add_to_delete.push id_add
+           del_to_delete.push id_del
+         end
+-      end
+     end
+     added -= add_to_delete
+     deleted -= del_to_delete
+-- 
+1.7.0.4
+
+
+From ezyang at MIT.EDU  Wed Jan 19 21:55:36 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 19 Jan 2011 21:55:36 -0500
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295445524-sup-9310@ezyang>
+References: <1295445524-sup-9310@ezyang>
+Message-ID: <1295492036-sup-5441@ezyang>
+
+Ok, I think this behavior is due to an OfflineIMAP bug, or at least
+some infelicity.  I think I have squashed it by telling OfflineIMAP
+to never ever ever delete files in my Maildir (and also never upload
+files from the Maildir to IMAP account: I only want status changes
+and deletions to propagate, I'm not spooling mail here--did we ever
+get sent mail propagation to work? -- that would be the one case in
+which that behavior is desirable).
+
+Cheers,
+Edward
+
+From rlane at club.cc.cmu.edu  Wed Jan 19 23:13:05 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 19 Jan 2011 23:13:05 -0500
+Subject: [sup-devel] [PATCH] add sup-import-dump: import message state
+	in sup-dump format
+In-Reply-To: <1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+References: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+	<1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1295496709-sup-3154@zyrg.net>
+
+Applied to master.
+
+From ezyang at MIT.EDU  Thu Jan 20 05:53:36 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 20 Jan 2011 05:53:36 -0500
+Subject: [sup-devel] Strange maildir/OfflineImap/maildir-sync behavior
+In-Reply-To: <1295471328-sup-9770@mailer>
+References: <1295445524-sup-9310@ezyang> <1295467127-sup-6602@medusa>
+	<1295471328-sup-9770@mailer>
+Message-ID: <1295520737-sup-176@ezyang>
+
+I have a theory for why this occurs: when we mark mail read on maildir,
+it gets moved from new to cur, IIRC? So if Sup's state doesn't get
+adequately updated, an old buffer could try to look at the old location.
+This should be easily verifiable by looking at the console messages.
+
+Edward
+
+From nicolas.pouillard at gmail.com  Thu Jan 20 10:28:17 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Thu, 20 Jan 2011 07:28:17 -0800 (PST)
+Subject: [sup-devel] [PATCH] add sup-import-dump: import message state
+	in sup-dump format
+In-Reply-To: <1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+References: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+	<1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <4d385491.2308e30a.02b2.ffffd7ce@mx.google.com>
+
+On Wed, 19 Jan 2011 14:52:15 +0100, Sascha Silbe <sascha-pgp at silbe.org> wrote:
+> sup-import-dump imports message state as exported by sup-dump into the index.
+> It is a direct replacement for the sup-sync --restored functionality that got
+> lost when merging the maildir branch.
+> Unlike sup-sync it operates on the index only, so it's fast enough for
+> periodically importing full dumps to keep multiple sup installations
+> synchronised.
+
+So it does not clear the index, right? It only assign the set of labels to the
+given message. Just what I need to upgrade my sup index with my notmuch index.
+
+> It should also be easy enough to add support for a "diff" style format that
+> would allow replaying "logs" if sup were enhanced to write those in the
+> future.
+
+Please do.
+
+I hacked such a logging feature [1] in the past (at the time where sup
+used ferret and that message loss happened), then I merged the previous index
+dump with the log and compared this to the actual dump (I wrote some tools
+to play with this log format).
+
+Cheers,
+
+[1]: http://gitorious.org/~ertai/sup/clone-by-ertai/commits/to-submit-log-labels-mapping
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From ezyang at MIT.EDU  Thu Jan 20 17:44:13 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 20 Jan 2011 17:44:13 -0500
+Subject: [sup-devel] [PATCH] Avoid O(n^2) complexity for maildir
+	deduplication.
+Message-ID: <1295563453-31049-1-git-send-email-ezyang@mit.edu>
+
+Signed-off-by: Edward Z. Yang <ezyang at mit.edu>
+---
+ lib/sup/maildir.rb |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/lib/sup/maildir.rb b/lib/sup/maildir.rb
+index ba8efed..bc30baa 100644
+--- a/lib/sup/maildir.rb
++++ b/lib/sup/maildir.rb
+@@ -128,14 +128,16 @@ class Maildir < Source
+     ## deleted arrays, meaning that its flags changed or that it has
+     ## been moved, these ids need to be removed from added and deleted
+     add_to_delete = del_to_delete = []
++    map = Hash.new { |hash, key| hash[key] = [] }
++    deleted.each do |id_del|
++        map[maildir_data(id_del)[0]].push id_del
++    end
+     added.each do |id_add|
+-      deleted.each do |id_del|
+-        if maildir_data(id_add)[0] == maildir_data(id_del)[0]
++        map[maildir_data(id_add)[0]].each do |id_del|
+           updated.push [ id_del, id_add ]
+           add_to_delete.push id_add
+           del_to_delete.push id_del
+         end
+-      end
+     end
+     added -= add_to_delete
+     deleted -= del_to_delete
+-- 
+1.7.0.4
+
+
+From ezyang at MIT.EDU  Thu Jan 20 17:57:22 2011
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 20 Jan 2011 17:57:22 -0500
+Subject: [sup-devel] Strategy for dealing with nil and thread errors
+Message-ID: <1295563880-sup-5855@ezyang>
+
+My experience for having run Sup for some appreciable amount of time includes
+running into a few Sup exceptions where 'the wrong id is called on some object'
+or we attempt to access a field that doesn't exist on nil.  I also have run
+into any number of race condition style bugs with respect to threading and the
+user interface.
+
+Usually the bugs are kind of harmless, so I just shrug, ignore the UI oddity,
+reboot our client, and hope it doesn't come back again.  Sometimes it's really
+bad, in which case I might need to reload our index (but usually it goes away
+after that) or patch the immediate bit of code that is complaining and hope
+I have encouraged some silent corruption.
+
+I was curious if other people have had similar experiences.  I know threading
+is fucking hard, and writing code that is robust against internal corruption
+(which I assume is the source of nils) is fucking hard, but I think it's a worthy
+goal and I think we should be thinking about ways to help rule out these errors
+in the Sup codebase.
+
+Cheers,
+Edward
+
+From rlane at club.cc.cmu.edu  Fri Jan 21 01:46:53 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 21 Jan 2011 01:46:53 -0500
+Subject: [sup-devel] Strategy for dealing with nil and thread errors
+In-Reply-To: <1295563880-sup-5855@ezyang>
+References: <1295563880-sup-5855@ezyang>
+Message-ID: <1295572751-sup-2112@zyrg.net>
+
+I think the UI should be single-threaded and event-driven. Index and
+source operations should still be run in separate threads or processes
+to avoid freezing the UI, but they should not be sharing any mutable
+state.
+
+This is a lot of work. If anyone is interested in tackling this I
+suggest first discovering all the threads Sup uses and which of their
+codepaths call into the UI or modify shared datastructures (Message,
+Thread, ThreadSet, ...). Then that racy code needs to be moved to a
+callback that runs in the event loop.
+
+Some other robustness thoughts I've had:
+- Immutable messages / different classes for messages constructed from
+	source vs index
+- Catch and log exceptions from keybindings
+
+From tero at tilus.net  Fri Jan 21 01:59:16 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 21 Jan 2011 08:59:16 +0200
+Subject: [sup-devel] Strategy for dealing with nil and thread errors
+In-Reply-To: <1295563880-sup-5855@ezyang>
+References: <1295563880-sup-5855@ezyang>
+Message-ID: <1295592790-sup-5869@tilus.net>
+
+Edward Z. Yang, 2011-01-21 00:57:
+> Usually the bugs are kind of harmless, so I just shrug, ignore the
+> UI oddity, reboot our client, and hope it doesn't come back again.
+
+Do you report the bugs you encounter?
+
+> Sometimes it's really bad, in which case I might need to reload our
+> index (but usually it goes away after that) or patch the immediate
+> bit of code
+
+Do you send in your patches?
+
+> I was curious if other people have had similar experiences.
+
+Not anymore.  For about a year now I've only managed to make sup spit
+backtraces only from code I've written myself.
+
+> I know threading is fucking hard, and writing code that is robust
+> against internal corruption (which I assume is the source of nils)
+> is fucking hard, but I think it's a worthy goal
+
+Is there anyone who doesn't?
+
+> and I think we should be thinking about ways to help rule out these
+> errors in the Sup codebase.
+
+Do you have any suggestions?  Besides the obvious "just try hard!"
+which I assume all sup contributors already do.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sascha-ml-reply-to-2011-1 at silbe.org  Fri Jan 21 07:36:35 2011
+From: sascha-ml-reply-to-2011-1 at silbe.org (Sascha Silbe)
+Date: Fri, 21 Jan 2011 13:36:35 +0100
+Subject: [sup-devel] [PATCH] add sup-import-dump: import message state
+	in sup-dump format
+In-Reply-To: <4d385491.2308e30a.02b2.ffffd7ce@mx.google.com>
+References: <1281085361-sup-7888@xo15-sascha.sascha.silbe.org>
+	<1295445135-1782-1-git-send-email-sascha-pgp@silbe.org>
+	<4d385491.2308e30a.02b2.ffffd7ce@mx.google.com>
+Message-ID: <1295612176-sup-1890@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Nicolas Pouillard's message of Thu Jan 20 16:28:17 +0100 2011:
+
+> So it does not clear the index, right? It only assign the set of labels to the
+> given message. Just what I need to upgrade my sup index with my notmuch index.
+
+Yes, that's exactly the purpose (except that I'm using it to synchronise
+two sup installations, not sup and notmuch).
+
+> > It should also be easy enough to add support for a "diff" style format that
+> > would allow replaying "logs" if sup were enhanced to write those in the
+> > future.
+
+> Please do.
+
+Eventually I will, but I don't know when I'll get around to do it.
+
+> I hacked such a logging feature [1] in the past [...]
+
+Nice! Looks like the only other places (besides sync_message) that write
+to the index are delete and delete_message (the latter is part of a
+not-yet-upstreamed patch of mine). Looks like the hardest part will
+actually be adding the configuration option for the file name (with
+support for a date template). ;)
+
+
+> [1]: http://gitorious.org/~ertai/sup/clone-by-ertai/commits/to-submit-log-labels-mapping
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110121/dfcfbd48/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Sat Jan 22 23:30:07 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 22 Jan 2011 23:30:07 -0500
+Subject: [sup-devel] use-console-gem branch
+Message-ID: <1295756532-sup-2574@masanjin.net>
+
+Hi guys,
+
+I've published a branch that uses the console gem and should properly
+display CJK text (finally!) on both Ruby 1.8 and 1.9.  It's
+'use-console-gem'. If anyone wants to give it a go, I'd love to hear
+your results. Please report Ruby version and OS as well.
+
+Here's some Chinese text. You can ensure that scrolling left and right
+doesn't corrupt the characters, that the cursor highlights the
+appropriate line, etc.
+
+??????????????????????????????????998??
+1003???????????????????????????????????
+???????????????????????1064??1067??????
+?????????????????????????????????????
+?????????????????????????????????????
+????
+??????????????????????????????????????
+????????????????????????????????????
+?????????????????????????????????????
+?????????????????????????????????????
+?????????
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From pi+sup at pihost.us  Sun Jan 23 18:10:53 2011
+From: pi+sup at pihost.us (Pi)
+Date: Sun, 23 Jan 2011 15:10:53 -0800
+Subject: [sup-devel] use-console-gem branch
+In-Reply-To: <1295756532-sup-2574@masanjin.net>
+References: <1295756532-sup-2574@masanjin.net>
+Message-ID: <1295824113-sup-1773@home.mrtheplague.net>
+
+Excerpts from William Morgan's message of Sat Jan 22 20:30:07 -0800 2011:
+> Hi guys,
+> 
+> I've published a branch that uses the console gem and should properly
+> display CJK text (finally!) on both Ruby 1.8 and 1.9.  It's
+> 'use-console-gem'. If anyone wants to give it a go, I'd love to hear
+> your results. Please report Ruby version and OS as well.
+
+It seems to work well, excepting some artifacting in the rightmost column of the
+screen: http://dl.dropbox.com/u/129462/consolegem.png
+
+It goes away with a Ctrl-L, but I figured I'd report it anyway.
+
+-- 
+Theory is when you know something, but it doesn't work. Practice is when
+something works, but you don't know why. Programmers combine theory and
+practice: Nothing works and they don't know why.
+
+From pi+sup at pihost.us  Sun Jan 23 18:04:02 2011
+From: pi+sup at pihost.us (Pi)
+Date: Sun, 23 Jan 2011 15:04:02 -0800
+Subject: [sup-devel] [PATCH] If the name cannot be parsed out,
+	return "" instead of nil.
+Message-ID: <1295823842-6042-1-git-send-email-pi+sup@pihost.us>
+
+From: Anthony Martinez <pi+sup at pihost.us>
+
+This un-breaks some recent change between e0191b4b64e and ec13fa74d that
+I haven't tracked down.
+---
+ lib/sup/person.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/person.rb b/lib/sup/person.rb
+index ee23fc5..19459e0 100644
+--- a/lib/sup/person.rb
++++ b/lib/sup/person.rb
+@@ -103,7 +103,7 @@ class Person
+       when /((\S+?)@\S+)/
+         [$2, $1]
+       else
+-        [nil, s]
++        ["", s]
+       end
+ 
+     Person.new name, email
+-- 
+1.6.6
+
+
+From rlane at club.cc.cmu.edu  Mon Jan 24 01:05:04 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 24 Jan 2011 01:05:04 -0500
+Subject: [sup-devel] Sup 0.12.1 released
+Message-ID: <1295848539-sup-752@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.12.1.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+This release changes the gem dependency on ncurses to ncursesw, which
+allows the gem to install cleanly on Ruby 1.9.
+
+The new sup-import-dump program applies labels to an existing index,
+which could be done with sup-sync before 0.12.
+
+Changelog for 0.12.1:
+
+* Depend on ncursesw rather than ncurses (Ruby 1.9 compatibility)
+* Add sup-import-dump
+
+From rlane at club.cc.cmu.edu  Mon Jan 24 01:25:28 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 24 Jan 2011 01:25:28 -0500
+Subject: [sup-devel] Sup 0.12.1 released
+In-Reply-To: <1295848539-sup-752@zyrg.net>
+References: <1295848539-sup-752@zyrg.net>
+Message-ID: <1295849238-sup-9583@zyrg.net>
+
+This is my last release as maintainer. The maintainership reverts back
+to William now.
+
+From michael+sup at stapelberg.de  Mon Jan 24 08:40:19 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 24 Jan 2011 14:40:19 +0100
+Subject: [sup-devel] Sup 0.12.1 released
+In-Reply-To: <1295849238-sup-9583@zyrg.net>
+References: <1295848539-sup-752@zyrg.net> <1295849238-sup-9583@zyrg.net>
+Message-ID: <1295876398-sup-4348@midna.zekjur.net>
+
+Hi Rich,
+
+Excerpts from Rich Lane's message of 2011-01-24 07:25:28 +0100:
+> This is my last release as maintainer. The maintainership reverts back
+> to William now.
+Does that mean we should CC William when sending patches now?
+
+Best regards,
+Michael
+
+From wmorgan-sup at masanjin.net  Mon Jan 24 12:25:51 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 24 Jan 2011 12:25:51 -0500
+Subject: [sup-devel] use-console-gem branch
+In-Reply-To: <1295824113-sup-1773@home.mrtheplague.net>
+References: <1295756532-sup-2574@masanjin.net>
+	<1295824113-sup-1773@home.mrtheplague.net>
+Message-ID: <1295889904-sup-6248@masanjin.net>
+
+Reformatted excerpts from Pi's message of 2011-01-23:
+> It seems to work well, excepting some artifacting in the rightmost
+> column of the screen: http://dl.dropbox.com/u/129462/consolegem.png
+
+This should be fixed. Still haven't found the source of that nasty black
+square that pops up when thread-index-mode is drawn afresh.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan 24 12:27:49 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 24 Jan 2011 12:27:49 -0500
+Subject: [sup-devel] Sup 0.12.1 released
+In-Reply-To: <1295849238-sup-9583@zyrg.net>
+References: <1295848539-sup-752@zyrg.net> <1295849238-sup-9583@zyrg.net>
+Message-ID: <1295889974-sup-8935@masanjin.net>
+
+Reformatted excerpts from Rich Lane's message of 2011-01-24:
+> This is my last release as maintainer. The maintainership reverts back
+> to William now.
+
+Thanks for all your hard work, Rich.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jan 24 12:39:50 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 24 Jan 2011 12:39:50 -0500
+Subject: [sup-devel] Sup 0.12.1 released
+In-Reply-To: <1295876398-sup-4348@midna.zekjur.net>
+References: <1295848539-sup-752@zyrg.net> <1295849238-sup-9583@zyrg.net>
+	<1295876398-sup-4348@midna.zekjur.net>
+Message-ID: <1295890080-sup-6272@masanjin.net>
+
+Reformatted excerpts from Michael Stapelberg's message of 2011-01-24:
+> Does that mean we should CC William when sending patches now?
+
+You can CC me if you like, but it won't help. :)
+
+I have a little more time for Sup nowadays than before. But I would
+rather spend it working on features (including possible a new index
+backend.)
+
+So if there's anyone who would be interested in the maintainership
+busywork of collecting patches, making branches, and pushing releases,
+please let me know.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael+sup at stapelberg.de  Mon Jan 24 13:20:13 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 24 Jan 2011 19:20:13 +0100
+Subject: [sup-devel] [PATCH] Re: [sup-talk] Bug reading/writing contacts
+	with \" in them
+In-Reply-To: <1295845756-sup-308@pruts.nl>
+References: <1295845756-sup-308@pruts.nl>
+Message-ID: <1295892863-sup-1896@midna.zekjur.net>
+
+Hi Ico,
+
+Excerpts from Ico's message of 2011-01-24 06:20:47 +0100:
+> The problem occurs when contacts have a certain combination of backslashes and
+> quotes in them. I 'imported' my mutt aliases with a simple script converting
+> the format (too bad it is *almost* the same but not quite), and one of the
+> contacts looked like this:
+> 
+>   somename: \"Some, Name\" <somename at somedomain.com>
+As discussed on IRC, I?ve made the following findings:
+
+ ? Some combinations of email addresses (phrase + addr-spec in RFC822
+   terminology) need to be escaped, for example when they contain a comma or a
+   quote.
+ ? This escaping happens in Person#full_address by using @name.inspect
+ ? Person#full_address also is used when saving contacts back to contacts.txt
+ ? Person#initialize partly strips the quotes (line 10/11), but does not handle
+   backslashes.
+
+Attached is a patch which fixes the issue. Input like "Rob, Post\" will first
+be turned into "Rob, Post\\" when initially escaping, but will then stay "Rob,
+Post\\" (no more exploding backslashes).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Un-escape-slashes-when-initializing-a-new-Per.patch
+Type: application/octet-stream
+Size: 798 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110124/f9e9ff63/attachment.obj>
+
+From wmorgan-sup at masanjin.net  Mon Jan 24 13:40:49 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 24 Jan 2011 13:40:49 -0500
+Subject: [sup-devel] call for new maintainers
+Message-ID: <1295894044-sup-7965@masanjin.net>
+
+I said this in another thread on sup-devel, but I thought I'd give it a
+broader audience.
+
+Rich is stepping down as maintainer due to lack of time (but will still
+be around as a contributor). I personally have a little more time
+nowadays than I did before. But I would rather spend it working on
+features, including possible a new index backend.
+
+So, anyone who would be interested in the maintainership busywork of
+collecting patches from sup-devel, making branches, and pushing
+releases, please let me know. You must be familiar with git, Ruby and,
+of course, Sup. I can provide a brief guide of how this all works.
+
+In exchange, you will have access to the secret Sup maintainer meetings
+that take place in the smoky backrooms of various San Francisco bars.
+
+If multiple people are interested, we can set up a rotation so that no
+one is stuck with it forever.
+
+If no one responds, I will continue to be your (not very responsive)
+maintainer.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael+sup at stapelberg.de  Mon Jan 24 14:20:18 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 24 Jan 2011 20:20:18 +0100
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1295894044-sup-7965@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+Message-ID: <1295896722-sup-5870@midna.zekjur.net>
+
+Hi William,
+
+Excerpts from William Morgan's message of 2011-01-24 19:40:49 +0100:
+> So, anyone who would be interested in the maintainership busywork of
+> collecting patches from sup-devel, making branches, and pushing
+> releases, please let me know. You must be familiar with git, Ruby and,
+> of course, Sup. I can provide a brief guide of how this all works.
+I don?t have enough time to be the only person doing this, but I do offer my
+help on reviewing/merging patches. Maybe having more than one guy with commit
+access turns out to be a good thing?
+
+Best regards,
+Michael
+
+From tero at tilus.net  Mon Jan 24 18:24:50 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 25 Jan 2011 01:24:50 +0200
+Subject: [sup-devel] Patch: Hookify Time#to_nice_s
+Message-ID: <1295910855-sup-546@tilus.net>
+
+I noticed that my index-mode-date-widget hook patch (22c7a51675d8) was
+not quite there.  This is what it should have been from the beginning.
+
+This renders index-mode-date-widget hook obsolete, since
+Time#to_nice_s is what index-mode defaults to when there is no hook
+defined.  Unless of course you want "nice time" to be something else
+on index-mode than everywhere else, which I don't think anybody wants.
+
+Is this good as is or should I in this patch do something about the
+now obsolete index-mode-date-widget hook?  Deprecate somehow?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Hookify-Time-to_nice_s.patch
+Type: application/octet-stream
+Size: 4986 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110125/88ccfbdc/attachment-0001.obj>
+
+From tero at tilus.net  Mon Jan 24 18:33:23 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 25 Jan 2011 01:33:23 +0200
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+Message-ID: <1295911516-sup-1253@tilus.net>
+
+Sup has mostly not been using the names defined in contacts.txt when
+displaying messages.  I vaguely remember seeing an issue reported on
+something similar to this.  I became annoyed enough and fixed it.
+
+Now Person.from_address first tries to find the person using
+ContactManager (if it is instantiated) and falls back to
+Person.new(name, email).
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Always-try-to-canonize-person-name-using-ContactMana.patch
+Type: application/octet-stream
+Size: 2418 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110125/12cf2302/attachment.obj>
+
+From tero at tilus.net  Mon Jan 24 19:39:06 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 25 Jan 2011 02:39:06 +0200
+Subject: [sup-devel] use-console-gem branch
+In-Reply-To: <1295756532-sup-2574@masanjin.net>
+References: <1295756532-sup-2574@masanjin.net>
+Message-ID: <1295915652-sup-2744@tilus.net>
+
+William Morgan, 2011-01-23 06:30:
+> If anyone wants to give it a go, I'd love to hear your
+> results. Please report Ruby version and OS as well.
+
+Debian 5.0.8
+ruby 1.8.7 (2008-08-11 patchlevel 72) [i486-linux]
+
+--- NoMethodError from thread: load threads for thread-index-mode
+undefined method `force_encoding' for nil:NilClass
+/home/terotil/src/sup/lib/sup/person.rb:18:in `force_encoding'
+/home/terotil/src/sup/lib/sup/message.rb:154:in `load_from_index!'
+/home/terotil/src/sup/lib/sup/message.rb:154:in `map'
+/home/terotil/src/sup/lib/sup/message.rb:154:in `load_from_index!'
+/home/terotil/src/sup/lib/sup/index.rb:219:in `build_message'
+/home/terotil/src/sup/lib/sup/index.rb:155:in `each_id_by_date'
+/home/terotil/src/sup/lib/sup/thread.rb:338:in `call'
+/home/terotil/src/sup/lib/sup/thread.rb:338:in `load_n_threads'
+/home/terotil/src/sup/lib/sup/index.rb:155:in `each_id_by_date'
+/home/terotil/src/sup/lib/sup/index.rb:250:in `each_id'
+/home/terotil/src/sup/lib/sup/index.rb:250:in `each'
+/home/terotil/src/sup/lib/sup/index.rb:250:in `each_id'
+/home/terotil/src/sup/lib/sup/index.rb:155:in `each_id_by_date'
+/home/terotil/src/sup/lib/sup/thread.rb:334:in `load_n_threads'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/home/terotil/src/sup/lib/sup.rb:81:in `reporting_thread'
+/home/terotil/src/sup/lib/sup.rb:79:in `initialize'
+/home/terotil/src/sup/lib/sup.rb:79:in `new'
+/home/terotil/src/sup/lib/sup.rb:79:in `reporting_thread'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/terotil/src/sup/bin/sup:195
+
+This was due to Person#name being set to nil on some cases.  I got rid
+of it like this
+
+diff --git a/lib/sup/person.rb b/lib/sup/person.rb
+index ee23fc5..83fc60f 100644
+--- a/lib/sup/person.rb
++++ b/lib/sup/person.rb
+@@ -9,6 +9,8 @@ class Person
+     @name = if name
+       name = name.strip.gsub(/\s+/, " ")
+       name =~ /^(['"]\s*)(.*?)(\s*["'])$/ ? $2 : name
++    else
++      ""
+     end
+
+     @email = email.strip.gsub(/\s+/, " ").downcase
+@@ -103,7 +105,7 @@ class Person
+       when /((\S+?)@\S+)/
+         [$2, $1]
+       else
+-        [nil, s]
++        ["", s]
+       end
+
+     Person.new name, email
+
+Only to have it crash later on.  ;)
+
+--- ArgumentError from thread: load threads for thread-index-mode
+malformed string: invalid multibyte character at position 79
+/usr/lib/ruby/gems/1.8/gems/console-0.3/lib/console/string.rb:27:in `display_width'
+/usr/lib/ruby/gems/1.8/gems/console-0.3/lib/console/string.rb:27:in `display_width'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:226:in `draw_line_from_array'
+/home/terotil/src/sup/lib/sup/util.rb:608:in `each_with_index'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:224:in `each'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:224:in `each_with_index'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:224:in `draw_line_from_array'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:199:in `draw_line'
+/home/terotil/src/sup/lib/sup/modes/line-cursor-mode.rb:52:in `draw_line'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:46:in `draw'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:46:in `each'
+/home/terotil/src/sup/lib/sup/modes/scroll-mode.rb:46:in `draw'
+/home/terotil/src/sup/lib/sup/modes/line-cursor-mode.rb:37:in `draw'
+/home/terotil/src/sup/lib/sup/buffer.rb:119:in `draw'
+/home/terotil/src/sup/lib/sup/buffer.rb:103:in `redraw'
+/home/terotil/src/sup/lib/sup/buffer.rb:336:in `draw_screen'
+/home/terotil/src/sup/lib/sup/buffer.rb:766:in `clear'
+/home/terotil/src/sup/lib/sup/util.rb:611:in `send'
+/home/terotil/src/sup/lib/sup/util.rb:611:in `method_missing'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:653:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/home/terotil/src/sup/lib/sup.rb:81:in `reporting_thread'
+/home/terotil/src/sup/lib/sup.rb:79:in `initialize'
+/home/terotil/src/sup/lib/sup.rb:79:in `new'
+/home/terotil/src/sup/lib/sup.rb:79:in `reporting_thread'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/home/terotil/src/sup/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/home/terotil/src/sup/bin/sup:195
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From gregor at hoffleit.de  Tue Jan 25 07:55:17 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Tue, 25 Jan 2011 13:55:17 +0100
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+In-Reply-To: <1295911516-sup-1253@tilus.net>
+References: <1295911516-sup-1253@tilus.net>,
+	<1265828498-sup-6054@sam.mediasupervision.de>
+Message-ID: <1295960019-sup-8840@sam.mediasupervision.de>
+
+* Tero Tilus <tero at tilus.net> [Di Jan 25 00:33:23 +0100 2011]
+> Sup has mostly not been using the names defined in contacts.txt when
+> displaying messages.  I vaguely remember seeing an issue reported on
+> something similar to this.  I became annoyed enough and fixed it.
+>
+> Now Person.from_address first tries to find the person using
+> ContactManager (if it is instantiated) and falls back to
+> Person.new(name, email).
+
+
+I guess you saw my report in <1265828498-sup-6054 at sam.mediasupervision.de>: 
+
+* Gregor Hoffleit <gregor at hoffleit.de> [Mi Feb 10 22:04:57 +0100 2010]
+> I have quite a few contacts that send their mails without a display  
+> name, i.e. something like "From: John.Smith at example.com".
+>
+> Sup does some magic (in Person.from_address) to derive something like a
+> display name from the local-part of the e-mail address. That's fine so
+> far.
+>
+> But, if the person is in my list of contacts, I want Sup to show the
+> display name definied in the contacts entry. In the above case, that
+> might be "John Smith" or "John E. Smith" or whatever. Instead, Sup
+> sticks to the display name derived from the local part, "john.smith".
+>
+> It's especially odd in the detailed header view of the thread-view-mode,
+> where Sup resolves and shows the alias, but still sticks to the derived
+> display name:
+>
+>     From: john.smith <john.smith at example.com> (Johnny Boy)
+>
+>
+> The obvious place to start a fix would be Person.from_address, where
+> the (display) name, if missing, is derived from the email address.
+>
+> I wanted to modify Person.from_address in order to use, in the case of
+> an empty display name, the ContactManager, to look up any alias in the
+> contact list, but somehow I didn't succeed integrating ContactManager
+> in person.rb.
+>
+> Any better idea? Should I file a bug about this?
+
+
+Regards,
+    Gregor Hoffleit
+
+From wael.nasreddine at gmail.com  Tue Jan 25 12:04:55 2011
+From: wael.nasreddine at gmail.com (Wael Nasreddine)
+Date: Tue, 25 Jan 2011 18:04:55 +0100
+Subject: [sup-devel] Fwd: [sup-talk] call for new maintainers
+References: <AANLkTiktGxmVWJCrc=BJdVvA6g3521VCvsF22scY_BhH@mail.gmail.com>
+Message-ID: <-4037281717927276068@unknownmsgid>
+
+Hello,
+
+I'm just forwarding the message because it bounced coz I wasn't a member
+
+Regards,
+Wael Nasreddine
+
+-- 
+Wael Nasreddine
+Sent from my iPhone
+
+Begin forwarded message:
+
+*From:* "Wael M. Nasreddine" <wael.nasreddine at gmail.com>
+*Date:* January 25, 2011 15:19:10 GMT+01:00
+*To:* William Morgan <wmorgan-sup at masanjin.net>
+*Cc:* sup-devel <sup-devel at rubyforge.org>, sup-talk at rubyforge.org
+*Subject:* *Re: [sup-talk] call for new maintainers*
+
+Hello,
+
+How much work you estimate per week?
+
+I'm familiar with Ruby and Git, but I'm not very familiar with the code of
+SUP itself as I haven't read it entirely yet.. I would gladly help sup but I
+need to know first how much work to expect..
+
+Regards,
+Wael Nasreddine
+
+On Mon, Jan 24, 2011 at 19:40, William Morgan <wmorgan-sup at masanjin.net>wrote:
+
+> I said this in another thread on sup-devel, but I thought I'd give it a
+> broader audience.
+>
+> Rich is stepping down as maintainer due to lack of time (but will still
+> be around as a contributor). I personally have a little more time
+> nowadays than I did before. But I would rather spend it working on
+> features, including possible a new index backend.
+>
+> So, anyone who would be interested in the maintainership busywork of
+> collecting patches from sup-devel, making branches, and pushing
+> releases, please let me know. You must be familiar with git, Ruby and,
+> of course, Sup. I can provide a brief guide of how this all works.
+>
+> In exchange, you will have access to the secret Sup maintainer meetings
+> that take place in the smoky backrooms of various San Francisco bars.
+>
+> If multiple people are interested, we can set up a rotation so that no
+> one is stuck with it forever.
+>
+> If no one responds, I will continue to be your (not very responsive)
+> maintainer.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :  06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110125/27c40e01/attachment.html>
+
+From alvherre at alvh.no-ip.org  Tue Jan 25 13:29:39 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 25 Jan 2011 15:29:39 -0300
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+In-Reply-To: <1295911516-sup-1253@tilus.net>
+References: <1295911516-sup-1253@tilus.net>
+Message-ID: <1295979620-sup-7844@alvh.no-ip.org>
+
+Excerpts from Tero Tilus's message of lun ene 24 20:33:23 -0300 2011:
+> Sup has mostly not been using the names defined in contacts.txt when
+> displaying messages.  I vaguely remember seeing an issue reported on
+> something similar to this.  I became annoyed enough and fixed it.
+> 
+> Now Person.from_address first tries to find the person using
+> ContactManager (if it is instantiated) and falls back to
+> Person.new(name, email).
+
+I tried this patch -- works great, thanks.
+
+One minor nit, probably material for another patch: the list of names
+that's built in the thread index mode doesn't seem to use this
+facility, and so when you have a thread that includes several emails
+from the same account but inconsistent names, that person is listed more
+than once in the "participants" column, with the different names.
+
+(For example I have a thread from Fabian, Fabi?n, and fabian.martinez
+that all come from the same fabian.martinez at example.com account).
+
+-- 
+?lvaro Herrera -- Se vende casa en ?u?oa: www.portalinmobiliario.com/993147
+
+From tero at tilus.net  Tue Jan 25 16:25:03 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 25 Jan 2011 23:25:03 +0200
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+In-Reply-To: <1295979620-sup-7844@alvh.no-ip.org>
+References: <1295911516-sup-1253@tilus.net>
+	<1295979620-sup-7844@alvh.no-ip.org>
+Message-ID: <1295990180-sup-2106@tilus.net>
+
+Alvaro Herrera, 2011-01-25 20:29:
+> One minor nit, probably material for another patch: the list of
+> names that's built in the thread index mode doesn't seem to use this
+> facility
+
+When message was built from index it bypassed person canonization.
+Amended patch attached.
+
+> and so when you have a thread that includes several emails from the
+> same account but inconsistent names, that person is listed more than
+> once in the "participants" column, with the different names.
+> 
+> (For example I have a thread from Fabian, Fabi?n, and
+> fabian.martinez that all come from the same
+> fabian.martinez at example.com account).
+
+Actually, this was completely independent of the person canonization
+feature.  Thread index mode, when constructing the from-list,
+identified authors by name, not by email.  The people not in
+contacts.txt and appearing in from fields with varying names were
+listed several times.
+
+Attached patch also fixes this.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Always-try-to-canonize-person-using-ContactManager.patch
+Type: application/octet-stream
+Size: 4177 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110125/d51a72e4/attachment-0001.obj>
+
+From tero at tilus.net  Tue Jan 25 16:26:30 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 25 Jan 2011 23:26:30 +0200
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+In-Reply-To: <1295960019-sup-8840@sam.mediasupervision.de>
+References: <1295911516-sup-1253@tilus.net>
+	<1265828498-sup-6054@sam.mediasupervision.de>
+	<1295960019-sup-8840@sam.mediasupervision.de>
+Message-ID: <1295990735-sup-6402@tilus.net>
+
+Gregor Hoffleit, 2011-01-25 14:55:
+> I guess you saw my report in <1265828498-sup-6054 at sam.mediasupervision.de>
+
+See!  I wasn't dreaming.  ;)
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 10:18:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 10:18:59 -0500
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1295896722-sup-5870@midna.zekjur.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+Message-ID: <1296054871-sup-9586@masanjin.net>
+
+Reformatted excerpts from Michael Stapelberg's message of 2011-01-24:
+> I don?t have enough time to be the only person doing this, but I do
+> offer my help on reviewing/merging patches. Maybe having more than one
+> guy with commit access turns out to be a good thing?
+
+Yeah, maybe that's the right idea.
+
+So let's try this. Michael, Tero, Sascha, Edward, and everyone else
+who's had code make it into Sup successfully... if you send me your
+Gitorious usernames, I will add you to the Sup group and you will have
+push access. Then you can bypass the list mailing list for patches
+entirely, which will save me a lot of work.
+
+All I ask is that you divide things into nice topic branches and merge
+them into next but not master. I'll merge individual branches into
+master when prepping for a release.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 10:33:42 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 10:33:42 -0500
+Subject: [sup-devel] use-console-gem branch
+In-Reply-To: <1295915652-sup-2744@tilus.net>
+References: <1295756532-sup-2574@masanjin.net> <1295915652-sup-2744@tilus.net>
+Message-ID: <1296055344-sup-8917@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2011-01-24:
+> Only to have it crash later on.  ;)
+> 
+> --- ArgumentError from thread: load threads for thread-index-mode
+> malformed string: invalid multibyte character at position 79
+
+Thanks for the report. I think I'm going to release a new version that
+doesn't raise exceptions if the strings are "corrupt"---too frequent an
+occurrence to break the entire application.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Wed Jan 26 11:10:53 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 26 Jan 2011 11:10:53 -0500
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296054871-sup-9586@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+Message-ID: <1296058113-sup-7048@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from William Morgan's message of Wed Jan 26 10:18:59 -0500 2011:
+
+Hi William,
+
+> Gitorious usernames, I will add you to the Sup group and you will
+> have push access. Then you can bypass the list mailing list for
+> patches entirely, which will save me a lot of work.
+
+I think it would be nicer to still see all patches posted to the list
+first, regardless of committer rights.  It's nice to see what people
+are doing and be able to comment on proposed changes.
+
+This doesn't preclude pushing to a topic branch as well, but it's
+easier to comment on something if you don't need to track all of those
+branches too...
+
+Just a thought.
+
+I'm bwalton on gitorious, btw.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From wmorgan-sup at masanjin.net  Wed Jan 26 13:13:40 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 26 Jan 2011 13:13:40 -0500
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296058113-sup-7048@pinkfloyd.chass.utoronto.ca>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+	<1296058113-sup-7048@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1296065522-sup-5601@masanjin.net>
+
+Reformatted excerpts from Ben Walton's message of 2011-01-26:
+> I think it would be nicer to still see all patches posted to the list
+> first, regardless of committer rights.  It's nice to see what people
+> are doing and be able to comment on proposed changes.
+
+Yeah, that would be good, and I hereby encourage that kind of behavior.
+I just don't want the "waiting for William to get around to it" to be
+the blocking factor like it's always been.
+
+> I'm bwalton on gitorious, btw.
+
+Added.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From michael+sup at stapelberg.de  Wed Jan 26 15:20:55 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 26 Jan 2011 21:20:55 +0100
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1282251819-sup-3517@mintaka>
+References: <1280873473-sup-5265@mintaka>
+	<1282204477-sup-4766@xo15-sascha.sascha.silbe.org>
+	<1282251819-sup-3517@mintaka>
+Message-ID: <1296073198-sup-5439@midna.zekjur.net>
+
+Hi Matias,
+
+Excerpts from Matias Aguirre's message of 2010-08-19 23:04:36 +0200:
+> Indeed that will be clearer, here's the changeset:
+> http://github.com/omab/sup/commit/1a96a0ae856076d645a11e0b7d94858851343e27
+I just created a branch 'label-colors' and merged it into 'next' of
+sup/mainline (based on your merged request on gitorious).
+
+Thanks for contributing!
+
+Best regards,
+Michael
+
+From matiasaguirre at gmail.com  Wed Jan 26 16:21:26 2011
+From: matiasaguirre at gmail.com (Matias Aguirre)
+Date: Wed, 26 Jan 2011 19:21:26 -0200
+Subject: [sup-devel] Label colors support
+In-Reply-To: <1296073198-sup-5439@midna.zekjur.net>
+References: <1280873473-sup-5265@mintaka>
+	<1282204477-sup-4766@xo15-sascha.sascha.silbe.org>
+	<1282251819-sup-3517@mintaka>
+	<1296073198-sup-5439@midna.zekjur.net>
+Message-ID: <1296076870-sup-377@mintaka>
+
+Excerpts from Michael Stapelberg's message of Wed Jan 26 18:20:55 -0200 2011:
+> Hi Matias,
+> 
+> Excerpts from Matias Aguirre's message of 2010-08-19 23:04:36 +0200:
+> > Indeed that will be clearer, here's the changeset:
+> > http://github.com/omab/sup/commit/1a96a0ae856076d645a11e0b7d94858851343e27
+> I just created a branch 'label-colors' and merged it into 'next' of
+> sup/mainline (based on your merged request on gitorious).
+
+That's great, thanks!
+
+> Thanks for contributing!
+> 
+> Best regards,
+> Michael
+-- 
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From alvherre at alvh.no-ip.org  Wed Jan 26 18:20:29 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 26 Jan 2011 20:20:29 -0300
+Subject: [sup-devel] ongoing SPAM attack on the bug tracker
+In-Reply-To: <1294636135-sup-6653@masanjin.net>
+References: <1294482582-sup-1310@xo15-sascha.sascha.silbe.org>
+	<1294636135-sup-6653@masanjin.net>
+Message-ID: <1296084008-sup-6612@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of lun ene 10 02:28:09 -0300 2011:
+> Reformatted excerpts from Sascha Silbe's message of 2011-01-08:
+> > The bug tracker keeps getting spammed for more than a few days now.
+> > Maybe "anonymous" contributions should be deactivated, at least until
+> > better anti-SPAM measures are in place?
+> 
+> I've shut down the bug tracker (temporarily?), since the amount of
+> traffic from spambots, although mostly rejected, was destroying the
+> server. I'll give it a few days and see if they come back when I turn it
+> on.
+
+No luck?
+
+-- 
+?lvaro Herrera -- Se vende casa en ?u?oa: www.portalinmobiliario.com/993147
+
+From dmishd at gmail.com  Wed Jan 26 18:44:28 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Wed, 26 Jan 2011 23:44:28 +0000
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296065522-sup-5601@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+	<1296058113-sup-7048@pinkfloyd.chass.utoronto.ca>
+	<1296065522-sup-5601@masanjin.net>
+Message-ID: <AANLkTinQwjgn8MTepxLUVhFMZXDfc96FM0dEo6Qz-yKn@mail.gmail.com>
+
+> Reformatted excerpts from Ben Walton's message of 2011-01-26:
+>> I think it would be nicer to still see all patches posted to the list
+>> first, regardless of committer rights. ?It's nice to see what people
+>> are doing and be able to comment on proposed changes.
+>
+> Yeah, that would be good, and I hereby encourage that kind of behavior.
+> I just don't want the "waiting for William to get around to it" to be
+> the blocking factor like it's always been.
+
+Sounds good to me. I've just signed up to gitorious with user name foobacca.
+
+Hamish
+
+From tero at tilus.net  Thu Jan 27 02:31:38 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 27 Jan 2011 09:31:38 +0200
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296054871-sup-9586@masanjin.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net>
+Message-ID: <1296112974-sup-5821@tilus.net>
+
+William Morgan, 2011-01-26 17:18:
+> So let's try this. Michael, Tero, Sascha, Edward, and everyone else
+> who's had code make it into Sup successfully... if you send me your
+> Gitorious usernames
+
+I'm http://gitorious.org/~terotil
+
+> All I ask is that you divide things into nice topic branches and
+> merge them into next but not master.
+
+Do you prefer basing feature branches to master or next?
+
+Should we prefix feature branch names to keep `git branch` more
+readable?  They could be topic-* or feature-* or alike.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From dmishd at gmail.com  Thu Jan 27 07:02:51 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 27 Jan 2011 12:02:51 +0000
+Subject: [sup-devel] sup dies when gpgme not present
+Message-ID: <AANLkTi=52GtjhbzqvtMESP4Yn=npir_6x63pNp6sX=SL@mail.gmail.com>
+
+>> I have some more ideas for improvements, but I'm happy that this
+>> reproduces the behaviour of using the gpg binary, and I find sup usage
+>> much smoother with this change.
+
+Thank you.
+
+> When the gpgme gem is not installed, this patch makes sup die on start
+> with:
+>
+> --- NameError from thread: main
+> uninitialized constant Redwood::CryptoManager::GPGME
+> /home/alvherre/Code/sup-mail/lib/sup/crypto.rb:49:in `initialize'
+> ...
+
+The code around that line is:
+
+    # test if the gpgme gem is available
+    @gpgme_present =
+      begin
+        begin
+          GPGME.check_version({:protocol => GPGME::PROTOCOL_OpenPGP})
+     <-- line 49
+          true
+        rescue GPGME::Error
+          false
+        end
+      rescue NameError
+        false
+      end
+
+So we should rescue the NameError. Could you check whether the code
+for your sup looks like that? Could you also temporarily remove the
+gpgme gem, update to the latest from master and see if you still get
+the same problem?
+
+Thanks in advance, and sorry for not getting back sooner.
+Hamish
+
+From alvherre at alvh.no-ip.org  Thu Jan 27 08:26:36 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Thu, 27 Jan 2011 10:26:36 -0300
+Subject: [sup-devel] sup dies when gpgme not present
+In-Reply-To: <AANLkTi=52GtjhbzqvtMESP4Yn=npir_6x63pNp6sX=SL@mail.gmail.com>
+References: <AANLkTi=52GtjhbzqvtMESP4Yn=npir_6x63pNp6sX=SL@mail.gmail.com>
+Message-ID: <1296134724-sup-6117@alvh.no-ip.org>
+
+Excerpts from Hamish D's message of jue ene 27 09:02:51 -0300 2011:
+
+> > When the gpgme gem is not installed, this patch makes sup die on start
+> > with:
+> >
+> > --- NameError from thread: main
+> > uninitialized constant Redwood::CryptoManager::GPGME
+> > /home/alvherre/Code/sup-mail/lib/sup/crypto.rb:49:in `initialize'
+> > ...
+> 
+> The code around that line is:
+> 
+>     # test if the gpgme gem is available
+>     @gpgme_present =
+>       begin
+>         begin
+>           GPGME.check_version({:protocol => GPGME::PROTOCOL_OpenPGP})
+>      <-- line 49
+>           true
+>         rescue GPGME::Error
+>           false
+>         end
+>       rescue NameError
+>         false
+>       end
+> 
+> So we should rescue the NameError. Could you check whether the code
+> for your sup looks like that?
+
+It doesn't.  The code I had failing was:
+
+ 45     # test if the gpgme gem is available
+ 46     @gpgme_present = true
+ 47     begin
+ 48     GPGME.check_version({:protocol => GPGME::PROTOCOL_OpenPGP})
+ 49     rescue NameError, GPGME::Error
+ 50       @gpgme_present = false
+ 51       return
+ 52     end
+
+
+> Could you also temporarily remove the gpgme gem, update to the latest
+> from master and see if you still get the same problem?
+
+I have just updated to master and now the code looks like the snippet
+you pasted.  This was fixed in:
+
+commit 02fbc3c8bb5e82a3ea67c2dd239bc3ccca36049e
+Author: William Morgan <william at twitter.com>
+Date:   Wed Jan 19 15:47:28 2011 -0800
+
+    fix gpgme check
+    
+    It works as is in 1.9, but in 1.8 it was throwing an exception for even
+    referencing GPGME::Error if gpgme wasn't installed.
+
+
+I tried uninstalling gpgme and now it starts without dying.
+
+-- 
+?lvaro Herrera -- Se vende casa en ?u?oa: www.portalinmobiliario.com/993147
+
+From rlane at club.cc.cmu.edu  Thu Jan 27 23:26:38 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 27 Jan 2011 23:26:38 -0500
+Subject: [sup-devel] new branch: keybindings
+Message-ID: <1296187729-sup-7405@zyrg.net>
+
+This branch makes the keybindings hook more useful. It moves the global
+keymap into a new GlobalMode that all others inherit from. This lets
+you write the same code to make a global keybinding as for a
+mode-specific one:
+
+class Redwood::GlobalMode
+  keymap.add! :list_starred, "List all starred threads", "s"
+
+  def list_starred
+    SearchResultsMode.spawn_from_query "is:starred"
+  end
+end
+
+I got rid of the "modes" local since I think it's better to just reopen
+the class with normal Ruby syntax. The keybindings hook is now exactly
+like the startup hook but with the O-k keybinding to reload it.
+
+This branch also makes it easier to write keybindings by catching and
+displaying exceptions from any keybinding, including builtin Sup ones.
+Masking Sup bugs isn't the goal (there's still a backtrace and bug
+report instructions) but the user experience is much better than losing
+a half-composed email.
+
+I've added some of my own keybindings (not using GlobalMode yet) to the
+wiki: http://sup.rubyforge.org/wiki/wiki.pl?CustomizingKeys
+
+From wmorgan-sup at masanjin.net  Fri Jan 28 01:20:50 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 28 Jan 2011 01:20:50 -0500
+Subject: [sup-devel] call for new maintainers
+In-Reply-To: <1296112974-sup-5821@tilus.net>
+References: <1295894044-sup-7965@masanjin.net>
+	<1295896722-sup-5870@midna.zekjur.net>
+	<1296054871-sup-9586@masanjin.net> <1296112974-sup-5821@tilus.net>
+Message-ID: <1296195497-sup-1700@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2011-01-27:
+> I'm http://gitorious.org/~terotil
+
+Added! And now I can ignore all your outstanding patch requests. :)
+
+> > All I ask is that you divide things into nice topic branches and
+> > merge them into next but not master.
+> 
+> Do you prefer basing feature branches to master or next?
+
+Base them off of master, please. If they're based off of next, I can't
+merge them into master without also merging all of next.
+
+> Should we prefix feature branch names to keep `git branch` more
+> readable?  They could be topic-* or feature-* or alike.
+
+I don't think that's necessary. The only two integration branches are
+master and next (and the release-* branches, I suppose). When I merge
+things into master I will delete the remote branches as well, so we
+shouldn't end up with a big mess.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From adeel at adeel.ru  Fri Jan 28 22:11:40 2011
+From: adeel at adeel.ru (Adeel Ahmad Khan)
+Date: Fri, 28 Jan 2011 22:11:40 -0500
+Subject: [sup-devel] Bug: UTF-8 error when sending messages
+Message-ID: <1296270677-sup-4339@poincare>
+
+When sending a message containing certain characters, like guillemets
+<http://en.wikipedia.org/wiki/Guillemets>, I experiencing the following error.
+
+    --- ArgumentError from thread: main
+    invalid byte sequence in UTF-8
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `block in mentions_attachments?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `each'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `any?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `mentions_attachments?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:339:in `send_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+    /usr/bin/sup:19:in `load'
+    /usr/bin/sup:19:in `<main>'
+
+After setting :confirm_no_attachments and :confirm_top_posting to false, I get
+the following error instead.
+
+    --- ArgumentError from thread: main
+    invalid byte sequence in UTF-8
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:389:in `build_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:354:in `send_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+    /usr/bin/sup:19:in `load'
+    /usr/bin/sup:19:in `<main>'
+
+I am using a nearly fresh installation of Sup 0.12.1 with Ruby 1.9.2p136.  I
+have LOCALE="en_US.UTF-8".
+
+Adeel
+
+From adeel at adeel.ru  Fri Jan 28 20:00:16 2011
+From: adeel at adeel.ru (Adeel Ahmad Khan)
+Date: Fri, 28 Jan 2011 20:00:16 -0500
+Subject: [sup-devel] UTF-8 error when sending messages
+Message-ID: <1296261855-sup-9354@poincare>
+
+When sending a message containing certain characters, like guillemets
+<http://en.wikipedia.org/wiki/Guillemets>, I experiencing the following error.
+
+    --- ArgumentError from thread: main
+    invalid byte sequence in UTF-8
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `block in mentions_attachments?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `each'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `any?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `mentions_attachments?'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:339:in `send_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+    /usr/bin/sup:19:in `load'
+    /usr/bin/sup:19:in `<main>'
+
+After setting :confirm_no_attachments and :confirm_top_posting to false, I get
+the following error instead.
+
+    --- ArgumentError from thread: main
+    invalid byte sequence in UTF-8
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:389:in `build_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:354:in `send_message'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+    /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+    /usr/bin/sup:19:in `load'
+    /usr/bin/sup:19:in `<main>'
+
+I am using a nearly fresh installation of Sup 0.12.1 with Ruby 1.9.2p136.  I
+have LOCALE="en_US.UTF-8".
+
+Adeel
+
+From tero at tilus.net  Sat Jan 29 13:17:36 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 29 Jan 2011 20:17:36 +0200
+Subject: [sup-devel] Bug: UTF-8 error when sending messages
+In-Reply-To: <1296270677-sup-4339@poincare>
+References: <1296270677-sup-4339@poincare>
+Message-ID: <1296324611-sup-2693@tilus.net>
+
+Adeel Ahmad Khan, 2011-01-29 05:11:
+>     invalid byte sequence in UTF-8
+...
+> I am using a nearly fresh installation of Sup 0.12.1 with Ruby
+> 1.9.2p136.  I have LOCALE="en_US.UTF-8".
+
+Both the errors were from regex matches against message body.  Somehow
+your editor doesn't know your locale or is not obeying it.  As a
+result non-utf8 stuff gets saved to disk and sup gets confused.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From eg at gaute.vetsj.com  Sun Jan 30 10:58:31 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 30 Jan 2011 16:58:31 +0100
+Subject: [sup-devel] Bug: UTF-8 error when sending messages
+In-Reply-To: <1296270677-sup-4339@poincare>
+References: <1296270677-sup-4339@poincare>
+Message-ID: <1296402962-sup-9808@qwerzila>
+
+Excerpts from Adeel Ahmad Khan's message of 2011-01-29 04:11:40 +0100:
+> When sending a message containing certain characters, like guillemets
+> <http://en.wikipedia.org/wiki/Guillemets>, I experiencing the following error.
+> 
+>     --- ArgumentError from thread: main
+>     invalid byte sequence in UTF-8
+>     /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `block in mentions_attachments?'
+
+Could you try if this patch fixes it (or just edit the lines manually) ?
+
+- Gaute
+
+
+>From 67a8777875091da6ae57c762f18254509f418a46 Mon Sep 17 00:00:00 2001
+From: Gaute Hope <eg at gaute.vetsj.com>
+Date: Sun, 30 Jan 2011 16:57:15 +0100
+Subject: [PATCH] Attempt to handle encoding errors when searching for attachment string
+
+---
+ lib/sup/modes/edit-message-mode.rb |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 734a879..8517011 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -494,7 +494,10 @@ private
+     if HookManager.enabled? "mentions-attachments"
+       HookManager.run "mentions-attachments", :header => @header, :body => @body
+     else
+-      @body.any? {  |l| l =~ /^[^>]/ && l =~ /\battach(ment|ed|ing|)\b/i }
++      @body.any? {  |l|
++        l.force_encoding 'UTF-8' if l.methods.include?(:encoding)
++        l =~ /^[^>]/ && l =~ /\battach(ment|ed|ing|)\b/i
++      }
+     end
+   end
+ 
+-- 
+1.7.3.5
+
+From dmishd at gmail.com  Sun Jan 30 17:57:02 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 30 Jan 2011 22:57:02 +0000
+Subject: [sup-devel] Fixed bug with messages not being signed.
+Message-ID: <1296426286-sup-8656@whisper>
+
+Found the bug that stopped people signing email. Needed to use merge! 
+rather than merge. Real slap on head moment.
+
+I've committed it to the (existing) gpgme branch and to next.
+
+Hamish Downer
+
+
+
+Full patch is:
+
+commit 42149329b37af5e3fc0183367521999c479b7881
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Sun Jan 30 22:44:05 2011 +0000
+
+    Fixed the bug that stopped emails being signed.
+    
+    Schoolboy error - needed merge! rather than merge
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index e532261..5f1b730 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -57,7 +57,7 @@ EOS
+     return unknown_status(cant_find_gpgme) unless @gpgme_present
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP, :armor => true, :textmode => true}
+-    gpg_opts.merge(gen_sign_user_opts(from))
++    gpg_opts.merge!(gen_sign_user_opts(from))
+     gpg_opts = HookManager.run("gpg-options", 
+                                {:operation => "sign", :options => gpg_opts}) || gpg_opts
+ 
+@@ -82,8 +82,8 @@ EOS
+ 
+     gpg_opts = {:protocol => GPGME::PROTOCOL_OpenPGP, :armor => true, :textmode => true}
+     if sign
+-      gpg_opts.merge(gen_sign_user_opts(from)) 
+-      gpg_opts.merge({:sign => true})
++      gpg_opts.merge!(gen_sign_user_opts(from)) 
++      gpg_opts.merge!({:sign => true})
+     end
+     gpg_opts = HookManager.run("gpg-options", 
+                                {:operation => "encrypt", :options => gpg_opts}) || gpg_opts
+
+From dmishd at gmail.com  Sun Jan 30 18:53:42 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 30 Jan 2011 23:53:42 +0000
+Subject: [sup-devel] more gpgme fixes
+Message-ID: <1296431335-sup-781@whisper>
+
+I've pushed a couple more patches to the gpgme branch and to next. 
+
+One fixes the issue where sup would send a message you wanted signed 
+or encrypted without signing or encrypting it when the key (or 
+gpg-agent) is not available. For some reason GPGME doesn't complain
+but just returns an empty string. The patch checks for this case and
+complains.
+
+The other one shows the full fingerprint of keys used to sign messages 
+if the key is not trusted.
+
+Hamish Downer
+
+
+
+commit ac321bd89a72dba74e9b2ff182be0b5fc89a61fc
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Sun Jan 30 23:37:45 2011 +0000
+
+    Catch case where gpg-agent not running or key not available
+
+    GPGME does not raise an Error when the key is not available (say
+    gpg-agent is not running, or the key is on removable media and has
+    been removed). In these cases GPGME returns a zero length string.
+    This patch checks the returned string and raises an error if it has
+    zero length.
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 5f1b730..6f6797b 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -68,6 +68,13 @@ EOS
+       raise Error, "GPG command failed. See log for details."
+     end
+ 
++    # if the key (or gpg-agent) is not available GPGME does not complain 
++    # but just returns a zero length string. Let's catch that
++    if sig.length == 0
++      info "GPG failed to generate signature: check that gpg-agent is running and your key is available."
++      raise Error, "GPG command failed. See log for details."
++    end
++
+     envelope = RMail::Message.new
+     envelope.header["Content-Type"] = 'multipart/signed; protocol=application/pgp-signature'
+ 
+@@ -96,6 +103,13 @@ EOS
+       raise Error, "GPG command failed. See log for details."
+     end
+ 
++    # if the key (or gpg-agent) is not available GPGME does not complain 
++    # but just returns a zero length string. Let's catch that
++    if cipher.length == 0
++      info "GPG failed to generate cipher text: check that gpg-agent is running and your key is available."
++      raise Error, "GPG command failed. See log for details."
++    end
++
+     encrypted_payload = RMail::Message.new
+     encrypted_payload.header["Content-Type"] = "application/octet-stream"
+     encrypted_payload.header["Content-Disposition"] = 'inline; filename="msg.asc"'
+
+
+
+
+
+
+commit 9b1721cce09fc18bd9975d9b24918c8c314aaabe
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Sun Jan 30 23:43:14 2011 +0000
+
+    Add full fingerprint for untrusted keys
+    
+    When the key that signed a message is not trusted, show the full
+    fingerprint, as the gpg binary does.
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 6f6797b..5a38f27 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -307,6 +307,7 @@ private
+       if signature.validity != GPGME::GPGME_VALIDITY_FULL && signature.validity != GPGME::GPGME_VALIDITY_MARGINAL
+         output_lines << "WARNING: This key is not certified with a trusted signature!"
+         output_lines << "There is no indication that the signature belongs to the owner"
++        output_lines << "Full fingerprint is: " + (0..9).map {|i| signature.fpr[(i*2),2]}.join(":")
+       else
+         trusted = true
+       end
+
+From dmishd at gmail.com  Sun Jan 30 18:57:03 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 30 Jan 2011 23:57:03 +0000
+Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
+In-Reply-To: <1291023322-sup-8457@meteor.durcheinandertal.local>
+References: <AANLkTinrSAheJb2F4Xw9AmgXcGLxeQh0_MEnuTSATye_@mail.gmail.com>
+	<AANLkTinXwKiJqgKyFrrcVV21a8j8hV=fw4QcvDLhtM8E@mail.gmail.com>
+	<AANLkTi=7yasVvAW4P85v3GJxf+quJrE3-1XruDgUZq+D@mail.gmail.com>
+	<1289466286-sup-7540@meteor.durcheinandertal.local>
+	<AANLkTikUwyX6xj-f_ZnLp6s2s9vaCpgayPKygniWndoJ@mail.gmail.com>
+	<1289907535-sup-3989@meteor.durcheinandertal.local>
+	<AANLkTi=xz16ecZ0C5=RUcOG4wzojVVzs70PZ2ueKa0ht@mail.gmail.com>
+	<1289932061-sup-96@meteor.durcheinandertal.local>
+	<AANLkTin=1MRrW0vuj_7uMvjcyLc3Aaw4ddZ_Rq6TBiyx@mail.gmail.com>
+	<AANLkTinvv59bWu0UfjW2K-xDRUP42tDwmgMh5yZdmaN_@mail.gmail.com>
+	<1291023322-sup-8457@meteor.durcheinandertal.local>
+Message-ID: <AANLkTimKK6yW7E-KYF12RfNwJE4eM04ftKL-FrNu7XQ1@mail.gmail.com>
+
+> I just discovered another problem: If the secret key is not available
+> (because it's on a removable media and the media is not mounted), the
+> mail is sent anyway. While this is just a bit annoying for signed mail
+> it definitely should not happen for encrypted mails. Current sup
+> corectly fails in this case.
+
+Finally got around to fixing this issue. I think it may be a bug in
+the gpgme gem which I'll investigate further at some point. In the
+meantime, I've worked out how to get sup to stop this being a problem.
+The fix has been applied to next, and will hopefully move to master
+before too long.
+
+http://www.mail-archive.com/sup-devel at rubyforge.org/msg00899.html
+
+Hamish
+
+From dmishd at gmail.com  Sun Jan 30 18:59:38 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 30 Jan 2011 23:59:38 +0000
+Subject: [sup-devel] [PATCH] Converted crypto to use the gpgme gem
+In-Reply-To: <AANLkTimKK6yW7E-KYF12RfNwJE4eM04ftKL-FrNu7XQ1@mail.gmail.com>
+References: <AANLkTinrSAheJb2F4Xw9AmgXcGLxeQh0_MEnuTSATye_@mail.gmail.com>
+	<AANLkTinXwKiJqgKyFrrcVV21a8j8hV=fw4QcvDLhtM8E@mail.gmail.com>
+	<AANLkTi=7yasVvAW4P85v3GJxf+quJrE3-1XruDgUZq+D@mail.gmail.com>
+	<1289466286-sup-7540@meteor.durcheinandertal.local>
+	<AANLkTikUwyX6xj-f_ZnLp6s2s9vaCpgayPKygniWndoJ@mail.gmail.com>
+	<1289907535-sup-3989@meteor.durcheinandertal.local>
+	<AANLkTi=xz16ecZ0C5=RUcOG4wzojVVzs70PZ2ueKa0ht@mail.gmail.com>
+	<1289932061-sup-96@meteor.durcheinandertal.local>
+	<AANLkTin=1MRrW0vuj_7uMvjcyLc3Aaw4ddZ_Rq6TBiyx@mail.gmail.com>
+	<AANLkTinvv59bWu0UfjW2K-xDRUP42tDwmgMh5yZdmaN_@mail.gmail.com>
+	<1291023322-sup-8457@meteor.durcheinandertal.local>
+	<AANLkTimKK6yW7E-KYF12RfNwJE4eM04ftKL-FrNu7XQ1@mail.gmail.com>
+Message-ID: <AANLkTi=DSdyoEjPAHP8Fivss1NcjLGTA+RjXZ+ngU-R8@mail.gmail.com>
+
+> Finally got around to fixing this issue. I think it may be a bug in
+> the gpgme gem which I'll investigate further at some point. In the
+> meantime, I've worked out how to get sup to stop this being a problem.
+> The fix has been applied to next, and will hopefully move to master
+> before too long.
+
+Link should have been:
+
+http://rubyforge.org/pipermail/sup-devel/2011-January/000966.html
+
+Sorry, late and tired ...
+
+Hamish Downer
+
+From adeel at adeel.ru  Mon Jan 31 13:24:42 2011
+From: adeel at adeel.ru (Adeel Ahmad Khan)
+Date: Mon, 31 Jan 2011 13:24:42 -0500
+Subject: [sup-devel] Bug: UTF-8 error when sending messages
+In-Reply-To: <mailman.75.1296431981.25874.sup-devel@rubyforge.org>
+References: <mailman.75.1296431981.25874.sup-devel@rubyforge.org>
+Message-ID: <1296497911-sup-5024@poincare>
+
+
+Tero Tilus <tero at tilus.net>:
+> Adeel Ahmad Khan, 2011-01-29 05:11:
+> >     invalid byte sequence in UTF-8
+> ...
+> > I am using a nearly fresh installation of Sup 0.12.1 with Ruby
+> > 1.9.2p136.  I have LOCALE="en_US.UTF-8".
+> 
+> Both the errors were from regex matches against message body.  Somehow
+> your editor doesn't know your locale or is not obeying it.  As a
+> result non-utf8 stuff gets saved to disk and sup gets confused.
+
+You were right.  It turned out to be an issue with editor.
+
+Gaute Hope <eg at gaute.vetsj.com>:
+> Excerpts from Adeel Ahmad Khan's message of 2011-01-29 04:11:40 +0100:
+> >     --- ArgumentError from thread: main
+> >     invalid byte sequence in UTF-8
+> >     /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:497:in `block in mentions_attachments?'
+> 
+> Could you try if this patch fixes it (or just edit the lines manually) ?
+
+The patch resolved that error, but I get a different one now:
+
+  --- ArgumentError from thread: main
+  invalid byte sequence in UTF-8
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:389:in `build_message'
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/edit-message-mode.rb:354:in `send_message'
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+  /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+  /usr/bin/sup:19:in `load'
+  /usr/bin/sup:19:in `<main>'
+
+It looks like another regex match.
+
+    m.body += "\n" unless m.body =~ /\n\Z/
+
+In any case it seems to be my problem, not sup's.
+
+Adeel
+

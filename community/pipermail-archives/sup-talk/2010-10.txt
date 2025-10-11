@@ -1,0 +1,1357 @@
+From rlane at club.cc.cmu.edu  Wed Oct  6 23:21:15 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 06 Oct 2010 23:21:15 -0400
+Subject: [sup-talk] my list subscription is broken
+Message-ID: <1286421412-sup-6614@zyrg.net>
+
+Mailman claims I'm still subscribed to the sup lists even though I
+haven't received any mails from them for months, and I see the archive
+has many messages. Please CC me for now until I get this figured out.
+If there are any bugfixes I haven't responded to please resubmit them.
+
+From andrew at pimlott.net  Fri Oct 15 12:01:49 2010
+From: andrew at pimlott.net (Andrew Pimlott)
+Date: Fri, 15 Oct 2010 09:01:49 -0700
+Subject: [sup-talk] Reply-To: not offered as reply recipient
+Message-ID: <1287156818-sup-6475@pimlott.net>
+
+Just a ping: there was this thread on what reply recipients to offer in
+some mailing list cases:
+
+http://www.mail-archive.com/sup-talk at rubyforge.org/msg02206.html
+
+Replying to list admin messages is still pretty broken.  They set
+Reply-To to a magic address, but sup does not offer it as an option
+because of the mailing list headers.  Really annoying.  Any further
+thoughts on resolving this?
+
+Andrew
+
+From daniel at degu.cl  Mon Oct 18 21:52:54 2010
+From: daniel at degu.cl (=?utf-8?q?Daniel_Hern=C3=A1ndez?=)
+Date: Mon, 18 Oct 2010 22:52:54 -0300
+Subject: [sup-talk] deleting files from source
+Message-ID: <1287452900-sup-9784@maullin>
+
+Hello,
+
+I started using sup recently. Now I have only one source that is a
+inbox maildir folder. I want to delete some emails from the source
+forever, but when I delete or kill emails they are not really deleted
+from the maildir folder. How can I clean the maildir folder, removing
+deleted or killed emails?
+
+Thanks,
+Daniel
+
+From shadowfirebird at gmail.com  Tue Oct 19 05:18:03 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Tue, 19 Oct 2010 10:18:03 +0100
+Subject: [sup-talk] Hints on debugging hooks
+Message-ID: <1287479408-sup-4846@blake>
+
+Hi, I'm new to Sup.  (I can code Ruby, a bit, but I'm finding the source hard to read, so configuration is going slower than I would like. It's me, not you...)
+
+Can someone give me some hints on debugging hooks? For example, is there an easy way to get just one message object in the console, so I can play with it?  
+
+Is it true that the before-add-message hook can die silently if my code is bad?  Will wrapping my code in begin ... rescue ... end guarantee that this doesn't happen?
+
+Ta. 
+
+-- 
+"All snakes who wish to remain in Ireland will please raise their right hands."
+		-- Saint Patrick
+
+From daniel at degu.cl  Tue Oct 19 07:31:23 2010
+From: daniel at degu.cl (=?utf-8?q?Daniel_Hern=C3=A1ndez?=)
+Date: Tue, 19 Oct 2010 08:31:23 -0300
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287452900-sup-9784@maullin>
+References: <1287452900-sup-9784@maullin>
+Message-ID: <1287487562-sup-6426@maullin>
+
+Excerpts from Daniel Hern?ndez's message of Mon Oct 18 22:52:54 -0300 2010:
+> Hello,
+> 
+> I started using sup recently. Now I have only one source that is a
+> inbox maildir folder. I want to delete some emails from the source
+> forever, but when I delete or kill emails they are not really deleted
+> from the maildir folder. How can I clean the maildir folder, removing
+> deleted or killed emails?
+
+I found the answer in the faq.
+
+Q: But I want to delete it for real, not just add a 'deleted' flag in
+   the index. I want it gone from disk!
+A: Currently, for mbox sources, there is a batch deletion tool that
+   will strip out all messages marked as spam or deleted.
+
+And this not works with maildir folders.
+
+Daniel
+
+From phorrillo at aurigae.com  Tue Oct 19 08:18:17 2010
+From: phorrillo at aurigae.com (=?utf-8?q?Pedro_F._=C2=ABpancho=C2=BB_Horrillo?=)
+Date: Tue, 19 Oct 2010 14:18:17 +0200
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287487562-sup-6426@maullin>
+References: <1287452900-sup-9784@maullin> <1287487562-sup-6426@maullin>
+Message-ID: <1287490577-sup-4798@aurigae120.hi.inet>
+
+Hi!
+
+I think that using mutt for this deletion was suggested some time ago...
+
+Cheers,
+
+Excerpts from Daniel Hern?ndez's message of Tue Oct 19 13:31:23 +0200 2010:
+> Excerpts from Daniel Hern?ndez's message of Mon Oct 18 22:52:54 -0300 2010:
+> > Hello,
+> > 
+> > I started using sup recently. Now I have only one source that is a
+> > inbox maildir folder. I want to delete some emails from the source
+> > forever, but when I delete or kill emails they are not really deleted
+> > from the maildir folder. How can I clean the maildir folder, removing
+> > deleted or killed emails?
+> 
+> I found the answer in the faq.
+> 
+> Q: But I want to delete it for real, not just add a 'deleted' flag in
+>    the index. I want it gone from disk!
+> A: Currently, for mbox sources, there is a batch deletion tool that
+>    will strip out all messages marked as spam or deleted.
+> 
+> And this not works with maildir folders.
+> 
+> Daniel
+-- 
+Pedro F. ?pancho? Horrillo
+
+From michael+sup at stapelberg.de  Tue Oct 19 13:31:55 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 19 Oct 2010 19:31:55 +0200
+Subject: [sup-talk] Hints on debugging hooks
+In-Reply-To: <1287479408-sup-4846@blake>
+References: <1287479408-sup-4846@blake>
+Message-ID: <1287508635-sup-7410@midna.zekjur.net>
+
+Hi,
+
+Excerpts from Shadowfirebird's message of 2010-10-19 11:18:03 +0200:
+> Can someone give me some hints on debugging hooks? For example, is there an
+> easy way to get just one message object in the console, so I can play with
+> it?  
+Yep, there is:
+$ irb1.9.1 -Ilib
+>> require 'sup'
+>> include Redwood
+>> start
+>> i = Index.init
+>> i.load
+
+If you have some message ID you want to load, you can do so. If you don?t know
+which one to load, you could print them all (beware, on a big index, this of
+course will be a very long listing):
+>> i.each_id { |i| puts i }
+
+To actually load the message:
+>> m = i.build_message("201010062050.45778.kern at sibbald.com")
+
+You can then play with the masseg as you like.
+
+> Is it true that the before-add-message hook can die silently if my code is
+> bad?  Will wrapping my code in begin ... rescue ... end guarantee that this
+> doesn't happen?
+Not sure about that. At least in the system log (press ; to open the buffer
+manager) it will leave a trace about hooks dying, but I don?t know if it?s
+display very obviously when you?re not having an eye on the log.
+
+Best regards,
+Michael
+
+From dmishd at gmail.com  Tue Oct 19 14:18:29 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 19 Oct 2010 19:18:29 +0100
+Subject: [sup-talk] Hints on debugging hooks
+In-Reply-To: <1287479408-sup-4846@blake>
+References: <1287479408-sup-4846@blake>
+Message-ID: <AANLkTim+3+rbZQ79Wct4iwio49Te4r6cqL0udZni5m-N@mail.gmail.com>
+
+> Can someone give me some hints on debugging hooks? For example, is there an easy way to get just one message object in the console, so I can play with it?
+
+For hooks, I tried using debug. So in the before-add-message hook you
+could have:
+
+  debug ("message subject is #{message.subj} and is from #{message.from.email}")
+
+Then launch sup with debug on:
+
+  $ SUP_LOG_LEVEL=debug sup
+
+And you will get extra logging, including your hook debug message, in
+the log buffer (press ; to see the buffer list).
+
+One thing to watch out for in the message hooks is that the regex is
+case sensitive by default. To change that, just put an i at the end,
+eg
+
+if message.subj =~ /\[sup-talk\]/i
+  message.add_label "sup"
+end
+
+Good luck
+Hamish
+
+From cjparsons1 at yahoo.co.uk  Wed Oct 20 00:09:21 2010
+From: cjparsons1 at yahoo.co.uk (Chris Parsons)
+Date: Wed, 20 Oct 2010 05:09:21 +0100
+Subject: [sup-talk] Sup won't run because of chert version issue
+In-Reply-To: <op.vklxqoqo0495wc@localhost>
+References: <op.vklwzirc0495wc@localhost> <op.vklxqoqo0495wc@localhost>
+Message-ID: <op.vkuwhvxz0495wc@localhost>
+
+On Fri, 15 Oct 2010 08:57:50 +0100, Chris Parsons <cjparsons1 at yahoo.co.uk>  
+wrote:
+
+
+> Hello, I've made a mess of updating my (arch linux) system and annoyed  
+> sup.
+>
+> I get the error below related to chert version.
+>
+... snip ...
+
+> DatabaseVersionError: /home/archie/.sup/xapian/iamchert: Chert version
+> file is version 200912150 but I only understand 200903070
+
+I fixed my problem. The error message above comes from Xapian, not sup. In  
+trying to fix the original problem I'd installed a personal version of the  
+xapian ruby bindings in ~/.gem which ruby finding in preference to the  
+system gem, but which was the wrong version for the system xapian. For the  
+record I have
+
+community/xapian-core 1.2.3-1
+local/xapian-ruby-bindings 1.2.3-1
+local/sup 999-1 (i.e. current mainline)
+extra/ruby 1.9.1_p429-1
+
+From cjparsons1 at yahoo.co.uk  Wed Oct 20 01:26:13 2010
+From: cjparsons1 at yahoo.co.uk (Chris Parsons)
+Date: Wed, 20 Oct 2010 06:26:13 +0100
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287452900-sup-9784@maullin>
+References: <1287452900-sup-9784@maullin>
+Message-ID: <op.vkuz1znr0495wc@localhost>
+
+On Tue, 19 Oct 2010 02:52:54 +0100, Daniel Hern?ndez <daniel at degu.cl>  
+wrote:
+
+> I started using sup recently. Now I have only one source that is a
+> inbox maildir folder. I want to delete some emails from the source
+> forever, but when I delete or kill emails they are not really deleted
+> from the maildir folder. How can I clean the maildir folder, removing
+> deleted or killed emails?
+
+The design intent of sup is to specifically remove the need to worry about  
+deleting e-mails. But if you really need to do that then one way might be  
+to do the following (assuming your machine has the right tools installed).  
+Doing stuff like this could lose your messages. Info supplied for  
+education purposes only. Proceed at your own risk!
+
+# change to top of the Maildir
+   cd ~/Mail
+# get message id of all files with tag 'deleted' and put in temp file
+   FL=/tmp/del-filelist
+   rm -f $FL
+   for i in `sup-dump | grep deleted | cut -f 1 -d' '`; do grep -l -r $i  
+./*  >> $FL;done
+# delete the files in the file list
+   for i in `cat $FL`; do rm $i; done
+# sync the index. New versions of sup-sync don't have the --changed  
+argument
+   sup-sync --verbose --changed
+
+repeat for "killed" instead of "deleted"
+
+From daniel at degu.cl  Wed Oct 20 10:17:11 2010
+From: daniel at degu.cl (=?utf-8?q?Daniel_Hern=C3=A1ndez?=)
+Date: Wed, 20 Oct 2010 11:17:11 -0300
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <op.vkuz1znr0495wc@localhost>
+References: <1287452900-sup-9784@maullin> <op.vkuz1znr0495wc@localhost>
+Message-ID: <1287582761-sup-3447@maullin>
+
+Excerpts from Chris Parsons's message of Wed Oct 20 02:26:13 -0300 2010:
+> On Tue, 19 Oct 2010 02:52:54 +0100, Daniel Hern?ndez <daniel at degu.cl>  
+> wrote:
+> 
+> > I started using sup recently. Now I have only one source that is a
+> > inbox maildir folder. I want to delete some emails from the source
+> > forever, but when I delete or kill emails they are not really deleted
+> > from the maildir folder. How can I clean the maildir folder, removing
+> > deleted or killed emails?
+> 
+> The design intent of sup is to specifically remove the need to worry about  
+> deleting e-mails. But if you really need to do that then one way might be  
+> to do the following (assuming your machine has the right tools installed).  
+> Doing stuff like this could lose your messages. Info supplied for  
+> education purposes only. Proceed at your own risk!
+
+The reason because I need to delete some emails is that I read emails
+in several computers. In each computer I have sup installed and I
+synchronize the maildir with other maildirs using a primary imap
+server. Thus I like to delete some unimportant emails to reduce the
+network traffic.
+
+I started with this practice using mutt and the wanderlust email
+client, but I prefer the sup email client. I like the tagging system
+of sup and its capacity to manage threads. But now I have another
+problem, because tags are not stored in the maildir and I don't know
+how to synchronize tags in several computers.
+ 
+> # change to top of the Maildir
+>    cd ~/Mail
+> # get message id of all files with tag 'deleted' and put in temp file
+>    FL=/tmp/del-filelist
+>    rm -f $FL
+>    for i in `sup-dump | grep deleted | cut -f 1 -d' '`; do grep -l -r $i  
+> ./*  >> $FL;done
+> # delete the files in the file list
+>    for i in `cat $FL`; do rm $i; done
+> # sync the index. New versions of sup-sync don't have the --changed  
+> argument
+>    sup-sync --verbose --changed
+> 
+> repeat for "killed" instead of "deleted"
+
+That works fine, but I have written some modifications because my
+maildir don't store emails using the message-id.
+
+Thanks,
+Daniel
+
+From helgedt at tihlde.org  Wed Oct 20 11:11:59 2010
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Wed, 20 Oct 2010 17:11:59 +0200
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287582761-sup-3447@maullin>
+References: <1287452900-sup-9784@maullin> <op.vkuz1znr0495wc@localhost>
+	<1287582761-sup-3447@maullin>
+Message-ID: <1287587200-sup-5302@colargol.tihlde.org>
+
+Excerpts from Daniel Hern?ndez's message of Wed Oct 20 16:17:11 +0200 2010:
+> The reason because I need to delete some emails is that I read emails
+> in several computers. In each computer I have sup installed and I
+> synchronize the maildir with other maildirs using a primary imap
+> server. Thus I like to delete some unimportant emails to reduce the
+> network traffic.
+
+Could I suggest running sup on only one machine under screen, and then
+ssh'ing in to that machine and attaching the screen from any of the
+other computers?
+
+Sup is not (yet:) designed for syncing back tags and read/delete-flags
+to a central server. There's been talk both about sync-back features to
+update Maildir/IMAP and a specialized sup server for distributing the
+index, but we're not there yet.
+
+-- 
+Helge
+
+From shadowfirebird at gmail.com  Wed Oct 20 17:00:10 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Wed, 20 Oct 2010 22:00:10 +0100
+Subject: [sup-talk] Hints on debugging hooks
+In-Reply-To: <1287479408-sup-4846@blake>
+References: <1287479408-sup-4846@blake>
+Message-ID: <1287608310-sup-1766@blake>
+
+Thanks for all those suggestions.  
+
+I hadn't even known how to get to sup from irb!  And I don't think debug is documented -- or is it?
+
+Lot of stuff for me to try here.   Expect more dumb questions a bit later...
+
+
+-- 
+There are two types of people in this world, good and bad.  The good
+sleep better, but the bad seem to enjoy the waking hours much more.
+		-- Woody Allen
+
+From dmishd at gmail.com  Thu Oct 21 14:11:12 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 21 Oct 2010 19:11:12 +0100
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287452900-sup-9784@maullin>
+References: <1287452900-sup-9784@maullin>
+Message-ID: <AANLkTi=vpgkevAEa981ikPz2gi9uwOEa-L0ka1yqWFtk@mail.gmail.com>
+
+> I started using sup recently. Now I have only one source that is a
+> inbox maildir folder. I want to delete some emails from the source
+> forever, but when I delete or kill emails they are not really deleted
+> from the maildir folder. How can I clean the maildir folder, removing
+> deleted or killed emails?
+
+You can't do it with maildir, but if you have mbox you should be able to do:
+
+sup-sync-back --drop-deleted mbox:/home/name/mail/mbox
+sup-sync --changed mbox:/home/name/mail/mbox
+
+Make sure sup is NOT running when you do this, and obviously put the
+path to your own mbox there. Also note that currently the git version
+says that sup-sync-back doesn't work ...
+
+Hamish
+
+From shadowfirebird at gmail.com  Fri Oct 22 04:34:04 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 09:34:04 +0100
+Subject: [sup-talk] mime-view.rb: content_type not found
+Message-ID: <1287736097-sup-8064@blake>
+
+Hi, I'm having trouble setting up the mime-view.rb hook.
+
+According to the wiki, there should be a "variable" content_type.  
+
+But, here's my program:
+
+    begin
+       log content_type filename
+
+    rescue
+       log "Error: #{$!}"
+    end
+
+And here's what the log file says:
+
+    hook[mime-view]: Error: undefined method `content_type' for #<Redwood::HookManager::HookContext:0x7f13003fe110>
+
+
+Anyone got any ideas?
+
+-- 
+Bones: "The man's DEAD, Jim!"
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/75caa1e7/attachment.bin>
+
+From shadowfirebird at gmail.com  Fri Oct 22 05:23:42 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 10:23:42 +0100
+Subject: [sup-talk] Slow opening of threads?
+Message-ID: <1287739347-sup-2987@blake>
+
+Is it me, or is Sup sometimes very slow at opening a thread?  I mean: a couple of minutes to open a thread with two or three messages and no attachments, about one time in three?
+
+It *could* be because my maildir is on the other side of an NFS mount.  Or, not.   
+
+I'm just wondering if anyone else is experiencing it.
+
+-- 
+"One day I woke up and discovered that I was in love with tripe."
+		-- Tom Anderson
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/37bba7b3/attachment-0001.bin>
+
+From aidecoe at aidecoe.name  Fri Oct 22 06:40:22 2010
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Fri, 22 Oct 2010 12:40:22 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287739347-sup-2987@blake>
+References: <1287739347-sup-2987@blake>
+Message-ID: <1287743891-sup-1864@etiriah>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 11:23:42 +0200 2010:
+> Is it me, or is Sup sometimes very slow at opening a thread?  I mean:
+> a couple of minutes to open a thread with two or three messages and no
+> attachments, about one time in three?
+> 
+> It *could* be because my maildir is on the other side of an NFS mount.
+> Or, not.   
+> 
+> I'm just wondering if anyone else is experiencing it.
+
+I've just opened thread of 18 messages in less than second.  My maildir
+holds above 7000 messages and my machine is quite antique.
+--
+Amadeusz ?o?nowski
+
+PGP key fpr: C700 CEDE 0C18 212E 49DA  4653 F013 4531 E1DB FAB5
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/41bf762d/attachment.bin>
+
+From hollunder at lavabit.com  Fri Oct 22 06:31:08 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Fri, 22 Oct 2010 12:31:08 +0200
+Subject: [sup-talk] mime-view.rb: content_type not found
+In-Reply-To: <1287736097-sup-8064@blake>
+References: <1287736097-sup-8064@blake>
+Message-ID: <1287743238-sup-1964@eris>
+
+Excerpts from Shadowfirebird's message of 2010-10-22 10:34:04 +0200:
+> Hi, I'm having trouble setting up the mime-view.rb hook.
+> 
+> According to the wiki, there should be a "variable" content_type.  
+> 
+> But, here's my program:
+> 
+>     begin
+>        log content_type filename
+> 
+>     rescue
+>        log "Error: #{$!}"
+>     end
+> 
+> And here's what the log file says:
+> 
+>     hook[mime-view]: Error: undefined method `content_type' for #<Redwood::HookManager::HookContext:0x7f13003fe110>
+> 
+> 
+> Anyone got any ideas?
+
+I might be wrong, but I seem to remember that the mime type checking
+depends on some funky debian/ubuntu script. I ran into this when I tried
+to get this to work:
+http://sup.rubyforge.org/wiki/wiki.pl?ViewingAttachments
+
+Regards,
+Philipp
+
+
+From eg at gaute.vetsj.com  Fri Oct 22 07:04:34 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 22 Oct 2010 13:04:34 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287739347-sup-2987@blake>
+References: <1287739347-sup-2987@blake>
+Message-ID: <1287745423-sup-8192@qwerzila>
+
+Excerpts from Shadowfirebird's message of fr. okt. 22 11:23:42 +0200 2010:
+> It *could* be because my maildir is on the other side of an NFS mount.  Or, not.   
+
+I'd test that :) I have no problems - might be that simple seek
+operations are really expansive over NFS.
+
+- gaute
+
+From hollunder at lavabit.com  Fri Oct 22 07:16:13 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Fri, 22 Oct 2010 13:16:13 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287739347-sup-2987@blake>
+References: <1287739347-sup-2987@blake>
+Message-ID: <1287746050-sup-6114@eris>
+
+Excerpts from Shadowfirebird's message of 2010-10-22 11:23:42 +0200:
+> Is it me, or is Sup sometimes very slow at opening a thread?  I mean: a couple of minutes to open a thread with two or three messages and no attachments, about one time in three?
+> 
+> It *could* be because my maildir is on the other side of an NFS mount.  Or, not.   
+> 
+> I'm just wondering if anyone else is experiencing it.
+
+That sounds weird. In my experience it's only slow when flushing index,
+which means everything is frozen for a couple of seconds. Opening
+threads is fast enough here. Threads with 50-100 messages take a couple
+of seconds though, but it's acceptable.
+
+
+From shadowfirebird at gmail.com  Fri Oct 22 07:48:45 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 12:48:45 +0100
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287743891-sup-1864@etiriah>
+References: <1287739347-sup-2987@blake> <1287743891-sup-1864@etiriah>
+Message-ID: <1287748027-sup-7412@blake>
+
+Excerpts from Amadeusz ?o?nowski's message of Fri Oct 22 11:40:22 +0100 2010:
+> I've just opened thread of 18 messages in less than second.  My maildir
+> holds above 7000 messages and my machine is quite antique.
+
+I've got 343,000 messages.  Maybe that's it...
+
+-- 
+Some performers on television appear to be horrible people, but when
+you finally get to know them in person, they turn out to be even worse.
+		-- Avery
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/b30cebbe/attachment.bin>
+
+From marka at pobox.com  Fri Oct 22 08:38:16 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 22 Oct 2010 08:38:16 -0400
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287739347-sup-2987@blake>
+References: <1287739347-sup-2987@blake>
+Message-ID: <1287750098-sup-8825@r61>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 05:23:42 -0400 2010:
+> Is it me, or is Sup sometimes very slow at opening a thread?  I mean: a couple of minutes to open a thread with two or three messages and no attachments, about one time in three?
+> 
+> It *could* be because my maildir is on the other side of an NFS mount.  Or, not.   
+
+I have that experience with one of my maildirs that is in an ecryptfs
+directory.  It's not quite a couple of minutes, but sometimes up to 30
+seconds opening a very long thread.  I've seen slowdowns on ecryptfs
+doing other things like compiles.
+
+So my guess is that the slowdown you're seeing is due to NFS.  In my
+experience NFS is a performance hog and should be avoided at all
+costs.  If at all possible, run sup on a single machine with your
+maildirs (and your .sup directory) on a local disk.  If you need to
+access your mail from other machines, log into your sup-running
+machine via ssh.
+
+Also (and this is perhaps the most important thing), run sup inside a
+screen session so you won't lose any of your work if the ssh
+connection goes down.  Screen is useful even if you only access your
+mail from a single machine, because it will keep your session alive if
+Gnome/KDE crashes or you have to log out and back in for any other
+reason.
+
+From shadowfirebird at gmail.com  Fri Oct 22 09:03:15 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 14:03:15 +0100
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287750098-sup-8825@r61>
+References: <1287739347-sup-2987@blake> <1287750098-sup-8825@r61>
+Message-ID: <1287752134-sup-9563@blake>
+
+Excerpts from Mark Alexander's message of Fri Oct 22 13:38:16 +0100 2010:
+> Excerpts from Shadowfirebird's message of Fri Oct 22 05:23:42 -0400 2010:
+> I have that experience with one of my maildirs that is in an ecryptfs
+> directory.  It's not quite a couple of minutes, but sometimes up to 30
+> seconds opening a very long thread.  I've seen slowdowns on ecryptfs
+> doing other things like compiles.
+
+Interesting that you should mention that, because I have an encrypted $HOME (bad choice at Ubuntu install time -- ::shrug:: ).  I suppose it might apply the other way around, too.
+
+> So my guess is that the slowdown you're seeing is due to NFS.  In my
+> experience NFS is a performance hog and should be avoided at all
+> costs.  If at all possible, run sup on a single machine with your
+> maildirs (and your .sup directory) on a local disk.  If you need to
+> access your mail from other machines, log into your sup-running
+> machine via ssh.
+
+I think I'll plan to run something like offlineIMAP (or just rsync) to sync my maildir to a local folder when I rework my machine in the near future.  Also, I'm moving the whole house to gigabit ethernet, so maybe that will help.
+
+> Also (and this is perhaps the most important thing), run sup inside a
+> screen session so you won't lose any of your work if the ssh
+> connection goes down.
+
+Not a problem here; there's no ssh involved.  The maildir is on the server downstairs, and I've got my home directory there mounted here via NFS.
+
+-- 
+If you will practice being fictional for a while, you will understand that
+fictional characters are sometimes more real than people with bodies and
+heartbeats.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/d8b3c9c9/attachment.bin>
+
+From moritz+sup at wzff.de  Fri Oct 22 09:09:00 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Fri, 22 Oct 2010 15:09:00 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287748027-sup-7412@blake>
+References: <1287739347-sup-2987@blake> <1287743891-sup-1864@etiriah>
+	<1287748027-sup-7412@blake>
+Message-ID: <1287752579-sup-8292@niflheimr>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 13:48:45 +0200 2010:
+Dear all,
+ 
+> I've got 343,000 messages.  Maybe that's it...
+
+I heard rumours that notmuch is supposed to be significantly faster than sup
+with huge amounts of mail, while also being tag-based.  If you don't mind using
+emacs, which is - I think - the only usable interface to it, you could give it
+a try (sorry for promoting different mailclients here :)
+
+I like sup, because I love the UI (and because I am not bound to emacs)
+I love the thread and signature folding. Keep up the good work!
+
+Best regards,
+
+Moritz
+
+From bwalton at artsci.utoronto.ca  Fri Oct 22 08:21:26 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 22 Oct 2010 08:21:26 -0400
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287746050-sup-6114@eris>
+References: <1287739347-sup-2987@blake> <1287746050-sup-6114@eris>
+Message-ID: <1287750034-sup-6402@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Philipp ?berbacher's message of Fri Oct 22 07:16:13 -0400 2010:
+
+> That sounds weird. In my experience it's only slow when flushing index,
+> which means everything is frozen for a couple of seconds. Opening
+> threads is fast enough here. Threads with 50-100 messages take a couple
+> of seconds though, but it's acceptable.
+
+I periodically see slow thread loading and I'm also doing Maildir over
+NFS.  It's not frequent enough that I've bothered to look into it, but
+it does happen from time to time.  I've seen it on threads of various
+sizes.
+
+HTH.
+-Ben
+
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From marka at pobox.com  Fri Oct 22 12:28:01 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Fri, 22 Oct 2010 12:28:01 -0400
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287752134-sup-9563@blake>
+References: <1287739347-sup-2987@blake> <1287750098-sup-8825@r61>
+	<1287752134-sup-9563@blake>
+Message-ID: <1287764701-sup-6487@r61>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 09:03:15 -0400 2010:
+> Interesting that you should mention that, because I have an
+> encrypted $HOME (bad choice at Ubuntu install time -- ::shrug:: ).  I
+> suppose it might apply the other way around, too. 
+
+That could do it.  It would mean your .sup directory (and the Xapian
+index) would be on ecryptfs, which could be slow.
+
+In my case, my home directory is not encrypted.  I only put
+work-related stuff (e.g., email) on an encrypted directory
+($HOME/Private) that I set up initially with ecryptfs-setup-private.
+
+From sascha-ml-reply-to-2010-3 at silbe.org  Fri Oct 22 13:19:39 2010
+From: sascha-ml-reply-to-2010-3 at silbe.org (Sascha Silbe)
+Date: Fri, 22 Oct 2010 19:19:39 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287739347-sup-2987@blake>
+References: <1287739347-sup-2987@blake>
+Message-ID: <1287766308-sup-224@twin.sascha.silbe.org>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 11:23:42 +0200 2010:
+
+> Is it me, or is Sup sometimes very slow at opening a thread?  I mean: a couple of minutes to open a thread with two or three messages and no attachments, about one time in three?
+
+My experience is that 
+a) thread opening time is proportional to cumulated message size and
+b) time for collapsing/expanding a message is proportional to the number
+   of (expanded) lines in the buffer.
+
+In both cases there's a large factor involved.
+
+Are you getting different timings for the same thread (remember to flush
+all OS level caches to check this) or are some threads always slow?
+Does it happen in conjunction with polling? I noticed that sup doesn't
+always display "Flushing index..." right away (maybe it doesn't flush
+the output buffer when displaying the message?).
+
+
+FWIW, notmuch is not much faster (SCNR) on my systems. Sup is
+alternating between IO bound and CPU bound; notmuch kind of eliminates
+the CPU bound part, but because it doesn't support mbox the IO bound
+part increases significantly. I imagine that notmuch would benefit
+greatly from an SSD.
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/e9ca6b1b/attachment.bin>
+
+From shadowfirebird at gmail.com  Fri Oct 22 14:02:39 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 19:02:39 +0100
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287752579-sup-8292@niflheimr>
+References: <1287739347-sup-2987@blake> <1287743891-sup-1864@etiriah>
+	<1287748027-sup-7412@blake> <1287752579-sup-8292@niflheimr>
+Message-ID: <1287770413-sup-279@blake>
+
+> I heard rumours that notmuch is supposed to be significantly faster than sup
+> with huge amounts of mail, while also being tag-based.  If you don't mind using
+> emacs, which is - I think - the only usable interface to it, you could give it
+> a try (sorry for promoting different mailclients here :)
+
+Oh gods.  I'm emacs-phobic.
+
+But I can live with Sup taking an age to open threads every so often, at least until I reorganise away from NFS and/or it gets fixed.  
+
+I love Sup for Ruby-ness as much as anything.  The other day I had a corrupt index and I fixed it myself!  </smug>
+
+-- 
+Advice from an old carpenter: measure twice, saw once.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/cdfe9b7b/attachment.bin>
+
+From shadowfirebird at gmail.com  Fri Oct 22 15:56:07 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Fri, 22 Oct 2010 20:56:07 +0100
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287766308-sup-224@twin.sascha.silbe.org>
+References: <1287739347-sup-2987@blake>
+	<1287766308-sup-224@twin.sascha.silbe.org>
+Message-ID: <1287777291-sup-9882@blake>
+
+> Are you getting different timings for the same thread (remember to flush
+> all OS level caches to check this) or are some threads always slow?
+
+It seems pretty random, but how do I flush my caches?
+
+-- 
+No one can guarantee the actions of another.
+		-- Spock, "Day of the Dove", stardate unknown
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101022/a9526488/attachment.bin>
+
+From moritz+sup at wzff.de  Fri Oct 22 19:32:46 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sat, 23 Oct 2010 01:32:46 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287770413-sup-279@blake>
+References: <1287739347-sup-2987@blake> <1287743891-sup-1864@etiriah>
+	<1287748027-sup-7412@blake> <1287752579-sup-8292@niflheimr>
+	<1287770413-sup-279@blake>
+Message-ID: <1287790246-sup-3757@niflheimr>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 20:02:39 +0200 2010:
+> Oh gods.  I'm emacs-phobic.
+
+I meant to say, you could try if notmuch performs any better. You don't have to
+use the emacs extension, it also works as plain command line command. 
+If the performance is not better, it's probably your NFS.
+
+From sascha-ml-reply-to-2010-3 at silbe.org  Sat Oct 23 04:28:42 2010
+From: sascha-ml-reply-to-2010-3 at silbe.org (Sascha Silbe)
+Date: Sat, 23 Oct 2010 10:28:42 +0200
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287777291-sup-9882@blake>
+References: <1287739347-sup-2987@blake>
+	<1287766308-sup-224@twin.sascha.silbe.org>
+	<1287777291-sup-9882@blake>
+Message-ID: <1287822209-sup-8113@twin.sascha.silbe.org>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 21:56:07 +0200 2010:
+> > Are you getting different timings for the same thread (remember to flush
+> > all OS level caches to check this) or are some threads always slow?
+> 
+> It seems pretty random, but how do I flush my caches?
+
+From [1]:
+
+>> drop_caches
+
+>> Writing to this will cause the kernel to drop clean caches, dentries
+>> and inodes from memory, causing that memory to become free.
+
+>> To free pagecache:
+>>         echo 1 > /proc/sys/vm/drop_caches
+>> To free dentries and inodes:
+>>         echo 2 > /proc/sys/vm/drop_caches
+>> To free pagecache, dentries and inodes:
+>>         echo 3 > /proc/sys/vm/drop_caches
+
+>> As this is a non-destructive operation and dirty objects are not
+>> freeable, the user should run `sync' first.
+
+Sascha
+
+[1] http://www.kernel.org/doc/Documentation/sysctl/vm.txt
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101023/46ccc801/attachment.bin>
+
+From shadowfirebird at gmail.com  Sat Oct 23 05:28:29 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Sat, 23 Oct 2010 10:28:29 +0100
+Subject: [sup-talk] mime-view.rb: content_type not found
+In-Reply-To: <1287743238-sup-1964@eris>
+References: <1287736097-sup-8064@blake> <1287743238-sup-1964@eris>
+Message-ID: <1287826034-sup-7074@blake>
+
+> I might be wrong, but I seem to remember that the mime type checking
+> depends on some funky debian/ubuntu script. I ran into this when I tried
+> to get this to work:
+> http://sup.rubyforge.org/wiki/wiki.pl?ViewingAttachments
+
+Has *anyone* got mime-view.rb working?  If so, what OS?
+
+-- 
+A synonym is a word you use when you can't spell the word you first
+thought of.
+		-- Burt Bacharach
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101023/da3c1690/attachment.bin>
+
+From shadowfirebird at gmail.com  Sat Oct 23 06:42:11 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Sat, 23 Oct 2010 11:42:11 +0100
+Subject: [sup-talk] Slow opening of threads?
+In-Reply-To: <1287822209-sup-8113@twin.sascha.silbe.org>
+References: <1287739347-sup-2987@blake>
+	<1287766308-sup-224@twin.sascha.silbe.org>
+	<1287777291-sup-9882@blake>
+	<1287822209-sup-8113@twin.sascha.silbe.org>
+Message-ID: <1287830479-sup-4229@blake>
+
+> >> drop_caches
+> 
+> >> Writing to this will cause the kernel to drop clean caches, dentries
+> >> and inodes from memory, causing that memory to become free.
+> 
+> >> To free pagecache:
+> >>         echo 1 > /proc/sys/vm/drop_caches
+> >> To free dentries and inodes:
+> >>         echo 2 > /proc/sys/vm/drop_caches
+> >> To free pagecache, dentries and inodes:
+> >>         echo 3 > /proc/sys/vm/drop_caches
+> 
+> >> As this is a non-destructive operation and dirty objects are not
+> >> freeable, the user should run `sync' first.
+> 
+> Sascha
+> 
+> [1] http://www.kernel.org/doc/Documentation/sysctl/vm.txt
+
+Thank you!  
+
+-- 
+Know what I hate most?  Rhetorical questions.
+		-- Henry N. Camp
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101023/9e5c5c97/attachment.bin>
+
+From sascha-ml-reply-to-2010-3 at silbe.org  Sat Oct 23 08:00:56 2010
+From: sascha-ml-reply-to-2010-3 at silbe.org (Sascha Silbe)
+Date: Sat, 23 Oct 2010 14:00:56 +0200
+Subject: [sup-talk] mime-view.rb: content_type not found
+In-Reply-To: <1287736097-sup-8064@blake>
+References: <1287736097-sup-8064@blake>
+Message-ID: <1287834835-sup-5649@twin.sascha.silbe.org>
+
+Excerpts from Shadowfirebird's message of Fri Oct 22 10:34:04 +0200 2010:
+
+> According to the wiki, there should be a "variable" content_type.  
+> 
+>        log content_type filename
+> 
+>     hook[mime-view]: Error: undefined method `content_type' for #<Redwood::HookManager::HookContext:0x7f13003fe110>
+
+Looks like a syntax error to me (in Ruby you don't have to add
+parentheses around the parameters, but as in your case above things can
+get ambiguous then). Also log doesn't support more than one parameter.
+
+Try:
+
+       log content_type
+       log filename
+
+Or:
+
+       log "content_type=#{content_type} filename=#{filename}"
+
+Sascha
+
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101023/bb8fad1a/attachment.bin>
+
+From shadowfirebird at gmail.com  Sat Oct 23 17:42:23 2010
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Sat, 23 Oct 2010 22:42:23 +0100
+Subject: [sup-talk] mime-view.rb: content_type not found
+In-Reply-To: <1287834835-sup-5649@twin.sascha.silbe.org>
+References: <1287736097-sup-8064@blake>
+	<1287834835-sup-5649@twin.sascha.silbe.org>
+Message-ID: <1287870023-sup-2367@blake>
+
+> Looks like a syntax error to me (in Ruby you don't have to add
+> parentheses around the parameters, but as in your case above things can
+> get ambiguous then). Also log doesn't support more than one parameter.
+
+::headdesk::  You called it.  The error message threw me, I guess.  That's me, though: the only mistakes I make are stupid ones.  Many thanks.
+
+-- 
+What this country needs is a good five cent microcomputer.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 197 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101023/f0eb2471/attachment-0001.bin>
+
+From dogsaw at thecyberplains.com  Sat Oct 23 17:46:00 2010
+From: dogsaw at thecyberplains.com (Matthew Goodall)
+Date: Sun, 24 Oct 2010 10:46:00 +1300
+Subject: [sup-talk] mime-view.rb: content_type not found
+In-Reply-To: <1287826034-sup-7074@blake>
+References: <1287736097-sup-8064@blake> <1287743238-sup-1964@eris>
+	<1287826034-sup-7074@blake>
+Message-ID: <1287868822-sup-9296@ethicsgradient.lan>
+
+Excerpts from Shadowfirebird's message of Sat Oct 23 22:28:29 +1300 2010:
+> > I might be wrong, but I seem to remember that the mime type checking
+> > depends on some funky debian/ubuntu script. I ran into this when I tried
+> > to get this to work:
+> > http://sup.rubyforge.org/wiki/wiki.pl?ViewingAttachments
+> 
+> Has *anyone* got mime-view.rb working?  If so, what OS?
+> 
+
+I guess I have it going, I use a standard OSX configuration.
+
+mime-view.rb:
+
+    system "open '#{filename}'"
+
+>From the open man page "The open command opens a file (or a directory
+or URL), just as if you had double-clicked the file's icon."
+
+If you are on linux you may want to try xdg-open and iirc you can use 
+'cmd /c start' on windows.
+
+From ulricha at informatik.uni-tuebingen.de  Sun Oct 24 06:52:17 2010
+From: ulricha at informatik.uni-tuebingen.de (Alexander Ulrich)
+Date: Sun, 24 Oct 2010 12:52:17 +0200
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287452900-sup-9784@maullin>
+References: <1287452900-sup-9784@maullin>
+Message-ID: <1287916961-sup-4654@difference.lan>
+
+> I started using sup recently. Now I have only one source that is a
+> inbox maildir folder. I want to delete some emails from the source
+> forever, but when I delete or kill emails they are not really deleted
+> from the maildir folder. How can I clean the maildir folder, removing
+> deleted or killed emails?
+
+Apparently this hasn't been mentioned before: There is a
+'maildir-sync' branch in the git repository by Damien Leone which does
+what you want. It adds a tool 'sup-sync-back-maildir' for syncing back
+manually and an option ':sync_back_to_maildir:' which does the sync
+automatically.
+
+The branch has worked quite well for me so far in normal operation,
+although I haven't done extensive testing.
+
+How are chances to have the branch merged to master?
+
+Alex
+
+From damien.leone at fensalir.fr  Sun Oct 24 16:11:49 2010
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 24 Oct 2010 22:11:49 +0200
+Subject: [sup-talk] deleting files from source
+In-Reply-To: <1287916961-sup-4654@difference.lan>
+References: <1287452900-sup-9784@maullin> <1287916961-sup-4654@difference.lan>
+Message-ID: <1287950838-sup-5470@mailer>
+
+Hello,
+
+Some news about this, I have been testing the branch for months and
+months without trouble so I guess it is stable enough, however I still
+have a todo list to finish and some commits to push. I did not have
+time to do this yet but I hope I'll finish soon.
+
+However this thread reminds me to add an option to whether delete
+emails from Maildirs or just mark them as deleted (the T flag) and let
+another software (such as offlineimap) handle them.
+
+Cheers,
+
+Excerpts from Alexander Ulrich's message of Sun Oct 24 12:52:17 +0200 2010:
+> > I started using sup recently. Now I have only one source that is a
+> > inbox maildir folder. I want to delete some emails from the source
+> > forever, but when I delete or kill emails they are not really deleted
+> > from the maildir folder. How can I clean the maildir folder, removing
+> > deleted or killed emails?
+> 
+> Apparently this hasn't been mentioned before: There is a
+> 'maildir-sync' branch in the git repository by Damien Leone which does
+> what you want. It adds a tool 'sup-sync-back-maildir' for syncing back
+> manually and an option ':sync_back_to_maildir:' which does the sync
+> automatically.
+> 
+> The branch has worked quite well for me so far in normal operation,
+> although I haven't done extensive testing.
+> 
+> How are chances to have the branch merged to master?
+> 
+> Alex
+
+--
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20101024/c864bc5d/attachment.bin>
+
+From dmishd at gmail.com  Mon Oct 25 19:06:51 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 26 Oct 2010 00:06:51 +0100
+Subject: [sup-talk] sup and ruby 1.9
+Message-ID: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+
+Hello all
+
+I'm wondering what the status of sup and ruby 1.9 is. Is it stable and
+no more buggy than on ruby 1.8? Is it significantly faster than on
+ruby 1.8?
+
+If I did go for the change, can I switch back and forth between ruby
+versions? Should I reinstall all the gems that sup depends on?
+
+Thanks in advance
+Hamish
+
+From michael+sup at stapelberg.de  Tue Oct 26 02:06:25 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 26 Oct 2010 08:06:25 +0200
+Subject: [sup-talk] sup and ruby 1.9
+In-Reply-To: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+References: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+Message-ID: <1288073067-sup-885@midna.zekjur.net>
+
+Hi Hamish,
+
+Excerpts from Hamish D's message of 2010-10-26 01:06:51 +0200:
+> I'm wondering what the status of sup and ruby 1.9 is. Is it stable and
+> no more buggy than on ruby 1.8? Is it significantly faster than on
+> ruby 1.8?
+It works just fine. I run it since a few months without any problems. For ruby
+1.9.2, you need some patches:
+http://rubyforge.org/pipermail/sup-talk/2010-September/004223.html
+
+> If I did go for the change, can I switch back and forth between ruby
+> versions? Should I reinstall all the gems that sup depends on?
+Yes, you need to install all gems.
+
+Best regards,
+Michael
+
+From hollunder at lavabit.com  Tue Oct 26 06:04:29 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 26 Oct 2010 12:04:29 +0200
+Subject: [sup-talk] sup and ruby 1.9
+In-Reply-To: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+References: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+Message-ID: <1288087383-sup-6381@eris>
+
+Excerpts from Hamish D's message of 2010-10-26 01:06:51 +0200:
+> Hello all
+> 
+> I'm wondering what the status of sup and ruby 1.9 is. Is it stable and
+> no more buggy than on ruby 1.8? Is it significantly faster than on
+> ruby 1.8?
+> 
+> If I did go for the change, can I switch back and forth between ruby
+> versions? Should I reinstall all the gems that sup depends on?
+> 
+> Thanks in advance
+> Hamish
+
+All I can tell you is that sup 0.11 works with ruby 1.9.1_p429 but
+breaks with 1.9.2.
+
+
+From moritz+sup at wzff.de  Tue Oct 26 06:45:02 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Tue, 26 Oct 2010 12:45:02 +0200
+Subject: [sup-talk] sup and ruby 1.9
+In-Reply-To: <1288087383-sup-6381@eris>
+References: <AANLkTinRQ9A+8630CnUKam1h2X5o_N_n9e6GgY_weLkQ@mail.gmail.com>
+	<1288087383-sup-6381@eris>
+Message-ID: <1288089771-sup-406@niflheimr>
+
+> Excerpts from Hamish D's message of 2010-10-26 01:06:51 +0200:
+> > I'm wondering what the status of sup and ruby 1.9 is. Is it stable and
+> > no more buggy than on ruby 1.8? Is it significantly faster than on
+> > ruby 1.8?
+
+I myself have 1.8 installed in /opt and use it for running sup. My distro
+(arch) likes upgrading to beta-versions way too much, and I want my mailclient
+to be stable ;)
+
+From tero at tilus.net  Thu Oct 28 20:31:59 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 29 Oct 2010 03:31:59 +0300
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1284051347-sup-9359@ezyang>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+	<1281916596-sup-8793@ezyang> <1284051347-sup-9359@ezyang>
+Message-ID: <1288311632-sup-2088@tilus.net>
+
+Edward Z. Yang, 2010-09-09 19:56:
+> Has anyone been able to reproduce this bug on the relevant commit?
+
+I'm running git next and my sent mail gets archived right away.  What
+I see by reading the code is that the default SentLoader (which I use)
+is hardwired to be "archived", which means the inbox tag is removed
+from new messages added to index from that source.
+
+SentLoader has been like that since 2007, but I definitely have seen
+my sent mail appear to my inbox up until I updated from e97f535e9 to
+927b6bae94.
+
+Does anyone have sent mail showing up in inbox?
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+http://seurakuntavaalit.fi/      1.-5. ja 14.-15.11.
+http://www.seurakuntavaki.net/       ehdokas nro 126
+
+From tero at tilus.net  Fri Oct 29 19:00:08 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sat, 30 Oct 2010 02:00:08 +0300
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1288311632-sup-2088@tilus.net>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+	<1281916596-sup-8793@ezyang> <1284051347-sup-9359@ezyang>
+	<1288311632-sup-2088@tilus.net>
+Message-ID: <1288392786-sup-8176@tilus.net>
+
+I just noticed that when I replied, the thread appeared to inbox and
+disappeared when I refreshed (hit @) the inbox buffer.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+http://seurakuntavaalit.fi/      1.-5. ja 14.-15.11.
+http://www.seurakuntavaki.net/       ehdokas nro 126
+
+From ezyang at MIT.EDU  Fri Oct 29 19:29:55 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Fri, 29 Oct 2010 19:29:55 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1288392786-sup-8176@tilus.net>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+	<1281916596-sup-8793@ezyang> <1284051347-sup-9359@ezyang>
+	<1288311632-sup-2088@tilus.net> <1288392786-sup-8176@tilus.net>
+Message-ID: <1288394971-sup-9573@ezyang>
+
+Excerpts from Tero Tilus's message of Fri Oct 29 19:00:08 -0400 2010:
+> I just noticed that when I replied, the thread appeared to inbox and
+> disappeared when I refreshed (hit @) the inbox buffer.
+
+That's quite interesting :-)  I haven't had time to dig into this, but
+a verification is good to hear.
+
+Edward
+
+From matias at insophia.com  Fri Oct 29 19:49:40 2010
+From: matias at insophia.com (Matias Aguirre)
+Date: Fri, 29 Oct 2010 21:49:40 -0200
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1288394971-sup-9573@ezyang>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+	<1281916596-sup-8793@ezyang> <1284051347-sup-9359@ezyang>
+	<1288311632-sup-2088@tilus.net> <1288392786-sup-8176@tilus.net>
+	<1288394971-sup-9573@ezyang>
+Message-ID: <1288396090-sup-7184@mintaka>
+
+I didn't dug on this one, but I can confirm behavior difference, I
+liked previous one and noticed immediately. Just adding my vote here.
+
+Thanks,
+Mat?as
+
+Excerpts from Edward Z. Yang's message of Fri Oct 29 21:29:55 -0200 2010:
+> Excerpts from Tero Tilus's message of Fri Oct 29 19:00:08 -0400 2010:
+> > I just noticed that when I replied, the thread appeared to inbox and
+> > disappeared when I refreshed (hit @) the inbox buffer.
+> 
+> That's quite interesting :-)  I haven't had time to dig into this, but
+> a verification is good to hear.
+> 
+> Edward
+--
+Mat?as Aguirre <matias at insophia.com>
+

@@ -1,0 +1,2712 @@
+From eg at gaute.vetsj.com  Thu Jun  2 10:36:04 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 02 Jun 2011 16:36:04 +0200
+Subject: [sup-devel] Invalid encoding symbol when doing Marshal.load
+Message-ID: <1307025076-sup-2874@qwerzila>
+
+Hi,
+
+I've been searching a bit through some old mail and suddenly encountered
+the following error:
+
+  --- EncodingError from thread: load threads for thread-index-mode
+  invalid encoding symbol
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:796:in `load'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:796:in `entry'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:571:in `get_entry'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:200:in `block in build_message'
+  /usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:579:in `synchronize'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:200:in `build_message'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `block (2 levels) in each_id_by_date'
+  /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:338:in `call'
+  /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:338:in `block in load_n_threads'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `block in each_id_by_date'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `block in each_id'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `each'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `each_id'
+  /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `each_id_by_date'
+  /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:334:in `load_n_threads'
+  /home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:643:in `load_n_threads'
+  (eval):12:in `load_n_threads'
+  /home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:627:in `block in load_n_threads_background'
+  /home/gaute/dev/ruby/sup.git/lib/sup.rb:78:in `block in reporting_thread'
+
+running latest 'next'. I've tried to experiment a bit with it, but
+haven't found a solution. Trying to encode data, or force_encode the
+data to UTF-8.
+
+This happens when listing some old mail, so it could possibly be an
+issue with data not _stored_ correctly in the first place.
+
+I still haven't figured out a way to handle the exception and still get
+the message structure de-serialized. Any suggestions?
+
+Best regards,
+Gaute
+
+From wmorgan-sup at masanjin.net  Wed Jun  8 01:21:45 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 08 Jun 2011 05:21:45 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+	<1304527268-sup-7661@masanjin.net>
+	<BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+Message-ID: <1307509658-sup-6995@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-06:
+> Great, let me know when you have the modifications so I can stress
+> test them.
+
+In the most recent version of Heliotrope, there are two hooks you can
+use to do this: transform-text and transform-query. To use them, place
+your Ruby code in files called <store dir>/hooks/<hook-name>.rb.
+
+For transform-text, place your code in <store dir>/hooks/transform-text.rb
+This hook will be called on any text added to the index. The 'text'
+variable will contain the text, and the hook should return (i.e. the
+last command should evaluate to) the transformed text.
+
+Example:
+  $ cat store/hooks/transform-text.rb
+  require 'MeCab'
+  MeCab::Tagger.new("-Owakati").parse(text).gsub(/\s+/, " ")
+
+For transform-query, place your code in <store
+ dir>/hooks/transform-query.rb. This hook will be called on any query
+before it is executed. The 'query' variable will contain the query
+string, and the hook should return (i.e. the last command should
+evaluate to) the transformed query.
+
+Example:
+  $ cat store/hooks/transform-query.rb
+  require 'MeCab'
+  MeCab::Tagger.new("-Owakati").parse(query).gsub(/\s+/, " ")
+
+Let me know if you have any problems with these hooks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eg at gaute.vetsj.com  Thu Jun  9 07:28:07 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 09 Jun 2011 13:28:07 +0200
+Subject: [sup-devel] Invalid encoding symbol when doing Marshal.load
+In-Reply-To: <1307025076-sup-2874@qwerzila>
+References: <1307025076-sup-2874@qwerzila>
+Message-ID: <1307618816-sup-5149@qwerzila>
+
+Excerpts from Gaute Hope's message of 2011-06-02 16:36:04 +0200:
+> Hi,
+> 
+> I've been searching a bit through some old mail and suddenly encountered
+> the following error:
+> 
+>   --- EncodingError from thread: load threads for thread-index-mode
+>   invalid encoding symbol
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:796:in `load'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:796:in `entry'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:571:in `get_entry'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:200:in `block in build_message'
+>   /usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:579:in `synchronize'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:200:in `build_message'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `block (2 levels) in each_id_by_date'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:338:in `call'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:338:in `block in load_n_threads'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `block in each_id_by_date'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `block in each_id'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `each'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:250:in `each_id'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/index.rb:155:in `each_id_by_date'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/thread.rb:334:in `load_n_threads'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:643:in `load_n_threads'
+>   (eval):12:in `load_n_threads'
+>   /home/gaute/dev/ruby/sup.git/lib/sup/modes/thread-index-mode.rb:627:in `block in load_n_threads_background'
+>   /home/gaute/dev/ruby/sup.git/lib/sup.rb:78:in `block in reporting_thread'
+
+Also perhaps worth mentioning; I get an error on several documents when
+doing sup-dump:
+
+failed to dump document 2192065433
+failed to dump document 2195211019
+failed to dump document 2195211571
+failed to dump document 2197009224
+failed to dump document 2197023569
+failed to dump document 2197023801
+failed to dump document 2198792521
+failed to dump document 2199089510
+failed to dump document 2199602802
+failed to dump document 2199602803
+failed to dump document 2200333894
+failed to dump document 2201147825
+failed to dump document 2201629209
+failed to dump document 2207757157
+failed to dump document 2207760235
+failed to dump document 2209183158
+failed to dump document 2209239264
+failed to dump document 2210514594
+failed to dump document 2211271070
+failed to dump document 2211437027
+
+Could perhaps be related.
+
+- Gaute
+
+From eg at gaute.vetsj.com  Thu Jun  9 07:30:30 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 09 Jun 2011 13:30:30 +0200
+Subject: [sup-devel] Another UTF-8 exception: edit-message-mode.rb
+In-Reply-To: <1306828491-sup-5835@qwerzila>
+References: <1306828491-sup-5835@qwerzila>
+Message-ID: <1307618902-sup-5198@qwerzila>
+
+Excerpts from Gaute Hope's message of 2011-05-31 09:57:39 +0200:
+> And a patch:
+> 0001-Fix-UTF-8-exception-in-santizing-body.patch
+
+*bump*
+
+Any comments on this or on whether it will be included?
+
+Cheers,
+Gaute
+
+From hsanson at gmail.com  Thu Jun  9 09:48:23 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 9 Jun 2011 22:48:23 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <1307509658-sup-6995@masanjin.net>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+	<1304527268-sup-7661@masanjin.net>
+	<BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+	<1307509658-sup-6995@masanjin.net>
+Message-ID: <BANLkTim6_vC3K+ZcrTPgLnckYPRLxG9zOQ@mail.gmail.com>
+
+On Wed, Jun 8, 2011 at 2:21 PM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-06:
+>> Great, let me know when you have the modifications so I can stress
+>> test them.
+>
+> In the most recent version of Heliotrope, there are two hooks you can
+> use to do this: transform-text and transform-query. To use them, place
+> your Ruby code in files called <store dir>/hooks/<hook-name>.rb.
+>
+> For transform-text, place your code in <store dir>/hooks/transform-text.rb
+> This hook will be called on any text added to the index. The 'text'
+> variable will contain the text, and the hook should return (i.e. the
+> last command should evaluate to) the transformed text.
+>
+> Example:
+> ?$ cat store/hooks/transform-text.rb
+> ?require 'MeCab'
+> ?MeCab::Tagger.new("-Owakati").parse(text).gsub(/\s+/, " ")
+>
+> For transform-query, place your code in <store
+> ?dir>/hooks/transform-query.rb. This hook will be called on any query
+> before it is executed. The 'query' variable will contain the query
+> string, and the hook should return (i.e. the last command should
+> evaluate to) the transformed query.
+>
+> Example:
+> ?$ cat store/hooks/transform-query.rb
+> ?require 'MeCab'
+> ?MeCab::Tagger.new("-Owakati").parse(query).gsub(/\s+/, " ")
+>
+> Let me know if you have any problems with these hooks!
+
+Great I am downloading my gmail accounts now (again). I can see you
+have improved the imap-dumper.rb to handle uidvalidity and uidnext
+that is also great. In the git log says gmail labels are also copied
+to heliotrope but I don't see them in my index.
+
+BTW there are two small bugs in the imap-dumper.rb, see attached patch
+for details.
+
+regards,
+Horacio
+
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+gmail
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-imap-dumper.patch
+Type: text/x-patch
+Size: 1033 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110609/61e5e685/attachment.bin>
+
+From hsanson at gmail.com  Thu Jun  9 10:08:56 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 9 Jun 2011 23:08:56 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTim6_vC3K+ZcrTPgLnckYPRLxG9zOQ@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+	<1304527268-sup-7661@masanjin.net>
+	<BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+	<1307509658-sup-6995@masanjin.net>
+	<BANLkTim6_vC3K+ZcrTPgLnckYPRLxG9zOQ@mail.gmail.com>
+Message-ID: <BANLkTin8e2C9YGFCR1ob5VZJdjWxY4=mGA@mail.gmail.com>
+
+Unfortunately the gmail sync failed....  Below the error:
+
+ requesting messages 40266..40315 from imap server
+; gmail loving gave us 19 messages in 4.6s = a whopping 4.1m/s
+scanned 748, indexed 747, skipped 0 bad and 1 seen messages in 400.4s = 1.9 m/s
+; requesting messages 40316..40365 from imap server
+; gmail loving gave us 8 messages in 2.2s = a whopping 3.7m/s
+; requesting messages 40366..40415 from imap server
+/media/DATA/Apps/heliotrope/lib/heliotrope/imap-dumper.rb:73:in
+`next_message': undefined method `size' for nil:NilClass
+(NoMethodError)
+        from bin/heliotrope-add:128:in `<main>'
+
+For some reason "uid_fetch" is returning nil instead of an empty array
+(contrary to what Net::IMAP documentation says). Not really sure if
+checking for nil and simply repeat the query can resolve the problem
+but seems to be the best option.
+
+
+regards
+Horacio
+
+
+
+On Thu, Jun 9, 2011 at 10:48 PM, Horacio Sanson <hsanson at gmail.com> wrote:
+> On Wed, Jun 8, 2011 at 2:21 PM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+>> Reformatted excerpts from Horacio Sanson's message of 2011-05-06:
+>>> Great, let me know when you have the modifications so I can stress
+>>> test them.
+>>
+>> In the most recent version of Heliotrope, there are two hooks you can
+>> use to do this: transform-text and transform-query. To use them, place
+>> your Ruby code in files called <store dir>/hooks/<hook-name>.rb.
+>>
+>> For transform-text, place your code in <store dir>/hooks/transform-text.rb
+>> This hook will be called on any text added to the index. The 'text'
+>> variable will contain the text, and the hook should return (i.e. the
+>> last command should evaluate to) the transformed text.
+>>
+>> Example:
+>> ?$ cat store/hooks/transform-text.rb
+>> ?require 'MeCab'
+>> ?MeCab::Tagger.new("-Owakati").parse(text).gsub(/\s+/, " ")
+>>
+>> For transform-query, place your code in <store
+>> ?dir>/hooks/transform-query.rb. This hook will be called on any query
+>> before it is executed. The 'query' variable will contain the query
+>> string, and the hook should return (i.e. the last command should
+>> evaluate to) the transformed query.
+>>
+>> Example:
+>> ?$ cat store/hooks/transform-query.rb
+>> ?require 'MeCab'
+>> ?MeCab::Tagger.new("-Owakati").parse(query).gsub(/\s+/, " ")
+>>
+>> Let me know if you have any problems with these hooks!
+>
+> Great I am downloading my gmail accounts now (again). I can see you
+> have improved the imap-dumper.rb to handle uidvalidity and uidnext
+> that is also great. In the git log says gmail labels are also copied
+> to heliotrope but I don't see them in my index.
+>
+> BTW there are two small bugs in the imap-dumper.rb, see attached patch
+> for details.
+>
+> regards,
+> Horacio
+>
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> Sup-devel mailing list
+>> Sup-devel at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>
+>
+> gmail
+>
+
+From wmorgan-sup at masanjin.net  Thu Jun  9 18:46:45 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Jun 2011 22:46:45 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTim6_vC3K+ZcrTPgLnckYPRLxG9zOQ@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+	<1304527268-sup-7661@masanjin.net>
+	<BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+	<1307509658-sup-6995@masanjin.net>
+	<BANLkTim6_vC3K+ZcrTPgLnckYPRLxG9zOQ@mail.gmail.com>
+Message-ID: <1307659482-sup-7420@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-09:
+> Great I am downloading my gmail accounts now (again). I can see you
+> have improved the imap-dumper.rb to handle uidvalidity and uidnext
+> that is also great. In the git log says gmail labels are also copied
+> to heliotrope but I don't see them in my index.
+
+I actually added a separate gmail importer that does that stuff,
+borrowing from your gmail.rb. Try the -g option.
+
+It's mostly duplicated with imap-dumper.rb so I'm trying to decide how
+to best merge them.
+
+> BTW there are two small bugs in the imap-dumper.rb, see attached patch
+> for details.
+
+Thank you!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Sat Jun 11 11:30:24 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sun, 12 Jun 2011 00:30:24 +0900
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+Message-ID: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+
+After finishing sync of my gmail account to heliotrope I tried to
+start the server but was received with this error message:
+
+ruby1.9.1  -Ilib bin/heliotrope-server -d ~/.heliotrope
+/var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:337:in
+`try': invalid meta data (error code 5)
+(OklahomaMixer::Error::CabinetError)
+        from /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:44:in
+`initialize'
+        from /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer.rb:17:in
+`new'
+        from /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer.rb:17:in
+`open'
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/index.rb:44:in
+`initialize'
+        from bin/heliotrope-server:576:in `new'
+        from bin/heliotrope-server:576:in `<main>'
+
+
+seems something got corrupted and I have no idea how to recover. Any
+tips that would fix this without resync my whole account would be
+greatly appreciated.
+
+
+Horacio
+
+From wmorgan-sup at masanjin.net  Mon Jun 13 22:14:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Jun 2011 02:14:05 +0000
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+In-Reply-To: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+References: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+Message-ID: <1308017442-sup-8849@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-11:
+> ruby1.9.1  -Ilib bin/heliotrope-server -d ~/.heliotrope
+> /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:337:in
+> `try': invalid meta data (error code 5)
+> (OklahomaMixer::Error::CabinetError)
+
+Very disturbing. I found this:
+
+http://www.supermind.org/blog/557/tokyocabinet-hdb-slowdown
+
+Did you hit 2GB on your store.tch file, by any chance?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun 13 22:14:32 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Jun 2011 02:14:32 +0000
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+In-Reply-To: <1308017442-sup-8849@masanjin.net>
+References: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+	<1308017442-sup-8849@masanjin.net>
+Message-ID: <1308017654-sup-350@masanjin.net>
+
+Whoops, I mean this:
+
+http://www.supermind.org/blog/554/2gb-limit-with-tokyo-cabinet-aka-invalid-meta-data
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Mon Jun 13 22:37:14 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 14 Jun 2011 11:37:14 +0900
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+In-Reply-To: <1308017654-sup-350@masanjin.net>
+References: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+	<1308017442-sup-8849@masanjin.net>
+	<1308017654-sup-350@masanjin.net>
+Message-ID: <BANLkTikqVo2WLyOJ7jTdRgyBm9d3=DbRMw@mail.gmail.com>
+
+Not even close... my store.tch is 76MB only. This metadata corruption
+in Tokyo Cabinet seems to be a common occurrence and what is scary
+about this is that there seems to be no way to recover from it (as far
+as google can tell). The only option I see is delete my store/index
+and restart sync again.
+
+
+regards,
+Horacio
+
+On Tue, Jun 14, 2011 at 11:14 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Whoops, I mean this:
+>
+> http://www.supermind.org/blog/554/2gb-limit-with-tokyo-cabinet-aka-invalid-meta-data
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From wmorgan-sup at masanjin.net  Mon Jun 13 23:30:58 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Jun 2011 03:30:58 +0000
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+In-Reply-To: <BANLkTikqVo2WLyOJ7jTdRgyBm9d3=DbRMw@mail.gmail.com>
+References: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+	<1308017442-sup-8849@masanjin.net>
+	<1308017654-sup-350@masanjin.net>
+	<BANLkTikqVo2WLyOJ7jTdRgyBm9d3=DbRMw@mail.gmail.com>
+Message-ID: <1308022018-sup-5391@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+> Not even close... my store.tch is 76MB only. This metadata corruption
+> in Tokyo Cabinet seems to be a common occurrence and what is scary
+> about this is that there seems to be no way to recover from it (as far
+> as google can tell). The only option I see is delete my store/index
+> and restart sync again.
+
+Can you point me to some links about this type of corruption?
+
+I'm far from wedded to Oklahoma Mixer / Tokyo Cabinet. It was just the
+easiest thing to get started with. Any kind of mutable persistent
+key-value store will do. Other alternatives to consider: another
+TokyoCabinet gem besides OH, KyotoCabinet, BDB... I kinda don't want to
+move to separate processes like Redis though. If only there were a
+libredis (well there is, but it's not what you want.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Tue Jun 14 00:21:56 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 14 Jun 2011 13:21:56 +0900
+Subject: [sup-devel] Invalid meta data error in OklahomaMixer
+In-Reply-To: <1308022018-sup-5391@masanjin.net>
+References: <BANLkTi=5BQ6f0VPKq9ZhE6KNyXKS9ZMV3Q@mail.gmail.com>
+	<1308017442-sup-8849@masanjin.net>
+	<1308017654-sup-350@masanjin.net>
+	<BANLkTikqVo2WLyOJ7jTdRgyBm9d3=DbRMw@mail.gmail.com>
+	<1308022018-sup-5391@masanjin.net>
+Message-ID: <BANLkTi=CKJmvQ4G2djKikSeT3-to4yPaDA@mail.gmail.com>
+
+I managed to get the store.tch working again by installing
+tokyocabinet-bin and running this command on the file:
+
+  tchmgr optimize -nl store.tch   # without -nl nothing works...
+
+at the end of this command I got a write error but the file got back
+to a usable state. I am afraid this command simply truncated the file
+causing some missing emails but not really sure. Is there a way to
+check if the index and the messages are in sync? That is all indexed
+messages have a corresponding email message in the store.tch?
+
+Here is a good blog post with tips for using Tokyo Cabinet. It
+recommends enabling logging and running optimize from time to time.
+Logging would allow us to see what caused the metadata corruption:
+
+  http://www.bigdbahead.com/?p=700
+
+Some posts of people with the same invalid metadata problem:
+
+  http://twitter.com/#!/ono_matope/statuses/17650765308
+  http://groups.google.com/group/tokyocabinet-users/browse_thread/thread/f114f078848e20ed
+
+Tokyo Cabinet is pretty good and is actually used for the largest
+social network in Japan
+(http://alpha.mixi.co.jp/blog/?s=tchdb&paged=2) so I would not change
+it. Even big databases (e.g. MySQL, Postgres and Oracle) are not free
+of table corruption. The difference is that they provide tools to
+detect and recover from such corruption state.
+
+regards,
+Horacio
+
+On Tue, Jun 14, 2011 at 12:30 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+>> Not even close... my store.tch is 76MB only. This metadata corruption
+>> in Tokyo Cabinet seems to be a common occurrence and what is scary
+>> about this is that there seems to be no way to recover from it (as far
+>> as google can tell). The only option I see is delete my store/index
+>> and restart sync again.
+>
+> Can you point me to some links about this type of corruption?
+>
+> I'm far from wedded to Oklahoma Mixer / Tokyo Cabinet. It was just the
+> easiest thing to get started with. Any kind of mutable persistent
+> key-value store will do. Other alternatives to consider: another
+> TokyoCabinet gem besides OH, KyotoCabinet, BDB... I kinda don't want to
+> move to separate processes like Redis though. If only there were a
+> libredis (well there is, but it's not what you want.)
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From hsanson at gmail.com  Tue Jun 14 04:36:02 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 14 Jun 2011 17:36:02 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+Message-ID: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+
+Well I will retract what I said earlier... maybe is a good idea to
+replace TokyoCabinet with something else.
+
+Now the store.tch got corrupted again for some reason and the only
+error I get is "invalid record header". Some googling does not help
+and my previous fix (tchmgr optimiza -nl) does not fix this problem.
+What is interesting is that the store.tch file is at 76MB now that is
+exactly the same size it had when the previous corruption occured.
+
+
+===========  error ============
+; found 496204 new messages...
+; found 496204 messages to scan
+; requesting messages 79228..79327 from imap server
+/var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:337:in
+`try': invalid record header (error code 6)
+(OklahomaMixer::Error::CabinetError)
+        from /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:142:in
+`fetch'
+        from /var/lib/gems/1.9.1/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:205:in
+`include?'
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/index.rb:633:in
+`contains_key?'
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/index.rb:165:in
+`contains_msgid?'
+        from bin/heliotrope-add:139:in `<main>'
+
+
+regards,
+Horacio
+
+From wmorgan-sup at masanjin.net  Tue Jun 14 13:30:32 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Jun 2011 17:30:32 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+Message-ID: <1308071162-sup-7051@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+> Now the store.tch got corrupted again for some reason and the only
+> error I get is "invalid record header". Some googling does not help
+> and my previous fix (tchmgr optimiza -nl) does not fix this problem.
+> What is interesting is that the store.tch file is at 76MB now that is
+> exactly the same size it had when the previous corruption occured.
+
+Hm. And you're not running out of disk space or anything wierd like
+that, are you?
+
+Maybe you're encountering a limitation on the number of keys? What does
+this say for you?
+
+  $ ruby -Ilib bin/heliotrope-console -d store
+  Heliotrope console started.
+  [...]
+  > s = index.instance_eval { @store }
+  [...]
+  > s.size
+  => 234201
+  > s.keys.size
+  => 234201
+
+(My store.tch is only 30mb.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Tue Jun 14 18:36:51 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 15 Jun 2011 07:36:51 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308071162-sup-7051@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308071162-sup-7051@masanjin.net>
+Message-ID: <BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+
+Interesting....  yesterday I started again to sync my gmail account
+but this time using ruby1.8.7 instead of ruby1.9.1 and without any
+hooks configured and it finished without problems. I think the problem
+is the hooks so I will rerun again with ruby 1.9.1 but without the
+hooks.
+
+On Wed, Jun 15, 2011 at 2:30 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+>> Now the store.tch got corrupted again for some reason and the only
+>> error I get is "invalid record header". Some googling does not help
+>> and my previous fix (tchmgr optimiza -nl) does not fix this problem.
+>> What is interesting is that the store.tch file is at 76MB now that is
+>> exactly the same size it had when the previous corruption occured.
+>
+> Hm. And you're not running out of disk space or anything wierd like
+> that, are you?
+>
+> Maybe you're encountering a limitation on the number of keys? What does
+> this say for you?
+>
+> ?$ ruby -Ilib bin/heliotrope-console -d store
+> ?Heliotrope console started.
+> ?[...]
+> ?> s = index.instance_eval { @store }
+> ?[...]
+> ?> s.size
+> ?=> 234201
+> ?> s.keys.size
+> ?=> 234201
+>
+> (My store.tch is only 30mb.)
+
+irb> s = index.instance_eval { @store }
+irb> s.size
+=> 3469212
+irb> s.keys.size
+=> 3469212
+
+$ ls -lh ~/.heliotrope
+?? 3.8G
+drwxrwxr-x 2 ryujin ryujin 4.0K 2011-06-14 17:36 hooks
+-rw-r----- 1 ryujin ryujin 4.1M 2011-06-15 07:26 index0.lb
+-rw-r----- 1 ryujin ryujin 513M 2011-06-15 07:27 index0.pr
+-rw-r----- 1 ryujin ryujin  13M 2011-06-15 07:28 index0.sh_
+-rw-r----- 1 ryujin ryujin  65M 2011-06-15 07:27 index0.sp
+-rw-r----- 1 ryujin ryujin  37M 2011-06-15 07:28 index0.th
+-rw-rw-r-- 1 ryujin ryujin 3.0G 2011-06-15 07:27 messages
+-rw-r--r-- 1 ryujin ryujin 378M 2011-06-15 07:28 store.tch
+
+
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+regards
+Horacio
+
+From wmorgan-sup at masanjin.net  Wed Jun 15 11:11:54 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 15 Jun 2011 15:11:54 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308071162-sup-7051@masanjin.net>
+	<BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+Message-ID: <1308150597-sup-6406@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+> Interesting....  yesterday I started again to sync my gmail account
+> but this time using ruby1.8.7 instead of ruby1.9.1 and without any
+> hooks configured and it finished without problems. I think the problem
+> is the hooks so I will rerun again with ruby 1.9.1 but without the
+> hooks.
+
+There is a difference in how strings are marshalled between Ruby 1.8 and
+1.9, and you will obviously get different strings if you tokenize
+differently, but if either of these two changes is the difference, it's
+a bug in TC.
+
+One option is to write some Ruby bindings to LevelDB and try that, but
+it would be a bunch of work, would require C++0x which means every OS X
+user would be complaining all the time, etc etc. Not sure if I want to
+go down that route.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jun 15 11:16:20 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 15 Jun 2011 15:16:20 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308071162-sup-7051@masanjin.net>
+	<BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+Message-ID: <1308150793-sup-575@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-14:
+> irb> s.size
+> => 3469212
+
+Ok, squarely between 2^21 and 2^22. It doesn't seem like you're bumping
+up against some kind of key size limit.
+
+> -rw-r--r-- 1 ryujin ryujin 378M 2011-06-15 07:28 store.tch
+
+Looks like 378mb here. You were sayings 78mb earlier. Was that a
+different set of mail?
+
+If you have a corrupted store.tch file, keep it around. Maybe we can get
+one of the TC people to help us.
+
+But maybe the easiest next thing to try is another TC gem besides
+OklahomaMixer.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Jun 18 01:02:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 18 Jun 2011 05:02:59 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308150597-sup-6406@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308071162-sup-7051@masanjin.net>
+	<BANLkTi=6EuFkyDh4rjV6zroQv6k-tgH+oA@mail.gmail.com>
+	<1308150597-sup-6406@masanjin.net>
+Message-ID: <1308373312-sup-3728@masanjin.net>
+
+I have pushed a branch called 'leveldb' that uses leveldb instead of
+TokyoCabinet. Can you try this please? You will need to install the
+'leveldb-ruby' gem.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Sun Jun 19 09:25:34 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sun, 19 Jun 2011 22:25:34 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308373312-sup-3728@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308150597-sup-6406@masanjin.net>
+	<1308373312-sup-3728@masanjin.net>
+Message-ID: <201106192225.34516.hsanson@gmail.com>
+
+On Saturday 18 June 2011 14:02:59 William Morgan wrote:
+> I have pushed a branch called 'leveldb' that uses leveldb instead of
+> TokyoCabinet. Can you try this please? You will need to install the
+> 'leveldb-ruby' gem.
+
+Sorry but I am unable to install the leveldb-gem. It complains about a missing 
+header and I have already installed all the packages that contain that file and 
+still no luck:
+
+###########################################
+sudo gem1.9.1 install leveldb-ruby
+Building native extensions.  This could take a while...
+ERROR:  Error installing leveldb-ruby:
+        ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.9.1 extconf.rb
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/builder.cc -o db/builder.o
+In file included from ./port/port.h:14:0,
+                 from ./db/filename.h:14,
+                 from db/builder.cc:7:
+./port/port_posix.h:14:22: fatal error: cstdatomic: ??????????????????????
+compilation terminated.
+make: *** [db/builder.o] ??? 1
+##############################################
+
+The error message says that the cstdatomic file does not exists. I installed 
+the  libstdc++6-4.4-dev package that has the file in 
+(/usr/include/c++/4.4/cstdatomic) but the build system fails to find it.
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Sun Jun 19 14:30:22 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Jun 2011 18:30:22 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106192225.34516.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308150597-sup-6406@masanjin.net>
+	<1308373312-sup-3728@masanjin.net>
+	<201106192225.34516.hsanson@gmail.com>
+Message-ID: <1308508184-sup-6792@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-19:
+> ./port/port_posix.h:14:22: fatal error: cstdatomic: ??????????????????????
+
+What is the output of g++ --version on your system, please?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From vivien.didelot at gmail.com  Sun Jun 19 16:44:09 2011
+From: vivien.didelot at gmail.com (Vivien Didelot)
+Date: Sun, 19 Jun 2011 16:44:09 -0400
+Subject: [sup-devel] Turn Turnsole into a generic mail client
+Message-ID: <BANLkTiniXpQtS_YG5Fhmr4rqFKW7=tGHWw@mail.gmail.com>
+
+Hi William and others,
+
+As Turnsole is a great mail interface, I was thinking about having it
+generic to multiple servers or mail sources, to fit many use cases.
+
+Explicitely, the Turnsole::Client class (
+https://github.com/wmorgan/turnsole/blob/master/lib/turnsole/client.rb)
+could be turned into a Turnsole::Client module instead,
+which implements the necessary abstract methods for the interface, and which
+needs to be included in every client adapters (like DataMapper adapters are
+working for instance).
+Built-in Turnsole adapters would be in lib/turnsole/client/. That way, we
+could easily implement Turnsole adapters for many sources, such as:
+Heliotrope (for sure, the official adapter),
+IMAP (direct connection),
+Gmail (simpler adapter using the IMAP adapter),
+Maildir/Mbox,
+NotMuchMail (which is a great Sup-like email back-end),
+upasfs,
+etc.
+
+The main reason why I'm posting that, is that I really like the Turnsole
+ncurses based interface,
+but sometimes I'd like to check emails directly from imap (when not on my
+computer for instance).
+I also know that NotMuch is missing a good ncurses-based client (that's why
+I've Cc'd them).
+
+What do you think? Is there limitations I didn't think about?
+
+-- 
+Vivien Didelot,
+vivien.didelot.org
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110619/4c41b27c/attachment.html>
+
+From dmishd at gmail.com  Sun Jun 19 17:48:40 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 19 Jun 2011 22:48:40 +0100
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1306775826-sup-4909@whisper>
+References: <1300032642-sup-9716@mailer> <1306775826-sup-4909@whisper>
+Message-ID: <1308520036-sup-7949@whisper>
+
+Excerpts from Hamish's message of Mon May 30 18:23:10 +0100 2011:
+> Excerpts from Damien Leone's message of Sun Mar 13 16:13:05 +0000 2011:
+> > 0002-edit-message-mode-Add-an-optional-account-selector.patch
+> 
+> I imagine though that you would want to handle all the possible email
+> addresses, so I've written an extra patch to do that, and pushed your
+> patch and mine onto the (new) account_selector branch on gitorious.
+> Please have a look and see if what I've done still works for you, and is
+> what you meant.
+> 
+> I also wondered whether to change the behaviour so that the account
+> selector will only appear if there is more than one possible email
+> address to choose from, but I thought it would be handy to be able to
+> reset the From: header to your usual From: using the selector, rather
+> than having to hand edit whatever was in the To: header that you are
+> replying to. What do you think?
+> 
+> I'll wait for you to review my changes before I merge this into next.
+> (My changes are in commit bf56b543cc664c40c3695e287ee8e7e924f2d0d1)
+
+I've not heard anything for a bit, so I've pushed this into next for
+wider testing, with the guard so that the account selector will only
+appear if you have more than one email address. Shout out if it causes
+any problems.
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Jun 19 17:59:02 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Jun 2011 21:59:02 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308508184-sup-6792@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308150597-sup-6406@masanjin.net>
+	<1308373312-sup-3728@masanjin.net>
+	<201106192225.34516.hsanson@gmail.com>
+	<1308508184-sup-6792@masanjin.net>
+Message-ID: <1308520727-sup-5380@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-06-19:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-19:
+> > ./port/port_posix.h:14:22: fatal error: cstdatomic: ??????????????????????
+> 
+> What is the output of g++ --version on your system, please?
+
+Try version 0.4. I believe it should work for oyu.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Jun 19 18:01:55 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Jun 2011 22:01:55 +0000
+Subject: [sup-devel] Turn Turnsole into a generic mail client
+In-Reply-To: <BANLkTiniXpQtS_YG5Fhmr4rqFKW7=tGHWw@mail.gmail.com>
+References: <BANLkTiniXpQtS_YG5Fhmr4rqFKW7=tGHWw@mail.gmail.com>
+Message-ID: <1308520505-sup-4762@masanjin.net>
+
+Hi Vivien,
+
+Reformatted excerpts from Vivien Didelot's message of 2011-06-19:
+> As Turnsole is a great mail interface, I was thinking about having it
+> generic to multiple servers or mail sources, to fit many use cases.
+> 
+> Explicitely, the Turnsole::Client class (
+> https://github.com/wmorgan/turnsole/blob/master/lib/turnsole/client.rb)
+> could be turned into a Turnsole::Client module instead,
+
+The server portion of turnsole, heliotrope, is explicitly designed to
+support multiple clients and provides a JSON-over-HTTP interface for
+that purpose.
+
+The specifics of the protocol are still subject to change, but see e.g.
+https://github.com/wmorgan/heliotrope/blob/master/lib/heliotrope-client.rb
+for the ruby client that turnsole uses to communicate with the server.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Sun Jun 19 18:48:38 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 20 Jun 2011 07:48:38 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308520727-sup-5380@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308508184-sup-6792@masanjin.net>
+	<1308520727-sup-5380@masanjin.net>
+Message-ID: <201106200748.38303.hsanson@gmail.com>
+
+This morning I tried with g++-4.4 and got a different error. When I return from 
+work I will look into it. In the meantime this is the error:
+
+rm -f libleveldb.a
+ar -rs libleveldb.a ./db/builder.o ./db/db_impl.o ./db/db_iter.o 
+./db/filename.o ./db/dbformat.o ./db/log_reader.o ./db/log_writer.o 
+./db/memtable.o ./db/repair.o ./db/table_cache.o ./db/version_edit.o 
+./db/version_set.o ./db/write_batch.o ./port/port_posix.o ./table/block.o 
+./table/block_builder.o ./table/format.o ./table/iterator.o ./table/merger.o 
+./table/table.o ./table/table_builder.o ./table/two_level_iterator.o 
+./util/arena.o ./util/cache.o ./util/coding.o ./util/comparator.o 
+./util/crc32c.o ./util/env.o ./util/env_posix.o ./util/hash.o 
+./util/histogram.o ./util/logging.o ./util/options.o ./util/status.o
+ar: creating libleveldb.a
+creating Makefile
+
+make
+g++ -I. -I/usr/lib/ruby/1.8/x86_64-linux -I/usr/lib/ruby/1.8/x86_64-linux -I.   
+-fPIC -fno-strict-aliasing -g -g -O2  -fPIC  -I../../leveldb/include   -c 
+leveldb.cc
+gcc -shared -o leveldb.so leveldb.o -L. -L/usr/lib -L. -Wl,-Bsymbolic-
+functions -rdynamic -Wl,-export-dynamic    -lruby1.8  -lpthread -lrt -ldl -
+lcrypt -lm   -lc -L../../leveldb -lleveldb
+/usr/bin/ld: ../../leveldb/libleveldb.a(db_impl.o): relocation R_X86_64_32S 
+against `vtable for leveldb::DBImpl::RecoverLogFile(unsigned long, 
+leveldb::VersionEdit*, unsigned long*)::LogReporter' can not be used when 
+making a shared object; recompile with -fPIC
+../../leveldb/libleveldb.a: could not read symbols: Bad value
+collect2: ld returned 1 exit status
+make: *** [leveldb.so] ??? 1
+
+
+
+This is my g++:
+
+g++ --version
+g++ (Ubuntu/Linaro 4.4.5-15ubuntu1) 4.4.5
+Copyright (C) 2010 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+On Monday 20 June 2011 06:59:02 William Morgan wrote:
+> Reformatted excerpts from William Morgan's message of 2011-06-19:
+> > Reformatted excerpts from Horacio Sanson's message of 2011-06-19:
+> > > ./port/port_posix.h:14:22: fatal error: cstdatomic:
+> > > ??????????????????????
+> > 
+> > What is the output of g++ --version on your system, please?
+> 
+> Try version 0.4. I believe it should work for oyu.
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From dmishd at gmail.com  Sun Jun 19 19:39:24 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Mon, 20 Jun 2011 00:39:24 +0100
+Subject: [sup-devel] Mail-to-self does not end up in inbox
+Message-ID: <1308526747-sup-5729@whisper>
+
+Excerpts from Amadeusz ?o?nowski's message of Mon Mar 07 08:27:56 +0000 2011:
+> Excerpts from Ico Doornekamp's message of Sun Mar 06 18:34:56 +0000 2011:
+> > Back in the old days when using mutt, I regularly used to send mails to
+> > myself as reminders or short notes. Sup however shows intelligent
+> > behaviour, recognizes the message is both sent and received, and
+> > attaches a 'sent' label to it, and thus the mail does not show up in the
+> > inbox.
+> 
+> Why not have requested behaviour (sent mail in inbox) and hook for
+> archiving?  E.g. I am usually modyfing labels on sent mail.  And it's
+> easier to archive sent mail than unarchive it.
+
+I've thought about this more and added an option ":archive_sent" to
+allow this. The default value is "true", so sent mail will continue to
+be archived if you do nothing. Change it to false if you want to have
+sent mail show up in your inbox.
+
+This is in the archive_sent branch and has been merged into next.
+
+I may at some point have a go at making it possible to edit labels while
+composing messages, but that may be overly complex ...
+
+And as a side note, I've looked through the history and it looks like
+the sent source has always been set up to archive the mail, but maybe a
+bug elsewhere in the code "fixed" it so that the sent mail really was
+archived.
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Jun 19 23:54:22 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Jun 2011 03:54:22 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106200748.38303.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308508184-sup-6792@masanjin.net>
+	<1308520727-sup-5380@masanjin.net>
+	<201106200748.38303.hsanson@gmail.com>
+Message-ID: <1308541982-sup-2095@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-19:
+> This morning I tried with g++-4.4 and got a different error. When I
+> return from work I will look into it. In the meantime this is the
+> error:
+
+Hm. Try with 0.4. If that doesn't work then I can try modifying the
+original leveldb Makefile to use -fPIC. I didn't think it would be
+necessary, but you apparently have some funny computer that is breaking
+all my assumptions.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Mon Jun 20 01:23:26 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 20 Jun 2011 14:23:26 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308541982-sup-2095@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106200748.38303.hsanson@gmail.com>
+	<1308541982-sup-2095@masanjin.net>
+Message-ID: <201106201423.26629.hsanson@gmail.com>
+
+On Monday 20 June 2011 12:54:22 William Morgan wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-19:
+> > This morning I tried with g++-4.4 and got a different error. When I
+> > return from work I will look into it. In the meantime this is the
+> 
+> > error:
+> Hm. Try with 0.4. If that doesn't work then I can try modifying the
+> original leveldb Makefile to use -fPIC. I didn't think it would be
+> necessary, but you apparently have some funny computer that is breaking
+> all my assumptions.
+
+When you say try 0.4 you mean leveldb-ruby version 0.4 right?, because I 
+downloaded the source from github and the latest version I get is 0.3. Also 
+rubygems only has version 0.3.
+
+https://github.com/wmorgan/leveldb-ruby
+http://rubygems.org/gems/leveldb-ruby
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From damien.leone at fensalir.fr  Mon Jun 20 04:08:39 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Mon, 20 Jun 2011 10:08:39 +0200
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1308520036-sup-7949@whisper>
+References: <1300032642-sup-9716@mailer> <1306775826-sup-4909@whisper>
+	<1308520036-sup-7949@whisper>
+Message-ID: <1308557136-sup-5866@mailer>
+
+Hello,
+
+Sorry I have been quite busy finishing my degree last weeks. I planned
+to review and answer but it got delayed and delayed.
+
+Thanks for pushing and fixing the issue with alternate addresses. I
+will fetch it and let you know.
+
+Excerpts from Hamish's message of dim. juin 19 23:48:40 +0200 2011:
+> Excerpts from Hamish's message of Mon May 30 18:23:10 +0100 2011:
+> > Excerpts from Damien Leone's message of Sun Mar 13 16:13:05 +0000 2011:
+> > > 0002-edit-message-mode-Add-an-optional-account-selector.patch
+> > 
+> > I imagine though that you would want to handle all the possible email
+> > addresses, so I've written an extra patch to do that, and pushed your
+> > patch and mine onto the (new) account_selector branch on gitorious.
+> > Please have a look and see if what I've done still works for you, and is
+> > what you meant.
+> > 
+> > I also wondered whether to change the behaviour so that the account
+> > selector will only appear if there is more than one possible email
+> > address to choose from, but I thought it would be handy to be able to
+> > reset the From: header to your usual From: using the selector, rather
+> > than having to hand edit whatever was in the To: header that you are
+> > replying to. What do you think?
+> > 
+> > I'll wait for you to review my changes before I merge this into next.
+> > (My changes are in commit bf56b543cc664c40c3695e287ee8e7e924f2d0d1)
+> 
+> I've not heard anything for a bit, so I've pushed this into next for
+> wider testing, with the guard so that the account selector will only
+> appear if you have more than one email address. Shout out if it causes
+> any problems.
+> 
+> Hamish
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+GPG: 0x82EB4DDF
+
+From sascha-ml-reply-to-2011-3 at silbe.org  Mon Jun 20 09:47:57 2011
+From: sascha-ml-reply-to-2011-3 at silbe.org (Sascha Silbe)
+Date: Mon, 20 Jun 2011 15:47:57 +0200
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1308520036-sup-7949@whisper>
+References: <1300032642-sup-9716@mailer> <1306775826-sup-4909@whisper>
+	<1308520036-sup-7949@whisper>
+Message-ID: <1308577441-sup-8658@xo15-sascha.sascha.silbe.org>
+
+Excerpts from Hamish's message of Sun Jun 19 23:48:40 +0200 2011:
+
+> I've not heard anything for a bit, so I've pushed this into next for
+> wider testing, with the guard so that the account selector will only
+> appear if you have more than one email address. Shout out if it causes
+> any problems.
+
+This breaks the "Reply to" selector for me. Any attempt to change the
+value results in an exception:
+
+--- TypeError from thread: main
+no implicit conversion from nil to integer
+./lib/sup/horizontal-selector.rb:18:in `[]'
+./lib/sup/horizontal-selector.rb:18:in `val'
+./lib/sup/modes/edit-message-mode.rb:374:in `update'
+./lib/sup/modes/edit-message-mode.rb:351:in `move_cursor_left'
+./lib/sup/modes/reply-mode.rb:174:in `move_cursor_left'
+./lib/sup/mode.rb:59:in `send'
+./lib/sup/mode.rb:59:in `handle_input'
+./lib/sup/buffer.rb:278:in `handle_input'
+bin/sup:271
+
+
+Reverting the account selector patches makes it work again.
+
+This is the code in edit-message-mode.rb:
+
+372  def update
+373    if @account_selector
+374      if @account_selector.val.nil?
+375        @header["From"] = @account_user
+376      else
+377        @header["From"] = AccountManager.full_address_for @account_selector.val
+378      end
+379    end
+
+And horizontal-selector.rb:
+
+18   def val; @vals[@selection] end
+
+So account_selector.selection is nil. The only way for that to happen is
+by calling account_selector.set_to() with a value that's not in
+account_selector.vals (IMO HorizontalSelector should throw an exception
+in that case, BTW). Any idea where and why that would have happened?
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110620/f069c692/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Mon Jun 20 12:42:24 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Jun 2011 16:42:24 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106201423.26629.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106200748.38303.hsanson@gmail.com>
+	<1308541982-sup-2095@masanjin.net>
+	<201106201423.26629.hsanson@gmail.com>
+Message-ID: <1308588065-sup-5212@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-20:
+> When you say try 0.4 you mean leveldb-ruby version 0.4 right?, because
+> I downloaded the source from github and the latest version I get is
+> 0.3. Also rubygems only has version 0.3.
+
+Whoops, forgot to upload it. Try now. (0.4 should have the fix for
+cstdatomic issue, but nothing with -fPIC.)
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Mon Jun 20 17:38:21 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Mon, 20 Jun 2011 22:38:21 +0100
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1308577441-sup-8658@xo15-sascha.sascha.silbe.org>
+References: <1300032642-sup-9716@mailer> <1306775826-sup-4909@whisper>
+	<1308520036-sup-7949@whisper>
+	<1308577441-sup-8658@xo15-sascha.sascha.silbe.org>
+Message-ID: <1308605576-sup-2122@whisper>
+
+Excerpts from Sascha Silbe's message of Mon Jun 20 14:47:57 +0100 2011:
+> This breaks the "Reply to" selector for me. Any attempt to change the
+> value results in an exception:
+> 
+> So account_selector.selection is nil. The only way for that to happen is
+> by calling account_selector.set_to() with a value that's not in
+> account_selector.vals (IMO HorizontalSelector should throw an exception
+> in that case, BTW). Any idea where and why that would have happened?
+
+I'm afraid I couldn't reproduce your exception - do you have several
+accounts? Multiple email addresses per account?
+
+Anyway I've pushed an update to the account_selector branch (commit
+5bb55890) that you could try out. The basic change is that in the
+original patch, there was:
+
+    @account_selector =
+      HorizontalSelector.new "Account:", AccountManager.user_accounts + [nil], user_emails_copy + ["Customized"]
+
+Note the [nil] added to the end of the first array. I've changed that to
+[:user] (in line with the replyto selector) and made the other changes
+in the file to stay in line with that. As I say I can't reproduce your
+problem, so I'm not 100% sure I've solved it, so let me know how you get
+on. If it fixes it for you I'll put the patch onto next aswell.
+
+Hamish Downer
+
+From dmishd at gmail.com  Mon Jun 20 17:55:59 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Mon, 20 Jun 2011 22:55:59 +0100
+Subject: [sup-devel] Another UTF-8 exception: edit-message-mode.rb
+In-Reply-To: <1306828491-sup-5835@qwerzila>
+References: <1306828491-sup-5835@qwerzila>
+Message-ID: <1308606546-sup-9510@whisper>
+
+Excerpts from Gaute Hope's message of Tue May 31 08:57:39 +0100 2011:
+> ran into another UTF-8 exception in edit-message-mode, I don't know
+> exactly what is causing it - but could be UTF-8 chars in some of the
+> keywords that are sanitized.
+> 
+> And a patch:
+> 0001-Fix-UTF-8-exception-in-santizing-body.patch
+
+OK, I've had a look at this. From the patch:
+
+   def sanitize_body body
++    body.force_encoding 'UTF-8' if body.methods.include?(:encoding)
+     body.gsub(/^From /, ">From ")
+   end
+ 
+I'm not convinced that force_encoding is the best thing to use here. I
+would expect it to be better to use encode! in most cases.
+force_encoding does not change the string at all, only the encoding,
+while encode! will change the string to a new string that may have
+different underlying bytes.
+
+Instead of the above patch could you try:
+
+   def sanitize_body body
++    body.encode! 'UTF-8' if body.methods.include?(:encoding)
+     body.gsub(/^From /, ">From ")
+   end
+
+and see if that also fixes your bug?
+
+Hamish Downer
+
+From hsanson at gmail.com  Mon Jun 20 18:26:18 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 21 Jun 2011 07:26:18 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308588065-sup-5212@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106201423.26629.hsanson@gmail.com>
+	<1308588065-sup-5212@masanjin.net>
+Message-ID: <201106210726.19004.hsanson@gmail.com>
+
+On Tuesday 21 June 2011 01:42:24 William Morgan wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-20:
+> > When you say try 0.4 you mean leveldb-ruby version 0.4 right?, because
+> > I downloaded the source from github and the latest version I get is
+> > 0.3. Also rubygems only has version 0.3.
+> 
+> Whoops, forgot to upload it. Try now. (0.4 should have the fix for
+> cstdatomic issue, but nothing with -fPIC.)
+
+Indeed it fixed the cstdatomic issue but not the linking one:
+
+####################################
+sudo gem1.9.1 install leveldb-ruby
+Building native extensions.  This could take a while...
+ERROR:  Error installing leveldb-ruby:
+        ERROR: Failed to build gem native extension.
+
+/usr/bin/ruby1.9.1 extconf.rb
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/builder.cc -o db/builder.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/db_impl.cc -o db/db_impl.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/db_iter.cc -o db/db_iter.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/filename.cc -o db/filename.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/dbformat.cc -o db/dbformat.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/log_reader.cc -o db/log_reader.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/log_writer.cc -o db/log_writer.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/memtable.cc -o db/memtable.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/repair.cc -o db/repair.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/table_cache.cc -o db/table_cache.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/version_edit.cc -o db/version_edit.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/version_set.cc -o db/version_set.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 db/write_batch.cc -o db/write_batch.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 port/port_posix.cc -o port/port_posix.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/block.cc -o table/block.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/block_builder.cc -o table/block_builder.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/format.cc -o table/format.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/iterator.cc -o table/iterator.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/merger.cc -o table/merger.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/table.cc -o table/table.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/table_builder.cc -o table/table_builder.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 table/two_level_iterator.cc -o table/two_level_iterator.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/arena.cc -o util/arena.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/cache.cc -o util/cache.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/coding.cc -o util/coding.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/comparator.cc -o util/comparator.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/crc32c.cc -o util/crc32c.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/env.cc -o util/env.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/env_posix.cc -o util/env_posix.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/hash.cc -o util/hash.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/histogram.cc -o util/histogram.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/logging.cc -o util/logging.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/options.cc -o util/options.o
+g++ -c -I. -I./include -DLEVELDB_PLATFORM_POSIX -std=c++0x -O2 -DNDEBUG        
+-DUSE_SNAPPY=1 util/status.cc -o util/status.o
+rm -f libleveldb.a
+ar -rs libleveldb.a ./db/builder.o ./db/db_impl.o ./db/db_iter.o 
+./db/filename.o ./db/dbformat.o ./db/log_reader.o ./db/log_writer.o 
+./db/memtable.o ./db/repair.o ./db/table_cache.o ./db/version_edit.o 
+./db/version_set.o ./db/write_batch.o ./port/port_posix.o ./table/block.o 
+./table/block_builder.o ./table/format.o ./table/iterator.o ./table/merger.o 
+./table/table.o ./table/table_builder.o ./table/two_level_iterator.o 
+./util/arena.o ./util/cache.o ./util/coding.o ./util/comparator.o 
+./util/crc32c.o ./util/env.o ./util/env_posix.o ./util/hash.o 
+./util/histogram.o ./util/logging.o ./util/options.o ./util/status.o
+ar: creating libleveldb.a
+creating Makefile
+
+make
+g++ -I. -I/usr/include/ruby-1.9.1/x86_64-linux -
+I/usr/include/ruby-1.9.1/ruby/backward -I/usr/include/ruby-1.9.1 -I.   -fPIC -
+fno-strict-aliasing -g -g -O2 -fPIC -I../../leveldb/include  -fno-strict-
+aliasing -g -o leveldb.o -c leveldb.cc
+g++ -shared -o leveldb.so leveldb.o -L. -L/usr/lib -L.  -rdynamic -Wl,-export-
+dynamic   -lruby-1.9.1  -lpthread -lrt -ldl -lcrypt -lm   -lc -L../../leveldb 
+-lleveldb
+/usr/bin/ld: ../../leveldb/libleveldb.a(db_impl.o): relocation R_X86_64_32S 
+against `vtable for leveldb::DB' can not be used when making a shared object; 
+recompile with -fPIC
+../../leveldb/libleveldb.a: could not read symbols: Bad value
+collect2: ld returned 1 exit status
+make: *** [leveldb.so] ??? 1
+
+
+Gem files will remain installed in /var/lib/gems/1.9.1/gems/leveldb-ruby-0.4 
+for inspection.
+Results logged to /var/lib/gems/1.9.1/gems/leveldb-
+ruby-0.4/ext/leveldb/gem_make.out
+################################
+
+
+I tried qwith both g++-4.4 and g++-4.5 that come with standard Ubuntu 11.04 
+distribution.
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Mon Jun 20 18:52:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Jun 2011 22:52:05 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106210726.19004.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106201423.26629.hsanson@gmail.com>
+	<1308588065-sup-5212@masanjin.net>
+	<201106210726.19004.hsanson@gmail.com>
+Message-ID: <1308610289-sup-7090@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-20:
+> /usr/bin/ld: ../../leveldb/libleveldb.a(db_impl.o): relocation
+> R_X86_64_32S against `vtable for leveldb::DB' can not be used when
+> making a shared object; 
+
+Ok, I have a potential fix for this that I'll try and get out tonight.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Mon Jun 20 18:45:43 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Mon, 20 Jun 2011 23:45:43 +0100
+Subject: [sup-devel] [PATCH] Re: [sup-talk] Bug reading/writing contacts
+	with \" in them
+In-Reply-To: <1295892863-sup-1896@midna.zekjur.net>
+References: <1295845756-sup-308@pruts.nl>
+	<1295892863-sup-1896@midna.zekjur.net>
+Message-ID: <1308609891-sup-2821@whisper>
+
+Excerpts from Michael Stapelberg's message of Mon Jan 24 18:20:13 +0000 2011:
+> Excerpts from Ico's message of 2011-01-24 06:20:47 +0100:
+> > The problem occurs when contacts have a certain combination of backslashes and
+> > quotes in them. 
+> > 
+> >   somename: \"Some, Name\" <somename at somedomain.com>
+> 
+> Attached is a patch which fixes the issue. Input like "Rob, Post\" will first
+> be turned into "Rob, Post\\" when initially escaping, but will then stay "Rob,
+> Post\\" (no more exploding backslashes).
+
+Another patch that slipped through the net. Now applied to next.
+
+Hamish
+
+-- 
+Hamish Downer <hamish at foobacca.co.uk>
+
+Web: http://www.foobacca.co.uk/
+GPG: B7C48416
+
+From dmishd at gmail.com  Mon Jun 20 18:43:57 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Mon, 20 Jun 2011 23:43:57 +0100
+Subject: [sup-devel] Patch: Always try to canonize person name using
+	ContactManager
+In-Reply-To: <1295911516-sup-1253@tilus.net>
+References: <1295911516-sup-1253@tilus.net>
+Message-ID: <1308609737-sup-8209@whisper>
+
+Excerpts from Tero Tilus's message of Mon Jan 24 23:33:23 +0000 2011:
+> Sup has mostly not been using the names defined in contacts.txt when
+> displaying messages.  I vaguely remember seeing an issue reported on
+> something similar to this.  I became annoyed enough and fixed it.
+> 
+> Now Person.from_address first tries to find the person using
+> ContactManager (if it is instantiated) and falls back to
+> Person.new(name, email).
+
+In my search for old patches that have never been applied I came across
+this one. Now applied to next.
+
+Hamish
+
+-- 
+Hamish Downer <hamish at foobacca.co.uk>
+
+Web: http://www.foobacca.co.uk/
+GPG: B7C48416
+
+From dmishd at gmail.com  Mon Jun 20 19:01:03 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Tue, 21 Jun 2011 00:01:03 +0100
+Subject: [sup-devel] [PATCH] toggle killed status
+In-Reply-To: <1303605889-sup-5283@Apollo.local>
+References: <1303605889-sup-5283@Apollo.local>
+Message-ID: <1308610834-sup-8989@whisper>
+
+Excerpts from Evan Hanson's message of Sun Apr 24 01:46:59 +0100 2011:
+> Attached allows toggling 'killed' status of a thread. If there was a way to do
+> this previously, please ignore.
+
+Found while trawling for old patches - applied to next.
+
+Hamish
+
+-- 
+Hamish Downer <hamish at foobacca.co.uk>
+
+Web: http://www.foobacca.co.uk/
+GPG: B7C48416
+
+From vivien.didelot at gmail.com  Tue Jun 21 13:16:45 2011
+From: vivien.didelot at gmail.com (Vivien Didelot)
+Date: Tue, 21 Jun 2011 13:16:45 -0400
+Subject: [sup-devel] Turn Turnsole into a generic mail client
+In-Reply-To: <1308520505-sup-4762@masanjin.net>
+References: <BANLkTiniXpQtS_YG5Fhmr4rqFKW7=tGHWw@mail.gmail.com>
+	<1308520505-sup-4762@masanjin.net>
+Message-ID: <BANLkTi=iwGtH3K2AyX267ZUF=PtPQjX8ow@mail.gmail.com>
+
+Hi William,
+
+I'm not suggesting to make Heliotrope supports several clients (what it
+already does via  provinding JSON),
+I'm suggesting the make the Turnsole interface modulable to several mail
+sources.
+And its default and official one will be the Heliotrope client for sure.
+
+I hope it is clearer.
+
+On Sun, Jun 19, 2011 at 6:01 PM, William Morgan <wmorgan-sup at masanjin.net>wrote:
+
+> Hi Vivien,
+>
+> Reformatted excerpts from Vivien Didelot's message of 2011-06-19:
+> > As Turnsole is a great mail interface, I was thinking about having it
+> > generic to multiple servers or mail sources, to fit many use cases.
+> >
+> > Explicitely, the Turnsole::Client class (
+> > https://github.com/wmorgan/turnsole/blob/master/lib/turnsole/client.rb)
+> > could be turned into a Turnsole::Client module instead,
+>
+> The server portion of turnsole, heliotrope, is explicitly designed to
+> support multiple clients and provides a JSON-over-HTTP interface for
+> that purpose.
+>
+> The specifics of the protocol are still subject to change, but see e.g.
+> https://github.com/wmorgan/heliotrope/blob/master/lib/heliotrope-client.rb
+> for the ruby client that turnsole uses to communicate with the server.
+> --
+> William <wmorgan-sup at masanjin.net>
+>
+
+
+
+-- 
+Vivien Didelot,
+vivien.didelot.org
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110621/097f71d3/attachment.html>
+
+From wmorgan-sup at masanjin.net  Tue Jun 21 16:33:15 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 21 Jun 2011 20:33:15 +0000
+Subject: [sup-devel] Turn Turnsole into a generic mail client
+In-Reply-To: <BANLkTi=iwGtH3K2AyX267ZUF=PtPQjX8ow@mail.gmail.com>
+References: <BANLkTiniXpQtS_YG5Fhmr4rqFKW7=tGHWw@mail.gmail.com>
+	<1308520505-sup-4762@masanjin.net>
+	<BANLkTi=iwGtH3K2AyX267ZUF=PtPQjX8ow@mail.gmail.com>
+Message-ID: <1308687110-sup-7599@masanjin.net>
+
+Reformatted excerpts from Vivien Didelot's message of 2011-06-21:
+> I'm suggesting the make the Turnsole interface modulable to several
+> mail sources.
+
+Oh, I see. Yes, to the extent that you can mimic what's in
+Turnsole::Client, it will be possible. But that class is a pretty thin
+wrapper around the Heliotrope protocol, so mimicking it will feel a lot
+like writing a Heliotrope compatibility layer.
+
+I'm not personally interested in doing this, since Heliotrope is the One
+True Mailstore as far as I'm concerned, but I'll try to be helpful if
+you attempt it.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Jun 21 23:25:16 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Jun 2011 03:25:16 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308610289-sup-7090@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106201423.26629.hsanson@gmail.com>
+	<1308588065-sup-5212@masanjin.net>
+	<201106210726.19004.hsanson@gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+Message-ID: <1308713034-sup-9195@masanjin.net>
+
+Hi Horacio,
+
+Reformatted excerpts from William Morgan's message of 2011-06-20:
+> Ok, I have a potential fix for this that I'll try and get out tonight.
+
+Can you please:
+
+1. git clone git://github.com/wmorgan/leveldb-ruby.git
+2. git checkout fpic
+3. rake gem
+4. gem install pkg/leveldb-ruby-0.4.gem
+
+And tell me if that works?
+
+If so, I will release that as 0.5.
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Wed Jun 22 08:38:50 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 22 Jun 2011 21:38:50 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308713034-sup-9195@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+Message-ID: <201106222138.51097.hsanson@gmail.com>
+
+On Wednesday 22 June 2011 12:25:16 William Morgan wrote:
+> Hi Horacio,
+> 
+> Reformatted excerpts from William Morgan's message of 2011-06-20:
+> > Ok, I have a potential fix for this that I'll try and get out tonight.
+> 
+> Can you please:
+> 
+> 1. git clone git://github.com/wmorgan/leveldb-ruby.git
+> 2. git checkout fpic
+> 3. rake gem
+> 4. gem install pkg/leveldb-ruby-0.4.gem
+> 
+> And tell me if that works?
+> 
+It works!!
+
+> If so, I will release that as 0.5.
+>
+
+I am downloading my emails again using the leveldb branch.
+ 
+> Thanks!
+
+Thanks to you....
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Wed Jun 22 14:06:44 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Jun 2011 18:06:44 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106222138.51097.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+	<201106222138.51097.hsanson@gmail.com>
+Message-ID: <1308765957-sup-2477@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-22:
+> It works!!
+
+Great. I will release that as leveldb-ruby 0.5. Hopefully the leveldb
+branch of heliotrope will work for you too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Wed Jun 22 18:41:19 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 23 Jun 2011 07:41:19 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308713034-sup-9195@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+Message-ID: <201106230741.19602.hsanson@gmail.com>
+
+I left heliotrope-add running but it did not finished. I got some strange nil 
+errors (see below):
+
+I think this error happens when find_msgids is unable to find the message's id. 
+Not sure what is the best action in this case but skipping it sounds a good 
+option.
+###################################################
+; requesting messages 141445..141564 from imap server
+scanned 130401, indexed 130278, skipped 25 bad and 98 seen messages in 9566.0s 
+= 13.6 m/s
+; requesting messages 141565..141688 from imap server
+scanned 130501, indexed 130378, skipped 25 bad and 98 seen messages in 9572.0s 
+= 13.6 m/s
+/media/DATA/Apps/heliotrope/lib/heliotrope/message.rb:155:in `digest': can't 
+convert nil into String (TypeError)
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/message.rb:155:in 
+`hexdigest'
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/message.rb:155:in 
+`munge_msgid'
+        from /media/DATA/Apps/heliotrope/lib/heliotrope/message.rb:20:in 
+`parse!'
+        from bin/heliotrope-add:138:in `<main>'
+####################################################
+
+
+This error happens when @imap.uid_fetch doesn't raise any exception and 
+returns nil instead of empty array. Was thinking to check for nil and set it
+to an empty array if true but it would likely result in an infinite loop.
+####################################################
+; loading mail...
+; connecting...
+; login as horacio.sanson at gmail.com ...
+; found 293004 new messages...
+; found 293004 messages to scan
+; requesting messages 283664..283763 from imap server
+scanned 1, indexed 1, skipped 0 bad and 0 seen messages in 7.9s = 0.1 m/s
+; requesting messages 283764..283863 from imap server
+/media/DATA/Apps/heliotrope/lib/heliotrope/gmail-dumper.rb:171:in 
+`next_message': undefined method `empty?' for nil:NilClass (NoMethodError)
+        from bin/heliotrope-add:128:in `<main>'
+#####################################################
+
+
+Finally the leveldb branch is not working that well. After reaching 130378 
+indexed messages I started the heliotrope server and the web interface only 
+showed two messages. 
+
+I will try again without the hooks for Japanese and see how it goes.
+
+
+On Wednesday 22 June 2011 12:25:16 William Morgan wrote:
+> Hi Horacio,
+> 
+> Reformatted excerpts from William Morgan's message of 2011-06-20:
+> > Ok, I have a potential fix for this that I'll try and get out tonight.
+> 
+> Can you please:
+> 
+> 1. git clone git://github.com/wmorgan/leveldb-ruby.git
+> 2. git checkout fpic
+> 3. rake gem
+> 4. gem install pkg/leveldb-ruby-0.4.gem
+> 
+> And tell me if that works?
+> 
+> If so, I will release that as 0.5.
+> 
+> Thanks!
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Wed Jun 22 19:36:07 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 22 Jun 2011 23:36:07 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106230741.19602.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+	<201106230741.19602.hsanson@gmail.com>
+Message-ID: <1308785750-sup-5886@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-22:
+> Finally the leveldb branch is not working that well. After reaching
+> 130378 indexed messages I started the heliotrope server and the web
+> interface only showed two messages. 
+
+What if you search for "*"?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Thu Jun 23 09:29:25 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Thu, 23 Jun 2011 22:29:25 +0900
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308785750-sup-5886@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106230741.19602.hsanson@gmail.com>
+	<1308785750-sup-5886@masanjin.net>
+Message-ID: <201106232229.25944.hsanson@gmail.com>
+
+On Thursday 23 June 2011 08:36:07 William Morgan wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-22:
+> > Finally the leveldb branch is not working that well. After reaching
+> > 130378 indexed messages I started the heliotrope server and the web
+> > interface only showed two messages.
+> 
+> What if you search for "*"?
+
+Search for "*" return zero items...
+
+wget http://localhost:8042/search?q=*
+
+search(body:"*", 0, 20) took 0.0ms
+127.0.0.1 - - [23/Jun/2011 22:26:30] "GET /search?q=* HTTP/1.1" 200 813 0.0010
+localhost - - [23/Jun/2011:22:26:30 JST] "GET /search?q=* HTTP/1.1" 200 813
+http://localhost:8042/search?q=%7Einbox -> /search?q=*
+127.0.0.1 - - [23/Jun/2011 22:26:30] "GET /favicon.ico HTTP/1.1" 404 447 
+0.0006
+localhost - - [23/Jun/2011:22:26:30 JST] "GET /favicon.ico HTTP/1.1" 404 447
+- -> /favicon.ico
+
+
+
+
+I ran the heliotrope-add with and without hooks and both resulted in no 
+messages even though it reached 130378 messages indexed before crashing with a 
+nil error.
+
+
+-- 
+regards,                                                                                                                                                                                                       
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Thu Jun 23 11:44:20 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Jun 2011 15:44:20 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <201106232229.25944.hsanson@gmail.com>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<201106230741.19602.hsanson@gmail.com>
+	<1308785750-sup-5886@masanjin.net>
+	<201106232229.25944.hsanson@gmail.com>
+Message-ID: <1308843817-sup-5307@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-06-23:
+> Search for "*" return zero items...
+
+I forgot to add: make sure you have whistlepig 0.7 installed.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From vivien.didelot at gmail.com  Fri Jun 24 01:49:26 2011
+From: vivien.didelot at gmail.com (Vivien Didelot)
+Date: Fri, 24 Jun 2011 01:49:26 -0400
+Subject: [sup-devel] [PATCH] update Heliotrope client requirement
+Message-ID: <1308894567-7174-1-git-send-email-vivien.didelot@gmail.com>
+
+This patch is for the Turnsole project.
+
+It comes with the
+0001-put-the-heliotrope-client-into-the-Heliotrope-namesp.patch
+patch for Heliotrope.
+
+It updates the Heliotrope client requirement.
+
+Signed-off-by: Vivien Didelot <vivien.didelot at gmail.com>
+---
+ lib/turnsole/client.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/turnsole/client.rb b/lib/turnsole/client.rb
+index f651fe3..aaa402b 100644
+--- a/lib/turnsole/client.rb
++++ b/lib/turnsole/client.rb
+@@ -1,5 +1,5 @@
+ require 'thread'
+-require 'heliotrope-client'
++require 'heliotrope/client'
+ 
+ ## all the methods here are asynchronous, except for ping!
+ ## requests are queued and dispatched by the thread here. results are queued
+@@ -10,7 +10,7 @@ class Client
+ 
+   def initialize context, url
+     @context = context
+-    @client = HeliotropeClient.new url
++    @client = Heliotrope::Client.new url
+     @client_mutex = Mutex.new # we sometimes access client from the main thread, for synchronous calls
+     @q = Queue.new
+   end
+-- 
+1.7.5.4
+
+
+From vivien.didelot at gmail.com  Fri Jun 24 01:49:27 2011
+From: vivien.didelot at gmail.com (Vivien Didelot)
+Date: Fri, 24 Jun 2011 01:49:27 -0400
+Subject: [sup-devel] [PATCH] put the heliotrope client into the Heliotrope
+	namespace
+In-Reply-To: <1308894567-7174-1-git-send-email-vivien.didelot@gmail.com>
+References: <1308894567-7174-1-git-send-email-vivien.didelot@gmail.com>
+Message-ID: <1308894567-7174-2-git-send-email-vivien.didelot@gmail.com>
+
+Hi William,
+
+To start working on Turnsole,I think putting heliotrope-client
+under the Heliotrope namespace in a good start, to avoid
+confusion.
+
+This first patch is for the Heliotrope project. It moves
+lib/heliotrope-client.rb to lib/heliotrope/client.rb
+
+Another patch is sent with this email to update the Turnsole
+client.
+
+Signed-off-by: Vivien Didelot <vivien.didelot at gmail.com>
+---
+ README                   |    2 +-
+ lib/heliotrope-client.rb |  102 ---------------------------------------------
+ lib/heliotrope/client.rb |  104 ++++++++++++++++++++++++++++++++++++++++++++++
+ lib/heliotrope/index.rb  |    2 +-
+ 4 files changed, 106 insertions(+), 104 deletions(-)
+ delete mode 100644 lib/heliotrope-client.rb
+ create mode 100644 lib/heliotrope/client.rb
+
+diff --git a/README b/README
+index ff82c1d..639e2c2 100644
+--- a/README
++++ b/README
+@@ -92,4 +92,4 @@ procmailrc or whatever.
+ JSON API SPEC
+ -------------
+ 
+-Coming soon! For now, you can reverse engineer lib/heliotrope-client.rb.
++Coming soon! For now, you can reverse engineer lib/heliotrope/client.rb.
+diff --git a/lib/heliotrope-client.rb b/lib/heliotrope-client.rb
+deleted file mode 100644
+index 5b3a4bd..0000000
+--- a/lib/heliotrope-client.rb
++++ /dev/null
+@@ -1,102 +0,0 @@
+-require 'rubygems'
+-require 'rest_client'
+-require 'json'
+-
+-class HeliotropeClient
+-  class Error < StandardError; end
+-
+-  MESSAGE_MUTABLE_STATE = Set.new %w(starred unread deleted)
+-  MESSAGE_IMMUTABLE_STATE = Set.new %w(attachment signed encrypted draft sent)
+-  MESSAGE_STATE = MESSAGE_MUTABLE_STATE + MESSAGE_IMMUTABLE_STATE
+-
+-  attr_reader :url
+-  def initialize url
+-    @url = url
+-    @resource = RestClient::Resource.new url
+-  end
+-
+-  def search query, num=20, start=0
+-    v = get_json "search", :q => query, :start => start, :num => num
+-    v["results"]
+-  end
+-
+-  def count query
+-    get_json("count", :q => query)["count"]
+-  end
+-
+-  def thread id; get_json("thread/#{id}")["messageinfos"] end
+-  def threadinfo id; get_json("thread/#{id}/info") end
+-
+-  def message id, preferred_mime_type="text/plain"
+-    get_json "message/#{id}", :mime_type_pref => preferred_mime_type
+-  end
+-
+-  def send_message message, opts={}
+-    post_json "message/send", :message => message, :labels => (opts[:labels] || []).to_json
+-  end
+-
+-  def message_part message_id, part_id
+-    ## not a json blob, but a binary region
+-    @resource["message/#{message_id}/part/#{part_id}"].get
+-  end
+-
+-  def raw_message message_id
+-    ## not a json blob, but a binary region
+-    @resource["message/#{message_id}/raw"].get
+-  end
+-
+-  def labels; get_json("labels")["labels"] end
+-  def info; get_json("info") end
+-  def size; get_json("size")["size"] end
+-
+-  def prune_labels!; post_json("labels/prune")["labels"] end
+-
+-  def set_labels! thread_id, labels
+-    post_json "thread/#{thread_id}/labels", :labels => labels.to_json
+-  end
+-
+-  def set_state! message_id, state
+-    post_json "message/#{message_id}/state", :state => state.to_json
+-  end
+-
+-  def set_thread_state! thread_id, state
+-    post_json "thread/#{thread_id}/state", :state => state.to_json
+-  end
+-
+-private
+-
+-  def get_json path, params={}
+-    handle_errors do
+-      response = @resource[path + ".json"].get :params => params
+-      response.force_encoding Encoding::UTF_8 if in_ruby19_hell?
+-      JSON.parse response
+-    end
+-  end
+-
+-  def post_json path, params={ :please => "1" } # you need to have at least one param for RestClient to work... lame
+-    handle_errors do
+-      response = @resource[path + ".json"].post params
+-      response.force_encoding Encoding::UTF_8 if in_ruby19_hell?
+-      JSON.parse response
+-    end
+-  end
+-
+-  def handle_errors
+-    begin
+-      v = yield
+-      raise Error, "invalid response: #{v.inspect[0..200]}" unless v.is_a?(Hash)
+-      case v["response"]
+-        when "ok"; v
+-        when "error"; raise Error, v["message"]
+-        else raise Error, "invalid response: #{v.inspect[0..200]}"
+-      end
+-    rescue SystemCallError, RestClient::Exception, JSON::ParserError => e
+-      raise Error, "#{e.message} (#{e.class})"
+-    end
+-  end
+-
+-  def in_ruby19_hell?
+-    @in_ruby19_hell = "".respond_to?(:encoding) if @in_ruby19_hell.nil?
+-    @in_ruby19_hell
+-  end
+-end
+diff --git a/lib/heliotrope/client.rb b/lib/heliotrope/client.rb
+new file mode 100644
+index 0000000..386efc9
+--- /dev/null
++++ b/lib/heliotrope/client.rb
+@@ -0,0 +1,104 @@
++require 'rubygems'
++require 'rest_client'
++require 'json'
++
++module Heliotrope
++class Client
++  class Error < StandardError; end
++
++  MESSAGE_MUTABLE_STATE = Set.new %w(starred unread deleted)
++  MESSAGE_IMMUTABLE_STATE = Set.new %w(attachment signed encrypted draft sent)
++  MESSAGE_STATE = MESSAGE_MUTABLE_STATE + MESSAGE_IMMUTABLE_STATE
++
++  attr_reader :url
++  def initialize url
++    @url = url
++    @resource = RestClient::Resource.new url
++  end
++
++  def search query, num=20, start=0
++    v = get_json "search", :q => query, :start => start, :num => num
++    v["results"]
++  end
++
++  def count query
++    get_json("count", :q => query)["count"]
++  end
++
++  def thread id; get_json("thread/#{id}")["messageinfos"] end
++  def threadinfo id; get_json("thread/#{id}/info") end
++
++  def message id, preferred_mime_type="text/plain"
++    get_json "message/#{id}", :mime_type_pref => preferred_mime_type
++  end
++
++  def send_message message, opts={}
++    post_json "message/send", :message => message, :labels => (opts[:labels] || []).to_json
++  end
++
++  def message_part message_id, part_id
++    ## not a json blob, but a binary region
++    @resource["message/#{message_id}/part/#{part_id}"].get
++  end
++
++  def raw_message message_id
++    ## not a json blob, but a binary region
++    @resource["message/#{message_id}/raw"].get
++  end
++
++  def labels; get_json("labels")["labels"] end
++  def info; get_json("info") end
++  def size; get_json("size")["size"] end
++
++  def prune_labels!; post_json("labels/prune")["labels"] end
++
++  def set_labels! thread_id, labels
++    post_json "thread/#{thread_id}/labels", :labels => labels.to_json
++  end
++
++  def set_state! message_id, state
++    post_json "message/#{message_id}/state", :state => state.to_json
++  end
++
++  def set_thread_state! thread_id, state
++    post_json "thread/#{thread_id}/state", :state => state.to_json
++  end
++
++private
++
++  def get_json path, params={}
++    handle_errors do
++      response = @resource[path + ".json"].get :params => params
++      response.force_encoding Encoding::UTF_8 if in_ruby19_hell?
++      JSON.parse response
++    end
++  end
++
++  def post_json path, params={ :please => "1" } # you need to have at least one param for RestClient to work... lame
++    handle_errors do
++      response = @resource[path + ".json"].post params
++      response.force_encoding Encoding::UTF_8 if in_ruby19_hell?
++      JSON.parse response
++    end
++  end
++
++  def handle_errors
++    begin
++      v = yield
++      raise Error, "invalid response: #{v.inspect[0..200]}" unless v.is_a?(Hash)
++      case v["response"]
++        when "ok"; v
++        when "error"; raise Error, v["message"]
++        else raise Error, "invalid response: #{v.inspect[0..200]}"
++      end
++    rescue SystemCallError, RestClient::Exception, JSON::ParserError => e
++      raise Error, "#{e.message} (#{e.class})"
++    end
++  end
++
++  def in_ruby19_hell?
++    @in_ruby19_hell = "".respond_to?(:encoding) if @in_ruby19_hell.nil?
++    @in_ruby19_hell
++  end
++end
++end
+diff --git a/lib/heliotrope/index.rb b/lib/heliotrope/index.rb
+index 48ea09e..197ba91 100644
+--- a/lib/heliotrope/index.rb
++++ b/lib/heliotrope/index.rb
+@@ -33,7 +33,7 @@ class Index
+   MESSAGE_IMMUTABLE_STATE = Set.new %w(attachment signed encrypted draft sent)
+   MESSAGE_STATE = MESSAGE_MUTABLE_STATE + MESSAGE_IMMUTABLE_STATE
+   ## if you change any of those state things, be sure to update
+-  ## heliotrope-client as well.
++  ## heliotrope/client as well.
+ 
+   SNIPPET_MAX_SIZE = 100 # chars
+ 
+-- 
+1.7.5.4
+
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 01:36:24 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Jun 2011 05:36:24 +0000
+Subject: [sup-devel] try heliotrope!
+Message-ID: <1309152077-sup-5963@masanjin.net>
+
+Hi guys,
+
+If any of you are interested in trying out the next generation of Sup, I
+have things in a reasonably stable state. It's still too early for a
+gem, but I have updated the README for both client and server sides. So
+if you'd like to run some highly experimental code and see what the
+future of curses-based email might look like, follow the instructions
+in:
+
+http://github.com/wmorgan/heliotrope
+  and then
+http://github.com/wmorgan/turnsole
+
+Lots of stuff is broken, but I have been using it as an end-to-end email
+system for a week or so now, so the basics are there. Tell me how it goes!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Mon Jun 27 05:52:14 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Mon, 27 Jun 2011 10:52:14 +0100
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides.
+
+Couple of broken bits in the READMEs
+
+turnsole/README - lists rubymail as a gem to instal - should that be rmail ?
+
+heliotrope/README - lists leveldb as a gem but gem didn't find it. A
+gem search finds leveldb-ruby instead.
+
+And does heliotrope use both leveldb and whistlepig, or just one of
+them? (I didn't follow the recent discussion that closely I'm afraid).
+
+Then the gem install of leveldb-ruby failed aswell. So I re-read your
+discussion with Horacio and I see the same issue (-fPIC related - I am
+also on Ubuntu 11.04). You mention that leveldb-ruby 0.5 should be
+available, but I only found 0.4 through gem search -r ...
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 23:32:03 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 03:32:03 +0000
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <1309231838-sup-6073@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-06-27:
+> If any of you are interested in trying out the next generation of Sup
+
+Thanks for all the feedback so far. I forgot to say: if you find bugs,
+please file issues on github (either
+https://github.com/wmorgan/heliotrope/issues or
+https://github.com/wmorgan/turnsole/issues) so that I don't lose track
+of them.
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 23:53:16 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 03:53:16 +0000
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+Message-ID: <1309232963-sup-9208@masanjin.net>
+
+Reformatted excerpts from Hamish D's message of 2011-06-27:
+> turnsole/README - lists rubymail as a gem to instal - should that be rmail ?
+
+I don't see this in the readme...
+
+> heliotrope/README - lists leveldb as a gem but gem didn't find it. A
+> gem search finds leveldb-ruby instead.
+
+Fixed, thanks.
+
+> And does heliotrope use both leveldb and whistlepig, or just one of
+> them? (I didn't follow the recent discussion that closely I'm afraid).
+
+Both.
+
+> Then the gem install of leveldb-ruby failed aswell. So I re-read your
+> discussion with Horacio and I see the same issue (-fPIC related - I am
+> also on Ubuntu 11.04). You mention that leveldb-ruby 0.5 should be
+> available, but I only found 0.4 through gem search -r ...
+
+Whoops, 0.5 should be available now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 23:54:01 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 03:54:01 +0000
+Subject: [sup-devel] [sup-talk] try heliotrope!
+In-Reply-To: <1309209957-sup-3069@vector>
+References: <1309152077-sup-5963@masanjin.net> <1309209957-sup-3069@vector>
+Message-ID: <1309233212-sup-7112@masanjin.net>
+
+Reformatted excerpts from sergeig's message of 2011-06-27:
+> /home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11: [BUG] Segmentation fault
+> ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+
+Yipes. I've released leveldb-ruby 0.5. Can you try with that please?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Tue Jun 28 14:34:10 2011
+From: dmishd at gmail.com (Hamish Downer)
+Date: Tue, 28 Jun 2011 19:34:10 +0100
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <1309232963-sup-9208@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+	<1309232963-sup-9208@masanjin.net>
+Message-ID: <1309285940-sup-9983@whisper>
+
+Excerpts from William Morgan's message of Tue Jun 28 04:53:16 +0100 2011:
+> Reformatted excerpts from Hamish D's message of 2011-06-27:
+> > turnsole/README - lists rubymail as a gem to instal - should that be rmail ?
+> 
+> I don't see this in the readme...
+
+Sorry - I meant turnsole/HACKING (line 8)
+
+> > Then the gem install of leveldb-ruby failed aswell. So I re-read your
+> > discussion with Horacio and I see the same issue (-fPIC related - I am
+> > also on Ubuntu 11.04). You mention that leveldb-ruby 0.5 should be
+> > available, but I only found 0.4 through gem search -r ...
+> 
+> Whoops, 0.5 should be available now.
+
+Still not there: http://rubygems.org/gems/leveldb-ruby
+
+Hamish
+
+-- 
+Hamish Downer <hamish at foobacca.co.uk>
+
+Web: http://www.foobacca.co.uk/
+GPG: B7C48416
+
+From wmorgan-sup at masanjin.net  Tue Jun 28 16:40:50 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 20:40:50 +0000
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <1309285940-sup-9983@whisper>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+	<1309232963-sup-9208@masanjin.net> <1309285940-sup-9983@whisper>
+Message-ID: <1309293624-sup-2491@masanjin.net>
+
+Reformatted excerpts from Hamish Downer's message of 2011-06-28:
+> > Whoops, 0.5 should be available now.
+> 
+> Still not there: http://rubygems.org/gems/leveldb-ruby
+
+Wow. I'm not very good at this. Try now please.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From kevin.mark at verizon.net  Mon Jun 27 11:02:08 2011
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Mon, 27 Jun 2011 11:02:08 -0400
+Subject: [sup-devel] [sup-talk] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <20110627150207.GB22309@horacrux>
+
+On Mon, Jun 27, 2011 at 05:36:24AM +0000, William Morgan wrote:
+> Hi guys,
+> 
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+> 
+> http://github.com/wmorgan/heliotrope
+>   and then
+> http://github.com/wmorgan/turnsole
+> 
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+> -- 
+
+Could you provide a few screenshots of both? (with person details removed) 
+just curious about it.
+-K
+-- 
+|  .''`.  == Debian GNU/Linux ==.| http://kevix.myopenid.com......|
+| : :' :     The Universal OS....| mysite.verizon.net/kevin.mark/.|
+| `. `'   http://www.debian.org/.| http://counter.li.org [#238656]|
+|___`-____Unless I ask to be CCd,.assume I am subscribed._________|
+
+NEVER RESPOND TO CRITICAL PRESS.  IT IS A GAME YOU CAN ONLY LOSE, AND IT
+MAKES US LOOK BAD.
+		-- Bruce Perens
+
+From sergeig at gmail.com  Mon Jun 27 17:30:32 2011
+From: sergeig at gmail.com (sergeig at gmail.com)
+Date: Mon, 27 Jun 2011 14:30:32 -0700
+Subject: [sup-devel] [sup-talk] try heliotrope!
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <1309209957-sup-3069@vector>
+
+Server starts, but mbox add does not work.
+
+On ubuntu 10.04, the gem found for livedb is "leveldb-ruby". Not sure if this is related.
+
+==
+$ ruby -Ilib src/git/heliotrope/bin/heliotrope-add -m Mail/fb-mon.mbox -d .heliotrope/fb-mon/
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11: [BUG] Segmentation fault
+ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+
+-- control frame ----------
+c:0008 p:---- s:0053 b:0053 l:000052 d:000052 CFUNC  :make
+c:0007 p:0017 s:0047 b:0047 l:000046 d:000046 METHOD /home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11
+c:0006 p:0054 s:0043 b:0043 l:000042 d:000042 METHOD /home/sergei/src/git/heliotrope/lib/heliotrope/index.rb:45
+c:0005 p:---- s:0038 b:0038 l:000037 d:000037 FINISH
+c:0004 p:---- s:0036 b:0036 l:000035 d:000035 CFUNC  :new
+c:0003 p:0798 s:0031 b:0031 l:000ebc d:001680 EVAL   src/git/heliotrope/bin/heliotrope-add:113
+c:0002 p:---- s:0004 b:0004 l:000003 d:000003 FINISH
+c:0001 p:0000 s:0002 b:0002 l:000ebc d:000ebc TOP   
+---------------------------
+-- Ruby level backtrace information ----------------------------------------
+src/git/heliotrope/bin/heliotrope-add:113:in `<main>'
+src/git/heliotrope/bin/heliotrope-add:113:in `new'
+/home/sergei/src/git/heliotrope/lib/heliotrope/index.rb:45:in `initialize'
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11:in `new'
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11:in `make'
+
+-- C level backtrace information -------------------------------------------
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_vm_bugreport+0x72) [0xb7807102]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x56657) [0xb76df657]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_bug+0x3a) [0xb76df74a]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x10a1c4) [0xb77931c4]
+[0xb787c410]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb8SkipListIPKcNS_8MemTable13KeyComparatorEE6InsertERKS2_+0x2c) [0xb712feec]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb8MemTable3AddEyNS_9ValueTypeERKNS_5SliceES4_+0x11a) [0xb712f85a]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(+0x29699) [0xb7138699]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZNK7leveldb10WriteBatch7IterateEPNS0_7HandlerE+0x1cd) [0xb71389bd]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb18WriteBatchInternal10InsertIntoEPKNS_10WriteBatchEPNS_8MemTableE+0x40) [0xb7138a60]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl14RecoverLogFileEyPNS_11VersionEditEPy+0x35c) [0xb7126d6c]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl7RecoverEPNS_11VersionEditE+0x261) [0xb71280b1]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb2DB4OpenERKNS_7OptionsERKSsPPS0_+0xbd) [0xb712ad2d]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(+0x14165) [0xb7123165]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x1681b9) [0xb77f11b9]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x178e1e) [0xb7801e1e]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x16db50) [0xb77f6b50]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x173128) [0xb77fc128]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x174902) [0xb77fd902]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_obj_call_init+0x50) [0xb76e18b0]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_class_new_instance+0x3a) [0xb77302ea]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x168208) [0xb77f1208]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x178e1e) [0xb7801e1e]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x16db50) [0xb77f6b50]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x173128) [0xb77fc128]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_iseq_eval_main+0x1f2) [0xb77fc562]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x58f3a) [0xb76e1f3a]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(ruby_exec_node+0x25) [0xb76e1f75]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(ruby_run_node+0x35) [0xb76e3785]
+ruby(main+0x68) [0x80487f8]
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe6) [0xb74b4bd6]
+ruby() [0x80486f1]
+
+[NOTE]
+You may have encountered a bug in the Ruby interpreter or extension libraries.
+Bug reports are welcome.
+For details: http://www.ruby-lang.org/bugreport.html
+
+--
+list of gems:
+
+==
+$ gem list
+
+*** LOCAL GEMS ***
+
+abstract (1.0.0)
+actionmailer (3.0.9)
+actionpack (3.0.9)
+activemodel (3.0.9)
+activerecord (3.0.9)
+activeresource (3.0.9)
+activesupport (3.0.9)
+arel (2.1.3, 2.0.10)
+builder (3.0.0, 2.1.2)
+bundler (1.0.15)
+erubis (2.7.0, 2.6.6)
+gettext (2.1.0)
+highline (1.6.2)
+i18n (0.6.0, 0.5.0)
+leveldb-ruby (0.4)
+locale (2.0.5)
+lockfile (1.4.3)
+mail (2.3.0, 2.2.19)
+mime-types (1.16)
+ncursesw (1.2.4.3)
+polyglot (0.3.1)
+rack (1.3.0, 1.2.3)
+rack-mount (0.8.1, 0.6.14)
+rack-test (0.6.0, 0.5.7)
+rails (3.0.9)
+railties (3.0.9)
+rake (0.9.2, 0.8.7 ruby)
+rdoc (3.6.1)
+rest-client (1.6.3)
+rmail (1.0.0)
+rubygems-update (1.8.5)
+sinatra (1.2.6)
+sup (0.12.1)
+thor (0.14.6)
+tilt (1.3.2)
+treetop (1.4.9)
+trollop (1.16.2)
+tzinfo (0.3.28)
+whistlepig (0.7)
+xapian-core (1.2.3.1)
+xapian-full (1.2.3)
+
+==
+
+Thx,
+
+-Sergei
+
+
+Excerpts from William Morgan's message of 2011-06-26 22:36:24 -0700:
+> Hi guys,
+> 
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+> 
+> http://github.com/wmorgan/heliotrope
+>   and then
+> http://github.com/wmorgan/turnsole
+> 
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+
+From alvherre at alvh.no-ip.org  Tue Jun 28 17:18:52 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 28 Jun 2011 17:18:52 -0400
+Subject: [sup-devel] try heliotrope!
+In-Reply-To: <1309293624-sup-2491@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTi=MnULdUFhw8Vf5=0dSL_VrbDGLvQ@mail.gmail.com>
+	<1309232963-sup-9208@masanjin.net> <1309285940-sup-9983@whisper>
+	<1309293624-sup-2491@masanjin.net>
+Message-ID: <1309295815-sup-5006@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of mar jun 28 16:40:50 -0400 2011:
+> Reformatted excerpts from Hamish Downer's message of 2011-06-28:
+> > > Whoops, 0.5 should be available now.
+> > 
+> > Still not there: http://rubygems.org/gems/leveldb-ruby
+> 
+> Wow. I'm not very good at this. Try now please.
+
+It's there now, yes, thanks :-)
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From alvherre at alvh.no-ip.org  Tue Jun 28 13:42:59 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 28 Jun 2011 13:42:59 -0400
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1308765957-sup-2477@masanjin.net>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+	<201106222138.51097.hsanson@gmail.com>
+	<1308765957-sup-2477@masanjin.net>
+Message-ID: <1309282796-sup-1216@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of mi? jun 22 14:06:44 -0400 2011:
+> Reformatted excerpts from Horacio Sanson's message of 2011-06-22:
+> > It works!!
+> 
+> Great. I will release that as leveldb-ruby 0.5. Hopefully the leveldb
+> branch of heliotrope will work for you too.
+
+Hi, I was just trying to get the latest Heliotrope, but I'm getting the
+same -fPIC problem with leveldb-ruby.  Gem says it's trying to install
+0.4 though; maybe you forgot to actually release 0.5?
+
+Last line of failing gem install:
+
+/usr/bin/ld: ../../leveldb/libleveldb.a(db_impl.o): relocation R_X86_64_32S against `vtable for leveldb::DB' can not be used when making a shared object; recompile with -fPIC
+../../leveldb/libleveldb.a: could not read symbols: Bad value
+collect2: ld returned 1 exit status
+make: *** [leveldb.so] Error 1
+
+
+Gem files will remain installed in /var/lib/gems/1.9.1/gems/leveldb-ruby-0.4 for inspection.
+Results logged to /var/lib/gems/1.9.1/gems/leveldb-ruby-0.4/ext/leveldb/gem_make.out
+
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From wmorgan-sup at masanjin.net  Wed Jun 29 01:18:55 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Jun 2011 05:18:55 +0000
+Subject: [sup-devel] Tokyo Cabinet fails with invalid record header
+In-Reply-To: <1309282796-sup-1216@alvh.no-ip.org>
+References: <BANLkTikNPaccz_Lhc_ws_pEUgRpQRwntjA@mail.gmail.com>
+	<1308610289-sup-7090@masanjin.net>
+	<1308713034-sup-9195@masanjin.net>
+	<201106222138.51097.hsanson@gmail.com>
+	<1308765957-sup-2477@masanjin.net>
+	<1309282796-sup-1216@alvh.no-ip.org>
+Message-ID: <1309324721-sup-2829@masanjin.net>
+
+Reformatted excerpts from Alvaro Herrera's message of 2011-06-28:
+> Hi, I was just trying to get the latest Heliotrope, but I'm getting the
+> same -fPIC problem with leveldb-ruby.  Gem says it's trying to install
+> 0.4 though; maybe you forgot to actually release 0.5?
+
+Yeah, if you try again you should get it. Sorry about that.
+-- 
+William <wmorgan-sup at masanjin.net>
+

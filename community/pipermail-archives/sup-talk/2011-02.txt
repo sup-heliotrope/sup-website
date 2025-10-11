@@ -1,0 +1,3267 @@
+From support at plecavalier.com  Tue Feb  1 11:29:56 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 01 Feb 2011 11:29:56 -0500
+Subject: [sup-talk] stripping label from msgs
+Message-ID: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+
+Hi.
+
+I've only recently began using sup. As such, I've changed my mind on my labeling structure. Naturally, I thought I'll just open each label -there aren't that many yet-, tag all, apply to all, -label. But there must be something about '-label' I'm not understanding. I've tried -label:<label_name>, just '-label' and a few other attempts at the syntax but nothing works. If I don't tag-all and just tag a single mail at a time I can delete/edit labels. But that's no solution -there may not be many labels but there's a ton of mail-.
+
+Also, why can't I use 'A' in the search mode? I like searching tagging and marking but I can only search, tag, mark read and then archive. Is that intentional?
+
+Lastly, and somewhat related to my above mentioned issue, how do I modify labels. The label list mode seems rather restricted. I'd like to do L<enter> and delete/edit the labels themselves.
+-- 
+Thanks,
+Phil
+
+From michael+sup at stapelberg.de  Tue Feb  1 12:26:15 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 01 Feb 2011 18:26:15 +0100
+Subject: [sup-talk] stripping label from msgs
+In-Reply-To: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+References: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+Message-ID: <1296581103-sup-6821@midna.zekjur.net>
+
+Hi Philippe,
+
+Excerpts from Philippe LeCavalier's message of 2011-02-01 17:29:56 +0100:
+> aren't that many yet-, tag all, apply to all, -label. But there must be
+> something about '-label' I'm not understanding. I've tried
+> -label:<label_name>, just '-label' and a few other attempts at the syntax but
+Suppose you have labeled a mail 'sup'. To remove this label, use '-sup'
+
+In general, if you want to re-label a lot of mails, use sup-tweak-labels.
+
+> Lastly, and somewhat related to my above mentioned issue, how do I modify
+> labels. The label list mode seems rather restricted. I'd like to do L<enter>
+> and delete/edit the labels themselves.
+I don?t think you can. Again, use sup-tweak-labels to remove/add labels.
+
+Best regards,
+Michael
+
+From tero at tilus.net  Tue Feb  1 12:31:59 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 01 Feb 2011 19:31:59 +0200
+Subject: [sup-talk] stripping label from msgs
+In-Reply-To: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+References: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+Message-ID: <1296581380-sup-1179@tilus.net>
+
+Philippe LeCavalier, 2011-02-01 18:29:
+> I've only recently began using sup. As such, I've changed my mind on
+> my labeling structure.
+
+You probably want to make friends with sup-tweak-labels.  And thats
+_after_ you have backed up label state dump.  ;)
+
+  sup-tweak-labels --help
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From support at plecavalier.com  Tue Feb  1 12:43:59 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 01 Feb 2011 12:43:59 -0500
+Subject: [sup-talk] stripping label from msgs
+In-Reply-To: <1296581380-sup-1179@tilus.net>
+References: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+	<1296581380-sup-1179@tilus.net>
+Message-ID: <1296582225-sup-7780@plc.intranet.plecavalier.com>
+
+Excerpts from Tero Tilus's message of Tue Feb 01 12:31:59 -0500 2011:
+> Philippe LeCavalier, 2011-02-01 18:29:
+> > I've only recently began using sup. As such, I've changed my mind on
+> > my labeling structure.
+> 
+> You probably want to make friends with sup-tweak-labels.  And thats
+> _after_ you have backed up label state dump.  ;)
+> 
+>   sup-tweak-labels --help
+> 
+Perfect!
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Tue Feb  1 14:58:10 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 01 Feb 2011 14:58:10 -0500
+Subject: [sup-talk] stripping label from msgs
+In-Reply-To: <1296581103-sup-6821@midna.zekjur.net>
+References: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+	<1296581103-sup-6821@midna.zekjur.net>
+Message-ID: <1296589333-sup-2413@plc.intranet.plecavalier.com>
+
+Excerpts from Michael Stapelberg's message of Tue Feb 01 12:26:15 -0500 2011:
+> Hi Philippe,
+> 
+> Excerpts from Philippe LeCavalier's message of 2011-02-01 17:29:56 +0100:
+> > aren't that many yet-, tag all, apply to all, -label. But there must be
+> > something about '-label' I'm not understanding. I've tried
+> > -label:<label_name>, just '-label' and a few other attempts at the syntax but
+> Suppose you have labeled a mail 'sup'. To remove this label, use '-sup'
+ah! Just about the only thing I didn't try...figures.
+> 
+> In general, if you want to re-label a lot of mails, use sup-tweak-labels.
+> 
+> > Lastly, and somewhat related to my above mentioned issue, how do I modify
+> > labels. The label list mode seems rather restricted. I'd like to do L<enter>
+> > and delete/edit the labels themselves.
+> I don?t think you can. Again, use sup-tweak-labels to remove/add labels.
+I had now idea this existed. We should plug that in the wiki somewhere. Or is it already and I didn't see it?
+
+> Best regards,
+> Michael
+-- 
+Thanks,
+Phil
+
+From bogus@does.not.exist.com  Tue Feb  1 15:18:11 2011
+From: bogus@does.not.exist.com ()
+Date: Tue, 01 Feb 2011 15:18:11 -0500
+Subject: [sup-talk] stripping label from msgs
+In-Reply-To: <1296581103-sup-6821@midna.zekjur.net>
+References: <1296577784-sup-6951@plc.intranet.plecavalier.com>
+	<1296581103-sup-6821@midna.zekjur.net>
+Message-ID: <1296591415-sup-1777@plc.intranet.plecavalier.com>
+
+Hi Michael.
+Excerpts from Michael Stapelberg's message of Tue Feb 01 12:26:15 -0500 2011:
+> Hi Philippe,
+> 
+> Excerpts from Philippe LeCavalier's message of 2011-02-01 17:29:56 +0100:
+> > aren't that many yet-, tag all, apply to all, -label. But there must be
+> > something about '-label' I'm not understanding. I've tried
+> > -label:<label_name>, just '-label' and a few other attempts at the syntax but
+> Suppose you have labeled a mail 'sup'. To remove this label, use '-sup'
+> 
+> In general, if you want to re-label a lot of mails, use sup-tweak-labels.
+> 
+> > Lastly, and somewhat related to my above mentioned issue, how do I modify
+> > labels. The label list mode seems rather restricted. I'd like to do L<enter>
+> > and delete/edit the labels themselves.
+> I don?t think you can. Again, use sup-tweak-labels to remove/add labels.
+Could you be so kind as to provide me with a working example of a query. I don't seem to "get it". :)
+
+> Best regards,
+> Michael
+
+From support at plecavalier.com  Thu Feb  3 10:58:18 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 03 Feb 2011 10:58:18 -0500
+Subject: [sup-talk] New User Hooks Details
+Message-ID: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+
+I'm having a hard time using the hooks system.
+
+I'm trying to add the 'AutoAddLabelsToNewMessages'. I've followed the wiki and created '~/.sup/hooks/before-add-message.rb' with a few hooks but sup isn't calling them before polling.
+
+One bit of info that seems odd to me is when I issue 'sup -l' the hooks listed are nowhere to be found in the hooks folder yet they appear to be working. Is that normal?
+
+ruby 1.8.7 (2010-08-16 patchlevel 302) [i486-linux]
+sup 0.12.1
+
+sample hook:
+#Mark Lists <lists> 
+addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+if ! addressfile.grep(/#{message.list_address}/).empty?
+message.add_label :lists
+end
+
+contents of ~/.sup.hooks/label.lists
+
+plecavalier at plc:~/.sup/hooks$ cat label.lists 
+cups at easysw.com
+samba at lists.samba.org
+rsync at lists.samba.org
+offlineimap-project at lists.alioth.debian.org
+bind-users at lists.isc.org
+
+The only thing I can think of is possibly setting the execute bit but I wanted to checking here prior.
+-- 
+Thanks,
+Phil
+
+From tero at tilus.net  Thu Feb  3 18:01:39 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 04 Feb 2011 01:01:39 +0200
+Subject: [sup-talk] New User Hooks Details
+In-Reply-To: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+References: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+Message-ID: <1296771606-sup-3188@tilus.net>
+
+Philippe LeCavalier, 2011-02-03 17:58:
+> One bit of info that seems odd to me is when I issue 'sup -l' the
+> hooks listed are nowhere to be found in the hooks folder yet they
+> appear to be working. Is that normal?
+
+The `sup -l` lists all the hooks sup looks for upon start.  If a hook
+file exists, sup loads it and calls the ruby code in the file the way
+documented in `sup -l`.
+
+> # Mark Lists <lists> 
+> addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+> if ! addressfile.grep(/#{message.list_address}/).empty?
+>   message.add_label :lists
+> end
+
+Looks sound on the surface.  This is your
+~/.sup/hooks/before-add-message.rb?  New mails coming from
+mailinglists listed in label.lists don't get lists-tag?  You could add
+some logging and see whats going on.
+
+debug "before-add-message"
+File.open("/home/plecavalier/.sup/hooks/label.lists") do |addressfile|
+  unless addressfile.grep(/#{message.list_address}/).empty?
+    debug "list message #{message.id.inspect}"
+    message.add_label :lists
+  else
+    debug "non-list message #{message.id.inspect}"
+  end
+end
+
+Then
+
+$ SUP_LOG_LEVEL=debug sup
+
+and wait for incoming mail or temporarily use another SUP_BASE (than
+$HOME/.sup) with a sources.yaml pointing to a test corpus of mails.
+
+Debug output goes to log buffer.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From dmishd at gmail.com  Thu Feb  3 18:48:56 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 3 Feb 2011 23:48:56 +0000
+Subject: [sup-talk] New User Hooks Details
+In-Reply-To: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+References: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+Message-ID: <AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+
+> One bit of info that seems odd to me is when I issue 'sup -l' the hooks listed are nowhere to be found in the hooks folder yet they appear to be working. Is that normal?
+
+sup -l will list the hooks you can use - it doesn't check what hooks
+you've actually created.
+
+> sample hook:
+> #Mark Lists <lists>
+> addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+> if ! addressfile.grep(/#{message.list_address}/).empty?
+> message.add_label :lists
+> end
+
+You can stick debug statements in - say:
+
+debug "list address is #{message.list_address.inspect}, type is
+#{message.list_address.class.to_s}"
+
+and then see it in the log (while using sup, press ";" and scroll down
+to the log buffer).
+
+I think that message.list_address is actually of class Person, so you
+would want to use message.list_address.email for your case. I've
+updated the wiki to correct that - I think I may have written the
+wrong information into the wiki to start with :/ so sorry for the
+mistake.
+
+Hamish
+
+From dmishd at gmail.com  Thu Feb  3 18:52:41 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 3 Feb 2011 23:52:41 +0000
+Subject: [sup-talk] issue after upgrading sup mainline
+In-Reply-To: <AANLkTi=uUvKgVk4AEiiaBSjSL7=+w=HiWSNs5nb2MTdJ@mail.gmail.com>
+References: <AANLkTi=uUvKgVk4AEiiaBSjSL7=+w=HiWSNs5nb2MTdJ@mail.gmail.com>
+Message-ID: <AANLkTinGY8zJChFftqgyd8vVOr1bYByWP=ezgp7-JQpo@mail.gmail.com>
+
+The key line would be:
+
+> ./lib/sup/index.rb:17: Xapian version 1.2.1 or higher required
+
+gem upgrade should fix it.
+
+Hamish
+
+From dmishd at gmail.com  Thu Feb  3 19:00:34 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Fri, 4 Feb 2011 00:00:34 +0000
+Subject: [sup-talk] Custom cursor color
+In-Reply-To: <1295232827-sup-7356@ubook.local>
+References: <1295232827-sup-7356@ubook.local>
+Message-ID: <AANLkTimHg7wN==eH31Pta9Exwx6Q0s4OjrRcVKiy7vpJ@mail.gmail.com>
+
+> I trying to customize colors for sup and cannot find
+> any yaml key for cursor color (highlighted line moved by J/K).
+> Anyone can help me?
+
+Looking at lib/sup/colormap.rb it looks like you might want one of:
+
+   :horizontal_selector_selected => { :fg => "yellow", :bg =>
+"default", :attrs => ["bold"] },
+   :horizontal_selector_unselected => { :fg => "cyan", :bg => "default" },
+
+Full list at http://gitorious.org/sup/mainline/blobs/next/lib/sup/colormap.rb#line28
+
+Hamish Downer
+
+From self at antono.info  Thu Feb  3 20:28:47 2011
+From: self at antono.info (Antono Vasiljev)
+Date: Fri, 04 Feb 2011 03:28:47 +0200
+Subject: [sup-talk] New User Hooks Details
+In-Reply-To: <AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+References: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+	<AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+Message-ID: <1296782927.5402.6.camel@localhost>
+
+On Thu, 2011-02-03 at 23:48 +0000, Hamish D wrote:
+
+> debug "list address is #{message.list_address.inspect}, type is
+> #{message.list_address.class.to_s}"
+> 
+> and then see it in the log (while using sup, press ";" and scroll down
+> to the log buffer).
+> 
+> I think that message.list_address is actually of class Person, so you
+> would want to use message.list_address.email for your case. I've
+> updated the wiki to correct that - I think I may have written the
+> wrong information into the wiki to start with :/ so sorry for the
+> mistake.
+
+Oh. Spent some hours debugging this issue. And list_address.to_s gives
+list address so it was kinda magic that list != list :)
+
+-- 
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+
+
+From support at plecavalier.com  Fri Feb  4 21:15:58 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 04 Feb 2011 21:15:58 -0500
+Subject: [sup-talk] New User Hooks Details
+In-Reply-To: <AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+References: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+	<AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+Message-ID: <1296871814-sup-3165@plc.intranet.plecavalier.com>
+
+Hi.
+
+Excerpts from Hamish D's message of Thu Feb 03 18:48:56 -0500 2011:
+> > One bit of info that seems odd to me is when I issue 'sup -l' the hooks listed are nowhere to be found in the hooks folder yet they appear to be working. Is that normal?
+> 
+> sup -l will list the hooks you can use - it doesn't check what hooks
+> you've actually created.
+> 
+> > sample hook:
+> > #Mark Lists <lists>
+> > addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+> > if ! addressfile.grep(/#{message.list_address}/).empty?
+> > message.add_label :lists
+> > end
+> 
+> You can stick debug statements in - say:
+> 
+> debug "list address is #{message.list_address.inspect}, type is
+> #{message.list_address.class.to_s}"
+> 
+> and then see it in the log (while using sup, press ";" and scroll down
+> to the log buffer).
+> 
+> I think that message.list_address is actually of class Person, so you
+> would want to use message.list_address.email for your case. I've
+> updated the wiki to correct that - I think I may have written the
+> wrong information into the wiki to start with :/ so sorry for the
+> mistake.
+Thanks for this. And thanks to everyone else who posted suggestions. Suffice it to say, I would have never figured that out on my own. 
+
+I'm also seeing allot more info now with debugs here there and everywhere and can work from that.
+
+One question came to mind while I was fixing my hooks...Does the email address have to be complete or can it be just the domain? (I'm referring to the email address list in the referenced file of course)
+
+-- 
+Thanks,
+Phil
+
+From blakes.85 at gmail.com  Fri Feb  4 21:54:49 2011
+From: blakes.85 at gmail.com (Blake Sweeney)
+Date: Fri, 4 Feb 2011 21:54:49 -0500
+Subject: [sup-talk] New User Hooks Details
+In-Reply-To: <1296871814-sup-3165@plc.intranet.plecavalier.com>
+References: <1296746458-sup-2021@plc.intranet.plecavalier.com>
+	<AANLkTinhwyCC46MgNN0OrGL4KRysmqajPMhkWjo3UMKz@mail.gmail.com>
+	<1296871814-sup-3165@plc.intranet.plecavalier.com>
+Message-ID: <AANLkTi=vRH-zdAx3QyY7DTJ+-iyOS6_Dp22J5oNMGcBC@mail.gmail.com>
+
+On Fri, Feb 4, 2011 at 9:15 PM, Philippe LeCavalier
+<support at plecavalier.com> wrote:
+> Hi.
+>
+> Excerpts from Hamish D's message of Thu Feb 03 18:48:56 -0500 2011:
+>> > One bit of info that seems odd to me is when I issue 'sup -l' the hooks listed are nowhere to be found in the hooks folder yet they appear to be working. Is that normal?
+>>
+>> sup -l will list the hooks you can use - it doesn't check what hooks
+>> you've actually created.
+>>
+>> > sample hook:
+>> > #Mark Lists <lists>
+>> > addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+>> > if ! addressfile.grep(/#{message.list_address}/).empty?
+>> > message.add_label :lists
+>> > end
+>>
+>> You can stick debug statements in - say:
+>>
+>> debug "list address is #{message.list_address.inspect}, type is
+>> #{message.list_address.class.to_s}"
+>>
+>> and then see it in the log (while using sup, press ";" and scroll down
+>> to the log buffer).
+>>
+>> I think that message.list_address is actually of class Person, so you
+>> would want to use message.list_address.email for your case. I've
+>> updated the wiki to correct that - I think I may have written the
+>> wrong information into the wiki to start with :/ so sorry for the
+>> mistake.
+> Thanks for this. And thanks to everyone else who posted suggestions. Suffice it to say, I would have never figured that out on my own.
+>
+> I'm also seeing allot more info now with debugs here there and everywhere and can work from that.
+>
+> One question came to mind while I was fixing my hooks...Does the email address have to be complete or can it be just the domain? (I'm referring to the email address list in the referenced file of course)
+>
+> --
+> Thanks,
+> Phil
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+I'm a bit biased but I think my gem sup_tag could help out. It makes
+tagging messages pretty easy. For example:
+
+tag do
+  list_address /sup-talk/, :sup
+end
+
+tags all messages with sup-talk in the list address as sup. Checkout out:
+
+https://github.com/blakesweeney/sup_tag
+
+
+Blake
+
+From support at plecavalier.com  Tue Feb  8 10:38:12 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 08 Feb 2011 10:38:12 -0500
+Subject: [sup-talk] search and omit
+Message-ID: <1297179373-sup-7015@plc.intranet.plecavalier.com>
+
+Hi. How do I trim my search results in the refined-search mode?
+
+-- 
+Thanks,
+Phil
+
+From john.wyzer at gmx.de  Wed Feb  9 00:57:19 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Wed, 09 Feb 2011 06:57:19 +0100
+Subject: [sup-talk] message missing in source, sup v0.12.1,
+	sup-sync no longer has --changed?
+Message-ID: <4D522CBF.4020203@gmx.de>
+
+Hi!
+I have my sent messages in a maildir and deleted one message.
+sup-sync used to have --changed to fix this in the index, but no longer 
+has (the FAQ still says so).
+Sup only says that there was an error loading the message, but does not 
+say how to fix the index.
+Is there a new method to do this?
+
+Thanks in advance and
+all the best,
+John
+
+
+From support at plecavalier.com  Wed Feb  9 14:45:35 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 09 Feb 2011 14:45:35 -0500
+Subject: [sup-talk] Loosing first line of body, intentional or bug?
+Message-ID: <1297277984-sup-9281@plc.intranet.plecavalier.com>
+
+If I forget to add an extra linebreak when top-posting the first line of my reply is brought back up into the headers(references) and therefore doesn't appear in the body. This is especially annoying if I reply with a one liner.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Feb 10 09:44:18 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Feb 2011 09:44:18 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+Message-ID: <1297346751-sup-70@plc.intranet.plecavalier.com>
+
+Hi All.
+
+I'm still working on my initial labeling/hooks and best choices thereof.
+
+I'm torn between a few options.
+
+i)external file reference (would be my preferred method)
+-can't list anything other than full email addresses in the file
+@domain.com, wildcards...etc. would be nice
+-can't comment in the file. It would be nice to weed out comments
+-is it possible that when an address has a subdomain the example in the wiki breaks? ie list at list.domain.com
+none of my hooks for these types of addresses seem to work
+-is Sup caching the referenced file? if not, I presume this option significantly slows things down
+
+ii)not using an external file makes the hook file lengthy. However it seems to be the only safe way of adding multiple labels - which I feel crucial to making a strong searchable system. Perhaps a label(s)-markread-archive would be nice :)
+-using this method I find myself writing a ton of rules for the same thread.
+a)label the thread from a particular community/client/area
+b)label the thread from a particular person within said community/clientel/area
+c)label it something useful ie (not)important/archive/redirect/bounce(hehe)...etc.
+
+
+I'm assuming my difficulties spring from a few basic assumptions;
+I can't write any code let alone Ruby, if my life depended on it.
+The wiki has solid working examples for those who can work with Ruby. Again I don't speak Ruby.
+And mostly, I come form a world where things get filtered to folders :-( I'm really trying to keep an open mind and I know I'll get there but my inbox now has thousands of mails in it and I'm the type that kept a strict 0 count. In order for me to move to Sup I had to get *real* disorganized before getting *real* organized ;-) All that to say that for types like me, it's all about copying other, less ruby-challenged, peoples work. So for the past three weeks I've been living in the wiki....It's a pretty lonely place out there!
+
+In keeping an open mind about all this, I'm open to hearing examples of how others handle there workflow that are achieving the same goal I have in mind. ie label everything with individual labels and archive it all using the least/simplest/most efficient code possible. This way I can search for clients,client A,reports,after:tue-jan-18(I think the latter is prob. wrong but feel like looking up chronic's standards at the moment:-) )
+
+My mail is really important to me so if the only response I get from this is "learn Ruby you lazy-ass-bastard!" I'll get the message(lousy pun eh?) ;-)
+-- 
+Thanks,
+Phil
+
+From michael+sup at stapelberg.de  Thu Feb 10 09:52:14 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 10 Feb 2011 15:52:14 +0100
+Subject: [sup-talk] Loosing first line of body, intentional or bug?
+In-Reply-To: <1297277984-sup-9281@plc.intranet.plecavalier.com>
+References: <1297277984-sup-9281@plc.intranet.plecavalier.com>
+Message-ID: <1297349497-sup-2501@midna.zekjur.net>
+
+Hi Philippe,
+
+Excerpts from Philippe LeCavalier's message of 2011-02-09 20:45:35 +0100:
+> If I forget to add an extra linebreak when top-posting the first line of my
+> reply is brought back up into the headers(references) and therefore doesn't
+> appear in the body. This is especially annoying if I reply with a one liner.
+Well, how would you distinguish text from an additional header? I would call
+the behaviour intentional.
+
+Best regards,
+Michael
+
+From support at plecavalier.com  Thu Feb 10 10:31:39 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Feb 2011 10:31:39 -0500
+Subject: [sup-talk] Loosing first line of body, intentional or bug?
+In-Reply-To: <1297349497-sup-2501@midna.zekjur.net>
+References: <1297277984-sup-9281@plc.intranet.plecavalier.com>
+	<1297349497-sup-2501@midna.zekjur.net>
+Message-ID: <1297351086-sup-7177@plc.intranet.plecavalier.com>
+
+Excerpts from Michael Stapelberg's message of Thu Feb 10 09:52:14 -0500 2011:
+> Hi Philippe,
+> 
+> Excerpts from Philippe LeCavalier's message of 2011-02-09 20:45:35 +0100:
+> > If I forget to add an extra linebreak when top-posting the first line of my
+> > reply is brought back up into the headers(references) and therefore doesn't
+> > appear in the body. This is especially annoying if I reply with a one liner.
+> Well, how would you distinguish text from an additional header? I would call
+> the behaviour intentional.
+> 
+I'm referring to the diff between this:
+
+--------
+References: <1297277984-sup-9281 at plc.intranet.plecavalier.com> <1297349497-sup-2501 at midna.zekjur.net>
+
+ Hi Michael
+---------
+
+And this:
+---------
+References: <1297277984-sup-9281 at plc.intranet.plecavalier.com> <1297349497-sup-2501 at midna.zekjur.net>
+ Hi Michael
+--------
+
+If I leave the latter the "Hi Michael" ends up looking like this:
+----------
+References: <1297277984-sup-9281 at plc.intranet.plecavalier.com> <1297349497-sup-2501 at midna.zekjur.net>Hi Michael
+                                                                                                      ^here^
+
+I suspect a rather obvious workaround is adding a linebreak to:
+
+/usr/bin/vim '+/^\s*\n'
+
+In config.yaml
+
+but shouldn't this be considered a bug? Or is this just happening to me?
+-- 
+Thanks,
+Phil
+
+From marka at pobox.com  Thu Feb 10 11:40:38 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 10 Feb 2011 11:40:38 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297346751-sup-70@plc.intranet.plecavalier.com>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+Message-ID: <1297355619-sup-8657@bloovis.org>
+
+Excerpts from Philippe LeCavalier's message of Thu Feb 10 09:44:18 -0500 2011:
+> i)external file reference (would be my preferred method)
+> -can't list anything other than full email addresses in the file
+> @domain.com, wildcards...etc. would be nice
+
+I'm not sure if this will help (it's pretty primitive), but here's
+my before-add-message.rb, showing how to do regular expression
+matches on addresses:
+
+# Label by subject.  This is useful for messages
+# generated automatically by Bugzilla or cron jobs.
+case message.subj
+when /\[P4 SUBMIT/
+  message.add_label :p4
+when /\[Bug.*project:/
+  message.add_label :projbugs
+when /\[Bug/
+  message.add_label :bugs
+when /project.*suite results/
+  message.add_label :testing
+end
+
+# Label by recipients.  This is useful for mailing lists.
+to_string = message.recipients.map { |t| t.email }.join(" ")
+case to_string
+# Personal labels
+when /\bsup-(devel|talk)@rubyforge.org\b/
+  message.add_label :sup
+# Work labels
+when /pi at widgets/
+  message.add_label :pi
+when /git-users at widgets/
+  message.add_label :git
+when /team-project at widgets/
+  message.add_label :project
+end
+
+# Label by from.  This is useful for personal emails.
+case message.from.email
+when /@amazon/
+  message.add_label :amazon
+when /@facebook/
+  message.add_label :facebook
+when /@netflix/
+  message.add_label :netflix
+when /somebody at gmail.com|somebody at aol.com/
+  message.add_label :somebody
+end
+
+From support at plecavalier.com  Thu Feb 10 12:37:14 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Feb 2011 12:37:14 -0500
+Subject: [sup-talk] time factor on before-poll.rb
+Message-ID: <1297359413-sup-688@plc.intranet.plecavalier.com>
+
+Is there any reasoning behind the time factor on the offlineimap before-poll.rb hook? I would prefer it allowing me to run the hook at any interval I wish...
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Feb 10 14:19:49 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Feb 2011 14:19:49 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297357197-sup-5893@bloovis.org>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+Message-ID: <1297364797-sup-8388@plc.intranet.plecavalier.com>
+
+Hi. I apologize in advance for the broken thread...Since I forgot a  linebreak at the beginning of the body so everything got mangled upon exiting vim. I did my best to re-create the order.
+
+
+Excerpts from Mark Alexander's message of Thu Feb 10 12:00:17 -0500 2011: 
+
+> Excerpts from Philippe LeCavalier's message of Thu Feb 10 11:52:53 -0500 2011:
+
+> > Hi Mark. 
+> > Have you tried? 
+> > > >  case message.subj 
+> >  when /\[P4 SUBMIT/ 
+> >    message.add_label :p4 
+> >   message.remove_label :inbox 
+> > end 
+> > No, I haven't tried remove_label.
+
+I did some testing and for some reason I cannot see, the above code automatically archives the msg without any obvious code telling sup to do so.
+
+If I:
+
+  case message.from.email
+  when /@plecavalier.com/
+    message.add_label :TEST
+    message.add_label :TEST2
+    message.add_label :TEST3
+  end
+
+tests sent to myself are respectively labeled TEST TEST2 TEST3 but are also striped of the inbox label. Since this is exactly what I want this works for me but...
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Feb 10 17:09:11 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 10 Feb 2011 17:09:11 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297364797-sup-8388@plc.intranet.plecavalier.com>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+Message-ID: <1297375381-sup-2823@plc.intranet.plecavalier.com>
+
+Hi All.
+Excerpts from Philippe LeCavalier's message of Thu Feb 10 14:19:49 -0500 2011:
+> Hi. I apologize in advance for the broken thread...Since I forgot a  linebreak at the beginning of the body so everything got mangled upon exiting vim. I did my best to re-create the order.
+> 
+> 
+> Excerpts from Mark Alexander's message of Thu Feb 10 12:00:17 -0500 2011: 
+> 
+> > Excerpts from Philippe LeCavalier's message of Thu Feb 10 11:52:53 -0500 2011:
+> 
+> > > Hi Mark. 
+> > > Have you tried? 
+> > > > >  case message.subj 
+> > >  when /\[P4 SUBMIT/ 
+> > >    message.add_label :p4 
+> > >   message.remove_label :inbox 
+> > > end 
+> > > No, I haven't tried remove_label.
+> 
+> I did some testing and for some reason I cannot see, the above code automatically archives the msg without any obvious code telling sup to do so.
+> 
+> If I:
+> 
+>   case message.from.email
+>   when /@plecavalier.com/
+>     message.add_label :TEST
+>     message.add_label :TEST2
+>     message.add_label :TEST3
+>   end
+> 
+> tests sent to myself are respectively labeled TEST TEST2 TEST3 but are also striped of the inbox label. Since this is exactly what I want this works for me but...
+
+Well, I don't know if this was the most efficient method but I took Mark's example and ran with it. This method accomplishes my goal to add(and remove!) multiple labels in one swish and is legible enough for the simple-minded like myself.
+
+Note: the above statement re. removing the inbox label without having specifying it explicitely is false...No idea why Sup was doing that but restarting sup completely, fixed that oddity. Perhaps my understanding of 'H' is incorrect!?
+
+Thanks a bunch Mark my inbox is well on it's way to 0 as it once was.
+-- 
+Thanks,
+Phil
+
+From romain at univers-libre.net  Fri Feb 11 08:08:29 2011
+From: romain at univers-libre.net (Romain Dessort)
+Date: Fri, 11 Feb 2011 14:08:29 +0100
+Subject: [sup-talk] Delete email from Sup index
+Message-ID: <1297428180-sup-8381@mail.univers-libre.net>
+
+Hi all,
+
+I use Sup for a while to manage a huge quantity of emails (~1000 emails
+per day, most of these are directly archived).  In parallel, I have a
+cron job which remove (in my maildir) old emails and then do a sup-sync
+to update Sup index each day.
+
+But I notice Sup does not remove the correspondent entry from his index
+after sup-sync (even if I use --discard option).
+It is problematic for me because the Sup index contains now about
+310,000 emails and the .sup/xapian/ directory takes about 4.4 GB disk
+space !
+
+Is there a way to really remove emails from Index (and not mark them as
+'deleted') ?
+
+Thanks for your help !
+-- 
+Romain Dessort
+Jabber ID : romain at univers-libre.net
+GnuPG : 3072D/724BC532
+
+From sup at zevv.nl  Fri Feb 11 09:24:57 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Fri, 11 Feb 2011 15:24:57 +0100
+Subject: [sup-talk] Feature request: remove 'no new messages' flashing
+Message-ID: <1297434100-sup-1912@pruts.nl>
+
+Hi,
+
+This might be a nitpicking request, but I would like to propose the
+removal of the 'No new messages' text flashing on screen after every
+poll. 
+
+Apart from that this message is not really informational (the unix
+philosophy being 'no news is good news'), it also is distracting: when
+I'm working with a sup window open on screen, the flashing always seems
+to catch my attention and distract me for a second, only to find out
+that there is no mail.
+
+Thanks,
+
+Ico
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From thorsten at net.t-labs.tu-berlin.de  Fri Feb 11 09:25:01 2011
+From: thorsten at net.t-labs.tu-berlin.de (Thorsten Fischer)
+Date: Fri, 11 Feb 2011 14:25:01 +0000
+Subject: [sup-talk] Delete email from Sup index
+In-Reply-To: <1297428180-sup-8381@mail.univers-libre.net>
+References: <1297428180-sup-8381@mail.univers-libre.net>
+Message-ID: <1297433878-sup-5263@mail.froschi.org>
+
+Excerpts from Romain Dessort's message of 2011-02-11 13:08:29 +0000:
+> Is there a way to really remove emails from Index (and not mark them as
+> 'deleted') ?
+
+I have been through exactly that about ten minutes ago to get rid of
+>40k index entries in my sup setup. Good timing! ;)
+
+What I did:
+
+* stopped the periodic polling of my offlineimap, just in case, to keep
+  the sources from changing.
+* made a backup of my .sup/ folder, just in case.
+* created a label dump file using sup-dump.
+* deleted the .sup/xapian folder.
+* run sup-sync with the --restore option, pointing to the dump file.
+
+The index was re-created from the dump file, but only taking into
+account the files that were currently available from the sources. Worked
+like a charm. Better, in fact, since charms don't work at all. Ahem.
+
+Yes, it would be great if there were a less convoluted way to do this.
+
+
+Cheers,
+
+t
+
+-- 
+Thorsten Fischer, BOWL Project Administrator
+<thorsten at net.t-labs.tu-berlin.de>
+Technische Universit?t Berlin, FG INET, TEL16, 18th floor
+Ernst-Reuter-Platz 7, 10587 Berlin, Germany
+Tel: +49 30 835358542, Fax: +49 391 53478347
+
+From support at plecavalier.com  Fri Feb 11 11:04:26 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Fri, 11 Feb 2011 11:04:26 -0500
+Subject: [sup-talk] Feature request: remove 'no new messages' flashing
+In-Reply-To: <1297434100-sup-1912@pruts.nl>
+References: <1297434100-sup-1912@pruts.nl>
+Message-ID: <1297440178-sup-2287@plc.intranet.plecavalier.com>
+
+Hi Ico.
+Excerpts from Ico Doornekamp's message of Fri Feb 11 09:24:57 -0500 2011:
+> Hi,
+> 
+> This might be a nitpicking request, but I would like to propose the
+> removal of the 'No new messages' text flashing on screen after every
+> poll.
+I'm pretty certain I've come across either a hook or a config option/tweak that does just that. Google is your friend on that one.
+ 
+> Thanks,
+> 
+> Ico
+-- 
+Thanks,
+Phil
+
+From romain at univers-libre.net  Fri Feb 11 13:36:32 2011
+From: romain at univers-libre.net (Romain Dessort)
+Date: Fri, 11 Feb 2011 19:36:32 +0100
+Subject: [sup-talk] Delete email from Sup index
+In-Reply-To: <1297433878-sup-5263@mail.froschi.org>
+References: <1297428180-sup-8381@mail.univers-libre.net>
+	<1297433878-sup-5263@mail.froschi.org>
+Message-ID: <1297448359-sup-6036@mail.univers-libre.net>
+
+Excerpts from Thorsten Fischer's message of ven f?v 11 15:25:01 +0100 2011:
+> I have been through exactly that about ten minutes ago to get rid of
+> >40k index entries in my sup setup. Good timing! ;)
+
+Yeah, but I receive too much cron output emails and other boring
+automatic daily reports, so it's easy to reach this value ;).
+
+> What I did:
+> 
+> * stopped the periodic polling of my offlineimap, just in case, to keep
+>   the sources from changing.
+> * made a backup of my .sup/ folder, just in case.
+> * created a label dump file using sup-dump.
+> * deleted the .sup/xapian folder.
+> * run sup-sync with the --restore option, pointing to the dump file.
+> 
+> The index was re-created from the dump file, but only taking into
+> account the files that were currently available from the sources. Worked
+> like a charm. Better, in fact, since charms don't work at all. Ahem.
+
+Ok, this should be a good hack if I do this operation occasionally, but
+I can hardly automated it?
+
+But thank you anyway!
+-- 
+Romain Dessort
+Jabber ID : romain at univers-libre.net
+GnuPG : 3072D/724BC532
+
+From moritz+sup at wzff.de  Sat Feb 12 20:34:27 2011
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sun, 13 Feb 2011 02:34:27 +0100
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297375381-sup-2823@plc.intranet.plecavalier.com>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+Message-ID: <1297560324-sup-4333@niflheimr>
+
+Hi,
+
+what would be the best way to match - for instance - the List-Id-Header in case
+it's present? I've been wondering about this for a long time, right now, I'm
+matching the raw-header against some regex, but it breaks if the line I'm
+matching contains a newline (i.e. the header field is longer than one line).
+Is there any way around this? Right now I'm doing something along the lines of
+this:
+
+# Mailing lists
+lids_re = {
+  /<foo\.lists\.foo\.com>/           => "foo",
+  /<dev\.something\.org>/            => ["something", "devel"]
+}
+
+def add_labels message, labels
+    labels.each do |l|
+        message.add_label l
+    end
+end
+
+if message.raw_header =~ /^List-I[dD]: ([^\n]+)/
+    #log "List ID: #{$1}"
+    message.add_label "list"
+    lids_re.keys.each do |re|
+        add_labels message lids_re[re] if $1 =~ re
+    end
+end
+
+Can I pull arbitrary, parsed headers directly out of the message object, or do
+I have to do my own parsing?
+
+Best regards,
+
+Moritz
+
+From fedzor at gmail.com  Sat Feb 12 21:40:10 2011
+From: fedzor at gmail.com (fedzor)
+Date: Sat, 12 Feb 2011 21:40:10 -0500
+Subject: [sup-talk]  Maildir and Sup Aren't Playing Well Together
+Message-ID: <9E6F6174-48AE-42F4-9DF4-D5848FCF64AF@gmail.com>
+
+Hey all,
+
+I have my maildir set up with offlineimap, and it produces a directory structure like this:
+drwx------  5 ari  staff   170B Feb 12 17:25 Bulk Mail
+drwx------  5 ari  staff   170B Feb 12 17:25 Deleted Messages
+drwx------  5 ari  staff   170B Feb 12 17:25 Drafts
+drwx------  5 ari  staff   170B Feb 12 17:25 Email_Templates
+drwx------  5 ari  staff   170B Feb 12 17:25 INBOX
+drwx------  5 ari  staff   170B Feb 12 17:25 Send_Later
+drwx------  5 ari  staff   170B Feb 12 17:25 Sent Items
+drwx------  5 ari  staff   170B Feb 12 17:25 Sent Messages
+drwx------  5 ari  staff   170B Feb 12 17:25 Trash
+
+However, sup complains about this when it tries to poll:
+[Sat Feb 12 21:38:52 -0500 2011] WARNING: problem getting messages from maildir:/Users/ari/.mail/aribrown.com: /Users/ari/.mail/aribrown.com/new not a directory
+
+What did I do wrong, and how do I fix it?
+
+Thanks,
+Ari
+
+From support at plecavalier.com  Sat Feb 12 22:21:19 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Sat, 12 Feb 2011 22:21:19 -0500
+Subject: [sup-talk] Maildir and Sup Aren't Playing Well Together
+In-Reply-To: <9E6F6174-48AE-42F4-9DF4-D5848FCF64AF@gmail.com>
+References: <9E6F6174-48AE-42F4-9DF4-D5848FCF64AF@gmail.com>
+Message-ID: <1297566894-sup-7979@plc.intranet.plecavalier.com>
+
+Excerpts from fedzor's message of Sat Feb 12 21:40:10 -0500 2011:
+> Hey all,
+> 
+> I have my maildir set up with offlineimap, and it produces a directory structure like this:
+> drwx------  5 ari  staff   170B Feb 12 17:25 Bulk Mail
+> drwx------  5 ari  staff   170B Feb 12 17:25 Deleted Messages
+> drwx------  5 ari  staff   170B Feb 12 17:25 Drafts
+> drwx------  5 ari  staff   170B Feb 12 17:25 Email_Templates
+> drwx------  5 ari  staff   170B Feb 12 17:25 INBOX
+> drwx------  5 ari  staff   170B Feb 12 17:25 Send_Later
+> drwx------  5 ari  staff   170B Feb 12 17:25 Sent Items
+> drwx------  5 ari  staff   170B Feb 12 17:25 Sent Messages
+> drwx------  5 ari  staff   170B Feb 12 17:25 Trash
+> 
+> However, sup complains about this when it tries to poll:
+> [Sat Feb 12 21:38:52 -0500 2011] WARNING: problem getting messages from maildir:/Users/ari/.mail/aribrown.com: /Users/ari/.mail/aribrown.com/new not a directory
+> 
+> What did I do wrong, and how do I fix it?
+Based on the list above each would have to be a source. Also looks like you pointed sup to the parent dir and not INBOX where it will find new,cur,tmp. I would guess you were expecting sup to pick up each directory. Sup doesn't work that way. You'd have to specify each folder as a source in the config.
+
+> Thanks,
+> Ari
+-- 
+Thanks,
+Phil
+
+From john.wyzer at gmx.de  Sun Feb 13 03:20:13 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Sun, 13 Feb 2011 09:20:13 +0100
+Subject: [sup-talk] message missing in source, sup v0.12.1,
+	sup-sync no longer has --changed?
+In-Reply-To: <1297452493-sup-3136@spade.spade-domain>
+References: <4D522CBF.4020203@gmx.de> <1297452493-sup-3136@spade.spade-domain>
+Message-ID: <1297584795-sup-2477@localhost>
+
+Excerpts from Jon Austin's message of Fri Feb 11 20:29:28 +0100 2011:
+> I think sup-sync -o may fix it.
+> 
+> (I've been having a strange issue since .12 came out if I send a message and then quit sup, then relaunch, it'll show the first line of the message, ending in '.....' and then show the below error (inside the message), until I sup-sync -o)
+> 
+> ***********************************************************************
+>  An error occurred while loading this message.
+> ***********************************************************************
+> 
+> I even spent several hours yesterday completely rebuilding the xapian index, but still happening...if anyone has a clue what could be causing this, I'd love to hear it :)
+
+
+Hmm. In lib/sup/index.rb it says:
+  ## xapian-compact takes too long, so this is a no-op
+  ## until we think of something better
+  def optimize
+  end
+
+And from what I understand, the -o optime does not do more at the moment.
+
+So the question remain - if messags are missing from one Maildir, is my only option to dump, reindex all and restore?
+That would be painful given the number of messages...
+
+-- 
+
+From tero at tilus.net  Sun Feb 13 04:51:02 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 13 Feb 2011 11:51:02 +0200
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297560324-sup-4333@niflheimr>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+	<1297560324-sup-4333@niflheimr>
+Message-ID: <1297589599-sup-596@tilus.net>
+
+Moritz Wilhelmy, 2011-02-13 03:34:
+> what would be the best way to match - for instance - the
+> List-Id-Header in case it's present?
+
+List-Id is a whole separate kind of beast.  My stragy dealing with it
+looks like this.  Comments in finnish.  Go google translate. ;)
+
+== clip from ~/.sup/hooks/before-add-message.rb ==
+hdr = message.raw_header
+
+# Yritet??n hakea listalle label List-Id headerista ja jos sellaista
+# ei ole (mm. pipermail-arkistot) niin otsikkorivilt? [listanimest?].
+# Listaheadereita on montaa sorttia
+#
+# List-Id: effi-alert.winston.effi.org
+# List-Id: <effipalvelin.winston.effi.org>
+# List-Id: EFFIn hallituksen keskusteluja <board.effi.org>
+# List-Id: =?iso-8859-1?q?Keski-Suomen_EFFIl=E4iset?= <ks-effi.lists.jyu.fi>
+# List-Id: "Hear ry:n julkinen tiedotuslista: Radio Hear, Linnunlaulupubi,
+# List-Id: =?iso-8859-1?q?El=E4m=E4_on_peli=E4=2C_j=E4rjest=E4j=E4lista?=
+
+if m = (hdr.match(/^List-Id: +[^<]*<([^>\s]+)> *$/i) or # tyyppi 1
+        hdr.match(/^List-Id: +([^<>=\s]+) *$/i) or      # tyypit 2-4
+        hdr.match(/^Subject: +\[ *([^\] ]+) *\]/i))
+  list_id = m[1]
+  list_id = 'effi-hallitus' if list_id == 'board.effi.org'
+  list_id = 'effi-asiantuntijat' if list_id == 'asiantuntijat.effi.org'
+  list_id = 'maahinkainen-jasenet' if list_id == 'jasenet.maahinkainen.org'
+  list_id = 'lev' if list_id == 'lev-list'
+  list_id = list_id.split('.', 2)[0].downcase
+  message.add_label list_id
+end
+
+== clip end ==
+
+> Can I pull arbitrary, parsed headers directly out of the message
+> object, or do I have to do my own parsing?
+
+Uh, oh.  Looks like no, but it is pretty close, berause
+Message#parse_header already builds parsed hash of arbitrary headers
+internally.
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Sun Feb 13 06:27:16 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Sun, 13 Feb 2011 12:27:16 +0100
+Subject: [sup-talk] message missing in source, sup v0.12.1,
+	sup-sync no longer has --changed?
+In-Reply-To: <4D522CBF.4020203@gmx.de>
+References: <4D522CBF.4020203@gmx.de>
+Message-ID: <1297596179-sup-1919@xo15-sascha.sascha.silbe.org>
+
+Excerpts from John Wyzer's message of Wed Feb 09 06:57:19 +0100 2011:
+
+> I have my sent messages in a maildir and deleted one message.
+> sup-sync used to have --changed to fix this in the index, but no longer 
+> has (the FAQ still says so).
+> Sup only says that there was an error loading the message, but does not 
+> say how to fix the index.
+
+Check out the recent thread "Delete email from Sup index" [1] on
+sup-talk and my patch [2] on sup-devel.
+
+Sascha
+
+[1] http://rubyforge.org/pipermail/sup-talk/2011-February/thread.html#4511
+[2] http://rubyforge.org/pipermail/sup-devel/2011-February/thread.html#982
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110213/139c733e/attachment-0001.bin>
+
+From moritz+sup at wzff.de  Sun Feb 13 08:00:27 2011
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sun, 13 Feb 2011 14:00:27 +0100
+Subject: [sup-talk] How to treat List-Id headers (Was: best method for
+	before-add-message.rb)
+In-Reply-To: <1297589599-sup-596@tilus.net>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+	<1297560324-sup-4333@niflheimr> <1297589599-sup-596@tilus.net>
+Message-ID: <1297600750-sup-2275@niflheimr>
+
+Hello,
+
+Excerpts from Tero Tilus's message of Sun Feb 13 10:51:02 +0100 2011:
+> > what would be the best way to match - for instance - the
+> > List-Id-Header in case it's present?
+> List-Id is a whole separate kind of beast.  My stragy dealing with it
+> looks like this.  Comments in finnish.  Go google translate. ;)
+Ah, well, the problem I have is something like this
+
+List-Id: "very long descriptive text on what the list is about"
+    <list.lists.something.com>
+
+Because the actual List-Id is so long, it's sometimes wrapped into the next
+line per convention (i.e. when the descriptive text is already very long and
+the line needs to be wrapped because the actual List-Id would exceed the
+character limit per line, I think it's around 80 characters). Thus, my regexes
+don't match in all cases. I want to match the list by the part between the <>,
+not the descriptive text, which is a bit problematic because of the
+line-wrapping. However, if I could get the full List-Id line from the parsed
+headers hashtable, this would eliminate my parsing problems.
+
+> > Can I pull arbitrary, parsed headers directly out of the message
+> > object, or do I have to do my own parsing?
+> Uh, oh.  Looks like no, but it is pretty close, berause
+> Message#parse_header already builds parsed hash of arbitrary headers
+> internally.
+
+Well, making this publicly accessible to the before-add-message hook would
+simplify a lot of the stuff I do with my email in order to place the right
+labels. So maybe, this is a feature request to the sup developers, but maybe I
+also got everything wrong. ;)
+
+Cheers,
+
+Moritz
+
+From moritz+sup at wzff.de  Sun Feb 13 08:59:12 2011
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Sun, 13 Feb 2011 14:59:12 +0100
+Subject: [sup-talk] message missing in source, sup v0.12.1,
+	sup-sync no longer has --changed?
+In-Reply-To: <1297584795-sup-2477@localhost>
+References: <4D522CBF.4020203@gmx.de> <1297452493-sup-3136@spade.spade-domain>
+	<1297584795-sup-2477@localhost>
+Message-ID: <1297605296-sup-2535@niflheimr>
+
+Hi,
+
+Excerpts from John Wyzer's message of Sun Feb 13 09:20:13 +0100 2011:
+> So the question remain - if messags are missing from one Maildir, is my only
+> option to dump, reindex all and restore?  That would be painful given the
+> number of messages...
+
+Not only painful and annoying but also very stupid. Why would someone want to
+get rid of sup-sync --changed? It happens all the time that Maildirs are
+externally changed, there *should* be some easy way to sync these changes back,
+at least that's my insignificant opinion. I don't completely understand the
+motivation for getting rid of this feature in the first place. Can someone
+please explain?
+
+Best regards,
+
+Moritz
+
+From dmishd at gmail.com  Sun Feb 13 12:12:15 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 13 Feb 2011 17:12:15 +0000
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297560324-sup-4333@niflheimr>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+	<1297560324-sup-4333@niflheimr>
+Message-ID: <AANLkTim2ULBn=c8pPqSQ49i661HRmGgZbrevKix9kbSV@mail.gmail.com>
+
+> what would be the best way to match - for instance - the List-Id-Header in case
+> it's present? I've been wondering about this for a long time, right now, I'm
+> matching the raw-header against some regex, but it breaks if the line I'm
+> matching contains a newline (i.e. the header field is longer than one line).
+
+Is there any reason you're not using the list_address member of
+message? It is derived from the List-Post header if present, or if
+not, the X-Mailing-List header. You can use it as, for example:
+
+# Mark by email list
+if message.list_address.email =~ /sup-talk/
+  message.add_label "sup"
+  message.add_label "list"
+end
+
+Hamish
+
+From rlane at club.cc.cmu.edu  Sun Feb 13 12:45:04 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 13 Feb 2011 12:45:04 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <1297589599-sup-596@tilus.net>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+	<1297560324-sup-4333@niflheimr> <1297589599-sup-596@tilus.net>
+Message-ID: <1297618949-sup-445@zyrg.net>
+
+Excerpts from Tero Tilus's message of 2011-02-13 04:51:02 -0500:
+> Moritz Wilhelmy, 2011-02-13 03:34:
+> > Can I pull arbitrary, parsed headers directly out of the message
+> > object, or do I have to do my own parsing?
+> 
+> Uh, oh.  Looks like no, but it is pretty close, berause
+> Message#parse_header already builds parsed hash of arbitrary headers
+> internally.
+> 
+
+I use "hs = message.source.load_header(message.source_info)", which we
+should probably make a convenience method on Message.
+
+From rlane at club.cc.cmu.edu  Sun Feb 13 13:03:11 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 13 Feb 2011 13:03:11 -0500
+Subject: [sup-talk] message missing in source, sup v0.12.1,
+	sup-sync no longer has --changed?
+In-Reply-To: <1297605296-sup-2535@niflheimr>
+References: <4D522CBF.4020203@gmx.de> <1297452493-sup-3136@spade.spade-domain>
+	<1297584795-sup-2477@localhost> <1297605296-sup-2535@niflheimr>
+Message-ID: <1297619275-sup-3028@zyrg.net>
+
+Excerpts from Moritz Wilhelmy's message of 2011-02-13 08:59:12 -0500:
+> Excerpts from John Wyzer's message of Sun Feb 13 09:20:13 +0100 2011:
+> > So the question remain - if messags are missing from one Maildir, is my only
+> > option to dump, reindex all and restore?  That would be painful given the
+> > number of messages...
+> 
+> Not only painful and annoying but also very stupid. Why would someone want to
+> get rid of sup-sync --changed? It happens all the time that Maildirs are
+> externally changed, there *should* be some easy way to sync these changes back,
+> at least that's my insignificant opinion. I don't completely understand the
+> motivation for getting rid of this feature in the first place. Can someone
+> please explain?
+
+sup-sync --changed was removed because it is no longer necessary. The
+maildir code can now gracefully deal with messages being moved and
+deleted. If all locations for a message are deleted it will keep the
+index entry (including the snippet) but display an error (inline, not
+disrupting the rest of the UI) if you try to view the message.
+
+Is this the behavior you're seeing, or is there a bug in the
+implementation?
+
+Sascha posted a patch that deletes index entries with no locations after
+a sync. I'd rather see that as a extra sup-sync --purge option, and if
+you don't want deleted messages to appear in the UI we should just check
+for that before adding them to the ThreadSet.
+
+From support at plecavalier.com  Sun Feb 13 13:08:23 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Sun, 13 Feb 2011 13:08:23 -0500
+Subject: [sup-talk] best method for before-add-message.rb
+In-Reply-To: <AANLkTim2ULBn=c8pPqSQ49i661HRmGgZbrevKix9kbSV@mail.gmail.com>
+References: <1297346751-sup-70@plc.intranet.plecavalier.com>
+	<1297355619-sup-8657@bloovis.org>
+	<1297356327-sup-9107@plc.intranet.plecavalier.com>
+	<1297357197-sup-5893@bloovis.org>
+	<1297364797-sup-8388@plc.intranet.plecavalier.com>
+	<1297375381-sup-2823@plc.intranet.plecavalier.com>
+	<1297560324-sup-4333@niflheimr>
+	<AANLkTim2ULBn=c8pPqSQ49i661HRmGgZbrevKix9kbSV@mail.gmail.com>
+Message-ID: <1297619496-sup-5791@plc.intranet.plecavalier.com>
+
+Excerpts from Hamish D's message of Sun Feb 13 12:12:15 -0500 2011:
+> > what would be the best way to match - for instance - the List-Id-Header in case
+> > it's present? I've been wondering about this for a long time, right now, I'm
+> > matching the raw-header against some regex, but it breaks if the line I'm
+> > matching contains a newline (i.e. the header field is longer than one line).
+> 
+> Is there any reason you're not using the list_address member of
+> message? It is derived from the List-Post header if present, or if
+> not, the X-Mailing-List header. You can use it as, for example:
+> 
+> # Mark by email list
+> if message.list_address.email =~ /sup-talk/
+>   message.add_label "sup"
+>   message.add_label "list"
+> end
+> 
+> Hamish
+I tried that and experienced varying success.
+ie 2 or three 'add_label' is fine but adding and removing, for instance doesn't appear possible. I would assume most ppl here are interested in not only applying a label but also removing one in particular the inbox label.
+
+Is anybody successfully both adding and removing a labels...in any way regexp, header...anything?
+
+So far I've tried this:
+addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+if ! addressfile.grep(/#{message.list_address.email}/).empty?
+  message.add_label :lists
+end
+addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+if ! addressfile.grep(/#{message.list_address.email}/).empty?
+  message.remove_label :inbox
+end
+
+In this case it appears handling a msg twice breaks everything. So then I tried this:
+
+case message.list_address
+  when /samba at lists.samba.org/
+    message.add_label :lists
+    message.add_label :samba
+    message.remove_label :inbox
+  when /cups at easysw.com/
+    message.add_label :lists
+    message.add_label :cups
+    message.remove_label :inbox
+end
+
+This remains the closest I've come -thanks to Mark Alexander-. In this I was able to get multiple labels going for multiple msgs but again, very much hit-and-miss for label removal. I should probably not that message.remove_label in it's simplest form works fine. Just appears that it can't live alongside any other function.
+
+I think we're starting to see that unless one is conversely adept in one form of language or another your odds of successfully adding labels upon receipt are in a manner which will create a robust searching db is quite low. Thus defeating in part the whole concept of this system. Don't mean to sound so negative here but I just to point out that from a none fluent regex/rudy....etc the wiki and mail archives leave you somewhat hanging.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Sun Feb 13 15:57:30 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Sun, 13 Feb 2011 15:57:30 -0500
+Subject: [sup-talk] 0/0...I made it
+Message-ID: <1297630080-sup-3488@plc.intranet.plecavalier.com>
+
+Well, despite not finding a truly efficient method for autolabeling my mail -I'm not worried I won't, I just haven't found it yet- after 30 some days of due deligence my inbox is for now back to 0.
+
+I think this speaks volumes about just how good Sup is considering I did this mostly by selecting a thread, highlight a contact(this really should be mentioned in a wiki somewhere), S, T, =, L, <various labels seperated by whitespaces starting with '-inbox'>
+
+This wasn't as painful as it may sound. In fact it was almost enjoyable. To put things into perspective; I started the day out with approx. ten thousand msgs left in my inbox and it's ten to four. Considering I prob. spent every other hour entertaining the kids I prob. spent a three to four hours.
+
+I almost crossed over to notmuch just yesterday but I stuck with Sup and I'm glad I did.
+
+Cheers!
+-- 
+Thanks,
+Phil
+
+From whodevil-suptalk at offthecob.info  Sun Feb 13 20:24:50 2011
+From: whodevil-suptalk at offthecob.info (whodevil)
+Date: Sun, 13 Feb 2011 17:24:50 -0800
+Subject: [sup-talk] after-poll.rb variables
+Message-ID: <1297646180-sup-4406@mail.offthecob.info>
+
+I'm trying to write a hook that will update the status bar 
+of my screen session with the number of unread emails in my 
+inbox. I've worked out the logistics on how to get this into 
+the status bar. My issue is that when the hook executes, 
+num_inbox only returns the number of new messages it found 
+during that poll period. While this can be useful, it doesn't 
+fit my need. I'm wondering if someone know if there is a way 
+to get the total unread messages in the inbox from within the 
+after-poll hook?
+
+Thanks,
+Whodevil
+
+From rlane at club.cc.cmu.edu  Sun Feb 13 21:08:52 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 13 Feb 2011 21:08:52 -0500
+Subject: [sup-talk] after-poll.rb variables
+In-Reply-To: <1297646180-sup-4406@mail.offthecob.info>
+References: <1297646180-sup-4406@mail.offthecob.info>
+Message-ID: <1297648971-sup-3124@zyrg.net>
+
+Excerpts from whodevil's message of 2011-02-13 20:24:50 -0500:
+> I'm wondering if someone know if there is a way to get the total
+> unread messages in the inbox from within the after-poll hook?
+
+Index.num_results_for(labels: [:inbox, :unread])
+
+From support at plecavalier.com  Mon Feb 14 08:31:05 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Mon, 14 Feb 2011 08:31:05 -0500
+Subject: [sup-talk] after-poll.rb variables
+In-Reply-To: <1297648971-sup-3124@zyrg.net>
+References: <1297646180-sup-4406@mail.offthecob.info>
+	<1297648971-sup-3124@zyrg.net>
+Message-ID: <1297690119-sup-2506@plc.intranet.plecavalier.com>
+
+Excerpts from Rich Lane's message of Sun Feb 13 21:08:52 -0500 2011:
+> Excerpts from whodevil's message of 2011-02-13 20:24:50 -0500:
+> > I'm wondering if someone know if there is a way to get the total
+> > unread messages in the inbox from within the after-poll hook?
+> 
+> Index.num_results_for(labels: [:inbox, :unread])
+
+This thread made me wonder...
+Wouldn't it be handy if after-poll reported the labels before-add-poll.rb assigns?
+-- 
+Thanks,
+Phil
+
+From groups at hjdivad.com  Mon Feb 14 13:11:40 2011
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Mon, 14 Feb 2011 10:11:40 -0800
+Subject: [sup-talk] 0/0...I made it
+In-Reply-To: <1297630080-sup-3488@plc.intranet.plecavalier.com>
+References: <1297630080-sup-3488@plc.intranet.plecavalier.com>
+Message-ID: <1297706861-sup-7672@nyx.local>
+
+Philippe,
+
+Excerpts from Philippe LeCavalier's message of Sun Feb 13 12:57:30 -0800 2011:
+> Well, despite not finding a truly efficient method for autolabeling my mail
+> -I'm not worried I won't, I just haven't found it yet- after 30 some days of
+> due deligence my inbox is for now back to 0.
+
+Have you tried writing a before-add-message hook?  If so, what problems have you
+run in to with your attempts at autolabeling?
+
+Here's a snippet of mine:
+
+  # before-add-message.rb
+
+  def autolabel message, label 
+    log "Adding label [#{label}] to #{message.id}"
+    message.add_label label
+  end
+
+  def autolabel_email message, regexes, label
+    regexes = [ regexes ] unless regexes.is_a? Enumerable
+    if message.recipients.any? do |recipient|
+          AccountManager.is_account_email? recipient.email and
+            regexes.any?{ |r| recipient.email =~ r }
+        end
+      autolabel message, label
+    end
+
+    if    AccountManager.is_account_email? message.from.email and
+          regexes.any?{ |r| message.from.email =~ r }
+        
+      autolabel message, label
+    end
+  end
+
+
+  unless message.nil?
+    autolabel_email   message,    /ucdavis.edu$/i,     'ucdavis'
+    # ? lines similar to above, giving regexes or arrays of regexes and the
+    # desired label.
+  end
+
+-- 
+med v?nlig h?lsning
+David J. Hamilton
+
+From support at plecavalier.com  Mon Feb 14 14:18:38 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Mon, 14 Feb 2011 14:18:38 -0500
+Subject: [sup-talk] 0/0...I made it
+In-Reply-To: <1297706861-sup-7672@nyx.local>
+References: <1297630080-sup-3488@plc.intranet.plecavalier.com>
+	<1297706861-sup-7672@nyx.local>
+Message-ID: <1297707717-sup-3255@plc.intranet.plecavalier.com>
+
+Hi David.
+Excerpts from David J. Hamilton's message of Mon Feb 14 13:11:40 -0500 2011:
+> Philippe,
+> 
+> Excerpts from Philippe LeCavalier's message of Sun Feb 13 12:57:30 -0800 2011:
+> > Well, despite not finding a truly efficient method for autolabeling my mail
+> > -I'm not worried I won't, I just haven't found it yet- after 30 some days of
+> > due deligence my inbox is for now back to 0.
+> 
+> Have you tried writing a before-add-message hook?  If so, what problems have you
+> run in to with your attempts at autolabeling?
+
+Yeah. I've tried a bunch of options[1] -and still am-. Mostly, I don't understand what's going on during the functions and it's making things challenging to say the least.
+
+I really like the idea of matching email addresses using an external file as in the sup-wiki. As I mention in [1] simple operations ie adding/removing a single label works like a charm. But I want a model that will allow me to search in a very granular way. I want to break down my labels.
+
+|client
+||companyA
+||companyB
+||companyC
+|||position
+|||invoice
+|||issues
+|||reports
+
+|ff #friends and foe
+||wife,friends, family
+|||contact
+||||persons name I don't like
+
+This way I can search for all 'company' then refine by 'position' 'invoice'...etc. Or go straight to a specific group or people 'position' ie all 'exec' or 'finance'. But in order to do that I need a before-add-message hook that will add multiple labels either in one invocation or multiple ones.
+
+It goes without saying, but I'll state it anyways, my desired model far exceeds my ability as non-programmer. However, I'm a logical and patience individual and I know that if I can find a working example I can 'take it from there'.
+
+At the moment, it seems my biggest problem is labeling an email more than once. I found a few posts/relevant discussions[2,3] regard sup and multiple labels but nothing has lead me down the correct path.
+
+ref:
+[1] http://rubyforge.org/pipermail/sup-talk/2011-February/004504.html
+[2] https://github.com/jacius/sup-filters/blob/master/filters.example.yaml
+[3] http://www.mail-archive.com/sup-talk at rubyforge.org/msg03361.html
+> Here's a snippet of mine:
+> 
+>   # before-add-message.rb
+> 
+>   def autolabel message, label 
+>     log "Adding label [#{label}] to #{message.id}"
+>     message.add_label label
+>   end
+> 
+>   def autolabel_email message, regexes, label
+>     regexes = [ regexes ] unless regexes.is_a? Enumerable
+>     if message.recipients.any? do |recipient|
+>           AccountManager.is_account_email? recipient.email and
+>             regexes.any?{ |r| recipient.email =~ r }
+>         end
+>       autolabel message, label
+>     end
+> 
+>     if    AccountManager.is_account_email? message.from.email and
+>           regexes.any?{ |r| message.from.email =~ r }
+>         
+>       autolabel message, label
+>     end
+>   end
+> 
+> 
+>   unless message.nil?
+>     autolabel_email   message,    /ucdavis.edu$/i,     'ucdavis'
+>     # ? lines similar to above, giving regexes or arrays of regexes and the
+>     # desired label.
+>   end
+> 
+-- 
+Thanks,
+Phil
+
+From hollunder at lavabit.com  Tue Feb 15 07:00:10 2011
+From: hollunder at lavabit.com (Philipp)
+Date: Tue, 15 Feb 2011 13:00:10 +0100
+Subject: [sup-talk] sup-tweak-labels broken, and more
+Message-ID: <1297770445-sup-8888@eris>
+
+Hi there.
+I ran "sup-tweak-labels -r <label> --all-sources" to get rid of the
+inbox labels and others. I had to run it multiple times until all
+messages were processed. In my case it was three times for inbox and
+around ten times for unread. I would have expected it to work on all
+messages when run once.
+
+
+
+A different, small error:
+$ sup-dump --help
+Dumps all message state from the sup index to standard out. You can
+later use sup-sync --restored --restore <filename> to recover the index.
+
+The --restored is superfluous and wrong.
+
+
+
+And another one, not sure where this comes from:
+$ sup-import-dump --help
+Error: version mismatch!
+The sup executable is at version "git".
+The sup libraries are at version "0.12.1".
+
+Your development environment may be picking up code from a
+rubygems installation of sup.
+
+If you're running from git with a commandline like
+
+  ruby -Ilib /usr/bin/sup-import-dump
+
+try this instead:
+
+  RUBY_INVOCATION="ruby -Ilib" ruby -Ilib /usr/bin/sup-import-dump
+
+  You can also try `gem uninstall sup` and removing all Sup rubygems.
+
+
+
+$ sup-cmd --help
+<internal:lib/rubygems/custom_require>:29:in `require': no such file to load -- eventmachine (LoadError)
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/protocol.rb:1:in `<top (required)>'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/client.rb:1:in `<top (required)>'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-cmd:5:in `<top (required)>'
+        from /usr/bin/sup-cmd:19:in `load'
+        from /usr/bin/sup-cmd:19:in `<main>'
+
+
+
+$ sup-server --help
+<internal:lib/rubygems/custom_require>:29:in `require': no such file to load -- eventmachine (LoadError)
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/protocol.rb:1:in `<top (required)>'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/server.rb:1:in `<top (required)>'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from <internal:lib/rubygems/custom_require>:29:in `require'
+        from /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-server:5:in `<top (required)>'
+        from /usr/bin/sup-server:19:in `load'
+        from /usr/bin/sup-server:19:in `<main>'
+
+
+
+$ sup-sync-back --help
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync-back:9:in `<top (required)>': not working yet (RuntimeError)
+        from /usr/bin/sup-sync-back:19:in `load'
+        from /usr/bin/sup-sync-back:19:in `<main>
+
+
+
+Seems like something went wrong in the update process, I don't quite know what.
+Normal operation seems to work as expected, but all those errors worry me.
+
+
+From support at plecavalier.com  Tue Feb 15 09:55:05 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 15 Feb 2011 09:55:05 -0500
+Subject: [sup-talk] More before-add hook issues
+Message-ID: <1297780499-sup-4885@plc.intranet.plecavalier.com>
+
+Not certain what I did but the following used to work and now it doesn't. I have this:
+
+1 #bit of spam control
+2 if message.raw_header =~ /X-Spam-Flag: YES/
+3  message.add_label :spam
+4  log "Marking message #{message.id} as spam, subject is '#{message.subj}'"
+5 end
+6
+7 addressfile = File.open("/home/plecavalier/.sup/hooks/label.lists","r")
+8 if ! addressfile.grep(/#{message.list_address.email}/).empty?
+9   message.add_label :lists
+10 end
+
+in before-add-message.rb. At the moment that is all I have in there.
+
+And this:
+
+cups at easysw.com
+samba at lists.samba.org
+rsync at lists.samba.org
+offlineimap-project at lists.alioth.debian.org
+bind-users at lists.isc.org
+
+in ~/.sup/hooks/label.lists.
+
+If I state this: {message.list_address.email}
+
+I get this:
+[Tue Feb 15 09:32:21 -0500 2011] hook: error running /home/plecavalier/.sup/hooks/before-add-message.rb: undefined method `email' for nil:NilClass
+[Tue Feb 15 09:32:21 -0500 2011] hook: /home/plecavalier/.sup/hooks/before-add-message.rb:8:in `__run'
+
+As you can see above line 8 is {message.list_address.email} in this case. Unless, of course, '8' has nothing to do with the line number!?
+
+If I state this: {message.list_address} all mail -not just the from the addresses stated in the file- are labeled 'lists'.
+
+I looked at the post[1] where Hamish helped me by suggesting I state message.list_address.email to reference the list-post in the header and it worked fine at that time. I continued to play aroudn with things to try and get the hook to not only add 'lists' but add the relevant list name as well as remove the 'inbox' label. That didn't work so I tried going back to basics and just have the hook label the relevant mails as 'lists' and now I can't even do that.
+
+What Have I done to make this not work anymore?
+
+ref
+[1]http://rubyforge.org/pipermail/sup-talk/2011-February/004495.html
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Tue Feb 15 10:26:48 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 15 Feb 2011 10:26:48 -0500
+Subject: [sup-talk] renaming label woes
+Message-ID: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+
+I changed my mind on a certain label I had setup and wanted to rename it. I first looked at using sup-tweak-labels but opted against that tool since I couldn't figure out how to limit add/remove to a specific set of query results. Instead I loaded sup, performed a search for that label, did !!, T, =, l  and -FF  ff (FF being the label in question). I refreshed the screen to see the changes(@) and the old label(FF) reappeared. I thought it might be some sort of case sensitivity thing so I then did: !!, T, =, l, -FF <enter> and =, l, ff <enter>. When I refreshed that time the change appeared to take. So I closed the buffer.
+
+Now when I search for 'ff' I only get a few threads whereas previously I had over 800. Interestingly enough, If I search by from: or subject...etc. of which I know I'll get a hit within that label the label 'ff' is there as expected. So why can't I search for 'ff' anymore? I'm guessing something with the indexing has gone a-scew. I remembered seeing "Optimizing index..." when looking to do this with sup-tweak-labels so I went ahead and did a dry-run but that didn't help the situation -maybe I shouldn't have done --dry-run? Or maybe I'm way off here ;-)
+
+...help.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Tue Feb 15 10:37:37 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 15 Feb 2011 10:37:37 -0500
+Subject: [sup-talk] Label Display; Sorting Alphabetically
+Message-ID: <1297784079-sup-7440@plc.intranet.plecavalier.com>
+
+Hi All. Just wondering if there has ever been any consideration to sorting labels alphabetically. I'm assuming the way sup displays the labels is purely esthetic's?
+
+-- 
+Thanks,
+Phil
+
+From hollunder at lavabit.com  Tue Feb 15 11:43:13 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Tue, 15 Feb 2011 17:43:13 +0100
+Subject: [sup-talk] renaming label woes
+In-Reply-To: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+References: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+Message-ID: <1297788106-sup-5771@eris>
+
+Excerpts from Philippe LeCavalier's message of 2011-02-15 16:26:48 +0100:
+> I changed my mind on a certain label I had setup and wanted to rename it. I first looked at using sup-tweak-labels but opted against that tool since I couldn't figure out how to limit add/remove to a specific set of query results. Instead I loaded sup, performed a search for that label, did !!, T, =, l  and -FF  ff (FF being the label in question). I refreshed the screen to see the changes(@) and the old label(FF) reappeared. I thought it might be some sort of case sensitivity thing so I then did: !!, T, =, l, -FF <enter> and =, l, ff <enter>. When I refreshed that time the change appeared to take. So I closed the buffer.
+> 
+> Now when I search for 'ff' I only get a few threads whereas previously I had over 800. Interestingly enough, If I search by from: or subject...etc. of which I know I'll get a hit within that label the label 'ff' is there as expected. So why can't I search for 'ff' anymore? I'm guessing something with the indexing has gone a-scew. I remembered seeing "Optimizing index..." when looking to do this with sup-tweak-labels so I went ahead and did a dry-run but that didn't help the situation -maybe I shouldn't have done --dry-run? Or maybe I'm way off here ;-)
+> 
+> ...help.
+
+My experience with sup-tweak-labels today suggests that each run it gets
+only part of the messages. Maybe your problem is similar. Try to search
+for the old labels or try 'L', Enter to see all existing labels.
+
+
+From support at plecavalier.com  Tue Feb 15 14:01:38 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 15 Feb 2011 14:01:38 -0500
+Subject: [sup-talk] renaming label woes
+In-Reply-To: <1297788106-sup-5771@eris>
+References: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+	<1297788106-sup-5771@eris>
+Message-ID: <1297796479-sup-5530@plc.intranet.plecavalier.com>
+
+Excerpts from Philipp ?berbacher's message of Tue Feb 15 11:43:13 -0500 2011:
+> Excerpts from Philippe LeCavalier's message of 2011-02-15 16:26:48 +0100:
+> > I changed my mind on a certain label I had setup and wanted to rename it. I first looked at using sup-tweak-labels but opted against that tool since I couldn't figure out how to limit add/remove to a specific set of query results. Instead I loaded sup, performed a search for that label, did !!, T, =, l  and -FF  ff (FF being the label in question). I refreshed the screen to see the changes(@) and the old label(FF) reappeared. I thought it might be some sort of case sensitivity thing so I then did: !!, T, =, l, -FF <enter> and =, l, ff <enter>. When I refreshed that time the change appeared to take. So I closed the buffer.
+> > 
+> > Now when I search for 'ff' I only get a few threads whereas previously I had over 800. Interestingly enough, If I search by from: or subject...etc. of which I know I'll get a hit within that label the label 'ff' is there as expected. So why can't I search for 'ff' anymore? I'm guessing something with the indexing has gone a-scew. I remembered seeing "Optimizing index..." when looking to do this with sup-tweak-labels so I went ahead and did a dry-run but that didn't help the situation -maybe I shouldn't have done --dry-run? Or maybe I'm way off here ;-)
+> > 
+> > ...help.
+> 
+> My experience with sup-tweak-labels today suggests that each run it gets
+> only part of the messages. Maybe your problem is similar. Try to search
+> for the old labels or try 'L', Enter to see all existing labels.
+> 
+As above, I did that and it only returns a few(11) threads. Doing 'L' and choosing FF or ff shows the same msgs, 11 of them. Still, searching for a thread for which I know should be labeled with that returns lots of threads, all properly labeled. Really odd. And broken.
+-- 
+Thanks,
+Phil
+
+From hollunder at lavabit.com  Tue Feb 15 18:39:11 2011
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Wed, 16 Feb 2011 00:39:11 +0100
+Subject: [sup-talk] renaming label woes
+In-Reply-To: <1297796479-sup-5530@plc.intranet.plecavalier.com>
+References: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+	<1297788106-sup-5771@eris>
+	<1297796479-sup-5530@plc.intranet.plecavalier.com>
+Message-ID: <1297813032-sup-3201@eris>
+
+Excerpts from Philippe LeCavalier's message of 2011-02-15 20:01:38 +0100:
+> Excerpts from Philipp ?berbacher's message of Tue Feb 15 11:43:13 -0500 2011:
+> > Excerpts from Philippe LeCavalier's message of 2011-02-15 16:26:48 +0100:
+> > > I changed my mind on a certain label I had setup and wanted to rename it. I first looked at using sup-tweak-labels but opted against that tool since I couldn't figure out how to limit add/remove to a specific set of query results. Instead I loaded sup, performed a search for that label, did !!, T, =, l  and -FF  ff (FF being the label in question). I refreshed the screen to see the changes(@) and the old label(FF) reappeared. I thought it might be some sort of case sensitivity thing so I then did: !!, T, =, l, -FF <enter> and =, l, ff <enter>. When I refreshed that time the change appeared to take. So I closed the buffer.
+> > > 
+> > > Now when I search for 'ff' I only get a few threads whereas previously I had over 800. Interestingly enough, If I search by from: or subject...etc. of which I know I'll get a hit within that label the label 'ff' is there as expected. So why can't I search for 'ff' anymore? I'm guessing something with the indexing has gone a-scew. I remembered seeing "Optimizing index..." when looking to do this with sup-tweak-labels so I went ahead and did a dry-run but that didn't help the situation -maybe I shouldn't have done --dry-run? Or maybe I'm way off here ;-)
+> > > 
+> > > ...help.
+> > 
+> > My experience with sup-tweak-labels today suggests that each run it gets
+> > only part of the messages. Maybe your problem is similar. Try to search
+> > for the old labels or try 'L', Enter to see all existing labels.
+> > 
+> As above, I did that and it only returns a few(11) threads. Doing 'L' and choosing FF or ff shows the same msgs, 11 of them. Still, searching for a thread for which I know should be labeled with that returns lots of threads, all properly labeled. Really odd. And broken.
+
+This sounds very broken indeed. Which sup version is this? I know as
+little about ruby/sup as you do, but others might find the information
+useful. Good luck.
+
+
+From tero at tilus.net  Wed Feb 16 04:08:04 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 16 Feb 2011 11:08:04 +0200
+Subject: [sup-talk] Label Display; Sorting Alphabetically
+In-Reply-To: <1297784079-sup-7440@plc.intranet.plecavalier.com>
+References: <1297784079-sup-7440@plc.intranet.plecavalier.com>
+Message-ID: <1297847031-sup-6835@tilus.net>
+
+Philippe LeCavalier, 2011-02-15 17:37:
+> Hi All. Just wondering if there has ever been any consideration to
+> sorting labels alphabetically. I'm assuming the way sup displays the
+> labels is purely esthetic's?
+
+I assume you are talking about thread index mode.  Judging from the
+code label order looks purely incidental.  And I don't remember there
+being any discussion on label sorting.  Dump sorts the labels though,
+to ease keeping dump in vcs I guess.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From tero at tilus.net  Wed Feb 16 04:31:17 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 16 Feb 2011 11:31:17 +0200
+Subject: [sup-talk] More before-add hook issues
+In-Reply-To: <1297780499-sup-4885@plc.intranet.plecavalier.com>
+References: <1297780499-sup-4885@plc.intranet.plecavalier.com>
+Message-ID: <1297848161-sup-8178@tilus.net>
+
+Philippe LeCavalier, 2011-02-15 16:55:
+> 8 if ! addressfile.grep(/#{message.list_address.email}/).empty?
+
+Try
+
+if message.list_address && !addressfile.grep(/#{message.list_address.email}/).empty?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From cedwards at zelut.org  Wed Feb 16 01:42:46 2011
+From: cedwards at zelut.org (Christer Edwards)
+Date: Tue, 15 Feb 2011 23:42:46 -0700
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+Message-ID: <1297838462-sup-8452@daphne>
+
+I finally managed to find the run-mailcap binary (mime-types package),
+but I'm still getting issues with rendering HTML email properly. I get
+the error in the subject line as well as another (can't reproduce
+without quitting sup).
+
+I wonder if anyone might share their .mailcap file, or suggest any
+alternative methods for stripping out the nonsense HTML markup and just
+leaving me with plain text.
+
+Thank you,
+Christer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110215/d0582513/attachment-0001.bin>
+
+From support at plecavalier.com  Wed Feb 16 08:33:32 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 08:33:32 -0500
+Subject: [sup-talk] Label Display; Sorting Alphabetically
+In-Reply-To: <1297847031-sup-6835@tilus.net>
+References: <1297784079-sup-7440@plc.intranet.plecavalier.com>
+	<1297847031-sup-6835@tilus.net>
+Message-ID: <1297863023-sup-4209@plc.intranet.plecavalier.com>
+
+Hi Tero.
+Excerpts from Tero Tilus's message of Wed Feb 16 04:08:04 -0500 2011:
+> Philippe LeCavalier, 2011-02-15 17:37:
+> > Hi All. Just wondering if there has ever been any consideration to
+> > sorting labels alphabetically. I'm assuming the way sup displays the
+> > labels is purely esthetic's?
+> 
+> I assume you are talking about thread index mode.
+No. Any mode really. Even in search mode they're random.
+
+>Judging from the code label order looks purely incidental.  And I don't remember there
+> being any discussion on label sorting.
+Just putting it out there. When visialy scanning a large list it seems logical to me that one would want the labels in some
+order...Randomly displaying them looks messy and chaotic. Just my 2 cents.
+
+>Dump sorts the labels though,
+> to ease keeping dump in vcs I guess.
+I could see that being a must, yes. 
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Wed Feb 16 08:39:41 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 08:39:41 -0500
+Subject: [sup-talk] renaming label woes
+In-Reply-To: <1297813032-sup-3201@eris>
+References: <1297782785-sup-2959@plc.intranet.plecavalier.com>
+	<1297788106-sup-5771@eris>
+	<1297796479-sup-5530@plc.intranet.plecavalier.com>
+	<1297813032-sup-3201@eris>
+Message-ID: <1297863503-sup-7205@plc.intranet.plecavalier.com>
+
+Hi Philipp.
+Excerpts from Philipp ?berbacher's message of Tue Feb 15 18:39:11 -0500 2011:
+> Excerpts from Philippe LeCavalier's message of 2011-02-15 20:01:38 +0100:
+> > Excerpts from Philipp ?berbacher's message of Tue Feb 15 11:43:13 -0500 2011:
+> > > Excerpts from Philippe LeCavalier's message of 2011-02-15 16:26:48 +0100:
+> > > > I changed my mind on a certain label I had setup and wanted to rename it. I first looked at using sup-tweak-labels but opted against that tool since I couldn't figure out how to limit add/remove to a specific set of query results. Instead I loaded sup, performed a search for that label, did !!, T, =, l  and -FF  ff (FF being the label in question). I refreshed the screen to see the changes(@) and the old label(FF) reappeared. I thought it might be some sort of case sensitivity thing so I then did: !!, T, =, l, -FF <enter> and =, l, ff <enter>. When I refreshed that time the change appeared to take. So I closed the buffer.
+> > > > 
+> > > > Now when I search for 'ff' I only get a few threads whereas previously I had over 800. Interestingly enough, If I search by from: or subject...etc. of which I know I'll get a hit within that label the label 'ff' is there as expected. So why can't I search for 'ff' anymore? I'm guessing something with the indexing has gone a-scew. I remembered seeing "Optimizing index..." when looking to do this with sup-tweak-labels so I went ahead and did a dry-run but that didn't help the situation -maybe I shouldn't have done --dry-run? Or maybe I'm way off here ;-)
+> > > > 
+> > > > ...help.
+> > > 
+> > > My experience with sup-tweak-labels today suggests that each run it gets
+> > > only part of the messages. Maybe your problem is similar. Try to search
+> > > for the old labels or try 'L', Enter to see all existing labels.
+> > > 
+> > As above, I did that and it only returns a few(11) threads. Doing 'L' and choosing FF or ff shows the same msgs, 11 of them. Still, searching for a thread for which I know should be labeled with that returns lots of threads, all properly labeled. Really odd. And broken.
+> 
+> This sounds very broken indeed. Which sup version is this? I know as
+> little about ruby/sup as you do, but others might find the information
+> useful. Good luck.
+> 
+Debian testing Squeeze/Wheezy w/Sup 0.12.1
+-- 
+Thanks,
+Phil
+
+From sup at zevv.nl  Wed Feb 16 08:43:10 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Wed, 16 Feb 2011 14:43:10 +0100
+Subject: [sup-talk] Sup crash at startup
+Message-ID: <1297863697-sup-612@pruts.nl>
+
+Out of nowhere my sup started crasing on me. Running latest version from git.
+Any ideas, any more info I can provide to diagnose this problem ?
+
+Thanks,
+
+Ico
+
+
+[Wed Feb 16 14:31:56 +0100 2011] ERROR: oh crap, an exception                                                                  
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/ico/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- RuntimeError from thread: load threads for thread-index-mode
+
+./lib/sup/index.rb:556:in `find_docid'
+./lib/sup/index.rb:561:in `find_doc'
+./lib/sup/index.rb:571:in `get_entry'
+./lib/sup/index.rb:201:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+./lib/sup/index.rb:580:in `synchronize'
+./lib/sup/index.rb:201:in `build_message'
+./lib/sup/index.rb:195
+./lib/sup/thread.rb:349:in `call'
+./lib/sup/thread.rb:349:in `load_thread_for_message'
+./lib/sup/index.rb:195:in `each_message_in_thread_for'
+./lib/sup/index.rb:195:in `each'
+./lib/sup/index.rb:195:in `each_message_in_thread_for'
+./lib/sup/thread.rb:347:in `load_thread_for_message'
+./lib/sup/thread.rb:339:in `load_n_threads'
+./lib/sup/index.rb:156:in `each_id_by_date'
+./lib/sup/index.rb:251:in `each_id'
+./lib/sup/index.rb:251:in `each'
+./lib/sup/index.rb:251:in `each_id'
+./lib/sup/index.rb:156:in `each_id_by_date'
+./lib/sup/thread.rb:334:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+./lib/sup.rb:78:in `reporting_thread'
+./lib/sup.rb:76:in `initialize'
+./lib/sup.rb:76:in `new'
+./lib/sup.rb:76:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+./lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+bin/sup:223
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From support at plecavalier.com  Wed Feb 16 09:07:19 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 09:07:19 -0500
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+In-Reply-To: <1297838462-sup-8452@daphne>
+References: <1297838462-sup-8452@daphne>
+Message-ID: <1297865037-sup-9782@plc.intranet.plecavalier.com>
+
+Hi Christer.
+Excerpts from Christer Edwards's message of Wed Feb 16 01:42:46 -0500 2011:
+[...] 
+> I wonder if anyone might share their .mailcap file
+Here's mine. I just started building it but it's something...BTW Did you look into the mime-decode.rb hook?
+
+cat ../../.mailcap
+application/zip; squeeze '%s'
+application/pdf; /usr/bin/xpdf '%s'
+application/msexcel; gnumeric '%s'
+application/html; firefox '%s'
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; abiword '%s'
+
+Not certain the last one is 'proper' but it works.
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Wed Feb 16 09:35:00 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 09:35:00 -0500
+Subject: [sup-talk] More before-add hook issues
+In-Reply-To: <1297848161-sup-8178@tilus.net>
+References: <1297780499-sup-4885@plc.intranet.plecavalier.com>
+	<1297848161-sup-8178@tilus.net>
+Message-ID: <1297865749-sup-514@plc.intranet.plecavalier.com>
+
+Hi Tero.
+Excerpts from Tero Tilus's message of Wed Feb 16 04:31:17 -0500 2011:
+> Philippe LeCavalier, 2011-02-15 16:55:
+> > 8 if ! addressfile.grep(/#{message.list_address.email}/).empty?
+> 
+> Try
+> 
+> if message.list_address && !addressfile.grep(/#{message.list_address.email}/).empty?
+> 
+It worked! Thanks Tero. Just for everyone's benefit this is what the complete rule looks like:
+
+  7   if message.list_address &&
+  8   addressfile = File.open("/home/plecavalier/.sup/hooks/label.list","r")
+  9   !addressfile.grep(/#{message.list_address.email}/).empty?
+ 10  message.add_label :list
+ 11 end
+
+Tero, I'm assuming this is what you expected me to do!? Would I be able to add more functions:
+
+i) read a list of addresses in a second file ie label.list.sup against list-post header from each list and label accordingly ie if it's sup-talk at rubyforge assign label: sup if it's cups->cups...and so on?
+ii) lastly, remove :inbox
+
+I'm asking in that fashion because in my experience thus far if I go and build rules for each list to:
+a) label :list
+b) label :<list_name>
+c) -label :inbox
+d) wash, rinse and repeat for each list
+
+the hook dies. So it's apparent to me that all functions need to occur in the same invocation. ie multiple, separate functions on the same msg fails. I found a post somewhere(which I can't seem to find anymore) where someone stated multiple invocations on the same msg isn't possible but there must be a workaround...Someone must be applying more than one label to a msg at the same time. Isn't there someone out there succeeding at this?
+
+
+-- 
+Thanks,
+Phil
+
+From cedwards at zelut.org  Wed Feb 16 09:46:49 2011
+From: cedwards at zelut.org (Christer Edwards)
+Date: Wed, 16 Feb 2011 07:46:49 -0700
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+In-Reply-To: <1297865037-sup-9782@plc.intranet.plecavalier.com>
+References: <1297838462-sup-8452@daphne>
+	<1297865037-sup-9782@plc.intranet.plecavalier.com>
+Message-ID: <1297867503-sup-1594@daphne>
+
+Excerpts from Philippe LeCavalier's message of 2011-02-16 07:07:19 -0700:
+> Here's mine. I just started building it but it's something...BTW Did you look into the mime-decode.rb hook?
+> 
+> cat ../../.mailcap
+> application/zip; squeeze '%s'
+> application/pdf; /usr/bin/xpdf '%s'
+> application/msexcel; gnumeric '%s'
+> application/html; firefox '%s'
+> application/vnd.openxmlformats-officedocument.wordprocessingml.document; abiword '%s'
+> 
+> Not certain the last one is 'proper' but it works.
+
+I tried adding this contents to my file, but I'm still getting the error when selecting an html email attachment:
+
+Couldn't execute view command, viewing as text.
+
+In response to another suggestion, I have not tried the mime hook. I haven't quite been able to make sense of it yet.
+
+Christer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110216/23b400c7/attachment.bin>
+
+From support at plecavalier.com  Wed Feb 16 10:28:46 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 10:28:46 -0500
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+In-Reply-To: <1297867503-sup-1594@daphne>
+References: <1297838462-sup-8452@daphne>
+	<1297865037-sup-9782@plc.intranet.plecavalier.com>
+	<1297867503-sup-1594@daphne>
+Message-ID: <1297868379-sup-4270@plc.intranet.plecavalier.com>
+
+Hi Christer.
+Excerpts from Christer Edwards's message of Wed Feb 16 09:46:49 -0500 2011:
+> Excerpts from Philippe LeCavalier's message of 2011-02-16 07:07:19 -0700:
+> > Here's mine. I just started building it but it's something...BTW Did you look into the mime-decode.rb hook?
+> > 
+> > cat ../../.mailcap
+> > application/zip; squeeze '%s'
+> > application/pdf; /usr/bin/xpdf '%s'
+> > application/msexcel; gnumeric '%s'
+> > application/html; firefox '%s'
+> > application/vnd.openxmlformats-officedocument.wordprocessingml.document; abiword '%s'
+> > 
+> > Not certain the last one is 'proper' but it works.
+> 
+> I tried adding this contents to my file, but I'm still getting the error when selecting an html email attachment:
+> 
+> Couldn't execute view command, viewing as text.
+I think sup always tries to display HTML inline but without the mime-decode.rb hook it will fail(just a guess). Despite the error the
+mailcap entry for firefox(assuming you have firefox, if not substitute for sensible-browser) should open.
+
+All mime-decode does is make use of w3m to display the html encoding inline. So you'll need the w3m package for that to work. 
+> Christer
+-- 
+Thanks,
+Phil
+
+From marka at pobox.com  Wed Feb 16 11:26:24 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 16 Feb 2011 11:26:24 -0500
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+In-Reply-To: <1297838462-sup-8452@daphne>
+References: <1297838462-sup-8452@daphne>
+Message-ID: <1297873545-sup-8957@bloovis.org>
+
+Excerpts from Christer Edwards's message of Wed Feb 16 01:42:46 -0500 2011:
+> I wonder if anyone might share their .mailcap file, or suggest any
+> alternative methods for stripping out the nonsense HTML markup and just
+> leaving me with plain text.
+
+I use this line in my .mailcap to run w3m on html attachments:
+
+text/html; /usr/bin/w3m -T text/html '%s'; needsterminal; description=HTML Text; nametemplate=%s.html
+
+From cedwards at zelut.org  Wed Feb 16 11:39:56 2011
+From: cedwards at zelut.org (Christer Edwards)
+Date: Wed, 16 Feb 2011 09:39:56 -0700
+Subject: [sup-talk] Error: no "view" mailcap rules found for type
+	"text/plain"
+In-Reply-To: <1297873545-sup-8957@bloovis.org>
+References: <1297838462-sup-8452@daphne> <1297873545-sup-8957@bloovis.org>
+Message-ID: <1297874319-sup-3235@daphne>
+
+Excerpts from Mark Alexander's message of 2011-02-16 09:26:24 -0700:
+> Excerpts from Christer Edwards's message of Wed Feb 16 01:42:46 -0500 2011:
+> > I wonder if anyone might share their .mailcap file, or suggest any
+> > alternative methods for stripping out the nonsense HTML markup and just
+> > leaving me with plain text.
+> 
+> I use this line in my .mailcap to run w3m on html attachments:
+> 
+> text/html; /usr/bin/w3m -T text/html '%s'; needsterminal; description=HTML Text; nametemplate=%s.html
+
+This works! I'm not used to w3m, but at least it renders things
+properly. Maybe I'll tinker with some other options (lynx, etc).
+
+Thanks for putting me on the right track!
+
+Christer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110216/eda07e8c/attachment.bin>
+
+From cedwards at zelut.org  Wed Feb 16 12:34:39 2011
+From: cedwards at zelut.org (Christer Edwards)
+Date: Wed, 16 Feb 2011 10:34:39 -0700
+Subject: [sup-talk] tiny patch re: editor (vim)
+Message-ID: <1297876563-sup-2003@daphne>
+
+I've always been told that email text length should be limited to 72
+characters. I did some more research this morning in preparation for
+sharing this and I find that according to RFC 2822 it should be 78
+characters. I then continue to find more and more discussion about how
+it "doesn't matter" or "use whatever you want".
+
+In any case, below is a tiny patch to configure vim to wrap text at 72
+characters. This patch is specific to the initial file that is used at
+sup-config, but the same line could be edited in your local
+.sup/config.yaml.
+
+In any case, see the example below to configure your textwidth.
+
+
+--- lib/sup.rb  2011-02-16 09:08:19.373333347 -0700
++++ lib/sup.rb.new  2011-02-16 09:20:07.816666681 -0700
+@@ -289,7 +289,7 @@
+             :gpgkey => ""
+           }
+         },
+-        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'",
++        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail' -c 'set textwidth=72'",
+         :thread_by_subject => false,
+         :edit_signature => false,
+         :ask_for_from => false,
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110216/a13199ce/attachment-0001.bin>
+
+From matiasaguirre at gmail.com  Wed Feb 16 13:35:35 2011
+From: matiasaguirre at gmail.com (Matias Aguirre)
+Date: Wed, 16 Feb 2011 16:35:35 -0200
+Subject: [sup-talk] tiny patch re: editor (vim)
+In-Reply-To: <1297876563-sup-2003@daphne>
+References: <1297876563-sup-2003@daphne>
+Message-ID: <1297881187-sup-7241@mintaka>
+
+Regardless I prefer 72 chars line width, this is more a personal choice
+than a forced standard, instead I suggest you to put this to your .vimrc
+
+autocmd FileType mail set textwidth=72
+
+Will have the same effect.
+
+Cheers,
+Mat?as
+
+Excerpts from Christer Edwards's message of Wed Feb 16 15:34:39 -0200 2011:
+> I've always been told that email text length should be limited to 72
+> characters. I did some more research this morning in preparation for
+> sharing this and I find that according to RFC 2822 it should be 78
+> characters. I then continue to find more and more discussion about how
+> it "doesn't matter" or "use whatever you want".
+> 
+> In any case, below is a tiny patch to configure vim to wrap text at 72
+> characters. This patch is specific to the initial file that is used at
+> sup-config, but the same line could be edited in your local
+> .sup/config.yaml.
+> 
+> In any case, see the example below to configure your textwidth.
+> 
+> 
+> --- lib/sup.rb  2011-02-16 09:08:19.373333347 -0700
+> +++ lib/sup.rb.new  2011-02-16 09:20:07.816666681 -0700
+> @@ -289,7 +289,7 @@
+>              :gpgkey => ""
+>            }
+>          },
+> -        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'",
+> +        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail' -c 'set textwidth=72'",
+>          :thread_by_subject => false,
+>          :edit_signature => false,
+>          :ask_for_from => false,
+-- 
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From sup at zevv.nl  Wed Feb 16 13:42:07 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Wed, 16 Feb 2011 19:42:07 +0100
+Subject: [sup-talk] tiny patch re: editor (vim)
+In-Reply-To: <1297876563-sup-2003@daphne>
+References: <1297876563-sup-2003@daphne>
+Message-ID: <1297881617-sup-3074@pruts.nl>
+
+* On Wed Feb 16 18:34:39 +0100 2011, Christer Edwards wrote:
+ 
+> In any case, below is a tiny patch to configure vim to wrap text at 72
+> characters. This patch is specific to the initial file that is used at
+> sup-config, but the same line could be edited in your local
+> .sup/config.yaml.
+> 
+> In any case, see the example below to configure your textwidth.
+> 
+> 
+> --- lib/sup.rb  2011-02-16 09:08:19.373333347 -0700
+> +++ lib/sup.rb.new  2011-02-16 09:20:07.816666681 -0700
+> @@ -289,7 +289,7 @@
+>              :gpgkey => ""
+>            }
+>          },
+> -        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'",
+> +        :editor => ENV["EDITOR"] || "/usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail' -c 'set textwidth=72'",
+>          :thread_by_subject => false,
+>          :edit_signature => false,
+>          :ask_for_from => false,
+
+Funny, the default vim comes with the 'mail' filetype plugin which
+already handles setting the text width to 72, so I never needed to do
+anything to get this behaviour. Strange that this does not work for you
+out of the box
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From bwalton at artsci.utoronto.ca  Wed Feb 16 14:08:40 2011
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 16 Feb 2011 14:08:40 -0500
+Subject: [sup-talk] tiny patch re: editor (vim)
+In-Reply-To: <1297876563-sup-2003@daphne>
+References: <1297876563-sup-2003@daphne>
+Message-ID: <1297883154-sup-7252@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Christer Edwards's message of Wed Feb 16 12:34:39 -0500 2011:
+
+Hi Christer,
+
+> In any case, see the example below to configure your textwidth.
+
+Your patch looks fine, but I question why we would do anything other
+than call vim in the default case?  Passing default settings like this
+(including the existing options) should be beyond the scope of the
+mail client in my opinion.
+
+That being said, if others like the patch, by all means apply it.  I
+don't use vim and I specifically configure my environment so it won't
+affect me. :)
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From support at plecavalier.com  Wed Feb 16 15:23:42 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 16 Feb 2011 15:23:42 -0500
+Subject: [sup-talk] Body preview separator inbox-mode
+Message-ID: <1297887707-sup-809@plc.intranet.plecavalier.com>
+
+Just an idea...
+
+Could we have a body preview separator(| or , maybe?). I find it less
+efficient when visually browsing the inbox-mode to not have any kind of
+separator between each thread/response.
+
+-- 
+Thanks,
+Phil
+
+From pete at muddygoat.org  Wed Feb 16 20:02:34 2011
+From: pete at muddygoat.org (Peter Lewis)
+Date: Thu, 17 Feb 2011 01:02:34 +0000
+Subject: [sup-talk] Hi and noob question.
+Message-ID: <201102170102.34282.pete@muddygoat.org>
+
+Hi there,
+
+Firstly, thanks for sup! I've been following the project for a while, and 
+thought that since the new Archlinux packages are working well, I'd dive in 
+and give sup a proper go :-)
+
+So here's the newbie question: I had a look through the manual etc. and I 
+didn't seem to be able to find out any way of reversing the order in which the 
+messages are displayed in the list. It only seems to be able to have the most 
+recent at the top, etc., which I've been trained over the years to not be used 
+to. Is there a way to switch the order?
+
+Thanks in advance,
+
+Pete.
+
+From shadowfirebird at gmail.com  Thu Feb 17 04:20:10 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 17 Feb 2011 09:20:10 +0000
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297887707-sup-809@plc.intranet.plecavalier.com>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+Message-ID: <1297934366-sup-3072@blake>
+
+> Could we have a body preview separator(| or , maybe?). I find it less
+> efficient when visually browsing the inbox-mode to not have any kind of
+> separator between each thread/response.
+
++1.   I can't tell what's subject and what's message body 'hint'.
+
+-- 
+A boss with no humor is like a job that's no fun.
+
+From sup at zevv.nl  Thu Feb 17 04:59:56 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 17 Feb 2011 10:59:56 +0100
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297934366-sup-3072@blake>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake>
+Message-ID: <1297936718-sup-9587@pruts.nl>
+
+* On Thu Feb 17 10:20:10 +0100 2011, Shadowfirebird wrote:
+ 
+> > Could we have a body preview separator(| or , maybe?). I find it less
+> > efficient when visually browsing the inbox-mode to not have any kind of
+> > separator between each thread/response.
+> 
+> +1.   I can't tell what's subject and what's message body 'hint'.
+
+Consider defining a different color for :snippet in .sup/colors.yaml. I
+use
+
+  :snippet: 
+  :bg: default
+  :fg: black
+  :attrs:
+  - bold
+
+which gives dark gray on black, works ok for me.
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From shadowfirebird at gmail.com  Thu Feb 17 06:24:42 2011
+From: shadowfirebird at gmail.com (Shadowfirebird)
+Date: Thu, 17 Feb 2011 11:24:42 +0000
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297936718-sup-9587@pruts.nl>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+Message-ID: <1297941721-sup-6759@blake>
+
+> Consider defining a different color for :snippet in .sup/colors.yaml. I
+> use
+> 
+>   :snippet: 
+>   :bg: default
+>   :fg: black
+>   :attrs:
+>   - bold
+> 
+> which gives dark gray on black, works ok for me.
+
+To clarify, it appears you can copy the above into a new file .sup/colors.yaml and restart sup -- and it works brilliantly.  Ta.
+
+-- 
+System restarting, wait...
+
+From matthieu.rakotojaona at gmail.com  Thu Feb 17 08:58:40 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Feb 2011 14:58:40 +0100
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297941721-sup-6759@blake>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+	<1297941721-sup-6759@blake>
+Message-ID: <1297951012-sup-2455@Otokar>
+
+Excerpts from Shadowfirebird's message of 2011-02-17 12:24:42 +0100:
+> > Consider defining a different color for :snippet in .sup/colors.yaml. I
+> > use
+> > 
+> >   :snippet: 
+> >   :bg: default
+> >   :fg: black
+> >   :attrs:
+> >   - bold
+> > 
+> > which gives dark gray on black, works ok for me.
+> 
+> To clarify, it appears you can copy the above into a new file .sup/colors.yaml and restart sup -- and it works brilliantly.  Ta.
+
+Hello,
+
+Strange, I did as you say and I have an error : 
+
+
+NoMethodError from thread: main
+undefined method `[]' for nil:NilClass
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:190:in `rescue in block in populate_colormap'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:187:in `block in populate_colormap'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:186:in `each_pair'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:186:in `populate_colormap'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:182:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+yet I have the correct .sup/colors.yaml :
+
+$ cat .sup/color.yaml
+:snippet:
+:bg: default
+:fg: black
+:attrs:
+- bold
+
+Do you know where the problem might come from ?
+
+Thanks,
+-- 
+Matthieu RAKOTOJAONA
+
+From support at plecavalier.com  Thu Feb 17 09:42:59 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Feb 2011 09:42:59 -0500
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297951012-sup-2455@Otokar>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+	<1297941721-sup-6759@blake> <1297951012-sup-2455@Otokar>
+Message-ID: <1297953660-sup-4629@plc.intranet.plecavalier.com>
+
+Excerpts from Matthieu Rakotojaona's message of Thu Feb 17 08:58:40 -0500 2011:
+> Excerpts from Shadowfirebird's message of 2011-02-17 12:24:42 +0100:
+> > > Consider defining a different color for :snippet in .sup/colors.yaml. I
+> > > use
+> > > 
+> > >   :snippet: 
+> > >   :bg: default
+> > >   :fg: black
+> > >   :attrs:
+> > >   - bold
+> > > 
+> > > which gives dark gray on black, works ok for me.
+> > 
+> > To clarify, it appears you can copy the above into a new file .sup/colors.yaml and restart sup -- and it works brilliantly.  Ta.
+> 
+> Hello,
+> 
+> Strange, I did as you say and I have an error : 
+> 
+> 
+> NoMethodError from thread: main
+> undefined method `[]' for nil:NilClass
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:190:in `rescue in block in populate_colormap'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:187:in `block in populate_colormap'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:186:in `each_pair'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/lib/sup/colormap.rb:186:in `populate_colormap'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:182:in `<module:Redwood>'
+> /usr/lib/ruby/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19:in `<main>'
+> 
+> yet I have the correct .sup/colors.yaml :
+> 
+> $ cat .sup/color.yaml
+> :snippet:
+> :bg: default
+> :fg: black
+> :attrs:
+> - bold
+Did you double check to ensure you don't already have that entry? I did.
+The only thing I added was the '- bold'
+> 
+> Do you know where the problem might come from ?
+> 
+> Thanks,
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Thu Feb 17 10:02:58 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Thu, 17 Feb 2011 10:02:58 -0500
+Subject: [sup-talk] defined variables in after-poll.rb
+Message-ID: <1297954935-sup-1241@plc.intranet.plecavalier.com>
+
+Hi.
+
+I'd like the after-poll hook to display the assigned labels. What is
+that variable called?
+
+-- 
+Thanks,
+Phil
+
+From gregor at hoffleit.de  Thu Feb 17 11:44:17 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 17 Feb 2011 17:44:17 +0100
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297951012-sup-2455@Otokar>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+	<1297941721-sup-6759@blake> <1297951012-sup-2455@Otokar>
+Message-ID: <1297960819-sup-4803@sam.mediasupervision.de>
+
+* Matthieu Rakotojaona <matthieu.rakotojaona at gmail.com> [Do Feb 17 14:58:40 +0100 2011]
+> $ cat .sup/color.yaml
+> :snippet:
+> :bg: default
+> :fg: black
+> :attrs:
+> - bold
+
+Afaik, YAML (http://www.yaml.org/spec/1.2/spec.html) depends on the
+indentation for determination of the structure. I would have expected
+the above snippet definition to look like this:
+
+    :snippet:
+      :bg: default
+      :fg: black
+      :attrs:
+      - bold
+
+
+Regards,
+    Gregor
+
+From sup at zevv.nl  Thu Feb 17 12:45:15 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Thu, 17 Feb 2011 18:45:15 +0100
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297960819-sup-4803@sam.mediasupervision.de>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+	<1297941721-sup-6759@blake> <1297951012-sup-2455@Otokar>
+	<1297960819-sup-4803@sam.mediasupervision.de>
+Message-ID: <1297964683-sup-2380@pruts.nl>
+
+* On Thu Feb 17 17:44:17 +0100 2011, Gregor Hoffleit wrote:
+ 
+> Afaik, YAML (http://www.yaml.org/spec/1.2/spec.html) depends on the
+> indentation for determination of the structure. I would have expected
+> the above snippet definition to look like this:
+> 
+>     :snippet:
+>       :bg: default
+>       :fg: black
+>       :attrs:
+>       - bold
+
+Very true, apologies for the cut&paste failure
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From bacuh at riseup.net  Thu Feb 17 13:16:31 2011
+From: bacuh at riseup.net (Sebastian Lipp)
+Date: Thu, 17 Feb 2011 19:16:31 +0100
+Subject: [sup-talk] Hi and noob question.
+In-Reply-To: <201102170102.34282.pete@muddygoat.org>
+References: <201102170102.34282.pete@muddygoat.org>
+Message-ID: <1297966539-sup-4248@fly>
+
+Excerpts from Peter Lewis's message of Do Feb 17 02:02:34 +0100 2011:
+> So here's the newbie question: I had a look through the manual etc. and I 
+> didn't seem to be able to find out any way of reversing the order in which the 
+> messages are displayed in the list. It only seems to be able to have the most 
+> recent at the top, etc., which I've been trained over the years to not be used 
+> to. Is there a way to switch the order?
+
+You may patch sup with the files attached.
+
+But they are from Sept 2009, so they most likely will not succeed
+completely. You might have to adjust some lines of code manually.
+
+-- 
+basti
+ 
+If we have never called ourselves insurrectionists, it is not because we
+do not wish for insurrection, but because our own temperament
+predisposes us to an anarchism without adjectives. The important thing
+is to fight for freedom and against hierarchy; we imagine that this will
+demand different approaches in different situations, and that these
+approaches may need one another to succeed. We are anarcho-syndicalists
+on the shop floor, green anarchists in the woods, social anarchists in
+our communities, individualists when you catch us alone,
+anarcho-communists when there's something to share, insurrectionists
+when we strike a blow.
+   -- say you want an insurrection
+	-- <http://www.crimethinc.com/texts/rollingthunder/insurrection.php>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-allow-thread-index-view-to-sort-oldest-first.patch
+Type: application/octet-stream
+Size: 7502 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110217/6692c9f0/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Change-the-default-sort-for-inbox-mode-to-be-oldest.patch
+Type: application/octet-stream
+Size: 777 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110217/6692c9f0/attachment-0001.obj>
+
+From matthieu.rakotojaona at gmail.com  Thu Feb 17 13:18:48 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Feb 2011 19:18:48 +0100
+Subject: [sup-talk] Body preview separator inbox-mode
+In-Reply-To: <1297964683-sup-2380@pruts.nl>
+References: <1297887707-sup-809@plc.intranet.plecavalier.com>
+	<1297934366-sup-3072@blake> <1297936718-sup-9587@pruts.nl>
+	<1297941721-sup-6759@blake> <1297951012-sup-2455@Otokar>
+	<1297960819-sup-4803@sam.mediasupervision.de>
+	<1297964683-sup-2380@pruts.nl>
+Message-ID: <1297966712-sup-1638@Otokar>
+
+Excerpts from Ico Doornekamp's message of 2011-02-17 18:45:15 +0100:
+> * On Thu Feb 17 17:44:17 +0100 2011, Gregor Hoffleit wrote:
+>  
+> > Afaik, YAML (http://www.yaml.org/spec/1.2/spec.html) depends on the
+> > indentation for determination of the structure. I would have expected
+> > the above snippet definition to look like this:
+> > 
+> >     :snippet:
+> >       :bg: default
+> >       :fg: black
+> >       :attrs:
+> >       - bold
+> 
+> Very true, apologies for the cut&paste failure
+
+It's working now, many thanks !
+-- 
+Matthieu RAKOTOJAONA
+
+From eg at gaute.vetsj.com  Fri Feb 18 04:27:35 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 18 Feb 2011 10:27:35 +0100
+Subject: [sup-talk] Removing :draft label
+Message-ID: <1298021040-sup-2417@qwerzila>
+
+Hi,
+
+I saved a draft for a message; later opened it, finished it and sent
+it.. Now all the messages in the thread show: this is a draft message
+hit e to edit, y to send. They are all incoming or sent messages, and if
+I try to edit them to delete them sup crashes with:
+
+
+--- NoMethodError from thread: main
+undefined method `fn_for_offset' for #<Redwood::SentLoader:0x00000002539258>
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/message.rb:182:in `draft_filename'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/resume-mode.rb:8:in `initialize'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/thread-view-mode.rb:416:in `new'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/thread-view-mode.rb:416:in `edit_draft'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/mode.rb:59:in `handle_input'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/buffer.rb:277:in `handle_input'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/bin/sup:271:in `<module:Redwood>'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/bin/sup:80:in `<top (required)>'
+/home/gaute/.gem/ruby/1.9.1/bin/sup:19:in `load'
+/home/gaute/.gem/ruby/1.9.1/bin/sup:19:in `<main>'
+
+I tried to enter the console find the message and manually remove :draft
+using message.remove_label :draft. But this does not seem to do the
+trick.. Also tried Index.save or xapian.flush.. but how can I make the
+change go through ?
+
+This does not seem to work anymore:
+http://www.mail-archive.com/sup-talk at rubyforge.org/msg00874.html
+
+Best regards, Gaute
+
+From wmorgan-sup at masanjin.net  Mon Feb 21 16:02:28 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Feb 2011 21:02:28 +0000
+Subject: [sup-talk] sup-server revisited
+Message-ID: <1298320404-sup-5972@masanjin.net>
+
+Hello Sup fans,
+
+As I alluded to in an earlier email to sup-devel, I have been working recently
+on the ancient goal of splitting Sup functionality out into separate client and
+server programs. This will have many advantages; in particular it will remove
+email lock-in by making it possible to have non-Sup clients interact with Sup.
+
+I've tried various approaches to this goal at various times, without much
+success. But with the release of Whistlepig, I have been making a lot of
+progress in a short amount of time.
+
+I wanted to lay out my general plan in this email, so that everyone can follow
+along and try things out if they feel inclined.
+
+I'm focusing on the server component first. My specific goals are:
+
+- Encapsulate all storage and indexing logic.
+- Formalize the notion of labels and state, and the relationship between them,
+  messages, and threads. Currently these relationships are fuzzy in Sup, and
+  things suffer for it.
+- Precompute threads, so that search requires only moderate effort, instead of
+  the large effort it does now. This will make search much, much faster, at the
+  expense of a little more effort at index time.
+- Allow concurrent access from multiple clients.
+- Provide something that is transparent and easy to modify without having to go
+  through an ncurses client.
+
+You can find the work in progress here: https://github.com/wmorgan/heliotrope
+Currently it is not actually a server, but accomplishes many of the goals
+above. Run bin/email-indexer and then bin/email-searcher to play around with
+a simple preview of things to come. Stay tuned for more on this.
+
+Once the server is in a reasonable state, my goals for the curses client reboot
+are:
+
+- Move to an event-based model rather than the polling + many threads +
+  observable model we have now. Dump all events into one big queue,
+  and block on it.
+- Have one, and only one, non-main thread, which it to communicate with the
+  server. No more mutex insanity.
+- Work from the ground up with Ruby 1.9, which means finding the many sources
+  of encoding errors and punishing them.
+- Require the console and ncurses gems so that i18n works out of the box.
+- Borrow as much code as possible from the current Sup, because I sure as shit
+  don't want to have to rewrite it all.
+
+I haven't started on this at all.
+
+So stay tuned, and check out heliotrope if you are so inclined.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Mon Feb 21 19:54:43 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 22 Feb 2011 09:54:43 +0900
+Subject: [sup-talk] Correct way to sync index between two machines?
+Message-ID: <AANLkTik-rm2niKzb6iR0SJt7V4ErMyMM8ku-2NdmKhY7@mail.gmail.com>
+
+I have a laptop, my home desktop and my work desktop were I sync and
+read my email. Previously with mutt I simply rsync my mail folders so
+the mail was in sync with all three machines but for some reason rsync
+the whole .sup folder results in corrupted index.
+
+I make sure sup is not running and then rsync the .sup folder (via
+unison). Then when trying to run sup in the updated machine I get this
+error:
+
+Scanning maildir:/home/user/.mail/hsanson/INBOX...
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:792:in `load':
+invalid encoding symbol (EncodingError)
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:792:in `entry'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:567:in
+`get_entry'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in
+`block in build_message'
+        from /usr/lib/ruby/1.9.1/monitor.rb:201:in `mon_synchronize'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:575:in
+`synchronize'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/index.rb:196:in
+`build_message'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:159:in
+`block in poll_from'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:106:in
+`block (2 levels) in poll'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in
+`each'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in
+`each_with_index'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in
+`block in poll'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `each'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:155:in
+`poll_from'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in
+`method_missing'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:123:in
+`block in <top (required)>'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:118:in `each'
+        from /var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup-sync:118:in
+`<top (required)>'
+        from /var/lib/gems/1.9.1/bin/sup-sync:19:in `load'
+        from /var/lib/gems/1.9.1/bin/sup-sync:19:in `<main>'
+
+Removing the index (xapian folder) fixes the problem but of course I
+lost my whole night of labeling work.
+
+So how to safely sync my index between several machines?
+
+regards,
+Horacio
+
+From nicolas.pouillard at gmail.com  Tue Feb 22 09:09:43 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 22 Feb 2011 06:09:43 -0800 (PST)
+Subject: [sup-talk] [sup-devel] sup-server revisited
+In-Reply-To: <1298320404-sup-5972@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+Message-ID: <4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+
+On Mon, 21 Feb 2011 21:02:28 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Hello Sup fans,
+
+[...]
+
+> I'm focusing on the server component first. My specific goals are:
+> 
+> - Encapsulate all storage and indexing logic.
+> - Formalize the notion of labels and state, and the relationship between them,
+>   messages, and threads. Currently these relationships are fuzzy in Sup, and
+>   things suffer for it.
+> - Precompute threads, so that search requires only moderate effort, instead of
+>   the large effort it does now. This will make search much, much faster, at the
+>   expense of a little more effort at index time.
+> - Allow concurrent access from multiple clients.
+> - Provide something that is transparent and easy to modify without having to go
+>   through an ncurses client.
+
+On the server side, and more precisely on the interaction between the two,
+I would love to see a simple Unix/command/CLI defined for the server. To make
+myself clear, a bit like the notmuch CLI. This would allow for a greater
+modularity and reusablity between components. For instance I would like to
+index my mails with differents backends (disk is cheap), to get a way to
+compare different tools on real data, when searching emails, and thus allow
+to debug the different tools.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From wmorgan-sup at masanjin.net  Tue Feb 22 13:00:06 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 22 Feb 2011 18:00:06 +0000
+Subject: [sup-talk] [sup-devel] sup-server revisited
+In-Reply-To: <4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+References: <1298320404-sup-5972@masanjin.net>
+	<4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+Message-ID: <1298397585-sup-1661@masanjin.net>
+
+[resend to list]
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-02-22:
+> I would love to see a simple Unix/command/CLI defined for the server. To
+> make myself clear, a bit like the notmuch CLI. This would allow for a
+> greater modularity and reusablity between components.
+
+I am definitely interested in a set of composable CLI tools that talk to the
+server, for basic operations like search, show, add/remove labels, etc.
+
+> For instance I would like to index my mails with differents backends (disk
+> is cheap), to get a way to compare different tools on real data, when
+> searching emails, and thus allow to debug the different tools.
+
+The server implementation is pretty heavily tied to a particular index and
+store mechanism. It's not clear to me how (or whether) the CLI tools will
+allow you to swap out different implementations.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Feb 23 04:59:39 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 23 Feb 2011 01:59:39 -0800 (PST)
+Subject: [sup-talk] [sup-devel] sup-server revisited
+In-Reply-To: <1298397585-sup-1661@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+	<4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+	<1298397585-sup-1661@masanjin.net>
+Message-ID: <4d64da8b.8389cc0a.31cf.6b21@mx.google.com>
+
+On Tue, 22 Feb 2011 18:00:06 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> [resend to list]
+> 
+> Reformatted excerpts from Nicolas Pouillard's message of 2011-02-22:
+> > I would love to see a simple Unix/command/CLI defined for the server. To
+> > make myself clear, a bit like the notmuch CLI. This would allow for a
+> > greater modularity and reusablity between components.
+> 
+> I am definitely interested in a set of composable CLI tools that talk to the
+> server, for basic operations like search, show, add/remove labels, etc.
+
+Ok, then I think it would make not much sense to make it different than
+notmuch. Of course with good arguments changes can go the other direction as
+well.
+
+> > For instance I would like to index my mails with differents backends (disk
+> > is cheap), to get a way to compare different tools on real data, when
+> > searching emails, and thus allow to debug the different tools.
+> 
+> The server implementation is pretty heavily tied to a particular index and
+> store mechanism. It's not clear to me how (or whether) the CLI tools will
+> allow you to swap out different implementations.
+
+I agree with you and don't to expose such details. What I want is a way to
+separate the frontend from the backend completely. This would allow me to
+use the frontend with any of:
+  - heliotrope
+  - sup (maybe)
+  - notmuch (not written in ruby)
+  - my own toy project (not in ruby either)
+  - any combination of both, where "writes" are dispatched to all of them,
+    and "reads" are dispatched to one of them (that I can change easily).
+
+I also want to be able to script batch operations on the mail store easily.
+
+Best regards,
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From dcampbell24 at gmail.com  Wed Feb 23 07:57:35 2011
+From: dcampbell24 at gmail.com (David Campbell)
+Date: Wed, 23 Feb 2011 07:57:35 -0500
+Subject: [sup-talk] sup removing labels
+Message-ID: <1298465238-sup-6982@hypnos>
+
+Hi, yesterday while editing my labels sup crashed, and since then
+it only removes labels if I edit them and does not create new
+ones. I mention this issue here, since when I visited the page
+for the bug tracker, I was greeted by a "sorry this page is
+unavailable" message.
+
+crash report: http://codepad.org/M53pn9M4
+
+sup version: 0.12.1
+
+details: I was changing a labels from "Arch" to "arch". sup also
+appears to have problems with case, since it seemed to group
+labels Arch and arch together.
+-- 
+David Campbell
+
+From support at plecavalier.com  Wed Feb 23 08:23:21 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 23 Feb 2011 08:23:21 -0500
+Subject: [sup-talk] sup removing labels
+In-Reply-To: <1298465238-sup-6982@hypnos>
+References: <1298465238-sup-6982@hypnos>
+Message-ID: <1298466989-sup-993@plc.intranet.plecavalier.com>
+
+Hi David.
+Excerpts from David Campbell's message of Wed Feb 23 07:57:35 -0500 2011:
+> Hi, yesterday while editing my labels sup crashed, and since then
+> it only removes labels if I edit them and does not create new
+> ones. I mention this issue here, since when I visited the page
+> for the bug tracker, I was greeted by a "sorry this page is
+> unavailable" message.
+> 
+> crash report: http://codepad.org/M53pn9M4
+> 
+> sup version: 0.12.1
+> 
+> details: I was changing a labels from "Arch" to "arch". sup also
+> appears to have problems with case, since it seemed to group
+> labels Arch and arch together.
+
+I don't know for certain but I'm fairly confident you're right about
+case sensitivity. I experienced the exact same issue when renaming FF to
+ff. Still haven't fixed it.In my scenario, sup doesn't even find most of the
+threads with those labels anymore. I haven't had a chance to 'play'
+with this since it occurred but if you find any additional info please be
+certain to post so I and others can benefit.
+
+Good luck.
+Phil
+-- 
+Thanks,
+Phil
+
+From support at plecavalier.com  Wed Feb 23 09:25:57 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 23 Feb 2011 09:25:57 -0500
+Subject: [sup-talk] searching for multiple labels
+Message-ID: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+
+What's the syntax for searching multiple labels in one query? Or do I
+always have to search & refine?
+
+-- 
+Thanks,
+Phil
+
+From marka at pobox.com  Wed Feb 23 10:55:00 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 23 Feb 2011 10:55:00 -0500
+Subject: [sup-talk] searching for multiple labels
+In-Reply-To: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+References: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+Message-ID: <1298476415-sup-2899@bloovis.org>
+
+Excerpts from Philippe LeCavalier's message of Wed Feb 23 09:25:57 -0500 2011:
+> What's the syntax for searching multiple labels in one query? Or do I
+> always have to search & refine?
+
+I use things like this:
+
+  label:something AND label:other
+
+or this:
+
+  label:something AND is:unread AND is:inbox
+
+From gregor at hoffleit.de  Wed Feb 23 11:38:11 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Wed, 23 Feb 2011 17:38:11 +0100
+Subject: [sup-talk] searching for multiple labels
+In-Reply-To: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+References: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+Message-ID: <1298478713-sup-7540@sam.mediasupervision.de>
+
+"label:apple label:orange" finds all threads which have either the label
+"apple" or the label "orange" (or both).
+
+"label:apple AND label:orange" finds the threads which are labeled with
+"apple" and "orange" at the same time.
+
+For a more detailed description, have a look at
+http://sup.rubyforge.org/wiki/wiki.pl?SearchingMail.
+
+Regards,
+    Gregor
+
+
+
+* Philippe LeCavalier <support at plecavalier.com> [Mi Feb 23 15:25:57 +0100 2011]
+> What's the syntax for searching multiple labels in one query? Or do I
+> always have to search & refine?
+
+From johnbent at lanl.gov  Wed Feb 23 12:29:20 2011
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 23 Feb 2011 10:29:20 -0700
+Subject: [sup-talk] searching for multiple labels
+In-Reply-To: <1298476415-sup-2899@bloovis.org>
+References: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+	<1298476415-sup-2899@bloovis.org>
+Message-ID: <1298482087-sup-2756@guava.lanl.gov>
+
+Excerpts from Mark Alexander's message of Wed Feb 23 08:55:00 -0700 2011:
+> Excerpts from Philippe LeCavalier's message of Wed Feb 23 09:25:57 -0500 2011:
+> > What's the syntax for searching multiple labels in one query? Or do I
+> > always have to search & refine?
+> 
+> I use things like this:
+> 
+>   label:something AND label:other
+> 
+> or this:
+> 
+>   label:something AND is:unread AND is:inbox
+>
+There is a 'U' shortcut mapped to 'is:unread' which I always patch to
+'is:unread AND is:inbox' since I leave a ton of mailing list threads
+unread and archived.
+-- 
+Thanks,
+
+John 
+
+From wmorgan-sup at masanjin.net  Wed Feb 23 13:23:33 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 Feb 2011 18:23:33 +0000
+Subject: [sup-talk] [sup-devel] sup-server revisited
+In-Reply-To: <4d64da8b.8389cc0a.31cf.6b21@mx.google.com>
+References: <1298320404-sup-5972@masanjin.net>
+	<4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+	<1298397585-sup-1661@masanjin.net>
+	<4d64da8b.8389cc0a.31cf.6b21@mx.google.com>
+Message-ID: <1298485323-sup-5531@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-02-23:
+> I agree with you and don't to expose such details. What I want is a
+> way to separate the frontend from the backend completely.
+
+Yes, absolutely.
+
+> I also want to be able to script batch operations on the mail store
+> easily.
+
+Agreed. A definite goal. The prevalence of [bug reports about]
+sup-tweak-labels usage is a sign that other people desire this too.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From support at plecavalier.com  Wed Feb 23 13:31:51 2011
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Wed, 23 Feb 2011 13:31:51 -0500
+Subject: [sup-talk] searching for multiple labels
+In-Reply-To: <1298475886-sup-3699@daphne>
+References: <1298471114-sup-8140@plc.intranet.plecavalier.com>
+	<1298475886-sup-3699@daphne>
+Message-ID: <1298485835-sup-9397@plc.intranet.plecavalier.com>
+
+Excerpts from Christer Edwards's message of Wed Feb 23 10:45:41 -0500 2011:
+> Excerpts from Philippe LeCavalier's message of 2011-02-23 07:25:57 -0700:
+> > What's the syntax for searching multiple labels in one query? Or do I
+> > always have to search & refine?
+> 
+> label:foo AND label:bar AND is:unread ...etc.
+> 
+> Christer
+I see. Based on some posts I thought that the '-','+' would effectively add or
+negate a term.
+-- 
+Thanks,
+Phil
+

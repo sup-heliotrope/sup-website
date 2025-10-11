@@ -1,0 +1,3091 @@
+From eg at gaute.vetsj.com  Tue Feb  1 08:34:10 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 01 Feb 2011 14:34:10 +0100
+Subject: [sup-devel] Bug: UTF-8 error when sending messages
+In-Reply-To: <1296497911-sup-5024@poincare>
+References: <mailman.75.1296431981.25874.sup-devel@rubyforge.org>
+	<1296497911-sup-5024@poincare>
+Message-ID: <1296566276-sup-4340@qwerzila>
+
+Excerpts from Adeel Ahmad Khan's message of 2011-01-31 19:24:42 +0100:
+> 
+> Tero Tilus <tero at tilus.net>:
+> > Adeel Ahmad Khan, 2011-01-29 05:11:
+> > >     invalid byte sequence in UTF-8
+> > ...
+> > > I am using a nearly fresh installation of Sup 0.12.1 with Ruby
+> > > 1.9.2p136.  I have LOCALE="en_US.UTF-8".
+
+What editor are you using ? Could you attach some buggy text (make sure
+it is transferred in binary - ie upload an archive somewhere like
+http://paste.xinu.at/)?
+
+> > Both the errors were from regex matches against message body.  Somehow
+> > your editor doesn't know your locale or is not obeying it.  As a
+> > result non-utf8 stuff gets saved to disk and sup gets confused.
+>
+> You were right.  It turned out to be an issue with editor.
+
+I'm not so sure. I think it is a problem with Ruby (1.9) degrading the
+the text it reads to US-ASCII (8bit). And when you later try to do UTF-8
+stuff with it (append, or regexp with UTF-8) it fails. Perhaps even when
+trying to access chars in the string (the body) that are not really
+US-ASCII [2].
+
+What my patch does is tell Ruby that the string is an UTF-8 string, no
+matter what it deduced from reading the file in the first place - or
+what might have happened throughout Sup's processing of the text.
+
+Try this patch, it forces encoding on the entire body: http://ix.io/1rO
+
+(these patches are workarounds; not to be applied to source-tree)
+
+The same happened with labels.txt (or with contacts). Whenever a label
+string could be degraded to US-ASCII, Ruby did so (how should it know it
+was UTF-8 anyway?), then when trying to append, match or work with the
+US-ASCII string towards UTF-8 input it failed.
+
+What I think must be done (as an alternative to supporting different
+encodings all the way) - is to _always_ read all files in UTF-8 [1] (or
+transcode to UTF-8), and perhaps most difficultly _keep_ the strings
+UTF-8 throught the entire Sup processes.
+
+[1] http://blog.grayproductions.net/articles/ruby_19s_three_default_encodings
+[2] http://www.ruby-forum.com/topic/194493
+
+Best regards,
+Gaute
+
+From dmishd at gmail.com  Thu Feb  3 18:27:18 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 3 Feb 2011 23:27:18 +0000
+Subject: [sup-devel] couple more gpg related patches
+Message-ID: <AANLkTiki8LbxGaCLO0m8ENTF_0bMdJfwWyhDTBscrDLq@mail.gmail.com>
+
+I've uploaded a couple more patches to the gpgme branch and merged
+them into next:
+
+* one fixes the fingerprint of untrusted keys
+* the other adds "untrusted" to the signature summary line when the
+key is untrusted - ie when there is no web of trust from you to that
+key.
+
+Patches below for your reading pleasure. Someone tell me if you'd
+rather have less detail from me.
+
+Hamish Downer
+
+
+commit 6f1b9d7e94496543eacc63807b99fa29059ed300
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Wed Feb 2 21:06:22 2011 +0000
+
+    show the FULL key fingerprint, not just the first half
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 967c09e..978e145 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -313,7 +313,7 @@ private
+       if signature.validity != GPGME::GPGME_VALIDITY_FULL &&
+signature.validity != GPGME::GPGME_VALIDITY_MARGINAL
+         output_lines << "WARNING: This key is not certified with a
+trusted signature!"
+         output_lines << "There is no indication that the signature
+belongs to the owner"
+-        output_lines << "Full fingerprint is: " + (0..9).map {|i|
+signature.fpr[(i*2),2]}.join(":")
++        output_lines << "Full fingerprint is: " + (0..9).map {|i|
+signature.fpr[(i*4),4]}.join(":")
+       else
+         trusted = true
+       end
+
+
+
+commit 0e1f5e56dc7063104c52f1b2d03a3fd85573bc47
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Wed Feb 2 21:02:05 2011 +0000
+
+    signature summary now states "untrusted" if the signing key is not trusted
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 5a38f27..967c09e 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -153,16 +153,18 @@ EOS
+       end
+     end
+
++    summary_line =
+simplify_sig_line(verify_result.signatures[0].to_s, all_trusted)
++
+     if all_output_lines.length == 0
+       Chunk::CryptoNotice.new :valid, "Encrypted message wasn't
+signed", all_output_lines
+     elsif valid
+       if all_trusted
+-        Chunk::CryptoNotice.new(:valid,
+simplify_sig_line(verify_result.signatures[0].to_s), all_output_lines)
++        Chunk::CryptoNotice.new(:valid, summary_line, all_output_lines)
+       else
+-        Chunk::CryptoNotice.new(:valid_untrusted,
+simplify_sig_line(verify_result.signatures[0].to_s), all_output_lines)
++        Chunk::CryptoNotice.new(:valid_untrusted, summary_line,
+all_output_lines)
+       end
+     elsif !unknown
+-      Chunk::CryptoNotice.new(:invalid,
+simplify_sig_line(verify_result.signatures[0].to_s), all_output_lines)
++      Chunk::CryptoNotice.new(:invalid, summary_line, all_output_lines)
+     else
+       unknown_status all_output_lines
+     end
+@@ -274,8 +276,12 @@ private
+   end
+
+   # remove the hex key_id and info in ()
+-  def simplify_sig_line sig_line
+-    sig_line.sub(/from [0-9A-F]{16} /, "from ")
++  def simplify_sig_line sig_line, trusted
++    sig_line.sub!(/from [0-9A-F]{16} /, "from ")
++    if !trusted
++      sig_line.sub!(/Good signature/, "Good (untrusted) signature")
++    end
++    sig_line
+   end
+
+   def sig_output_lines signature
+
+From wael.nasreddine at gmail.com  Sun Feb  6 19:10:13 2011
+From: wael.nasreddine at gmail.com (Wael M. Nasreddine)
+Date: Mon, 7 Feb 2011 01:10:13 +0100
+Subject: [sup-devel] Branch maildir-sync
+Message-ID: <AANLkTi=QOmu4ru-OiZZojk_GU2KNPtVoboEgG4RwM9J-@mail.gmail.com>
+
+Hello,
+
+I'm trying to test the Next branch but with maildir sync support, however
+the branch maildir-sync does not merge without conflict into either of
+master nor Next, Damien could you please rebase the branch on master please?
+
+Thanks
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Wa?l Nasreddine
+TechnoGate www.technogate.fr
+mobile :  06.32.94.70.13
+agence : 09.70.444.236
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110207/e4c76009/attachment.html>
+
+From eg at gaute.vetsj.com  Tue Feb  8 03:01:44 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 08 Feb 2011 09:01:44 +0100
+Subject: [sup-devel] new branch: keybindings
+In-Reply-To: <1296187729-sup-7405@zyrg.net>
+References: <1296187729-sup-7405@zyrg.net>
+Message-ID: <1297152028-sup-5512@qwerzila>
+
+Excerpts from Rich Lane's message of 2011-01-28 05:26:38 +0100:
+> This branch makes the keybindings hook more useful. It moves the global
+> keymap into a new GlobalMode that all others inherit from. This lets
+> you write the same code to make a global keybinding as for a
+> mode-specific one:
+> 
+> class Redwood::GlobalMode
+>   keymap.add! :list_starred, "List all starred threads", "s"
+> 
+>   def list_starred
+>     SearchResultsMode.spawn_from_query "is:starred"
+>   end
+> end
+> 
+> I got rid of the "modes" local since I think it's better to just reopen
+> the class with normal Ruby syntax. The keybindings hook is now exactly
+> like the startup hook but with the O-k keybinding to reload it.
+> 
+> This branch also makes it easier to write keybindings by catching and
+> displaying exceptions from any keybinding, including builtin Sup ones.
+> Masking Sup bugs isn't the goal (there's still a backtrace and bug
+> report instructions) but the user experience is much better than losing
+> a half-composed email.
+> 
+> I've added some of my own keybindings (not using GlobalMode yet) to the
+> wiki: http://sup.rubyforge.org/wiki/wiki.pl?CustomizingKeys
+
+Could it be that this broke continue buffer search key 'n' ?
+
+lib/sup/buffer.rb:171
+
+This doesn't work for me anymore, could anyone confirm that?
+
+Best regards,
+Gaute Hope
+
+From eg at gaute.vetsj.com  Tue Feb  8 03:07:31 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 08 Feb 2011 09:07:31 +0100
+Subject: [sup-devel] new branch: keybindings
+In-Reply-To: <1297152028-sup-5512@qwerzila>
+References: <1296187729-sup-7405@zyrg.net> <1297152028-sup-5512@qwerzila>
+Message-ID: <1297152370-sup-4647@qwerzila>
+
+Excerpts from Gaute Hope's message of 2011-02-08 09:01:44 +0100:
+> Excerpts from Rich Lane's message of 2011-01-28 05:26:38 +0100:
+> Could it be that this broke continue buffer search key 'n' ?
+> 
+> lib/sup/buffer.rb:171
+> 
+> This doesn't work for me anymore, could anyone confirm that?
+
+Ah - I just noticed that I have to move down one line before I can hit
+'n' to search for the next occurrence. I don't think this was the
+original, or desired, behaviour?
+
+- Gaute
+
+From wmorgan-sup at masanjin.net  Wed Feb  9 01:14:52 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 09 Feb 2011 06:14:52 +0000
+Subject: [sup-devel] whistlepig
+Message-ID: <1297231668-sup-8433@masanjin.net>
+
+Today I've released something that I've been working on for many many months
+now, which I hope will form the basis of the mythical Sup 2.0. It's a tiny
+full-text search engine called Whistlepig.
+
+http://masanjin.net/whistlepig
+
+For a quick demo, if you clone it and check out the ruby/ directory, you can run:
+
+  ruby -Ilib bin/email-indexer <mbox name>
+  ruby -Ilib bin/email-searcher <mbox name>
+
+(You will also need to install the oklahoma_mixer, console and trollop gems.)
+
+This is a super simple non-threaded non-curses email browser. The email parsing
+code is much of the Sup email parsing code, but I think I've ironed out all the
+Ruby 1.9 encoding-related bugs through a very laborious process of trial and
+error.
+
+For my next trick, I am going to start writing a server version of this.
+Believe it or not, I'm thinking HTTP.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From john.wyzer at gmx.de  Wed Feb  9 07:59:50 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Wed, 09 Feb 2011 13:59:50 +0100
+Subject: [sup-devel] bug report / trace, exiting message search buffer
+Message-ID: <1297256387-sup-1667@localhost>
+
+Hi.
+
+sup v0.12.1:
+
+I experienced this a few times. Sup crashes sometimes when I hit "x" in a
+buffer with message search results.
+Submitting it here since the bugtracker is down.
+
+--- NoMethodError from thread: poll after loading inbox
+undefined method `content_width' for nil:NilClass
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:921:in `from_width'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:840:in `block in text_for_thread_at'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `each_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `text_for_thread_at'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `block in regen_text'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:444:in `block in map_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:444:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:444:in `each_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:444:in `map_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:242:in `update'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:717:in `add_or_unhide'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:196:in `handle_added_update'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/update.rb:26:in `block in relay'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/update.rb:26:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:175:in `block in poll_from'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:106:in `block (2 levels) in poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each_with_index'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `block in poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:155:in `poll_from'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:113:in `block (2 levels) in do_poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:103:in `block in do_poll'
+<internal:prelude>:10:in `synchronize'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:102:in `do_poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in `poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:49:in `poll_with_sources'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup:212:in `block (2 levels) in <module:Redwood>'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup.rb:78:in `block in reporting_thread'
+
+From gaudenz at soziologie.ch  Wed Feb  9 16:27:13 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Wed, 09 Feb 2011 22:27:13 +0100
+Subject: [sup-devel] Encoding of message snippet in xapian
+Message-ID: <1297286134-sup-7498@meteor.durcheinandertal.local>
+
+Hi 
+
+While debuging the trackeback posted below I discovered that my xapian
+index contains some of the message snippets in ASCII-8BIT and others
+in UTF-8. This leads to probelems when building the thread-view for
+collapsed messages for messages wich have non 7-bit ASCII characters
+in their snippet. message_patina_lines combines the snippet which
+comes from the xapian index and is (sometimes) in ASCII-8BIT with
+other parts of the message which are in UTF-8.
+
+I don't know exactly how I ended up with a xapian index which has some
+strings in ASCII-8BIT and others in UTF-8. I guess it's because I
+first used sup with Ruby 1.8 and only recently switched to Ruby 1.9.1.
+What's the expected encoding of things coming from the xapian index?
+Is there a way to fix the index? Or is a fix in sup needed for this?
+Or should I just recreate my index from scratch?
+
+Running sup with Ruby 1.8 avoids the problem. But I guess it only
+masks it because 1.8 is not encoding aware.
+
+Gaudenz
+
+--- Encoding::CompatibilityError from thread: load messages for thread-view-mode
+incompatible character encodings: UTF-8 and ASCII-8BIT
+/home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:792:in `message_patina_lines'
+/home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:853:in `chunk_to_lines'
+/home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:724:in `block in regen_text'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:68:in `block in each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:174:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+/home/gaudenz/projects/sup/lib/sup/thread.rb:67:in `each'
+/home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:713:in `regen_text'
+/home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:175:in `buffer='
+/home/gaudenz/projects/sup/lib/sup/buffer.rb:387:in `spawn'
+(eval):1:in `spawn'
+/home/gaudenz/projects/sup/lib/sup/modes/thread-index-mode.rb:120:in `block in select'
+/home/gaudenz/projects/sup/lib/sup.rb:78:in `block in reporting_thread'
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+
+From dmishd at gmail.com  Wed Feb  9 17:03:55 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Wed, 9 Feb 2011 22:03:55 +0000
+Subject: [sup-devel] BRANCH: rerun_crypto_selector
+Message-ID: <AANLkTinU=eJ4B0d97T-GfX82mQrQPEpyv-37tUQuogfW@mail.gmail.com>
+
+I noticed that if I changed the reply-to selector that my
+crypto-selector hook wasn't getting called, so I've made a branch
+called rerun_crypto_selector (and merged it to next). From the main
+commit message in the branch:
+
+    Re-run the crypto selector hook after message changes.
+
+    The crypto-selector hook will be re-run after the message is edited,
+    or after the recipients change due to changing the "Reply to"
+    selector in reply-mode. So when the recipients change, the default
+    selector will also change.
+
+    However, if the user has manually changed the crypto selector then the
+    hook will not be re-run, so as to avoid over-riding the user's choice.
+
+I've also updated the wiki as the headers["to"] bit is sometimes an
+array. Working much nicer now. I've pasted in the two patches at the
+end for those who like to review them in the email.
+
+Hamish Downer
+
+
+
+
+commit f111201a469fd1c1dccb143e089cc623ce35025d
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Tue Feb 8 23:53:13 2011 +0000
+
+    added @changed_by_user to HorizontalSelector
+
+diff --git a/lib/sup/horizontal-selector.rb b/lib/sup/horizontal-selector.rb
+index 35a028e..e6ec6dc 100644
+--- a/lib/sup/horizontal-selector.rb
++++ b/lib/sup/horizontal-selector.rb
+@@ -1,7 +1,7 @@
+ module Redwood
+
+ class HorizontalSelector
+-  attr_accessor :label
++  attr_accessor :label, :changed_by_user
+
+   def initialize label, vals, labels,
+base_color=:horizontal_selector_unselected_color,
+selected_color=:horizontal_selector_selected_color
+     @label = label
+@@ -10,6 +10,7 @@ class HorizontalSelector
+     @base_color = base_color
+     @selected_color = selected_color
+     @selection = 0
++    @changed_by_user = false
+   end
+
+   def set_to val; @selection = @vals.index(val) end
+@@ -37,10 +38,12 @@ class HorizontalSelector
+
+   def roll_left
+     @selection = (@selection - 1) % @labels.length
++    @changed_by_user = true
+   end
+
+   def roll_right
+     @selection = (@selection + 1) % @labels.length
++    @changed_by_user = true
+   end
+ end
+
+
+
+
+
+
+commit 3cbccb471fc73b1593374ef8efea1a22ba237d89
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Wed Feb 9 18:58:30 2011 +0000
+
+    Re-run the crypto selector hook after message changes.
+
+    The crypto-selector hook will be re-run after the message is edited,
+    or after the recipients change due to changing the "Reply to"
+    selector in reply-mode. So when the recipients change, the default
+    selector will also change.
+
+    However, if the user has manually changed the crypto selector then the
+    hook will not be re-run, so as to avoid over-riding the user's choice.
+
+diff --git a/lib/sup/modes/edit-message-mode.rb
+b/lib/sup/modes/edit-message-mode.rb
+index 734a879..6c2d61c 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -179,6 +179,7 @@ EOS
+     header, @body = parse_file @file.path
+     @header = header - NON_EDITABLE_HEADERS
+     handle_new_text @header, @body
++    rerun_crypto_selector_hook
+     update
+
+     @edited
+@@ -215,6 +216,12 @@ EOS
+
+ protected
+
++  def rerun_crypto_selector_hook
++    if @crypto_selector && !@crypto_selector.changed_by_user
++      HookManager.run "crypto-mode", :header => @header, :body =>
+@body, :crypto_selector => @crypto_selector
++    end
++  end
++
+   def mime_encode string
+     string = [string].pack('M') # basic quoted-printable
+     string.gsub!(/=\n/,'')      # .. remove trailing newline
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index 079e4de..ccdf371 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -165,6 +165,7 @@ protected
+     if @headers[@type_selector.val] != self.header
+       self.header = @headers[@type_selector.val]
+       self.body = @bodies[@type_selector.val] unless @edited
++      rerun_crypto_selector_hook
+       update
+     end
+   end
+@@ -174,6 +175,7 @@ protected
+     if @headers[@type_selector.val] != self.header
+       self.header = @headers[@type_selector.val]
+       self.body = @bodies[@type_selector.val] unless @edited
++      rerun_crypto_selector_hook
+       update
+     end
+   end
+
+From dmishd at gmail.com  Wed Feb  9 19:57:55 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 10 Feb 2011 00:57:55 +0000
+Subject: [sup-devel] Improved GPG start up checks
+Message-ID: <AANLkTins1JXJbrOca0EL7AyYBCt3rXm6TumbMNOdSk8p@mail.gmail.com>
+
+    Better gpg error checking.
+
+    The crypto initialize code now checks for a number of common reasons
+    for GPG not working, all related to the gpg-agent side of things. It
+    will then give a reasonably friendly error message, helping diagnose
+    why GPG is not working for you.
+
+    In particular it will check whether the environment variable is set,
+    whether the environment variable points to a file, and whether that
+    file is a socket.
+
+
+On branch gpgme and next. Though this change also merged the improved
+rescue of NameError from the master branch to the gpgme branch, and
+the improved rescue was already on the next branch, so a quick manual
+merge was required to merge into next, and will presumably also be
+required to merge the gpgme stuff into master. I should probably start
+a new branch for further gpg improvements to save trouble down the
+road.
+
+Let me know if you want me to pick out commits for cherry-pick to get past this.
+
+Hamish Downer
+
+From dmishd at gmail.com  Thu Feb 10 18:26:29 2011
+From: dmishd at gmail.com (Hamish)
+Date: Thu, 10 Feb 2011 23:26:29 +0000
+Subject: [sup-devel] branching and merging
+Message-ID: <1297380057-sup-9005@whisper>
+
+Hello
+
+I'm wondering if there are preferred strategies for the feature branches. 
+I'm aware that new branches should be branched off master, and merged into
+next when the author thinks they're ready. But I'm wondering when a merge has 
+been done from a branch, should development continue on that branch?
+
+I've been working on the gpgme branch, even though a number of the earlier 
+commits on that branch have been merged into master. So I've been using git
+cherry-pick to merge later commits into next. Is that a reasonable way to go
+or should I be starting lots of little branches, or merging into next less
+often? Or does it just not make much difference to the maintainers and I 
+should do what works for me?
+
+Any opinions?
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Thu Feb 10 19:01:17 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 11 Feb 2011 00:01:17 +0000
+Subject: [sup-devel] branching and merging
+In-Reply-To: <1297380057-sup-9005@whisper>
+References: <1297380057-sup-9005@whisper>
+Message-ID: <1297381879-sup-6069@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-02-10:
+> But I'm wondering when a merge has been done from a branch, should
+> development continue on that branch?
+
+If it's essentially more work on the same feature, then yes, continue on that
+branch. Otherwise, no. Branches are cheap.
+
+The point of a feature branch is that you can merge or not merge or revert it
+without touching other features. So that should be the deciding factor on
+whether to start a new feature branch: if I have to throw away, or if I have to
+revert this whole branch, will I be losing extra stuff?
+
+The other option is that if it's a long-running set of related and dependent
+features, you can also call it an integration branch, merge individual feature
+branches into it as necessary, and finally merge the whole thing into master in
+one go. I haven't been following the gpgme changes, but it sounds like maybe
+this is the case.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sascha-pgp at silbe.org  Fri Feb 11 09:30:15 2011
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Fri, 11 Feb 2011 15:30:15 +0100
+Subject: [sup-devel] [PATCH] Delete messages from index if there is no
+	location left
+In-Reply-To: <1297428180-sup-8381@mail.univers-libre.net>
+References: <1297428180-sup-8381@mail.univers-libre.net>
+Message-ID: <1297434615-5101-1-git-send-email-sascha-pgp@silbe.org>
+
+If messages don't have any location, we cannot access their body and are also
+unable to restore them from a message state dump (written by sup-dump). So
+it's more consistent to the user if we remove them completely. This is
+most likely what the user expects anyway: why else would they delete the
+message from all locations?
+
+The drawback is that messages that were moved between sources need to be
+either scanned in a single sup-sync run or the new location must be scanned
+first. But that isn't a regression from behaviour before the maildir branch
+was merged.
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+
+I've had this in my branch for quite some time now, but didn't have a
+a chance yet to thoroughly test it after rebasing on top of next (which
+made changes in the same area of the code, causing conflicts). Feel
+free to push to next and/or master once you verified it doesn't cause
+you to loose mails.
+
+ bin/sup-sync     |    9 +++++++++
+ lib/sup/index.rb |    9 +++++++++
+ lib/sup/poll.rb  |    9 +++++++++
+ 3 files changed, 27 insertions(+), 0 deletions(-)
+
+diff --git a/bin/sup-sync b/bin/sup-sync
+index b4d5cba..c54359d 100755
+--- a/bin/sup-sync
++++ b/bin/sup-sync
+@@ -115,6 +115,7 @@ def time
+     end
+   end
+
++  deleted_message_ids = Set.new
+   sources.each do |source|
+     puts "Scanning #{source}..."
+     num_added = num_updated = num_deleted = num_scanned = num_restored = 0
+@@ -124,9 +125,11 @@ def time
+       num_scanned += 1
+       if action == :delete
+         num_deleted += 1
++        deleted_message_ids.add m.id if m.locations.empty?
+         puts "Deleting #{m.id}" if opts[:verbose]
+       elsif action == :add
+         seen[m.id] = true
++        deleted_message_ids.delete(m.id)
+
+         ## tweak source labels according to commandline arguments if necessary
+         m.labels.delete :inbox if opts[:archive]
+@@ -190,6 +193,12 @@ def time
+     puts "Restored state on #{num_restored} (#{100.0 * num_restored / num_scanned}%) messages." if num_restored > 0
+   end
+
++  puts "Deleting #{deleted_message_ids.size} messages from index."
++  deleted_message_ids.each do |id|
++    debug "Removing #{id} from index"
++    index.remove_message_by_id id
++  end
++
+   index.save
+
+   if opts[:optimize]
+diff --git a/lib/sup/index.rb b/lib/sup/index.rb
+index 4ad91e7..7dcc7f9 100644
+--- a/lib/sup/index.rb
++++ b/lib/sup/index.rb
+@@ -129,6 +129,7 @@ def load_index
+   def add_message m; sync_message m, true end
+   def update_message m; sync_message m, true end
+   def update_message_state m; sync_message m, false end
++  def remove_message_by_id id; delete_message id end
+
+   def save_index
+     info "Flushing Xapian updates to disk. This may take a while..."
+@@ -627,6 +628,14 @@ def build_xapian_query opts
+     end
+   end
+
++  def delete_message id
++    doc = synchronize { find_doc(id) }
++    fail unless doc
++    doc.clear_terms
++    doc.clear_values
++    synchronize { @xapian.delete_document doc.docid }
++  end
++
+   def sync_message m, overwrite
+     doc = synchronize { find_doc(m.id) }
+     existed = doc != nil
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 7e05292..46ad441 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -98,6 +98,7 @@ def do_poll
+     from_and_subj = []
+     from_and_subj_inbox = []
+     loaded_labels = Set.new
++    deleted_message_ids = Set.new
+
+     @mutex.synchronize do
+       @poll_sources.each do |source|
+@@ -112,9 +113,11 @@ def do_poll
+         numi = 0
+         poll_from source do |action,m,old_m,progress|
+           if action == :delete
++            deleted_message_ids.add m.id if m.locations.empty?
+             yield "Deleting #{m.id}"
+           elsif action == :add
+             if old_m
++              deleted_message_ids.delete(m.id)
+               new_locations = (m.locations - old_m.locations)
+               if not new_locations.empty?
+                 yield "Message at #{new_locations[0].info} is an update of an old message. Updating labels from #{old_m.labels.to_a * ','} => #{m.labels.to_a * ','}"
+@@ -139,6 +142,12 @@ def do_poll
+         total_numi += numi
+       end
+
++      yield "Deleting #{deleted_message_ids.size} messages from index."
++      deleted_message_ids.each do |id|
++        debug "Removing #{id} from index"
++        Index.remove_message_by_id id
++      end
++
+       loaded_labels = loaded_labels - LabelManager::HIDDEN_RESERVED_LABELS - [:inbox, :killed]
+       yield "Done polling; loaded #{total_num} new messages total"
+       @last_poll = Time.now
+--
+1.7.2.3
+
+
+From romain at univers-libre.net  Fri Feb 11 13:18:31 2011
+From: romain at univers-libre.net (Romain Dessort)
+Date: Fri, 11 Feb 2011 19:18:31 +0100
+Subject: [sup-devel] [PATCH] Delete messages from index if there is no
+	location left
+In-Reply-To: <1297434615-5101-1-git-send-email-sascha-pgp@silbe.org>
+References: <1297428180-sup-8381@mail.univers-libre.net>
+	<1297434615-5101-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1297447700-sup-8352@mail.univers-libre.net>
+
+Excerpts from Sascha Silbe's message of ven f?v 11 15:30:15 +0100 2011:
+> If messages don't have any location, we cannot access their body and are also
+> unable to restore them from a message state dump (written by sup-dump). So
+> it's more consistent to the user if we remove them completely. This is
+> most likely what the user expects anyway: why else would they delete the
+> message from all locations?
+
+Yes, I agree with you, this should be the normal behaviour.
+
+> I've had this in my branch for quite some time now, but didn't have a
+> a chance yet to thoroughly test it after rebasing on top of next (which
+> made changes in the same area of the code, causing conflicts). Feel
+> free to push to next and/or master once you verified it doesn't cause
+> you to loose mails.
+> 
+>  bin/sup-sync     |    9 +++++++++
+>  lib/sup/index.rb |    9 +++++++++
+>  lib/sup/poll.rb  |    9 +++++++++
+>  3 files changed, 27 insertions(+), 0 deletions(-)
+> [...]
+
+Thanks for this patch !
+I going to try to merge it with my current Sup version.
+-- 
+Romain Dessort
+Jabber ID : romain at univers-libre.net
+GnuPG : 3072D/724BC532
+
+From john.wyzer at gmx.de  Sat Feb 12 09:07:05 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Sat, 12 Feb 2011 15:07:05 +0100
+Subject: [sup-devel] [bug] trace: undefined method `mark_dirty' for
+	nil:NilClass
+Message-ID: <1297519607-sup-128@localhost>
+
+
+Hi.
+
+sup v0.12.1:
+Submitting it here since the bugtracker is down.
+
+I got this when I hit the "u" key after killing a thread.
+
+
+--- NoMethodError from thread: main
+undefined method `mark_dirty' for nil:NilClass
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:68:in `set_cursor_pos'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:240:in `update'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:717:in `add_or_unhide'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:479:in `block (2 levels) in multi_kill'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:477:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:477:in `block in multi_kill'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/undo.rb:27:in `call'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/undo.rb:27:in `block in undo'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/undo.rb:27:in `each'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/undo.rb:27:in `undo'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:227:in `undo'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/mode.rb:59:in `handle_input'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/lib/sup/buffer.rb:277:in `handle_input'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup:260:in `<module:Redwood>'
+/var/lib/gems/1.9.1/gems/sup-0.12.1/bin/sup:69:in `<top (required)>'
+/var/lib/gems/1.9.1/bin/sup:19:in `load'
+/var/lib/gems/1.9.1/bin/sup:19:in `<main>'
+-- 
+
+From john.wyzer at gmx.de  Sun Feb 13 07:08:50 2011
+From: john.wyzer at gmx.de (John Wyzer)
+Date: Sun, 13 Feb 2011 13:08:50 +0100
+Subject: [sup-devel] [bug] two more different traces: RuntimeError from
+	thread: poll after loading inbox
+Message-ID: <1297598759-sup-2911@localhost>
+
+sup 0.12.1. I experienced two more different exceptions while indexing was
+running in the background:
+
+
+----------------------------------------------------------------
+--- NoMethodError from thread: poll after loading inbox
+undefined method `content_width' for nil:NilClass
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:921:in `from_width'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:840:in `text_for_thread_at'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:537:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:839:in `text_for_thread_at'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `map_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/index.rb:537:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:444:in `map_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:242:in `update'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:717:in `add_or_unhide'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:196:in `handle_added_update'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:175:in `poll_from'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:106:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/hook.rb:128:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:155:in `poll_from'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:113:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:103:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:103:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:102:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb
+
+:102:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:49:in `poll_with_sources'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:684:in `call'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:684
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:625:in `call'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+
+
+--- RuntimeError from thread: poll after loading inbox
+unknown drawable object: nil in #<Redwood::InboxMode:0xf673c764> for line 37
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:200:in `draw_line'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:52:in `draw_line'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `draw'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/scroll-mode.rb:48:in `draw'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/line-cursor-mode.rb:37:in `draw'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:119:in `draw'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:103:in `redraw'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/buffer.rb:339:in `draw_screen'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:197:in `handle_added_update'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/update.rb:26:in `relay'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:175:in `poll_from'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:106:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/hook.rb:128:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `each_with_index'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:105:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/maildir.rb:90:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:155:in `poll_from'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:113:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:103:in `each'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:103:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:102:in `synchronize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:102:in `do_poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/poll-mode.rb:15:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:49:in `poll_with_sources'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/poll.rb:68:in `poll'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `send'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/util.rb:609:in `method_missing'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:684:in `call'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:684
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:625:in `call'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:625:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:78:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `initialize'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `new'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup.rb:76:in `reporting_thread'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/var/lib/gems/1.8/gems/sup-0.12.1/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/var/lib/gems/1.8/gems/sup-0.12.1/bin/sup:212
+/var/lib/gems/1.8/bin/sup:19:in `load'
+/var/lib/gems/1.8/bin/sup:19
+
+
+-- 
+
+From rlane at club.cc.cmu.edu  Sun Feb 13 13:05:40 2011
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 13 Feb 2011 13:05:40 -0500
+Subject: [sup-devel] new branch: keybindings
+In-Reply-To: <1297152370-sup-4647@qwerzila>
+References: <1296187729-sup-7405@zyrg.net> <1297152028-sup-5512@qwerzila>
+	<1297152370-sup-4647@qwerzila>
+Message-ID: <1297620229-sup-1485@zyrg.net>
+
+Excerpts from Gaute Hope's message of 2011-02-08 03:07:31 -0500:
+> Excerpts from Gaute Hope's message of 2011-02-08 09:01:44 +0100:
+> > Excerpts from Rich Lane's message of 2011-01-28 05:26:38 +0100:
+> > Could it be that this broke continue buffer search key 'n' ?
+> > 
+> > lib/sup/buffer.rb:171
+> > 
+> > This doesn't work for me anymore, could anyone confirm that?
+> 
+> Ah - I just noticed that I have to move down one line before I can hit
+> 'n' to search for the next occurrence. I don't think this was the
+> original, or desired, behaviour?
+
+I did a git bisect and had to stop at the last index format change in
+May 2010. It looks like 'n' has been broken for a long time.
+
+From sup at zevv.nl  Sun Feb 13 14:13:10 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Sun, 13 Feb 2011 20:13:10 +0100
+Subject: [sup-devel] Sup crash when trying to view full headers on deleted
+	message.
+Message-ID: <1297624152-sup-1543@pruts.nl>
+
+The patch below avoids a crash when opening a full header view on deleted messages.
+
+---
+ lib/sup/message.rb |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 832716e..b8d066d 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -274,7 +274,11 @@ EOS
+   end
+
+   def raw_header
+-    location.raw_header
++    begin
++      location.raw_header
++    rescue OutOfSyncSourceError => e
++      error_message
++    end
+   end
+
+   def raw_message
+--
+1.7.0.4
+
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From gaudenz at soziologie.ch  Thu Feb 17 09:42:58 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 17 Feb 2011 15:42:58 +0100
+Subject: [sup-devel] Encoding of message snippet in xapian
+In-Reply-To: <1297286134-sup-7498@meteor.durcheinandertal.local>
+References: <1297286134-sup-7498@meteor.durcheinandertal.local>
+Message-ID: <1297953544-sup-6116@meteor.durcheinandertal.local>
+
+HI
+
+Excerpts from Gaudenz Steinlin's message of 2011-02-09 22:27:13 +0100:
+> Hi 
+> 
+> While debuging the trackeback posted below I discovered that my xapian
+> index contains some of the message snippets in ASCII-8BIT and others
+> in UTF-8. This leads to probelems when building the thread-view for
+> collapsed messages for messages wich have non 7-bit ASCII characters
+> in their snippet. message_patina_lines combines the snippet which
+> comes from the xapian index and is (sometimes) in ASCII-8BIT with
+> other parts of the message which are in UTF-8.
+> 
+> I don't know exactly how I ended up with a xapian index which has some
+> strings in ASCII-8BIT and others in UTF-8. I guess it's because I
+> first used sup with Ruby 1.8 and only recently switched to Ruby 1.9.1.
+> What's the expected encoding of things coming from the xapian index?
+> Is there a way to fix the index? Or is a fix in sup needed for this?
+> Or should I just recreate my index from scratch?
+> 
+> Running sup with Ruby 1.8 avoids the problem. But I guess it only
+> masks it because 1.8 is not encoding aware.
+
+Just for the record. I solved the issue by dumping all labels and
+recreating the index with ruby 1.9. That's what I did:
+sup-dump > label-dump.txt
+rm -r ~/.sup/xapian
+sup-sync --restore label-dump.txt --all-sources
+
+While reimporting all my messages I discovered a few message parsing
+bugs and some bugs related to GPGME. I created patches for all these
+problems and will submit these in separate mails.
+
+Gaudenz
+
+> 
+> Gaudenz
+> 
+> --- Encoding::CompatibilityError from thread: load messages for thread-view-mode
+> incompatible character encodings: UTF-8 and ASCII-8BIT
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:792:in `message_patina_lines'
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:853:in `chunk_to_lines'
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:724:in `block in regen_text'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:68:in `block in each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block (2 levels) in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:174:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:176:in `block in each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:175:in `each_with_stuff'
+> /home/gaudenz/projects/sup/lib/sup/thread.rb:67:in `each'
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:713:in `regen_text'
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-view-mode.rb:175:in `buffer='
+> /home/gaudenz/projects/sup/lib/sup/buffer.rb:387:in `spawn'
+> (eval):1:in `spawn'
+> /home/gaudenz/projects/sup/lib/sup/modes/thread-index-mode.rb:120:in `block in select'
+> /home/gaudenz/projects/sup/lib/sup.rb:78:in `block in reporting_thread'
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/24cbc4cf/attachment.bin>
+
+From gaudenz at soziologie.ch  Thu Feb 17 09:44:49 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 17 Feb 2011 15:44:49 +0100
+Subject: [sup-devel] Message parsing fixes
+Message-ID: <1297953809-sup-575@meteor.durcheinandertal.local>
+
+Hi
+
+While reimporting all my messages to recreate the index I fixed a few
+message parsing issues. Please consider the attached patches against
+master.
+
+Gaudenz
+
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Don-t-normalize_whitespace-message-rfc822-parts.patch
+Type: application/octet-stream
+Size: 1132 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/8e544a76/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Be-more-cautious-about-invalid-content-type-headers.patch
+Type: application/octet-stream
+Size: 1526 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/8e544a76/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/8e544a76/attachment.bin>
+
+From gaudenz at soziologie.ch  Thu Feb 17 09:49:01 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 17 Feb 2011 15:49:01 +0100
+Subject: [sup-devel] GPGME fixes
+Message-ID: <1297953902-sup-8049@meteor.durcheinandertal.local>
+
+Hi
+
+While reimporting all my messages I encountered a few problemes with
+the GPGME code. Please consider the attached fixes.
+
+The second patch depends on the first (error message unification). But
+if you don't like the first I can easily produce a standalone version.
+
+Gaudenz
+
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Encode-multipart-messages-for-crypt-operations.patch
+Type: application/octet-stream
+Size: 2180 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/ce79eb0a/attachment-0004.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Unify-formatting-of-GPGME-error-messages.patch
+Type: application/octet-stream
+Size: 2413 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/ce79eb0a/attachment-0005.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Check-for-ArgumentError-on-signature-verification.patch
+Type: application/octet-stream
+Size: 1614 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/ce79eb0a/attachment-0006.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-Check-for-valid-signature-before-signature.to_s.patch
+Type: application/octet-stream
+Size: 1290 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/ce79eb0a/attachment-0007.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/ce79eb0a/attachment-0001.bin>
+
+From dmishd at gmail.com  Thu Feb 17 13:45:20 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Feb 2011 18:45:20 +0000
+Subject: [sup-devel] GPGME fixes
+In-Reply-To: <1297953902-sup-8049@meteor.durcheinandertal.local>
+References: <1297953902-sup-8049@meteor.durcheinandertal.local>
+Message-ID: <AANLkTin_eTz=qprMhm3v4nfpuhSk55VmCgmeHKht4EAH@mail.gmail.com>
+
+> While reimporting all my messages I encountered a few problemes with
+> the GPGME code. Please consider the attached fixes.
+
+0001-Encode-multipart-messages-for-crypt-operations.patch already
+appears to be in master ...
+
+I like the others though, though in applying them I ran into some
+trouble, partly through my adding lines near the top of the file that
+change line numbers and seemed to confuse git. So they are now applied
+to a local copy, but in my name (but with your commit messages).
+
+I imagine you would like them to be in your name, so I have not pushed
+them yet. If anyone could tell me how I should be applying them
+properly then I will do. And maybe it might be necessary to format the
+patches with options that give more context.
+
+I'm hoping someone with more git knowledge than me can help ...
+
+Hamish
+
+From gaudenz at soziologie.ch  Thu Feb 17 15:44:08 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 17 Feb 2011 21:44:08 +0100
+Subject: [sup-devel] GPGME fixes
+In-Reply-To: <AANLkTin_eTz=qprMhm3v4nfpuhSk55VmCgmeHKht4EAH@mail.gmail.com>
+References: <1297953902-sup-8049@meteor.durcheinandertal.local>
+	<AANLkTin_eTz=qprMhm3v4nfpuhSk55VmCgmeHKht4EAH@mail.gmail.com>
+Message-ID: <1297974845-sup-4146@meteor.durcheinandertal.local>
+
+Excerpts from Hamish D's message of 2011-02-17 19:45:20 +0100:
+> > While reimporting all my messages I encountered a few problemes with
+> > the GPGME code. Please consider the attached fixes.
+> 
+> 0001-Encode-multipart-messages-for-crypt-operations.patch already
+> appears to be in master ...
+
+Yes this one belongs to another patch serie already submitted earlier.
+Sorry.
+
+> 
+> I like the others though, though in applying them I ran into some
+> trouble, partly through my adding lines near the top of the file that
+> change line numbers and seemed to confuse git. So they are now applied
+> to a local copy, but in my name (but with your commit messages).
+> 
+> I imagine you would like them to be in your name, so I have not pushed
+> them yet. If anyone could tell me how I should be applying them
+> properly then I will do. And maybe it might be necessary to format the
+> patches with options that give more context.
+> 
+> I'm hoping someone with more git knowledge than me can help ...
+
+What command do you use to apply the patches? If I can fetch your
+changes somewhere I can also rebase my patches on top of them.
+
+Gaudenz
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110217/a3fd1817/attachment.bin>
+
+From dmishd at gmail.com  Thu Feb 17 17:57:42 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Feb 2011 22:57:42 +0000
+Subject: [sup-devel] GPGME fixes
+In-Reply-To: <1297974845-sup-4146@meteor.durcheinandertal.local>
+References: <1297953902-sup-8049@meteor.durcheinandertal.local>
+	<AANLkTin_eTz=qprMhm3v4nfpuhSk55VmCgmeHKht4EAH@mail.gmail.com>
+	<1297974845-sup-4146@meteor.durcheinandertal.local>
+Message-ID: <AANLkTikdMASiPmP6DFBpdAFNzK+w11Wf0Qq07MK1FsL8@mail.gmail.com>
+
+>> I like the others though, though in applying them I ran into some
+>> trouble, partly through my adding lines near the top of the file that
+>> change line numbers and seemed to confuse git. So they are now applied
+>> to a local copy, but in my name (but with your commit messages).
+>
+> What command do you use to apply the patches? If I can fetch your
+> changes somewhere I can also rebase my patches on top of them.
+
+My changes are on the gpgme branch on gitorious. I used the git apply
+command. I also tried git am but that did't work at all.
+
+Hamish
+
+From dmishd at gmail.com  Sun Feb 20 14:19:17 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 20 Feb 2011 19:19:17 +0000
+Subject: [sup-devel] Need help applying patches
+Message-ID: <1298228733-sup-6115@whisper>
+
+Gaudenz has submitted a few useful patches which I want to commit to the
+gpgme branch, but git apply seems to fail. I've forwarded the message
+text below, and attached the patches. When I apply it gpgme, I get:
+
+
+$ git apply --check --verbose ../patches2merge/0001-Unify-formatting-of-GPGME-error-messages.patch
+Checking patch lib/sup/crypto.rb...
+error: while searching for:
+    begin
+      sig = GPGME.detach_sign(format_payload(payload), gpg_opts)
+    rescue GPGME::Error => exc
+      info "Error while running gpg: #{exc.message}"
+      raise Error, "GPG command failed. See log for details."
+    end
+
+    envelope = RMail::Message.new
+
+error: patch failed: lib/sup/crypto.rb:75
+error: lib/sup/crypto.rb: patch does not apply
+
+
+But I can't see why it could not find it. The code quoted above has
+moved down by 31 lines, but is otherwise unchanged, but I thought git
+could cope with that :/
+
+I tried hand-editing the patch to change the line numbers, but I still
+get the same error. Am I missing a trick? I've checked the file formats
+and both have unix-style line endings.
+
+I have tried and I can apply these patches by hand, but then they will
+appear as committed by me, rather than giving Gaudenz his due.
+
+Do others have the same problem? You could try by checking out the gpgme
+branch and trying git apply.
+
+I've also tried git am on a directory with these 3 attachments in:
+
+
+$ git am -s ../patches2merge/
+Nothing to do.
+
+
+Not very helpful. Any help appreciated.
+
+Hamish Downer
+
+
+PS I am using git 1.7.1 on Ubuntu 10.10 x86_64 
+
+
+--- Begin forwarded message from Gaudenz Steinlin ---
+From: Gaudenz Steinlin <gaudenz at soziologie.ch>
+To: sup-devel <sup-devel at rubyforge.org>
+Date: Thu, 17 Feb 2011 14:49:01 +0000
+Subject: [sup-devel] GPGME fixes
+
+Hi
+
+While reimporting all my messages I encountered a few problemes with
+the GPGME code. Please consider the attached fixes.
+
+The second patch depends on the first (error message unification). But
+if you don't like the first I can easily produce a standalone version.
+
+Gaudenz
+
+--- End forwarded message ---
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0003-Check-for-valid-signature-before-signature.to_s.patch
+Type: application/octet-stream
+Size: 1290 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110220/c1b71b53/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Check-for-ArgumentError-on-signature-verification.patch
+Type: application/octet-stream
+Size: 1614 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110220/c1b71b53/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Unify-formatting-of-GPGME-error-messages.patch
+Type: application/octet-stream
+Size: 2413 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110220/c1b71b53/attachment-0002.obj>
+
+From dmishd at gmail.com  Sun Feb 20 14:55:33 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 20 Feb 2011 19:55:33 +0000
+Subject: [sup-devel] Need help applying patches
+In-Reply-To: <1298228733-sup-6115@whisper>
+References: <1298228733-sup-6115@whisper>
+Message-ID: <1298230750-sup-6418@whisper>
+
+Excerpts from Hamish's message of Sun Feb 20 19:19:17 +0000 2011:
+> Gaudenz has submitted a few useful patches which I want to commit to the
+> gpgme branch, but git apply seems to fail. I've forwarded the message
+> text below, and attached the patches. When I apply it gpgme, I get:
+
+Of course, having just written an email describing my problem, I do a
+little more playing about and manage to find a way through. To record
+what I did:
+
+$ cat ../patches2merge/0001-Unify-formatting-of-GPGME-error-messages.patch | git am -s -3
+$ vim lib/sup/crypto.rb
+$ git add lib/sup/crypto.rb
+$ git am -3 --resolved
+
+Rinse and repeat for the other 2 patches. And now the log looks like I
+expect it to. 
+
+I ran into some more issues merging this into next - my usual
+cherry-pick method led to the same problems as originally, and led to me
+being listed as the committer, but I managed to do a git merge which 
+preserved the commit messages from Gaudenz (although a couple of mine
+appear to be repeated).
+
+If there is some better way to do this in future, please tell me.
+
+Hamish
+
+From michael at content-space.de  Sun Feb 20 15:12:50 2011
+From: michael at content-space.de (Michael Hamann)
+Date: Sun, 20 Feb 2011 21:12:50 +0100
+Subject: [sup-devel] Need help applying patches
+In-Reply-To: <1298228733-sup-6115@whisper>
+References: <1298228733-sup-6115@whisper>
+Message-ID: <1298232315-sup-3221@mithink>
+
+Hi,
+
+Excerpts from Hamish's message of 2011-02-20 20:19:17 +0100:
+[...]
+> I have tried and I can apply these patches by hand, but then they will
+> appear as committed by me, rather than giving Gaudenz his due.
+
+You can use git commit --author="Name <example at example.com>", then you
+are recorded as committer and the author you supply is recorded as
+author of the change.
+
+Michael Hamann
+
+From wmorgan-sup at masanjin.net  Sun Feb 20 16:58:13 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 20 Feb 2011 21:58:13 +0000
+Subject: [sup-devel] Need help applying patches
+In-Reply-To: <1298228733-sup-6115@whisper>
+References: <1298228733-sup-6115@whisper>
+Message-ID: <1298238906-sup-3941@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-02-20:
+> But I can't see why it could not find it. The code quoted above has
+> moved down by 31 lines, but is otherwise unchanged, but I thought git
+> could cope with that :/
+
+Git apply is a pretty low-level command and I believe it acts basically like
+the patch command, i.e. fails fast if things aren't perfectly in tune.
+
+To pull in the git merge logic on patch files, use `git am -3`.
+
+> $ git am -s ../patches2merge/
+> Nothing to do.
+
+I think it's trying to interpret that directory as a maildir. Give it the
+individual files.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Sun Feb 20 17:02:54 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 20 Feb 2011 22:02:54 +0000
+Subject: [sup-devel] editing messages outside of sup
+Message-ID: <1298239068-sup-6985@whisper>
+
+Hello
+
+It is often useful to be able to look at messages while writing a message.
+While I can exit my editor and look at other messages, and then come back to 
+my editor, it would be nice to have both open at the same time. So I've
+written some code that allows you to do that. When you are in
+compose-mode/reply-mode/etc you can press 'E' and it will transform into
+a buffer showing a file path of the file to edit, and a key to press ('E'
+again) to say you've finished.
+
+So you can open the file in another editor, whether on your desktop, in 
+another terminal, in a screen session split so you can see both, or whatever.
+While editing you can still navigate around sup's buffers and copy text,
+email addresses etc into your editor and so on.
+
+Then when you're done, you can exit the editor, navigate back to the edit
+buffer and press 'E' to go back to normal edit-message-mode and carry on as
+normal. 
+
+As part of this, I've created a way to hide the original buffer. I think
+I handle buffer killing properly in the various states (file still being
+edited, file saved etc), but someone will doubtless find an edge case
+...
+
+For the moment this work is in the async_message_edit branch. If no one
+shouts about this being a terrible idea then I'll merge it into next
+within a week.
+
+Hamish Downer
+
+From dmishd at gmail.com  Sun Feb 20 20:22:41 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 21 Feb 2011 01:22:41 +0000
+Subject: [sup-devel] [sup-talk] Label Display; Sorting Alphabetically
+In-Reply-To: <1297863023-sup-4209@plc.intranet.plecavalier.com>
+References: <1297784079-sup-7440@plc.intranet.plecavalier.com>
+	<1297847031-sup-6835@tilus.net>
+	<1297863023-sup-4209@plc.intranet.plecavalier.com>
+Message-ID: <1298250926-sup-5020@whisper>
+
+Excerpts from Philippe LeCavalier's message of Wed Feb 16 13:33:32 +0000 2011:
+> > Philippe LeCavalier, 2011-02-15 17:37:
+> > > Hi All. Just wondering if there has ever been any consideration to
+> > > sorting labels alphabetically. I'm assuming the way sup displays the
+> > > labels is purely esthetic's?
+> > 
+> > I assume you are talking about thread index mode.
+> No. Any mode really. Even in search mode they're random.
+
+No longer! I've published a branch called order_labels that will fix
+this, both in the various thread index modes, and when editing the
+labels for a message. Diffs at the end of the email for your viewing
+pleasure ...
+
+I'll merge this into next when I'm a bit more awake - been up a bit long
+...
+
+Hamish Downer
+
+
+
+commit 1ae7c0a1e5b20681ea6ecb9a6bf15fffa5f4c0e3
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Sun Feb 20 22:57:47 2011 +0000
+
+    Order labels alphabetically in thread index mode
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 11548c7..36d6db3 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -893,7 +893,7 @@ protected
+       [:to_me_color, t.labels.member?(:attachment) ? "@" : " "],
+       [:to_me_color, dp ? ">" : (p ? '+' : " ")],
+     ] +
+-      (t.labels - @hidden_labels).map { |label| [:label_color, "#{label} "] } +
++      (t.labels - @hidden_labels).sort_by {|x| x.to_s}.map { |label| [:label_color, "#{label} "] } +
+       [
+       [subj_color, t.subj + (t.subj.empty? ? "" : " ")],
+       [:snippet_color, t.snippet],
+
+
+
+
+commit 490e57254c5ee493e8acf4b8358b54e7eb3ab698
+Author: Hamish Downer <dmishd at gmail.com>
+Date:   Sun Feb 20 23:22:05 2011 +0000
+
+    When editing labels, they are presented in alphabetical order
+
+diff --git a/lib/sup/modes/thread-index-mode.rb b/lib/sup/modes/thread-index-mode.rb
+index 36d6db3..613aa61 100644
+--- a/lib/sup/modes/thread-index-mode.rb
++++ b/lib/sup/modes/thread-index-mode.rb
+@@ -542,7 +542,7 @@ EOS
+ 
+     keepl, modifyl = thread.labels.partition { |t| speciall.member? t }
+ 
+-    user_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", modifyl, @hidden_labels
++    user_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", modifyl.sort_by {|x| x.to_s}, @hidden_labels
+     return unless user_labels
+ 
+     thread.labels = Set.new(keepl) + user_labels
+diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+index 59705bc..e69de57 100644
+--- a/lib/sup/modes/thread-view-mode.rb
++++ b/lib/sup/modes/thread-view-mode.rb
+@@ -282,7 +282,7 @@ EOS
+   def edit_labels
+     old_labels = @thread.labels
+     reserved_labels = old_labels.select { |l| LabelManager::RESERVED_LABELS.include? l }
+-    new_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", @thread.labels
++    new_labels = BufferManager.ask_for_labels :label, "Labels for thread: ", @thread.labels.sort_by {|x| x.to_s}
+ 
+     return unless new_labels
+     @thread.labels = Set.new(reserved_labels) + new_labels
+
+From dmishd at gmail.com  Sun Feb 20 20:29:20 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 21 Feb 2011 01:29:20 +0000
+Subject: [sup-devel] [BRANCH] Ctrl-W behaviour
+Message-ID: <1298251460-sup-4333@whisper>
+
+I use Ctrl-W when deleting labels from a thread, and it's been a minor
+annoyance that this is slightly broken - when there is a space before
+the cursor, Ctrl-W will just delete the space, and you need to press
+Ctrl-W a second time to delete the word aswell. This is not how I'm used
+to it working in vim or on the command line.
+
+So I've now had a go at fixing it, in the branch called ctrl_w - just
+one commit so far, and it took quite a bit of farting around to get this
+far. I'll review it when it's not the early hours of the morning and
+merge it into next at that point.
+
+Please have a go and see if you can get any strange behaviour - I had
+some strange behaviour with single-letter labels, but I seem to have
+fixed that ...
+
+Hamish Downer
+
+From wmorgan-sup at masanjin.net  Mon Feb 21 16:02:28 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 21 Feb 2011 21:02:28 +0000
+Subject: [sup-devel] sup-server revisited
+Message-ID: <1298320404-sup-5972@masanjin.net>
+
+Hello Sup fans,
+
+As I alluded to in an earlier email to sup-devel, I have been working recently
+on the ancient goal of splitting Sup functionality out into separate client and
+server programs. This will have many advantages; in particular it will remove
+email lock-in by making it possible to have non-Sup clients interact with Sup.
+
+I've tried various approaches to this goal at various times, without much
+success. But with the release of Whistlepig, I have been making a lot of
+progress in a short amount of time.
+
+I wanted to lay out my general plan in this email, so that everyone can follow
+along and try things out if they feel inclined.
+
+I'm focusing on the server component first. My specific goals are:
+
+- Encapsulate all storage and indexing logic.
+- Formalize the notion of labels and state, and the relationship between them,
+  messages, and threads. Currently these relationships are fuzzy in Sup, and
+  things suffer for it.
+- Precompute threads, so that search requires only moderate effort, instead of
+  the large effort it does now. This will make search much, much faster, at the
+  expense of a little more effort at index time.
+- Allow concurrent access from multiple clients.
+- Provide something that is transparent and easy to modify without having to go
+  through an ncurses client.
+
+You can find the work in progress here: https://github.com/wmorgan/heliotrope
+Currently it is not actually a server, but accomplishes many of the goals
+above. Run bin/email-indexer and then bin/email-searcher to play around with
+a simple preview of things to come. Stay tuned for more on this.
+
+Once the server is in a reasonable state, my goals for the curses client reboot
+are:
+
+- Move to an event-based model rather than the polling + many threads +
+  observable model we have now. Dump all events into one big queue,
+  and block on it.
+- Have one, and only one, non-main thread, which it to communicate with the
+  server. No more mutex insanity.
+- Work from the ground up with Ruby 1.9, which means finding the many sources
+  of encoding errors and punishing them.
+- Require the console and ncurses gems so that i18n works out of the box.
+- Borrow as much code as possible from the current Sup, because I sure as shit
+  don't want to have to rewrite it all.
+
+I haven't started on this at all.
+
+So stay tuned, and check out heliotrope if you are so inclined.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From roni at cs.utah.edu  Mon Feb 21 16:17:04 2011
+From: roni at cs.utah.edu (Roni Choudhury)
+Date: Mon, 21 Feb 2011 14:17:04 -0700
+Subject: [sup-devel] [PATCH] eliminated nil-to-integer error when standard
+	library ruby code calls make_tmpname with n=nil
+Message-ID: <1298322910-sup-1012@medusa>
+
+I was getting an error from monkeypatched code that didn't seem to
+call into the standard library properly... this patch seemed to fix
+things for me, but I didn't fully understand what was going on here.
+
+roni
+
+---
+ lib/sup/message-chunks.rb |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index c275f41..90137da 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -34,7 +34,11 @@ require 'tempfile'
+ ## monkey-patch time: make temp files have the right extension
+ class Tempfile
+   def make_tmpname basename, n
+-    sprintf '%d-%d-%s', $$, n, basename
++    if n == nil
++      sprintf '%d-nil-%s', $$, basename
++    else
++      sprintf '%d-%d-%s', $$, n, basename
++    end
+   end
+ end
+ 
+-- 
+1.7.3.2
+
+From alvherre at alvh.no-ip.org  Mon Feb 21 18:26:07 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Mon, 21 Feb 2011 20:26:07 -0300
+Subject: [sup-devel] [PATCH] eliminated nil-to-integer error when
+	standard library ruby code calls make_tmpname with n=nil
+In-Reply-To: <1298322910-sup-1012@medusa>
+References: <1298322910-sup-1012@medusa>
+Message-ID: <1298330683-sup-2583@alvh.no-ip.org>
+
+Excerpts from Roni Choudhury's message of lun feb 21 18:17:04 -0300 2011:
+> I was getting an error from monkeypatched code that didn't seem to
+> call into the standard library properly... this patch seemed to fix
+> things for me, but I didn't fully understand what was going on here.
+
+Seems like the way to really solve the problem would be to figure out
+what's calling make_tmpname with a nil n, and fix that instead.  Is it
+possible for you to figure that out from the trace?
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From roni at cs.utah.edu  Mon Feb 21 18:54:28 2011
+From: roni at cs.utah.edu (Roni Choudhury)
+Date: Mon, 21 Feb 2011 16:54:28 -0700
+Subject: [sup-devel] [PATCH] eliminated nil-to-integer error when
+	standard library ruby code calls make_tmpname with n=nil
+In-Reply-To: <1298330683-sup-2583@alvh.no-ip.org>
+References: <1298322910-sup-1012@medusa> <1298330683-sup-2583@alvh.no-ip.org>
+Message-ID: <1298332384-sup-5832@medusa>
+
+Excerpts from Alvaro Herrera's message of 2011-02-21 16:26:07 -0700:
+> Excerpts from Roni Choudhury's message of lun feb 21 18:17:04 -0300 2011:
+> > I was getting an error from monkeypatched code that didn't seem to
+> > call into the standard library properly... this patch seemed to fix
+> > things for me, but I didn't fully understand what was going on here.
+> 
+> Seems like the way to really solve the problem would be to figure out
+> what's calling make_tmpname with a nil n, and fix that instead.  Is it
+> possible for you to figure that out from the trace?
+> 
+
+I believe I did track it down, and it looked like a custom use for
+make_tmpname somewhere... I could figure it out again, but I was also
+informed in the IRC channel that this fix has already been applied to
+master under different circumstances.
+
+roni
+
+From gaudenz at soziologie.ch  Tue Feb 22 08:14:38 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Tue, 22 Feb 2011 14:14:38 +0100
+Subject: [sup-devel] Need help applying patches
+In-Reply-To: <1298230750-sup-6418@whisper>
+References: <1298228733-sup-6115@whisper> <1298230750-sup-6418@whisper>
+Message-ID: <1298379918-sup-5032@meteor.durcheinandertal.local>
+
+Hi
+
+Excerpts from Hamish's message of 2011-02-20 20:55:33 +0100:
+> Excerpts from Hamish's message of Sun Feb 20 19:19:17 +0000 2011:
+> I ran into some more issues merging this into next - my usual
+> cherry-pick method led to the same problems as originally, and led to me
+> being listed as the committer, but I managed to do a git merge which 
+> preserved the commit messages from Gaudenz (although a couple of mine
+> appear to be repeated).
+
+Cherrypicking has basically the same disadvantages as rebasing as it
+changes the commit ID. So don't cherry pick commits from one branch
+(e.g. next) into another branch (e.g. gpgme) if you want to merge that
+branch back into the branch from which you cherry-picked (e.g. you
+want to merge gpgme back into next). 
+
+Also don't rebase a branch as soon as you published it somwhere for
+other to pull from. 
+
+> 
+> If there is some better way to do this in future, please tell me.
+
+I think the correct thing to do is to rebase your development branches
+against the branch they will eventually be merged into as long as you
+did not publish them. Rebasing has the nice effect of not complicating
+the history to much.
+
+If you can't rebase then merge, either merge your feature branch into
+the target branch and then you are free recreate your feature branch
+and rebase while you are doing development. 
+
+Or if your changes are not ready yet for merging, you can also merge
+the target branch into your feature branch to get the latest changes
+into your feature branch.
+
+For testing and day to day usage I usually create a sepeparate branch
+based of next and merge all my development branches into this branch.
+This branch is then never published and frequently recreated if
+something fails...
+
+Gaudenz
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 828 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110222/ed8fe28b/attachment.bin>
+
+From marka at pobox.com  Tue Feb 22 08:46:56 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Tue, 22 Feb 2011 08:46:56 -0500
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298320404-sup-5972@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+Message-ID: <1298382339-sup-4016@bloovis.org>
+
+Excerpts from William Morgan's message of Mon Feb 21 16:02:28 -0500 2011:
+> You can find the work in progress here: https://github.com/wmorgan/heliotrope
+
+I took a very quick look, and it appears to support mbox only at the moment.
+Presumably maildir will be supported eventually?
+
+From nicolas.pouillard at gmail.com  Tue Feb 22 09:09:43 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Tue, 22 Feb 2011 06:09:43 -0800 (PST)
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298320404-sup-5972@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+Message-ID: <4d63c3a7.8389cc0a.52c5.7a5c@mx.google.com>
+
+On Mon, 21 Feb 2011 21:02:28 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Hello Sup fans,
+
+[...]
+
+> I'm focusing on the server component first. My specific goals are:
+> 
+> - Encapsulate all storage and indexing logic.
+> - Formalize the notion of labels and state, and the relationship between them,
+>   messages, and threads. Currently these relationships are fuzzy in Sup, and
+>   things suffer for it.
+> - Precompute threads, so that search requires only moderate effort, instead of
+>   the large effort it does now. This will make search much, much faster, at the
+>   expense of a little more effort at index time.
+> - Allow concurrent access from multiple clients.
+> - Provide something that is transparent and easy to modify without having to go
+>   through an ncurses client.
+
+On the server side, and more precisely on the interaction between the two,
+I would love to see a simple Unix/command/CLI defined for the server. To make
+myself clear, a bit like the notmuch CLI. This would allow for a greater
+modularity and reusablity between components. For instance I would like to
+index my mails with differents backends (disk is cheap), to get a way to
+compare different tools on real data, when searching emails, and thus allow
+to debug the different tools.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From dmishd at gmail.com  Tue Feb 22 12:01:29 2011
+From: dmishd at gmail.com (Hamish)
+Date: Tue, 22 Feb 2011 17:01:29 +0000
+Subject: [sup-devel] [BRANCH] Ctrl-W behaviour
+In-Reply-To: <1298251460-sup-4333@whisper>
+References: <1298251460-sup-4333@whisper>
+Message-ID: <1298393768-sup-7839@whisper>
+
+Excerpts from Hamish's message of Mon Feb 21 01:29:20 +0000 2011:
+> I use Ctrl-W when deleting labels from a thread, and it's been a minor
+> annoyance that this is slightly broken - when there is a space before
+> the cursor, Ctrl-W will just delete the space, and you need to press
+> Ctrl-W a second time to delete the word aswell. This is not how I'm used
+> to it working in vim or on the command line.
+
+I've now merged this into next. I forgot to put the patches in email
+last night, so I've put the branch diff at the end of this email.
+
+Hamish Downer
+
+
+
+diff --git a/lib/sup/textfield.rb b/lib/sup/textfield.rb
+index a3d002a..343e450 100644
+--- a/lib/sup/textfield.rb
++++ b/lib/sup/textfield.rb
+@@ -120,6 +120,9 @@ class TextField
+         nop
+         Ncurses::Form::REQ_BEG_FIELD
+       when ?\C-w.ord
++        while action = remove_extra_space
++          Ncurses::Form.form_driver @form, action
++        end
+         Ncurses::Form.form_driver @form, Ncurses::Form::REQ_PREV_CHAR
+         Ncurses::Form.form_driver @form, Ncurses::Form::REQ_DEL_WORD
+       when Ncurses::KEY_UP, Ncurses::KEY_DOWN
+@@ -167,6 +170,40 @@ private
+     end
+   end
+ 
++  def remove_extra_space
++    return nil unless @field
++
++    Ncurses::Form.form_driver @form, Ncurses::Form::REQ_VALIDATION
++    x = Ncurses.curx
++    v = @field.field_buffer(0).gsub(/^\s+|\s+$/, "")
++    v_index = x - @question.length
++
++    # at start of line
++    if v_index < 1
++      nil
++    ## cursor <= end of text
++    elsif v_index < v.length
++      # is the character before the cursor a space?
++      if v[v_index-1] == ?\s
++        # if there is a non-space char under cursor then go back
++        if v[v_index] != ?\s
++          Ncurses::Form::REQ_PREV_CHAR
++        # otherwise delete the space
++        else
++          Ncurses::Form::REQ_DEL_PREV
++        end
++      else
++        nil
++      end
++    elsif v_index == v.length
++      # at end of string, with non-space before us
++      nil
++    else
++      # trailing spaces
++      Ncurses::Form::REQ_PREV_CHAR
++    end
++  end
++
+   def set_cursed_value v
+     @field.set_field_buffer 0, v
+   end
+
+From wmorgan-sup at masanjin.net  Tue Feb 22 12:55:23 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 22 Feb 2011 17:55:23 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298382339-sup-4016@bloovis.org>
+References: <1298320404-sup-5972@masanjin.net>
+	<1298382339-sup-4016@bloovis.org>
+Message-ID: <1298397161-sup-9723@masanjin.net>
+
+Reformatted excerpts from Mark Alexander's message of 2011-02-22:
+> I took a very quick look, and it appears to support mbox only at the moment.
+> Presumably maildir will be supported eventually?
+
+It's more like: you will give new emails to the server using some tool, and it
+will store them some way that you don't care about, and you can then use a sup
+client to view them, or (eventually) an IMAP client, or you can export them
+from the server and leave Sup entirely.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Tue Feb 22 13:44:28 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 22 Feb 2011 20:44:28 +0200
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298397161-sup-9723@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+	<1298382339-sup-4016@bloovis.org>
+	<1298397161-sup-9723@masanjin.net>
+Message-ID: <1298399731-sup-2646@tilus.net>
+
+William Morgan, 2011-02-22 19:55:
+> It's more like: you will give new emails to the server using some
+> tool
+
+You mean something like configuring your MDA to do a pipe-deliver to
+"sup-indexer"?
+
+> you can then use a sup client to view them, or (eventually) an IMAP
+> client
+
+Does this mean you intend to implement IMAP capability to sup-server?
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Feb 22 14:00:01 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 22 Feb 2011 19:00:01 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298399731-sup-2646@tilus.net>
+References: <1298320404-sup-5972@masanjin.net>
+	<1298382339-sup-4016@bloovis.org>
+	<1298397161-sup-9723@masanjin.net> <1298399731-sup-2646@tilus.net>
+Message-ID: <1298401081-sup-6560@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2011-02-22:
+> You mean something like configuring your MDA to do a pipe-deliver to
+> "sup-indexer"?
+
+Yes.
+
+> Does this mean you intend to implement IMAP capability to sup-server?
+
+Yeah. I'm not really looking forward to actually doing it, but I would like to
+have an IMAP compatibility layer on the server. That goes a long way to
+eliminating what I think is the biggest blocker for Sup adoption, which is
+lockin.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From tero at tilus.net  Tue Feb 22 15:17:04 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Tue, 22 Feb 2011 22:17:04 +0200
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298320404-sup-5972@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+Message-ID: <1298400274-sup-4941@tilus.net>
+
+William Morgan, 2011-02-21 23:02:
+> I have been making a lot of
+> progress in a short amount of time.
+
+Cool!  I'm thrilled.  \o/
+
+> - Precompute threads, so that search requires only moderate effort,
+>   instead of the large effort it does now. This will make search
+>   much, much faster, at the expense of a little more effort at index
+>   time.
+
+I guess this offers the possibility to add threading to "external
+state" of messages, together with labels.  I'd do a whole a lot of
+more prune'n'crafting with my threads if there only was more
+comfortable interface to doing it (admit it, been too lazy to
+implement it in sup).
+
+Do you have considerations wrt to programmatical thread browsing and
+editing API?  Something I've thought of, on the top of my head.
+
+first_msg
+|-- second_msg
+|-- third_msg
+|   `-- fifth_msg
+`-- fourth_msg
+
+sixth_msg
+`-- seventh_msg
+
+thread = Thread.find :second
+subthread = thread.find { |msg| msg == :third_msg }.prune!
+Message.find(:sixth_msg).craft! subthread
+
+first
+|-- second
+`-- fourth
+
+sixth
+|-- third
+|   `-- fifth
+`-- seventh
+
+> - Allow concurrent access from multiple clients.
+
+Since the first post on sup-server I've been nurturing the idea of
+"fat" sup-client for maemo/meego.
+
+> - Borrow as much code as possible from the current Sup, because I
+>   sure as shit don't want to have to rewrite it all.
+
+Would it be time to go for https://github.com/mikel/mail now?  It
+would be supported and actively developed and I really like the API.
+As a downside, depending on activesupport pulls in a whole a lot of
+fluff and using treetop may suggest that parsing might hog a little
+more cpu and memory than is absolutely necessary.
+
+Who would give us bindings to GMime and wrap it inside Mail API...
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Tue Feb 22 16:29:07 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 22 Feb 2011 21:29:07 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298400274-sup-4941@tilus.net>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+Message-ID: <1298409714-sup-1926@masanjin.net>
+
+Reformatted excerpts from Tero Tilus's message of 2011-02-22:
+> I guess this offers the possibility to add threading to "external state"
+> of messages, together with labels.  I'd do a whole a lot of more
+> prune'n'crafting with my threads if there only was more comfortable
+> interface to doing it (admit it, been too lazy to implement it in sup).
+
+Not quite sure I follow, but the intention is certainly to allow clients to
+create and break threads and to present labels as per-thread, rather than
+per-message, data.
+
+> Do you have considerations wrt to programmatical thread browsing and
+> editing API?
+
+I suspect won't get into that level of detail. The API will be more along
+the lines of "give me thread 6" and you'll get a tree of message ids back,
+and on the client side you can represent that however you like. Unless
+there's a compelling case for handling portions of threads at the API level.
+
+> > - Allow concurrent access from multiple clients.
+> 
+> Since the first post on sup-server I've been nurturing the idea of "fat"
+> sup-client for maemo/meego.
+
+That would be great. I would like an Android client while you're at it. :)
+
+> Would it be time to go for https://github.com/mikel/mail now?  It would be
+> supported and actively developed and I really like the API.  As a
+> downside, depending on activesupport pulls in a whole a lot of fluff and
+> using treetop may suggest that parsing might hog a little more cpu and
+> memory than is absolutely necessary.
+
+I looked at it, but the dependency on activesupport is a dealbreaker for me.
+There's no way I would pull that pile of Rails shit into Sup.
+
+RMail is not great and I don't like using it, but it really is the best
+thing I've found so far. I think I have whipped it into shape pretty well in
+heliotrope.
+
+> Who would give us bindings to GMime and wrap it inside Mail API...
+
+I would use GMime bindings in a heartbeat.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From nicolas.pouillard at gmail.com  Wed Feb 23 04:48:12 2011
+From: nicolas.pouillard at gmail.com (Nicolas Pouillard)
+Date: Wed, 23 Feb 2011 01:48:12 -0800 (PST)
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298409714-sup-1926@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+Message-ID: <4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+
+On Tue, 22 Feb 2011 21:29:07 +0000, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Tero Tilus's message of 2011-02-22:
+> > I guess this offers the possibility to add threading to "external state"
+> > of messages, together with labels.  I'd do a whole a lot of more
+> > prune'n'crafting with my threads if there only was more comfortable
+> > interface to doing it (admit it, been too lazy to implement it in sup).
+> 
+> Not quite sure I follow, but the intention is certainly to allow clients to
+> create and break threads and to present labels as per-thread, rather than
+> per-message, data.
+
+I would not go for "labels on threads" only, here is a list of labels that are
+more message based than thread based: unread, starred, draft, sent,
+attachment. And while it would make sense to have special cases for those this
+also prevents from user defined per message labels.
+
+-- 
+Nicolas Pouillard
+http://nicolaspouillard.fr
+
+From alvherre at alvh.no-ip.org  Wed Feb 23 08:19:15 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 23 Feb 2011 10:19:15 -0300
+Subject: [sup-devel] [BRANCH] Ctrl-W behaviour
+In-Reply-To: <1298393768-sup-7839@whisper>
+References: <1298251460-sup-4333@whisper> <1298393768-sup-7839@whisper>
+Message-ID: <1298467110-sup-4536@alvh.no-ip.org>
+
+Excerpts from Hamish's message of mar feb 22 14:01:29 -0300 2011:
+> Excerpts from Hamish's message of Mon Feb 21 01:29:20 +0000 2011:
+> > I use Ctrl-W when deleting labels from a thread, and it's been a minor
+> > annoyance that this is slightly broken - when there is a space before
+> > the cursor, Ctrl-W will just delete the space, and you need to press
+> > Ctrl-W a second time to delete the word aswell. This is not how I'm used
+> > to it working in vim or on the command line.
+> 
+> I've now merged this into next. I forgot to put the patches in email
+> last night, so I've put the branch diff at the end of this email.
+
+I've been using this and it works great.  I was annoyed by the original
+behavior too.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From wmorgan-sup at masanjin.net  Wed Feb 23 13:43:34 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 Feb 2011 18:43:34 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+	<4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+Message-ID: <1298485426-sup-5530@masanjin.net>
+
+Reformatted excerpts from Nicolas Pouillard's message of 2011-02-23:
+> I would not go for "labels on threads" only, here is a list of labels that
+> are more message based than thread based: unread, starred, draft, sent,
+> attachment. And while it would make sense to have special cases for those
+> this also prevents from user defined per message labels.
+
+One of the major goals of Heliotrope is to formalize this type of thing and to
+implement it correctly. Here's the model:
+
+- Individual messages have "state", including unread, starred, and all the
+  other things you've mentioned.
+- Threads have "labels", which are user-defined.
+- Message state is mapped onto thread labels by taking the union of the states
+  of all the messages in a thread. E.g. if one message is unread, the entire
+  thread has the unread label.
+- Sup maintains that mapping for you.
+- The user can set (some of) the state of a particular message.
+- The user can set the labels for a thread, but can't create labels that have
+  the same name as a message state.
+- The labels of a thread match all messages in a thread at search time.
+
+Sup conflates these things, maintains labels on messages only, and does some UI
+stuff to make it seem like they apply to threads. It's easy to find corner
+cases where you get weird behavior.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alvherre at alvh.no-ip.org  Wed Feb 23 13:53:23 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 23 Feb 2011 15:53:23 -0300
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298485426-sup-5530@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+	<4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+	<1298485426-sup-5530@masanjin.net>
+Message-ID: <1298486753-sup-2845@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of mi? feb 23 15:43:34 -0300 2011:
+
+> One of the major goals of Heliotrope is to formalize this type of thing and to
+> implement it correctly. Here's the model:
+> 
+> - Individual messages have "state", including unread, starred, and all the
+>   other things you've mentioned.
+> - Threads have "labels", which are user-defined.
+> - Message state is mapped onto thread labels by taking the union of the states
+>   of all the messages in a thread. E.g. if one message is unread, the entire
+>   thread has the unread label.
+> - Sup maintains that mapping for you.
+> - The user can set (some of) the state of a particular message.
+> - The user can set the labels for a thread, but can't create labels that have
+>   the same name as a message state.
+> - The labels of a thread match all messages in a thread at search time.
+
+I like this, except the part that thread_labels = union(states).  It
+doesn't work correctly for "attachment" for example: it makes it look
+like the whole thread "has attachments" which doesn't make sense.  The
+user really needs to have a way of telling messages that really have
+attachments from ones that don't.
+
+Also, you said upthread that Heliotrope was going to provide ways to
+break threads and form new ones from pieces.  I badly want this feature
+:-)  (I haven't checked Heliotrope out yet).
+
+> Sup conflates these things, maintains labels on messages only, and does some UI
+> stuff to make it seem like they apply to threads. It's easy to find corner
+> cases where you get weird behavior.
+
+Agreed.  Someone mentioned some weeks ago that "undo" badly messed up
+labels that you're now separating as "state" (again, attachment).  Seems
+like the current proposal fixes that problem.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From wmorgan-sup at masanjin.net  Wed Feb 23 16:08:07 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 23 Feb 2011 21:08:07 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298486753-sup-2845@alvh.no-ip.org>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+	<4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+	<1298485426-sup-5530@masanjin.net>
+	<1298486753-sup-2845@alvh.no-ip.org>
+Message-ID: <1298495002-sup-1617@masanjin.net>
+
+Reformatted excerpts from Alvaro Herrera's message of 2011-02-23:
+> I like this, except the part that thread_labels = union(states).  It
+> doesn't work correctly for "attachment" for example: it makes it look
+> like the whole thread "has attachments" which doesn't make sense.
+
+The thread has the label "attachment", but when you look at the
+individual messages inside of it, you see which ones actually have the
+attachment state. I think this makes sense.
+
+> Also, you said upthread that Heliotrope was going to provide ways to
+> break threads and form new ones from pieces.  I badly want this
+> feature :-)  (I haven't checked Heliotrope out yet).
+
+Yes, this will definitely be there.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alvherre at alvh.no-ip.org  Wed Feb 23 16:30:26 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 23 Feb 2011 18:30:26 -0300
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298495002-sup-1617@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298400274-sup-4941@tilus.net>
+	<1298409714-sup-1926@masanjin.net>
+	<4d64d7dc.5989cc0a.4550.ffffb543@mx.google.com>
+	<1298485426-sup-5530@masanjin.net>
+	<1298486753-sup-2845@alvh.no-ip.org>
+	<1298495002-sup-1617@masanjin.net>
+Message-ID: <1298496576-sup-8044@alvh.no-ip.org>
+
+Excerpts from William Morgan's message of mi? feb 23 18:08:07 -0300 2011:
+> Reformatted excerpts from Alvaro Herrera's message of 2011-02-23:
+> > I like this, except the part that thread_labels = union(states).  It
+> > doesn't work correctly for "attachment" for example: it makes it look
+> > like the whole thread "has attachments" which doesn't make sense.
+> 
+> The thread has the label "attachment", but when you look at the
+> individual messages inside of it, you see which ones actually have the
+> attachment state. I think this makes sense.
+
+Yes, this sounds good to me.
+
+> > Also, you said upthread that Heliotrope was going to provide ways to
+> > break threads and form new ones from pieces.  I badly want this
+> > feature :-)  (I haven't checked Heliotrope out yet).
+> 
+> Yes, this will definitely be there.
+
+Great.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From dmishd at gmail.com  Sat Feb 26 14:15:40 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sat, 26 Feb 2011 19:15:40 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298320404-sup-5972@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net>
+Message-ID: <1298744738-sup-631@whisper>
+
+Excerpts from William Morgan's message of Mon Feb 21 21:02:28 +0000 2011:
+> As I alluded to in an earlier email to sup-devel, I have been working recently
+> on the ancient goal of splitting Sup functionality out into separate client and
+> server programs. This will have many advantages; in particular it will remove
+> email lock-in by making it possible to have non-Sup clients interact with Sup.
+
+Excellent :) I look forward to an android client. I will definitely
+contribute to it, and I *might* even get it started. Or might not ...
+
+> You can find the work in progress here: https://github.com/wmorgan/heliotrope
+> Currently it is not actually a server, but accomplishes many of the goals
+> above. Run bin/email-indexer and then bin/email-searcher to play around with
+> a simple preview of things to come. Stay tuned for more on this.
+
+I've had a quick look at heliotrope (and whistlepig) and not got very
+far:
+
+
+$ ruby -I lib bin/email-indexer ~/path/to/mbox
+/var/lib/gems/1.8/gems/ffi-1.0.6/lib/ffi/library.rb:93:in `ffi_libraries': no library specified (LoadError)
+        from /var/lib/gems/1.8/gems/ffi-1.0.6/lib/ffi/library.rb:129:in `attach_function'
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/utilities.rb:39:in `func'
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/utilities.rb:214
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/extensible_string/c.rb:1
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/extensible_string.rb:1
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `gem_original_require'
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer/hash_database.rb:2
+        from /var/lib/gems/1.8/gems/oklahoma_mixer-0.4.0/lib/oklahoma_mixer.rb:11:in `open'
+        from ./lib/heliotrope/store.rb:40:in `initialize'
+        from bin/email-indexer:20:in `new'
+        from bin/email-indexer:20
+
+$ ruby --version
+ruby 1.8.7 (2010-06-23 patchlevel 299) [x86_64-linux]
+
+
+Am I missing something? It appears that the oklahoma_mixer gem is
+broken. I installed it though rubygems. Any ideas?
+
+
+I also wasn't sure how to build and run whistlepig from source. I'm not
+familiar with the extconf stuff. I can type make happily enough, but it
+appears more steps are required. If someone shows me the way I'll
+happily contribute an improved README for anyone else who wants to use
+it. (I installed whistlepig from the gem in order to try out heliotrope,
+in case you're wondering).
+
+Hamish
+
+From dmishd at gmail.com  Sat Feb 26 14:23:13 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sat, 26 Feb 2011 19:23:13 +0000
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298239068-sup-6985@whisper>
+References: <1298239068-sup-6985@whisper>
+Message-ID: <1298747943-sup-9749@whisper>
+
+Excerpts from Hamish's message of Sun Feb 20 22:02:54 +0000 2011:
+> For the moment this work is in the async_message_edit branch. If no one
+> shouts about this being a terrible idea then I'll merge it into next
+> within a week.
+
+No one shouted, so I've merged it into next. At the end of the email is
+the diff of the async_message_edit branch against where I started it.
+
+Hamish Downer
+
+
+
+
+diff --git a/lib/sup.rb b/lib/sup.rb
+index 74eb950..213823c 100644
+--- a/lib/sup.rb
++++ b/lib/sup.rb
+@@ -370,6 +370,7 @@ require "sup/horizontal-selector"
+ require "sup/modes/line-cursor-mode"
+ require "sup/modes/help-mode"
+ require "sup/modes/edit-message-mode"
++require "sup/modes/edit-message-async-mode"
+ require "sup/modes/compose-mode"
+ require "sup/modes/resume-mode"
+ require "sup/modes/forward-mode"
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 25ea132..444589a 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -73,7 +73,7 @@ class InputSequenceAborted < StandardError; end
+ class Buffer
+   attr_reader :mode, :x, :y, :width, :height, :title, :atime
+   bool_reader :dirty, :system
+-  bool_accessor :force_to_top
++  bool_accessor :force_to_top, :hidden
+ 
+   def initialize window, mode, width, height, opts={}
+     @w = window
+@@ -82,6 +82,7 @@ class Buffer
+     @focus = false
+     @title = opts[:title] || ""
+     @force_to_top = opts[:force_to_top] || false
++    @hidden = opts[:hidden] || false
+     @x, @y, @width, @height = 0, 0, width, height
+     @atime = Time.at 0
+     @system = opts[:system] || false
+@@ -265,7 +266,7 @@ EOS
+   end
+ 
+   def rollable_buffers
+-    @buffers.select { |b| !b.system? || @buffers.last == b }
++    @buffers.select { |b| !(b.system? || b.hidden?) || @buffers.last == b }
+   end
+ 
+   def handle_input c
+diff --git a/lib/sup/modes/buffer-list-mode.rb b/lib/sup/modes/buffer-list-mode.rb
+index 40f2e76..08bb604 100644
+--- a/lib/sup/modes/buffer-list-mode.rb
++++ b/lib/sup/modes/buffer-list-mode.rb
+@@ -28,7 +28,7 @@ protected
+   end
+ 
+   def regen_text
+-    @bufs = BufferManager.buffers.reject { |name, buf| buf.mode == self }.sort_by { |name, buf| buf.atime }.reverse
++    @bufs = BufferManager.buffers.reject { |name, buf| buf.mode == self || buf.hidden? }.sort_by { |name, buf| buf.atime }.reverse
+     width = @bufs.max_of { |name, buf| buf.mode.name.length }
+     @text = @bufs.map do |name, buf|
+       base_color = buf.system? ? :system_buf_color : :regular_buf_color
+diff --git a/lib/sup/modes/edit-message-async-mode.rb b/lib/sup/modes/edit-message-async-mode.rb
+new file mode 100644
+index 0000000..385ba6a
+--- /dev/null
++++ b/lib/sup/modes/edit-message-async-mode.rb
+@@ -0,0 +1,89 @@
++module Redwood
++
++class EditMessageAsyncMode < LineCursorMode
++
++  register_keymap do |k|
++    k.add :edit_finished, "Finished editing message", 'E'
++    k.add :path_to_clipboard, "Copy file path to the clipboard", :enter
++  end
++
++  def initialize parent_edit_mode, file_path, msg_subject
++    @parent_edit_mode = parent_edit_mode
++    @file_path = file_path
++    @orig_mtime = File.mtime @file_path
++
++    @text = ["ASYNC MESSAGE EDIT",
++             "", "Your message with subject:",  msg_subject, "is saved in a file:", "", @file_path, "", 
++             "You can edit your message in the editor of your choice and continue to",
++             "use sup while you edit your message.", "",
++             "Press <Enter> to have the file path copied to the clipboard.", "",
++             "When you have finished editing, select this buffer and press 'E'.",]
++    super()
++  end
++
++  def lines; @text.length end
++
++  def [] i
++    @text[i]
++  end
++
++  def killable?
++    if file_being_edited?
++      if !BufferManager.ask_yes_or_no("It appears the file is still being edited. Are you sure?")
++        return false
++      end
++    end
++
++    @parent_edit_mode.edit_message_async_resume true
++    true
++  end
++
++  def unsaved?
++    !file_being_edited? && !file_has_been_edited?
++  end
++
++protected
++
++  def edit_finished
++    if file_being_edited?
++      if !BufferManager.ask_yes_or_no("It appears the file is still being edited. Are you sure?")
++        return false
++      end
++    end
++
++    @parent_edit_mode.edit_message_async_resume
++    BufferManager.kill_buffer buffer
++    true
++  end
++
++  def path_to_clipboard
++    if system("which xsel > /dev/null 2>&1")
++      # linux/unix path
++      IO.popen('xsel --clipboard --input', 'r+') { |clipboard| clipboard.puts(@file_path) }
++      BufferManager.flash "Copied file path to clipboard."
++    elsif system("which pbcopy > /dev/null 2>&1")
++      # mac path
++      IO.popen('pbcopy', 'r+') { |clipboard| clipboard.puts(@file_path) }
++      BufferManager.flash "Copied file path to clipboard."
++    else
++      BufferManager.flash "No way to copy text to clipboard - try installing xsel."
++    end
++  end
++
++  def file_being_edited?
++    # check for common editor lock files
++    vim_lock_file = File.join(File.dirname(@file_path), '.'+File.basename(@file_path)+'.swp')
++    emacs_lock_file = File.join(File.dirname(@file_path), '.#'+File.basename(@file_path))
++
++    return true if File.exist?(vim_lock_file) || File.exist?(emacs_lock_file)
++
++    false
++  end
++
++  def file_has_been_edited?
++    File.mtime(@file_path) > @orig_mtime
++  end
++
++end
++
++end
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 734a879..01f3653 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -80,6 +80,7 @@ EOS
+     k.add :edit_cc, "Edit Cc:", 'c'
+     k.add :edit_subject, "Edit Subject", 's'
+     k.add :edit_message, "Edit message", :enter
++    k.add :edit_message_async, "Edit message asynchronously", 'E'
+     k.add :save_as_draft, "Save as draft", 'P'
+     k.add :attach_file, "Attach a file", 'a'
+     k.add :delete_attachment, "Delete an attachment", 'd'
+@@ -184,7 +185,51 @@ EOS
+     @edited
+   end
+ 
++  def edit_message_async
++    @file = Tempfile.new ["sup.#{self.class.name.gsub(/.*::/, '').camel_to_hyphy}", ".eml"]
++    @file.puts format_headers(@header - NON_EDITABLE_HEADERS).first
++    @file.puts
++    @file.puts @body.join("\n")
++    @file.close
++
++    @mtime = File.mtime @file.path
++
++    # put up buffer saying you can now edit the message in another
++    # terminal or app, and continue to use sup in the meantime.
++    subject = @header["Subject"] || ""
++    @async_mode = EditMessageAsyncMode.new self, @file.path, subject
++    BufferManager.spawn "Waiting for message \"#{subject}\" to be finished", @async_mode
++
++    # hide ourselves, and wait for signal to resume from async mode ...
++    buffer.hidden = true
++  end
++
++  def edit_message_async_resume being_killed=false
++    buffer.hidden = false
++    @async_mode = nil
++    BufferManager.raise_to_front buffer if !being_killed
++
++    @edited = true if File.mtime(@file.path) > @mtime
++
++    header, @body = parse_file @file.path
++    @header = header - NON_EDITABLE_HEADERS
++    handle_new_text @header, @body
++    update
++
++    true
++  end
++
+   def killable?
++    if !@async_mode.nil?
++      return false if !@async_mode.killable?
++      if File.mtime(@file.path) > @mtime
++        @edited = true
++        header, @body = parse_file @file.path
++        @header = header - NON_EDITABLE_HEADERS
++        handle_new_text @header, @body
++        update
++      end
++    end
+     !edited? || BufferManager.ask_yes_or_no("Discard message?")
+   end
+
+From wmorgan-sup at masanjin.net  Sat Feb 26 17:04:13 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 26 Feb 2011 22:04:13 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298744738-sup-631@whisper>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+Message-ID: <1298757625-sup-9756@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-02-26:
+> /var/lib/gems/1.8/gems/ffi-1.0.6/lib/ffi/library.rb:93:in `ffi_libraries': no library specified (LoadError)
+>         from /var/lib/gems/1.8/gems/ffi-1.0.6/lib/ffi/library.rb:129:in `attach_function'
+
+You need to install your system's TokyoTyrant / TokyoCabinet libraries. The
+OklahomaMixer gem is a ffi wrapper on those. Then it should work.
+
+> I also wasn't sure how to build and run whistlepig from source.
+
+`make rubygem` and then `gem install ruby/pkg/*.gem` will do it, but installing the public gem should be sufficient.
+
+I'm about to push some changes to Heliotrope that should make it easy to get
+started with. I will announce here.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Feb 26 18:15:50 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 26 Feb 2011 23:15:50 +0000
+Subject: [sup-devel] sup-server revisited
+In-Reply-To: <1298757625-sup-9756@masanjin.net>
+References: <1298320404-sup-5972@masanjin.net> <1298744738-sup-631@whisper>
+	<1298757625-sup-9756@masanjin.net>
+Message-ID: <1298762120-sup-1118@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-02-26:
+> I'm about to push some changes to Heliotrope that should make it easy to get
+> started with. I will announce here.
+
+Check out the README and see if the instructions work for you.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From alvherre at alvh.no-ip.org  Sat Feb 26 20:15:31 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Sat, 26 Feb 2011 22:15:31 -0300
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298747943-sup-9749@whisper>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+Message-ID: <1298768518-sup-4041@alvh.no-ip.org>
+
+Excerpts from Hamish's message of s?b feb 26 16:23:13 -0300 2011:
+> Excerpts from Hamish's message of Sun Feb 20 22:02:54 +0000 2011:
+> > For the moment this work is in the async_message_edit branch. If no one
+> > shouts about this being a terrible idea then I'll merge it into next
+> > within a week.
+> 
+> No one shouted, so I've merged it into next. At the end of the email is
+> the diff of the async_message_edit branch against where I started it.
+
+I like this general idea very much.  The bit about having to copy/paste
+the file name is a bit of a pain, though.  I gave it a spin, and
+excepting that one infelicity, I found it pretty neat.  I noticed no
+problems at all.
+
+The way I envision this working is with a "vim --servername foo" window
+being open at the time sup starts, and then "vim --remote" would open
+the file in that server each time I edit an email.  Most likely, the
+command to edit a file should be specified via a hook.
+
+Thanks for your work on this.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From roni at cs.utah.edu  Sat Feb 26 21:51:05 2011
+From: roni at cs.utah.edu (Roni Choudhury)
+Date: Sat, 26 Feb 2011 19:51:05 -0700
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298768518-sup-4041@alvh.no-ip.org>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org>
+Message-ID: <1298774629-sup-4062@medusa>
+
+Excerpts from Alvaro Herrera's message of 2011-02-26 18:15:31 -0700:
+> Excerpts from Hamish's message of s?b feb 26 16:23:13 -0300 2011:
+> > Excerpts from Hamish's message of Sun Feb 20 22:02:54 +0000 2011:
+> > > For the moment this work is in the async_message_edit branch. If no one
+> > > shouts about this being a terrible idea then I'll merge it into next
+> > > within a week.
+> > 
+> > No one shouted, so I've merged it into next. At the end of the email is
+> > the diff of the async_message_edit branch against where I started it.
+> 
+> I like this general idea very much.  The bit about having to copy/paste
+> the file name is a bit of a pain, though.  I gave it a spin, and
+> excepting that one infelicity, I found it pretty neat.  I noticed no
+> problems at all.
+> 
+> The way I envision this working is with a "vim --servername foo" window
+> being open at the time sup starts, and then "vim --remote" would open
+> the file in that server each time I edit an email.  Most likely, the
+> command to edit a file should be specified via a hook.
+> 
+> Thanks for your work on this.
+> 
+
+Hamish, definitely thank you for doing something about this.  I
+actually had a general question about this problem a while back - if
+it is possible to edit the message independently via the approach you
+took in this patch, why can't the editor be fired up in a
+"nonblocking" kind of mode in the first place?  Something like a
+fork()/exec() to start the editor, and then handling SIGCHLD rather
+than calling a variant of wait() immediately.  The SIGCHLD handling
+could check the return code from the editor, and then update the
+message sending buffer appropriately.
+
+I promise, this is not to denigrate on your work at all... I have just
+always been confused what would be wrong with the general approach I
+just described.
+
+roni
+
+From sup at zevv.nl  Sun Feb 27 10:31:14 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Sun, 27 Feb 2011 16:31:14 +0100
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298774629-sup-4062@medusa>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org> <1298774629-sup-4062@medusa>
+Message-ID: <1298819507-sup-8138@pruts.nl>
+
+* On Sun Feb 27 03:51:05 +0100 2011, Roni Choudhury wrote:
+ 
+> Excerpts from Alvaro Herrera's message of 2011-02-26 18:15:31 -0700:
+> > Excerpts from Hamish's message of s?b feb 26 16:23:13 -0300 2011:
+> > > Excerpts from Hamish's message of Sun Feb 20 22:02:54 +0000 2011:
+> > > > For the moment this work is in the async_message_edit branch. If no one
+> > > > shouts about this being a terrible idea then I'll merge it into next
+> > > > within a week.
+> > > 
+> > > No one shouted, so I've merged it into next. At the end of the email is
+> > > the diff of the async_message_edit branch against where I started it.
+> 
+> Hamish, definitely thank you for doing something about this.  I
+> actually had a general question about this problem a while back - if
+> it is possible to edit the message independently via the approach you
+> took in this patch, why can't the editor be fired up in a
+> "nonblocking" kind of mode in the first place?  Something like a
+> fork()/exec() to start the editor, and then handling SIGCHLD rather
+> than calling a variant of wait() immediately.  The SIGCHLD handling
+> could check the return code from the editor, and then update the
+> message sending buffer appropriately.
+
+But in what tty should the forked editor run then? I guess the above
+idea would work for spawning an editor under X, but can not be used when
+running on a (remote) console. I guess the 'vim --remote' solution would
+be feasable, bug I guess this is not simple enough to add as an
+out-of-the-box solution.
+
+I guess one solution could be to add master/slave pty support to sup,
+allowing one or more regular console based editors instances (vim, nano,
+joe, etc) inside sup, passing all keyboard input to the slave process
+except for a few (configurable) keystrokes for switching sup buffers.
+
+(I'd make an exception for running emacs inside sup, because emacs users
+would probably prefer running their own lisp version of sup inside emacs
+instead of emacs in sup)
+
+A quick proto would probably be not very hard to do, it is mostly a
+matter of passing keyboard commands from the master sup to the editor
+running in the slave pty, passing pty output back to the terminal and
+handling the proper signals and ioctls() for keeping track of the window
+size. This will work as long as all terminal control characters are
+simple passed transparantly from the slave editor to the terminal, but
+things quickly get nasty when you would want to do the terminal
+emulation inside sup, and this is probably necessary for properly
+handling screen redrawing and resizing.
+
+It's hard to guess how much work this would really be. Part of me says
+it should not be too hard to find a simple terminal emulation
+implentation in another piece of (L)GPL software and simply steal as
+much as possible. Another part of my fears one would likely end up
+reimplementing at least half of GNU screen, which is probably not a very
+pleasant adventure.
+
+Ico
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From damien.leone at fensalir.fr  Sun Feb 27 11:58:46 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 27 Feb 2011 17:58:46 +0100
+Subject: [sup-devel] [PATCH] line-cursor-mode: Add an option to disable
+	automatic threads loading when scrolling down for slow CPUs
+Message-ID: <1298825716-sup-3818@mailer>
+
+Sup guys,
+
+I run Sup on a Pogoplug-like device which has a slow CPU and I'm
+always annoyed when I scroll down to reach an entry and then
+everything stalls because some more threads are loading.
+
+This patch adds an option to disable this behavior.
+
+Cheers,
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-line-cursor-mode-Add-an-option-to-disable-automatic-.patch
+Type: application/octet-stream
+Size: 1249 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110227/233d4904/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110227/233d4904/attachment.bin>
+
+From damien.leone at fensalir.fr  Sun Feb 27 12:09:43 2011
+From: damien.leone at fensalir.fr (Damien Leone)
+Date: Sun, 27 Feb 2011 18:09:43 +0100
+Subject: [sup-devel] [PATCH] Mark the thread as read after the
+	ThreadViewMode has been instancied and displayed
+Message-ID: <1298826320-sup-8596@mailer>
+
+Sup guys,
+
+The current behavior is that when opening an unread thread, the unread
+label is removed at the instanciation of the ThreadViewMode, thus it
+makes the 'N' indicator useless.
+
+Even if new messages are automatically expanded it can be confusing
+when you open some old message in the same thread, at the end you
+might not remember which ones are new.
+
+This patch delays the moment when the unread label is removed so when
+opening a thread you know exactly what are the new messages thanks to
+that 'N' indicator.
+
+Cheers,
+
+-- 
+Damien Leone <damien.leone at fensalir.fr>
+
+Web: http://dleone.fensalir.fr/
+GPG: 0x82EB4DDF
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Mark-the-thread-as-read-after-the-ThreadViewMode-has.patch
+Type: application/octet-stream
+Size: 1432 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110227/dcf9a2b1/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110227/dcf9a2b1/attachment.bin>
+
+From dmishd at gmail.com  Sun Feb 27 12:20:55 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 27 Feb 2011 17:20:55 +0000
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298819507-sup-8138@pruts.nl>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org>
+	<1298774629-sup-4062@medusa> <1298819507-sup-8138@pruts.nl>
+Message-ID: <1298826314-sup-276@whisper>
+
+Excerpts from Ico Doornekamp's message of Sun Feb 27 15:31:14 +0000 2011:
+> > Hamish, definitely thank you for doing something about this.  I
+> > actually had a general question about this problem a while back - if
+> > it is possible to edit the message independently via the approach you
+> > took in this patch, why can't the editor be fired up in a
+> > "nonblocking" kind of mode in the first place?  Something like a
+> > fork()/exec() to start the editor, and then handling SIGCHLD rather
+> > than calling a variant of wait() immediately.  The SIGCHLD handling
+> > could check the return code from the editor, and then update the
+> > message sending buffer appropriately.
+> 
+> But in what tty should the forked editor run then? I guess the above
+> idea would work for spawning an editor under X, but can not be used when
+> running on a (remote) console. I guess the 'vim --remote' solution would
+> be feasable, bug I guess this is not simple enough to add as an
+> out-of-the-box solution.
+
+Now I've got the basic stuff working, I'd be up for adding to it.
+Probably the best way would be to use a hook that could fire up
+something using a fork()/exec().
+
+The way I'd see this working is that it would only be useful on a
+machine running X (or Wayland, or whatever the Mac GUI is called).
+
+If you have ssh'ed to a remote machine then I don't think there is a
+good way to manage this automatically without turning sup into screen
+(which I think would be a bad idea), though I wouldn't want to get in
+the way of imaginative hooks of course.
+
+Basically I would say that if you want to edit your message outside of
+sup on a remote machine (via ssh) you should use screen/tmux in split
+mode, or have 2 terminals that ssh to the same server, or something like
+that. Opening the file tends to involve typing:
+
+$ vim /tmp/sup
+
+and then pressing tab, so I don't think it's too onerous. And if you
+turned on X forwarding and had xsel installed you could just press
+<Enter> (to copy the path to the clipboard) and then paste that into the
+other terminal.
+
+Anyway, I'll have a think about how best to do a hook for this. I might
+end up doing a blocking and a non-blocking variant - the blocking
+variant could drop you straight back to reply-mode when it detects the
+editor has exited, while the non-blocking mode would make it simpler to
+write a hook, but you would have to manually exit async mode once
+editing was done.
+
+Hamish
+
+From sup at zevv.nl  Sun Feb 27 14:44:15 2011
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Sun, 27 Feb 2011 20:44:15 +0100
+Subject: [sup-devel] editing messages outside of sup
+In-Reply-To: <1298826314-sup-276@whisper>
+References: <1298239068-sup-6985@whisper> <1298747943-sup-9749@whisper>
+	<1298768518-sup-4041@alvh.no-ip.org>
+	<1298774629-sup-4062@medusa> <1298819507-sup-8138@pruts.nl>
+	<1298826314-sup-276@whisper>
+Message-ID: <1298833983-sup-4830@pruts.nl>
+
+* On Sun Feb 27 18:20:55 +0100 2011, Hamish wrote:
+ 
+> Excerpts from Ico Doornekamp's message of Sun Feb 27 15:31:14 +0000 2011:
+> > > Hamish, definitely thank you for doing something about this.  I
+> > > actually had a general question about this problem a while back - if
+> > > it is possible to edit the message independently via the approach you
+> > > took in this patch, why can't the editor be fired up in a
+> > > "nonblocking" kind of mode in the first place?  Something like a
+> > > fork()/exec() to start the editor, and then handling SIGCHLD rather
+> > > than calling a variant of wait() immediately.  The SIGCHLD handling
+> > > could check the return code from the editor, and then update the
+> > > message sending buffer appropriately.
+> > 
+> > But in what tty should the forked editor run then? I guess the above
+> > idea would work for spawning an editor under X, but can not be used when
+> > running on a (remote) console. I guess the 'vim --remote' solution would
+> > be feasable, bug I guess this is not simple enough to add as an
+> > out-of-the-box solution.
+> 
+> If you have ssh'ed to a remote machine then I don't think there is a
+> good way to manage this automatically without turning sup into screen
+> (which I think would be a bad idea), though I wouldn't want to get in
+> the way of imaginative hooks of course.
+
+I've just hooked up a few lines of code (standalone, not part of sup)
+that forks two editors (one joe, one vim) in ptys and handling both
+terminal outputs with select(), allowing me to 'switch' between
+processes on-the-fly using a magic keystroke. Redrawing is forced before
+'switching' to a process by doing a TIOCSWINSZ ioctl and sending a
+SIGWINCH twice, first with a fake, then with the true window size. This
+is not quite a complete rewrite of screen, but seems to work quite well.
+(Although I'm sure there are plenty of cases not covered by this crude
+method of switching)
+
+When the infrastructure for background-editor hooks is there, I'm ready
+to try to make the hook!
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+

@@ -1,0 +1,1088 @@
+From groups at hjdivad.com  Wed Sep  1 14:55:26 2010
+From: groups at hjdivad.com (David J. Hamilton)
+Date: Wed, 1 Sep 2010 11:55:26 -0700
+Subject: [sup-talk] Trying sup with gmail
+In-Reply-To: <AANLkTinnoyGXjYTxC0bpuZR=fajBH-m+8HsXEVPxgx9p@mail.gmail.com>
+References: <AANLkTinnoyGXjYTxC0bpuZR=fajBH-m+8HsXEVPxgx9p@mail.gmail.com>
+Message-ID: <AANLkTi=y0MfutXkShjF6mqVVNvVwZ5yHZO=qnYd-7peX@mail.gmail.com>
+
+Hello,
+
+I am trying to use sup for the first time and am having some
+difficulties. ?I currently use gmail, so I am trying to add it as a
+source. ?The new user guide[1] states that I could use either
+sup-config or sup-add to add an IMAP source, which is what I have
+tried. ? Unfortunately, sup-add refuses to recognize imap[s].
+
+? ?[davidjh at nyx (master; ruby-1.8.7-p302)] ~
+? ?$ sup --version
+? ?sup v0.11
+
+? ?[davidjh at nyx (master; ruby-1.8.7-p302)] ~
+? ?$ sup-add --help
+? ?Adds a source to the Sup source list.
+
+? ?Usage:
+? ? ?sup-add [options] <source uri>+
+
+? ?where <source uri>+ is one or more source URIs.
+
+? ?For mbox files on local disk, use the form:
+? ? ? ?mbox:<path to mbox file>, or
+? ? ? ?mbox://<path to mbox file>
+
+? ?For Maildir folders, use the form:
+? ? ? ?maildir:<path to Maildir directory>; or
+? ? ? ?maildir://<path to Maildir directory>
+
+? ?Options are:
+? ? ? ? ? ? ? ?--archive, -a: ? Automatically archive all new
+messages from these sources.
+? ? ? ? ? ? ? ?--unusual, -u: ? Do not automatically poll these
+sources for new messages.
+? ? ? ? ? ? --labels, -l <s>: ? A comma-separated set of labels to
+apply to all messages from this source
+? ? ? ? ? ? ?--force-new, -f: ? Create a new account for this source,
+even if one already exists.
+? ? ?--force-account, -o <s>: ? Reuse previously defined account user at hostname.
+? ? ? ? ? ? ? ?--version, -v: ? Print version and exit
+? ? ? ? ? ? ? ? ? --help, -h: ? Show this message
+
+? ?[davidjh at nyx (master; ruby-1.8.7-p302)] ~
+? ?$ sup-add imaps://imap.google.com
+? ?Error: Unknown source type "imaps".
+? ?Try --help for help.
+? ?[Wed Sep 01 11:36:48 -0700 2010] Flushing Xapian updates to disk.
+This may take a while...
+
+? ?[davidjh at nyx (master; ruby-1.8.7-p302)] ~
+? ?$ sup-add imap://imap.google.com
+? ?Error: Unknown source type "imap".
+? ?Try --help for help.
+? ?[Wed Sep 01 11:36:51 -0700 2010] Flushing Xapian updates to disk.
+This may take a while...
+
+
+Checking the source, it seems adding imap sources was removed around
+February, in commit 5bb1b3a29bc434c006ce0f4886059de3fa0d9801. ?There
+is a brief note about using offlineimap, but not much more.
+
+
+Is it possible to add gmail as a source in the current version of sup,
+and if so what is the recommended way of doing this? ?I am quite happy
+to RTFM if somebody could kindly point me towards the FM I must R. ?It
+is fine if the answer is IMAP is basically not supported, but if I
+read up on offlineimap I can find a way to get a non-imap (mbox,
+maildir?) interface, but at the moment it feels as if I am just going
+in the wrong direction.
+
+[1] http://sup.rubyforge.org/NewUserGuide.txt
+
+--
+med v?nlig h?lsning
+David J. Hamilton
+
+From marka at pobox.com  Wed Sep  1 15:58:42 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 01 Sep 2010 15:58:42 -0400
+Subject: [sup-talk] Trying sup with gmail
+In-Reply-To: <AANLkTi=y0MfutXkShjF6mqVVNvVwZ5yHZO=qnYd-7peX@mail.gmail.com>
+References: <AANLkTinnoyGXjYTxC0bpuZR=fajBH-m+8HsXEVPxgx9p@mail.gmail.com>
+	<AANLkTi=y0MfutXkShjF6mqVVNvVwZ5yHZO=qnYd-7peX@mail.gmail.com>
+Message-ID: <1283370560-sup-9418@x41>
+
+Excerpts from David J. Hamilton's message of Wed Sep 01 14:55:26 -0400 2010:
+> Is it possible to add gmail as a source in the current version of sup,
+> and if so what is the recommended way of doing this? ?I am quite happy
+> to RTFM if somebody could kindly point me towards the FM I must R. ?It
+> is fine if the answer is IMAP is basically not supported, but if I
+> read up on offlineimap I can find a way to get a non-imap (mbox,
+> maildir?) interface, but at the moment it feels as if I am just going
+> in the wrong direction.
+
+My understanding is that IMAP is not supported any more by sup (I've
+never used IMAP sources, so I could be wrong about this).
+
+I use both Gmail and MS Exchange with sup, using fetchmail and
+maildrop to fetch the mail and store it locally.  (I use msmtp to
+send mail.)
+
+I tried offlineimap for a while.  I know it's popular, but I abandoned
+it because I was having problems with messages being moved from one
+maildir to another.  I was definitely having this problem with
+Exchange, and it seemed to be related to deleted messages.  I can't
+remember if I was having this problem with Gmail; probably not.
+
+In any case, fetchmail and maildrop seem very solid.  They don't give
+you the ability to sync changes back to the IMAP server, but I never
+needed that feature, and my understanding is that sup doesn't quite
+support that yet anyway (or maybe it's experimental?).
+
+From michael+sup at stapelberg.de  Wed Sep  1 16:11:06 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 01 Sep 2010 22:11:06 +0200
+Subject: [sup-talk] Trying sup with gmail
+In-Reply-To: <AANLkTi=y0MfutXkShjF6mqVVNvVwZ5yHZO=qnYd-7peX@mail.gmail.com>
+References: <AANLkTinnoyGXjYTxC0bpuZR=fajBH-m+8HsXEVPxgx9p@mail.gmail.com>
+	<AANLkTi=y0MfutXkShjF6mqVVNvVwZ5yHZO=qnYd-7peX@mail.gmail.com>
+Message-ID: <1283371814-sup-3556@midna.zekjur.net>
+
+Hi David,
+
+Excerpts from David J. Hamilton's message of 2010-09-01 20:55:26 +0200:
+> Is it possible to add gmail as a source in the current version of sup,
+> and if so what is the recommended way of doing this? ?I am quite happy
+You can have a look at http://anirudhsanjeev.org/temp/supsite/ which explains
+how to set up sup with gmail.
+
+Best regards,
+Michael
+
+From dlordxorso at yahoo.com  Fri Sep  3 09:13:40 2010
+From: dlordxorso at yahoo.com (Daren Lord)
+Date: Fri, 3 Sep 2010 06:13:40 -0700 (PDT)
+Subject: [sup-talk] Arch Linux sup now failing.
+Message-ID: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+
+There must have been an arch package update that is now causing my sup mail to 
+fail with this error.
+
+/usr/lib/ruby/1.9.1/rubygems.rb:762:in `report_activate_error': Could not find 
+RubyGem ncurses (>= 0) (Gem::LoadError)
+    from /usr/lib/ruby/1.9.1/rubygems.rb:219:in `activate'
+    from /usr/lib/ruby/1.9.1/rubygems.rb:254:in `block in activate'
+    from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `each'
+    from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `activate'
+    from /usr/lib/ruby/1.9.1/rubygems.rb:1065:in `gem'
+    from /usr/bin/sup:18:in `<main>'
+
+I have both ncurses and ncursesw installed through the aur branch.
+
+Any ideas? Use this at work so I am down right now.
+
+aur/ruby-ncurses 1.2.4-1 [installed] (17)
+    This ruby extension makes most functions, constants, and external variables 
+of the C library ncurses accessible 
+
+    from the Ruby programming language. 
+aur/ruby-ncursesw 1.2.4.1-2 [installed] (17)
+    Ruby wrapper for ncurses providing wide character support.
+
+Thanks,
+
+dalord
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100903/afe2d87c/attachment.html>
+
+From piotr.kempa at sigarden.com  Fri Sep  3 09:33:07 2010
+From: piotr.kempa at sigarden.com (Piotr Kempa)
+Date: Fri, 03 Sep 2010 15:33:07 +0200
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+References: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+Message-ID: <1283520512-sup-6361@pk-desktop>
+
+Excerpts from Daren Lord's message of 2010-09-03 15:13:40 +0200:
+> There must have been an arch package update that is now causing my sup mail to 
+> fail with this error.
+> 
+> /usr/lib/ruby/1.9.1/rubygems.rb:762:in `report_activate_error': Could not find 
+> RubyGem ncurses (>= 0) (Gem::LoadError)
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:219:in `activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:254:in `block in activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `each'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:1065:in `gem'
+>     from /usr/bin/sup:18:in `<main>'
+> 
+> I have both ncurses and ncursesw installed through the aur branch.
+> 
+> Any ideas? Use this at work so I am down right now.
+> 
+> aur/ruby-ncurses 1.2.4-1 [installed] (17)
+>     This ruby extension makes most functions, constants, and external variables 
+> of the C library ncurses accessible 
+> 
+>     from the Ruby programming language. 
+> aur/ruby-ncursesw 1.2.4.1-2 [installed] (17)
+>     Ruby wrapper for ncurses providing wide character support.
+> 
+> Thanks,
+> 
+> dalord
+> 
+
+Hi, I just had the same thing this morning. I reinstalled sup from aur
+(there's been a new package version, upgraded me from 0.11-1 to 0.11-2)
+and just in case backed ruby (upgraded recently to 1.9.2) to 1.9.1. I'm
+not sure the latter was necessary but I'm up and running again. I'm
+using this at work too so I have no time to experiment with upgrading
+ruby, but I'll try when I get a chance (especially if somebody here can
+confirm sup works with ruby 1.9.2 on their box). 
+
+The new package release -2 depends on ruby-ncursesw instead of
+ruby-ncurses the -1 depended on - this might have something to do with
+the whole error (but it's just a guess). 
+
+Try respawning sup from aur and if this doesn't help, downgrade ruby to
+1.9.1. 
+
+Good luck!
+Piotr
+
+From arian.kuschki at googlemail.com  Fri Sep  3 11:26:22 2010
+From: arian.kuschki at googlemail.com (Arian Kuschki)
+Date: Fri, 3 Sep 2010 17:26:22 +0200
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+References: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+Message-ID: <AANLkTi=3UQX4ULet==e+my5rWuvCLLCqACKa5CgJ9n6d@mail.gmail.com>
+
+same thing happened to me on Arch Linux a couple of days ago after the
+upgrade to ruby 1.9.2. p0 (or similar, can't check right now). downgrading
+ to 1.9.1 didn't help. I would also be happy if somebody could help.
+
+On 3 September 2010 15:13, Daren Lord <dlordxorso at yahoo.com> wrote:
+
+> There must have been an arch package update that is now causing my sup mail
+> to fail with this error.
+>
+> /usr/lib/ruby/1.9.1/rubygems.rb:762:in `report_activate_error': Could not
+> find RubyGem ncurses (>= 0) (Gem::LoadError)
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:219:in `activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:254:in `block in activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `each'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `activate'
+>     from /usr/lib/ruby/1.9.1/rubygems.rb:1065:in `gem'
+>     from /usr/bin/sup:18:in `<main>'
+>
+> I have both ncurses and ncursesw installed through the aur branch.
+>
+> Any ideas? Use this at work so I am down right now.
+>
+> aur/ruby-ncurses 1.2.4-1 [installed] (17)
+>     This ruby extension makes most functions, constants, and external
+> variables of the C library ncurses accessible
+>     from the Ruby programming language.
+> aur/ruby-ncursesw 1.2.4.1-2 [installed] (17)
+>     Ruby wrapper for ncurses providing wide character support.
+>
+> Thanks,
+>
+> dalord
+>
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100903/1615262a/attachment.html>
+
+From hollunder at lavabit.com  Fri Sep  3 13:57:38 2010
+From: hollunder at lavabit.com (hollunder at lavabit.com)
+Date: Fri, 3 Sep 2010 13:57:38 -0400 (EDT)
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <1283520512-sup-6361@pk-desktop>
+References: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+	<1283520512-sup-6361@pk-desktop>
+Message-ID: <1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+
+> Excerpts from Daren Lord's message of 2010-09-03 15:13:40 +0200:
+>> There must have been an arch package update that is now causing my sup
+>> mail to
+>> fail with this error.
+>>
+>> /usr/lib/ruby/1.9.1/rubygems.rb:762:in `report_activate_error': Could
+>> not find
+>> RubyGem ncurses (>= 0) (Gem::LoadError)
+>>     from /usr/lib/ruby/1.9.1/rubygems.rb:219:in `activate'
+>>     from /usr/lib/ruby/1.9.1/rubygems.rb:254:in `block in activate'
+>>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `each'
+>>     from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `activate'
+>>     from /usr/lib/ruby/1.9.1/rubygems.rb:1065:in `gem'
+>>     from /usr/bin/sup:18:in `<main>'
+>>
+>> I have both ncurses and ncursesw installed through the aur branch.
+>>
+>> Any ideas? Use this at work so I am down right now.
+>>
+>> aur/ruby-ncurses 1.2.4-1 [installed] (17)
+>>     This ruby extension makes most functions, constants, and external
+>> variables
+>> of the C library ncurses accessible
+>>
+>>     from the Ruby programming language.
+>> aur/ruby-ncursesw 1.2.4.1-2 [installed] (17)
+>>     Ruby wrapper for ncurses providing wide character support.
+>>
+>> Thanks,
+>>
+>> dalord
+>>
+>
+> Hi, I just had the same thing this morning. I reinstalled sup from aur
+> (there's been a new package version, upgraded me from 0.11-1 to 0.11-2)
+> and just in case backed ruby (upgraded recently to 1.9.2) to 1.9.1. I'm
+> not sure the latter was necessary but I'm up and running again. I'm
+> using this at work too so I have no time to experiment with upgrading
+> ruby, but I'll try when I get a chance (especially if somebody here can
+> confirm sup works with ruby 1.9.2 on their box).
+>
+> The new package release -2 depends on ruby-ncursesw instead of
+> ruby-ncurses the -1 depended on - this might have something to do with
+> the whole error (but it's just a guess).
+>
+> Try respawning sup from aur and if this doesn't help, downgrade ruby to
+> 1.9.1.
+>
+> Good luck!
+> Piotr
+
+The situation looks grim. I don't seem to have the 1.9.1 package anymore
+due to a recent cache cleaning. Read all the things I tried:
+http://aur.archlinux.org/packages.php?ID=26439
+
+How can a stupid minor version change break things so badly? And no one
+knows what's wrong or how to solve this mess? I'm kinda pissed.
+
+Maybe we can get sup into community, so it's kinda supported and might get
+some testing that would catch this kind of breakage before it hits users.
+
+
+
+From eg at gaute.vetsj.com  Fri Sep  3 14:13:42 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 3 Sep 2010 20:13:42 +0200
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+References: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+	<1283520512-sup-6361@pk-desktop>
+	<1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+Message-ID: <AANLkTimujj1BxAj8knRra1qWCxe-aUKiZNoGQ8msrnvt@mail.gmail.com>
+
+Hey,
+
+ran into the same problem. The first problem I ran into was related to
+ncursesw using STR2CSTR () and not StringValuePtr, this has been
+obsolete for a while, but was apparently removed in 1.9.2. I got
+ncurses to work; see attached PKGBUILD with patch. But there were some
+problems with the tmpfile stuff, sup would start (complain about
+ncurses not being ncursesw, which i don't think is correct because i
+didn't seem to have problems with wide chars.. but well well, probably
+just a matter of names). But when creating a new message it would
+fail.
+
+So I gave up :p and downgraded to 1.9.1-p378 from arch, I jumped a few
+revisions back in Arch'es ABS (PKGBUILD's), I'll attach the PKGBUILD
+here for you, but you could grab it yourself from ArchLinux's
+repository. Still rebuilding some gems so haven't been able to test if
+something else is the cause yet.. but this should work.
+
+To be able to build the old ruby I first had to delete the 1.9.2
+ruby.. (otherwise the build will segfault). I just removed it with
+pacman -Ud ruby ( or actually yaourt.. but..)
+
+The attached files should be put in their own folder and you can
+create the packages with makepkg, and install the resulting *.pkg..*
+with pacman -U filename.
+
+- gaute
+
+On Fri, Sep 3, 2010 at 7:57 PM,  <hollunder at lavabit.com> wrote:
+>> Excerpts from Daren Lord's message of 2010-09-03 15:13:40 +0200:
+>>> There must have been an arch package update that is now causing my sup
+>>> mail to
+>>> fail with this error.
+>>>
+>>> /usr/lib/ruby/1.9.1/rubygems.rb:762:in `report_activate_error': Could
+>>> not find
+>>> RubyGem ncurses (>= 0) (Gem::LoadError)
+>>> ? ? from /usr/lib/ruby/1.9.1/rubygems.rb:219:in `activate'
+>>> ? ? from /usr/lib/ruby/1.9.1/rubygems.rb:254:in `block in activate'
+>>> ? ? from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `each'
+>>> ? ? from /usr/lib/ruby/1.9.1/rubygems.rb:253:in `activate'
+>>> ? ? from /usr/lib/ruby/1.9.1/rubygems.rb:1065:in `gem'
+>>> ? ? from /usr/bin/sup:18:in `<main>'
+>>>
+>>> I have both ncurses and ncursesw installed through the aur branch.
+>>>
+>>> Any ideas? Use this at work so I am down right now.
+>>>
+>>> aur/ruby-ncurses 1.2.4-1 [installed] (17)
+>>> ? ? This ruby extension makes most functions, constants, and external
+>>> variables
+>>> of the C library ncurses accessible
+>>>
+>>> ? ? from the Ruby programming language.
+>>> aur/ruby-ncursesw 1.2.4.1-2 [installed] (17)
+>>> ? ? Ruby wrapper for ncurses providing wide character support.
+>>>
+>>> Thanks,
+>>>
+>>> dalord
+>>>
+>>
+>> Hi, I just had the same thing this morning. I reinstalled sup from aur
+>> (there's been a new package version, upgraded me from 0.11-1 to 0.11-2)
+>> and just in case backed ruby (upgraded recently to 1.9.2) to 1.9.1. I'm
+>> not sure the latter was necessary but I'm up and running again. I'm
+>> using this at work too so I have no time to experiment with upgrading
+>> ruby, but I'll try when I get a chance (especially if somebody here can
+>> confirm sup works with ruby 1.9.2 on their box).
+>>
+>> The new package release -2 depends on ruby-ncursesw instead of
+>> ruby-ncurses the -1 depended on - this might have something to do with
+>> the whole error (but it's just a guess).
+>>
+>> Try respawning sup from aur and if this doesn't help, downgrade ruby to
+>> 1.9.1.
+>>
+>> Good luck!
+>> Piotr
+>
+> The situation looks grim. I don't seem to have the 1.9.1 package anymore
+> due to a recent cache cleaning. Read all the things I tried:
+> http://aur.archlinux.org/packages.php?ID=26439
+>
+> How can a stupid minor version change break things so badly? And no one
+> knows what's wrong or how to solve this mess? I'm kinda pissed.
+>
+> Maybe we can get sup into community, so it's kinda supported and might get
+> some testing that would catch this kind of breakage before it hits users.
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ruby-ncursesw-fixed-stringvalueptr.tar.xz
+Type: application/x-xz
+Size: 3112 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100903/f23a8ea3/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ruby-1.9.1p378.pkgbuild.tar.xz
+Type: application/x-xz
+Size: 2372 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100903/f23a8ea3/attachment-0001.bin>
+
+From eg at gaute.vetsj.com  Fri Sep  3 14:25:04 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 03 Sep 2010 20:25:04 +0200
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <AANLkTimujj1BxAj8knRra1qWCxe-aUKiZNoGQ8msrnvt@mail.gmail.com>
+References: <747172.93895.qm@web63905.mail.re1.yahoo.com>
+	<1283520512-sup-6361@pk-desktop>
+	<1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+	<AANLkTimujj1BxAj8knRra1qWCxe-aUKiZNoGQ8msrnvt@mail.gmail.com>
+Message-ID: <1283537988-sup-5681@dolk>
+
+Excerpts from Gaute Hope's message of 2010-09-03 20:13:42 +0200:
+> So I gave up :p and downgraded to 1.9.1-p378 from arch, I jumped a few
+> revisions back in Arch'es ABS (PKGBUILD's), I'll attach the PKGBUILD
+> here for you, but you could grab it yourself from ArchLinux's
+> repository. Still rebuilding some gems so haven't been able to test if
+> something else is the cause yet.. but this should work.
+
+Yeah, that worked. Writing this from sup. In cases the attachements
+don't appear at the mailing list the updated ruby-ncurses PKGBUILD is
+located here: http://github.com/gauteh/arch/tree/master/ruby-ncursesw/
+
+(don't use it thou, it might be helpful for anyone who want to get sup
+to work on 1.9.2)
+
+You can find the old PKGBUILDS for ruby here: 
+p378:
+http://repos.archlinux.org/wsvn/packages/ruby/trunk/?rev=75260&peg=75260
+
+but p429 should probably also work:
+http://repos.archlinux.org/wsvn/packages/ruby/trunk/?rev=84971&peg=84971
+
+checkout the wiki or manpage on how to use 'makepkg'.
+
+- gaute
+ 
+
+From _ at whats-your.name  Fri Sep  3 19:01:55 2010
+From: _ at whats-your.name (carmen)
+Date: Fri, 3 Sep 2010 23:01:55 +0000
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+References: <1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+Message-ID: <20100903230155.GA4001@myhost.Belkin>
+
+> How can a stupid minor version change break things so badly?
+Arch totally hosed 1.9.2 here too. way beyond sup, into justnuking Gem-installed lib functionality in general
+
+actually, ive never used sup beacuse it refuses to find my mail (notmuch has no issues) because its not in {cur,new,tmp} subdirs. nor does it seem to recursively dig. but i spent a while and there was just too much code to read, so i wrote my own webmail [ http://gitorious.org/element/element/blobs/master/ruby/W/mail.rb ] 
+
+well, TMail is totally broken on 1.9.2, and RMail (as sup uses) and Mail (from TMail's maintainer and now abandoner) is simply way too slow as theyre pure-ruby
+
+unless you install activeSupport 2.3.x which has a hacked tmail that runson 1.9.x
+
+anyways.. i'm trying to figure out a good permanent solution to this, and it seems to involve rewriting eveyrthing in HAskell..
+
+From hollunder at lavabit.com  Sat Sep  4 05:05:07 2010
+From: hollunder at lavabit.com (=?utf-8?q?Philipp_=C3=9Cberbacher?=)
+Date: Sat, 04 Sep 2010 11:05:07 +0200
+Subject: [sup-talk] Arch Linux sup now failing.
+In-Reply-To: <20100903230155.GA4001@myhost.Belkin>
+References: <1438.143.205.216.185.1283536658.squirrel@lavabit.com>
+	<20100903230155.GA4001@myhost.Belkin>
+Message-ID: <1283590730-sup-9050@eris>
+
+Excerpts from carmen's message of 2010-09-04 01:01:55 +0200:
+> > How can a stupid minor version change break things so badly?
+> Arch totally hosed 1.9.2 here too. way beyond sup, into justnuking Gem-installed lib functionality in general
+
+Ok, good to know that other stuff is broken too, so it's not entirely
+sups fault and the Arch devs need to look into this. I filed a bug
+report (with a somewhat bad title) sometime yesterday:
+http://bugs.archlinux.org/task/20733
+
+> actually, ive never used sup beacuse it refuses to find my mail (notmuch has no issues) because its not in {cur,new,tmp} subdirs. nor does it seem to recursively dig. but i spent a while and there was just too much code to read, so i wrote my own webmail [ http://gitorious.org/element/element/blobs/master/ruby/W/mail.rb ] 
+
+Hmm, not sure what issue you ran into there. The way it works for me:
+everything lands in the inbox at the mail provider, offlineimap pulls it
+to my machine, sup indexes it, done.
+
+> well, TMail is totally broken on 1.9.2, and RMail (as sup uses) and Mail (from TMail's maintainer and now abandoner) is simply way too slow as theyre pure-ruby
+> 
+> unless you install activeSupport 2.3.x which has a hacked tmail that runson 1.9.x
+>
+> anyways.. i'm trying to figure out a good permanent solution to this, and it seems to involve rewriting eveyrthing in HAskell..
+
+Nah, the solution is to rewrite everything in lua :)
+-- 
+Philipp
+
+--
+"Wir stehen selbst entt?uscht und sehn betroffen / Den Vorhang zu
+und alle Fragen offen." Bertolt Brecht, Der gute Mensch von Sezuan
+
+
+From aidecoe at aidecoe.name  Tue Sep  7 05:53:01 2010
+From: aidecoe at aidecoe.name (=?utf-8?q?Amadeusz_=C5=BBo=C5=82nowski?=)
+Date: Tue, 07 Sep 2010 11:53:01 +0200
+Subject: [sup-talk] sent mail labeling
+Message-ID: <1283852052-sup-722@aemeni>
+
+Hi,
+
+How sent messages are handled?  What I've observed is that only threads
+I've started are labeled as 'sent' and not separate messages I've sent
+as a reply to someone's e-mail.
+
+I've also noticed some strange behaviour.  Sup labels some messages that
+I haven't sent/replied in any way as 'sent'.  An example is thread on
+sup-talk list: "[sup-talk] Arch Linux sup now failing.", which Sup
+labeled as 'sent'.  Should I report it?  What should I include?  I'm
+using common maildir for outbox and inbox (does that matter?) and don't
+mangle with any other programs than Fetchmail and Sup.
+
+As a workaround would be nice to have possibility to add/remove 'sent'
+label manually.  Is it already possible?  Does it make sense to request
+this feature?
+
+
+Cheers,
+-- 
+Amadeusz ?o?nowski
+aka aidecoe
+PGP key: C284750D / encrypt&sign, please
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100907/ecbbc3ff/attachment.bin>
+
+From ezyang at MIT.EDU  Thu Sep  9 12:56:11 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Thu, 09 Sep 2010 12:56:11 -0400
+Subject: [sup-talk] Behavior for sent messages
+In-Reply-To: <1281916596-sup-8793@ezyang>
+References: <1280546878-sup-5384@ezyang>
+	<1280575476-sup-2567@pinkfloyd.chass.utoronto.ca>
+	<1280628309-sup-7092@ezyang>
+	<1280628833-sup-7698@pinkfloyd.chass.utoronto.ca>
+	<1281916596-sup-8793@ezyang>
+Message-ID: <1284051347-sup-9359@ezyang>
+
+Excerpts from Edward Z. Yang's message of Sun Aug 15 19:58:03 -0400 2010:
+> I've tracked down the regression to this merge: 45c3433c0 Merge remote branch 'origin/maildir'
+> 
+> I'd appreciate a quick san-check before I start investigating the merge more
+> closely: you can easily test for this bug by renaming your .sup directory away
+> and creating a fresh sup directory.
+
+Hello,
+
+Has anyone been able to reproduce this bug on the relevant commit?
+
+Edward
+
+From badalex at gmail.com  Thu Sep  9 13:24:21 2010
+From: badalex at gmail.com (Alex Hunsaker)
+Date: Thu, 9 Sep 2010 11:24:21 -0600
+Subject: [sup-talk] sup with ruby 1.9.2 patches (was: Arch Linux sup now
+	failing.)
+Message-ID: <AANLkTi=EKfpn6wT_eb-8kNDKUB4cDrZ0WqyAJR6yDPuo@mail.gmail.com>
+
+Here are the 2 patches Im using to get sup to work with ruby 1.9.2
+
+The first is against ncursesw and fixes the STR2CSTR issues.
+The 2nd is against sup and fixes the tmpfile issue when trying to
+reply/create a new message or viewing an attachment.
+
+With both of these I dont have to run to mutt to send mail anymore :-)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ncw.patch
+Type: text/x-patch
+Size: 14181 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100909/1f32b31d/attachment-0002.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup_ruby192.patch
+Type: text/x-patch
+Size: 474 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100909/1f32b31d/attachment-0003.bin>
+
+From danielgoldin at gmail.com  Sat Sep 11 12:58:56 2010
+From: danielgoldin at gmail.com (Daniel Goldin)
+Date: Sat, 11 Sep 2010 09:58:56 -0700
+Subject: [sup-talk] exception
+Message-ID: <AANLkTinMOE8fopRLuX1M-5MWAUEGYL9CiUiRJMNxX_r5@mail.gmail.com>
+
+I got an exception error when reading one of my labels. Any thoughts. I am
+not a programmer, so keep it simple, if you will. Exception-log below:
+
+d.
+
+--- RuntimeError from thread: load threads for thread-index-mode
+DocNotFoundError: Document 2275758200 not found.
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:178:in `document'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:178:in
+`each_message_in_thread_for'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:178:in `map'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:178:in
+`each_message_in_thread_for'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:341:in
+`load_thread_for_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:333:in
+`load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in
+`each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in
+`each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:328:in
+`load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:640:in
+`__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:623:in
+`load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:694:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/label-search-results-mode.rb:33:in
+`spawn_nicely'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/label-list-mode.rb:134:in
+`select_label'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `send'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/buffer.rb:279:in `handle_input'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:279
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+
+
+-- 
+Daniel Goldin
+626.817.2462
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100911/4d8e7588/attachment.html>
+
+From dogsaw at thecyberplains.com  Mon Sep 13 04:50:34 2010
+From: dogsaw at thecyberplains.com (Matthew Goodall)
+Date: Mon, 13 Sep 2010 20:50:34 +1200
+Subject: [sup-talk] Twitter
+Message-ID: <1284356125-sup-5550@ethicsgradient.lan>
+
+As a part an honest attempt at twitter, and my ongoing quest to put 
+everything into sup; I created a twitter client that stores into a 
+maildir and sends an email as a tweet.
+
+I figure someone else might be interested:  
+http://github.com/downloads/lionicsheriff/rfc5322/rfc5322-0.4.0.gem
+
+It provides two binaries: fetchtweet and sendtweet. I'd recommend
+running 'fetchtweet --add-account accountname' first to create the
+config file.
+
+There are some examples of using (along with some sup hooks) at
+http://github.com/lionicsheriff/rfc5322
+
+From william.betts at gmail.com  Mon Sep 13 12:02:06 2010
+From: william.betts at gmail.com (William Betts)
+Date: Mon, 13 Sep 2010 09:02:06 -0700
+Subject: [sup-talk] Twitter
+In-Reply-To: <1284356125-sup-5550@ethicsgradient.lan>
+References: <1284356125-sup-5550@ethicsgradient.lan>
+Message-ID: <AANLkTi=Pgr8rpR03Kg5MYS9VvmoCK4h0g+pEy4Nyesqw@mail.gmail.com>
+
+That's pretty cool. Thank you.
+
+On Mon, Sep 13, 2010 at 1:50 AM, Matthew Goodall
+<dogsaw at thecyberplains.com>wrote:
+
+> As a part an honest attempt at twitter, and my ongoing quest to put
+> everything into sup; I created a twitter client that stores into a
+> maildir and sends an email as a tweet.
+>
+> I figure someone else might be interested:
+> http://github.com/downloads/lionicsheriff/rfc5322/rfc5322-0.4.0.gem
+>
+> It provides two binaries: fetchtweet and sendtweet. I'd recommend
+> running 'fetchtweet --add-account accountname' first to create the
+> config file.
+>
+> There are some examples of using (along with some sup hooks) at
+> http://github.com/lionicsheriff/rfc5322
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100913/cee128e3/attachment.html>
+
+From lionel.grenier at gmail.com  Sat Sep 18 01:31:28 2010
+From: lionel.grenier at gmail.com (Lionel Grenier)
+Date: Sat, 18 Sep 2010 07:31:28 +0200
+Subject: [sup-talk] Error after Sup installation under Cygwin
+Message-ID: <AANLkTimOVjjLqYWs0M-EcOtvKvPKyAggFWNyCTxv_YLd@mail.gmail.com>
+
+Hello
+
+I didn't find any post related to this so here it is:
+- I've installed Sup in cygwin using gem (gem install sup).
+- Installation went very well. no reported error all dependant components
+(xapian, ncurses etc..) have been installed all together
+- BUT when I run 'sup' I got the following error:
+---------------------------------------------
+/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.so: No such file
+or
+directory - /usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.so
+(Load
+Error)
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`requi
+re'
+        from
+/usr/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/xapian.rb:41
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_o
+riginal_require'
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`requi
+re'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:3
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_o
+riginal_require'
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`requi
+re'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:316
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_o
+riginal_require'
+        from /usr/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in
+`requi
+re'
+        from /usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:15
+        from /usr/bin/sup:19:in `load'
+        from /usr/bin/sup:19
+---------------------------------------------
+
+Looking into the xapian library folder the file _xapian.so exists.
+I googled this but didn't find solution, so maybe the sup community may have
+the answer.
+
+Thanks for your help
+
+Lionel
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100918/88c4fc3b/attachment.html>
+
+From moritz+sup at wzff.de  Tue Sep 21 13:32:14 2010
+From: moritz+sup at wzff.de (Moritz Wilhelmy)
+Date: Tue, 21 Sep 2010 19:32:14 +0200
+Subject: [sup-talk] Quick start for newbies
+Message-ID: <20100921173214.GA3808@barfooze.de>
+
+The first message I wrote (using sup) did not arrive, it seems, so I send it
+again with mutt and all the things that might rubyforge think I'm a spammer
+censored.
+
+-- forwarded message --
+Content-Type: text/plain; charset=utf8
+Subject: Quick start for newbies
+From: Moritz Wilhelmy <moritz+sup at wzff.de>
+To: sup-talk <sup-talk at rubyforge.org>
+Date: Mon, 20 Sep 2010 11:36:38 +0200
+Message-Id: <1284974706-sup-6890 at niflheimr>
+User-Agent: Sup/0.11
+Content-Transfer-Encoding: 8bit
+
+Hello all,
+
+I've installed sup a few days ago and wanted to finally migrate to it
+yesterday, so I started with migrating my MH folders to maildirs, since I've
+been on nmh before and was hoping to become happy with sup. I was tempted to
+try notmuch before, but I'm not an emacs user, and it lacks a sane curses
+interface from what I know, so I decided to take a look at sup.
+
+Then, I tried importing the messages, and I was wondering how to for instance,
+import my sentbox and mark it as sent, and mark everything from my old mails as
+read, since that's what I did with them.  Importing with the label "Sent" on
+the outbox didn't work, since apparently "Sent" (the Label) and "Sent" (the sup
+internal whatever that's used for marking mails as sent) are not the same.
+
+I also tried running sup-sync -a -e on my inbox, but apparently, the imported
+mails are not marked as read either.
+
+Now I'm wondering how to apply something (tag, mark as read, mark as spam) on a
+number of messages which is the result of a search, for instance tag everything
+with a subject containing VI**RA as spam, or tag everything from a particular
+mailbox (outbox maildir) as sent.
+
+I did read the readme and quickstart guide, but it doesn't say anything about
+my kind of problem, although I figure it's very for new sup users.
+Furthermore, I think manpages would be really handy, since that's where I look
+first.
+
+Also, is the archive to this list available as mbox file?
+
+Sup seems overall nice, I like it that far. The tagging system is a good idea,
+I figure.
+
+Kind regards and thanks in advance,
+
+Moritz
+
+From stipredirect at gmail.com  Wed Sep 22 14:18:30 2010
+From: stipredirect at gmail.com (Michael Stipicevic)
+Date: Wed, 22 Sep 2010 14:18:30 -0400
+Subject: [sup-talk] archive all messages before a certain date?
+Message-ID: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+
+I'm not sure if this is on the web anywhere (I've tried a few searches and
+not much came up): what is the most straightforward way to archive all
+messages before a certain date? I just loaded up a huge mail store and want
+to archive everything before, say, March this year. I've tried various
+combinations of chronic commands and the 'g' to tag threads but I'm not
+getting anywhere. Also, sup seems built to *toggle* threads rather than
+force them to a certain state (+inbox or -inbox). Any ideas?
+
+Thanks,
+- Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100922/a937a8b1/attachment.html>
+
+From ezyang at MIT.EDU  Wed Sep 22 14:35:20 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Wed, 22 Sep 2010 14:35:20 -0400
+Subject: [sup-talk] archive all messages before a certain date?
+In-Reply-To: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+References: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+Message-ID: <1285180485-sup-7603@ezyang>
+
+Excerpts from Michael Stipicevic's message of Wed Sep 22 14:18:30 -0400 2010:
+> I'm not sure if this is on the web anywhere (I've tried a few searches and
+> not much came up): what is the most straightforward way to archive all
+> messages before a certain date? I just loaded up a huge mail store and want
+> to archive everything before, say, March this year. I've tried various
+> combinations of chronic commands and the 'g' to tag threads but I'm not
+> getting anywhere. Also, sup seems built to *toggle* threads rather than
+> force them to a certain state (+inbox or -inbox). Any ideas?
+
+The best strategy I've found is to dump the inbox, do a manual search replace
+on the appropriate range of the inbox tag, and then load it back up again.
+
+Edward
+
+From marka at pobox.com  Wed Sep 22 14:50:32 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 22 Sep 2010 11:50:32 -0700
+Subject: [sup-talk] archive all messages before a certain date?
+In-Reply-To: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+References: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+Message-ID: <1285181337-sup-1150@x41>
+
+Excerpts from Michael Stipicevic's message of Wed Sep 22 11:18:30 -0700 2010:
+> what is the most straightforward way to archive all
+> messages before a certain date?
+
+I believe that sup-tweak-labels is the thing you want to use.
+It's been a long time since I tried it but I do recall
+I was able to do what you're trying to do.  Make sure
+you use --dry-run first to make sure you don't wreck
+things.
+
+
+From stipredirect at gmail.com  Wed Sep 22 14:53:47 2010
+From: stipredirect at gmail.com (Michael Stipicevic)
+Date: Wed, 22 Sep 2010 14:53:47 -0400
+Subject: [sup-talk] archive all messages before a certain date?
+In-Reply-To: <1285181337-sup-1150@x41>
+References: <AANLkTin8H1hWi6pmpGErBwey+kHefnUa2ZtS9+gbgyYz@mail.gmail.com>
+	<1285181337-sup-1150@x41>
+Message-ID: <AANLkTimAoY8wSa9SxWcZMgG6R9wO_sN0xVLKZ6bAa=zn@mail.gmail.com>
+
+On Wed, Sep 22, 2010 at 2:50 PM, Mark Alexander <marka at pobox.com> wrote:
+
+> I believe that sup-tweak-labels is the thing you want to use.
+> It's been a long time since I tried it but I do recall
+> I was able to do what you're trying to do.  Make sure
+> you use --dry-run first to make sure you don't wreck
+> things.
+>
+
+Thanks guys, I'll try this out.
+
+- Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100922/96e0bfd4/attachment.html>
+
+From dogsaw at thecyberplains.com  Thu Sep 23 13:26:36 2010
+From: dogsaw at thecyberplains.com (Matthew Goodall)
+Date: Fri, 24 Sep 2010 05:26:36 +1200
+Subject: [sup-talk] Twitter - new release
+In-Reply-To: <1284356125-sup-5550@ethicsgradient.lan>
+References: <1284356125-sup-5550@ethicsgradient.lan>
+Message-ID: <1285262666-sup-1123@ethicsgradient.lan>
+
+I have released a new version: 
+http://github.com/downloads/lionicsheriff/rfc5322/rfc5322-1.0.1.gem
+
+Features:
++ attached images and videos are uploaded to yfrog & url is appended to
+  tweet
++ long urls are automatically shortened
++ --pastebin option in sendtweet uploads unused parts of body to
+  pastebin. Again urls are appended
++ long tweets are sent to tweetshrink.com before rejecting them
+
+Documentation at: http://github.com/lionicsheriff/rfc5322
+
+Note for upgraders:
+The config file has been renamed ~/.rfc5322.rc and a couple keys have
+been renamed:
+    :oauth_token: -> :access_key: 
+    :oauth_token_secret: -> :access_secret:
+
+I did a complete rewrite since the previous attempt reflected my recent
+stint in shell programming and would be very hard to maintain.
+
+From lists at syshex.com  Fri Sep 24 05:34:45 2010
+From: lists at syshex.com (=?utf-8?q?Jo=C3=A3o_Taveira_Ara=C3=BAjo?=)
+Date: Fri, 24 Sep 2010 10:34:45 +0100
+Subject: [sup-talk] Twitter - new release
+In-Reply-To: <1285262666-sup-1123@ethicsgradient.lan>
+References: <1284356125-sup-5550@ethicsgradient.lan>
+	<1285262666-sup-1123@ethicsgradient.lan>
+Message-ID: <1285319574-sup-2845@dhcp-87-233.eduroam.ucl.ac.uk>
+
+Excellent, this is potentially really useful, although I think we'll end up needing a twitter mode for sup to handle this properly. I might get round to having a crack at it myself if I get the time, but I haven't really looked into Ruby or sup internals properly.
+
+Excerpts from Matthew Goodall's message of Thu Sep 23 18:26:36 +0100 2010:
+> I have released a new version: 
+> http://github.com/downloads/lionicsheriff/rfc5322/rfc5322-1.0.1.gem
+> 
+> Features:
+> + attached images and videos are uploaded to yfrog & url is appended to
+>   tweet
+> + long urls are automatically shortened
+> + --pastebin option in sendtweet uploads unused parts of body to
+>   pastebin. Again urls are appended
+> + long tweets are sent to tweetshrink.com before rejecting them
+> 
+> Documentation at: http://github.com/lionicsheriff/rfc5322
+
+I think the name is terrible. I'm not familiar with that RFC, but I'm pretty sure it's not twitter specific, which "fetchtweet" and "sendtweet" imply. Having a .fetchtweetrc fits in a lot better alongside .fetchmailrc too. +1 if the config options are similar too.
+
+Cheers,
+Joao.
+
+From dogsaw at thecyberplains.com  Fri Sep 24 18:45:20 2010
+From: dogsaw at thecyberplains.com (Matthew Goodall)
+Date: Sat, 25 Sep 2010 10:45:20 +1200
+Subject: [sup-talk] Twitter - new release
+In-Reply-To: <1285319574-sup-2845@dhcp-87-233.eduroam.ucl.ac.uk>
+References: <1284356125-sup-5550@ethicsgradient.lan>
+	<1285262666-sup-1123@ethicsgradient.lan>
+	<1285319574-sup-2845@dhcp-87-233.eduroam.ucl.ac.uk>
+Message-ID: <1285364787-sup-7922@ethicsgradient.lan>
+
+Excerpts from Jo?o Taveira Ara?jo's message of Fri Sep 24 21:34:45 +1200 2010:
+> Excellent, this is potentially really useful, although I think we'll end up needing a twitter mode for sup to handle this properly. I might get round to having a crack at it myself if I get the time, but I haven't really looked into Ruby or sup internals properly.
+Yeah we probably would need a real mode. It turns out that Twitter is a
+little more fast paced than email.
+
+As it stands, if you have a particularly active stream you are best 
+off auto-archiving and filtering mentions into your inbox. That is 
+just speculation though, I am hardly following anyone, so it is all
+easily manageable from the inbox.
+
+> I think the name is terrible. I'm not familiar with that RFC, but I'm pretty sure it's not twitter specific, which "fetchtweet" and "sendtweet" imply. 
+It's the spec for email messages. Personally, I'm unsure about it.
+I enjoy the 'via rfc5322' you see on the web interface, but it seems to
+me the name would be better served by an email parsing library.
+
+Incidentally the new interface, the so-called #newtwitter, doesn't 
+readily show the source of the tweet any more (you have to click on it).
+
+>Having a .fetchtweetrc fits in a lot better alongside .fetchmailrc too.
+I like the .fetchtweetrc, it links the rc to the tools better. Both
+tools use the same config file though, so maybe I could make it accept
+.fetchtweetrc and .sendtweetrc with .fetchtweetrc having precedence.
+
+>+1 if the config options are similar too.
+That would be interesting, been a long while since I have looked at them
+though. I use getmail and offlineimap.
+

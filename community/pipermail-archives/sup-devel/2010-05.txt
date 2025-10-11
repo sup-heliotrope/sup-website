@@ -1,0 +1,1308 @@
+From sup-bugs at masanjin.net  Mon May  3 15:40:16 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 03 May 2010 19:40:16 +0000
+Subject: [sup-devel] [issue98] `force_encoding': can't modify frozen string
+	(RuntimeError)	- On first start
+In-Reply-To: <1272915616.88.0.00422065712816.issue98@masanjin.net>
+Message-ID: <1272915616.88.0.00422065712816.issue98@masanjin.net>
+
+
+New submission from anonymous:
+
+Hello,
+If I start sup or sup-config the very first time, the following error occurs:
+
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in
+`force_encoding': can't modify frozen string (RuntimeError)
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `block in
+add_account'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `each'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `add_account'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:37:in `initialize'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `new'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `init'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:126:in `start'
+	from /usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup-config:115:in `<top
+(required)>'
+	from /usr/bin/sup-config:19:in `load'
+	from /usr/bin/sup-config:19:in `<main>'
+
+If I then run the command again, it is working, thus there exists an ~/.sup
+directory. I can reproduce this error by removing the ~/.sup directory and
+re-run it again. This 'cant modify frozen string'-issue can not be resolved by
+applying the lines to multipart.rb mentioned in the FAQ.
+
+Best regards
+
+----------
+messages: 222
+nosy: anonymous
+priority: bug
+ruby_version: 1.9.1_p378
+status: unread
+sup_version: 0.11
+title: `force_encoding': can't modify frozen string (RuntimeError) - On first start
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue98>
+_________________________________________
+
+From sup-bugs at masanjin.net  Thu May  6 10:14:49 2010
+From: sup-bugs at masanjin.net (Ben Walton)
+Date: Thu, 06 May 2010 14:14:49 +0000
+Subject: [sup-devel] [issue99] persistent crash with "wrong id called on nil"
+In-Reply-To: <1273155288.81.0.0378934243374.issue99@masanjin.net>
+Message-ID: <1273155288.81.0.0378934243374.issue99@masanjin.net>
+
+
+New submission from Ben Walton <bwalton at artsci.utoronto.ca>:
+
+This one is driving me nuts.  I'm not able to determine which message 
+(threadset) causes it yet.  Sometimes I can run for a few minutes, view 
+messages, etc.  The next time, sup crashes almost immediately after startup.
+
+This started with a crash last night (random after running for days).  I 
+couldn't get sup to restart.  I ended up hosing my index...I've now rebuilt it 
+and while I can run sup again, the crashes continue.
+
+Ideas?  This is going to be long day...
+
+Thanks
+-Ben
+
+--- RuntimeError from thread: load threads for thread-index-mode                
+wrong id called on nil
+./sup.rb:17:in `id'
+./sup/modes/thread-index-mode.rb:234:in `update'
+./sup/hook.rb:123:in `sort_by'
+./sup/modes/thread-index-mode.rb:234:in `each'
+./sup/modes/thread-index-mode.rb:234:in `sort_by'
+./sup/modes/thread-index-mode.rb:234:in `update'
+./sup/modes/thread-index-mode.rb:232:in `synchronize'
+./sup/modes/thread-index-mode.rb:232:in `update'
+./sup/modes/thread-index-mode.rb:652:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+./sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+./sup.rb:77:in `reporting_thread'
+./sup.rb:75:in `initialize'
+./sup.rb:75:in `new'
+./sup.rb:75:in `reporting_thread'
+./sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+./sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+./sup/modes/thread-index-mode.rb:89:in `initialize'
+./sup/modes/line-cursor-mode.rb:22:in `call'
+./sup/modes/line-cursor-mode.rb:22:in `initialize'
+./sup/modes/line-cursor-mode.rb:22:in `each'
+./sup/modes/line-cursor-mode.rb:22:in `initialize'
+./sup/modes/line-cursor-mode.rb:19:in `new'
+./sup/modes/line-cursor-mode.rb:19:in `initialize'
+./sup/modes/thread-index-mode.rb:60:in `initialize'
+./sup/modes/inbox-mode.rb:14:in `initialize'
+../bin/sup:193:in `new'
+../bin/sup:193
+
+----------
+messages: 223
+nosy: bwalton
+priority: bug
+ruby_version: 1.8.5
+status: unread
+sup_version: next
+title: persistent crash with "wrong id called on nil"
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue99>
+_________________________________________
+
+From snaipperi at gmail.com  Thu May  6 14:02:46 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Thu, 6 May 2010 21:02:46 +0300
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+Message-ID: <p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+
+Hey folks,
+
+I've been experimenting with sup for the past few days, and of course,
+I love it. Firstly I had some trouble with getting unicode display
+going. This problem was already described in an old post on this
+mailing list:
+
+http://rubyforge.org/pipermail/sup-devel/2010-March/000522.html
+
+So Arch Linux defines encoding as utf8, but Iconv requires it to be
+UTF-8. I would say this is a bug in Arch Linux for not following
+standards, but anyway, I fixed it with the little modification to
+sup.rb:
+
+## determine encoding and character set
+$encoding = Locale.current.charset
+$encoding = "UTF-8" if $encoding == "utf8"
+
+
+
+Then about wide character support. And I mean really wide. Like CJK
+characters. Scandics (?,?,?) and other European accent characters work
+nicely, as we all who are concerned probably know. These characters
+have a byte length of 2 and unicode length of 1.
+
+However, take an example of the following two-character Korean word
+(byte length of such single character is 3 instead of 2!)
+
+http://www.kotiposti.net/eiden/soulbound/hellovim.png (looking good in vim)
+http://www.kotiposti.net/eiden/soulbound/hellosup.png (sup lost 2
+characters (or bytes) from the line that has the Korean word)
+
+It seems that for every Korean character with a byte length of 3, one
+byte is lost from the end of the line. In the above example, two bytes
+are missing in sup, as there are two Korean characters on the same
+line.
+
+If the line consist of a single Korean character, nothing appears in
+sup (last byte out of three is missing?).
+If the line consist of two Korean characters, last character is
+missing (last two bytes out of six are missing?).
+etc.
+
+Some sort of miscalculation somewhere is causing this, perhaps
+assuming that unicode characters always have a byte length of 2? Can
+anybody with Ruby skills take a look on this?
+
+Thanks,
+Matti
+
+From rlane at club.cc.cmu.edu  Fri May  7 12:46:20 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 07 May 2010 12:46:20 -0400
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+	<p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+Message-ID: <1273250528-sup-9662@zyrg.net>
+
+Excerpts from Matti Eiden's message of 2010-05-06 14:02:46 -0400:
+> Hey folks,
+> 
+> I've been experimenting with sup for the past few days, and of course,
+> I love it. Firstly I had some trouble with getting unicode display
+> going. This problem was already described in an old post on this
+> mailing list:
+> 
+> http://rubyforge.org/pipermail/sup-devel/2010-March/000522.html
+> 
+> So Arch Linux defines encoding as utf8, but Iconv requires it to be
+> UTF-8. I would say this is a bug in Arch Linux for not following
+> standards, but anyway, I fixed it with the little modification to
+> sup.rb:
+> 
+> ## determine encoding and character set
+> $encoding = Locale.current.charset
+> $encoding = "UTF-8" if $encoding == "utf8"
+
+I've applied this fix, thanks.
+
+> Then about wide character support. And I mean really wide. Like CJK
+> characters. Scandics (?,?,?) and other European accent characters work
+> nicely, as we all who are concerned probably know. These characters
+> have a byte length of 2 and unicode length of 1.
+> 
+> However, take an example of the following two-character Korean word
+> (byte length of such single character is 3 instead of 2!)
+> 
+> http://www.kotiposti.net/eiden/soulbound/hellovim.png (looking good in vim)
+> http://www.kotiposti.net/eiden/soulbound/hellosup.png (sup lost 2
+> characters (or bytes) from the line that has the Korean word)
+> 
+> It seems that for every Korean character with a byte length of 3, one
+> byte is lost from the end of the line. In the above example, two bytes
+> are missing in sup, as there are two Korean characters on the same
+> line.
+> 
+> If the line consist of a single Korean character, nothing appears in
+> sup (last byte out of three is missing?).
+> If the line consist of two Korean characters, last character is
+> missing (last two bytes out of six are missing?).
+> etc.
+> 
+> Some sort of miscalculation somewhere is causing this, perhaps
+> assuming that unicode characters always have a byte length of 2? Can
+> anybody with Ruby skills take a look on this?
+
+It's actually the multiple screen cells that causes problems, not
+multiple bytes [1]. Sup currently thinks all characters are 1 cell wide.
+The right thing is probably a C extension that uses wcswidth.
+
+[1] http://mid.gmane.org/1264629880-sup-9232%40zyrg.net
+
+From michael+sup at stapelberg.de  Fri May  7 14:55:28 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 07 May 2010 20:55:28 +0200
+Subject: [sup-devel] [PATCH] Overwrite line contents before drawing the new
+	contents (instead of filling up the rest)
+Message-ID: <1273258431-sup-4976@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+
+  Overwrite line contents before drawing the new contents (instead of filling
+  up the rest)
+  
+  This fixes display problems of mails with tab characters in it, like
+  "foo\n\tbar"
+
+The problem was that \t is one character but will be displayed as multiple
+characters, so that the filling started too early and overwrote valid content
+of the line (the "bar" is not visible).
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Overwrite-line-contents-before-drawing-the-new-conte.patch
+Type: application/octet-stream
+Size: 1220 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100507/2e9615fd/attachment.obj>
+
+From sup-bugs at masanjin.net  Fri May  7 23:18:27 2010
+From: sup-bugs at masanjin.net (Todd Eisenberger)
+Date: Sat, 08 May 2010 03:18:27 +0000
+Subject: [sup-devel] [issue100] GPG Signing Bug
+In-Reply-To: <1273288706.87.0.318581427994.issue100@masanjin.net>
+Message-ID: <1273288706.87.0.318581427994.issue100@masanjin.net>
+
+
+New submission from Todd Eisenberger <teisenbe at andrew.cmu.edu>:
+
+After having a few messages fail verification on the recipient end, I discovered 
+that sup is not compliant with the RFC for signing email with PGP/GPG.  RFC2015 
+section 3 indicates that signed messages must be sent in a 7-bit format such as 
+base64 or quoted-printable.  Attached is a patch to provide compliance by 
+converting to base64 when crypto is used.  Note: I am unfamiliar with the code 
+base, so it is possible this patch is not correct.
+
+----------
+files: gpg.patch
+messages: 227
+nosy: teisenbe
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: git
+title: GPG Signing Bug
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue100>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gpg.patch
+Type: text/x-patch
+Size: 881 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100508/a894fb45/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Tue May 11 00:18:46 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 11 May 2010 00:18:46 -0400
+Subject: [sup-devel] [issue100] GPG Signing Bug
+In-Reply-To: <1273288706.87.0.318581427994.issue100@masanjin.net>
+References: <1273288706.87.0.318581427994.issue100@masanjin.net>
+Message-ID: <1273551419-sup-9803@zyrg.net>
+
+Excerpts from Todd Eisenberger's message of 2010-05-07 23:18:27 -0400:
+> After having a few messages fail verification on the recipient end, I discovered 
+> that sup is not compliant with the RFC for signing email with PGP/GPG.  RFC2015 
+> section 3 indicates that signed messages must be sent in a 7-bit format such as 
+> base64 or quoted-printable.  Attached is a patch to provide compliance by 
+> converting to base64 when crypto is used.  Note: I am unfamiliar with the code 
+> base, so it is possible this patch is not correct.
+
+Thanks, applied to master.
+
+From snaipperi at gmail.com  Tue May 11 14:50:17 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Tue, 11 May 2010 21:50:17 +0300
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <1273250528-sup-9662@zyrg.net>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+	<p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+	<1273250528-sup-9662@zyrg.net>
+Message-ID: <k2l6242182a1005111150n1b018aanf8a939e1d260b59a@mail.gmail.com>
+
+>
+> It's actually the multiple screen cells that causes problems, not
+> multiple bytes [1]. Sup currently thinks all characters are 1 cell wide.
+> The right thing is probably a C extension that uses wcswidth.
+>
+> [1] http://mid.gmane.org/1264629880-sup-9232%40zyrg.net
+>
+
+So okay, I sent my previous answer accidentally only to Rich. In this
+mail I mentioned a Ruby library called terminfo (
+http://www.a-k-r.org/ruby-terminfo/ ), which contains a function
+wcswidth.
+
+I downloaded terminfo and installed it, and edited lib/sup/util.rb slightly.
+1) Added of course "require 'terminfo'" on the top.
+2) Modified the display_length function of "nasty multibyte hack" to
+use TermInfo.wcswidth instead of native "size"
+
+
+Results: Everything seems to work now.
+
+I don't know what is the opinion of other sup users, whether adding a
+new dependency (to terminfo) is desirable, as the current list of
+dependencies is already rather high.. Discuss. If somebody with some C
+skills knows how to move that wcswidth function to the ruby-ncursesw
+(Rich? :D) would that be a more favourable option?
+
+Here's the actual patch of what I did to keep it clear (I notice there
+has been an earlier utf8 patch here, for pre Ruby 1.9.1 versions. I
+don't know how many of you use some earlier Ruby version still, of
+course this would also solve the "nasty" utf scan patch.):
+
+--- util-old.rb	2010-05-11 21:38:55.736596584 +0300
++++ util.rb	2010-05-11 21:36:12.653281044 +0300
+@@ -3,6 +3,7 @@
+ require 'mime/types'
+ require 'pathname'
+ require 'set'
++require 'terminfo'
+ ## time for some monkeypatching!
+ class Lockfile
+   def gen_lock_id
+@@ -183,7 +184,7 @@
+     if RUBY_VERSION < '1.9.1' && ($encoding == "UTF-8" || $encoding == "utf8")
+       scan(/./u).size
+     else
+-      size
++      TermInfo.wcswidth(self)
+     end
+   end
+
+From wmorgan-sup at masanjin.net  Tue May 11 15:19:43 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 11 May 2010 15:19:43 -0400
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <k2l6242182a1005111150n1b018aanf8a939e1d260b59a@mail.gmail.com>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+	<p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+	<1273250528-sup-9662@zyrg.net>
+	<k2l6242182a1005111150n1b018aanf8a939e1d260b59a@mail.gmail.com>
+Message-ID: <1273605454-sup-2267@masanjin.net>
+
+Reformatted excerpts from Matti Eiden's message of 2010-05-11:
+> I don't know what is the opinion of other sup users, whether adding a
+> new dependency (to terminfo) is desirable, as the current list of
+> dependencies is already rather high.
+
+I'm working on a gem that provides both wcswidth functionality and the
+ability to slice a string at specific display widths, both of which, I
+think, will be required to function entirely.
+
+You can try it with 'gem install console'. It's 1.9-only for now.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From snaipperi at gmail.com  Tue May 11 17:51:20 2010
+From: snaipperi at gmail.com (Matti Eiden)
+Date: Wed, 12 May 2010 00:51:20 +0300
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <1273605454-sup-2267@masanjin.net>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+	<p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+	<1273250528-sup-9662@zyrg.net>
+	<k2l6242182a1005111150n1b018aanf8a939e1d260b59a@mail.gmail.com>
+	<1273605454-sup-2267@masanjin.net>
+Message-ID: <t2s6242182a1005111451uc2781ca0rcd97dbf6d3146684@mail.gmail.com>
+
+Oh right, splitting. Yes right, makes sense. I tried your
+console/string, seems good, except the display_split ignores the
+padding request? Or did I understand this feature wrongly? I mean, it
+slices the string exactly where the end offset is, not by the nearest
+" ", space?
+
+Well anyway, I showed it inside sup, seems to be working nicely.
+
+Here's what I did to get it to work, if anybody's interested. I'm in a
+rush to work, so there may be mistakes. I tried to check that
+everything works.
+
+Summary:
+- buffer.rb is patched to slice all strings according to @width, this
+fixes issues in inbox-mode when email subjects have wide characters.
+Old "hacks" were removed.
+- utils.rb is patched to wrap using display_slice and then looking for
+nearest space. if no space is found, it uses simply the original
+output of display_slice. display_length function defaults to the
+display_width
+
+With quick testing for resizing the window with different kind of test
+emails, I see no lost characters or text corruption.
+
+
+Nice, thanks.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: console-sup-buffer.patch
+Type: text/x-patch
+Size: 754 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100512/57b1f6dd/attachment-0002.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: console-sup-util.patch
+Type: text/x-patch
+Size: 1449 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100512/57b1f6dd/attachment-0003.bin>
+
+From bwalton at cquest.utoronto.ca  Tue May 11 20:28:34 2010
+From: bwalton at cquest.utoronto.ca (Ben Walton)
+Date: Tue, 11 May 2010 20:28:34 -0400
+Subject: [sup-devel] Toggling usual status of sources
+Message-ID: <4BE9F632.3020108@cquest.utoronto.ca>
+
+Hi All,
+
+I'm looking to redefine my mail storage and want to implement a somewhat 
+unorthodox hook[1].  I want to dynamically add new sources to sup while 
+sup is running using the after-poll hook.
+
+So far, I've succeeded in adding a source with the following:
+
+--snip--
+u = "maildir:/u/bwalton/Maildir/.test2/"
+
+unless Redwood::SourceManager.source_for(u)
+   Redwood::Logger.force_message "test2 not setup yet." 
+
+   Redwood::SourceManager.add_source 
+Recoverable.new(Redwood::Maildir.new(u)) un\
+less Redwood::SourceManager.source_for(u)
+end
+--snip--
+
+(Sorry about the wrapping...Thunderbird is driving me nuts.)
+
+Now, what I really want to do is something like:
+
+--snip--
+d = Date.today
+s = "maildir:/u/bwalton/Maildir/.incoming.#{d.year}.#{d.strftime('%m')}"
+
+unless Redwood::SourceManager.source_for(s)
+   # determine currently 'primary' source (decrement month,
+   # possibly wrap month to 12 and decrement year)
+   #add source
+   #toggle usual status on previous source
+end
+--snip--
+
+I don't see a way, currently, to toggle that flag.  Would there be 
+objections to adding support for that?  Is what I'm proposing _too_ nuts?
+
+I already have my procmail recipe delivering into the 
+.incoming.$year.$month folders and have given up filing individual lists 
+into separate folders...With a good before-add-message hook, I can give 
+up on assigning labels based on folders and just have monthly mailboxes 
+that are added automatically. :)
+
+Thoughts?
+
+Thanks
+-Ben
+
+[1] This is along the lines of my 'patterned/dynamic source' idea that I 
+briefly described a few nights back, but I think that was eaten...
+
+From tero at tilus.net  Wed May 12 00:44:29 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 12 May 2010 07:44:29 +0300
+Subject: [sup-devel] Toggling usual status of sources
+In-Reply-To: <4BE9F632.3020108@cquest.utoronto.ca>
+References: <4BE9F632.3020108@cquest.utoronto.ca>
+Message-ID: <1273637602-sup-1446@tilus.net>
+
+Ben Walton, 2010-05-12 03:28:
+>    #toggle usual status on previous source
+> [...]
+> I don't see a way, currently, to toggle that flag.  Would there be
+> objections to adding support for that?  Is what I'm proposing _too_
+> nuts?
+
+Not at all.  If you do that, I'll switch to rotating inbox.
+
+> [1] This is along the lines of my 'patterned/dynamic source' idea
+> that I briefly described a few nights back, but I think that was
+> eaten...
+
+Patterned/dynamic/recursive sources are in my todo-list.  Haven't got
+around implementing it yet.  Gave it some thought though.  Did you
+consider them "virtual" (as in bunch of "physical" maildir/mbox stores
+made transparently look like one source) or "meta" (as in template
+source which sup uses to generate a set of "physical" sources)?  Which
+one would be better?
+
+I think rotating inbox would pretty clean to implement using either
+"virtual" or "meta" source.  If either of them ever got implemented.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From wmorgan-sup at masanjin.net  Thu May 13 08:33:50 2010
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 13 May 2010 08:33:50 -0400
+Subject: [sup-devel] Arch utf8 vs UTF-8 fix and wide character support
+In-Reply-To: <t2s6242182a1005111451uc2781ca0rcd97dbf6d3146684@mail.gmail.com>
+References: <y2j6242182a1005061059w5e32fb54vd10ccfd7e4a1911e@mail.gmail.com>
+	<p2s6242182a1005061102ree7fa042jb595f0a2e7b443cc@mail.gmail.com>
+	<1273250528-sup-9662@zyrg.net>
+	<k2l6242182a1005111150n1b018aanf8a939e1d260b59a@mail.gmail.com>
+	<1273605454-sup-2267@masanjin.net>
+	<t2s6242182a1005111451uc2781ca0rcd97dbf6d3146684@mail.gmail.com>
+Message-ID: <1273753871-sup-7238@masanjin.net>
+
+Reformatted excerpts from Matti Eiden's message of 2010-05-11:
+> Oh right, splitting. Yes right, makes sense. I tried your
+> console/string, seems good, except the display_split ignores the
+> padding request? Or did I understand this feature wrongly? I mean, it
+> slices the string exactly where the end offset is, not by the nearest
+> " ", space?
+
+The padding only comes into play when you ask it to slice a string in
+the middle of a multi-column character. It will then pad the
+left/right/both ends of the string to make the total display width of
+the returned string what you asked for.
+
+> With quick testing for resizing the window with different kind of test
+> emails, I see no lost characters or text corruption.
+
+Awesome. I'll see what I can do about 1.8-compatibility.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From bwalton at artsci.utoronto.ca  Thu May 13 10:15:06 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 13 May 2010 10:15:06 -0400
+Subject: [sup-devel] Toggling usual status of sources
+In-Reply-To: <1273637602-sup-1446@tilus.net>
+References: <4BE9F632.3020108@cquest.utoronto.ca>
+	<1273637602-sup-1446@tilus.net>
+Message-ID: <1273759958-sup-326@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Tero Tilus's message of Wed May 12 00:44:29 -0400 2010:
+
+> Not at all.  If you do that, I'll switch to rotating inbox.
+
+Cool!
+
+> > [1] This is along the lines of my 'patterned/dynamic source' idea
+> > that I briefly described a few nights back, but I think that was
+> > eaten...
+> 
+> Patterned/dynamic/recursive sources are in my todo-list.  Haven't
+> got around implementing it yet.  Gave it some thought though.  Did
+> you consider them "virtual" (as in bunch of "physical" maildir/mbox
+> stores made transparently look like one source) or "meta" (as in
+> template source which sup uses to generate a set of "physical"
+> sources)?  Which one would be better?
+
+I was thinking meta, but virtual is interesting too.  I _think_ that
+meta would be easier to implement given the current code structure.  I
+also think having each of the 'dynamic' sources listed explicitly in
+sources.yaml has some merit.
+
+Thanks
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From bwalton at artsci.utoronto.ca  Thu May 13 21:08:05 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Thu, 13 May 2010 21:08:05 -0400
+Subject: [sup-devel] [PATCH] Fix 1.9-ism use of Array.count
+Message-ID: <1273799285-31140-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Use the size method of array rather than the 1.9 specific count in
+message body parsing.
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ lib/sup/message.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index 0bda5b1..521f00f 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -554,7 +554,7 @@ private
+ 
+       sig = lines.between(GPG_SIGNED_START, GPG_SIG_END)
+       payload = RMail::Message.new
+-      payload.body = sig[1, sig.count-2].join("\n")
++      payload.body = sig[1, sig.size-2].join("\n")
+       return [CryptoManager.verify(nil, msg, false), message_to_chunks(payload)].flatten.compact
+     end
+ 
+-- 
+1.7.0
+
+
+From rlane at club.cc.cmu.edu  Thu May 13 21:58:47 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 13 May 2010 21:58:47 -0400
+Subject: [sup-devel] [PATCH] Overwrite line contents before drawing the
+	new contents (instead of filling up the rest)
+In-Reply-To: <1273258431-sup-4976@midna.zekjur.net>
+References: <1273258431-sup-4976@midna.zekjur.net>
+Message-ID: <1273680127-sup-8786@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of 2010-05-07 14:55:28 -0400:
+> Hi,
+> 
+> quote from the commit message:
+> 
+>   Overwrite line contents before drawing the new contents (instead of filling
+>   up the rest)
+>   
+>   This fixes display problems of mails with tab characters in it, like
+>   "foo\n\tbar"
+> 
+> The problem was that \t is one character but will be displayed as multiple
+> characters, so that the filling started too early and overwrote valid content
+> of the line (the "bar" is not visible).
+> 
+> Best regards,
+> Michael
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Thu May 13 22:32:10 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 13 May 2010 22:32:10 -0400
+Subject: [sup-devel] [PATCH] Fix 1.9-ism use of Array.count
+In-Reply-To: <1273799285-31140-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1273799285-31140-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1273804242-sup-3214@zyrg.net>
+
+Applied to inline-gpg and branch merged to master.
+
+From bwalton at artsci.utoronto.ca  Fri May 14 11:22:24 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 14 May 2010 11:22:24 -0400
+Subject: [sup-devel] [PATCH] Add global keybinding to clear all hooks
+Message-ID: <1273850544-16363-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+When developing/tweaking hooks, it's inconvenient to use the console
+mode to run the clear hooks command.  Add a globally available key
+binding ('H') to trigger HookManager.clear.  As this is now more
+exposed in the UI, make HookManager flash a notice to the
+BufferManager indicating that it cleared the hooks.
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ bin/sup         |    3 +++
+ lib/sup/hook.rb |    2 +-
+ 2 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/bin/sup b/bin/sup
+index ef4092f..8638c78 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -86,6 +86,7 @@ global_keymap = Keymap.new do |k|
+   k.add :nothing, "Do nothing", :ctrl_g
+   k.add :recall_draft, "Edit most recent draft message", 'R'
+   k.add :show_inbox, "Show the Inbox buffer", 'I'
++  k.add :clear_hooks, "Clear all hooks", 'H'
+   k.add :show_console, "Show the Console buffer", '~'
+ 
+   ## Submap for less often used keybindings
+@@ -330,6 +331,8 @@ begin
+       end
+     when :show_inbox
+       BufferManager.raise_to_front ibuf
++    when :clear_hooks
++      HookManager.clear
+     when :show_console
+       b, new = bm.spawn_unless_exists("Console", :system => true) { ConsoleMode.new }
+       b.mode.run
+diff --git a/lib/sup/hook.rb b/lib/sup/hook.rb
+index 08738cd..a2a39a5 100644
+--- a/lib/sup/hook.rb
++++ b/lib/sup/hook.rb
+@@ -112,7 +112,7 @@ EOS
+ 
+   def enabled? name; !hook_for(name).nil? end
+ 
+-  def clear; @hooks.clear; end
++  def clear; @hooks.clear; BufferManager.flash "Hooks cleared" end
+   def clear_one k; @hooks.delete k; end
+ 
+ private
+-- 
+1.7.0
+
+
+From rlane at club.cc.cmu.edu  Fri May 14 12:05:41 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 14 May 2010 12:05:41 -0400
+Subject: [sup-devel] [PATCH] Add global keybinding to clear all hooks
+In-Reply-To: <1273850544-16363-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1273850544-16363-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1273853116-sup-3498@zyrg.net>
+
+Applied to master.
+
+From bwalton at artsci.utoronto.ca  Sat May 15 14:45:21 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sat, 15 May 2010 14:45:21 -0400
+Subject: [sup-devel] [PATCH] Allow toggle on Source.usual and Source.archived
+Message-ID: <1273949121-16731-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Allow sources to be more malleable by allowing for the modification of
+the usual and archived flags.  This is a first step toward patterned
+(meta) sources.  Initially, the patterning will be handled by one of
+the poll hooks, which will use the usual toggle when a 'new' source is
+added.  Later on, this may be handled internally for sources with a
+meta = true attribute (or something similar).
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ lib/sup/source.rb |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/source.rb b/lib/sup/source.rb
+index 6fe7bfb..2f2e5df 100644
+--- a/lib/sup/source.rb
++++ b/lib/sup/source.rb
+@@ -63,7 +63,8 @@ class Source
+   ##
+   ## dirty? means cur_offset has changed, so the source info needs to
+   ## be re-saved to sources.yaml.
+-  bool_reader :usual, :archived, :dirty
++  bool_reader :dirty
++  bool_accessor :usual, :archived
+   attr_reader :uri, :cur_offset
+   attr_accessor :id
+ 
+-- 
+1.7.0
+
+
+From sup-bugs at masanjin.net  Mon May 24 12:30:06 2010
+From: sup-bugs at masanjin.net (wires)
+Date: Mon, 24 May 2010 16:30:06 +0000
+Subject: [sup-devel] [issue101] gem install fails on os x 10.6.3
+In-Reply-To: <1274718605.97.0.0811975060218.issue101@masanjin.net>
+Message-ID: <1274718605.97.0.0811975060218.issue101@masanjin.net>
+
+
+New submission from wires <jelle at defekt.nl>:
+
+I cannot seem to run sup:
+
+I've updated my gem system.
+
+$ sudo sudo gem update --system
+Updating RubyGems
+Updating rubygems-update
+Successfully installed rubygems-update-1.3.7
+Updating RubyGems to 1.3.7
+Installing RubyGems 1.3.7
+RubyGems 1.3.7 installed
+
+=== 1.3.7 / 2010-05-13
+
+Installing sup seems to work
+
+$ sudo gem install sup
+Building native extensions.  This could take a while...
+Building native extensions.  This could take a while...
+Successfully installed xapian-full-1.1.3.4
+Successfully installed ncurses-0.9.1
+Successfully installed rmail-1.0.0
+Successfully installed highline-1.5.2
+Successfully installed net-ssh-2.0.22
+Successfully installed trollop-1.16.2
+Successfully installed lockfile-1.4.3
+Successfully installed mime-types-1.16
+Successfully installed locale-2.0.5
+Successfully installed gettext-2.1.0
+Successfully installed sup-0.11
+11 gems installed
+Installing ri documentation for xapian-full-1.1.3.4...
+Installing ri documentation for ncurses-0.9.1...
+Installing ri documentation for rmail-1.0.0...
+Installing ri documentation for highline-1.5.2...
+Installing ri documentation for net-ssh-2.0.22...
+Installing ri documentation for trollop-1.16.2...
+Installing ri documentation for lockfile-1.4.3...
+Installing ri documentation for mime-types-1.16...
+Installing ri documentation for locale-2.0.5...
+Installing ri documentation for gettext-2.1.0...
+Installing ri documentation for sup-0.11...
+Installing RDoc documentation for xapian-full-1.1.3.4...
+Installing RDoc documentation for ncurses-0.9.1...
+Installing RDoc documentation for rmail-1.0.0...
+Installing RDoc documentation for highline-1.5.2...
+Installing RDoc documentation for net-ssh-2.0.22...
+Installing RDoc documentation for trollop-1.16.2...
+Installing RDoc documentation for lockfile-1.4.3...
+Installing RDoc documentation for mime-types-1.16...
+Installing RDoc documentation for locale-2.0.5...
+Installing RDoc documentation for gettext-2.1.0...
+Installing RDoc documentation for sup-0.11...
+
+But running it fails:
+
+$ sup
+/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle: 
+dlopen(/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle, 
+9): Library not loaded: /usr/local/lib/libxapian-1.1.3.dylib (LoadError)
+  Referenced from: /opt/local/lib/ruby/gems/1.8/gems/xapian-full-
+1.1.3.4/lib/_xapian.bundle
+  Reason: image not found - /opt/local/lib/ruby/gems/1.8/gems/xapian-full-
+1.1.3.4/lib/_xapian.bundle
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`require'
+	from /opt/local/lib/ruby/gems/1.8/gems/xapian-full-
+1.1.3.4/lib/xapian.rb:41
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`gem_original_require'
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`require'
+	from /opt/local/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:3
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`gem_original_require'
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`require'
+	from /opt/local/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:316
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`gem_original_require'
+	from /opt/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:31:in 
+`require'
+	from /opt/local/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:15
+	from /opt/local/bin/sup:19:in `load'
+	from /opt/local/bin/sup:19
+
+These are the installed gems / versions
+
+$ gem list
+
+*** LOCAL GEMS ***
+
+gettext (2.1.0)
+highline (1.5.2)
+locale (2.0.5)
+lockfile (1.4.3)
+mime-types (1.16)
+ncurses (0.9.1)
+net-ssh (2.0.22)
+rmail (1.0.0)
+rubygems-update (1.3.7)
+sup (0.11)
+trollop (1.16.2)
+xapian-full (1.1.3.4)
+
+
+Any thoughts? Thanks :)
+
+----------
+messages: 233
+nosy: wires
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: gem install fails on os x 10.6.3
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue101>
+_________________________________________
+
+From sup-bugs at masanjin.net  Mon May 24 12:54:51 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 24 May 2010 16:54:51 +0000
+Subject: [sup-devel] [issue102] RuntimeError from thread: main
+In-Reply-To: <1274720091.21.0.757446456345.issue102@masanjin.net>
+Message-ID: <1274720091.21.0.757446456345.issue102@masanjin.net>
+
+
+New submission from anonymous:
+
+I just installed sup in Arch Linux using AUR [1]. When executing sup for first 
+time i get an error.
+
+The content of ~/.sup/exception-log.txt is:
+
+--- RuntimeError from thread: main
+can't modify frozen string
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `force_encoding'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `block in 
+add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:53:in `add_account'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/account.rb:37:in `initialize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `new'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/util.rb:574:in `init'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:126:in `start'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:153:in `<module:Redwood>'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/bin/sup:68:in `<top (required)>'
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19:in `<main>'
+
+----------
+messages: 234
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.9.1p378 (2010-01-10 revision 26273) [i686-linux]
+status: unread
+sup_version: 0.11
+title: RuntimeError from thread: main
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue102>
+_________________________________________
+
+From sup-bugs at masanjin.net  Tue May 25 13:18:01 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Tue, 25 May 2010 17:18:01 +0000
+Subject: [sup-devel] [issue103] undefined method `has_label?' for
+	nil:NilClass
+In-Reply-To: <1274807881.68.0.551439031073.issue103@masanjin.net>
+Message-ID: <1274807881.68.0.551439031073.issue103@masanjin.net>
+
+
+New submission from anonymous:
+
+While reading a thread I encountered the following exception. I had used ",," (switch to next thread without archiving the current one) a few seconds before the crash. offlineimap was running, but inactive at the time of the crash.
+
+--- NoMethodError from thread: load messages for thread-view-mode
+undefined method `has_label?' for nil:NilClass
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:833:in `text_for_thread_at'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/usr/lib/ruby/1.8/sup/util.rb:414:in `map_with_index'
+/usr/lib/ruby/1.8/sup/hook.rb:55:in `each_with_index'
+/usr/lib/ruby/1.8/sup/util.rb:414:in `each'
+/usr/lib/ruby/1.8/sup/util.rb:414:in `each_with_index'
+/usr/lib/ruby/1.8/sup/util.rb:414:in `map_with_index'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:781:in `regen_text'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:242:in `update'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:219:in `handle_spammed_update'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `send'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `relay'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `each'
+/usr/lib/ruby/1.8/sup/update.rb:26:in `relay'
+/usr/lib/ruby/1.8/sup/util.rb:570:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:570:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:560:in `spam_and_then'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:600
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:129:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:129:in `select'
+/usr/lib/ruby/1.8/sup.rb:75:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:73:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:73:in `new'
+/usr/lib/ruby/1.8/sup.rb:73:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:109:in `select'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:159:in `launch_another_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:141:in `launch_next_thread_after'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:606:in `dispatch'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:558:in `spam_and_then'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:533:in `spam_and_next'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:279:in `handle_input'
+/usr/bin/sup-mail:277
+
+----------
+messages: 235
+nosy: anonymous
+priority: bug
+ruby_version: 4.4 (Debian squeeze)
+status: unread
+sup_version: 0.11-2 (Debian squeeze)
+title: undefined method `has_label?' for nil:NilClass
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue103>
+_________________________________________
+
+From wking at drexel.edu  Tue May 25 14:50:27 2010
+From: wking at drexel.edu (W. Trevor King)
+Date: Tue, 25 May 2010 14:50:27 -0400
+Subject: [sup-devel] email threading - tree vs. graph
+In-Reply-To: <1266730498-sup-78@tilus.net>
+References: <20100218114943.GB911@mjolnir>
+ <1266730498-sup-78@tilus.net>
+Message-ID: <20100525185026.GA11947@thialfi.home.net>
+
+On Sun, Feb 21, 2010 at 08:38:35AM +0200, Tero Tilus wrote:
+> W. Trevor King, 2010-02-18 13:49:
+> > Since email can have multiple parents [1], why does everyone make
+> > threads trees rather than directed, acyclic graphs (DAGs)?
+> > ...
+> > On an implementation level, I've got the above graph browser going
+> > in python/curses, so it should be easy to port to ruby/curses.
+> 
+> Have a pointer to code?
+> 
+> I would love to see sup being able to do something usefull with
+> multiple parent messages.
+
+I got some good feedback from Nicolas Pouillard on the Python tidbit I
+posted, but after waiting optimisticly for some enterprising Rubist to
+port it to Ruby and merge it into Sup, I've finally taught myself
+enough Ruby to do it myself ;).  Here's DAG-supporting Sup (+ a few
+glaring documentation updates)
+
+  http://www.physics.drexel.edu/~wking/code/git/git.php?p=sup.git
+
+I haven't done any benchmarking vs the tree-threading code, but if it
+turns out to be too slow, we can always use:
+  if @graph_thread
+    ...general...code...
+  else
+    ...old...tree...code...
+  end
+for bottleneck methods.
+
+We could also resurect the old indentation-style display in the thread
+viewer, if people dislike my tig-style ascii graph.
+
+Cheers,
+Trevor
+
+-- 
+This email may be signed or encrypted with GPG (http://www.gnupg.org).
+The GPG signature (if present) will be attached as 'signature.asc'.
+For more information, see http://en.wikipedia.org/wiki/Pretty_Good_Privacy
+
+My public key is at http://www.physics.drexel.edu/~wking/pubkey.txt
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100525/2b2d676a/attachment.bin>
+
+From pi+sup at pihost.us  Wed May 26 17:48:12 2010
+From: pi+sup at pihost.us (pi+sup at pihost.us)
+Date: Wed, 26 May 2010 14:48:12 -0700
+Subject: [sup-devel] [PATCH] Respect source.archived? in poll.
+Message-ID: <1274910492-13206-1-git-send-email-pi+sup@pihost.us>
+
+From: Anthony Martinez <pi+sup at pihost.us>
+
+[14:31:51] <mtp> i have some sources marked as pre-archived, but it isn't obeying that
+[14:38:02] <mtp> looks like 51789907cfcf80b5edb4d597c91a7c888ce5e003 broke it in the first hunk of lib/sup/poll.rb
+
+This appears to fix it.
+---
+ lib/sup/poll.rb |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/poll.rb b/lib/sup/poll.rb
+index 20931f5..607d06a 100644
+--- a/lib/sup/poll.rb
++++ b/lib/sup/poll.rb
+@@ -158,6 +158,7 @@ EOS
+           m = Message.build_from_source source, args[:info]
+           old_m = Index.build_message m.id
+           m.labels += args[:labels]
++          m.labels.delete :inbox  if source.archived?
+           m.labels.delete :unread if source.read?
+           m.labels.delete :unread if m.source_marked_read? # preserve read status if possible
+           m.labels.each { |l| LabelManager << l }
+-- 
+1.6.6
+
+
+From rlane at club.cc.cmu.edu  Wed May 26 23:31:04 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 26 May 2010 23:31:04 -0400
+Subject: [sup-devel] now in next: maildir and index version bump
+Message-ID: <1274847527-sup-4673@zyrg.net>
+
+I've merged the maildir branch to next. These changes allow Sup to
+handle maildirs where messages are being moved and deleted. There are
+still some UI fixes I need to make to handle moved/deleted messages
+smoothly, but I'm hoping that with the current code there aren't any
+regressions.
+
+The maildir branch changes the how message locations are stored so
+you'll have to do a full sync after upgrading. I've made sure of this by
+incrementing the index version number. This is the first incompatible
+index format change since switching to xapian, so I've taken the
+opportunity to remove old compatibility code and make some improvements
+to sup-dump. The sup-dump in next will work against any older
+xapian-based index, so there's no need to downgrade to run it. It will
+also work against newer index versions unless the basic structure
+changes.
+
+From sup-bugs at masanjin.net  Fri May 28 06:57:33 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Fri, 28 May 2010 10:57:33 +0000
+Subject: [sup-devel] [issue104] Switching Reply To: discards the signature
+In-Reply-To: <1275044253.64.0.816531245566.issue104@masanjin.net>
+Message-ID: <1275044253.64.0.816531245566.issue104@masanjin.net>
+
+
+New submission from anonymous:
+
+- hit 'r' (reply) in thread list mode or <enter> in thread-view-mode;
+- highlight Reply To:
+- change the option to anything else (even come back to Sender)
+- the signature is gone
+
+----------
+messages: 239
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: master 6bc5fac5b9321acacce27a93f30e576d343b1ee5
+title: Switching Reply To: discards the signature
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue104>
+_________________________________________
+
+From =?utf-8?q?=C3=81lvaro_Herrera_=3Csup-bugs=40masanjin=2Enet=3E?=  Fri May 28 22:31:27 2010
+From: =?utf-8?q?=C3=81lvaro_Herrera_=3Csup-bugs=40masanjin=2Enet=3E?= (=?utf-8?q?=C3=81lvaro_Herrera_=3Csup-bugs=40masanjin=2Enet=3E?=)
+Date: Sat, 29 May 2010 02:31:27 +0000
+Subject: [sup-devel] [issue105] crash exception when viewing attachment with
+	/s in filename
+In-Reply-To: <1275100287.61.0.534667728298.issue105@masanjin.net>
+Message-ID: <1275100287.61.0.534667728298.issue105@masanjin.net>
+
+
+New submission from ??lvaro Herrera <alvherre at alvh.no-ip.org>:
+
+Got this exception today:
+
+--- RuntimeError from thread: main
+cannot generate tempfile `/home/alvherre/tmp/13416-9-/pgpatches/regexp'
+/usr/lib/ruby/1.8/tempfile.rb:52:in `initialize'
+/usr/lib/ruby/1.8/sup/message-chunks.rb:152:in `new'
+/usr/lib/ruby/1.8/sup/message-chunks.rb:152:in `write_to_disk'
+/usr/lib/ruby/1.8/sup/message-chunks.rb:145:in `view!'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:839:in `view'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:341:in `activate_chunk'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:279:in `handle_input'
+/usr/bin/sup-mail:277
+
+The problem is that the attachment contains forward slashes in the filename, and 
+this makes tempfile to raise an exception because it's expecting the directory 
+to exist.
+
+Example message: http://archives.postgresql.org/msgtxt.php?
+id=201005290201.o4T21bk04708 at momjian.us
+
+The attached patch (to 0.11) fixes the problem.
+
+----------
+files: msgchunks.patch
+messages: 240
+nosy: alvherre
+priority: bug
+ruby_version: 1.8
+status: unread
+sup_version: 0.11
+title: crash exception when viewing attachment with /s in filename
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue105>
+_________________________________________
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: msgchunks.patch
+Type: application/octet-stream
+Size: 372 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20100529/d0662af1/attachment.obj>
+
+From sup-bugs at masanjin.net  Mon May 31 07:48:29 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 31 May 2010 11:48:29 +0000
+Subject: [sup-devel] [issue106] Crash with exception :undefined method 'ord'
+In-Reply-To: <1275306509.64.0.734598838682.issue106@masanjin.net>
+Message-ID: <1275306509.64.0.734598838682.issue106@masanjin.net>
+
+
+New submission from anonymous:
+
+Crash.
+Attached exception log.
+
+----------
+files: exception-log.txt
+messages: 241
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.8.6
+status: unread
+sup_version: 0.10
+title: Crash with exception :undefined method 'ord'
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue106>
+_________________________________________
+-------------- next part --------------
+--- NoMethodError from thread: main
+undefined method `ord' for 121:Fixnum
+/usr/lib/ruby/gems/1.8/gems/sup-0.10/lib/sup/buffer.rb:648:in `ask_yes_or_no'
+/usr/lib/ruby/gems/1.8/gems/sup-0.10/bin/sup:282
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From bwalton at artsci.utoronto.ca  Mon May 31 16:48:37 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 31 May 2010 16:48:37 -0400
+Subject: [sup-devel] [issue106] Crash with exception :undefined method
+	'ord'
+In-Reply-To: <1275306509.64.0.734598838682.issue106@masanjin.net>
+References: <1275306509.64.0.734598838682.issue106@masanjin.net>
+Message-ID: <1275338876-sup-2263@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from anonymous's message of Mon May 31 07:48:29 -0400 2010:
+
+> --- NoMethodError from thread: main
+> undefined method `ord' for 121:Fixnum
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10/lib/sup/buffer.rb:648:in `ask_yes_or_no'
+> /usr/lib/ruby/gems/1.8/gems/sup-0.10/bin/sup:282
+> /usr/bin/sup:19:in `load'
+> /usr/bin/sup:19
+
+You're running a pretty old sup.  Try updating.  There was a bug fixed
+related to this method some time ago.
+
+HTH.
+-Ben
+-- 
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+

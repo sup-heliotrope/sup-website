@@ -1,0 +1,286 @@
+From dmishd at gmail.com  Sat Dec 17 13:46:07 2011
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 17 Dec 2011 18:46:07 +0000
+Subject: [sup-devel] [PATCH] Don't fail on empty lines while expanding
+In-Reply-To: <1318500554-sup-8811@qwerzila>
+References: <1318500554-sup-8811@qwerzila>
+Message-ID: <CAOxvSbc_S9grJVZxjTT3e1jepE53y9Y5ZYgy-n9QRboVMQvLzA@mail.gmail.com>
+
+Applied to next.
+
+Hamish
+
+On 13 October 2011 11:10, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> While expanding an GPG signature which must have contained a line that
+> ended up as nil while chomp'ing, chomp will crash. This patch filters
+> out lines which are nil.
+> ---
+> ?lib/sup/modes/thread-view-mode.rb | ? ?2 +-
+> ?1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/lib/sup/modes/thread-view-mode.rb b/lib/sup/modes/thread-view-mode.rb
+> index 9fcc45d..ec1a82e 100644
+> --- a/lib/sup/modes/thread-view-mode.rb
+> +++ b/lib/sup/modes/thread-view-mode.rb
+> @@ -846,7 +846,7 @@ private
+> ? ? ? else
+> ? ? ? ? width = buffer.content_width
+> ? ? ? end
+> - ? ? ?lines = lines.map { |l| l.chomp.wrap width }.flatten
+> + ? ? ?lines = lines.map { |l| l.chomp.wrap width if l }.flatten
+> ? ? end
+> ? ? return lines
+> ? end
+> --
+> 1.7.7
+>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+
+From michael+sup at stapelberg.de  Mon Dec 19 18:42:20 2011
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 19 Dec 2011 23:42:20 +0000
+Subject: [sup-devel] Status of Heliotrope/Turnsole?
+Message-ID: <1324338016-sup-6248@stapelberg.de>
+
+Hi William,
+
+I am wondering what the current status of Heliotrope/Turnsole is? I threw my
+mails into it and from the first few minutes with it, it seems pretty usable (I
+didn?t have an in-depth look, though).
+
+Do you recommend it for daily use?
+
+Which features are missing until you want to make the first release? Do you
+need any help with anything?
+
+Is there a migration path for sup users (to migrate labels, hooks, configfile)?
+
+Best regards,
+Michael
+
+From wmorgan at masanjin.net  Mon Dec 19 19:31:42 2011
+From: wmorgan at masanjin.net (William Morgan)
+Date: Mon, 19 Dec 2011 16:31:42 -0800
+Subject: [sup-devel] Status of Heliotrope/Turnsole?
+In-Reply-To: <1324338016-sup-6248@stapelberg.de>
+References: <1324338016-sup-6248@stapelberg.de>
+Message-ID: <1324340519-sup-5614@typhon>
+
+Hi Michael,
+
+Excerpts from Michael Stapelberg's message of 2011-12-19 15:42:20 -0800:
+> I am wondering what the current status of Heliotrope/Turnsole is? I
+> threw my mails into it and from the first few minutes with it, it
+> seems pretty usable (I didn?t have an in-depth look, though).
+> 
+> Do you recommend it for daily use?
+
+I have been using it for my personal email for a couple weeks now, so
+it's certainly possible. I don't know if I would recommend it. The
+obvious issues are:
+
+Turnsole:
+- Communication with the server is still mostly synchronous, which means
+  the UI is very laggy unless the server is running on the same machine.
+  I'm slowly working on fixing this (there is a good async mechanism in
+  there; I just have to move all the operaitons over).
+- The addressbook / favorites stuff isn't in there, so you have to type
+  everyone's email address out by hand all the time. Irritating.
+- No drafts. Irritating.
+
+Heliotrope:
+- I occasionally see weirdnesses in search. Specifically, labels being
+  "forgotten" by the server for a brief time period, and repeated
+  searches of the same query getting "stuck" on later result pages for
+  no apparent reason.
+
+> Which features are missing until you want to make the first release?
+> Do you need any help with anything?
+
+The above list is what I'm interested in help with and is basically my
+0.1 release goal, though possibly drafts and addressbook can be left
+out.
+
+> Is there a migration path for sup users (to migrate labels, hooks,
+> configfile)?
+
+The hooks and config file will probably have to be done manually.
+There's not really a 1-to-1 mapping.
+
+But to the above release-ready list you can add another big one: being
+able to import your sup mail into heliotrope, including labels and
+message state. Right now you can basically do this if you have only one
+mail source in sup. Multiple mail sources require Heliotrope being able
+to reorder the index. I have code for this (bin/heliotrope-reindex) but
+when I tried it I found some weird bugs, so I have to figure this one
+out.
+
+Hope that's helpful. Now that I'm using it every day, I'm pretty
+motivated to fix these things. :)
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan at masanjin.net  Wed Dec 28 17:23:06 2011
+From: wmorgan at masanjin.net (William Morgan)
+Date: Wed, 28 Dec 2011 14:23:06 -0800
+Subject: [sup-devel] Status of Heliotrope/Turnsole?
+In-Reply-To: <1324340519-sup-5614@typhon>
+References: <1324338016-sup-6248@stapelberg.de> <1324340519-sup-5614@typhon>
+Message-ID: <1325110949-sup-9638@tw-mbp-wmorgan.local>
+
+Excerpts from William Morgan's message of Mon Dec 19 16:31:42 -0800 2011:
+> - Communication with the server is still mostly synchronous
+
+Fixed.
+
+> - I occasionally see weirdnesses in search.
+
+Fixed.
+-- 
+William <w at masanjin.net>
+
+From wmorgan at masanjin.net  Fri Dec 30 00:50:46 2011
+From: wmorgan at masanjin.net (William Morgan)
+Date: Thu, 29 Dec 2011 21:50:46 -0800
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+Message-ID: <1325223938-sup-1516@tw-mbp-wmorgan.local>
+
+Excerpts from Robin Burchell's message of Tue Dec 13 08:46:30 -0800 2011:
+> I recently tried Turnsole/Heliotrope from git. I'm forced (thanks to
+> Fedora) to use Ruby 1.8, and noticed there were at least one issue in
+> both Heliotrope and Turnsole. Patches attached.
+
+Thank you. I've applied the IMAP one. The escapeHTML issue I believe
+I've fixed elsewise. Please let me know if it doesn't work for you.
+
+As for the string encoding error, I'm reluctant to apply string encoding
+patches like that because they tend to infect the entire codebase. (Sup
+is a good example of this.) If you can figure out the source of the
+corrupted string, then we can fix the problem at the point where it's
+brought into the system rather than having to fix every possible place.
+
+> P.S. Did you take a look at
+> http://www.mail-archive.com/sup-devel at rubyforge.org/msg01071.html ?
+> I'm interested in two-way sync as much as is sanely possible (both
+> gmail and regular imap), without it, I sadly don't think I'll ever be
+> able to become more than a casual observer.
+
+I am more than happy that someone is working on this, but it's not a
+problem I personally want to address. I would rather make Heliotrope so
+awesome that it's worth switching to, and provide easy exit mechanisms
+so that you aren't trapped.
+-- 
+William <w at masanjin.net>
+
+From matthieu.rakotojaona at gmail.com  Fri Dec 30 02:39:35 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Fri, 30 Dec 2011 08:39:35 +0100
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <1325223938-sup-1516@tw-mbp-wmorgan.local>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+	<1325223938-sup-1516@tw-mbp-wmorgan.local>
+Message-ID: <CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+
+On Fri, Dec 30, 2011 at 6:50 AM, William Morgan <wmorgan at masanjin.net> wrote:
+>> P.S. Did you take a look at
+>> http://www.mail-archive.com/sup-devel at rubyforge.org/msg01071.html ?
+>> I'm interested in two-way sync as much as is sanely possible (both
+>> gmail and regular imap), without it, I sadly don't think I'll ever be
+>> able to become more than a casual observer.
+>
+> I am more than happy that someone is working on this, but it's not a
+> problem I personally want to address.
+
+I am currently working on a IMAP frontend to heliotrope [0]. It is not
+entirely functional yet (mostly has encoding errors), but it's more or
+less functional. Coded with love, not expertise.
+
+Problem : to use this, you will have to use a modified version of
+heliotrope (mostly only a new method in heliotrope-client to fetch
+only messageinfos and not the whole body if needed). I'll send a merge
+request when I have the time, that is next year.
+
+Happy new year !
+
+[0] https://github.com/rakoo/imaptrope
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Fri Dec 30 14:35:29 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 30 Dec 2011 11:35:29 -0800
+Subject: [sup-devel] Ruby 1.8 compatibility patches for Heliotrope and
+	Turnsole.
+In-Reply-To: <CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+References: <CA+ogd7HSKVpt27u6vcqi9LAjWmSWvvtaMgHv8eE9XgAxz_RpxQ@mail.gmail.com>
+	<1325223938-sup-1516@tw-mbp-wmorgan.local>
+	<CAMiZLn2k-AqQ-XOQenu-kSDKhRjg-nF7Pch++cpjr8fX_6whqg@mail.gmail.com>
+Message-ID: <1325273627-sup-7605@typhon>
+
+Excerpts from Matthieu Rakotojaona's message of 2011-12-29 23:39:35 -0800:
+> I am currently working on a IMAP frontend to heliotrope [0].
+
+This is something I'm really excited about having, since it means you
+will be able to read your email from all sorts of other clients,
+including your phone.
+
+> Problem : to use this, you will have to use a modified version of
+> heliotrope (mostly only a new method in heliotrope-client to fetch
+> only messageinfos and not the whole body if needed). I'll send a merge
+> request when I have the time, that is next year.
+
+That shouldn't be a problem to merge in.
+-- 
+William <wmorgan at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Dec 30 15:31:24 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 30 Dec 2011 12:31:24 -0800
+Subject: [sup-devel] importing your sup email into heliotrope
+Message-ID: <1325277038-sup-3185@tw-mbp-wmorgan.local>
+
+If you're feeling adventurous, here is how to import your Sup email into
+Heliotrope. This might break horribly for you--no guarantees. Bug
+reports are welcome.
+
+1. Install heliotrope and its dependencies. There is no gem yet, so
+   follow the instructions at https://github.com/wmorgan/heliotrope.
+
+2. Dump your sup labels to a file by running sup-dump > <dumpfile>.
+
+3. Import your mail sources into heliotrope. Mbox and maildir sources
+   should go pretty quick; IMAP, as usual, will be very slow. For each
+   source you can do this:
+
+     $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-import --dir <mailstore dir> --sup-dumpfile <dumpfile> --mbox <mbox file>
+
+   Or replace "--mbox <mbox file>" with the corresponding argument to
+   your source (use --help to see them all).
+
+4. Add your ~/.sup/drafts.mbox file using the same commands.
+
+5. Finally, reorder the index so that messages appear in order:
+
+     $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-reindex --reorder --dir <mailstore dir>
+     $HELIOTROPE_DIR> mv <mailstore dir>/index <mailstore dir>/index-old
+     $HELIOTROPE_DIR> mv <mailstore dir>/index-reindexed <mailstore dir>/index
+
+6. Start the server:
+
+     $HELIOTROPE_DIR> ruby -Ilib bin/heliotrope-server --dir <mailstore dir>
+
+Point your web browser to http://localhost:8042 and see if that works!
+If it looks good, you can also try and get turnsole working, for a
+Sup-like client: https://github.com/wmorgan/turnsole.
+
+Good luck and have fun!
+-- 
+William <w at masanjin.net>
+

@@ -1,0 +1,414 @@
+From eg at gaute.vetsj.com  Sat Apr 13 17:37:01 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 19:37:01 +0200
+Subject: [sup-devel] [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <5169925C.1060701@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+Message-ID: <516997BD.7010409@gaute.vetsj.com>
+
+If we go sup2 I would suggest the following plan:
+
+- Release the best we can get with the current code for 1.9.3 as a last
+community release of sup-0.12, say.. sup-0.13.
+
+For sup2:
+- Fork a new repo: sup2
+- Go for Mail in stead of RMail (index breakage)
+- Go for only Psych (config breakage), requires psych gem in 1.8
+- Integrate the IMAP / label sync back stuff (personally this is what I
+miss the most)
+- Go for ruby 2.0.0 and maybe 1.8
+- Get rid of all dependencies that are abandoned or deprecated (ncurses
+gem..)
+- Try to do tests on most stuff for different encodings
+- Try to get UTF-8 / encoding right
+- Move all the rest of the infrastructure to something the project is in
+control of
+
+Would be very nice:
+- Index migration
+- Config migration
+
+For the web page (eventually):
+- note about the original project
+- note about the last sup-0.13 release
+- wiki and project page for sup2
+
+This plan more or less holds whether we go sup2 or not, but I think it
+is easier to get rid of the hopeless dependencies.
+
+@sup-devel readers: discussion is currently at sup-talk, please send any
+responses there.
+
+Regards, Gaute
+
+On 13. april 2013 19:14, Gaute Hope wrote:
+> 
+> 
+> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Jonathan: I put your commit into a pull request at:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>
+>>>>> Also, re-branding and updating to web-references:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>
+>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>
+>>>> No, thank you very much! That looks great!
+>>>>
+>>>>> It is a pity that the official home page and probably first search
+>>>>> results direct to the abandoned home and gem of sup.
+>>>>
+>>>> It is too bad. Hopefully William could hand off access or at least
+>>>> push updates somehow.
+>>>>
+>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>
+>>>> --j
+>>>
+>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>> I'd be happy to add you to the github-organization.
+>>
+>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>> sup-heliotrope.github.io for pages.
+>>
+>> Stick me on the org, and I'll see about getting a simple site started.
+> 
+> Nice. You're on.
+> 
+> Cheers, Gaute
+> 
+
+From jof at thejof.com  Sat Apr 13 20:48:55 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 13:48:55 -0700
+Subject: [sup-devel] [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+Message-ID: <CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+
+Maybe William can help out?
+https://twitter.com/wm/status/323175493367119873
+
+On Sat, Apr 13, 2013 at 12:19 PM, Jonathan Lassoff <jof at thejof.com> wrote:
+> On Sat, Apr 13, 2013 at 10:37 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>> If we go sup2 I would suggest the following plan:
+>>
+>> - Release the best we can get with the current code for 1.9.3 as a last
+>> community release of sup-0.12, say.. sup-0.13.
+>>
+>> For sup2:
+>> - Fork a new repo: sup2
+>> - Go for Mail in stead of RMail (index breakage)
+>> - Go for only Psych (config breakage), requires psych gem in 1.8
+>> - Integrate the IMAP / label sync back stuff (personally this is what I
+>> miss the most)
+>> - Go for ruby 2.0.0 and maybe 1.8
+>> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>> gem..)
+>
+> And target ncursesw?
+>
+>> - Try to do tests on most stuff for different encodings
+>> - Try to get UTF-8 / encoding right
+>> - Move all the rest of the infrastructure to something the project is in
+>> control of
+>>
+>> Would be very nice:
+>> - Index migration
+>> - Config migration
+>>
+>> For the web page (eventually):
+>> - note about the original project
+>> - note about the last sup-0.13 release
+>> - wiki and project page for sup2
+>>
+>> This plan more or less holds whether we go sup2 or not, but I think it
+>> is easier to get rid of the hopeless dependencies.
+>
+> I agree that it's worth it to drop unmaintained dependencies and just
+> fix what breaks.
+> It would be unfortunate to have to fork the project and make a
+> different name. I wonder if Morgan has lost interest or is just busy
+> with other things.
+>
+> Cheers,
+> jof
+>> @sup-devel readers: discussion is currently at sup-talk, please send any
+>> responses there.
+>>
+>> Regards, Gaute
+>>
+>> On 13. april 2013 19:14, Gaute Hope wrote:
+>>>
+>>>
+>>> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>>>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> Jonathan: I put your commit into a pull request at:
+>>>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>>>
+>>>>>>> Also, re-branding and updating to web-references:
+>>>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>>>
+>>>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>>>
+>>>>>> No, thank you very much! That looks great!
+>>>>>>
+>>>>>>> It is a pity that the official home page and probably first search
+>>>>>>> results direct to the abandoned home and gem of sup.
+>>>>>>
+>>>>>> It is too bad. Hopefully William could hand off access or at least
+>>>>>> push updates somehow.
+>>>>>>
+>>>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>>>
+>>>>>> --j
+>>>>>
+>>>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>>>> I'd be happy to add you to the github-organization.
+>>>>
+>>>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>>>> sup-heliotrope.github.io for pages.
+>>>>
+>>>> Stick me on the org, and I'll see about getting a simple site started.
+>>>
+>>> Nice. You're on.
+>>>
+>>> Cheers, Gaute
+>>>
+
+From eg at gaute.vetsj.com  Sat Apr 13 22:17:32 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 14 Apr 2013 00:17:32 +0200
+Subject: [sup-devel] [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+	<CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+Message-ID: <5169D97C.6020909@gaute.vetsj.com>
+
+On la. 13. april 2013 kl. 22.48 +0200, Jonathan Lassoff wrote:
+> Maybe William can help out?
+> https://twitter.com/wm/status/323175493367119873
+
+That would be the best ;)
+
+But I still think we need to get rid of the deprecated and abandoned 
+stuff.
+
+- gaute
+
+From dmishd at gmail.com  Sun Apr 28 20:32:08 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 28 Apr 2013 21:32:08 +0100
+Subject: [sup-devel] sup 0.13
+Message-ID: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+
+We'd like to get version 0.13 of sup out soon.  There's a fair bit of
+work gone into sup since 0.12 was released (in January 2011) that it
+would be good to get out there. Once that is done we can then work on
+the bigger goals we have for 0.14 - see
+https://github.com/sup-heliotrope/sup/wiki/Development#roadmap for
+those plans.
+
+So the question is, are there any serious bugs that we should fix
+before releasing 0.13? In particular are there any regressions from
+0.12. I'm not aware of any at the moment. Looking at the issue list on
+github, there is:
+
+Invalid date in ncursesw gemspec for Ruby 1.8
+https://github.com/sup-heliotrope/sup/issues/18
+
+This is causing issues for gem installs.  #30 is a possible fix that
+requires testing (by using ncurses-ruby instead of ncursesw).  Could
+people try testing this branch on your own set up?
+
+Unable to add sources
+https://github.com/sup-heliotrope/sup/issues/33
+
+This is another issue we should at least look into before a release.
+Any testing etc appreciated.
+
+If you have a burning issue that you think should be fixed in 0.13,
+please add it to the issue tracker now so we can decide.
+
+I've also lost track of what's gone on to the develop branch. Should
+0.13 be based on the master branch or develop?
+
+Here's hoping we can get 0.13 out soon
+
+Hamish
+
+From eg at gaute.vetsj.com  Sun Apr 28 20:54:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 28 Apr 2013 22:54:23 +0200
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+Message-ID: <517D8C7F.8050603@gaute.vetsj.com>
+
+On 28. april 2013 22:32, Hamish D wrote:
+> I've also lost track of what's gone on to the develop branch. Should
+> 0.13 be based on the master branch or develop?
+
+develop should be ready for 0.13.
+
+I don't know if it is useful; but I set up a few milestones in the tracker.
+
+
+Cheers, Gaute
+
+From isra at herraiz.org  Mon Apr 29 11:02:36 2013
+From: isra at herraiz.org (Israel Herraiz)
+Date: Mon, 29 Apr 2013 13:02:36 +0200
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+Message-ID: <1367233230-sup-3593@tesla>
+
+Excerpts from Hamish D's message of Sun Apr 28 22:32:08 +0200 2013:
+> So the question is, are there any serious bugs that we should fix
+> before releasing 0.13? In particular are there any regressions from
+> 0.12. I'm not aware of any at the moment.
+
+I read the following in the roadmap:
+
+  "Release sup-0.13 very soon: will not include maildir support or
+  work on Ruby 2."
+
+Does that mean that maildir support will be dropped? Or is it related
+to maildir syncback? Will I be able to read maildirs using Sup 0.13?
+
+Cheers,
+Israel
+
+From eg at gaute.vetsj.com  Mon Apr 29 11:39:04 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 29 Apr 2013 13:39:04 +0200
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <1367233230-sup-3593@tesla>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<1367233230-sup-3593@tesla>
+Message-ID: <517E5BD8.6030803@gaute.vetsj.com>
+
+
+
+On 29. april 2013 13:02, Israel Herraiz wrote:
+> Excerpts from Hamish D's message of Sun Apr 28 22:32:08 +0200 2013:
+>> So the question is, are there any serious bugs that we should fix
+>> before releasing 0.13? In particular are there any regressions from
+>> 0.12. I'm not aware of any at the moment.
+> 
+> I read the following in the roadmap:
+> 
+>   "Release sup-0.13 very soon: will not include maildir support or
+>   work on Ruby 2."
+> 
+> Does that mean that maildir support will be dropped? Or is it related
+> to maildir syncback? Will I be able to read maildirs using Sup 0.13?
+
+err.. that should have been syncback. maildir support will stay as it is.
+
+Cheers, Gaute
+
+From hsanson at gmail.com  Tue Apr 30 09:44:56 2013
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 30 Apr 2013 18:44:56 +0900
+Subject: [sup-devel] sup 0.13
+In-Reply-To: <517E5BD8.6030803@gaute.vetsj.com>
+References: <CAOxvSbeLRoCwy2THkKa4TKsNqdsx9n-M5BxrZHGfPEUjfEWjSg@mail.gmail.com>
+	<1367233230-sup-3593@tesla> <517E5BD8.6030803@gaute.vetsj.com>
+Message-ID: <CAHWBo_aKjp__dkjuJ-tYHpKJuv2G=k_jxTWMo0QyyUtvxZbGXA@mail.gmail.com>
+
+Great to see Sup getting back on track again..
+
+I submitted some patches for the Gmail dumper of Heliotrope some time ago
+but the lack of non alphabet languages (Japanese, Chinese) made it
+impossible for me to keep using heliotrope/turnesole.
+
+The main issue to support Japanese/Chinese with heliotrope was that
+whistlepig (indexer) lacked the ability to tokenize these languages. Also
+the half baked UTF-8 support caused several issues with these languages.
+
+I would like to help in testing/implementing support for these languages,
+starting with Japanese, but I would require some guidance. First I would
+like to know is there is a way to configure the Xapian tokenizer
+(segmenter) within sup? Please consider that I am new to both sup and to
+Xapian.
+
+Also considering that development of ruby 1.8.x is going to be discontinued
+on June 2013 I don't find necessary to keep compatibility with it. This
+would improve UTF-8 support and eliminate the hacks required to support
+UTF-8 on ruby 1.8.x installations.
+
+regards,
+Horacio
+
+
+
+On Mon, Apr 29, 2013 at 8:39 PM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+>
+>
+> On 29. april 2013 13:02, Israel Herraiz wrote:
+> > Excerpts from Hamish D's message of Sun Apr 28 22:32:08 +0200 2013:
+> >> So the question is, are there any serious bugs that we should fix
+> >> before releasing 0.13? In particular are there any regressions from
+> >> 0.12. I'm not aware of any at the moment.
+> >
+> > I read the following in the roadmap:
+> >
+> >   "Release sup-0.13 very soon: will not include maildir support or
+> >   work on Ruby 2."
+> >
+> > Does that mean that maildir support will be dropped? Or is it related
+> > to maildir syncback? Will I be able to read maildirs using Sup 0.13?
+>
+> err.. that should have been syncback. maildir support will stay as it is.
+>
+> Cheers, Gaute
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130430/22c4fa84/attachment.html>
+

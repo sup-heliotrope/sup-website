@@ -1,0 +1,815 @@
+From jof at thejof.com  Wed Jan  2 20:24:43 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Wed, 2 Jan 2013 12:24:43 -0800
+Subject: [sup-talk] sup bug tracker down?
+Message-ID: <CAHsqw9szovBD8_R+RBPXn66masg-i4RAH+s+k09mcrzc5EapqA@mail.gmail.com>
+
+I hit a really unfortunate crash in my primary sup instance, and am
+having trouble recovering from filesystem snapshot backups.
+
+I went to go and submit a bug, but it seems that the bug tracker is
+down. It still seems to be on wmorgan's domain. Should it still be
+there? Maybe we could transition out to somewhere else?
+
+I'll show the bug in another thread.
+
+--j
+
+From jof at thejof.com  Wed Jan  2 20:26:15 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Wed, 2 Jan 2013 12:26:15 -0800
+Subject: [sup-talk] sup Xapian crash
+Message-ID: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+
+I'm having a sad day with sup. I'm crashing with a Xapian error I'll
+have to dig into.
+
+The exception is this:
+
+--- IOError from thread: poll after loading inbox
+DatabaseCorruptError: Expected another key with the same term name but
+found a different one
+/usr/lib/ruby/1.8/sup/index.rb:293:in `_dangerous_allterms_begin'
+/usr/lib/ruby/1.8/sup/index.rb:293:in `each_prefixed_term'
+/usr/lib/ruby/1.8/sup/index.rb:306:in `each_source_info'
+/usr/lib/ruby/1.8/sup/maildir.rb:98:in `each'
+/usr/lib/ruby/1.8/sup/maildir.rb:98:in `to_a'
+/usr/lib/ruby/1.8/sup/maildir.rb:98:in `poll'
+/usr/lib/ruby/1.8/sup/util.rb:229:in `call'
+/usr/lib/ruby/1.8/sup/util.rb:229:in `benchmark'
+/usr/lib/ruby/1.8/benchmark.rb:293:in `measure'
+/usr/lib/ruby/1.8/sup/util.rb:229:in `benchmark'
+/usr/lib/ruby/1.8/sup/maildir.rb:98:in `poll'
+/usr/lib/ruby/1.8/sup/maildir.rb:90:in `each'
+/usr/lib/ruby/1.8/sup/maildir.rb:90:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:155:in `poll_from'
+/usr/lib/ruby/1.8/sup/poll.rb:113:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:103:in `each'
+/usr/lib/ruby/1.8/sup/poll.rb:103:in `do_poll'
+/usr/lib/ruby/1.8/sup/poll.rb:102:in `synchronize'
+/usr/lib/ruby/1.8/sup/poll.rb:102:in `do_poll'
+/usr/lib/ruby/1.8/sup/util.rb:572:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:572:in `method_missing'
+/usr/lib/ruby/1.8/sup/modes/poll-mode.rb:15:in `poll'
+/usr/lib/ruby/1.8/sup/poll.rb:49:in `poll_with_sources'
+/usr/lib/ruby/1.8/sup/poll.rb:68:in `poll'
+/usr/lib/ruby/1.8/sup/util.rb:572:in `send'
+/usr/lib/ruby/1.8/sup/util.rb:572:in `method_missing'
+/usr/bin/sup-mail:223
+/usr/lib/ruby/1.8/sup.rb:79:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:77:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:77:in `new'
+/usr/lib/ruby/1.8/sup.rb:77:in `reporting_thread'
+/usr/bin/sup-mail:223
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:699:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:699:in
+`__unprotected_load_threads'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:640:in `call'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:640:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup.rb:79:in `reporting_thread'
+/usr/lib/ruby/1.8/sup.rb:77:in `initialize'
+/usr/lib/ruby/1.8/sup.rb:77:in `new'
+/usr/lib/ruby/1.8/sup.rb:77:in `reporting_thread'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:638:in
+`load_n_threads_background'
+/usr/lib/ruby/1.8/sup/modes/thread-index-mode.rb:709:in
+`__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/bin/sup-mail:223
+
+
+I can start sup, but it seems like it goes to add a new message from
+pickup and crashes. Maybe something about the new message could be
+causing this.
+
+Anyone run into this before or have any ideas where I should start hacking away?
+
+Cheers,
+jof
+
+From marka at pobox.com  Wed Jan  2 21:33:39 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 02 Jan 2013 16:33:39 -0500
+Subject: [sup-talk] sup Xapian crash
+In-Reply-To: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+References: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+Message-ID: <1357162160-sup-4225@bloovis.org>
+
+Excerpts from Jonathan Lassoff's message of Wed Jan 02 15:26:15 -0500 2013:
+> I'm having a sad day with sup. I'm crashing with a Xapian error I'll
+> have to dig into.
+
+I've never attempted to debug these kinds of crashes (which I run into
+once or twice a year).  Instead, I use sup-dump to save the state of
+the index, rename .sup/xapian to .sup/xapian.bad, then use sup-sync
+--restore to rebuild the index.
+
+Even though sup is not maintained, I'm so addicted to it that I'm willing
+to put up with this inconvenience once in a while.
+
+From jof at thejof.com  Wed Jan  2 23:20:28 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Wed, 2 Jan 2013 15:20:28 -0800
+Subject: [sup-talk] sup Xapian crash
+In-Reply-To: <1357162160-sup-4225@bloovis.org>
+References: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+	<1357162160-sup-4225@bloovis.org>
+Message-ID: <CAHsqw9vha-C=g-nrcvA_dNMGjsfmz8+chOWXvq7e0N0Ns5KM0A@mail.gmail.com>
+
+On Wed, Jan 2, 2013 at 1:33 PM, Mark Alexander <marka at pobox.com> wrote:
+> Excerpts from Jonathan Lassoff's message of Wed Jan 02 15:26:15 -0500 2013:
+>> I'm having a sad day with sup. I'm crashing with a Xapian error I'll
+>> have to dig into.
+>
+> I've never attempted to debug these kinds of crashes (which I run into
+> once or twice a year).  Instead, I use sup-dump to save the state of
+> the index, rename .sup/xapian to .sup/xapian.bad, then use sup-sync
+> --restore to rebuild the index.
+
+I started digging, but got bored with reading about the Xapian APIs,
+so I mostly did what you just did as well :P
+
+However, I needed to perform a sup-sync first to create the index and
+add the messages in, so when I restored from the dump, pretty much
+everything was marked as unread.
+Working in the console to declare inbox bankruptcy and inbox zero, and
+just clearing it all out. Thank goodness I'm starring threads that I
+need to follow up on! :p
+
+> Even though sup is not maintained, I'm so addicted to it that I'm willing
+> to put up with this inconvenience once in a while.
+
+Yeah, I've been using sup for so long that I can't just let it go now.
+I've got all these excellent hooks and I know the system well.
+
+Have you looked at Heliotrope / Turnisole yet?
+That totally seems like wmorgan's future mail architecture, and I've
+been curious to migrate to it, but haven't been able to sink the time
+into it just yet.
+
+Cheers,
+jof
+
+From marka at pobox.com  Thu Jan  3 23:04:41 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 03 Jan 2013 18:04:41 -0500
+Subject: [sup-talk] sup Xapian crash
+In-Reply-To: <CAHsqw9vha-C=g-nrcvA_dNMGjsfmz8+chOWXvq7e0N0Ns5KM0A@mail.gmail.com>
+References: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+	<1357162160-sup-4225@bloovis.org>
+	<CAHsqw9vha-C=g-nrcvA_dNMGjsfmz8+chOWXvq7e0N0Ns5KM0A@mail.gmail.com>
+Message-ID: <1357254215-sup-7868@bloovis.org>
+
+Excerpts from Jonathan Lassoff's message of Wed Jan 02 18:20:28 -0500 2013:
+> Have you looked at Heliotrope / Turnisole yet?
+
+I decided not to look at it when I heard it didn't support searches by date.
+I do this kind of searching all the time in sup:
+
+   from:somebody AND after:(1 week ago)
+
+and really can't live without it.
+
+From jim at gonzul.net  Fri Jan  4 09:49:58 2013
+From: jim at gonzul.net (Jim Cheetham)
+Date: Fri, 4 Jan 2013 22:49:58 +1300
+Subject: [sup-talk] sup Xapian crash
+In-Reply-To: <1357254215-sup-7868@bloovis.org>
+References: <CAHsqw9uZk4bB0a8mz3ERNVZ7T+jO2zNNwc=+qDQ6dNO+1aYAFw@mail.gmail.com>
+	<1357162160-sup-4225@bloovis.org>
+	<CAHsqw9vha-C=g-nrcvA_dNMGjsfmz8+chOWXvq7e0N0Ns5KM0A@mail.gmail.com>
+	<1357254215-sup-7868@bloovis.org>
+Message-ID: <CA+2knqtUwsXdziF5P5C7UBxaxXX1H+TKivjMW8zS3guiTHpP-Q@mail.gmail.com>
+
+On Fri, Jan 4, 2013 at 12:04 PM, Mark Alexander <marka at pobox.com> wrote:
+> Excerpts from Jonathan Lassoff's message of Wed Jan 02 18:20:28 -0500 2013:
+>> Have you looked at Heliotrope / Turnisole yet?
+>
+> I decided not to look at it when I heard it didn't support searches by date.
+> I do this kind of searching all the time in sup:
+>
+>    from:somebody AND after:(1 week ago)
+
+Mmm, I wondered why that wasn't working.
+
+I have a heliotrope/turnsole 'working', but the index frequently
+crashes and the rebuild is stupidly slow (<1message/sec)
+
+I get the impression that development has stalled/stopped. I wouldn't
+recommend heliotrope as an alternative to sup; the concept is
+positive, but the current execution is lacking.
+
+I guess I'll have to spend some time soon on rebuilding my sup
+environment, which was broken by Ubuntu's upgrade of some underlying
+libraries.
+
+-jim
+
+From dmishd at gmail.com  Sun Jan 13 15:22:03 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 13 Jan 2013 15:22:03 +0000
+Subject: [sup-talk] replacement sup wiki
+Message-ID: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+
+Hello
+
+I've set up a wiki we can use as a replacement for the old unloved
+wiki - http://foobacca.co.uk/sup/
+
+Unfortunately, most of the old wiki appears to be lost. The wiki
+software (usemod) only appears to keep the last 10 revisions of each
+page. But most pages have been vandalised far more than that, and so
+the content appears lost. I have checked the wayback machine but it
+doesn't have anything from the wiki. I also note that the wiki is
+covered by a Disallow line in the robots.txt - not sure how long
+that's been there.
+
+Anyway, please feel free to go and recreate the lost pages, or add new
+content. The new wiki is ikiwiki, which is based on git, so all
+history will remain available. At some point the spammers will start
+hitting it, at which point I'll disable registration, but try
+publishing an account on the front page and see if that foxes the
+spammers. We'll see.
+
+Hamish
+
+From matthieu.rakotojaona at gmail.com  Sun Jan 13 21:06:03 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sun, 13 Jan 2013 22:06:03 +0100
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+Message-ID: <CAMiZLn248BGp9ZZ9_xRC2O=V150J+7jEA6j6+0mmJOfDMCFxfA@mail.gmail.com>
+
+ This is excellent news, thank you for the move! I was myself considering
+running our own bugtracker, seeing that wmorgan's github hasn't been
+updated in the last 7 months and he is the only one being able to act on
+them. Same thing would have to be done for the mailing-lists.
+
+Speaking of the mailing list, is it okay if we hijack the wiki with
+heliotrope content ? I read too many complaints about it being too hard to
+install/use, and would love to fix it.
+
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130113/00101d48/attachment.html>
+
+From dmishd at gmail.com  Sun Jan 13 23:40:19 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 13 Jan 2013 23:40:19 +0000
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <CAMiZLn248BGp9ZZ9_xRC2O=V150J+7jEA6j6+0mmJOfDMCFxfA@mail.gmail.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+	<CAMiZLn248BGp9ZZ9_xRC2O=V150J+7jEA6j6+0mmJOfDMCFxfA@mail.gmail.com>
+Message-ID: <CAOxvSbdGF01FpdGnaYM43jTzz=mtwigAjfC_QGiRTgj+_eEiXA@mail.gmail.com>
+
+> This is excellent news, thank you for the move! I was myself considering
+> running our own bugtracker, seeing that wmorgan's github hasn't been updated
+> in the last 7 months and he is the only one being able to act on them. Same
+> thing would have to be done for the mailing-lists.
+
+I have access to the gitorious account (can't remember if it is full
+admin rights or just push access). But I would be equally happy for
+there to be a github organisation account that a few of us were admins
+for (including wmorgan if he wanted). It would definitely be nice to
+have a working issue tracker.
+
+Before doing more than this, might be worth seeing if wmorgan wants to
+say if he has preferences on this. My impression is that he has left
+sup behind, but would want to give a little time (a week, say) for him
+to say what he'd like before doing a load of work. I guess one key
+thing wmorgan has is the ability to push new sup gems to rubyforge.
+
+I'd also be happy for the wiki to live elsewhere if there was some
+collective decision that it would be better elsewhere. I just thought
+I'd set it up for now.
+
+> Speaking of the mailing list, is it okay if we hijack the wiki with
+> heliotrope content ? I read too many complaints about it being too hard to
+> install/use, and would love to fix it.
+
+Please do put heliotrope stuff up there.
+
+Hamish
+
+From eg at gaute.vetsj.com  Mon Jan 14 08:51:40 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 14 Jan 2013 09:51:40 +0100
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <CAOxvSbdGF01FpdGnaYM43jTzz=mtwigAjfC_QGiRTgj+_eEiXA@mail.gmail.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+	<CAMiZLn248BGp9ZZ9_xRC2O=V150J+7jEA6j6+0mmJOfDMCFxfA@mail.gmail.com>
+	<CAOxvSbdGF01FpdGnaYM43jTzz=mtwigAjfC_QGiRTgj+_eEiXA@mail.gmail.com>
+Message-ID: <50F3C71C.1070807@gaute.vetsj.com>
+
+On 14. jan. 2013 00:40, Hamish D wrote:
+>> This is excellent news, thank you for the move! I was myself considering
+>> running our own bugtracker, seeing that wmorgan's github hasn't been updated
+>> in the last 7 months and he is the only one being able to act on them. Same
+>> thing would have to be done for the mailing-lists.
+> 
+> I have access to the gitorious account (can't remember if it is full
+> admin rights or just push access). But I would be equally happy for
+> there to be a github organisation account that a few of us were admins
+> for (including wmorgan if he wanted). It would definitely be nice to
+> have a working issue tracker.
+> 
+> Before doing more than this, might be worth seeing if wmorgan wants to
+> say if he has preferences on this. My impression is that he has left
+> sup behind, but would want to give a little time (a week, say) for him
+> to say what he'd like before doing a load of work. I guess one key
+> thing wmorgan has is the ability to push new sup gems to rubyforge.
+> 
+> I'd also be happy for the wiki to live elsewhere if there was some
+> collective decision that it would be better elsewhere. I just thought
+> I'd set it up for now.
+> 
+>> Speaking of the mailing list, is it okay if we hijack the wiki with
+>> heliotrope content ? I read too many complaints about it being too hard to
+>> install/use, and would love to fix it.
+> 
+> Please do put heliotrope stuff up there.
+
+Great! I agree with the organization-plan (github or whatever with a
+full project page: repository, issues, wiki..) - it really strains the
+project with these administrational bumps.
+
+Most importantly: A admin group with full access to the organization to
+allow for admins/devs to go off for a while without the project staggering.
+
+Personally I think the best is to keep everything on the same place.
+
+Regards, Gaute
+
+From support at plecavalier.com  Mon Jan 14 13:20:56 2013
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Mon, 14 Jan 2013 05:20:56 -0800
+Subject: [sup-talk] replacement sup wiki
+In-Reply-To: <50F3C71C.1070807@gaute.vetsj.com>
+References: <CAOxvSbeLBiP9pGgpLek0AKfSSdUvG8Zix+Ly5wrNTDLQ-XuUZQ@mail.gmail.com>
+	<CAMiZLn248BGp9ZZ9_xRC2O=V150J+7jEA6j6+0mmJOfDMCFxfA@mail.gmail.com>
+	<CAOxvSbdGF01FpdGnaYM43jTzz=mtwigAjfC_QGiRTgj+_eEiXA@mail.gmail.com>
+	<50F3C71C.1070807@gaute.vetsj.com>
+Message-ID: <CAKada-4peOZihAwo4nD32jG_6FQsbBeXd-+4DVRjF1rennVOeg@mail.gmail.com>
+
+On Mon, Jan 14, 2013 at 12:51 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+> Great! I agree with the organization-plan (github or whatever with a
+> full project page: repository, issues, wiki..) - it really strains the
+> project with these administrational bumps.
+>
+> Most importantly: A admin group with full access to the organization to
+> allow for admins/devs to go off for a while without the project staggering.
+>
+> Personally I think the best is to keep everything on the same place.
+>
+
+I second that!
+
+Phil
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130114/100eb6da/attachment.html>
+
+From support at plecavalier.com  Mon Jan 14 15:12:58 2013
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Mon, 14 Jan 2013 07:12:58 -0800
+Subject: [sup-talk] help installing on FC17 on 64bit
+Message-ID: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+
+Hi.
+
+In light of recent activity I'd like to give sup another whirl. Last time I
+installed sup was on i386 w/Deb. I'm now on FC17 64-bit -dunno if that's
+what's making thing difficult or not...
+
+I've installed everything from the fedora repo including sup gem.
+Everything installs successfully however I get:
+
+ sup
+/usr/share/rubygems/rubygems/custom_require.rb:36:in `require': superclass
+mismatch for class Iconv (TypeError)
+from /usr/share/rubygems/rubygems/custom_require.rb:36:in `require'
+from /usr/share/gems/gems/sup-0.10.2/lib/sup/rfc2047.rb:19:in `<top
+(required)>'
+from /usr/share/rubygems/rubygems/custom_require.rb:36:in `require'
+from /usr/share/rubygems/rubygems/custom_require.rb:36:in `require'
+from /usr/share/gems/gems/sup-0.10.2/lib/sup/source.rb:1:in `<top
+(required)>'
+from /usr/share/rubygems/rubygems/custom_require.rb:36:in `require'
+from /usr/share/rubygems/rubygems/custom_require.rb:36:in `require'
+from /usr/share/gems/gems/sup-0.10.2/lib/sup.rb:304:in `<top (required)>'
+from /usr/share/rubygems/rubygems/custom_require.rb:55:in `require'
+from /usr/share/rubygems/rubygems/custom_require.rb:55:in `require'
+from /usr/share/gems/gems/sup-0.10.2/bin/sup:15:in `<top (required)>'
+from /usr/bin/sup:19:in `load'
+from /usr/bin/sup:19:in `<main>'
+
+Any ideas?
+
+Thanks in advance,
+Phil
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130114/31a16808/attachment-0001.html>
+
+From marka at pobox.com  Mon Jan 14 17:23:13 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 14 Jan 2013 12:23:13 -0500
+Subject: [sup-talk] help installing on FC17 on 64bit
+In-Reply-To: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+References: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+Message-ID: <1358183706-sup-7745@bloovis.org>
+
+Excerpts from Philippe LeCavalier's message of Mon Jan 14 10:12:58 -0500 2013:
+> /usr/share/rubygems/rubygems/custom_require.rb:36:in `require': superclass
+> mismatch for class Iconv (TypeError)
+
+I vaguely recall running into this when experimenting with sup on
+Linux Mint 13 and got around the problem with the following patch.  I
+was just trying to see if it would even run at all on a new version of
+Mint (I normally use sup on a machine running Mint 10).  On this
+experimental machine I had no mail in the index, and this was a patch
+against my copy of the sup git repository, not against any installed
+package.  So no guarantees that this will work.
+
+diff --git a/bin/sup b/bin/sup
+index ad7a0d1..8e87a83 100755
+--- a/bin/sup
++++ b/bin/sup
+@@ -19,6 +19,7 @@ end
+ 
+ require 'fileutils'
+ require 'trollop'
++require 'iconv'
+ require "sup"; Redwood::check_library_version_against "git"
+ 
+ if ENV['SUP_PROFILE']
+
+From matthieu.rakotojaona at gmail.com  Thu Jan 17 20:15:01 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Jan 2013 21:15:01 +0100
+Subject: [sup-talk] Github organization for sup and heliotrope
+Message-ID: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+
+Hello,
+
+I've set up a github organization at https://github.com/sup-heliotrope
+for managing sup, heliotrope, turnsole and any needed bit in the
+future. I've already added Hamish Downer (known as foobacca on github)
+as an administrator; he has the rights to do whatever is needed on the
+organization. Feel free to give me your github account names and I
+will add you to the administrators team. I believe this is doable for
+the moment because we are only a few people interested in
+sup/heliotrope. If (when !) the popularity grows, we might want to
+change the governance model.
+
+I've been quite hesitant to use github because of the closed model (I
+like running my own thing if possible) and wanted to run my own
+redmine. However, github offers many advantages (uptime, speed, quick
+visibility) and the data isn't that closed : wiki are just plain text
+in git that can be exported, and there are more than complete APIs [0]
+for issues. However, I'd like to keep the wiki in Hamish's ikiwiki
+because I like it much better (but this is just personal preference)
+
+I took the liberty of creating a repo for sup, which is just a
+straight copy of git://gitorious.org/sup/mainline.git. I must admit I
+don't follow sup's development that much, so feel free to do what you
+want there. I've also set up a repo for sup with master being
+William's master branch. I'm quite attracted to the git-flow [1]
+model; I propose we follow it, and have therefore created a develop
+branch which is just a branch at the same level as master. Please,
+feel free to fork develop and code/test over it. I already have a
+bunch of propositions to do and will soon put them in the repo (I just
+realized my own repo was way too dirty to put it up now)
+
+William, I know you are alive and well thanks to your tweetstream; If
+you read this, I hope you won't take this organization as a treason of
+any sort. It's just that the lack of activity on your repo is too
+saddening for the development of heliotrope.
+
+I'm sure we can do it.
+
+See you soon,
+
+[0] http://developer.github.com/v3/issues/
+[1] http://nvie.com/posts/a-successful-git-branching-model/
+
+--
+Matthieu RAKOTOJAONA
+
+From eg at gaute.vetsj.com  Thu Jan 17 20:52:01 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 17 Jan 2013 21:52:01 +0100
+Subject: [sup-talk] Github organization for sup and heliotrope
+In-Reply-To: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+Message-ID: <50F86471.3000900@gaute.vetsj.com>
+
+Hi,
+
+I think this is a step in the right direction - given that there has 
+been silence on wmorgans part so long.
+
+Kepping things in one place does work alot better, even if it means 
+sacrificing a few features - I think that keeping the wiki along with 
+the rest of the organization is the best.  Also github is not linked or 
+dependant on any one admin / developer, so I think for this kind of 
+project it is ideal - expanding to a proper web site is no biggie with 
+github either, making future possible migration even easier.
+
+I'd like to be part of the organization, but I am probably not going to 
+be active enough to be an administrator, github name: gauteh.
+
+Cheers, Gaute
+
+On to. 17. jan. 2013 kl. 21.15 +0100, Matthieu Rakotojaona wrote:
+> Hello,
+>
+> I've set up a github organization at https://github.com/sup-heliotrope
+> for managing sup, heliotrope, turnsole and any needed bit in the
+> future. I've already added Hamish Downer (known as foobacca on github)
+> as an administrator; he has the rights to do whatever is needed on the
+> organization. Feel free to give me your github account names and I
+> will add you to the administrators team. I believe this is doable for
+> the moment because we are only a few people interested in
+> sup/heliotrope. If (when !) the popularity grows, we might want to
+> change the governance model.
+>
+> I've been quite hesitant to use github because of the closed model (I
+> like running my own thing if possible) and wanted to run my own
+> redmine. However, github offers many advantages (uptime, speed, quick
+> visibility) and the data isn't that closed : wiki are just plain text
+> in git that can be exported, and there are more than complete APIs [0]
+> for issues. However, I'd like to keep the wiki in Hamish's ikiwiki
+> because I like it much better (but this is just personal preference)
+>
+> I took the liberty of creating a repo for sup, which is just a
+> straight copy of git://gitorious.org/sup/mainline.git. I must admit I
+> don't follow sup's development that much, so feel free to do what you
+> want there. I've also set up a repo for sup with master being
+> William's master branch. I'm quite attracted to the git-flow [1]
+> model; I propose we follow it, and have therefore created a develop
+> branch which is just a branch at the same level as master. Please,
+> feel free to fork develop and code/test over it. I already have a
+> bunch of propositions to do and will soon put them in the repo (I just
+> realized my own repo was way too dirty to put it up now)
+>
+> William, I know you are alive and well thanks to your tweetstream; If
+> you read this, I hope you won't take this organization as a treason of
+> any sort. It's just that the lack of activity on your repo is too
+> saddening for the development of heliotrope.
+>
+> I'm sure we can do it.
+>
+> See you soon,
+>
+> [0] http://developer.github.com/v3/issues/
+> [1] http://nvie.com/posts/a-successful-git-branching-model/
+>
+> --
+> Matthieu RAKOTOJAONA
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From dmishd at gmail.com  Thu Jan 17 21:09:18 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Jan 2013 21:09:18 +0000
+Subject: [sup-talk] Github organization for sup and heliotrope
+In-Reply-To: <50F86471.3000900@gaute.vetsj.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+	<50F86471.3000900@gaute.vetsj.com>
+Message-ID: <CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+
+> I'd like to be part of the organization, but I am probably not going to
+> be active enough to be an administrator, github name: gauteh.
+
+OK, I've set up a team called committers (with commit access to all
+repos) and added you. Also happy to make you an owner if you want.
+
+I'm don't have strong views on where the wiki should be, but it would
+be nice if people can just go and edit it with minimal fuss. It looks
+like you'd have to be given access to edit the github wiki, so a bit
+of a higher barrier to entry which I would prefer to not put in
+people's way.  But if we change our minds later (or if everyone
+prefers it) then I have the pages as markdown, so transferring it
+across to the github wiki would be very little work.
+
+Right, should probably go and dig up various patches I've copied off
+the email list that I wasn't sure about and turn them into pull
+requests to open up discussion on them.
+
+Hamish
+
+From dmishd at gmail.com  Thu Jan 17 23:43:01 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Jan 2013 23:43:01 +0000
+Subject: [sup-talk] Github organization for sup and heliotrope
+In-Reply-To: <CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+	<50F86471.3000900@gaute.vetsj.com>
+	<CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+Message-ID: <CAOxvSbd=VBvhC6YMN+xEJDj3Jk2rfVEv5HkdUv1_ufrrA96CeA@mail.gmail.com>
+
+> Right, should probably go and dig up various patches I've copied off
+> the email list that I wasn't sure about and turn them into pull
+> requests to open up discussion on them.
+
+I've started doing that with 4 well formatted patches I wasn't
+entirely sure about (3 from Gaute) and put my comments on those pull
+requests. If I get good answers we can merge them.
+
+Got a few more diffs I'll have to get to another night.
+
+Hamish
+
+From fedzor at gmail.com  Tue Jan 22 19:23:50 2013
+From: fedzor at gmail.com (fedzor)
+Date: Tue, 22 Jan 2013 14:23:50 -0500
+Subject: [sup-talk] help installing on FC17 on 64bit
+In-Reply-To: <1358183706-sup-7745@bloovis.org>
+References: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+	<1358183706-sup-7745@bloovis.org>
+Message-ID: <EECD4B7D-1CE9-4287-BCA3-D427465A49D2@gmail.com>
+
+I'm getting a similar error. Why does this have to be, though? Why is this error coming up in the first place?
+
+I'm posing the question now but I'll investigate shortly.
+
+On Jan 14, 2013, at 12:23 PM, Mark Alexander wrote:
+
+> Excerpts from Philippe LeCavalier's message of Mon Jan 14 10:12:58 -0500 2013:
+>> /usr/share/rubygems/rubygems/custom_require.rb:36:in `require': superclass
+>> mismatch for class Iconv (TypeError)
+> 
+> I vaguely recall running into this when experimenting with sup on
+> Linux Mint 13 and got around the problem with the following patch.  I
+> was just trying to see if it would even run at all on a new version of
+> Mint (I normally use sup on a machine running Mint 10).  On this
+> experimental machine I had no mail in the index, and this was a patch
+> against my copy of the sup git repository, not against any installed
+> package.  So no guarantees that this will work.
+> 
+> diff --git a/bin/sup b/bin/sup
+> index ad7a0d1..8e87a83 100755
+> --- a/bin/sup
+> +++ b/bin/sup
+> @@ -19,6 +19,7 @@ end
+> 
+> require 'fileutils'
+> require 'trollop'
+> +require 'iconv'
+> require "sup"; Redwood::check_library_version_against "git"
+> 
+> if ENV['SUP_PROFILE']
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+
+From support at plecavalier.com  Tue Jan 22 19:51:48 2013
+From: support at plecavalier.com (Philippe LeCavalier)
+Date: Tue, 22 Jan 2013 14:51:48 -0500
+Subject: [sup-talk] help installing on FC17 on 64bit
+In-Reply-To: <EECD4B7D-1CE9-4287-BCA3-D427465A49D2@gmail.com>
+References: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+	<1358183706-sup-7745@bloovis.org>
+	<EECD4B7D-1CE9-4287-BCA3-D427465A49D2@gmail.com>
+Message-ID: <CAKada-46SFBeHsERvk8+3qV-ah+95pt+zQHwZYS_FRyecDuOXQ@mail.gmail.com>
+
+On Tue, Jan 22, 2013 at 2:23 PM, fedzor <fedzor at gmail.com> wrote:
+
+> I'm getting a similar error. Why does this have to be, though? Why is this
+> error coming up in the first place?
+>
+> I'm posing the question now but I'll investigate shortly.
+>
+> dunno. I didn't attempt the patch suggested since I hadn't installed from
+source and was too lazy to rebuilt the rpm.
+
+Had you installed from source or rpm?
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130122/82213856/attachment.html>
+
+From matthieu.rakotojaona at gmail.com  Tue Jan 22 20:14:25 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 22 Jan 2013 21:14:25 +0100
+Subject: [sup-talk] help installing on FC17 on 64bit
+In-Reply-To: <EECD4B7D-1CE9-4287-BCA3-D427465A49D2@gmail.com>
+References: <CAKada-6gJLnz8sF1dVvF-R_QQ53KxXoLJSDpXx7W4WDB3XXEuw@mail.gmail.com>
+	<1358183706-sup-7745@bloovis.org>
+	<EECD4B7D-1CE9-4287-BCA3-D427465A49D2@gmail.com>
+Message-ID: <CAMiZLn3iYci=-iUM44kmtFYNF1QFExkMySzBZnf7sTwrYrNaRQ@mail.gmail.com>
+
+On Tue, Jan 22, 2013 at 8:23 PM, fedzor <fedzor at gmail.com> wrote:
+> I'm getting a similar error. Why does this have to be, though? Why is this error coming up in the first place?
+
+class Iconv is redefined in util.rb [0]. If you 'require "iconv"' over
+that, there will be a conflict (which one is the real one). I really
+don't know how to work around this one; the "easy" solution would be
+to uninstall the iconv gem, but this isn't really long-term. If you
+have time and courage, you should remove the custom Iconv class and
+replace it with the Decoder[1] class from heliotrope. It's a
+continuation of this Iconv class, taking into account the tricky 1.9.
+
+[0] https://github.com/sup-heliotrope/sup/blob/dd129e12603f5c77846c5fa624b8f118d53fbd0e/lib/sup/util.rb#L661
+[1] https://github.com/sup-heliotrope/sup/pull/1#issuecomment-12415689
+--
+Matthieu RAKOTOJAONA
+
+From sup at zevv.nl  Tue Jan 29 18:50:23 2013
+From: sup at zevv.nl (Ico)
+Date: Tue, 29 Jan 2013 19:50:23 +0100
+Subject: [sup-talk] Automatically saving all attachements
+Message-ID: <1359485303-sup-2521@pruts.nl>
+
+Does anyone happen to have a hook that automatically saves all
+attachements to a given directory when receiving or opening an e-mail?
+
+Thanks,
+
+Ico
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+
+From ezyang at MIT.EDU  Tue Jan 29 23:40:28 2013
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 29 Jan 2013 15:40:28 -0800
+Subject: [sup-talk] Automatically saving all attachements
+In-Reply-To: <1359485303-sup-2521@pruts.nl>
+References: <1359485303-sup-2521@pruts.nl>
+Message-ID: <1359502714-sup-1444@javelin>
+
+No, but OfflineIMAP+Sup effectively does this (as the attachments
+will be stored with your mail).
+
+A hook like this wouldn't be too hard to implement, but you will need to
+think carefully about intended semantics: if you open an email twice,
+should it save the attachment twice? If the hook is on-receive, what
+should the attachment be named?  How hard is it to find the attachment
+you actually want, esp if you receive many?  How do you deal with
+multipart messages (txt + HTML versions; the HTML counts as an
+"attachment").
+
+Cheers,
+Edward
+
+Excerpts from Ico's message of Tue Jan 29 10:50:23 -0800 2013:
+> Does anyone happen to have a hook that automatically saves all
+> attachements to a given directory when receiving or opening an e-mail?
+> 
+> Thanks,
+> 
+> Ico
+
+From eg at gaute.vetsj.com  Wed Jan 30 09:32:16 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 30 Jan 2013 10:32:16 +0100
+Subject: [sup-talk] Automatically saving all attachements
+In-Reply-To: <1359485303-sup-2521@pruts.nl>
+References: <1359485303-sup-2521@pruts.nl>
+Message-ID: <5108E8A0.70005@gaute.vetsj.com>
+
+On 29. jan. 2013 19:50, Ico wrote:
+> Does anyone happen to have a hook that automatically saves all
+> attachements to a given directory when receiving or opening an e-mail?
+> 
+> Thanks,
+> 
+> Ico
+> 
+
+Maybe there is some inspiration to be found in the save_all_to_disk
+function (keypress 'A' in thread view mode):
+
+https://github.com/sup-heliotrope/sup/blob/master/lib/sup/modes/thread-view-mode.rb#L375
+
+- gaute
+
+From sup at zevv.nl  Wed Jan 30 09:57:56 2013
+From: sup at zevv.nl (Ico)
+Date: Wed, 30 Jan 2013 10:57:56 +0100
+Subject: [sup-talk] Automatically saving all attachements
+In-Reply-To: <5108E8A0.70005@gaute.vetsj.com>
+References: <1359485303-sup-2521@pruts.nl> <5108E8A0.70005@gaute.vetsj.com>
+Message-ID: <1359539856-sup-2776@pruts.nl>
+
+* On Wed Jan 30 10:32:16 +0100 2013, Gaute Hope wrote:
+ 
+> Maybe there is some inspiration to be found in the save_all_to_disk
+> function (keypress 'A' in thread view mode):
+
+Just what the doctor ordered, thanks for the hint!
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+

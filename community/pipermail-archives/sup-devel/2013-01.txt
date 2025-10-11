@@ -1,0 +1,443 @@
+From dmishd at gmail.com  Tue Jan  1 18:33:09 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Tue, 1 Jan 2013 18:33:09 +0000
+Subject: [sup-devel] after second heliotrope import,
+	new messages not appearing
+In-Reply-To: <CAMiZLn1Uv-5Csf7O2kxijbwanVsT78W4puy_ypN0vMr=3mA0Yg@mail.gmail.com>
+References: <CAOxvSbextWLEObcKrU-93SzFqnhZ-up7cV6MwUboFgN2TM7GNw@mail.gmail.com>
+	<CAMiZLn1Uv-5Csf7O2kxijbwanVsT78W4puy_ypN0vMr=3mA0Yg@mail.gmail.com>
+Message-ID: <CAOxvSbcBPGCsL_ZDqMgi6zk2uodnLqrdh89SkzMFg=F8aYdCHA@mail.gmail.com>
+
+> Your problem may have multiple origins, and I have no idea where you could
+> start :
+>
+> - Did you use the correct directories for messages and index for _both_ the
+> import and the server ? (sorry if this sounds stupid)
+
+Always good to check the basics, but yes, I do use the same directory.
+I have scripts for the import and the server and both use the -d
+argument to ensure they use the same directory.
+
+> - Did the index size in heliotrope change ? (as given by a GET to
+> /size.json)
+
+No - it remained the same. (And is about half of the count that sup reports).
+
+> - Did the messages file size change ?
+
+It did on one import, but not the most recent.
+
+> - Are the messages absent in inbox only or from the whole turnsole ?
+
+All searches that I do stop in May.
+
+> - As a last resort, could you send the mbox file so that I can try this at
+> home, if your mails aren't too personal ?
+
+It's my work email, with a total of over 100,000 messages. So I'd
+prefer not to send it over.
+
+Any logs that might be worth looking at? While doing the import, I do
+get various lines along the line of:
+
+    ; scanned 71, indexed 71, skipped 0 bad and 0 seen messages in
+22.1s = 3.2 m/s
+
+I do use the state argument (-t) to save reimporting old mail. I have
+also tried doing a reindex (as I import from multiple mboxes) but to
+no avail.
+
+I could just try another import of the whole lot into a clean directory I guess.
+
+I'm also happy to type stuff into heliotrope-console if that will help
+diagnose stuff.
+
+Thanks for your suggestions so far
+Hamish
+
+
+> On Thu, Dec 27, 2012 at 5:19 PM, Hamish D <dmishd at gmail.com> wrote:
+>>
+>> Hello
+>>
+>> I've just been trying to carry on from where I left off with migrating
+>> my work email into heliotrope (which I last worked on in May).
+>>
+>> So I've rsynced the mbox files across to where I will run heliotrope
+>> and tried running heliotrope-import to put all the new messages in the
+>> index. It appeared to work properly, reporting that messages were
+>> being added to the index and the index files themselves have had their
+>> timestamps updated. But when I start turnsole, I can't find any email
+>> after May.
+>>
+>> Any ideas on where to start looking to work out what is going on?
+>>
+>> Hamish
+
+From matthieu.rakotojaona at gmail.com  Wed Jan  2 20:47:06 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 2 Jan 2013 21:47:06 +0100
+Subject: [sup-devel] after second heliotrope import,
+	new messages not appearing
+In-Reply-To: <CAOxvSbcBPGCsL_ZDqMgi6zk2uodnLqrdh89SkzMFg=F8aYdCHA@mail.gmail.com>
+References: <CAOxvSbextWLEObcKrU-93SzFqnhZ-up7cV6MwUboFgN2TM7GNw@mail.gmail.com>
+	<CAMiZLn1Uv-5Csf7O2kxijbwanVsT78W4puy_ypN0vMr=3mA0Yg@mail.gmail.com>
+	<CAOxvSbcBPGCsL_ZDqMgi6zk2uodnLqrdh89SkzMFg=F8aYdCHA@mail.gmail.com>
+Message-ID: <CAMiZLn2CNtF+9YULy9mXJKi0HVNXh9TJPuypjN4mfKC058HiVQ@mail.gmail.com>
+
+So, it appears heliotrope tells you your mails are indexed, yet they don't
+appear. All I see is `MetaIndex#add_message` returning in the test that
+checks if the mail is already in the store. Problem is, the exact same
+check is already done before that moment, and if the mail really was
+already present, it should be marked as "seen" and not "indexed".
+
+Another possibility could be `MetaIndex#gen_new_docid` which, for an
+unknown reason, returns a wrong value, so it would always overwrite an old
+message.
+
+I'm not really good at debugging efficiently, but I would re-launch the
+import after having placed a few "puts" in this `add_message` method, see
+if the existence test returns true or not. If not, print the docid, and see
+what the message with that docid is. If the message with that docid is the
+one you just imported, then there is a problem with how we generate them
+(because it was already given to another message).
+
+
+On Tue, Jan 1, 2013 at 7:33 PM, Hamish D <dmishd at gmail.com> wrote:
+
+> > Your problem may have multiple origins, and I have no idea where you
+> could
+> > start :
+> >
+> > - Did you use the correct directories for messages and index for _both_
+> the
+> > import and the server ? (sorry if this sounds stupid)
+>
+> Always good to check the basics, but yes, I do use the same directory.
+> I have scripts for the import and the server and both use the -d
+> argument to ensure they use the same directory.
+>
+> > - Did the index size in heliotrope change ? (as given by a GET to
+> > /size.json)
+>
+> No - it remained the same. (And is about half of the count that sup
+> reports).
+>
+> > - Did the messages file size change ?
+>
+> It did on one import, but not the most recent.
+>
+> > - Are the messages absent in inbox only or from the whole turnsole ?
+>
+> All searches that I do stop in May.
+>
+> > - As a last resort, could you send the mbox file so that I can try this
+> at
+> > home, if your mails aren't too personal ?
+>
+> It's my work email, with a total of over 100,000 messages. So I'd
+> prefer not to send it over.
+>
+> Any logs that might be worth looking at? While doing the import, I do
+> get various lines along the line of:
+>
+>     ; scanned 71, indexed 71, skipped 0 bad and 0 seen messages in
+> 22.1s = 3.2 m/s
+>
+> I do use the state argument (-t) to save reimporting old mail. I have
+> also tried doing a reindex (as I import from multiple mboxes) but to
+> no avail.
+>
+> I could just try another import of the whole lot into a clean directory I
+> guess.
+>
+> I'm also happy to type stuff into heliotrope-console if that will help
+> diagnose stuff.
+>
+> Thanks for your suggestions so far
+> Hamish
+>
+>
+> > On Thu, Dec 27, 2012 at 5:19 PM, Hamish D <dmishd at gmail.com> wrote:
+> >>
+> >> Hello
+> >>
+> >> I've just been trying to carry on from where I left off with migrating
+> >> my work email into heliotrope (which I last worked on in May).
+> >>
+> >> So I've rsynced the mbox files across to where I will run heliotrope
+> >> and tried running heliotrope-import to put all the new messages in the
+> >> index. It appeared to work properly, reporting that messages were
+> >> being added to the index and the index files themselves have had their
+> >> timestamps updated. But when I start turnsole, I can't find any email
+> >> after May.
+> >>
+> >> Any ideas on where to start looking to work out what is going on?
+> >>
+> >> Hamish
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+
+
+-- 
+Matthieu RAKOTOJAONA
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20130102/ca1aa823/attachment-0001.html>
+
+From matthieu.rakotojaona at gmail.com  Thu Jan 17 20:15:01 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Thu, 17 Jan 2013 21:15:01 +0100
+Subject: [sup-devel] Github organization for sup and heliotrope
+Message-ID: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+
+Hello,
+
+I've set up a github organization at https://github.com/sup-heliotrope
+for managing sup, heliotrope, turnsole and any needed bit in the
+future. I've already added Hamish Downer (known as foobacca on github)
+as an administrator; he has the rights to do whatever is needed on the
+organization. Feel free to give me your github account names and I
+will add you to the administrators team. I believe this is doable for
+the moment because we are only a few people interested in
+sup/heliotrope. If (when !) the popularity grows, we might want to
+change the governance model.
+
+I've been quite hesitant to use github because of the closed model (I
+like running my own thing if possible) and wanted to run my own
+redmine. However, github offers many advantages (uptime, speed, quick
+visibility) and the data isn't that closed : wiki are just plain text
+in git that can be exported, and there are more than complete APIs [0]
+for issues. However, I'd like to keep the wiki in Hamish's ikiwiki
+because I like it much better (but this is just personal preference)
+
+I took the liberty of creating a repo for sup, which is just a
+straight copy of git://gitorious.org/sup/mainline.git. I must admit I
+don't follow sup's development that much, so feel free to do what you
+want there. I've also set up a repo for sup with master being
+William's master branch. I'm quite attracted to the git-flow [1]
+model; I propose we follow it, and have therefore created a develop
+branch which is just a branch at the same level as master. Please,
+feel free to fork develop and code/test over it. I already have a
+bunch of propositions to do and will soon put them in the repo (I just
+realized my own repo was way too dirty to put it up now)
+
+William, I know you are alive and well thanks to your tweetstream; If
+you read this, I hope you won't take this organization as a treason of
+any sort. It's just that the lack of activity on your repo is too
+saddening for the development of heliotrope.
+
+I'm sure we can do it.
+
+See you soon,
+
+[0] http://developer.github.com/v3/issues/
+[1] http://nvie.com/posts/a-successful-git-branching-model/
+
+--
+Matthieu RAKOTOJAONA
+
+From eg at gaute.vetsj.com  Thu Jan 17 20:52:01 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 17 Jan 2013 21:52:01 +0100
+Subject: [sup-devel] [sup-talk] Github organization for sup and
+	heliotrope
+In-Reply-To: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+Message-ID: <50F86471.3000900@gaute.vetsj.com>
+
+Hi,
+
+I think this is a step in the right direction - given that there has 
+been silence on wmorgans part so long.
+
+Kepping things in one place does work alot better, even if it means 
+sacrificing a few features - I think that keeping the wiki along with 
+the rest of the organization is the best.  Also github is not linked or 
+dependant on any one admin / developer, so I think for this kind of 
+project it is ideal - expanding to a proper web site is no biggie with 
+github either, making future possible migration even easier.
+
+I'd like to be part of the organization, but I am probably not going to 
+be active enough to be an administrator, github name: gauteh.
+
+Cheers, Gaute
+
+On to. 17. jan. 2013 kl. 21.15 +0100, Matthieu Rakotojaona wrote:
+> Hello,
+>
+> I've set up a github organization at https://github.com/sup-heliotrope
+> for managing sup, heliotrope, turnsole and any needed bit in the
+> future. I've already added Hamish Downer (known as foobacca on github)
+> as an administrator; he has the rights to do whatever is needed on the
+> organization. Feel free to give me your github account names and I
+> will add you to the administrators team. I believe this is doable for
+> the moment because we are only a few people interested in
+> sup/heliotrope. If (when !) the popularity grows, we might want to
+> change the governance model.
+>
+> I've been quite hesitant to use github because of the closed model (I
+> like running my own thing if possible) and wanted to run my own
+> redmine. However, github offers many advantages (uptime, speed, quick
+> visibility) and the data isn't that closed : wiki are just plain text
+> in git that can be exported, and there are more than complete APIs [0]
+> for issues. However, I'd like to keep the wiki in Hamish's ikiwiki
+> because I like it much better (but this is just personal preference)
+>
+> I took the liberty of creating a repo for sup, which is just a
+> straight copy of git://gitorious.org/sup/mainline.git. I must admit I
+> don't follow sup's development that much, so feel free to do what you
+> want there. I've also set up a repo for sup with master being
+> William's master branch. I'm quite attracted to the git-flow [1]
+> model; I propose we follow it, and have therefore created a develop
+> branch which is just a branch at the same level as master. Please,
+> feel free to fork develop and code/test over it. I already have a
+> bunch of propositions to do and will soon put them in the repo (I just
+> realized my own repo was way too dirty to put it up now)
+>
+> William, I know you are alive and well thanks to your tweetstream; If
+> you read this, I hope you won't take this organization as a treason of
+> any sort. It's just that the lack of activity on your repo is too
+> saddening for the development of heliotrope.
+>
+> I'm sure we can do it.
+>
+> See you soon,
+>
+> [0] http://developer.github.com/v3/issues/
+> [1] http://nvie.com/posts/a-successful-git-branching-model/
+>
+> --
+> Matthieu RAKOTOJAONA
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From dmishd at gmail.com  Thu Jan 17 21:09:18 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Jan 2013 21:09:18 +0000
+Subject: [sup-devel] [sup-talk] Github organization for sup and
+	heliotrope
+In-Reply-To: <50F86471.3000900@gaute.vetsj.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+	<50F86471.3000900@gaute.vetsj.com>
+Message-ID: <CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+
+> I'd like to be part of the organization, but I am probably not going to
+> be active enough to be an administrator, github name: gauteh.
+
+OK, I've set up a team called committers (with commit access to all
+repos) and added you. Also happy to make you an owner if you want.
+
+I'm don't have strong views on where the wiki should be, but it would
+be nice if people can just go and edit it with minimal fuss. It looks
+like you'd have to be given access to edit the github wiki, so a bit
+of a higher barrier to entry which I would prefer to not put in
+people's way.  But if we change our minds later (or if everyone
+prefers it) then I have the pages as markdown, so transferring it
+across to the github wiki would be very little work.
+
+Right, should probably go and dig up various patches I've copied off
+the email list that I wasn't sure about and turn them into pull
+requests to open up discussion on them.
+
+Hamish
+
+From dmishd at gmail.com  Thu Jan 17 23:01:00 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Jan 2013 23:01:00 +0000
+Subject: [sup-devel] [sup-talk] Github organization for sup and
+	heliotrope
+In-Reply-To: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+Message-ID: <CAOxvSbdYRKwsuuZVuNkuhT-C-JV4nxGr1WQ-0-o59+zbgy04AA@mail.gmail.com>
+
+> I'm quite attracted to the git-flow [1]
+> model; I propose we follow it, and have therefore created a develop
+> branch which is just a branch at the same level as master. Please,
+> feel free to fork develop and code/test over it. I already have a
+> bunch of propositions to do and will soon put them in the repo (I just
+> realized my own repo was way too dirty to put it up now)
+
+I've pushed the next branch from the old sup repo to the develop
+branch of the new sup repo. Those are patches I'd previously reviewed
+and accepted.
+
+What is currently on master is what I was thinking about asking
+William to release as sup 0.13 but I never quite made that happen.
+
+There are various other branches in the old git repo aswell. Do we
+want to put them all on github for merging in our own sweet time? Or
+just review them locally and only push the good ones?
+
+Hamish
+
+From dmishd at gmail.com  Thu Jan 17 23:43:01 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Thu, 17 Jan 2013 23:43:01 +0000
+Subject: [sup-devel] [sup-talk] Github organization for sup and
+	heliotrope
+In-Reply-To: <CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+References: <CAMiZLn0QPzDPTxAuR9BcdWv2KPU4Zw-8wCQSSnLrYkq-tGSvow@mail.gmail.com>
+	<50F86471.3000900@gaute.vetsj.com>
+	<CAOxvSbctHrgaVXcpLVzasxKo8B+qLP6PCNLJBb2=YDFc5HObWA@mail.gmail.com>
+Message-ID: <CAOxvSbd=VBvhC6YMN+xEJDj3Jk2rfVEv5HkdUv1_ufrrA96CeA@mail.gmail.com>
+
+> Right, should probably go and dig up various patches I've copied off
+> the email list that I wasn't sure about and turn them into pull
+> requests to open up discussion on them.
+
+I've started doing that with 4 well formatted patches I wasn't
+entirely sure about (3 from Gaute) and put my comments on those pull
+requests. If I get good answers we can merge them.
+
+Got a few more diffs I'll have to get to another night.
+
+Hamish
+
+From matthieu.rakotojaona at gmail.com  Sat Jan 19 15:01:22 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sat, 19 Jan 2013 16:01:22 +0100
+Subject: [sup-devel] Simplification of heliotrope usage
+Message-ID: <CAMiZLn3fX5CbLPBJORzC6YQzaKjrqtR-i4iobWM8KgD9+VrC4g@mail.gmail.com>
+
+Hello everyone,
+
+I've simplified the usability of heliotrope through this pull-request :
+
+https://github.com/sup-heliotrope/heliotrope/pull/1
+
+Basically, to install heliotrope you need to :
+
+1. Install ruby
+2. git clone the branch
+(https://github.com/sup-heliotrope/heliotrope/tree/usability)
+3. Install the bundle gem and run it :
+    $ gem install bundle
+    $ bundle install
+4. run heliotrope :
+    $ ruby /path/to/bin/heliotrope-server
+
+This should simplify the management of gems versions (the versions are
+checked-in, thus using `bundle install` will install the exact same
+version as what I have), the management of paths (everything
+heliotrope-related is in $XDG_DATA_HOME/heliotrope, so you don't need
+to specify a folder). The other command are also modified, so that you
+can simply run
+
+    $ ruby /path/to/bin/heliotrope-import -l <maildir directory>
+
+to import all your mails from a maildir. The README is updated, so you
+can read what's up.
+
+I'd really like to push it as fast as possible into the develop branch
+because it helps a lot. Feel free to use/test it.
+
+--
+Matthieu RAKOTOJAONA
+

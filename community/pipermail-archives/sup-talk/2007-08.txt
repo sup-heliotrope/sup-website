@@ -1,0 +1,1724 @@
+From wmorgan-sup at masanjin.net  Wed Aug  1 12:15:27 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 01 Aug 2007 09:15:27 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184869044-sup-8195@nevans-desktop>
+References: <1184722934-sup-4107@south> <1184797247-sup-5066@mona>
+	<1184867946-sup-8698@south> <1184869044-sup-8195@nevans-desktop>
+Message-ID: <1185984911-sup-9232@south>
+
+Excerpts from nicholas a. evans's message of Thu Jul 19 11:18:58 -0700 2007:
+> Could we get tab completion for setting labels?  And also a keymapping
+> to set labels from thread-view-mode?
+
+These are both in svn now.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Aug  5 20:12:15 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 05 Aug 2007 17:12:15 -0700
+Subject: [sup-talk] new in svn: To/Cc/Bcc prompting and editing (with tab
+	completion)
+Message-ID: <1186358782-sup-8614@south>
+
+When you compose a new message, Sup will now prompt you for a To:
+header. You can also have it prompt you for Cc: and Bcc: by setting
+:ask_for_cc and :ask_for_bcc to true in config.yaml.
+
+When editing a message, 'e' will now edit either the message text (via
+your editor) or a specific header (via Sup), depending on where the
+cursor is. Enter will always edit the message.
+
+Tab completion (on contact aliases, email addresses and full addresses)
+is in effect any time you edit a To, From, Cc or Bcc header.
+
+This all really highlights Sup's inability to scroll a text edit field
+horizontally. I'll deal with this when I summon up the energy to fight
+with Ncurses some more.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Wed Aug  8 20:16:34 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Wed, 08 Aug 2007 20:16:34 -0400
+Subject: [sup-talk] rake/hoe issues
+Message-ID: <1186618315-sup-5646@zap>
+
+Seems like Redwood::VERSION being set to 'svn' isn't meeting some kind
+of hoe version spec, so rake tasks are failing.
+
+# rake gem
+rake aborted!
+Malformed version number string svn
+
+
+
+Whenever I try to build sup from svn, the rakefile seems to be using sup
+from my local gems repository rather than ./lib (within the build
+directory). Since I had already installed a previous dev version, I had
+to go edit the installed gem's lib/sup.rb Redwood::VERSION before the
+new gem would build.
+
+It seems strange to me that I must have sup installed as a gem before I
+can build the svn version.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Thu Aug  9 11:22:14 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 09 Aug 2007 08:22:14 -0700
+Subject: [sup-talk] rake/hoe issues
+In-Reply-To: <1186618315-sup-5646@zap>
+References: <1186618315-sup-5646@zap>
+Message-ID: <1186672403-sup-5194@south>
+
+Excerpts from Ian Taylor's message of Wed Aug 08 17:16:34 -0700 2007:
+> Seems like Redwood::VERSION being set to 'svn' isn't meeting some kind
+> of hoe version spec, so rake tasks are failing.
+
+Lame. I wanted to be able to distinguish SVN-built packages from actual
+releases somehow.  Well I've set it to "0" in SVN, which is at least
+distinctive.
+
+> Whenever I try to build sup from svn, the rakefile seems to be using
+> sup from my local gems repository rather than ./lib (within the build
+> directory).
+
+Ok, I have an explicit load of "./lib/sup.rb" in the Rakefile now. This
+means you probably won't be able to build outside of that directory, but
+that's probably not a problem.
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Sat Aug 11 15:34:38 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Sat, 11 Aug 2007 15:34:38 -0400
+Subject: [sup-talk] forward is broken in svn
+Message-ID: <1186860558-sup-9599@zap>
+
+When in the thread view mode, hitting 'f' on a message causes an
+exception to be thrown:
+
+thread-view-mode.rb:136 'compose' undefined method 'edit'
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Sat Aug 11 16:26:22 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 11 Aug 2007 13:26:22 -0700
+Subject: [sup-talk] forward is broken in svn
+In-Reply-To: <1186860558-sup-9599@zap>
+References: <1186860558-sup-9599@zap>
+Message-ID: <1186863923-sup-9365@south>
+
+Excerpts from Ian Taylor's message of Sat Aug 11 12:34:38 -0700 2007:
+> thread-view-mode.rb:136 'compose' undefined method 'edit'
+
+This was fixed in r519 (2007-08-06 21:16:53 -0700).
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Sat Aug 11 17:35:22 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Sat, 11 Aug 2007 17:35:22 -0400
+Subject: [sup-talk] forward is broken in svn
+In-Reply-To: <1186863923-sup-9365@south>
+References: <1186860558-sup-9599@zap> <1186863923-sup-9365@south>
+Message-ID: <1186867471-sup-8895@zap>
+
+Excerpts from William Morgan's message of Sat Aug 11 16:26:22 -0400 2007:
+> Excerpts from Ian Taylor's message of Sat Aug 11 12:34:38 -0700 2007:
+> > thread-view-mode.rb:136 'compose' undefined method 'edit'
+> 
+> This was fixed in r519 (2007-08-06 21:16:53 -0700).
+> 
+
+I'm sorry, but it doesn't appear to be fixed here. Just in case, here is
+the whole exection:
+
+The problem was: 'undefined method `edit' for #<Redwood::ForwardMode:0x2aaaab5044b8>' (error type NoMethodError)
+A backtrace follows:
+/usr/lib64/ruby/gems/1.8/gems/sup-0.9/lib/sup/modes/thread-index-mode.rb:337:in `forward': undefined method `edit' for #<Redwood::ForwardMode:0x2aaaab5044b8> (NoMethodError)
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.9/lib/sup/mode.rb:52:in `send'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.9/lib/sup/mode.rb:52:in `handle_input'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.9/lib/sup/buffer.rb:191:in `handle_input'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.9/bin/sup:186
+        from /usr/bin/sup:16:in `load'
+        from /usr/bin/sup:16
+
+
+Also, I think in the Rakefile, doing require 'lib/sup.rb' doesn't work
+as imagined. The requires within lib/sup.rb require 'sup/*' and so try
+to load from the local gem repository. I looked at the hoe project's
+Rakefile and I see them doing a trick which probably is what we want:
+
+require 'rubygems'
+require 'hoe'
+$:.unshift 'lib'
+require 'sup'
+
+
+
+Also, I think the change of the VERSION to 0 for development is a
+problem. I got this after installing dev version of sup (after removing
+the old ones):
+/usr/lib64/ruby/site_ruby/1.8/rubygems.rb:304:in `report_activate_error': RubyGem version error: sup(0 not > 0) (Gem::LoadError)
+        from /usr/lib64/ruby/site_ruby/1.8/rubygems.rb:238:in `activate'
+        from /usr/lib64/ruby/site_ruby/1.8/rubygems.rb:76:in `active_gem_with_options'
+        from /usr/lib64/ruby/site_ruby/1.8/rubygems.rb:50:in `gem'
+        from /usr/bin/sup:15
+
+Maybe some really high version number would be good since gems does a
+comparison for choosing which version to use?
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From itaylor at uark.edu  Sat Aug 11 20:23:47 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Sat, 11 Aug 2007 20:23:47 -0400
+Subject: [sup-talk] multiple accounts and reply
+Message-ID: <1186878074-sup-3921@zap>
+
+I have sup setup to use multiple accounts. When replying to mail
+received by the non-default account, the email address is set to the
+default account's address. Is this supposed to be working? If so, I
+didn't see it mentioned in the documentation.
+
+Oh, and about the documentation... When you run rake clean, it removes
+the 'docs' directory.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Sun Aug 12 18:21:05 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 12 Aug 2007 15:21:05 -0700
+Subject: [sup-talk] forward is broken in svn
+In-Reply-To: <1186867471-sup-8895@zap>
+References: <1186860558-sup-9599@zap> <1186863923-sup-9365@south>
+	<1186867471-sup-8895@zap>
+Message-ID: <1186956855-sup-9201@south>
+
+Excerpts from Ian Taylor's message of Sat Aug 11 14:35:22 -0700 2007:
+> I'm sorry, but it doesn't appear to be fixed here. Just in case, here is
+> the whole exection:
+
+Well now, that's a completely different backtrace! But I've fixed it
+too.
+
+> Also, I think in the Rakefile, doing require 'lib/sup.rb' doesn't work
+> as imagined. The requires within lib/sup.rb require 'sup/*' and so try
+> to load from the local gem repository. I looked at the hoe project's
+> Rakefile and I see them doing a trick which probably is what we want:
+
+Thanks. I see other projects doing this too. I've changed this in SVN.
+
+> Also, I think the change of the VERSION to 0 for development is a
+> problem. I got this after installing dev version of sup (after
+> removing the old ones):
+
+Bah, I'm tired of trying to make these things do something reasonable
+for SVN versions. I've changed the version back to 0.1 and SVN users
+will just have to be aware of the overloading.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From william.betts at gmail.com  Mon Aug 13 11:55:45 2007
+From: william.betts at gmail.com (William Betts)
+Date: Mon, 13 Aug 2007 10:55:45 -0500
+Subject: [sup-talk] Error when running sup
+Message-ID: <17b80a160708130855u34a2624fga748c4bd22906232@mail.gmail.com>
+
+Hello,
+
+I just installed sup using gem install sup -y after it finished
+installing I tried to run "sup" and I received the following errors.
+
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:34: warning:
+already initialized constant VERSION
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:36: warning:
+already initialized constant BASE_DIR
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:37: warning:
+already initialized constant CONFIG_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:38: warning:
+already initialized constant SOURCE_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:39: warning:
+already initialized constant LABEL_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:40: warning:
+already initialized constant PERSON_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:41: warning:
+already initialized constant CONTACT_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:42: warning:
+already initialized constant DRAFT_DIR
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:43: warning:
+already initialized constant SENT_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:44: warning:
+already initialized constant LOCK_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:45: warning:
+already initialized constant SUICIDE_FN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:47: warning:
+already initialized constant YAML_DOMAIN
+/usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:48: warning:
+already initialized constant YAML_DATE
+/usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:21:in
+`require__': no such file to load -- iconv (LoadError)
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:21:in
+`require'
+        from /usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup/message.rb:3
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`require__'
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`require'
+        from /usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:208
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`require__'
+        from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:27:in
+`require'
+        from /usr/local/lib/ruby/gems/1.8/gems/sup-0.1/bin/sup:7
+        from /usr/local/bin/sup:18:in `load'
+        from /usr/local/bin/sup:18
+
+uname -a output:
+FreeBSD <hostname_removed> 6.2-RELEASE FreeBSD 6.2-RELEASE #0: Fri Jan
+12 10:40:27 UTC 2007
+root at dessler.cse.buffalo.edu:/usr/obj/usr/src/sys/GENERIC  i386
+
+Any help would be appreciated.
+
+Thank You,
+William
+
+From wmorgan-sup at masanjin.net  Mon Aug 13 18:10:57 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 13 Aug 2007 15:10:57 -0700
+Subject: [sup-talk] Error when running sup
+In-Reply-To: <17b80a160708130855u34a2624fga748c4bd22906232@mail.gmail.com>
+References: <17b80a160708130855u34a2624fga748c4bd22906232@mail.gmail.com>
+Message-ID: <1187043032-sup-1506@south>
+
+Hi William,
+
+Excerpts from William Betts's message of Mon Aug 13 08:55:45 -0700 2007:
+> /usr/local/lib/ruby/gems/1.8/gems/sup-0.1/lib/sup.rb:34: warning:
+> already initialized constant VERSION
+
+I'm not sure what's causing these. Looks like sup.rb is being loaded
+twice in your path for some reason. It shouldn't affect anything though.
+
+> /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:21:in
+> `require__': no such file to load -- iconv (LoadError)
+>         from /usr/local/lib/ruby/site_ruby/1.8/rubygems/custom_require.rb:21:in
+
+Looks like you're missing a Ruby iconv library. On my Debian system it's
+a separate package named libruby-iconv. Not sure what the equivalent is
+for BSD but it's probably something similar.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue Aug 14 15:00:20 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Aug 2007 12:00:20 -0700
+Subject: [sup-talk] multiple accounts and reply
+In-Reply-To: <1186878074-sup-3921@zap>
+References: <1186878074-sup-3921@zap>
+Message-ID: <1187115974-sup-7512@south>
+
+Excerpts from Ian Taylor's message of Sat Aug 11 17:23:47 -0700 2007:
+> I have sup setup to use multiple accounts. When replying to mail
+> received by the non-default account, the email address is set to the
+> default account's address. Is this supposed to be working? If so, I
+> didn't see it mentioned in the documentation.
+
+This should work. If an account email address is matched in the headers
+of the original message, it uses that email address on the From: line.
+If an account alternate email address is matched, it uses the regular
+account email on the From: line. Failing all that, it uses the default
+account.
+
+In inspecting the code I did find a bug in certain cases. Can you svn
+update and try again?
+
+If it's still failing, I'd like to see the accounts section of your
+config.yaml and the headers of the email.
+
+> Oh, and about the documentation... When you run rake clean, it removes
+> the 'docs' directory.
+
+Yeah, this is a Hoe "feature". I guess I'm not supposed to put my own
+stuff in there because everything should be generated by rdoc, or
+something.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Tue Aug 14 18:47:58 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Tue, 14 Aug 2007 18:47:58 -0400
+Subject: [sup-talk] multiple accounts and reply
+In-Reply-To: <1187115974-sup-7512@south>
+References: <1186878074-sup-3921@zap> <1187115974-sup-7512@south>
+Message-ID: <1187131586-sup-5119@zap>
+
+Excerpts from William Morgan's message of Tue Aug 14 15:00:20 -0400 2007:
+> Excerpts from Ian Taylor's message of Sat Aug 11 17:23:47 -0700 2007:
+> > I have sup setup to use multiple accounts. When replying to mail
+> > received by the non-default account, the email address is set to the
+> > default account's address. Is this supposed to be working? If so, I
+> > didn't see it mentioned in the documentation.
+> 
+> This should work. If an account email address is matched in the headers
+> of the original message, it uses that email address on the From: line.
+> If an account alternate email address is matched, it uses the regular
+> account email on the From: line. Failing all that, it uses the default
+> account.
+> 
+> In inspecting the code I did find a bug in certain cases. Can you svn
+> update and try again?
+
+Still having problems.
+
+> If it's still failing, I'd like to see the accounts section of your
+> config.yaml and the headers of the email.
+
+Thanks for taking the time to look at this.
+
+x Return-Path: <XXXXXXX at gmail.com>
+x Delivered-To: lorf-ian at lorf.org
+x Received: (qmail 12196 invoked from network); 14 Aug 2007 22:32:00 -0000
+x Received: from nz-out-0506.google.com (64.233.162.227)
+x   by lorf.org with SMTP; 14 Aug 2007 22:32:00 -0000
+x Received: by nz-out-0506.google.com with SMTP id m22so754113nzf
+x         for <ian at lorf.org>; Tue, 14 Aug 2007 15:31:32 -0700 (PDT)
+x DKIM-Signature: a=rsa-sha1; c=relaxed/relaxed;
+x         d=gmail.com; s=beta;
+x         h=domainkey-signature:received:received:message-id:date:from:to:subject:mime-version:content-type;
+x         b=CdzFHegHMqYXR0tcBjKCHuor3vJ9wLhvoolg9lt+F5CeVEF0TejR861j+I0jwvVDaLSzDsS10UDijnxdtoi06E5w+MfoI4lS9N4OImHM1
+x DomainKey-Signature: a=rsa-sha1; c=nofws;
+x         d=gmail.com; s=beta;
+x         h=received:message-id:date:from:to:subject:mime-version:content-type;
+x         b=ewPvSfa+OFV2zHgtMGmV1HXtA37fykfPYssZ+e4EAsI1ktJBJn6j749x7Y3RGJ7cILcEr6h7L6MsQj6jEmGOc1g5A5uWzfXR+A4cthbXJ
+x Received: by 10.142.157.15 with SMTP id f15mr766432wfe.1187130690410;
+x         Tue, 14 Aug 2007 15:31:30 -0700 (PDT)
+x Received: by 10.142.110.20 with HTTP; Tue, 14 Aug 2007 15:31:30 -0700 (PDT)
+x Message-ID: <81488d6d0708141531j205f2c80y270c06f1ef3a2887 at mail.gmail.com>
+x Date: Tue, 14 Aug 2007 18:31:30 -0400
+x From: "Ian Taylor" <XXXXXXX at gmail.com>
+x To: ian at lorf.org
+x Subject: test
+x MIME-Version: 1.0
+x Content-Type: multipart/alternative;
+x     boundary="----=_Part_67191_10909169.1187130690392"
+x 
+x 
+
+config.yaml:
+--- 
+:editor: /usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set filetype=mail'
+:accounts: 
+  :default: 
+    :alternates:
+    - ian at lorf.org
+
+    :signature: /home/ian/.signature-uark
+    :name: Ian Taylor
+    :email: itaylor at uark.edu
+    :sendmail: /usr/bin/nbsmtp -c /home/ian/.nbsmtp/itaylor at uark.edu
+  :lorf:
+    :name: Ian
+    :signature: /home/ian/.signature-lorf
+    :email: ian at lorf.org
+    :sendmail: /usr/bin/nbsmtp -c /home/ian/.nbsmtp/ian at lorf.org
+
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From wmorgan-sup at masanjin.net  Wed Aug 15 01:16:07 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Aug 2007 22:16:07 -0700
+Subject: [sup-talk] multiple accounts and reply
+In-Reply-To: <1187131586-sup-5119@zap>
+References: <1186878074-sup-3921@zap> <1187115974-sup-7512@south>
+	<1187131586-sup-5119@zap>
+Message-ID: <1187154779-sup-8715@south>
+
+Excerpts from Ian Taylor's message of Tue Aug 14 15:47:58 -0700 2007:
+> :editor: /usr/bin/vim -f -c 'setlocal spell spelllang=en_us' -c 'set
+> filetype=mail'
+> :accounts: 
+>   :default: 
+>     :alternates:
+>     - ian at lorf.org
+
+I think the problem is this line. You're saying that ian at lorf.org is a
+valid alternate address for the default account. So when you receive
+mail Sup then uses the default account's primary email address as the
+"From" address.
+
+If you remove that line replies should work as you expect: emails to
+ian at lorf.org will use .singature-lorf, etc.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Aug 15 01:17:46 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 14 Aug 2007 22:17:46 -0700
+Subject: [sup-talk] Fwd: Re: [Ferret-trac] #279: IO Error - Error reading
+	the segment infos
+Message-ID: <1187154980-sup-1906@south>
+
+Fore those following the index.c:901 error, here's a potential reason
+why Ferret might be doing this: too many open filehandles. If you can
+reproduce this, try increasing the max open filehandle limit and see if
+that helps things.
+
+--- Begin forwarded message from Ferret ---
+From: Ferret <trac at davebalmain.com>
+Cc: dbalmain <dbalmain at gmail.com>
+Date: Wed, 15 Aug 2007 05:52:27 -0000
+Subject: Re: [Ferret-trac] #279: IO Error - Error reading the segment infos
+
+#279: IO Error - Error reading the segment infos
+--------------------------------------+-------------------------------------
+  Reporter:  dennis at dennisschaaf.com  |       Owner:  somebody
+      Type:  defect                   |      Status:  reopened
+  Priority:  major                    |   Milestone:          
+ Component:  component1               |     Version:          
+Resolution:                           |    Keywords:          
+--------------------------------------+-------------------------------------
+Comment (by dennis at dennisschaaf.com):
+
+ This guy mentions that there seems to be a limit with too many open files.
+ Could it be that ferret is not closing files properly? I don't know where
+ in the source i'd look but i'll try.
+
+ http://www.ruby-forum.com/topic/120609
+
+--- End forwarded message ---
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Thu Aug 16 21:20:33 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 16 Aug 2007 21:20:33 -0400
+Subject: [sup-talk] messages wrongly labeled as drafts
+Message-ID: <1187313405-sup-8302@mona>
+
+i postponed a message, then came back to it, finished it, and sent it.  the
+thread still appears with a "draft" label, which i can't remove.  there are
+currently no draft messages waiting to be finished, but if i hit "R", i get
+this exception:
+
+
+[Thu Aug 16 21:16:01 -0400 2007] stopped cursing
+[Thu Aug 16 21:16:01 -0400 2007] oh crap, an exception
+[Thu Aug 16 21:16:01 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'not a draft' (error type RuntimeError)
+A backtrace follows:
+./lib/sup/message.rb:156:in `draft_filename': not a draft (RuntimeError)
+        from ./lib/sup/modes/resume-mode.rb:8:in `initialize'
+        from bin/sup:253:in `new'
+        from bin/sup:253
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Fri Aug 17 14:27:59 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 17 Aug 2007 14:27:59 -0400
+Subject: [sup-talk] exception on opening a thread
+Message-ID: <20070817182759.GA13012@mona.jeffcovey.net>
+
+i did a search on a string, and when i tried to open one of the threads                              
+found by the search, sup died with the following exception.  also, i had to
+send this from mutt because i twice tried to send it through sup, and it sat
+forever on "sending...".
+
+
+[Fri Aug 17 14:14:30 -0400 2007] stopped cursing
+[Fri Aug 17 14:14:30 -0400 2007] oh crap, an exception
+[Fri Aug 17 14:14:30 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'uninitialized stream' (error type IOError)
+A backtrace follows:
+/var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:113:in `read': uninitialized stream (IOError)
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:113:in `standard_read_chunk'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:98:in `parent_read_chunk'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/mailbox/mboxreader.rb:139:in `read_chunk_low'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/mailbox/mboxreader.rb:89:in `read_chunk'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:85:in `read'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:113:in `standard_read_chunk'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:98:in `read_chunk'
+        from /var/lib/gems/1.8/gems/rmail-0.17/lib/rmail/parser/pushbackreader.rb:85:in `read'
+         ... 28 levels...
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:191:in `handle_input'
+        from bin/sup:186
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From itaylor at uark.edu  Sat Aug 18 11:17:48 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Sat, 18 Aug 2007 11:17:48 -0400
+Subject: [sup-talk] keypress causes crash
+Message-ID: <1187450158-sup-2106@zap>
+
+In the message list view, when I hit ctrl-4, it causes sup to crash. I
+meant to type '$', but that irrelevant.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From jeff.covey at pobox.com  Sat Aug 18 08:47:54 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 18 Aug 2007 08:47:54 -0400
+Subject: [sup-talk] exception on opening a thread
+In-Reply-To: <20070817182759.GA13012@mona.jeffcovey.net>
+References: <20070817182759.GA13012@mona.jeffcovey.net>
+Message-ID: <1187441160-sup-1614@mona>
+
+Excerpts from jeff covey's message of Fri Aug 17 14:27:59 -0400 2007:
+
+> i did a search on a string, and when i tried to open one of the threads
+> found by the search, sup died with the following exception.  also, i had
+> to send this from mutt because i twice tried to send it through sup, and
+> it sat forever on "sending...".
+
+i think these problems were caused by the "too many open files" problem.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Sat Aug 18 08:18:15 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Sat, 18 Aug 2007 08:18:15 -0400
+Subject: [sup-talk] [Ferret-trac] #279: IO Error - Error reading the
+	segment infos
+In-Reply-To: <1187154980-sup-1906@south>
+References: <1187154980-sup-1906@south>
+Message-ID: <20070818121815.GA11346@mona.jeffcovey.net>
+
+on Tue, Aug 14, 2007 at 10:17:46PM -0700%, William Morgan said:
+
+> Fore those following the index.c:901 error, here's a potential reason why
+> Ferret might be doing this: too many open filehandles. If you can
+> reproduce this, try increasing the max open filehandle limit and see if
+> that helps things.
+
+i tried this, setting it to 32768 as he recommended, then adding my archive
+sources from the beginning of the year (i had been working with just
+messages from the past month).  it caused a lot of exceptions in sup and
+some segmentation faults in ruby.  i tried resetting the limit to 1024, and
+got the exception below.
+
+i think i'll have to assume sup/ferret can't handle many sources and change
+my archiving system to accommodate.
+
+
+
+[Sat Aug 18 08:07:54 -0400 2007] stopped cursing
+[Sat Aug 18 08:07:54 -0400 2007] oh crap, an exception
+[Sat Aug 18 08:07:54 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'Too many open files - /home/jeff/mail/turbotax at mailca.custhelp.com-2007-02' (error type Errno::EMFILE)
+A backtrace follows:
+./lib/sup/mbox/loader.rb:20:in `initialize': Too many open files - /home/jeff/mail/turbotax at mailca.custhelp.com-2007-02 (Errno::EMFILE)
+        from ./lib/sup/mbox/loader.rb:20:in `open'
+        from ./lib/sup/mbox/loader.rb:20:in `initialize'
+        from ./lib/sup.rb:28:in `new'
+        from ./lib/sup.rb:28:in `yaml_properties'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `call'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `transfer'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `node_import'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+         ... 6 levels...
+        from ./lib/sup/index.rb:101:in `load'
+        from ./lib/sup/util.rb:401:in `send'
+        from ./lib/sup/util.rb:401:in `method_missing'
+        from bin/sup:89
+checking for messages to delete...
+./lib/sup/util.rb:7: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:18: warning: method redefined; discarding old dump_lock_id
+./lib/sup/mbox/loader.rb:20:in `initialize': Too many open files - /home/jeff/mail/turbotax at mailca.custhelp.com-2007-02 (Errno::EMFILE)
+        from ./lib/sup/mbox/loader.rb:20:in `open'
+        from ./lib/sup/mbox/loader.rb:20:in `initialize'
+        from ./lib/sup.rb:28:in `new'
+        from ./lib/sup.rb:28:in `yaml_properties'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `call'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `transfer'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `node_import'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+        from /usr/lib/ruby/1.8/yaml.rb:133:in `load'
+        from /usr/lib/ruby/1.8/yaml.rb:144:in `load_file'
+        from /usr/lib/ruby/1.8/yaml.rb:143:in `open'
+        from /usr/lib/ruby/1.8/yaml.rb:143:in `load_file'
+        from ./lib/sup.rb:99:in `load_yaml_obj'
+        from ./lib/sup/index.rb:348:in `load_sources'
+        from ./lib/sup/index.rb:101:in `load'
+        from bin/sup-dump:25
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Sat Aug 18 20:12:27 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 18 Aug 2007 17:12:27 -0700
+Subject: [sup-talk] [ANN] Sup 0.1 released
+In-Reply-To: <1184875869-sup-9220@south>
+References: <1184871475-sup-2598@eugen-laptop> <1184875869-sup-9220@south>
+Message-ID: <1187482320-sup-7409@south>
+
+Excerpts from William Morgan's message of Thu Jul 19 13:29:30 -0700 2007:
+> > - polling with fetchmail
+> > I use fetchmail and I'd like to be able to add some sort of hook before
+> > polling that would run fetchmail first.
+
+I'm about to commit a changeset that makes this possible.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Aug 18 20:30:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 18 Aug 2007 17:30:04 -0700
+Subject: [sup-talk] new mail notification hook
+In-Reply-To: <1180149989-sup-4780@doses>
+References: <1180149989-sup-4780@doses>
+Message-ID: <1187483373-sup-6117@south>
+
+Excerpts from brian's message of Fri May 25 20:31:39 -0700 2007:
+> I'd like it if there were a global or per-account setting in
+> config.yaml specifying a program to run when new mail arrives.
+
+The same changeset I'm about to commit also will make this possible. Go
+me.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sat Aug 18 21:03:57 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 18 Aug 2007 18:03:57 -0700
+Subject: [sup-talk] new in svn: hook system and polling hooks
+Message-ID: <1187484773-sup-6336@south>
+
+I've added a system for hooking user-created code into Sup. (Finally!)
+
+Sup hooks take the form of Ruby scripts, placed in ~/.sup/hooks. Each
+hook corresponds to a file in that directory. To see documentation on
+the available hooks, just run "sup -l".
+
+Hooks are passed information in the form of local "variables" (really
+method calls, so don't try assigning to them). There are two
+Sup-specific functions they can call, "say" and "log". "say" will write
+a temporary message to the bottom portion of the screen, which is erased
+when the hook stops executing. "log" will write a message to the sup
+log.
+
+There are only two hooks right now, before-poll and after-poll.
+Before-poll should satisfy the desire of fetchmail users and after-poll
+should satisfy the desire of all xbiff users.
+
+Future work:
+Allow sharing of information between successive invocations via instance
+variables; and add lots of hooks (some kind of mime handler is probably
+my immediate goal.)
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Aug 19 21:30:26 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Aug 2007 18:30:26 -0700
+Subject: [sup-talk] new in svn: hook system and polling hooks
+In-Reply-To: <1187484773-sup-6336@south>
+References: <1187484773-sup-6336@south>
+Message-ID: <1187573304-sup-2892@south>
+
+Excerpts from William Morgan's message of Sat Aug 18 18:03:57 -0700 2007:
+> Future work:
+> Allow sharing of information between successive invocations via instance
+> variables
+
+Ok, this is in. Here's how I'm handling fetchmail invocation. In
+hooks/before-poll.rb:
+
+  if (@last_fetchmail_time || Time.at(0)) < Time.now - 60
+    say "Running fetchmail..."
+    system "fetchmail >& /dev/null"
+  end
+  @last_fetchmail_time = Time.now
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun Aug 19 22:20:53 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Aug 2007 19:20:53 -0700
+Subject: [sup-talk] new in svn: behavior modification
+Message-ID: <1187576254-sup-4081@south>
+
+When the configuration variable :confirm_no_attachments is true, if you
+use words like "attach", "attachment", or "attached" in your email and
+don't have any attachments, Sup will prompt you before sending.
+
+When the configuration variable :confirm_top_posting is true, if you
+top-post, Sup will tell you that you are a bad person and will prompt
+you to confirm that before posting.
+
+Both of these will be true when a default config.yaml is generated, but
+are considered false if they're not explicitly specified. So if you
+already have a config.yaml and want these behaviors you'll have to add
+them.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Aug 20 01:15:21 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Aug 2007 22:15:21 -0700
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187313405-sup-8302@mona>
+References: <1187313405-sup-8302@mona>
+Message-ID: <1187586863-sup-8638@south>
+
+Excerpts from jeff.covey's message of Thu Aug 16 18:20:33 -0700 2007:
+> i postponed a message, then came back to it, finished it, and sent it.
+> the thread still appears with a "draft" label, which i can't remove.
+> there are currently no draft messages waiting to be finished, but if i
+> hit "R", i get this exception:
+
+Hm. I'm having trouble reproducing this. Are you able to reproduce it?
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Aug 20 02:52:02 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 19 Aug 2007 23:52:02 -0700
+Subject: [sup-talk] keypress causes crash
+In-Reply-To: <1187450158-sup-2106@zap>
+References: <1187450158-sup-2106@zap>
+Message-ID: <1187592592-sup-6200@south>
+
+Excerpts from Ian Taylor's message of Sat Aug 18 08:17:48 -0700 2007:
+> In the message list view, when I hit ctrl-4, it causes sup to crash. I
+> meant to type '$', but that irrelevant.
+
+I think this is some crazy Ncurses thing. It seems to work with top
+and mutt. I think I'm going to leave it as is.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Mon Aug 20 05:18:44 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Mon, 20 Aug 2007 05:18:44 -0400
+Subject: [sup-talk] crash when replying to message from self
+Message-ID: <1187601390-sup-7453@zap>
+
+If I send a mail to one of the addresses I'm receiving mail for and then
+reply to it, sup crashes.
+
+The problem was: 'undefined method `email' for nil:NilClass' (error type NoMethodError)
+A backtrace follows:
+/usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/edit-message-mode.rb:291:in `sig_lines': undefined method `email' for nil:NilClass (NoMethodError)
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/edit-message-mode.rb:126:in `regen_text'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/edit-message-mode.rb:41:in `initialize'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/reply-mode.rb:84:in `initialize'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/thread-index-mode.rb:326:in `new'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/modes/thread-index-mode.rb:326:in `reply'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/mode.rb:52:in `send'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/mode.rb:52:in `handle_input'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/lib/sup/buffer.rb:193:in `handle_input'
+        from /usr/lib64/ruby/gems/1.8/gems/sup-0.1/bin/sup:192
+        from /usr/bin/sup:16:in `load'
+        from /usr/bin/sup:16
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From jeff.covey at pobox.com  Mon Aug 20 06:04:36 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 20 Aug 2007 06:04:36 -0400
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187586863-sup-8638@south>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+Message-ID: <1187603525-sup-4036@mona>
+
+Excerpts from William Morgan's message of Mon Aug 20 01:15:21 -0400 2007:
+
+> > i postponed a message, then came back to it, finished it, and sent it.
+> > the thread still appears with a "draft" label, which i can't remove.
+> > there are currently no draft messages waiting to be finished, but if i
+> > hit "R", i get this exception:
+> 
+> Hm. I'm having trouble reproducing this. Are you able to reproduce it?
+
+there's definitely something odd going on with drafts.  i'm trying to work
+on another draft message now.  i started writing it and postponed it.  when
+i came back to it, added to it, and exited the editor, i hit "P" to postpone
+it again.  the next time i tried to edit it some more, my additions from the
+second editing session were gone.  i added a bit of text again as a trial,
+and when i exited the editor and postponed, that addition was gone as well.
+i tried once again, and this time after exiting the editor, i hit "x" to
+kill the buffer.  i was asked "discard draft?", and when i hit "n", i got
+the exception below.
+
+when i restarted sup, i had three draft messages in my inbox, one for each
+of my attempts (minus the one with the exception), and there are files named
+"1", "2", and "3" in ~/.sup/drafts, each with a slightly different version
+of the message.
+
+
+[Mon Aug 20 05:51:18 -0400 2007] stopped cursing
+[Mon Aug 20 05:51:18 -0400 2007] oh crap, an exception
+[Mon Aug 20 05:51:18 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: 'undefined method `to_nice_s' for nil:NilClass' (error type NoMethodError)
+A backtrace follows:
+./lib/sup/modes/thread-index-mode.rb:449:in `text_for_thread': undefined method `to_nice_s' for nil:NilClass (NoMethodError)
+        from ./lib/sup/modes/thread-index-mode.rb:431:in `regen_text'
+        from ./lib/sup/util.rb:233:in `map_with_index'
+        from /usr/lib/ruby/1.8/rubygems/custom_require.rb:27:in `each_with_index'
+        from ./lib/sup/util.rb:233:in `each'
+        from ./lib/sup/util.rb:233:in `each_with_index'
+        from ./lib/sup/util.rb:233:in `map_with_index'
+        from ./lib/sup/modes/thread-index-mode.rb:431:in `regen_text'
+        from ./lib/sup/modes/thread-index-mode.rb:137:in `update'
+         ... 9 levels...
+        from ./lib/sup/util.rb:387:in `method_missing'
+        from ./lib/sup/modes/resume-mode.rb:25:in `killable?'
+        from ./lib/sup/buffer.rb:317:in `kill_buffer_safely'
+        from bin/sup:205
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Mon Aug 20 13:01:11 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 20 Aug 2007 10:01:11 -0700
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187603525-sup-4036@mona>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+	<1187603525-sup-4036@mona>
+Message-ID: <1187629181-sup-1057@south>
+
+Excerpts from jeff.covey's message of Mon Aug 20 03:04:36 -0700 2007:
+> there's definitely something odd going on with drafts.  i'm trying to
+> work on another draft message now.  i started writing it and postponed
+> it.  when i came back to it, added to it, and exited the editor, i hit
+> "P" to postpone it again.  the next time i tried to edit it some more,
+> my additions from the second editing session were gone.  i added a bit
+> of text again as a trial, and when i exited the editor and postponed,
+> that addition was gone as well.  i tried once again, and this time
+> after exiting the editor, i hit "x" to kill the buffer.  i was asked
+> "discard draft?", and when i hit "n", i got the exception below.
+
+Bizarre. This all works for me, and has for months. Does draft saving
+and resuming work for other people?
+
+> The problem was: 'undefined method `to_nice_s' for nil:NilClass' (error type
+> NoMethodError)
+> A backtrace follows:
+> ./lib/sup/modes/thread-index-mode.rb:449:in `text_for_thread': undefined method
+
+Can you send me the contents of sup-exception-log.txt, which contains
+the full backtrace? (The ruby stdout one elides a critical section in
+this case.)
+
+Thanks,
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Mon Aug 20 08:28:41 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Mon, 20 Aug 2007 08:28:41 -0400
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187603525-sup-4036@mona>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+	<1187603525-sup-4036@mona>
+Message-ID: <1187612763-sup-8524@mona>
+
+Excerpts from jeff covey's message of Mon Aug 20 06:04:36 -0400 2007:
+
+> when i restarted sup, i had three draft messages in my inbox, one for each
+> of my attempts (minus the one with the exception), and there are files
+> named "1", "2", and "3" in ~/.sup/drafts, each with a slightly different
+> version of the message.
+
+i finished and sent the message and deleted the thread with the three
+messages in sup, but the three files are still in ~/.sup/drafts.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Tue Aug 21 14:19:35 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 21 Aug 2007 14:19:35 -0400
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187629181-sup-1057@south>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+	<1187603525-sup-4036@mona> <1187629181-sup-1057@south>
+Message-ID: <1187720230-sup-999@mona>
+
+Excerpts from William Morgan's message of Mon Aug 20 13:01:11 -0400 2007:
+
+> Can you send me the contents of sup-exception-log.txt, which contains the
+> full backtrace? 
+
+there was nothing in there about it.  the exception with the draft messages
+occurred on 8/20, and this is the full contents of sup-exception-log.txt:
+
+--- TypeError at Sat Aug 18 08:07:08 -0400 2007
+wrong argument type FalseClass (expected Thread)
+./lib/sup/buffer.rb:239:in `unlock'
+./lib/sup/buffer.rb:239:in `draw_screen'
+./lib/sup/buffer.rb:575:in `say'
+./lib/sup/util.rb:401:in `send'
+./lib/sup/util.rb:401:in `method_missing'
+./lib/sup/modes/thread-index-mode.rb:72:in `select'
+./lib/sup.rb:68:in `reporting_thread'
+./lib/sup.rb:66:in `initialize'
+./lib/sup.rb:66:in `new'
+./lib/sup.rb:66:in `reporting_thread'
+./lib/sup/modes/thread-index-mode.rb:71:in `select'
+./lib/sup/mode.rb:52:in `send'
+./lib/sup/mode.rb:52:in `handle_input'
+./lib/sup/buffer.rb:191:in `handle_input'
+bin/sup:186
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From jeff.covey at pobox.com  Thu Aug 23 08:21:04 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 23 Aug 2007 08:21:04 -0400
+Subject: [sup-talk] exception on attaching an html file
+Message-ID: <1187871532-sup-6972@mona>
+
+i just got this when i tried to attach an html file to a message and send
+it:
+
+endmail: fatal: No recipient addresses found in message header
+[Thu Aug 23 08:13:19 -0400 2007] stopped cursing
+[Thu Aug 23 08:13:19 -0400 2007] oh crap, an exception
+[Thu Aug 23 08:13:19 -0400 2007] unlocking /home/jeff/.sup/lock...
+----------------------------------------------------------------
+I'm very sorry, but it seems that an error occurred in Sup.
+Please accept my sincere apologies. If you don't mind, please
+send the backtrace below and a brief report of the circumstances
+to sup-talk at rubyforge dot orgs so that I might address this
+problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+
+The problem was: '8bit' (error type RMail::EncodingUnsupportedError)
+A backtrace follows:
+./lib/sup/util.rb:81:in `add_attachment': 8bit (RMail::EncodingUnsupportedError)
+        from ./lib/sup/modes/edit-message-mode.rb:251:in `write_full_message_to'
+        from ./lib/sup/modes/edit-message-mode.rb:251:in `each'
+        from ./lib/sup/modes/edit-message-mode.rb:251:in `write_full_message_to'
+        from ./lib/sup/modes/edit-message-mode.rb:206:in `send_message'
+        from ./lib/sup/modes/edit-message-mode.rb:206:in `popen'
+        from ./lib/sup/modes/edit-message-mode.rb:206:in `send_message'
+        from ./lib/sup/mode.rb:52:in `send'
+        from ./lib/sup/mode.rb:52:in `handle_input'
+        from ./lib/sup/buffer.rb:193:in `handle_input'
+        from bin/sup:192
+
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Thu Aug 23 13:26:26 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Aug 2007 10:26:26 -0700
+Subject: [sup-talk] exception on attaching an html file
+In-Reply-To: <1187871532-sup-6972@mona>
+References: <1187871532-sup-6972@mona>
+Message-ID: <1187889791-sup-1353@south>
+
+Excerpts from jeff.covey's message of Thu Aug 23 05:21:04 -0700 2007:
+> The problem was: '8bit' (error type RMail::EncodingUnsupportedError)
+
+Should be fixed in SVN. For a good time, read about when to use 8bit
+versus quoted-printable encoding for MIME attachments, and the history
+behind it all. And by "good" I mean "eyeball-stab-inducing".
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Aug 23 13:33:44 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Aug 2007 10:33:44 -0700
+Subject: [sup-talk] crash when replying to message from self
+In-Reply-To: <1187601390-sup-7453@zap>
+References: <1187601390-sup-7453@zap>
+Message-ID: <1187890335-sup-8084@south>
+
+Excerpts from Ian Taylor's message of Mon Aug 20 02:18:44 -0700 2007:
+> If I send a mail to one of the addresses I'm receiving mail for and
+> then reply to it, sup crashes.
+
+Seems like this would only happen if the header were somehow missing a
+ From: address, like you edited the message and deleted that line or
+something. Try the latest SVN... it at least shouldn't crash under this
+circumstance any more.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Thu Aug 23 13:40:33 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 23 Aug 2007 10:40:33 -0700
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187720230-sup-999@mona>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+	<1187603525-sup-4036@mona> <1187629181-sup-1057@south>
+	<1187720230-sup-999@mona>
+Message-ID: <1187890660-sup-9135@south>
+
+Excerpts from jeff.covey's message of Tue Aug 21 11:19:35 -0700 2007:
+> there was nothing in there about it.  the exception with the draft messages
+> occurred on 8/20, and this is the full contents of sup-exception-log.txt:
+> 
+> --- TypeError at Sat Aug 18 08:07:08 -0400 2007
+> wrong argument type FalseClass (expected Thread)
+
+Hm, this is some other unrelated completely scary backtrace. I'm going
+to ignore it and pretend it never happened.
+
+My guess at this point is that the index and your drafts directory
+somehow got out of sync. Can you run "sup-sync -va sup://drafts" and see
+if that clears up the problem?
+
+Thanks for the patience,
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Thu Aug 23 18:05:01 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 23 Aug 2007 18:05:01 -0400
+Subject: [sup-talk] messages wrongly labeled as drafts
+In-Reply-To: <1187890660-sup-9135@south>
+References: <1187313405-sup-8302@mona> <1187586863-sup-8638@south>
+	<1187603525-sup-4036@mona> <1187629181-sup-1057@south>
+	<1187720230-sup-999@mona> <1187890660-sup-9135@south>
+Message-ID: <1187906598-sup-9501@mona>
+
+Excerpts from William Morgan's message of Thu Aug 23 13:40:33 -0400 2007:
+
+> Can you run "sup-sync -va sup://drafts" and see if that clears up the
+> problem?
+
+hey, that seems to have found something:
+
+./lib/sup/util.rb:7: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:18: warning: method redefined; discarding old dump_lock_id
+bin/sup-sync:9: warning: method redefined; discarding old to_s
+[Thu Aug 23 18:00:21 -0400 2007] locking /home/jeff/.sup/lock...
+[Thu Aug 23 18:00:21 -0400 2007] loading index...
+[Thu Aug 23 18:00:21 -0400 2007] loaded index of 1066 messages
+Scanning sup://drafts...
+Scanned 0, added 0, updated 0 messages from sup://drafts.
+Deleting missing messages from the index...
+Deleting 1187603448-sup-5121 at mona
+Deleting 1187603421-sup-9743 at mona
+Deleting 1187603324-sup-7344 at mona
+Deleted 3 / 3 messages
+[Thu Aug 23 18:00:21 -0400 2007] saving index and sources...
+[Thu Aug 23 18:00:21 -0400 2007] unlocking /home/jeff/.sup/lock...
+
+but postponing this message, editing it again, and postponing again still
+results in two draft messages.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+
+From jeff.covey at pobox.com  Fri Aug 24 19:48:08 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 24 Aug 2007 19:48:08 -0400
+Subject: [sup-talk] exception on attaching an html file
+In-Reply-To: <1187889791-sup-1353@south>
+References: <1187871532-sup-6972@mona> <1187889791-sup-1353@south>
+Message-ID: <1187999085-sup-8324@mona>
+
+Excerpts from William Morgan's message of Thu Aug 23 13:26:26 -0400 2007:
+
+> Should be fixed in SVN.
+
+seems to be working fine, thanks!
+
+any chance the filename completion system for finding files to attach could
+also be used for saving attachments?  it's awkward to type the full pathname
+to where you want a file to go.
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Sat Aug 25 01:56:08 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 24 Aug 2007 22:56:08 -0700
+Subject: [sup-talk] exception on attaching an html file
+In-Reply-To: <1187999085-sup-8324@mona>
+References: <1187871532-sup-6972@mona> <1187889791-sup-1353@south>
+	<1187999085-sup-8324@mona>
+Message-ID: <1188021356-sup-4920@south>
+
+Excerpts from jeff.covey's message of Fri Aug 24 16:48:08 -0700 2007:
+> any chance the filename completion system for finding files to attach
+> could also be used for saving attachments?  it's awkward to type the
+> full pathname to where you want a file to go.
+
+Good point. Done.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Aug 27 16:32:56 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Aug 2007 13:32:56 -0700
+Subject: [sup-talk] [Ferret-trac] #279: IO Error - Error reading the
+	segment infos
+In-Reply-To: <20070818121815.GA11346@mona.jeffcovey.net>
+References: <1187154980-sup-1906@south>
+	<20070818121815.GA11346@mona.jeffcovey.net>
+Message-ID: <1188246610-sup-553@south>
+
+Excerpts from jeff.covey's message of Sat Aug 18 05:18:15 -0700 2007:
+> i tried this, setting it to 32768 as he recommended, then adding my
+> archive sources from the beginning of the year (i had been working
+> with just messages from the past month).  it caused a lot of
+> exceptions in sup and some segmentation faults in ruby.
+
+Sup does keep a filehandle open to every mbox source. Since sources
+aren't read except when you open a thread-view-mode, it probably
+wouldn't be too bad to just open them on demand. That might help.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jeff.covey at pobox.com  Tue Aug 28 17:48:01 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Tue, 28 Aug 2007 17:48:01 -0400
+Subject: [sup-talk] [Ferret-trac] #279: IO Error - Error reading the
+	segment infos
+In-Reply-To: <1188246610-sup-553@south>
+References: <1187154980-sup-1906@south>
+	<20070818121815.GA11346@mona.jeffcovey.net>
+	<1188246610-sup-553@south>
+Message-ID: <1188337653-sup-1735@mona>
+
+Excerpts from William Morgan's message of Mon Aug 27 16:32:56 -0400 2007:
+
+> Sup does keep a filehandle open to every mbox source.
+
+yikes, no wonder it complains!  :)
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Wed Aug 29 00:15:23 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Aug 2007 21:15:23 -0700
+Subject: [sup-talk] new in svn: mime-type hook
+Message-ID: <1188360667-sup-3717@south>
+
+There's a new hook for all your MIME decoding needs:
+
+  mime-decode
+  -----------
+  File: ~/.sup/hooks/mime-decode.rb
+  Executes when decoding a MIME attachment.
+  Variables:
+     content_type: the content-type of the message
+         filename: the filename of the attachment as saved to disk (generated
+                   on the fly, so don't call more than once)
+    sibling_types: if this attachment is part of a multipart MIME attachment,
+                   an array of content-types for all attachments. Otherwise,
+                   the empty array.
+  Return value:
+    The decoded text of the attachment, or nil if not decoded.
+
+Here's what I use for mime-decode.rb. It uses w3m to translate all HTML
+attachments that don't have a text/html alternative:
+
+  unless sibling_types.member? "text/plain"
+    case content_type
+    when "text/html"
+      `/usr/bin/w3m -dump -T #{content_type} '#{filename}'`
+    end
+  end
+
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From itaylor at uark.edu  Thu Aug 30 15:47:19 2007
+From: itaylor at uark.edu (Ian Taylor)
+Date: Thu, 30 Aug 2007 15:47:19 -0400
+Subject: [sup-talk] fwd mail w/attachment doesn't contain attachment
+Message-ID: <1188503143-sup-7979@zap>
+
+When forwarding a mail with an attachment, the fwd message doesn't seem
+to contain the attachment.
+
+-- 
+Ian Taylor, Technical Assistant
+Computer Science Computer Engineering
+http://www.csce.uark.edu itaylor at uark.edu
+University of Arkansas
+
+
+From jeff.covey at pobox.com  Thu Aug 30 15:50:47 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Thu, 30 Aug 2007 15:50:47 -0400
+Subject: [sup-talk] sup-sync-back not syncing all usual sources
+In-Reply-To: <1184091559-sup-1633@south>
+References: <1181836972-sup-1140@mona> <1182112191-sup-9971@south>
+	<1182126871-sup-7739@mona> <1184091559-sup-1633@south>
+Message-ID: <1188503036-sup-4823@mona>
+
+Excerpts from William Morgan's message of Tue Jul 10 14:21:57 -0400 2007:
+
+> > it now spits out the names of all of my usual sources and moves deleted
+> > files from some, but not all of them.
+> 
+> This I'm still not sure about and I can't replicate. a) Does it still
+> happen with recent SVN, and b) are there any distinguishing features about
+> which sources it moves stuff from and which it wrongly ignores?
+
+i just tried running sup-sync-back without specifying any sources for a
+week, then ran my script to look for messages waiting to be deleted.  my
+script didn't find anything, so this seems to be working fine for me now.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From wmorgan-sup at masanjin.net  Thu Aug 30 18:08:40 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Thu, 30 Aug 2007 15:08:40 -0700
+Subject: [sup-talk] fwd mail w/attachment doesn't contain attachment
+In-Reply-To: <1188503143-sup-7979@zap>
+References: <1188503143-sup-7979@zap>
+Message-ID: <1188511641-sup-6069@south>
+
+Excerpts from Ian Taylor's message of Thu Aug 30 12:47:19 -0700 2007:
+> When forwarding a mail with an attachment, the fwd message doesn't
+> seem to contain the attachment.
+
+Yeah... I have a partial implementation of better attachment code that
+should allow both this and attaching messages. I'm hoping to find some
+time to finish it up over the long weekend.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Fri Aug 31 12:09:10 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 31 Aug 2007 09:09:10 -0700
+Subject: [sup-talk] new in svn: signature generation hook
+Message-ID: <1188576459-sup-2368@south>
+
+Check out my new awesome sig. I made it by putting this code in
+~/.sup/hooks/signature.rb:
+
+  if from_email
+    title = "War Lord of the Sup"
+    padding = " " * (73 - title.length - from_email.length)
+    <<'EOS' +
+  _____________________________________________________________________________   
+  |                                                                           |   
+  |        |                          \ | /                          |        |   
+  |        |\                          \|/                          /|        |   
+  |  |XXXXX||>>>>>>>>>>>>>>>>>>>>>>>  ((*))  <<<<<<<<<<<<<<<<<<<<<<<||XXXXX|  |   
+  |        |/                          /|\                          \|        |   
+  |        |                          / | \                          |        |   
+  |                                                                           |   
+  | Death Star                                                                |   
+  EOS
+    <<EOS
+  | #{title}#{padding}#{from_email} |                                             
+  |___________________________________________________________________________|   
+                                                                                  
+  EOS
+  end
+
+Here's the hook documentation:
+
+  File: ~/.sup/hooks/signature.rb
+  Generates a signature for a message.
+  Variables:
+        header: an object that supports string-to-string hashtable-style access
+                to the raw headers for the message. E.g., header["From"],
+                header["To"], etc.
+    from_email: the email part of the From: line, or nil if empty
+  Return value:
+    A string (multi-line ok) containing the text of the signature, or nil to
+    use the default signature.
+
+Have fun,
+
+-- 
+_____________________________________________________________________________
+|                                                                           |
+|        |                          \ | /                          |        |
+|        |\                          \|/                          /|        |
+|  |XXXXX||>>>>>>>>>>>>>>>>>>>>>>>  ((*))  <<<<<<<<<<<<<<<<<<<<<<<||XXXXX|  |
+|        |/                          /|\                          \|        |
+|        |                          / | \                          |        |
+|                                                                           |
+| Death Star                                                                |
+| War Lord of the Sup                              wmorgan-sup at masanjin.net |
+|___________________________________________________________________________|
+
+From jeff.covey at pobox.com  Fri Aug 31 15:02:44 2007
+From: jeff.covey at pobox.com (jeff covey)
+Date: Fri, 31 Aug 2007 15:02:44 -0400
+Subject: [sup-talk] new in svn: mime-type hook
+In-Reply-To: <1188360667-sup-3717@south>
+References: <1188360667-sup-3717@south>
+Message-ID: <1188586680-sup-8783@mona>
+
+Excerpts from William Morgan's message of Wed Aug 29 00:15:23 -0400 2007:
+
+>   File: ~/.sup/hooks/mime-decode.rb
+
+it's working for me, thanks!  a lot of messages are finally showing
+something other than a single "attachment" line.  :)
+
+in the process of making this, did something go wrong with sup's decoding of
+ordinary messages?  i'm seeing a lot of messages with equals marks at the
+ends of lines, like:
+
+> This e-mail notifies you that the Bureau of the Public Debt just issued=
+>  a press
+> release concerning the securities identified in the subject area of thi=
+> s
+> message. =A0Clicking on the address listed above after "Press Release" =
+> should take
+> you to Public Debt's Internet page of a PDF version of the actual press=
+
+here's a copy of the original message from which this was taken:
+
+http://jeffcovey.net/tmp/.sup-equals.txt
+
+this was happening before and after i created my ~/.sup/hooks/mime-decode.rb
+file.
+
+thanks,
+
+-- 
+jeff covey
+http://jeffcovey.net/
+
+
+From magnus at therning.org  Fri Aug 31 15:36:14 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 31 Aug 2007 20:36:14 +0100
+Subject: [sup-talk] new in svn: mime-type hook
+In-Reply-To: <1188586680-sup-8783@mona>
+References: <1188360667-sup-3717@south> <1188586680-sup-8783@mona>
+Message-ID: <20070831193614.GC4604@die.therning.org>
+
+On Fri, Aug 31, 2007 at 15:02:44 -0400, jeff covey wrote:
+[..]
+>
+>in the process of making this, did something go wrong with sup's
+>decoding of ordinary messages?  i'm seeing a lot of messages with
+>equals marks at the ends of lines, like:
+>
+>> This e-mail notifies you that the Bureau of the Public Debt just issued=
+>>  a press
+>> release concerning the securities identified in the subject area of thi=
+>> s
+>> message. =A0Clicking on the address listed above after "Press Release" =
+>> should take
+>> you to Public Debt's Internet page of a PDF version of the actual press=
+>
+>here's a copy of the original message from which this was taken:
+>
+>http://jeffcovey.net/tmp/.sup-equals.txt
+>
+>this was happening before and after i created my
+>~/.sup/hooks/mime-decode.rb file.
+
+That looks like something relating to quoted-printable.  IIRC the equal
+sign is an escape for the newline character.
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+For a successful technology, reality must take precedence over public
+relations, for nature cannot be fooled.
+     -- R.P. Feynman
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: Digital signature
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070831/c6b50649/attachment.bin 
+
+From wmorgan-sup at masanjin.net  Fri Aug 31 11:31:04 2007
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Fri, 31 Aug 2007 08:31:04 -0700
+Subject: [sup-talk] on sup
+In-Reply-To: <1188557360-sup-7369@bryma>
+References: <1188557360-sup-7369@bryma>
+Message-ID: <1188573751-sup-6067@south>
+
+Excerpts from Magnus Therning's message of Fri Aug 31 04:04:03 -0700 2007:
+> Hey!  Sup is absolutely great!
+
+Thanks! Feel free to join the mailing list and tell all your friends.
+Especially if they can write Ruby. :)
+
+> Here are some things I'd like to see in sup in the future:
+> 
+>  - support for using the output of a command as signature (I don't seem
+>    to even get the contents of ~/.signature inserted into new emails)
+
+It should be trivial to add a hook for this. By default ~/.signature
+should be appended to email (not in the editor, but in Sup's review
+screen immediate post editing). If it's not, it's probably that
+~/.sup/config.yaml is pointing to a different file.
+
+>  - PGP/GPG support, this is really a show stopper for me at the moment
+
+Yep, I plan to have first-order GPG support (i.e. not just in the hooks
+system.) Not for the next release, but possibly the one after. The time
+is nigh.
+
+>  - support for choosing where to save sent messages
+
+This I'm a little curious about. Why do you care where they live on
+disk, as long as they show up in the index?
+
+Thanks for the feedback,
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From magnus at therning.org  Fri Aug 31 13:12:34 2007
+From: magnus at therning.org (Magnus Therning)
+Date: Fri, 31 Aug 2007 18:12:34 +0100
+Subject: [sup-talk] on sup
+In-Reply-To: <1188573751-sup-6067@south>
+References: <1188557360-sup-7369@bryma> <1188573751-sup-6067@south>
+Message-ID: <20070831171234.GD8312@die.therning.org>
+
+On Fri, Aug 31, 2007 at 08:31:04 -0700, William Morgan wrote:
+>Excerpts from Magnus Therning's message of Fri Aug 31 04:04:03 -0700 2007:
+>> Hey!  Sup is absolutely great!
+>
+>Thanks! Feel free to join the mailing list and tell all your friends.
+>Especially if they can write Ruby. :)
+
+Here I am.  Not very proficient in Ruby myself, but I suppose sup offers
+an incentive to check it out.
+
+>> Here are some things I'd like to see in sup in the future:
+>> 
+>>  - support for using the output of a command as signature (I don't seem
+>>    to even get the contents of ~/.signature inserted into new emails)
+>
+>It should be trivial to add a hook for this. By default ~/.signature
+>should be appended to email (not in the editor, but in Sup's review
+>screen immediate post editing). If it's not, it's probably that
+>~/.sup/config.yaml is pointing to a different file.
+
+Ah, that's slightly confusing behaviour especially after being used to
+mutt.  I think I can adapt though :-)
+
+>>  - PGP/GPG support, this is really a show stopper for me at the moment
+>
+>Yep, I plan to have first-order GPG support (i.e. not just in the hooks
+>system.) Not for the next release, but possibly the one after. The time
+>is nigh.
+
+Is anyone working on it already?
+
+>>  - support for choosing where to save sent messages
+>
+>This I'm a little curious about. Why do you care where they live on
+>disk, as long as they show up in the index?
+
+All right, here's some background :-)
+
+I have a fairly extensive configuration of procmail for sorting mails
+into maildir folders on a server at a friend's place.  I then
+synchronise those folders onto a few different machines.  This way I can
+read emails on all machines, both at home and work.  When I'm travelling
+I can use the web-based reader hosted on the same server at my friend's.
+
+Given this I want to control where sent mails end up so that I can
+access those mails from all those locations.  And I want to keep my
+hierarchy of folders so that reading emails is easy also on machines
+where I can't install sup and online.
+
+This makes me think of another little detail, it seems sup's idea of
+what's read and what's new isn't based on the maildir notion of what's
+read and what's new (i.e. sup doesn't move mail from /new to /cur when
+it's read and doesn't recognise that mail in /cur is read).
+
+/M
+
+-- 
+Magnus Therning                             (OpenPGP: 0xAB4DFBA4)
+magnus?therning?org             Jabber: magnus?therning?gmail?com
+http://therning.org/magnus
+
+When the people fear their government, there is tyranny; when the
+government fears the people, there is liberty.
+     -- Thomas Jefferson
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+Url : http://rubyforge.org/pipermail/sup-talk/attachments/20070831/8ae01aa6/attachment-0001.bin 
+

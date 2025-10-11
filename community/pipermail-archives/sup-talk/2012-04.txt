@@ -1,0 +1,552 @@
+From ruthard.baudach at web.de  Sat Apr 14 22:17:45 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Sun, 15 Apr 2012 00:17:45 +0200
+Subject: [sup-talk] wiki vandalized
+Message-ID: <1334441695-sup-7351@prxbdc.dyndns.org>
+
+The sup wiki was vandalized. I tried to rescue as much as I could, but
+could not restore some pages.
+
+Is it possible to integrate a kind of gotcha?
+
+Ruthard
+
+
+From masterkorp at masterkorp.net  Sun Apr 15 00:36:40 2012
+From: masterkorp at masterkorp.net (Alfredo Palhares)
+Date: Sun, 15 Apr 2012 02:36:40 +0200
+Subject: [sup-talk] wiki vandalized
+In-Reply-To: <1334441695-sup-7351@prxbdc.dyndns.org>
+References: <1334441695-sup-7351@prxbdc.dyndns.org>
+Message-ID: <1334450086-sup-1101@masterkorp.net>
+
+Excerpts from Ruthard Baudach's message of Sun Apr 15 00:17:45 +0200 2012:
+> The sup wiki was vandalized. I tried to rescue as much as I could, but
+> could not restore some pages.
+> 
+> Is it possible to integrate a kind of gotcha?
+> 
+> Ruthard
+we need  to convertthe wiki to gollem, the git powered wiki.
+
+From wmorgan at masanjin.net  Fri Apr 20 20:52:46 2012
+From: wmorgan at masanjin.net (William Morgan)
+Date: Fri, 20 Apr 2012 13:52:46 -0700
+Subject: [sup-talk] Fwd: [sup-devel] [heliotrope] crashes while importing
+In-Reply-To: <CAE+8KM3BeubqLWAZFYOYjEiVUYpQT3vhwhaf37r1BzVECngbJA@mail.gmail.com>
+References: <20120301151701.23555.84803@localhost> <1330985181-sup-8598@typhon>
+	<CAE+8KM0gu1UD=gGXfiEwmceW82AxF02Y+=Y-AZTW3SR5hToXZg@mail.gmail.com>
+	<CAE+8KM3BeubqLWAZFYOYjEiVUYpQT3vhwhaf37r1BzVECngbJA@mail.gmail.com>
+Message-ID: <1334932275-turnsole-49140@terminus-est>
+
+Hi Johann,
+
+Excerpts from Johann Kl?hn's message of 2012-04-18 13:58:24 -0700:
+> After sucessfully importing several messages I now run into this every
+> time I try to import mails from gmail. (It does not crash on the same
+> message every time. Perhaps the offending message is marked as seen
+> before the crash happens and thus is skipped the next time.)
+
+Thanks for the report. This appears to be a crash in leveldb-ruby. I
+should be prepping a new release shortly that might fix this problem
+(there have been random leveldb bugfixes in the mean time, though I'm
+not sure if any of them are particular to this problen).
+
+Since you can reproduce this, can you try running this command through
+valgrind or gdb and seeing if that points to anything interesting in the
+crash? For extra credit, check out the leveldb-ruby project, recompile
+it with debugging turned on, and then run it through valgrind.
+
+If this isn't fixed with the latest leveldb code, then we'll have to
+send the bug report upstream to them.
+
+I'm leaving the rest of your report in for the list:
+> 
+> ~/Sync/repositories/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:735:
+> [BUG] Bus Error
+> (that's "@store[key] = Marshal.dump(value.to_hash)" in "write_hash")
+> 
+> -- C level backtrace information -------------------------------------------
+> /usr/lib/libruby.so.1.9(+0x155629) [0x7f6dcf4ad629]
+> /usr/lib/libruby.so.1.9(+0x57c59) [0x7f6dcf3afc59]
+> /usr/lib/libruby.so.1.9(rb_bug+0xb3) [0x7f6dcf3b0493]
+> /usr/lib/libruby.so.1.9(+0xf6d12) [0x7f6dcf44ed12]
+> /lib/libc.so.6(+0x34cb0) [0x7f6dcefebcb0]
+> /lib/libc.so.6(+0x12d67e) [0x7f6dcf0e467e]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(+0x339dd)
+> [0x7f6dcb11e9dd]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer18EmitPhysicalRecordENS0_10RecordTypeEPKcm+0xd1)
+> [0x7f6dcb10b091]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer9AddRecordERKNS_5SliceE+0x74)
+>
+> I'm using Arch Linux, ruby 1.9.3p125, heliotrope as of commit 19fc1bf,
+> leveldb-ruby 0.14, whistlepig-0.10. See attached (full) crash log.
+> 
+> Thanks for your work on heliotrope so far, I'm eager to get it to work.
+> ; scanned 1307, indexed 25, skipped 0 bad and 1282 seen messages in 2218.0s = 0.6 m/s
+> ; adding 21891 with labels {} and state {unread}
+> ; adding 21893 with labels {} and state {unread}
+> ; adding 21897 with labels {} and state {unread}
+> ; adding 21899 with labels {} and state {unread}
+> ; adding 21901 with labels {} and state {unread}
+> ; adding 21902 with labels {} and state {}
+> ; adding 21903 with labels {notifications} and state {}
+> ; adding 21904 with labels {} and state {}
+> ~/Sync/repositories/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:735: [BUG] Bus Error
+> ruby 1.9.3p125 (2012-02-16 revision 34643) [x86_64-linux]
+> 
+> -- Control frame information -----------------------------------------------
+> c:0011 p:---- s:0097 b:0097 l:000096 d:000096 CFUNC  :put
+> c:0010 p:0072 s:0092 b:0091 l:000090 d:000090 METHOD ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:735
+> c:0009 p:0129 s:0086 b:0086 l:000085 d:000085 METHOD ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:674
+> c:0008 p:0238 s:0077 b:0077 l:000076 d:000076 METHOD ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:122
+> c:0007 p:0312 s:0060 b:0060 l:002058 d:000059 BLOCK  bin/heliotrope-import:133
+> c:0006 p:0188 s:0047 b:0047 l:000028 d:000046 BLOCK  ?/wmorgan/heliotrope/lib/heliotrope/message-adder.rb:57
+> c:0005 p:0095 s:0036 b:0036 l:000035 d:000035 METHOD ?/wmorgan/heliotrope/lib/heliotrope/imap-dumper.rb:149
+> c:0004 p:0211 s:0029 b:0029 l:000028 d:000028 METHOD ?/wmorgan/heliotrope/lib/heliotrope/message-adder.rb:42
+> c:0003 p:0611 s:0018 b:0018 l:002058 d:000c48 EVAL   bin/heliotrope-import:109
+> c:0002 p:---- s:0004 b:0004 l:000003 d:000003 FINISH
+> c:0001 p:0000 s:0002 b:0002 l:002058 d:002058 TOP
+> 
+> -- Ruby level backtrace information ----------------------------------------
+> bin/heliotrope-import:109:in `<main>'
+> ?/wmorgan/heliotrope/lib/heliotrope/message-adder.rb:42:in `each_message'
+> ?/wmorgan/heliotrope/lib/heliotrope/imap-dumper.rb:149:in `each_message'
+> ?/wmorgan/heliotrope/lib/heliotrope/message-adder.rb:57:in `block in each_message'
+> bin/heliotrope-import:133:in `block in <main>'
+> ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:122:in `add_message'
+> ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:674:in `write_messageinfo!'
+> ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:735:in `write_hash'
+> ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb:735:in `put'
+> 
+> -- C level backtrace information -------------------------------------------
+> /usr/lib/libruby.so.1.9(+0x155629) [0x7f6dcf4ad629]
+> /usr/lib/libruby.so.1.9(+0x57c59) [0x7f6dcf3afc59]
+> /usr/lib/libruby.so.1.9(rb_bug+0xb3) [0x7f6dcf3b0493]
+> /usr/lib/libruby.so.1.9(+0xf6d12) [0x7f6dcf44ed12]
+> /lib/libc.so.6(+0x34cb0) [0x7f6dcefebcb0]
+> /lib/libc.so.6(+0x12d67e) [0x7f6dcf0e467e]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(+0x339dd) [0x7f6dcb11e9dd]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer18EmitPhysicalRecordENS0_10RecordTypeEPKcm+0xd1) [0x7f6dcb10b091]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb3log6Writer9AddRecordERKNS_5SliceE+0x74) [0x7f6dcb10b1e4]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl5WriteERKNS_12WriteOptionsEPNS_10WriteBatchE+0x161) [0x7f6dcb100b71]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb2DB3PutERKNS_12WriteOptionsERKNS_5SliceES6_+0x55) [0x7f6dcb100f25]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl3PutERKNS_12WriteOptionsERKNS_5SliceES6_+0x9) [0x7f6dcb100f79]
+> ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so(+0x13323) [0x7f6dcb0fe323]
+> /usr/lib/libruby.so.1.9(+0x14f7c3) [0x7f6dcf4a77c3]
+> /usr/lib/libruby.so.1.9(+0x1455f2) [0x7f6dcf49d5f2]
+> /usr/lib/libruby.so.1.9(+0x14aca0) [0x7f6dcf4a2ca0]
+> /usr/lib/libruby.so.1.9(rb_iseq_eval_main+0xad) [0x7f6dcf4aa1ad]
+> /usr/lib/libruby.so.1.9(+0x5b53a) [0x7f6dcf3b353a]
+> /usr/lib/libruby.so.1.9(ruby_exec_node+0x1d) [0x7f6dcf3b3fdd]
+> /usr/lib/libruby.so.1.9(ruby_run_node+0x1e) [0x7f6dcf3b5a6e]
+> ruby() [0x40086b]
+> /lib/libc.so.6(__libc_start_main+0xf5) [0x7f6dcefd8455]
+> ruby() [0x400899]
+> 
+> -- Other runtime information -----------------------------------------------
+> 
+> * Loaded script: bin/heliotrope-import
+> 
+> * Loaded features:
+> 
+>     0 enumerator.so
+>     1 /usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+>     2 /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+>     3 /usr/lib/ruby/1.9.1/rubygems/defaults.rb
+>     4 /usr/lib/ruby/1.9.1/x86_64-linux/rbconfig.rb
+>     5 /usr/lib/ruby/1.9.1/rubygems/deprecate.rb
+>     6 /usr/lib/ruby/1.9.1/rubygems/exceptions.rb
+>     7 /usr/lib/ruby/1.9.1/rubygems/custom_require.rb
+>     8 /usr/lib/ruby/1.9.1/rubygems.rb
+>     9 /usr/lib/ruby/1.9.1/rubygems/version.rb
+>    10 /usr/lib/ruby/1.9.1/rubygems/requirement.rb
+>    11 /usr/lib/ruby/1.9.1/rubygems/platform.rb
+>    12 /usr/lib/ruby/1.9.1/rubygems/specification.rb
+>    13 /usr/lib/ruby/1.9.1/rubygems/path_support.rb
+>    14 /usr/lib/ruby/1.9.1/rubygems/dependency.rb
+>    15 /usr/lib/ruby/1.9.1/x86_64-linux/date_core.so
+>    16 /usr/lib/ruby/1.9.1/date/format.rb
+>    17 /usr/lib/ruby/1.9.1/date.rb
+>    18 ~/.gem/ruby/1.9.1/gems/trollop-1.16.2/lib/trollop.rb
+>    19 /usr/lib/ruby/1.9.1/json/version.rb
+>    20 /usr/lib/ruby/1.9.1/json/common.rb
+>    21 /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+>    22 /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+>    23 /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+>    24 /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+>    25 /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/parser.so
+>    26 /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/generator.so
+>    27 /usr/lib/ruby/1.9.1/json/ext.rb
+>    28 /usr/lib/ruby/1.9.1/json.rb
+>    29 ?/wmorgan/heliotrope/lib/heliotrope/message-adder.rb
+>    30 /usr/lib/ruby/1.9.1/x86_64-linux/iconv.so
+>    31 ?/wmorgan/heliotrope/lib/heliotrope/decoder.rb
+>    32 ?/wmorgan/heliotrope/lib/heliotrope/person.rb
+>    33 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/address.rb
+>    34 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/utils.rb
+>    35 /usr/lib/ruby/1.9.1/x86_64-linux/digest.so
+>    36 /usr/lib/ruby/1.9.1/digest.rb
+>    37 /usr/lib/ruby/1.9.1/x86_64-linux/digest/md5.so
+>    38 /usr/lib/ruby/1.9.1/time.rb
+>    39 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/header.rb
+>    40 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/mailbox.rb
+>    41 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/message.rb
+>    42 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser/pushbackreader.rb
+>    43 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser/multipart.rb
+>    44 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/parser.rb
+>    45 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/serialize.rb
+>    46 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail/mailbox/mboxreader.rb
+>    47 ~/.gem/ruby/1.9.1/gems/rmail-1.0.0/lib/rmail.rb
+>    48 /usr/lib/ruby/1.9.1/timeout.rb
+>    49 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/util/memoizable.rb
+>    50 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/simple.rb
+>    51 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/irregular.rb
+>    52 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/common.rb
+>    53 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/rfc.rb
+>    54 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/cldr.rb
+>    55 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag/posix.rb
+>    56 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/tag.rb
+>    57 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/taglist.rb
+>    58 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/version.rb
+>    59 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale.rb
+>    60 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/driver/env.rb
+>    61 ~/.gem/ruby/1.9.1/gems/locale-2.0.5/lib/locale/driver/posix.rb
+>    62 ?/wmorgan/heliotrope/lib/heliotrope/message.rb
+>    63 ?/wmorgan/heliotrope/lib/heliotrope/mbox-splitter.rb
+>    64 /usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+>    65 /usr/lib/ruby/1.9.1/socket.rb
+>    66 /usr/lib/ruby/1.9.1/thread.rb
+>    67 /usr/lib/ruby/1.9.1/monitor.rb
+>    68 /usr/lib/ruby/1.9.1/x86_64-linux/strscan.so
+>    69 /usr/lib/ruby/1.9.1/x86_64-linux/openssl.so
+>    70 /usr/lib/ruby/1.9.1/openssl/bn.rb
+>    71 /usr/lib/ruby/1.9.1/openssl/cipher.rb
+>    72 /usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+>    73 /usr/lib/ruby/1.9.1/openssl/config.rb
+>    74 /usr/lib/ruby/1.9.1/openssl/digest.rb
+>    75 /usr/lib/ruby/1.9.1/openssl/buffering.rb
+>    76 /usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+>    77 /usr/lib/ruby/1.9.1/openssl/ssl-internal.rb
+>    78 /usr/lib/ruby/1.9.1/openssl/x509-internal.rb
+>    79 /usr/lib/ruby/1.9.1/openssl.rb
+>    80 /usr/lib/ruby/1.9.1/net/imap.rb
+>    81 ?/wmorgan/heliotrope/lib/heliotrope/imap-dumper.rb
+>    82 ?/wmorgan/heliotrope/lib/heliotrope/gmail-dumper.rb
+>    83 ?/wmorgan/heliotrope/lib/heliotrope/maildir-walker.rb
+>    84 ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig/whistlepig.so
+>    85 ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig.rb
+>    86 ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+>    87 ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb.rb
+>    88 /usr/lib/ruby/1.9.1/set.rb
+>    89 ?/wmorgan/heliotrope/lib/heliotrope/meta-index.rb
+>    90 /usr/lib/ruby/1.9.1/x86_64-linux/zlib.so
+>    91 ?/wmorgan/heliotrope/lib/heliotrope/zmbox.rb
+>    92 ?/wmorgan/heliotrope/lib/heliotrope/query.rb
+>    93 /usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+>    94 /usr/lib/ruby/1.9.1/fileutils.rb
+>    95 ?/wmorgan/heliotrope/lib/heliotrope/hooks.rb
+>    96 ?/wmorgan/heliotrope/lib/heliotrope.rb
+>    97 /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_1.so
+>    98 /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+>    99 /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_15.so
+>   100 /usr/lib/ruby/1.9.1/x86_64-linux/enc/euc_kr.so
+>   101 /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/korean.so
+> 
+> * Process memory map:
+> 
+> 00400000-00401000 r-xp 00000000 fe:00 416133                             /usr/bin/ruby
+> 00600000-00601000 r--p 00000000 fe:00 416133                             /usr/bin/ruby
+> 00601000-00602000 rw-p 00001000 fe:00 416133                             /usr/bin/ruby
+> 0084d000-0b025000 rw-p 00000000 00:00 0                                  [heap]
+> 7f6da8000000-7f6da8aa0000 rw-p 00000000 00:00 0
+> 7f6da8aa0000-7f6dac000000 ---p 00000000 00:00 0
+> 7f6db0000000-7f6db0021000 rw-p 00000000 00:00 0
+> 7f6db0021000-7f6db4000000 ---p 00000000 00:00 0
+> 7f6dbbff0000-7f6dbc000000 rw-s 00000000 fe:01 13633738                   ~/mails/store/000036.log
+> 7f6dbc000000-7f6dbc025000 rw-p 00000000 00:00 0
+> 7f6dbc025000-7f6dc0000000 ---p 00000000 00:00 0
+> 7f6dc37ff000-7f6dc3800000 ---p 00000000 00:00 0
+> 7f6dc3800000-7f6dc4000000 rw-p 00000000 00:00 0
+> 7f6dc4000000-7f6dc8000000 rw-p 00000000 00:00 0
+> 7f6dc86ea000-7f6dc8725000 r-xp 00000000 fe:00 449233                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/korean.so
+> 7f6dc8725000-7f6dc8924000 ---p 0003b000 fe:00 449233                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/korean.so
+> 7f6dc8924000-7f6dc8925000 r--p 0003a000 fe:00 449233                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/korean.so
+> 7f6dc8925000-7f6dc8926000 rw-p 0003b000 fe:00 449233                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/korean.so
+> 7f6dc8926000-7f6dc8928000 r-xp 00000000 fe:00 449203                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_15.so
+> 7f6dc8928000-7f6dc8b27000 ---p 00002000 fe:00 449203                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_15.so
+> 7f6dc8b27000-7f6dc8b28000 r--p 00001000 fe:00 449203                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_15.so
+> 7f6dc8b28000-7f6dc8b29000 rw-p 00002000 fe:00 449203                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_15.so
+> 7f6dc8b29000-7f6dc8b3f000 r-xp 00000000 fe:00 449238                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+> 7f6dc8b3f000-7f6dc8d3e000 ---p 00016000 fe:00 449238                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+> 7f6dc8d3e000-7f6dc8d43000 r--p 00015000 fe:00 449238                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+> 7f6dc8d43000-7f6dc8d44000 rw-p 0001a000 fe:00 449238                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/single_byte.so
+> 7f6dc8d44000-7f6dc8d46000 r-xp 00000000 fe:00 449206                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_1.so
+> 7f6dc8d46000-7f6dc8f45000 ---p 00002000 fe:00 449206                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_1.so
+> 7f6dc8f45000-7f6dc8f46000 r--p 00001000 fe:00 449206                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_1.so
+> 7f6dc8f46000-7f6dc8f47000 rw-p 00002000 fe:00 449206                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/iso_8859_1.so
+> 7f6dc8fc9000-7f6dc8fcb000 r-xp 00000000 fe:00 449205                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/euc_kr.so
+> 7f6dc8fcb000-7f6dc91ca000 ---p 00002000 fe:00 449205                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/euc_kr.so
+> 7f6dc91ca000-7f6dc91cb000 r--p 00001000 fe:00 449205                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/euc_kr.so
+> 7f6dc91cb000-7f6dc91cc000 rw-p 00002000 fe:00 449205                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/euc_kr.so
+> 7f6dc91cc000-7f6dc91cd000 ---p 00000000 00:00 0
+> 7f6dc91cd000-7f6dc9391000 rw-p 00000000 00:00 0
+> 7f6dc9391000-7f6dc9392000 ---p 00000000 00:00 0
+> 7f6dc9392000-7f6dc9513000 rw-p 00000000 00:00 0
+> 7f6dc9513000-7f6dc9526000 r-xp 00000000 fe:00 266334                     /lib/libresolv-2.15.so
+> 7f6dc9526000-7f6dc9726000 ---p 00013000 fe:00 266334                     /lib/libresolv-2.15.so
+> 7f6dc9726000-7f6dc9727000 r--p 00013000 fe:00 266334                     /lib/libresolv-2.15.so
+> 7f6dc9727000-7f6dc9728000 rw-p 00014000 fe:00 266334                     /lib/libresolv-2.15.so
+> 7f6dc9728000-7f6dc972a000 rw-p 00000000 00:00 0
+> 7f6dc972a000-7f6dc972f000 r-xp 00000000 fe:00 261238                     /lib/libnss_dns-2.15.so
+> 7f6dc972f000-7f6dc992e000 ---p 00005000 fe:00 261238                     /lib/libnss_dns-2.15.so
+> 7f6dc992e000-7f6dc992f000 r--p 00004000 fe:00 261238                     /lib/libnss_dns-2.15.so
+> 7f6dc992f000-7f6dc9930000 rw-p 00005000 fe:00 261238                     /lib/libnss_dns-2.15.so
+> 7f6dc9930000-7f6dc993c000 r-xp 00000000 fe:00 261239                     /lib/libnss_files-2.15.so
+> 7f6dc993c000-7f6dc9b3b000 ---p 0000c000 fe:00 261239                     /lib/libnss_files-2.15.so
+> 7f6dc9b3b000-7f6dc9b3c000 r--p 0000b000 fe:00 261239                     /lib/libnss_files-2.15.so
+> 7f6dc9b3c000-7f6dc9b3d000 rw-p 0000c000 fe:00 261239                     /lib/libnss_files-2.15.so
+> 7f6dc9b66000-7f6dc9b6f000 rw-s 00000000 fe:01 13631779                   ~/mails/index/whistlepig0.lb
+> 7f6dc9b6f000-7f6dca370000 rw-s 00000000 fe:01 13631780                   ~/mails/index/whistlepig0.pr
+> 7f6dca370000-7f6dca5bd000 rw-s 00000000 fe:01 13631784                   ~/mails/index/whistlepig0.th
+> 7f6dca5bd000-7f6dca7c0000 rw-s 00000000 fe:01 13631783                   ~/mails/index/whistlepig0.sp
+> 7f6dca7c0000-7f6dca7c3000 r-xp 00000000 fe:00 449168                     /usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+> 7f6dca7c3000-7f6dca9c2000 ---p 00003000 fe:00 449168                     /usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+> 7f6dca9c2000-7f6dca9c3000 r--p 00002000 fe:00 449168                     /usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+> 7f6dca9c3000-7f6dca9c4000 rw-p 00003000 fe:00 449168                     /usr/lib/ruby/1.9.1/x86_64-linux/etc.so
+> 7f6dca9c4000-7f6dca9d0000 r-xp 00000000 fe:00 449180                     /usr/lib/ruby/1.9.1/x86_64-linux/zlib.so
+> 7f6dca9d0000-7f6dcabd0000 ---p 0000c000 fe:00 449180                     /usr/lib/ruby/1.9.1/x86_64-linux/zlib.so
+> 7f6dcabd0000-7f6dcabd1000 r--p 0000c000 fe:00 449180                     /usr/lib/ruby/1.9.1/x86_64-linux/zlib.so
+> 7f6dcabd1000-7f6dcabd2000 rw-p 0000d000 fe:00 449180                     /usr/lib/ruby/1.9.1/x86_64-linux/zlib.so
+> 7f6dcabd2000-7f6dcabe7000 r-xp 00000000 fe:00 392358                     /usr/lib/libgcc_s.so.1
+> 7f6dcabe7000-7f6dcade6000 ---p 00015000 fe:00 392358                     /usr/lib/libgcc_s.so.1
+> 7f6dcade6000-7f6dcade7000 rw-p 00014000 fe:00 392358                     /usr/lib/libgcc_s.so.1
+> 7f6dcade7000-7f6dcaecc000 r-xp 00000000 fe:00 392339                     /usr/lib/libstdc++.so.6.0.17
+> 7f6dcaecc000-7f6dcb0cc000 ---p 000e5000 fe:00 392339                     /usr/lib/libstdc++.so.6.0.17
+> 7f6dcb0cc000-7f6dcb0d4000 r--p 000e5000 fe:00 392339                     /usr/lib/libstdc++.so.6.0.17
+> 7f6dcb0d4000-7f6dcb0d6000 rw-p 000ed000 fe:00 392339                     /usr/lib/libstdc++.so.6.0.17
+> 7f6dcb0d6000-7f6dcb0eb000 rw-p 00000000 00:00 0
+> 7f6dcb0eb000-7f6dcb12c000 r-xp 00000000 fe:01 13632876                   ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+> 7f6dcb12c000-7f6dcb32b000 ---p 00041000 fe:01 13632876                   ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+> 7f6dcb32b000-7f6dcb32d000 r--p 00040000 fe:01 13632876                   ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+> 7f6dcb32d000-7f6dcb32e000 rw-p 00042000 fe:01 13632876                   ~/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+> 7f6dcb32e000-7f6dcb34e000 r-xp 00000000 fe:01 13632535                   ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig/whistlepig.so
+> 7f6dcb34e000-7f6dcb54d000 ---p 00020000 fe:01 13632535                   ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig/whistlepig.so
+> 7f6dcb54d000-7f6dcb54e000 r--p 0001f000 fe:01 13632535                   ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig/whistlepig.so
+> 7f6dcb54e000-7f6dcb54f000 rw-p 00020000 fe:01 13632535                   ~/.gem/ruby/1.9.1/gems/whistlepig-0.10/lib/whistlepig/whistlepig.so
+> 7f6dcb54f000-7f6dcb550000 r-xp 00000000 fe:00 449193                     /usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+> 7f6dcb550000-7f6dcb74f000 ---p 00001000 fe:00 449193                     /usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+> 7f6dcb74f000-7f6dcb750000 r--p 00000000 fe:00 449193                     /usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+> 7f6dcb750000-7f6dcb751000 rw-p 00001000 fe:00 449193                     /usr/lib/ruby/1.9.1/x86_64-linux/fcntl.so
+> 7f6dcb751000-7f6dcb757000 r-xp 00000000 fe:00 449166                     /usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+> 7f6dcb757000-7f6dcb956000 ---p 00006000 fe:00 449166                     /usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+> 7f6dcb956000-7f6dcb957000 r--p 00005000 fe:00 449166                     /usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+> 7f6dcb957000-7f6dcb958000 rw-p 00006000 fe:00 449166                     /usr/lib/ruby/1.9.1/x86_64-linux/stringio.so
+> 7f6dcb958000-7f6dcb9b8000 r-xp 00000000 fe:00 427152                     /usr/lib/libssl.so.1.0.0
+> 7f6dcb9b8000-7f6dcbbb7000 ---p 00060000 fe:00 427152                     /usr/lib/libssl.so.1.0.0
+> 7f6dcbbb7000-7f6dcbbbb000 r--p 0005f000 fe:00 427152                     /usr/lib/libssl.so.1.0.0
+> 7f6dcbbbb000-7f6dcbbc1000 rw-p 00063000 fe:00 427152                     /usr/lib/libssl.so.1.0.0
+> 7f6dcbbc1000-7f6dcbbc2000 rw-p 00000000 00:00 0
+> 7f6dcbbc2000-7f6dcbc0d000 r-xp 00000000 fe:00 449189                     /usr/lib/ruby/1.9.1/x86_64-linux/openssl.so
+> 7f6dcbc0d000-7f6dcbe0d000 ---p 0004b000 fe:00 449189                     /usr/lib/ruby/1.9.1/x86_64-linux/openssl.so
+> 7f6dcbe0d000-7f6dcbe0e000 r--p 0004b000 fe:00 449189                     /usr/lib/ruby/1.9.1/x86_64-linux/openssl.so
+> 7f6dcbe0e000-7f6dcbe10000 rw-p 0004c000 fe:00 449189                     /usr/lib/ruby/1.9.1/x86_64-linux/openssl.so
+> 7f6dcbe10000-7f6dcbe11000 rw-p 00000000 00:00 0
+> 7f6dcbe11000-7f6dcbe16000 r-xp 00000000 fe:00 449188                     /usr/lib/ruby/1.9.1/x86_64-linux/strscan.so
+> 7f6dcbe16000-7f6dcc015000 ---p 00005000 fe:00 449188                     /usr/lib/ruby/1.9.1/x86_64-linux/strscan.so
+> 7f6dcc015000-7f6dcc016000 r--p 00004000 fe:00 449188                     /usr/lib/ruby/1.9.1/x86_64-linux/strscan.so
+> 7f6dcc016000-7f6dcc017000 rw-p 00005000 fe:00 449188                     /usr/lib/ruby/1.9.1/x86_64-linux/strscan.so
+> 7f6dcc017000-7f6dcc039000 r-xp 00000000 fe:00 449176                     /usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+> 7f6dcc039000-7f6dcc238000 ---p 00022000 fe:00 449176                     /usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+> 7f6dcc238000-7f6dcc239000 r--p 00021000 fe:00 449176                     /usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+> 7f6dcc239000-7f6dcc23a000 rw-p 00022000 fe:00 449176                     /usr/lib/ruby/1.9.1/x86_64-linux/socket.so
+> 7f6dcc23a000-7f6dcc23d000 r-xp 00000000 fe:00 449192                     /usr/lib/ruby/1.9.1/x86_64-linux/digest.so
+> 7f6dcc23d000-7f6dcc43c000 ---p 00003000 fe:00 449192                     /usr/lib/ruby/1.9.1/x86_64-linux/digest.so
+> 7f6dcc43c000-7f6dcc43d000 r--p 00002000 fe:00 449192                     /usr/lib/ruby/1.9.1/x86_64-linux/digest.so
+> 7f6dcc43d000-7f6dcc43e000 rw-p 00003000 fe:00 449192                     /usr/lib/ruby/1.9.1/x86_64-linux/digest.so
+> 7f6dcc43e000-7f6dcc453000 r-xp 00000000 fe:00 397860                     /usr/lib/libz.so.1.2.6
+> 7f6dcc453000-7f6dcc652000 ---p 00015000 fe:00 397860                     /usr/lib/libz.so.1.2.6
+> 7f6dcc652000-7f6dcc653000 r--p 00014000 fe:00 397860                     /usr/lib/libz.so.1.2.6
+> 7f6dcc653000-7f6dcc654000 rw-p 00015000 fe:00 397860                     /usr/lib/libz.so.1.2.6
+> 7f6dcc654000-7f6dcc833000 r-xp 00000000 fe:00 427153                     /usr/lib/libcrypto.so.1.0.0
+> 7f6dcc833000-7f6dcca33000 ---p 001df000 fe:00 427153                     /usr/lib/libcrypto.so.1.0.0
+> 7f6dcca33000-7f6dcca4e000 r--p 001df000 fe:00 427153                     /usr/lib/libcrypto.so.1.0.0
+> 7f6dcca4e000-7f6dcca59000 rw-p 001fa000 fe:00 427153                     /usr/lib/libcrypto.so.1.0.0
+> 7f6dcca59000-7f6dcca5d000 rw-p 00000000 00:00 0
+> 7f6dcca5d000-7f6dcca5e000 r-xp 00000000 fe:00 449261                     /usr/lib/ruby/1.9.1/x86_64-linux/digest/md5.so
+> 7f6dcca5e000-7f6dccc5d000 ---p 00001000 fe:00 449261                     /usr/lib/ruby/1.9.1/x86_64-linux/digest/md5.so
+> 7f6dccc5d000-7f6dccc5e000 r--p 00000000 fe:00 449261                     /usr/lib/ruby/1.9.1/x86_64-linux/digest/md5.so
+> 7f6dccc5e000-7f6dccc5f000 rw-p 00001000 fe:00 449261                     /usr/lib/ruby/1.9.1/x86_64-linux/digest/md5.so
+> 7f6dccc5f000-7f6dccc64000 r-xp 00000000 fe:00 449174                     /usr/lib/ruby/1.9.1/x86_64-linux/iconv.so
+> 7f6dccc64000-7f6dcce64000 ---p 00005000 fe:00 449174                     /usr/lib/ruby/1.9.1/x86_64-linux/iconv.so
+> 7f6dcce64000-7f6dcce65000 r--p 00005000 fe:00 449174                     /usr/lib/ruby/1.9.1/x86_64-linux/iconv.so
+> 7f6dcce65000-7f6dcce66000 rw-p 00006000 fe:00 449174                     /usr/lib/ruby/1.9.1/x86_64-linux/iconv.so
+> 7f6dcce66000-7f6dcce6d000 r-xp 00000000 fe:00 449252                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/generator.so
+> 7f6dcce6d000-7f6dcd06c000 ---p 00007000 fe:00 449252                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/generator.so
+> 7f6dcd06c000-7f6dcd06d000 r--p 00006000 fe:00 449252                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/generator.so
+> 7f6dcd06d000-7f6dcd06e000 rw-p 00007000 fe:00 449252                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/generator.so
+> 7f6dcd06e000-7f6dcd06f000 r-xp 00000000 fe:00 449198                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+> 7f6dcd06f000-7f6dcd26e000 ---p 00001000 fe:00 449198                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+> 7f6dcd26e000-7f6dcd26f000 r--p 00000000 fe:00 449198                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+> 7f6dcd26f000-7f6dcd270000 rw-p 00001000 fe:00 449198                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32le.so
+> 7f6dcd270000-7f6dcd271000 r-xp 00000000 fe:00 449217                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+> 7f6dcd271000-7f6dcd470000 ---p 00001000 fe:00 449217                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+> 7f6dcd470000-7f6dcd471000 r--p 00000000 fe:00 449217                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+> 7f6dcd471000-7f6dcd472000 rw-p 00001000 fe:00 449217                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_32be.so
+> 7f6dcd472000-7f6dcd473000 r-xp 00000000 fe:00 449207                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+> 7f6dcd473000-7f6dcd673000 ---p 00001000 fe:00 449207                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+> 7f6dcd673000-7f6dcd674000 r--p 00001000 fe:00 449207                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+> 7f6dcd674000-7f6dcd675000 rw-p 00002000 fe:00 449207                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16le.so
+> 7f6dcd675000-7f6dcd676000 r-xp 00000000 fe:00 449211                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+> 7f6dcd676000-7f6dcd876000 ---p 00001000 fe:00 449211                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+> 7f6dcd876000-7f6dcd877000 r--p 00001000 fe:00 449211                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+> 7f6dcd877000-7f6dcd878000 rw-p 00002000 fe:00 449211                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/utf_16be.so
+> 7f6dcd878000-7f6dcd87d000 r-xp 00000000 fe:00 449253                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/parser.so
+> 7f6dcd87d000-7f6dcda7d000 ---p 00005000 fe:00 449253                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/parser.so
+> 7f6dcda7d000-7f6dcda7e000 r--p 00005000 fe:00 449253                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/parser.so
+> 7f6dcda7e000-7f6dcda7f000 rw-p 00006000 fe:00 449253                     /usr/lib/ruby/1.9.1/x86_64-linux/json/ext/parser.so
+> 7f6dcda7f000-7f6dcdaad000 r-xp 00000000 fe:00 449173                     /usr/lib/ruby/1.9.1/x86_64-linux/date_core.so
+> 7f6dcdaad000-7f6dcdcad000 ---p 0002e000 fe:00 449173                     /usr/lib/ruby/1.9.1/x86_64-linux/date_core.so
+> 7f6dcdcad000-7f6dcdcae000 r--p 0002e000 fe:00 449173                     /usr/lib/ruby/1.9.1/x86_64-linux/date_core.so
+> 7f6dcdcae000-7f6dcdcaf000 rw-p 0002f000 fe:00 449173                     /usr/lib/ruby/1.9.1/x86_64-linux/date_core.so
+> 7f6dcdcaf000-7f6dcdcb0000 rw-p 00000000 00:00 0
+> 7f6dcdcb0000-7f6dcdcb2000 r-xp 00000000 fe:00 449239                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+> 7f6dcdcb2000-7f6dcdeb2000 ---p 00002000 fe:00 449239                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+> 7f6dcdeb2000-7f6dcdeb3000 r--p 00002000 fe:00 449239                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+> 7f6dcdeb3000-7f6dcdeb4000 rw-p 00003000 fe:00 449239                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/trans/transdb.so
+> 7f6dcdeb4000-7f6dcdeb6000 r-xp 00000000 fe:00 449210                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+> 7f6dcdeb6000-7f6dce0b5000 ---p 00002000 fe:00 449210                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+> 7f6dce0b5000-7f6dce0b6000 r--p 00001000 fe:00 449210                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+> 7f6dce0b6000-7f6dce0b7000 rw-p 00002000 fe:00 449210                     /usr/lib/ruby/1.9.1/x86_64-linux/enc/encdb.so
+> 7f6dce0b7000-7f6dce463000 r--p 00000000 fe:00 446507                     /usr/lib/locale/locale-archive
+> 7f6dce463000-7f6dce556000 r-xp 00000000 fe:00 261144                     /lib/libm-2.15.so
+> 7f6dce556000-7f6dce756000 ---p 000f3000 fe:00 261144                     /lib/libm-2.15.so
+> 7f6dce756000-7f6dce757000 r--p 000f3000 fe:00 261144                     /lib/libm-2.15.so
+> 7f6dce757000-7f6dce758000 rw-p 000f4000 fe:00 261144                     /lib/libm-2.15.so
+> 7f6dce758000-7f6dce760000 r-xp 00000000 fe:00 261167                     /lib/libcrypt-2.15.so
+> 7f6dce760000-7f6dce95f000 ---p 00008000 fe:00 261167                     /lib/libcrypt-2.15.so
+> 7f6dce95f000-7f6dce960000 r--p 00007000 fe:00 261167                     /lib/libcrypt-2.15.so
+> 7f6dce960000-7f6dce961000 rw-p 00008000 fe:00 261167                     /lib/libcrypt-2.15.so
+> 7f6dce961000-7f6dce98f000 rw-p 00000000 00:00 0
+> 7f6dce98f000-7f6dce992000 r-xp 00000000 fe:00 261143                     /lib/libdl-2.15.so
+> 7f6dce992000-7f6dceb91000 ---p 00003000 fe:00 261143                     /lib/libdl-2.15.so
+> 7f6dceb91000-7f6dceb92000 r--p 00002000 fe:00 261143                     /lib/libdl-2.15.so
+> 7f6dceb92000-7f6dceb93000 rw-p 00003000 fe:00 261143                     /lib/libdl-2.15.so
+> 7f6dceb93000-7f6dceb9a000 r-xp 00000000 fe:00 261133                     /lib/librt-2.15.so
+> 7f6dceb9a000-7f6dced99000 ---p 00007000 fe:00 261133                     /lib/librt-2.15.so
+> 7f6dced99000-7f6dced9a000 r--p 00006000 fe:00 261133                     /lib/librt-2.15.so
+> 7f6dced9a000-7f6dced9b000 rw-p 00007000 fe:00 261133                     /lib/librt-2.15.so
+> 7f6dced9b000-7f6dcedb2000 r-xp 00000000 fe:00 261124                     /lib/libpthread-2.15.so
+> 7f6dcedb2000-7f6dcefb1000 ---p 00017000 fe:00 261124                     /lib/libpthread-2.15.so
+> 7f6dcefb1000-7f6dcefb2000 r--p 00016000 fe:00 261124                     /lib/libpthread-2.15.so
+> 7f6dcefb2000-7f6dcefb3000 rw-p 00017000 fe:00 261124                     /lib/libpthread-2.15.so
+> 7f6dcefb3000-7f6dcefb7000 rw-p 00000000 00:00 0
+> 7f6dcefb7000-7f6dcf14e000 r-xp 00000000 fe:00 261164                     /lib/libc-2.15.so
+> 7f6dcf14e000-7f6dcf34e000 ---p 00197000 fe:00 261164                     /lib/libc-2.15.so
+> 7f6dcf34e000-7f6dcf352000 r--p 00197000 fe:00 261164                     /lib/libc-2.15.so
+> 7f6dcf352000-7f6dcf354000 rw-p 0019b000 fe:00 261164                     /lib/libc-2.15.so
+> 7f6dcf354000-7f6dcf358000 rw-p 00000000 00:00 0
+> 7f6dcf358000-7f6dcf548000 r-xp 00000000 fe:00 416141                     /usr/lib/libruby.so.1.9.1
+> 7f6dcf548000-7f6dcf747000 ---p 001f0000 fe:00 416141                     /usr/lib/libruby.so.1.9.1
+> 7f6dcf747000-7f6dcf74f000 rw-p 001ef000 fe:00 416141                     /usr/lib/libruby.so.1.9.1
+> 7f6dcf74f000-7f6dcf76b000 rw-p 00000000 00:00 0
+> 7f6dcf76b000-7f6dcf78c000 r-xp 00000000 fe:00 261777                     /lib/ld-2.15.so
+> 7f6dcf78f000-7f6dcf85c000 rw-s 00000000 fe:01 13631781                   ~/mails/index/whistlepig0.sh
+> 7f6dcf85c000-7f6dcf962000 rw-p 00000000 00:00 0
+> 7f6dcf973000-7f6dcf974000 rw-p 00000000 00:00 0
+> 7f6dcf974000-7f6dcf975000 rw-s 00000000 fe:01 13631782                   ~/mails/index/whistlepig0.si
+> 7f6dcf975000-7f6dcf976000 rw-s 00000000 fe:01 13631778                   ~/mails/index/whistlepig.ii
+> 7f6dcf976000-7f6dcf986000 rw-s 00000000 fe:01 13633739                   ~/mails/store/MANIFEST-000035
+> 7f6dcf986000-7f6dcf987000 rw-p 00000000 00:00 0
+> 7f6dcf987000-7f6dcf988000 ---p 00000000 00:00 0
+> 7f6dcf988000-7f6dcf98c000 rw-p 00000000 00:00 0
+> 7f6dcf98c000-7f6dcf98d000 r--p 00021000 fe:00 261777                     /lib/ld-2.15.so
+> 7f6dcf98d000-7f6dcf98e000 rw-p 00022000 fe:00 261777                     /lib/ld-2.15.so
+> 7f6dcf98e000-7f6dcf98f000 rw-p 00000000 00:00 0
+> 7fffc536b000-7fffc538c000 rw-p 00000000 00:00 0                          [stack]
+> 7fffc53ff000-7fffc5400000 r-xp 00000000 00:00 0                          [vdso]
+> ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+> 
+> 
+> [NOTE]
+> You may have encountered a bug in the Ruby interpreter or extension libraries.
+> Bug reports are welcome.
+> For details: http://www.ruby-lang.org/bugreport.html
+
+-- 
+William <wmorgan at masanjin.net>
+
+From kljohann at gmail.com  Sat Apr 21 17:36:27 2012
+From: kljohann at gmail.com (=?UTF-8?Q?Johann_Kl=C3=A4hn?=)
+Date: Sat, 21 Apr 2012 19:36:27 +0200
+Subject: [sup-talk] [sup-devel] [heliotrope] crashes while importing
+In-Reply-To: <1334932275-turnsole-49140@terminus-est>
+References: <20120301151701.23555.84803@localhost> <1330985181-sup-8598@typhon>
+	<CAE+8KM0gu1UD=gGXfiEwmceW82AxF02Y+=Y-AZTW3SR5hToXZg@mail.gmail.com>
+	<CAE+8KM3BeubqLWAZFYOYjEiVUYpQT3vhwhaf37r1BzVECngbJA@mail.gmail.com>
+	<1334932275-turnsole-49140@terminus-est>
+Message-ID: <CAE+8KM0SqqLfGKnTTAw6TDRdb0eTBftJdueBghGxnoXE+wN3hg@mail.gmail.com>
+
+Hi William,
+
+after running gdb I found the following on the debian bug tracker
+(http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=627818 on a bug
+related to ffmpeg):
+
+eglibc (2.13-3) unstable; urgency=low
+  Starting with version 2.13, eglibc provides an SSSE3 optimized version
+  of memcpy() on the amd64 architecture. This version might copy memory
+  backward in some conditions, which causes issues if the source and
+  destination overlap. memmove() should be used in such cases, but some
+  programs still wrongly use memcpy().
+
+The cause of the segmentation fault seems to be the call to memcpy()
+in PosixMmapFile::Append(leveldb::Slice const&) in
+leveldb/util/env_posix.cc.
+Please note that I am indeed on amd64 (and using glibc 2.15).
+
+Best wishes,
+Johann
+
+Stack trace follows:
+
+#0  0x00007ffff7755ce1 in __memcpy_ssse3_back () from /lib/libc.so.6
+#1  0x00007ffff378e9dd in leveldb::(anonymous
+namespace)::PosixMmapFile::Append(leveldb::Slice const&) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#2  0x00007ffff377b091 in
+leveldb::log::Writer::EmitPhysicalRecord(leveldb::log::RecordType,
+char const*, unsigned long) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#3  0x00007ffff377b1e4 in
+leveldb::log::Writer::AddRecord(leveldb::Slice const&) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#4  0x00007ffff3770b71 in leveldb::DBImpl::Write(leveldb::WriteOptions
+const&, leveldb::WriteBatch*) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#5  0x00007ffff3770f25 in leveldb::DB::Put(leveldb::WriteOptions
+const&, leveldb::Slice const&, leveldb::Slice const&) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#6  0x00007ffff3770f79 in leveldb::DBImpl::Put(leveldb::WriteOptions
+const&, leveldb::Slice const&, leveldb::Slice const&) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#7  0x00007ffff376e323 in db_put(int, unsigned long*, unsigned long) ()
+   from /home/joni/.gem/ruby/1.9.1/gems/leveldb-ruby-0.14/lib/leveldb/leveldb.so
+#8  0x00007ffff7b177c3 in ?? () from /usr/lib/libruby.so.1.9
+
+From ruthard.baudach at web.de  Fri Apr 27 14:45:03 2012
+From: ruthard.baudach at web.de (Ruthard Baudach)
+Date: Fri, 27 Apr 2012 16:45:03 +0200
+Subject: [sup-talk] Fwd: Hook to labelize sended emails?
+Message-ID: <1335537882-sup-6565@prxbdc.dyndns.org>
+
+Dear Everybody on the list,
+
+Is there a hook to label outbound mail?
+
+How could such a Hook be created?
+
+Greetings,
+
+Ruthard
+

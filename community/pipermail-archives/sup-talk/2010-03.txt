@@ -1,0 +1,3215 @@
+From johnbent at lanl.gov  Mon Mar  1 16:26:09 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 01 Mar 2010 14:26:09 -0700
+Subject: [sup-talk] sup install error
+Message-ID: <1267478622-sup-2939@tangerine.lanl.gov>
+
+I've been using an old PowerPC Mac.  I got a new Intel one running
+Leopard (10.6.2) but got an error trying to install sup.  Everything is
+a fresh install.  The only thing I've done is install the Xcode tools.
+The error (below sig) looks like a problem with ncurses.  Looking around
+at the mkmf.log file (attached), I see more issues with curses: no
+wmove(), no libpdcurses.
+
+The ruby installed is 1.8.7.  gem is 1.3.1.
+
+I recreated this by copying the little test program with the wmove() in
+it.  When I tried to build it with -lncursesw, it failed because that
+lib doesn't exist but it did work with -lncurses (without the 'w').  So
+I just made a symlink:
+
+guava:/usr/lib>ln -s /usr/lib/libncurses.dylib /usr/lib/libncursesw.dylib
+
+That works.  Now gem install sup works.  But I'm not sure that's the
+best fix.  Anyway, it looks like the problem is in gem install ncursesw
+and not in gem install sup but I thought you might like to know about
+this.
+ 
+Thanks,
+
+John 
+
+guava:~>gem install sup
+Building native extensions.  This could take a while...
+ERROR:  Error installing sup:
+    ERROR: Failed to build gem native extension.
+
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+extconf.rb install sup
+checking for unistd.h... yes
+checking for locale.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncursesw... no
+checking for wmove() in -lpdcurses... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+
+Provided configuration options:
+    --with-opt-dir
+    --without-opt-dir
+    --with-opt-include
+    --without-opt-include=${opt-dir}/include
+    --with-opt-lib
+    --without-opt-lib=${opt-dir}/lib
+    --with-make-prog
+    --without-make-prog
+    --srcdir=.
+    --curdir
+    --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+    --with-ncurseswlib
+    --without-ncurseswlib
+    --with-pdcurseslib
+    --without-pdcurseslib
+extconf.rb:46: ncurses library not found (RuntimeError)
+
+
+Gem files will remain installed in
+/Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: mkmf.log
+Type: application/octet-stream
+Size: 5143 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100301/e4eb5e6d/attachment-0001.obj>
+
+From johnbent at lanl.gov  Mon Mar  1 16:57:03 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 01 Mar 2010 14:57:03 -0700
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267478622-sup-2939@tangerine.lanl.gov>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+Message-ID: <1267480569-sup-9556@tangerine.lanl.gov>
+
+Excerpts from John Bent's message of Mon Mar 01 14:26:09 -0700 2010:
+> I've been using an old PowerPC Mac.  I got a new Intel one running
+> Leopard (10.6.2) but got an error trying to install sup.  Everything is
+> a fresh install.  The only thing I've done is install the Xcode tools.
+> The error (below sig) looks like a problem with ncurses.  Looking around
+> at the mkmf.log file (attached), I see more issues with curses: no
+> wmove(), no libpdcurses.
+> 
+> The ruby installed is 1.8.7.  gem is 1.3.1.
+> 
+> I recreated this by copying the little test program with the wmove() in
+> it.  When I tried to build it with -lncursesw, it failed because that
+> lib doesn't exist but it did work with -lncurses (without the 'w').  So
+> I just made a symlink:
+> 
+> guava:/usr/lib>ln -s /usr/lib/libncurses.dylib /usr/lib/libncursesw.dylib
+> 
+> That works.  Now gem install sup works.  But I'm not sure that's the
+> best fix.  Anyway, it looks like the problem is in gem install ncursesw
+> and not in gem install sup but I thought you might like to know about
+> this.
+>  
+Whoops.  Maybe I shouldn't have done that.  gem install sup works, but
+sup itself doesn't (it's missing ncurses.so):
+
+guava:~>sup
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+/custom_require.rb:31:in
+`gem_original_require': no such file to load -- ncurses.so (LoadError)
+    from
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+/custom_require.rb:31:in
+`require'
+    from /Library/Ruby/Gems/1.8/gems/sup-0.10.2/lib/ncurses.rb:21
+    from
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+/custom_require.rb:31:in
+`gem_original_require'
+    from
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+/custom_require.rb:31:in
+`require'
+    from /Library/Ruby/Gems/1.8/gems/sup-0.10.2/bin/sup:9
+    from /usr/bin/sup:19:in `load'
+    from /usr/bin/sup:19
+
+John
+> Thanks,
+> 
+> John 
+> 
+> guava:~>gem install sup
+> Building native extensions.  This could take a while...
+> ERROR:  Error installing sup:
+>     ERROR: Failed to build gem native extension.
+> 
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> extconf.rb install sup
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+> *** extconf.rb failed ***
+> Could not create Makefile due to some reason, probably lack of
+> necessary libraries and/or headers.  Check the mkmf.log file for more
+> details.  You may need configuration options.
+> 
+> Provided configuration options:
+>     --with-opt-dir
+>     --without-opt-dir
+>     --with-opt-include
+>     --without-opt-include=${opt-dir}/include
+>     --with-opt-lib
+>     --without-opt-lib=${opt-dir}/lib
+>     --with-make-prog
+>     --without-make-prog
+>     --srcdir=.
+>     --curdir
+>     --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+>     --with-ncurseswlib
+>     --without-ncurseswlib
+>     --with-pdcurseslib
+>     --without-pdcurseslib
+> extconf.rb:46: ncurses library not found (RuntimeError)
+> 
+> 
+> Gem files will remain installed in
+> /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+> Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+
+From johnbent at lanl.gov  Mon Mar  1 18:50:50 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 01 Mar 2010 16:50:50 -0700
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267480569-sup-9556@tangerine.lanl.gov>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+	<1267480569-sup-9556@tangerine.lanl.gov>
+Message-ID: <1267486887-sup-2403@tangerine.lanl.gov>
+
+Excerpts from John Bent's message of Mon Mar 01 14:57:03 -0700 2010:
+> Excerpts from John Bent's message of Mon Mar 01 14:26:09 -0700 2010:
+> > I've been using an old PowerPC Mac.  I got a new Intel one running
+> > Leopard (10.6.2) but got an error trying to install sup.  Everything is
+> > a fresh install.  The only thing I've done is install the Xcode tools.
+> > The error (below sig) looks like a problem with ncurses.  Looking around
+> > at the mkmf.log file (attached), I see more issues with curses: no
+> > wmove(), no libpdcurses.
+> > 
+> > The ruby installed is 1.8.7.  gem is 1.3.1.
+> > 
+> > I recreated this by copying the little test program with the wmove() in
+> > it.  When I tried to build it with -lncursesw, it failed because that
+> > lib doesn't exist but it did work with -lncurses (without the 'w').  So
+> > I just made a symlink:
+> > 
+> > guava:/usr/lib>ln -s /usr/lib/libncurses.dylib /usr/lib/libncursesw.dylib
+> > 
+> > That works.  Now gem install sup works.  But I'm not sure that's the
+> > best fix.  Anyway, it looks like the problem is in gem install ncursesw
+> > and not in gem install sup but I thought you might like to know about
+> > this.
+> >  
+> Whoops.  Maybe I shouldn't have done that.  gem install sup works, but
+> sup itself doesn't (it's missing ncurses.so):
+> 
+> guava:~>sup
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+> /custom_require.rb:31:in
+> `gem_original_require': no such file to load -- ncurses.so (LoadError)
+>     from
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+> /custom_require.rb:31:in
+> `require'
+>     from /Library/Ruby/Gems/1.8/gems/sup-0.10.2/lib/ncurses.rb:21
+>     from
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+> /custom_require.rb:31:in
+> `gem_original_require'
+>     from
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/rubygems
+> /custom_require.rb:31:in
+> `require'
+>     from /Library/Ruby/Gems/1.8/gems/sup-0.10.2/bin/sup:9
+>     from /usr/bin/sup:19:in `load'
+>     from /usr/bin/sup:19
+> 
+OK.  I've made some more progress but am still stuck.  I used macports
+to update ruby and gem and I undid the symlink library hack, and now gem
+install sup works.  Yay!  But I still can't get sup (or sup-config) to
+run.  I also did gem install xapian-full and I did port install
+xapian-core and xapian-bindings
+
+When I try to run, I get this:
+
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:229:in
+`init': unknown index type "xapian":
+dlopen(/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle,
+9): Library not loaded: /usr/local/lib/libxapian-1.1.3.dylib
+(RuntimeError)
+  Referenced from:
+/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+  Reason: image not found -
+/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+    from /opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-config:150
+    from /opt/local/bin/sup-config:19:in `load'
+    from /opt/local/bin/sup-config:19
+ 
+I don't have a /usr/local/lib/libxapian-1.1.3.dylib 
+but I do have /opt/local/lib/libxapian.15.6.6.dylib, et al.
+
+I do have
+/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle.
+
+
+If I try to use ferret, I get this error:
+
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:229:in
+`init': unknown index type "ferret": no such file to load -- ferret
+(RuntimeError)
+    from /opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-config:150
+    from /opt/local/bin/sup-config:19:in `load'
+    from /opt/local/bin/sup-config:19
+
+After I run, there is a new $HOME/.sup directory created with a
+config.yaml and a hooks/ directory.
+
+Any ideas?
+
+Thanks,
+
+John
+
+ 
+> John
+> > Thanks,
+> > 
+> > John 
+> > 
+> > guava:~>gem install sup
+> > Building native extensions.  This could take a while...
+> > ERROR:  Error installing sup:
+> >     ERROR: Failed to build gem native extension.
+> > 
+> > /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> > extconf.rb install sup
+> > checking for unistd.h... yes
+> > checking for locale.h... yes
+> > checking for ncurses.h... yes
+> > checking for wmove() in -lncursesw... no
+> > checking for wmove() in -lpdcurses... no
+> > *** extconf.rb failed ***
+> > Could not create Makefile due to some reason, probably lack of
+> > necessary libraries and/or headers.  Check the mkmf.log file for more
+> > details.  You may need configuration options.
+> > 
+> > Provided configuration options:
+> >     --with-opt-dir
+> >     --without-opt-dir
+> >     --with-opt-include
+> >     --without-opt-include=${opt-dir}/include
+> >     --with-opt-lib
+> >     --without-opt-lib=${opt-dir}/lib
+> >     --with-make-prog
+> >     --without-make-prog
+> >     --srcdir=.
+> >     --curdir
+> >     --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> >     --with-ncurseswlib
+> >     --without-ncurseswlib
+> >     --with-pdcurseslib
+> >     --without-pdcurseslib
+> > extconf.rb:46: ncurses library not found (RuntimeError)
+> > 
+> > 
+> > Gem files will remain installed in
+> > /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+> > Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+
+From johnbent at lanl.gov  Mon Mar  1 18:52:08 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Mon, 01 Mar 2010 16:52:08 -0700
+Subject: [sup-talk] xapian error in startup v0.10.2 under Macports
+In-Reply-To: <3951FB79-4C19-4086-BE14-409458CB090F@ci.uchicago.edu>
+References: <8F59B6F6-523C-48FD-8EFA-7F951FB08E15@ci.uchicago.edu>
+	<3951FB79-4C19-4086-BE14-409458CB090F@ci.uchicago.edu>
+Message-ID: <1267487491-sup-6757@tangerine.lanl.gov>
+
+Excerpts from Neil Best's message of Tue Feb 09 05:58:56 -0700 2010:
+> 
+> By saying:
+> 
+> sup -i ferret
+> 
+> it looks like I can at least get started.  What's the situation and  
+> what should I expect?  Should I just work in this mode until a new  
+> version propagates to Macports?  Thanks.
+> 
+I'm seeing similar behavior.  I have a longer error report in a
+different thread, 'sup install error,' which I now realize could be more
+descriptive. :)
+
+John
+
+From eliecartan at mailworks.org  Mon Mar  1 19:23:10 2010
+From: eliecartan at mailworks.org (E. Cartan)
+Date: Mon, 1 Mar 2010 18:23:10 -0600
+Subject: [sup-talk] index options, by addressee instead of by sender
+Message-ID: <20100302002310.GB19325@katowice>
+
+
+
+
+  I am in the process of changing from mutt to sup, and there
+  is a feature from mutt which I miss. I would like to know
+  whether it might possible to force it with some simple 
+  configuration options.
+
+  I would like to see the messages which one sends displayed 
+  on the sup index by "addressee", instead of by "sender" 
+  (or sender replaced by "me").  Not all messages, but 
+  just the one sent by me.
+
+  With mutt, my practice was to use a hook to include for myself
+  a bcc copy of all outgoing mail, and my own messages would be 
+  displayed among the incoming mail as 
+
+   978   F Feb 23 To Alexis       (0.5K) request
+   979   F Feb 24 To Marshall     (0.9K) request
+   980   F Feb 28 To Andrea       (1.7K) Colloquium - Friday
+
+  Using sup, after I send the same messages, and before I receive a reply,
+  I see a list like the following:
+  
+   Feb 23 me              (2) >request
+   Feb 24 me                  >request
+   Feb 28 me                  >Colloquium - Friday
+
+  which is not very informative, specially  after sending several 
+  messages with the same, or similar subjects.
+
+  Many thanks for any help.
+
+  Elie.
+
+
+
+From bwalton at artsci.utoronto.ca  Mon Mar  1 19:38:45 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 01 Mar 2010 19:38:45 -0500
+Subject: [sup-talk] index options, by addressee instead of by sender
+In-Reply-To: <20100302002310.GB19325@katowice>
+References: <20100302002310.GB19325@katowice>
+Message-ID: <1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from E. Cartan's message of Mon Mar 01 19:23:10 -0500 2010:
+
+>   I would like to see the messages which one sends displayed 
+>   on the sup index by "addressee", instead of by "sender" 
+>   (or sender replaced by "me").  Not all messages, but 
+>   just the one sent by me.
+
+I think there is a patch to do just this that is likely to be included
+in the next release of sup (or available now if you track the git
+repo).  This is from memory.  Rich, can you confirm?
+
+Thanks
+-Ben
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100301/8b9769bc/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Mon Mar  1 20:02:02 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 01 Mar 2010 20:02:02 -0500
+Subject: [sup-talk] index options, by addressee instead of by sender
+In-Reply-To: <1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+References: <20100302002310.GB19325@katowice>
+	<1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1267491669-sup-1089@zyrg.net>
+
+Excerpts from Ben Walton's message of 2010-03-01 19:38:45 -0500:
+> Excerpts from E. Cartan's message of Mon Mar 01 19:23:10 -0500 2010:
+> 
+> >   I would like to see the messages which one sends displayed 
+> >   on the sup index by "addressee", instead of by "sender" 
+> >   (or sender replaced by "me").  Not all messages, but 
+> >   just the one sent by me.
+> 
+> I think there is a patch to do just this that is likely to be included
+> in the next release of sup (or available now if you track the git
+> repo).  This is from memory.  Rich, can you confirm?
+
+Yes, the patch is in master and will go out in 0.11.
+
+From piotr.kempa at wp.eu  Tue Mar  2 05:49:59 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Tue, 2 Mar 2010 11:49:59 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1267205858-sup-7113@hysbald>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<1267205858-sup-7113@hysbald>
+Message-ID: <201003021149.59760.piotr.kempa@wp.eu>
+
+I digged a bit further, trying to decode the emails from commandline with "gpg 
+--decode". For some of the inline GPG emails the commandline version fails, 
+but for some other it works. Even for those that it works, sup just shows 
+undecoded version which leads me to believe it doesn't even try to decode, 
+which means it doesn't recognize the email as encrypted at all. 
+
+As far as I can deduct, sup only recognizes encrypted emails if they have 
+something like this inside:
+Content-Type: multipart/encrypted;
+  boundary="nextPart15239034.i9UOPnLxZ9";
+  protocol="application/pgp-encrypted"
+
+Or similar. Which is a reasonable behaviour.
+
+On the other hand, if the damned enigmail creates an email with "Content-Type: 
+text/plain;" and then proceeds to include "-----BEGIN PGP MESSAGE-----" in the 
+body, sup treats this as (no surprise) text/plain and doesn't decode. If it 
+tried, it would succeed since this message passed through gpg --decode is 
+decoded okay.
+
+So, I guess if this functionality is to be included in sup (and I think it 
+doesn't have to be since enigmail just makes broken messages and there's no 
+reason why anybody should put up with that:) it should not be in crypto.rb but 
+somewhere else, where the decision is made to even use functions from 
+crypto.rb (like decrypt) on a message. I'm no programmer but I guess it should 
+be something like this:
+if payload contains "BEGIN PGP MESSAGE" then run the decrypt function from 
+crypto.rb on it. 
+
+For now - does anybody know a way to mass decrypt all messages in my mailbox 
+so I can keep them in plain text and use sup anyway? That would be ideal 
+solution but I just can't find a program to do that. And gpg itself isn't 
+helpful since it just prints decoded payload on --output, without the headers, 
+so it's no use in batch. I can try to code this in bash but maybe there's 
+something out there already?
+
+Thank you
+Piotr
+
+On Friday 26 February 2010 18:43:04 Sven Schober wrote:
+> Excerpts from kosmici-atakuja's message of Fri Feb 26 18:08:36 +0100 2010:
+> > First of wall I want to say I absolutely love sup! I used all the major 
+mail 
+> > clients like mutt, claws, thunderbird, kmail. All mail clients just fail 
+(mutt 
+> > was the closest though...). Sup so far has the potential to be the best of 
+> > them. If only I can get it to read the inline gpg that enigmail makes...
+> > 
+> +1
+> 
+> > Is there anything I can do to get this working? This is a crucial feature 
+for 
+> > me...
+> > 
+> +1
+> > Moreover, I searched the list archives and it looks like some people have 
+got 
+> > it working as there have been patches to make it work a couple of months 
+ago. 
+> > And my version is recent (January) so those patches should be in it. It 
+just 
+> > doesn't for me for some reason :(
+> > 
+> I think there was a (preliminary) patch from Michael Stapelberg
+> floating around, but somehow that didn't make it into next?
+> 
+> > I know I should read crypto.rb and figure it out from there. I tried, I 
+just 
+> > can't understand it, as I'm not experienced in ruby, or email clients code 
+for 
+> > that matter. 
+> > 
+> +1
+> 
+> > Please help!
+> +1
+> 
+> > Thank you
+> > Piotr
+> 
+> Ciao,
+>   Sven
+> -- 
+> Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+> http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+> Room O27-346, Phone: +49-731-5024146 [+49-179-5060182]   |SYSTEMS LAB
+> 
+
+From michael+sup at stapelberg.de  Tue Mar  2 08:59:19 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 02 Mar 2010 14:59:19 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003021149.59760.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<1267205858-sup-7113@hysbald>
+	<201003021149.59760.piotr.kempa@wp.eu>
+Message-ID: <1267538314-sup-6684@midna.zekjur.net>
+
+Hi Piotr,
+
+Excerpts from piotr.kempa's message of Di M?r 02 11:49:59 +0100 2010:
+> So, I guess if this functionality is to be included in sup (and I think it 
+> doesn't have to be since enigmail just makes broken messages and there's no 
+> reason why anybody should put up with that:) it should not be in crypto.rb but 
+> somewhere else, where the decision is made to even use functions from 
+> crypto.rb (like decrypt) on a message. I'm no programmer but I guess it should 
+As mentioned, I wrote a patch to do this. It is currently in review and will
+hopefully be included soon.
+
+Best regards,
+Michael
+
+From piotr.kempa at wp.eu  Tue Mar  2 09:19:23 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Tue, 2 Mar 2010 15:19:23 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1267538314-sup-6684@midna.zekjur.net>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003021149.59760.piotr.kempa@wp.eu>
+	<1267538314-sup-6684@midna.zekjur.net>
+Message-ID: <201003021519.23488.piotr.kempa@wp.eu>
+
+Sounds cool, I can't wait then. Let's hope the patch is included in 0.11. 
+Thanks Michael!
+Piotr
+
+On Tuesday 02 March 2010 14:59:19 Michael Stapelberg wrote:
+> Hi Piotr,
+> 
+> Excerpts from piotr.kempa's message of Di M?r 02 11:49:59 +0100 2010:
+> > So, I guess if this functionality is to be included in sup (and I think it 
+> > doesn't have to be since enigmail just makes broken messages and there's 
+no 
+> > reason why anybody should put up with that:) it should not be in crypto.rb 
+but 
+> > somewhere else, where the decision is made to even use functions from 
+> > crypto.rb (like decrypt) on a message. I'm no programmer but I guess it 
+should 
+> As mentioned, I wrote a patch to do this. It is currently in review and will
+> hopefully be included soon.
+> 
+> Best regards,
+> Michael
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+
+From samhall at riseup.net  Tue Mar  2 09:12:39 2010
+From: samhall at riseup.net (Sam Hall)
+Date: Tue, 2 Mar 2010 15:12:39 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003021149.59760.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<1267205858-sup-7113@hysbald>
+	<201003021149.59760.piotr.kempa@wp.eu>
+Message-ID: <20100302141239.GC28071@IvBodjogyut5>
+
+On Tue, Mar 02, 2010 at 11:49 (+0100), piotr.kempa at wp.eu wrote:
+> For now - does anybody know a way to mass decrypt all messages in my
+> mailbox so I can keep them in plain text and use sup anyway?
+
+Using mutt with tagging and decrypt-save should work (didn't test that,
+though). Google for decrypt-save, it's not documented in the manual.
+
+
+Best wishes,
+  /Sam
+
+
+From johnbent at lanl.gov  Tue Mar  2 13:06:35 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 02 Mar 2010 11:06:35 -0700
+Subject: [sup-talk] default_attachment_save_dir
+Message-ID: <1267553166-sup-2030@tangerine.lanl.gov>
+
+Is there a patch so that the default_attachment_save_dir is not static
+but uses the last used location?
+
+Thanks,
+
+John
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 13:49:06 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue,  2 Mar 2010 13:49:06 -0500
+Subject: [sup-talk] [PATCH] Small bugfix in keymap run_hook
+Message-ID: <1267555747-6064-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+I just merged the tip of origin/next and sup blew up on me.  The
+attached patch corrects this bug and, I think, provides the intended
+behaviour.
+
+Ben Walton (1):
+  Small bug ifx in keymap run_hook method
+
+ lib/sup/keymap.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 13:49:07 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue,  2 Mar 2010 13:49:07 -0500
+Subject: [sup-talk] [PATCH] Small bug ifx in keymap run_hook method
+In-Reply-To: <1267555747-6064-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1267555747-6064-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1267555747-6064-2-git-send-email-bwalton@artsci.utoronto.ca>
+
+Splat the array that is returned from Modes.keymaps.map when it is
+passed into Hash[] to avoid an error about an odd number of parameters
+being passes to the method.
+
+Error was:
+./sup/keymap.rb:129:in `[]': odd number of arguments for Hash
+(ArgumentError)
+        from ./sup/keymap.rb:129:in `run_hook'
+        from ../bin/sup:98
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ lib/sup/keymap.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/keymap.rb b/lib/sup/keymap.rb
+index 93060b8..8d54924 100644
+--- a/lib/sup/keymap.rb
++++ b/lib/sup/keymap.rb
+@@ -126,7 +126,7 @@ EOS
+   end
+ 
+   def self.run_hook global_keymap
+-    modes = Hash[Mode.keymaps.map { |klass,keymap| [Mode.make_name(klass.name),klass] }]
++    modes = Hash[*Mode.keymaps.map { |klass,keymap| [Mode.make_name(klass.name),klass] }]
+     locals = {
+       :modes => modes,
+       :global_keymap => global_keymap,
+-- 
+1.7.0
+
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 13:58:15 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue,  2 Mar 2010 13:58:15 -0500
+Subject: [sup-talk] [PATCH] Small bug fix in keymap run_hook method
+In-Reply-To: <1267555747-6064-1-git-send-email-bwalton@artsci.utoronto.ca>
+References: <1267555747-6064-1-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1267556295-6401-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+Splat the array that is returned from Modes.keymaps.map when it is
+passed into Hash[] to avoid an error about an odd number of parameters
+being passes to the method.
+
+Error was:
+./sup/keymap.rb:129:in `[]': odd number of arguments for Hash
+(ArgumentError)
+        from ./sup/keymap.rb:129:in `run_hook'
+        from ../bin/sup:98
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+
+This time with correct spelling in commit message. :)
+
+ lib/sup/keymap.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/keymap.rb b/lib/sup/keymap.rb
+index 93060b8..8d54924 100644
+--- a/lib/sup/keymap.rb
++++ b/lib/sup/keymap.rb
+@@ -126,7 +126,7 @@ EOS
+   end
+ 
+   def self.run_hook global_keymap
+-    modes = Hash[Mode.keymaps.map { |klass,keymap| [Mode.make_name(klass.name),klass] }]
++    modes = Hash[*Mode.keymaps.map { |klass,keymap| [Mode.make_name(klass.name),klass] }]
+     locals = {
+       :modes => modes,
+       :global_keymap => global_keymap,
+-- 
+1.7.0
+
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 14:20:50 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue,  2 Mar 2010 14:20:50 -0500
+Subject: [sup-talk] [PATCH] Strip out ruby 1.9-ism
+In-Reply-To: <y>
+References: <y>
+Message-ID: <1267557651-7110-1-git-send-email-bwalton@artsci.utoronto.ca>
+
+The tip of next uses Object.tap in the buffer manager code.  This blew
+up on me.  The attached patch corrects this.
+
+(I'm going to have to build me a ruby 1.9 rpm soon, me thinks.)
+
+Ben Walton (1):
+  Remove use of Object tap method
+
+ lib/sup/buffer.rb |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 14:20:51 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue,  2 Mar 2010 14:20:51 -0500
+Subject: [sup-talk] [PATCH] Remove use of Object tap method
+In-Reply-To: <y>
+References: <y>
+Message-ID: <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+
+Remove ruby 1.9-ism in buffer.rb.  This keeps things running on older
+ruby versions.
+
+Signed-off-by: Ben Walton <bwalton at artsci.utoronto.ca>
+---
+ lib/sup/buffer.rb |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/buffer.rb b/lib/sup/buffer.rb
+index 5772bb0..ccbd38f 100644
+--- a/lib/sup/buffer.rb
++++ b/lib/sup/buffer.rb
+@@ -612,7 +612,12 @@ EOS
+       tf.deactivate
+       draw_screen :sync => false, :status => status, :title => title
+     end
+-    tf.value.tap { |x| x.force_encoding Encoding::UTF_8 if x && x.respond_to?(:encoding) }
++
++    v = if tf.value && tf.value.respond_to?(:encoding)
++          tf.value.force_encoding Encoding::UTF_8
++        else
++          tf.value
++        end
+   end
+ 
+   def ask_getch question, accept=nil
+-- 
+1.7.0
+
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 14:27:27 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 02 Mar 2010 14:27:27 -0500
+Subject: [sup-talk] default_attachment_save_dir
+In-Reply-To: <1267553166-sup-2030@tangerine.lanl.gov>
+References: <1267553166-sup-2030@tangerine.lanl.gov>
+Message-ID: <1267557911-sup-352@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from John Bent's message of Tue Mar 02 13:06:35 -0500 2010:
+
+> Is there a patch so that the default_attachment_save_dir is not
+> static but uses the last used location?
+
+Not that I'm aware of, but the attached seems to do the trick.  I like
+this feature?  Anyone else?
+
+Thanks
+-Ben
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-remember-save-dir.patch
+Type: application/octet-stream
+Size: 1718 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100302/cf8131f6/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100302/cf8131f6/attachment.bin>
+
+From ezyang at MIT.EDU  Tue Mar  2 14:55:24 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Tue, 02 Mar 2010 14:55:24 -0500
+Subject: [sup-talk] ncurses opts exception on master
+In-Reply-To: <1267335529-sup-9079@zyrg.net>
+References: <1267331100-sup-926@black-opal.mit.edu>
+	<1267335529-sup-9079@zyrg.net>
+Message-ID: <1267559702-sup-4934@ezyang>
+
+Excerpts from Rich Lane's message of Sun Feb 28 02:11:35 -0500 2010:
+> I'm guessing you have an old version of the ncurses gem. Installing
+> the ncursesw gem should fix this.
+
+Does the ncursesw gem have the Unicode fixes?
+
+Cheers,
+Edward
+
+From sven.schober at uni-ulm.de  Tue Mar  2 17:04:14 2010
+From: sven.schober at uni-ulm.de (Sven Schober)
+Date: Tue, 02 Mar 2010 23:04:14 +0100
+Subject: [sup-talk] default_attachment_save_dir
+In-Reply-To: <1267557911-sup-352@pinkfloyd.chass.utoronto.ca>
+References: <1267553166-sup-2030@tangerine.lanl.gov>
+	<1267557911-sup-352@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1267567426-sup-6492@hysbald>
+
+Excerpts from Ben Walton's message of Tue Mar 02 20:27:27 +0100 2010:
+> Excerpts from John Bent's message of Tue Mar 02 13:06:35 -0500 2010:
+> 
+> > Is there a patch so that the default_attachment_save_dir is not
+> > static but uses the last used location?
+> 
+> Not that I'm aware of, but the attached seems to do the trick.  I like
+> this feature?  Anyone else?
+> 
++1
+
+> Thanks
+> -Ben
+
+Ciao,
+ Sven
+-- 
+Sven Schober, sven.schober at uni-ulm.de                    |UNI ULM
+http://www-vs.informatik.uni-ulm.de/dept/staff/schober/  |DISTRIBUTED
+Room O27-346, Phone: +49-731-5024146                     |SYSTEMS LAB
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100302/1536ffa4/attachment.bin>
+
+From rick.tessner at gmail.com  Tue Mar  2 17:10:15 2010
+From: rick.tessner at gmail.com (rick.tessner)
+Date: Tue, 02 Mar 2010 14:10:15 -0800
+Subject: [sup-talk] [PATCH] Remove use of Object tap method
+In-Reply-To: <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+References: <y> <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+Message-ID: <1267567699-sup-491@onnadayr.ca>
+
+Excerpts from Ben Walton's message of Tue Mar 02 11:20:51 -0800 2010:
+> Remove ruby 1.9-ism in buffer.rb.  This keeps things running on older
+> ruby versions.
+
+What about adding a lib/sup/tap.rb that looks like this:
+
+    unless Object.respond_to?(:tap)
+      class Object
+        def tap
+          yield self
+          self
+        end
+      end
+    end
+
+and then adding a:
+
+    require 'tap'
+
+to lib/sup.rb?  'tap' is a really handy little method that cleans up
+code nicely. :)
+-- 
+Rick Tessner
+rick.tessner at gmail.com
+
+From bwalton at artsci.utoronto.ca  Tue Mar  2 17:46:17 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 02 Mar 2010 17:46:17 -0500
+Subject: [sup-talk] [PATCH] Remove use of Object tap method
+In-Reply-To: <1267567699-sup-491@onnadayr.ca>
+References: <y> <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+	<1267567699-sup-491@onnadayr.ca>
+Message-ID: <1267569917-sup-8028@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from rick.tessner's message of Tue Mar 02 17:10:15 -0500 2010:
+
+> What about adding a lib/sup/tap.rb that looks like this:
+
+Or putting that directly in the lib/sup/util.rb that already has
+monkey patching type code?  I'm ok with this solution and agree that
+the tap method is a beautiful little thing.
+
+Thanks
+-Ben
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100302/95e27fee/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Wed Mar  3 13:12:01 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 03 Mar 2010 13:12:01 -0500
+Subject: [sup-talk] [PATCH] Remove use of Object tap method
+In-Reply-To: <1267569917-sup-8028@pinkfloyd.chass.utoronto.ca>
+References: <y> <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+	<1267567699-sup-491@onnadayr.ca>
+	<1267569917-sup-8028@pinkfloyd.chass.utoronto.ca>
+Message-ID: <1267639869-sup-1568@zyrg.net>
+
+Excerpts from Ben Walton's message of 2010-03-02 17:46:17 -0500:
+> Excerpts from rick.tessner's message of Tue Mar 02 17:10:15 -0500 2010:
+> 
+> > What about adding a lib/sup/tap.rb that looks like this:
+> 
+> Or putting that directly in the lib/sup/util.rb that already has
+> monkey patching type code?  I'm ok with this solution and agree that
+> the tap method is a beautiful little thing.
+
+What do you think about requiring the backports gem and getting rid of
+the compatibility code in util?
+
+From bwalton at artsci.utoronto.ca  Wed Mar  3 13:25:04 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 03 Mar 2010 13:25:04 -0500
+Subject: [sup-talk] [PATCH] Remove use of Object tap method
+In-Reply-To: <1267639869-sup-1568@zyrg.net>
+References: <y> <1267557651-7110-2-git-send-email-bwalton@artsci.utoronto.ca>
+	<1267567699-sup-491@onnadayr.ca>
+	<1267569917-sup-8028@pinkfloyd.chass.utoronto.ca>
+	<1267639869-sup-1568@zyrg.net>
+Message-ID: <1267640648-sup-2936@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Rich Lane's message of Wed Mar 03 13:12:01 -0500 2010:
+
+> What do you think about requiring the backports gem and getting rid of
+> the compatibility code in util?
+
+I wasn't aware of this gem.  It sounds like a better route from the
+supportability point of view.  I'll check it out and see if there is
+anything that isn't agreeable about it.  Do others already have
+experience with it?
+
+Thanks
+-Ben
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 189 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100303/d8fe7bf7/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Wed Mar  3 17:23:06 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 03 Mar 2010 17:23:06 -0500
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267478622-sup-2939@tangerine.lanl.gov>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+Message-ID: <1267654880-sup-4875@zyrg.net>
+
+Excerpts from John Bent's message of 2010-03-01 16:26:09 -0500:
+> I've been using an old PowerPC Mac.  I got a new Intel one running
+> Leopard (10.6.2) but got an error trying to install sup.  Everything is
+> a fresh install.  The only thing I've done is install the Xcode tools.
+> The error (below sig) looks like a problem with ncurses.  Looking around
+> at the mkmf.log file (attached), I see more issues with curses: no
+> wmove(), no libpdcurses.
+> 
+> The ruby installed is 1.8.7.  gem is 1.3.1.
+> 
+> I recreated this by copying the little test program with the wmove() in
+> it.  When I tried to build it with -lncursesw, it failed because that
+> lib doesn't exist but it did work with -lncurses (without the 'w').  So
+> I just made a symlink:
+> 
+> guava:/usr/lib>ln -s /usr/lib/libncurses.dylib /usr/lib/libncursesw.dylib
+> 
+> That works.  Now gem install sup works.  But I'm not sure that's the
+> best fix.  Anyway, it looks like the problem is in gem install ncursesw
+> and not in gem install sup but I thought you might like to know about
+> this.
+>  
+> Thanks,
+> 
+> John 
+> 
+> guava:~>gem install sup
+> Building native extensions.  This could take a while...
+> ERROR:  Error installing sup:
+>     ERROR: Failed to build gem native extension.
+> 
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> extconf.rb install sup
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+> *** extconf.rb failed ***
+> Could not create Makefile due to some reason, probably lack of
+> necessary libraries and/or headers.  Check the mkmf.log file for more
+> details.  You may need configuration options.
+> 
+> Provided configuration options:
+>     --with-opt-dir
+>     --without-opt-dir
+>     --with-opt-include
+>     --without-opt-include=${opt-dir}/include
+>     --with-opt-lib
+>     --without-opt-lib=${opt-dir}/lib
+>     --with-make-prog
+>     --without-make-prog
+>     --srcdir=.
+>     --curdir
+>     --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+>     --with-ncurseswlib
+>     --without-ncurseswlib
+>     --with-pdcurseslib
+>     --without-pdcurseslib
+> extconf.rb:46: ncurses library not found (RuntimeError)
+> 
+> 
+> Gem files will remain installed in
+> /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+> Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+
+I'm thinking about changing the gem dependency from ncursesw back to
+plain ncurses to avoid these install failures. Anyone have thoughts on
+this?
+
+From johnbent at lanl.gov  Wed Mar  3 17:25:08 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 03 Mar 2010 15:25:08 -0700
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267654880-sup-4875@zyrg.net>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+	<1267654880-sup-4875@zyrg.net>
+Message-ID: <1267655048-sup-9690@tangerine.lanl.gov>
+
+Excerpts from Rich Lane's message of Wed Mar 03 15:23:06 -0700 2010:
+> Excerpts from John Bent's message of 2010-03-01 16:26:09 -0500:
+> > I've been using an old PowerPC Mac.  I got a new Intel one running
+> > Leopard (10.6.2) but got an error trying to install sup.  Everything is
+> > a fresh install.  The only thing I've done is install the Xcode tools.
+> > The error (below sig) looks like a problem with ncurses.  Looking around
+> > at the mkmf.log file (attached), I see more issues with curses: no
+> > wmove(), no libpdcurses.
+> > 
+> > The ruby installed is 1.8.7.  gem is 1.3.1.
+> > 
+> > I recreated this by copying the little test program with the wmove() in
+> > it.  When I tried to build it with -lncursesw, it failed because that
+> > lib doesn't exist but it did work with -lncurses (without the 'w').  So
+> > I just made a symlink:
+> > 
+> > guava:/usr/lib>ln -s /usr/lib/libncurses.dylib /usr/lib/libncursesw.dylib
+> > 
+> > That works.  Now gem install sup works.  But I'm not sure that's the
+> > best fix.  Anyway, it looks like the problem is in gem install ncursesw
+> > and not in gem install sup but I thought you might like to know about
+> > this.
+> >  
+> > Thanks,
+> > 
+> > John 
+> > 
+> > guava:~>gem install sup
+> > Building native extensions.  This could take a while...
+> > ERROR:  Error installing sup:
+> >     ERROR: Failed to build gem native extension.
+> > 
+> > /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> > extconf.rb install sup
+> > checking for unistd.h... yes
+> > checking for locale.h... yes
+> > checking for ncurses.h... yes
+> > checking for wmove() in -lncursesw... no
+> > checking for wmove() in -lpdcurses... no
+> > *** extconf.rb failed ***
+> > Could not create Makefile due to some reason, probably lack of
+> > necessary libraries and/or headers.  Check the mkmf.log file for more
+> > details.  You may need configuration options.
+> > 
+> > Provided configuration options:
+> >     --with-opt-dir
+> >     --without-opt-dir
+> >     --with-opt-include
+> >     --without-opt-include=${opt-dir}/include
+> >     --with-opt-lib
+> >     --without-opt-lib=${opt-dir}/lib
+> >     --with-make-prog
+> >     --without-make-prog
+> >     --srcdir=.
+> >     --curdir
+> >     --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> >     --with-ncurseswlib
+> >     --without-ncurseswlib
+> >     --with-pdcurseslib
+> >     --without-pdcurseslib
+> > extconf.rb:46: ncurses library not found (RuntimeError)
+> > 
+> > 
+> > Gem files will remain installed in
+> > /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1 for inspection.
+> > Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.1/gem_make.out
+> 
+> I'm thinking about changing the gem dependency from ncursesw back to
+> plain ncurses to avoid these install failures. Anyone have thoughts on
+> this?
+>
++1 :)
+
+John
+
+From marka at pobox.com  Wed Mar  3 21:10:31 2010
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 03 Mar 2010 21:10:31 -0500
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267654880-sup-4875@zyrg.net>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+	<1267654880-sup-4875@zyrg.net>
+Message-ID: <1267668438-sup-218@r50p>
+
+Excerpts from Rich Lane's message of Wed Mar 03 17:23:06 -0500 2010:
+> I'm thinking about changing the gem dependency from ncursesw back to
+> plain ncurses to avoid these install failures. Anyone have thoughts on
+> this?
+
+It could be that I'm misunderstanding something, but wouldn't it
+still be likely that there would be failures if the user hasn't
+installed the libncurses5-dev package, or whatever it's called
+on their OS?
+
+From helgedt at tihlde.org  Thu Mar  4 06:45:04 2010
+From: helgedt at tihlde.org (Helge Titlestad)
+Date: Thu, 04 Mar 2010 12:45:04 +0100
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267654880-sup-4875@zyrg.net>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+	<1267654880-sup-4875@zyrg.net>
+Message-ID: <1267702902-sup-4834@tihlde.org>
+
+Excerpts from Rich Lane's message of Wed Mar 03 23:23:06 +0100 2010:
+> I'm thinking about changing the gem dependency from ncursesw back to
+> plain ncurses to avoid these install failures. Anyone have thoughts on
+> this?
+
+If this breaks UTF-8 support more, I humbly vote against. UTF-8 with ncursesw
+might not be the perfect solution, but it seems to be the only solution at the
+moment, and anyone outside stricy ascii-writing countries will expect it to
+Just Work[tm].
+-- 
+alge
+
+From rlane at club.cc.cmu.edu  Thu Mar  4 11:59:34 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 04 Mar 2010 11:59:34 -0500
+Subject: [sup-talk] sup install error
+In-Reply-To: <1267702902-sup-4834@tihlde.org>
+References: <1267478622-sup-2939@tangerine.lanl.gov>
+	<1267654880-sup-4875@zyrg.net> <1267702902-sup-4834@tihlde.org>
+Message-ID: <1267720861-sup-759@zyrg.net>
+
+Excerpts from Helge Titlestad's message of 2010-03-04 06:45:04 -0500:
+> Excerpts from Rich Lane's message of Wed Mar 03 23:23:06 +0100 2010:
+> > I'm thinking about changing the gem dependency from ncursesw back to
+> > plain ncurses to avoid these install failures. Anyone have thoughts on
+> > this?
+> 
+> If this breaks UTF-8 support more, I humbly vote against. UTF-8 with ncursesw
+> might not be the perfect solution, but it seems to be the only solution at the
+> moment, and anyone outside stricy ascii-writing countries will expect it to
+> Just Work[tm].
+
+I committed a patch to master that switches the gem dependency to plain
+ncurses. I'd rather have all users be able to install than having utf8
+support by default, especially when the way to enable utf8 is so easy -
+gem install ncursesw. I've promoted the debug log about missing ncursesw
+to an info log.
+
+From juantascon at gmail.com  Thu Mar  4 12:23:27 2010
+From: juantascon at gmail.com (Juan Diego)
+Date: Fri, 5 Mar 2010 02:23:27 +0900
+Subject: [sup-talk] index size
+Message-ID: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com>
+
+Hello listmates,
+
+I'm a sup newbie trying to migrate from gmail's web interface into sup.
+
+I would like to know an estimate of the xapian index files sizes in
+order to place these files in the right partition of my system before
+creating the index because it seems to be a long process.
+
+So, could any of you guys please share with me the sizes of your index
+files and also the sizes of your mail sources (I guess the index size
+depends on the sources size so that I can make an estimate for my
+sources).
+
+Thanks
+Have a nice day
+chao
+
+From pi+sup at pihost.us  Thu Mar  4 12:32:31 2010
+From: pi+sup at pihost.us (Anthony Martinez)
+Date: Thu, 04 Mar 2010 10:32:31 -0700
+Subject: [sup-talk] index size
+In-Reply-To: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com>
+References: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com>
+Message-ID: <1267723895-sup-8943@home.mrtheplague.net>
+
+Excerpts from Juan Diego's message of Thu Mar 04 10:23:27 -0700 2010:
+> So, could any of you guys please share with me the sizes of your index
+> files and also the sizes of your mail sources (I guess the index size
+> depends on the sources size so that I can make an estimate for my
+> sources).
+
+$ du -hs .sup/xapian Maildir
+625M    .sup/xapian
+765M    Maildir
+
+> Thanks
+> Have a nice day
+> chao
+No problem!
+
+-- pi
+
+-- 
+All C programs do the same thing: look at a character and do nothing with it.
+-- Peter Weinberger
+
+From michael+sup at stapelberg.de  Thu Mar  4 12:42:22 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 04 Mar 2010 18:42:22 +0100
+Subject: [sup-talk] index size
+In-Reply-To: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com>
+References: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com>
+Message-ID: <1267724507-sup-4189@midna.zekjur.net>
+
+Hi Juan,
+
+Excerpts from Juan Diego's message of Do M?r 04 18:23:27 +0100 2010:
+> So, could any of you guys please share with me the sizes of your index
+> files and also the sizes of your mail sources (I guess the index size
+> depends on the sources size so that I can make an estimate for my
+> sources).
+441 MB xapian database for ~ 40000 emails.
+
+Best regards,
+Michael
+
+From juantascon at gmail.com  Thu Mar  4 13:48:14 2010
+From: juantascon at gmail.com (Juan Diego)
+Date: Fri, 5 Mar 2010 03:48:14 +0900
+Subject: [sup-talk] index size
+In-Reply-To: <1267723895-sup-8943@home.mrtheplague.net>
+References: <b3095c51003040923r3cf7d6efl3fff5dbb4fdd6078@mail.gmail.com> 
+	<1267723895-sup-8943@home.mrtheplague.net>
+Message-ID: <b3095c51003041048x4f9791f7o4ca49c4da4d8fe4@mail.gmail.com>
+
+On Fri, Mar 5, 2010 at 2:32 AM, Anthony Martinez <pi+sup at pihost.us> wrote:
+> Excerpts from Juan Diego's message of Thu Mar 04 10:23:27 -0700 2010:
+>> So, could any of you guys please share with me the sizes of your index
+>> files and also the sizes of your mail sources (I guess the index size
+>> depends on the sources size so that I can make an estimate for my
+>> sources).
+>
+> $ du -hs .sup/xapian Maildir
+> 625M ? ?.sup/xapian
+> 765M ? ?Maildir
+>
+>> Thanks
+>> Have a nice day
+>> chao
+> No problem!
+>
+> -- pi
+>
+> --
+> All C programs do the same thing: look at a character and do nothing with it.
+> -- Peter Weinberger
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+Thanks for the info
+
+From johnbent at lanl.gov  Fri Mar  5 10:59:42 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Fri, 05 Mar 2010 08:59:42 -0700
+Subject: [sup-talk] unread status
+In-Reply-To: <1262557187-sup-8151@masanjin.net>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+	<1262130179-sup-8306@zyrg.net> <1262130868-sup-2032@masanjin.net>
+	<1262133096-sup-2807@tangerine.lanl.gov>
+	<1262557187-sup-8151@masanjin.net>
+Message-ID: <1267804677-sup-3302@guava.lanl.gov>
+
+Excerpts from William Morgan's message of Sun Jan 03 15:22:25 -0700
+2010:
+> Reformatted excerpts from John Bent's message of 2009-12-29:
+> > I spent a couple of unsuccessful hours last week trying to switch.
+> > Anyway else on an old PPC OS X who has been able to transition?
+> 
+> Please try sup-convert-ferret-index in git next and report any
+> problems.
+>
+Although, I have xapian-full install, when I run
+sup-convert-ferret-index, I get this error:
+
+guava:~>sup-convert-ferret-index
+Error: you don't have the xapian gem installed, so this script won't do
+much for you--`gem install xapian` (or xapian-full) first.
+Try --help for help.
+
+I do have xapian-full installed:
+
+ROOT:guava:/Users/johnbent>gem install xapian-full
+Building native extensions.  This could take a while...
+Successfully installed xapian-full-1.1.3.4
+1 gem installed
+Installing ri documentation for xapian-full-1.1.3.4...
+Installing RDoc documentation for xapian-full-1.1.3.4...
+
+But installing xapian (just itself) fails.  Looks like I'm missing
+glibc-devel library or something:
+
+/bin/sh ../libtool  --tag=CXX   --mode=link g++ -fno-strict-aliasing
+-Wall -Wno-unused -Wno-uninitialized -fvisibility=hidden
+-I/opt/local/include -g -O2 -avoid-version -module -shrext ".bundle"
+-o _xapian.la -rpath /opt/local/lib/ruby/site_ruby/1.8/i686-darwin10
+xapian_wrap.lo /opt/local/lib/libxapian.la -lstdc++  
+g++ -shared -nostdlib
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o  .libs/xapian_wrap.o
+-Wl,--rpath -Wl,/opt/local/lib -Wl,--rpath -Wl,/opt/local/lib
+/opt/local/lib/libxapian.dylib -L/opt/local/lib
+-L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1
+-L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../.. -lstdc++ -lm -lc -lgcc_s
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o  -Wl,-soname
+-Wl,_xapian.bundle -o .libs/_xapian.bundle
+i686-apple-darwin10-g++-4.0.1:
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o: No such file or
+directory
+i686-apple-darwin10-g++-4.0.1:
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o: No such file or
+directory
+i686-apple-darwin10-g++-4.0.1:
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o: No such file or
+directory
+i686-apple-darwin10-g++-4.0.1:
+/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o: No such file or
+directory
+make[4]: *** [_xapian.la] Error 1
+make[3]: *** [all-recursive] Error 1
+make[2]: *** [all] Error 2
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
+extconf.rb:3:in `system!': unhandled exception
+    from extconf.rb:6
+
+
+Thanks, 
+
+John
+
+From johnbent at lanl.gov  Fri Mar  5 15:00:14 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Fri, 05 Mar 2010 13:00:14 -0700
+Subject: [sup-talk] unread status
+In-Reply-To: <1267804677-sup-3302@guava.lanl.gov>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+	<1262130179-sup-8306@zyrg.net> <1262130868-sup-2032@masanjin.net>
+	<1262133096-sup-2807@tangerine.lanl.gov>
+	<1262557187-sup-8151@masanjin.net>
+	<1267804677-sup-3302@guava.lanl.gov>
+Message-ID: <1267818644-sup-5188@guava.lanl.gov>
+
+Excerpts from John Bent's message of Fri Mar 05 08:59:42 -0700 2010:
+> Excerpts from William Morgan's message of Sun Jan 03 15:22:25 -0700
+> 2010:
+> > Reformatted excerpts from John Bent's message of 2009-12-29:
+> > > I spent a couple of unsuccessful hours last week trying to switch.
+> > > Anyway else on an old PPC OS X who has been able to transition?
+> > 
+> > Please try sup-convert-ferret-index in git next and report any
+> > problems.
+> >
+> Although, I have xapian-full install, when I run
+> sup-convert-ferret-index, I get this error:
+> 
+> guava:~>sup-convert-ferret-index
+> Error: you don't have the xapian gem installed, so this script won't do
+> much for you--`gem install xapian` (or xapian-full) first.
+> Try --help for help.
+> 
+> I do have xapian-full installed:
+> 
+Also, irb reports that I have xapian installed but I still get the error
+from sup-convert-ferret-index:
+
+1) irb says that I have xapian:
+        irb(main):001:0> require 'rubygems'
+        => true
+        irb(main):002:0> require 'xapian'
+        => true
+        irb(main):003:0> quit
+
+
+2) gem list says that I have xapian:
+    *** LOCAL GEMS ***
+    ferret (0.11.6)
+    gettext (2.1.0)
+    highline (1.5.2)
+    locale (2.0.5)
+    lockfile (1.4.3)
+    mime-types (1.16)
+    ncursesw (1.2.4.1)
+    net-ssh (2.0.20)
+    rake (0.8.7)
+    rmail (1.0.0)
+    sup (0.10.2)
+    trollop (1.15)
+    xapian-full (1.1.3.4)
+
+3) sup-convert-ferret-index says I don't have xapian:
+    guava:~>sup-convert-ferret-index --verbose
+        Error: you don't have the xapian gem installed, so this script won't do
+        much for you--`gem install xapian` (or xapian-full) first.
+        Try --help for help.
+    guava:~>sup-convert-ferret-index --version
+        sup-convert-ferret-index (sup 0.10.2)
+
+4) ruby --version = 1.8.7 (2010-01-10 patchlevel 249) [i686-darwin10]
+    I tried port install ruby19 but the build failed:
+        'rb_dl_callback_double_19_0_stdcall' undeclared
+
+Any ideas?
+
+Thanks,
+
+John
+
+
+> ROOT:guava:/Users/johnbent>gem install xapian-full
+> Building native extensions.  This could take a while...
+> Successfully installed xapian-full-1.1.3.4
+> 1 gem installed
+> Installing ri documentation for xapian-full-1.1.3.4...
+> Installing RDoc documentation for xapian-full-1.1.3.4...
+> 
+> But installing xapian (just itself) fails.  Looks like I'm missing
+> glibc-devel library or something:
+> 
+> /bin/sh ../libtool  --tag=CXX   --mode=link g++ -fno-strict-aliasing
+> -Wall -Wno-unused -Wno-uninitialized -fvisibility=hidden
+> -I/opt/local/include -g -O2 -avoid-version -module -shrext ".bundle"
+> -o _xapian.la -rpath /opt/local/lib/ruby/site_ruby/1.8/i686-darwin10
+> xapian_wrap.lo /opt/local/lib/libxapian.la -lstdc++  
+> g++ -shared -nostdlib
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o  .libs/xapian_wrap.o
+> -Wl,--rpath -Wl,/opt/local/lib -Wl,--rpath -Wl,/opt/local/lib
+> /opt/local/lib/libxapian.dylib -L/opt/local/lib
+> -L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1
+> -L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../.. -lstdc++ -lm -lc -lgcc_s
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o  -Wl,-soname
+> -Wl,_xapian.bundle -o .libs/_xapian.bundle
+> i686-apple-darwin10-g++-4.0.1:
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o: No such file or
+> directory
+> i686-apple-darwin10-g++-4.0.1:
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o: No such file or
+> directory
+> i686-apple-darwin10-g++-4.0.1:
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o: No such file or
+> directory
+> i686-apple-darwin10-g++-4.0.1:
+> /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o: No such file or
+> directory
+> make[4]: *** [_xapian.la] Error 1
+> make[3]: *** [all-recursive] Error 1
+> make[2]: *** [all] Error 2
+> make[1]: *** [all-recursive] Error 1
+> make: *** [all] Error 2
+> extconf.rb:3:in `system!': unhandled exception
+>     from extconf.rb:6
+> 
+> 
+> Thanks, 
+> 
+> John
+
+From johnbent at lanl.gov  Fri Mar  5 15:32:17 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Fri, 05 Mar 2010 13:32:17 -0700
+Subject: [sup-talk] unread status
+In-Reply-To: <1267818644-sup-5188@guava.lanl.gov>
+References: <1262098048-sup-7303@tw> <1262127103-sup-307@masanjin.net>
+	<1262128268-sup-2780@tw> <1262128724-sup-1138@tilus.net>
+	<1262130179-sup-8306@zyrg.net> <1262130868-sup-2032@masanjin.net>
+	<1262133096-sup-2807@tangerine.lanl.gov>
+	<1262557187-sup-8151@masanjin.net>
+	<1267804677-sup-3302@guava.lanl.gov>
+	<1267818644-sup-5188@guava.lanl.gov>
+Message-ID: <1267821043-sup-7771@guava.lanl.gov>
+
+Excerpts from John Bent's message of Fri Mar 05 13:00:14 -0700 2010:
+> Excerpts from John Bent's message of Fri Mar 05 08:59:42 -0700 2010:
+> > Excerpts from William Morgan's message of Sun Jan 03 15:22:25 -0700
+> > 2010:
+> > > Reformatted excerpts from John Bent's message of 2009-12-29:
+> > > > I spent a couple of unsuccessful hours last week trying to switch.
+> > > > Anyway else on an old PPC OS X who has been able to transition?
+> > > 
+> > > Please try sup-convert-ferret-index in git next and report any
+> > > problems.
+> > >
+> > Although, I have xapian-full install, when I run
+> > sup-convert-ferret-index, I get this error:
+> > 
+> > guava:~>sup-convert-ferret-index
+> > Error: you don't have the xapian gem installed, so this script won't do
+> > much for you--`gem install xapian` (or xapian-full) first.
+> > Try --help for help.
+> > 
+> > I do have xapian-full installed:
+> > 
+> Also, irb reports that I have xapian installed but I still get the error
+> from sup-convert-ferret-index:
+> 
+> 1) irb says that I have xapian:
+>         irb(main):001:0> require 'rubygems'
+>         => true
+>         irb(main):002:0> require 'xapian'
+>         => true
+>         irb(main):003:0> quit
+> 
+> 
+> 2) gem list says that I have xapian:
+>     *** LOCAL GEMS ***
+>     ferret (0.11.6)
+>     gettext (2.1.0)
+>     highline (1.5.2)
+>     locale (2.0.5)
+>     lockfile (1.4.3)
+>     mime-types (1.16)
+>     ncursesw (1.2.4.1)
+>     net-ssh (2.0.20)
+>     rake (0.8.7)
+>     rmail (1.0.0)
+>     sup (0.10.2)
+>     trollop (1.15)
+>     xapian-full (1.1.3.4)
+> 
+> 3) sup-convert-ferret-index says I don't have xapian:
+>     guava:~>sup-convert-ferret-index --verbose
+>         Error: you don't have the xapian gem installed, so this script won't do
+>         much for you--`gem install xapian` (or xapian-full) first.
+>         Try --help for help.
+>     guava:~>sup-convert-ferret-index --version
+>         sup-convert-ferret-index (sup 0.10.2)
+> 
+> 4) ruby --version = 1.8.7 (2010-01-10 patchlevel 249) [i686-darwin10]
+>     I tried port install ruby19 but the build failed:
+>         'rb_dl_callback_double_19_0_stdcall' undeclared
+> 
+I tried commenting out the require xapian in sup-convert-ferret-index
+but it still failed:
+
+## Step three: build the Xapian index
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-sync --all
+--all-sources --index xapian --restore /tmp/sup-state.txt 
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/lib/sup/index.rb:229:in
+`init': unknown index type "xapian":
+dlopen(/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle,
+9): no suitable image found.  Did find: (RuntimeError)
+        /opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle:
+mach-o, but wrong architecture -
+/opt/local/lib/ruby/gems/1.8/gems/xapian-full-1.1.3.4/lib/_xapian.bundle
+        from
+/opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2/bin/sup-sync:99
+
+Shucks.
+
+John
+> Any ideas?
+> 
+> Thanks,
+> 
+> John
+> 
+> > ROOT:guava:/Users/johnbent>gem install xapian-full
+> > Building native extensions.  This could take a while...
+> > Successfully installed xapian-full-1.1.3.4
+> > 1 gem installed
+> > Installing ri documentation for xapian-full-1.1.3.4...
+> > Installing RDoc documentation for xapian-full-1.1.3.4...
+> > 
+> > But installing xapian (just itself) fails.  Looks like I'm missing
+> > glibc-devel library or something:
+> > 
+> > /bin/sh ../libtool  --tag=CXX   --mode=link g++ -fno-strict-aliasing
+> > -Wall -Wno-unused -Wno-uninitialized -fvisibility=hidden
+> > -I/opt/local/include -g -O2 -avoid-version -module -shrext ".bundle"
+> > -o _xapian.la -rpath /opt/local/lib/ruby/site_ruby/1.8/i686-darwin10
+> > xapian_wrap.lo /opt/local/lib/libxapian.la -lstdc++  
+> > g++ -shared -nostdlib
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o  .libs/xapian_wrap.o
+> > -Wl,--rpath -Wl,/opt/local/lib -Wl,--rpath -Wl,/opt/local/lib
+> > /opt/local/lib/libxapian.dylib -L/opt/local/lib
+> > -L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1
+> > -L/usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../.. -lstdc++ -lm -lc -lgcc_s
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o  -Wl,-soname
+> > -Wl,_xapian.bundle -o .libs/_xapian.bundle
+> > i686-apple-darwin10-g++-4.0.1:
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crti.o: No such file or
+> > directory
+> > i686-apple-darwin10-g++-4.0.1:
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtbeginS.o: No such file or
+> > directory
+> > i686-apple-darwin10-g++-4.0.1:
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/crtendS.o: No such file or
+> > directory
+> > i686-apple-darwin10-g++-4.0.1:
+> > /usr/lib/gcc/i686-pc-linux-gnu/4.4.1/../../../crtn.o: No such file or
+> > directory
+> > make[4]: *** [_xapian.la] Error 1
+> > make[3]: *** [all-recursive] Error 1
+> > make[2]: *** [all] Error 2
+> > make[1]: *** [all-recursive] Error 1
+> > make: *** [all] Error 2
+> > extconf.rb:3:in `system!': unhandled exception
+> >     from extconf.rb:6
+> > 
+> > 
+> > Thanks, 
+> > 
+> > John
+
+From rlane at club.cc.cmu.edu  Mon Mar  8 00:57:40 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 08 Mar 2010 00:57:40 -0500
+Subject: [sup-talk] [ANN] Sup 0.11 released
+Message-ID: <1268026262-sup-1918@zyrg.net>
+
+I'm pleased to announce the release of Sup 0.11.
+
+Sup is a console-based email client for people with a lot of email.
+It supports tagging, very fast full-text search, automatic contact-
+list management, and more. If you're the type of person who treats
+email as an extension of your long-term memory, Sup is for you.
+
+Get it: gem install sup
+Learn it: http://sup.rubyforge.org
+Love it: sup-talk at rubyforge.org
+
+Release notes:
+
+The deprecated Ferret index has been removed.
+
+Remote sources (IMAP, IMAPS, and mbox+ssh) have been deprecated and will be
+removed in 0.12. Tools like offlineimap, fetchmail, and rsync provide a much
+better user experience for these mail sources than Sup would ever be able to by
+itself.
+
+If your terminal supports it you can now use 256 colors in your colorscheme. Run
+the contrib/colorpicker.rb program to get the color names to put in colors.yaml.
+
+Saved searches are now supported. Hit '%' in search-results-mode to save the
+current search, and enter an empty search string to open the list of saved
+searches.
+
+Changelog for 0.11:
+* Remove deprecated Ferret backend.
+* Add deprecation notices to IMAP, IMAPS, and mbox+ssh sources.
+* 256 color support.
+* Backwards-compatible index format improvements.
+* Saved searches.
+* Improved support for custom keybindings.
+* Idle detection - poll totals accumulate and index flushes on idle.
+* Several textfield improvments.
+* New hooks: publish, mentions-attachments, keybindings,
+  index-mode-date-widget, gpg-args, and crypto-settings.
+* sup-cmd for easy programmatic access to a Sup index.
+* As always, many bugfixes and tweaks.
+
+From piotr.kempa at wp.eu  Mon Mar  8 05:18:55 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Mon, 8 Mar 2010 11:18:55 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003021519.23488.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<1267538314-sup-6684@midna.zekjur.net>
+	<201003021519.23488.piotr.kempa@wp.eu>
+Message-ID: <201003081118.55543.piotr.kempa@wp.eu>
+
+On Tuesday 02 March 2010 15:19:23 piotr.kempa at wp.eu wrote:
+> Sounds cool, I can't wait then. Let's hope the patch is included in 0.11. 
+> Thanks Michael!
+> Piotr
+> 
+> On Tuesday 02 March 2010 14:59:19 Michael Stapelberg wrote:
+> > Hi Piotr,
+> > 
+> > Excerpts from piotr.kempa's message of Di M?r 02 11:49:59 +0100 2010:
+> > > So, I guess if this functionality is to be included in sup (and I think 
+it 
+> > > doesn't have to be since enigmail just makes broken messages and there's 
+> no 
+> > > reason why anybody should put up with that:) it should not be in 
+crypto.rb 
+> but 
+> > > somewhere else, where the decision is made to even use functions from 
+> > > crypto.rb (like decrypt) on a message. I'm no programmer but I guess it 
+> should 
+> > As mentioned, I wrote a patch to do this. It is currently in review and 
+will
+> > hopefully be included soon.
+> > 
+
+Can anyone confirm if this patch made it to 0.11? I just installed the new 
+version and it still doesn't work but if it's there then maybe I'm doing 
+something wrong. If it didn't, is it posted anywhere? I'll be happy to patch 
+0.11 myself instead of waiting for the next version. I really, really want to 
+start using sup :)
+
+Thank you, 
+Piotr
+
+From piotr.kempa at wp.eu  Mon Mar  8 05:29:47 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Mon, 8 Mar 2010 11:29:47 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003081118.55543.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003021519.23488.piotr.kempa@wp.eu>
+	<201003081118.55543.piotr.kempa@wp.eu>
+Message-ID: <201003081129.47648.piotr.kempa@wp.eu>
+
+
+
+On Monday 08 March 2010 11:18:55 piotr.kempa at wp.eu wrote:
+> On Tuesday 02 March 2010 15:19:23 piotr.kempa at wp.eu wrote:
+> > Sounds cool, I can't wait then. Let's hope the patch is included in 0.11. 
+> > Thanks Michael!
+> > Piotr
+> > 
+> > On Tuesday 02 March 2010 14:59:19 Michael Stapelberg wrote:
+> > > Hi Piotr,
+> > > 
+> > > Excerpts from piotr.kempa's message of Di M?r 02 11:49:59 +0100 2010:
+> > > > So, I guess if this functionality is to be included in sup (and I 
+think 
+> it 
+> > > > doesn't have to be since enigmail just makes broken messages and 
+there's 
+> > no 
+> > > > reason why anybody should put up with that:) it should not be in 
+> crypto.rb 
+> > but 
+> > > > somewhere else, where the decision is made to even use functions from 
+> > > > crypto.rb (like decrypt) on a message. I'm no programmer but I guess 
+it 
+> > should 
+> > > As mentioned, I wrote a patch to do this. It is currently in review and 
+> will
+> > > hopefully be included soon.
+> > > 
+> 
+> Can anyone confirm if this patch made it to 0.11? I just installed the new 
+> version and it still doesn't work but if it's there then maybe I'm doing 
+> something wrong. If it didn't, is it posted anywhere? I'll be happy to patch 
+> 0.11 myself instead of waiting for the next version. I really, really want 
+to 
+> start using sup :)
+> 
+> Thank you, 
+> Piotr
+> 
+Okay, I found the patch here: http://www.mail-archive.com/sup-
+talk at rubyforge.org/msg02770.html
+
+And it is included in 0.11, I just checked in the code. 
+
+However, this still doesn't work because the header doesn't contain Content 
+Type = application/pgp, it is text/plain, which is absolutely crazy and I have 
+no idea what the enigmail developers are thinking... Anyway, here's how it 
+looks like (only the important part):
+
+X-Enigmail-Version: 0.95.7
+Content-Type: text/plain;
+  charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP MESSAGE-----
+Charset: UTF-8
+Version: GnuPG v1.4.9 (MingW32)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+=20
+hQIOA3WKxDKSmLd7EAf9GP5JLA77IcGOAUrOZ8fGCEtK8Pm838Me+pMD94ulHlDS
+LcidQKPSVGXaj4lLU8RqxoMKTpxuaZAm1u286C+SL9eQc51N3gH/X57loKhjCRb+
+[...]
+
+So in order to decide about encrypted content you actually have to look inside 
+the body of the message, not just at the header. At least I couldn't find any 
+indication in the headers :(
+
+All in all, I wouldn't be surprised if you decided not to support such broken 
+emails so I'll just go about learning enough ruby to patch it myself :)
+
+Piotr
+
+From michael+sup at stapelberg.de  Mon Mar  8 05:41:18 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 08 Mar 2010 11:41:18 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003081129.47648.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003021519.23488.piotr.kempa@wp.eu>
+	<201003081118.55543.piotr.kempa@wp.eu>
+	<201003081129.47648.piotr.kempa@wp.eu>
+Message-ID: <1268044772-sup-4188@midna.zekjur.net>
+
+Hi Piotr,
+
+Excerpts from piotr.kempa's message of Mo M?r 08 11:29:47 +0100 2010:
+> Okay, I found the patch here: http://www.mail-archive.com/sup-
+> talk at rubyforge.org/msg02770.html
+> 
+> And it is included in 0.11, I just checked in the code. 
+You are mistaken, this is a different patch (not for inline gpg).
+
+> So in order to decide about encrypted content you actually have to look inside 
+> the body of the message, not just at the header. At least I couldn't find any 
+> indication in the headers :(
+This is actually the very intention of inline gpg -- to work with existing
+standards/mailclients which do not support different headers.
+
+Unfortunately I did not yet have time to rework the patch, but I hope to do
+so in the next few days.
+
+Best regards,
+Michael
+
+From sm at khjk.org  Mon Mar  8 05:50:56 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Mon, 08 Mar 2010 11:50:56 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003081129.47648.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003021519.23488.piotr.kempa@wp.eu>
+	<201003081118.55543.piotr.kempa@wp.eu>
+	<201003081129.47648.piotr.kempa@wp.eu>
+Message-ID: <1268044814-sup-4847@khjk.org>
+
+> However, this still doesn't work because the header doesn't contain Content 
+> Type = application/pgp, it is text/plain, which is absolutely crazy and I have 
+> no idea what the enigmail developers are thinking...
+
+In fact I think this might be a design decision on the part of PGP, where the
+original thinking went something like this: It should be possible to use it
+with ANY mailer, even those that do not know about it. Thus the support for
+"inline PGP", i.e. a PGP message embedded within the text of a regular email.
+>From this standpoint it makes sense to keep the Content-Type as text/plain.
+Imagine your recipient's MUA has no idea how to handle application/pgp. With
+text/plain, she's still able to copy/paste into a separate PGP application.
+
+The merit of this design decision is debatable, but I think that's the way it
+came to be.
+
+So, I'd say it's unlikely Enigmail is going to change the header. I'd also
+guess that everyone else is doing it the same way.
+
+So, actually inspecting the body of the message is the way to go...
+
+HTH,
+pesco
+
+From piotr.kempa at wp.eu  Mon Mar  8 06:20:02 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Mon, 8 Mar 2010 12:20:02 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1268044814-sup-4847@khjk.org>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+Message-ID: <201003081220.03154.piotr.kempa@wp.eu>
+
+
+On Monday 08 March 2010 11:50:56 Sven Moritz Hallberg wrote:
+> > However, this still doesn't work because the header doesn't contain 
+Content 
+> > Type = application/pgp, it is text/plain, which is absolutely crazy and I 
+have 
+> > no idea what the enigmail developers are thinking...
+> 
+> In fact I think this might be a design decision on the part of PGP, where 
+the
+> original thinking went something like this: It should be possible to use it
+> with ANY mailer, even those that do not know about it. Thus the support for
+> "inline PGP", i.e. a PGP message embedded within the text of a regular 
+email.
+> >From this standpoint it makes sense to keep the Content-Type as text/plain.
+> Imagine your recipient's MUA has no idea how to handle application/pgp. With
+> text/plain, she's still able to copy/paste into a separate PGP application.
+> 
+> The merit of this design decision is debatable, but I think that's the way 
+it
+> came to be.
+> 
+> So, I'd say it's unlikely Enigmail is going to change the header. I'd also
+> guess that everyone else is doing it the same way.
+> 
+> So, actually inspecting the body of the message is the way to go...
+> 
+> HTH,
+> pesco
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+> 
+Thank you and Michael for the explanation. Now it all makes sense. I'll just 
+keep watching the git repo in case a patch makes it there. Or  this list. If 
+anybody needs help testing such patch - I'm at your service. Coding it myself 
+could be way over my head though...
+
+Thank you, 
+Piotr
+
+From eg at gaute.vetsj.com  Tue Mar  9 05:29:13 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 09 Mar 2010 11:29:13 +0100
+Subject: [sup-talk] [patch] Add crypto_selector variable to before-edit
+In-Reply-To: <1264521165-sup-9898@nemesis.home>
+References: <1263824428-sup-6466@nemesis.home>
+	<1264251144-sup-4056@masanjin.net>
+	<1264521165-sup-9898@nemesis.home>
+Message-ID: <1268130450-sup-8181@dolk>
+
+Excerpts from Daniel Schoepe's message of 2010-01-26 16:55:55 +0100:
+> Excerpts from William Morgan's message of Sat Jan 23 13:53:04 +0100 2010:
+> > Hi Daniel,
+> > 
+> > I like the idea, but would prefer a dedicated "crypto-mode" hook
+> > analogous to how we have the "reply-to" hook for setting the default
+> > reply-to mode.
+
+Could someone be so kind and provide an example for setting it to i.e.
+'Sign' by default, given a specific from address?
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100309/9dc5db42/attachment.bin>
+
+From michael+sup at stapelberg.de  Tue Mar  9 12:06:35 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 18:06:35 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <201003081220.03154.piotr.kempa@wp.eu>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+	<201003081220.03154.piotr.kempa@wp.eu>
+Message-ID: <1268154338-sup-155@midna.zekjur.net>
+
+Hi Piotr,
+
+Excerpts from piotr.kempa's message of Mo M?r 08 12:20:02 +0100 2010:
+> Thank you and Michael for the explanation. Now it all makes sense. I'll just 
+> keep watching the git repo in case a patch makes it there. Or  this list. If 
+> anybody needs help testing such patch - I'm at your service. Coding it myself 
+> could be way over my head though...
+I just sent an updated patch to sup-devel, you can find it at
+http://rubyforge.org/pipermail/sup-devel/2010-March/000463.html
+
+Testing it would be appreciated.
+
+Best regards,
+Michael
+
+From johnbent at lanl.gov  Tue Mar  9 16:44:09 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 09 Mar 2010 14:44:09 -0700
+Subject: [sup-talk] wrapping in the bottom command line
+Message-ID: <1268170953-sup-8766@guava.lanl.gov>
+
+I don't know what the bottom line is where you put the path to save
+things and the path to attach things, and where you list the recipients,
+etc.  But whatever it's called, it's not behaving well for me in 10.2.
+Whenever I exceed 80 chars and go off the screen, it forgets about the
+old stuff.  This used to work.  So now when I have a large path or lots
+of recipients, I have to drag my window temporarily very wide....
+
+Anyone else seeing this?
+
+Thanks,
+
+John
+
+From rlane at club.cc.cmu.edu  Tue Mar  9 16:59:39 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Tue, 09 Mar 2010 16:59:39 -0500
+Subject: [sup-talk] wrapping in the bottom command line
+In-Reply-To: <1268170953-sup-8766@guava.lanl.gov>
+References: <1268170953-sup-8766@guava.lanl.gov>
+Message-ID: <1268171860-sup-6991@zyrg.net>
+
+Excerpts from John Bent's message of 2010-03-09 16:44:09 -0500:
+> I don't know what the bottom line is where you put the path to save
+> things and the path to attach things, and where you list the recipients,
+> etc.  But whatever it's called, it's not behaving well for me in 10.2.
+> Whenever I exceed 80 chars and go off the screen, it forgets about the
+> old stuff.  This used to work.  So now when I have a large path or lots
+> of recipients, I have to drag my window temporarily very wide....
+
+I fixed several textfield issues in 0.11, please upgrade and see if the
+problem still occurs.
+
+From michael+sup at stapelberg.de  Tue Mar  9 17:07:06 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 23:07:06 +0100
+Subject: [sup-talk] wrapping in the bottom command line
+In-Reply-To: <1268170953-sup-8766@guava.lanl.gov>
+References: <1268170953-sup-8766@guava.lanl.gov>
+Message-ID: <1268172283-sup-3882@midna.zekjur.net>
+
+Hi John,
+
+Excerpts from John Bent's message of Di M?r 09 22:44:09 +0100 2010:
+> Anyone else seeing this?
+Please upgrade to 0.11, the bug is fixed there (see [1]).
+
+Best regards,
+Michael
+
+[1] http://gitorious.org/sup/mainline/commit/42e7aeaa907444acfcd1e1c30681c30ccb0cf2f1
+
+From johnbent at lanl.gov  Tue Mar  9 17:16:54 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 09 Mar 2010 15:16:54 -0700
+Subject: [sup-talk] wrapping in the bottom command line
+In-Reply-To: <1268171860-sup-6991@zyrg.net>
+References: <1268170953-sup-8766@guava.lanl.gov> <1268171860-sup-6991@zyrg.net>
+Message-ID: <1268172915-sup-9838@guava.lanl.gov>
+
+Excerpts from Rich Lane's message of Tue Mar 09 14:59:39 -0700 2010:
+> Excerpts from John Bent's message of 2010-03-09 16:44:09 -0500:
+> > I don't know what the bottom line is where you put the path to save
+> > things and the path to attach things, and where you list the
+> > recipients, etc.  But whatever it's called, it's not behaving well
+> > for me in 10.2.  Whenever I exceed 80 chars and go off the screen,
+> > it forgets about the old stuff.  This used to work.  So now when I
+> > have a large path or lots of recipients, I have to drag my window
+> > temporarily very wide....
+> 
+> I fixed several textfield issues in 0.11, please upgrade and see if
+> the problem still occurs.
+>
+I'd love to (and thanks for your work!) but I'm still stuck at 10 since
+I can't get xapian to work on Snow Leopard...
+
+(I've talked about that a bunch in another thread).
+
+John
+
+From michael+sup at stapelberg.de  Tue Mar  9 17:43:15 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 09 Mar 2010 23:43:15 +0100
+Subject: [sup-talk] wrapping in the bottom command line
+In-Reply-To: <1268172915-sup-9838@guava.lanl.gov>
+References: <1268170953-sup-8766@guava.lanl.gov> <1268171860-sup-6991@zyrg.net>
+	<1268172915-sup-9838@guava.lanl.gov>
+Message-ID: <1268174528-sup-7951@midna.zekjur.net>
+
+Hi John,
+
+Excerpts from John Bent's message of Di M?r 09 23:16:54 +0100 2010:
+> I'd love to (and thanks for your work!) but I'm still stuck at 10 since
+Well, you can just apply the fixes from
+http://gitorious.org/sup/mainline/commit/42e7aeaa907444acfcd1e1c30681c30ccb0cf2f1
+directly to your version.
+
+Best regards,
+Michael
+
+From johnbent at lanl.gov  Tue Mar  9 18:15:51 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Tue, 09 Mar 2010 16:15:51 -0700
+Subject: [sup-talk] wrapping in the bottom command line
+In-Reply-To: <1268174528-sup-7951@midna.zekjur.net>
+References: <1268170953-sup-8766@guava.lanl.gov> <1268171860-sup-6991@zyrg.net>
+	<1268172915-sup-9838@guava.lanl.gov>
+	<1268174528-sup-7951@midna.zekjur.net>
+Message-ID: <1268176415-sup-1885@guava.lanl.gov>
+
+Excerpts from Michael Stapelberg's message of Tue Mar 09 15:43:15 -0700 2010:
+> Hi John,
+> 
+> Excerpts from John Bent's message of Di M?r 09 23:16:54 +0100 2010:
+> > I'd love to (and thanks for your work!) but I'm still stuck at 10 since
+> Well, you can just apply the fixes from
+> http://gitorious.org/sup/mainline/commit/42e7aeaa907444acfcd1e1c30681c30ccb0cf2f1
+> directly to your version.
+> 
+I patched it and adding long attachments worked great.  And having a
+long recipients list worked great as well.  But then trying to modify
+the long recipients list caused a crash:
+
+ruby(68731,0x7fff70a6ebe0)
+malloc: *** error for object 0x10094e408: incorrect checksum for freed
+object - object was probably modified after being freed.
+***
+set a breakpoint in malloc_error_break to debug
+Abort
+
+Do I need to rake it again or something?  All I did was:
+
+cd /opt/local/lib/ruby/gems/1.8/gems/sup-0.10.2
+wget 42e7aeaa907444acfcd1e1c30681c30ccb0cf2f1.patch
+patch -p 1 < 42e7aeaa907444acfcd1e1c30681c30ccb0cf2f1.patch
+
+Thanks for your help!  I was thrilled when it worked.
+
+John
+
+> Best regards,
+> Michael
+
+From piotr.kempa at wp.eu  Wed Mar 10 05:53:00 2010
+From: piotr.kempa at wp.eu (Piotr Kempa)
+Date: Wed, 10 Mar 2010 11:53:00 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1268154338-sup-155@midna.zekjur.net>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+	<201003081220.03154.piotr.kempa@wp.eu>
+	<1268154338-sup-155@midna.zekjur.net>
+Message-ID: <1268218067-sup-7683@pk-laptop>
+
+Excerpts from Michael Stapelberg's message of 2010-03-09 18:06:35 +0100:
+> Hi Piotr,
+> 
+> Excerpts from piotr.kempa's message of Mo M?r 08 12:20:02 +0100 2010:
+> > Thank you and Michael for the explanation. Now it all makes sense. I'll just 
+> > keep watching the git repo in case a patch makes it there. Or  this list. If 
+> > anybody needs help testing such patch - I'm at your service. Coding it myself 
+> > could be way over my head though...
+> I just sent an updated patch to sup-devel, you can find it at
+> http://rubyforge.org/pipermail/sup-devel/2010-March/000463.html
+> 
+> Testing it would be appreciated.
+> 
+> Best regards,
+> Michael
+
+Hello Michael, 
+
+Thank you. I just tried the patch and unfortunately sup crashes on me
+now. I patched the 0.11 version and checked that the patches were
+applied successfully (as far as I could at least). 
+
+I'm attaching the crash log. The crash happens like this: I add the
+new source maildir with encrypted emails, run sup, it executes, sees
+the new source and starts indexing emails and then crashes. 
+
+Hope this helps somehow. 
+ 
+Piotr
+-- 
+Piotr Kempa
+-------------- next part --------------
+An embedded and charset-unspecified text was scrubbed...
+Name: exception-log.txt
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100310/bcbd243e/attachment-0001.txt>
+
+From michael+sup at stapelberg.de  Wed Mar 10 06:14:04 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 10 Mar 2010 12:14:04 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1268218067-sup-7683@pk-laptop>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+	<201003081220.03154.piotr.kempa@wp.eu>
+	<1268154338-sup-155@midna.zekjur.net>
+	<1268218067-sup-7683@pk-laptop>
+Message-ID: <1268219571-sup-3316@midna.zekjur.net>
+
+Hi Piotr,
+
+Excerpts from Piotr Kempa's message of Mi M?r 10 11:53:00 +0100 2010:
+> Thank you. I just tried the patch and unfortunately sup crashes on me
+> now. I patched the 0.11 version and checked that the patches were
+> applied successfully (as far as I could at least). 
+Thanks for testing. Can you please see if the updated version works
+for you (attached to this mail)?
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-inline-GPG.patch
+Type: application/octet-stream
+Size: 7925 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100310/d99ca5a5/attachment.obj>
+
+From piotr.kempa at wp.eu  Wed Mar 10 09:41:35 2010
+From: piotr.kempa at wp.eu (Piotr Kempa)
+Date: Wed, 10 Mar 2010 15:41:35 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1268219571-sup-3316@midna.zekjur.net>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+	<201003081220.03154.piotr.kempa@wp.eu>
+	<1268154338-sup-155@midna.zekjur.net>
+	<1268218067-sup-7683@pk-laptop>
+	<1268219571-sup-3316@midna.zekjur.net>
+Message-ID: <1268231546-sup-2256@pk-laptop>
+
+Excerpts from Michael Stapelberg's message of 2010-03-10 12:14:04 +0100:
+> Hi Piotr,
+> 
+> Excerpts from Piotr Kempa's message of Mi M?r 10 11:53:00 +0100 2010:
+> > Thank you. I just tried the patch and unfortunately sup crashes on me
+> > now. I patched the 0.11 version and checked that the patches were
+> > applied successfully (as far as I could at least). 
+> Thanks for testing. Can you please see if the updated version works
+> for you (attached to this mail)?
+> 
+> Best regards,
+> Michael
+
+Wow, this works!! Thank you so much Michael! This will make my job soooo much
+easier, faster and more pleasant :) 
+
+I have just two messages that give errors to sup-sync, but the remaining ones
+(a hundred or more) just work beautifully.  The error is like this: 
+
+   [2010-03-10 15:25:28 +0100] Error while running gpg: gpg: invalid armor header: 
+	    gpg: malformed CRC
+   gpg: encrypted_mdc packet with unknown version 255
+   gpg: quoted printable character in armor - probably a buggy MTA has been used
+   
+   [2010-03-10 15:25:33 +0100] Error while running gpg: gpg: invalid armor
+      header: gpg: CRC error; 9C0326 - DC39C0
+   gpg: encrypted_mdc packet with unknown version 255
+   gpg: quoted printable character in armor - probably a buggy MTA has been used
+
+(two long lines with the timestamp broken by me)
+
+But I guess this is what it says it is - an invalid message with CRC errors in
+the GPG payload, so this should be nothing to worry about. 
+
+Anyway, thanks a million Michael!
+-- 
+Piotr Kempa
+
+From dominik.epple at googlemail.com  Wed Mar 10 10:45:56 2010
+From: dominik.epple at googlemail.com (Dominik Epple)
+Date: Wed, 10 Mar 2010 16:45:56 +0100
+Subject: [sup-talk] 12h/24h Datetime format in sup index
+Message-ID: <123554aa1003100745v59a49fd4uda1a800266290d18@mail.gmail.com>
+
+Hi,
+
+in the sup index, the datetime column looks like this (for me):
+
+   11:05
+    6:28
+    3:29
+   12:30
+ Yest. 7
+ Yest. 5
+ Yest. 3
+ Yest. 3
+ Yest. 2
+ Yest. 2
+
+It took me some time to find out that this is a 12h time format
+(without am/pm indicators). I would prefer to have this as 24h date
+format, such that the dates above would be written as:
+
+   11:05
+    6:28
+    3:29
+    0:30
+ Yest. 19
+ Yest. 17
+ Yest. 15
+ Yest. 15
+ Yest. 14
+ Yest. 14
+
+Can one configure this? How?
+
+Thanks
+Dominik
+
+From tero at tilus.net  Wed Mar 10 12:44:49 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Wed, 10 Mar 2010 19:44:49 +0200
+Subject: [sup-talk] 12h/24h Datetime format in sup index
+In-Reply-To: <123554aa1003100745v59a49fd4uda1a800266290d18@mail.gmail.com>
+References: <123554aa1003100745v59a49fd4uda1a800266290d18@mail.gmail.com>
+Message-ID: <1268239924-sup-190@tilus.net>
+
+Dominik Epple, 2010-03-10 17:45:
+> I would prefer to have this as 24h date
+> Can one configure this? How?
+
+You need index-mode-date-widget hook
+
+$ sup --list-hooks
+...
+index-mode-date-widget
+----------------------
+File: /home/terotil/.sup/hooks/index-mode-date-widget.rb
+Generates the per-thread date widget for each thread.
+Variables:
+  thread: The message thread to be formatted.
+...
+
+Mine looks like this
+
+date = thread.date
+from = Time.now
+if date.is_the_same_day? from
+  # same day
+  date.strftime("klo %H:%M")
+elsif date.is_the_day_before? from
+  # yesterday
+  date.nearest_hour.strftime("eilen %H")
+else
+  if date.year != from.year
+    # different year
+    date.strftime("%e.%m.%Y")
+  elsif date.month != from.month
+    # same year
+    date.strftime("%e.%m. %H")
+  else
+    # same month
+    date.strftime("%e. %H:%M")
+  end
+end
+
+Just copy that to your .sup/hooks/index-mode-date-widget.rb and tweak
+the formats (strftime calls) to suit your needs.  Available formats
+you find from <http://ruby-doc.org/core/classes/Time.html#M000298>.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From johnbent at lanl.gov  Wed Mar 10 16:05:35 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 10 Mar 2010 14:05:35 -0700
+Subject: [sup-talk] signature hook placement
+Message-ID: <1268255039-sup-8974@guava.lanl.gov>
+
+Is there anyway to control where the signature hook text gets placed?
+If I'm replying in the middle of a long email thread, it places the
+signature at the bottom, whereas I'd prefer it placed under my last
+reply.
+
+Thanks,
+
+John
+
+From michael+sup at stapelberg.de  Wed Mar 10 16:19:24 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 10 Mar 2010 22:19:24 +0100
+Subject: [sup-talk] signature hook placement
+In-Reply-To: <1268255039-sup-8974@guava.lanl.gov>
+References: <1268255039-sup-8974@guava.lanl.gov>
+Message-ID: <1268255892-sup-2273@midna.zekjur.net>
+
+Hi John,
+
+Excerpts from John Bent's message of Mi M?r 10 22:05:35 +0100 2010:
+> Is there anyway to control where the signature hook text gets placed?
+> If I'm replying in the middle of a long email thread, it places the
+> signature at the bottom, whereas I'd prefer it placed under my last
+> reply.
+General style for replying to email is to cut off the non-relevant text, so
+that the bottom of the mail is always under the last reply.
+
+To give you a more helpful hint if you still want to do it: the before-edit
+hook can be used to modify the message contents and place a signature in a
+more appropriate place.
+
+Best regards,
+Michael
+
+From michael+sup at stapelberg.de  Wed Mar 10 16:21:50 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 10 Mar 2010 22:21:50 +0100
+Subject: [sup-talk] PGP INLINE - can't make it work
+In-Reply-To: <1268231546-sup-2256@pk-laptop>
+References: <201002261808.36354.kosmici-atakuja@wp.pl>
+	<201003081129.47648.piotr.kempa@wp.eu>
+	<1268044814-sup-4847@khjk.org>
+	<201003081220.03154.piotr.kempa@wp.eu>
+	<1268154338-sup-155@midna.zekjur.net>
+	<1268218067-sup-7683@pk-laptop>
+	<1268219571-sup-3316@midna.zekjur.net>
+	<1268231546-sup-2256@pk-laptop>
+Message-ID: <1268256033-sup-470@midna.zekjur.net>
+
+Hi Piotr,
+
+Excerpts from Piotr Kempa's message of Mi M?r 10 15:41:35 +0100 2010:
+> Wow, this works!! Thank you so much Michael! This will make my job soooo much
+> easier, faster and more pleasant :) 
+You?re welcome. Thanks for testing. I will now post the updated patch to
+sup-devel and hope that rlane will merge it soon.
+
+Best regards,
+Michael
+
+From sm at khjk.org  Thu Mar 11 07:03:55 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Thu, 11 Mar 2010 13:03:55 +0100
+Subject: [sup-talk] flicker on poll for new messages
+Message-ID: <1268309031-sup-2088@khjk.org>
+
+Just a quick question, when polling for new messages, sup seems to blank the
+screen and just immediately repaint it. Is this necessary?
+
+Regards,
+Sven
+
+From michael+sup at stapelberg.de  Thu Mar 11 07:26:58 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 11 Mar 2010 13:26:58 +0100
+Subject: [sup-talk] flicker on poll for new messages
+In-Reply-To: <1268309031-sup-2088@khjk.org>
+References: <1268309031-sup-2088@khjk.org>
+Message-ID: <1268310352-sup-1631@midna.zekjur.net>
+
+Hi Sven,
+
+Excerpts from Sven Moritz Hallberg's message of Do M?r 11 13:03:55 +0100 2010:
+> Just a quick question, when polling for new messages, sup seems to blank the
+> screen and just immediately repaint it. Is this necessary?
+Do you maybe receive new mails which are GPG signed/encrypted? In this case
+the flickering might be caused by leaving the ncurses mode, running the gpg
+command and re-entering ncurses mode. This is necessary to allow programs
+such as pinentry-curses to work correctly.
+
+Best regards,
+Michael
+
+From sm at khjk.org  Thu Mar 11 07:35:44 2010
+From: sm at khjk.org (Sven Moritz Hallberg)
+Date: Thu, 11 Mar 2010 13:35:44 +0100
+Subject: [sup-talk] flicker on poll for new messages
+In-Reply-To: <1268310352-sup-1631@midna.zekjur.net>
+References: <1268309031-sup-2088@khjk.org>
+	<1268310352-sup-1631@midna.zekjur.net>
+Message-ID: <1268310826-sup-3861@khjk.org>
+
+Excerpts from Michael Stapelberg's message of 2010-03-11 13:26:58 +0100:
+> Excerpts from Sven Moritz Hallberg's message of Do M?r 11 13:03:55 +0100 2010:
+> > Just a quick question, when polling for new messages, sup seems to blank the
+> > screen and just immediately repaint it. Is this necessary?
+> Do you maybe receive new mails which are GPG signed/encrypted? In this case
+> the flickering might be caused by leaving the ncurses mode, running the gpg
+> command and re-entering ncurses mode. This is necessary to allow programs
+> such as pinentry-curses to work correctly.
+
+This is probably it. Though I'm wondering, it also happens when there are
+no new messages received, or those messages are not PGP'ed...
+
+From dlordxorso at yahoo.com  Thu Mar 11 10:47:43 2010
+From: dlordxorso at yahoo.com (Daren Lord)
+Date: Thu, 11 Mar 2010 07:47:43 -0800 (PST)
+Subject: [sup-talk] before-add-message hook no creating threads
+Message-ID: <79968.51859.qm@web63906.mail.re1.yahoo.com>
+
+All,
+
+Have been using sup for a couple months and now that I feel comfortable with it I want to start customizing it.
+
+I am trying to take certain emails and lump them into a thread so I can keep track of the history
+
+Here is the code from my before-add-message.rb hook:
+
+if message.subj =~ /^\[ENV (PROD|TEST|DEV)\] Hourly ADDM report for instance (.*)/
+    message.add_ref $1 + "ADDM REPORTS - " + $2
+    message.add_label "report"
+    message.add_label $1
+end
+
+My add_label statements are working great, I just can't get the add_ref to work. I am not familiar with ruby at all, so I am hoping I am just missing something simple.
+
+Thanks.
+
+DLord
+
+
+
+      
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100311/b38cfbc7/attachment.html>
+
+From johnbent at lanl.gov  Thu Mar 11 16:09:04 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 11 Mar 2010 14:09:04 -0700
+Subject: [sup-talk] Problem with lbdb and extra contacts hook
+In-Reply-To: <1253488117-sup-4560@harikalardiyari>
+References: <1253481392-sup-4891@harikalardiyari>
+	<1253488117-sup-4560@harikalardiyari>
+Message-ID: <1268341630-sup-7494@guava.lanl.gov>
+
+Excerpts from Ali Polatel's message of Sun Sep 20 17:11:04 -0600 2009:
+> Ali Polatel yazm??:
+> > Hello,
+> > I've just started using sup and I'm really loving it.
+> > Thanks for the great software.
+> > 
+> > I have a problem with extra-contact-addresses hook and lbdb.
+> > Using the hook in the wiki:
+> > contacts = []
+> > `lbdbq |awk -F"\t" '{print $2 , "<"$1">"}'`.each { |c| contacts.push(c) }
+> > return contacts
+> 
+> Answering myself, removing return from the last line works as expected!
+> I'll see if I can edit the wiki.
+> 
+By the way, I recently used this hook as well and found it really slow
+so I rewrote it to parse the lbdb by hand instead of calling out to
+lbdb.  For me, it went from 1.5s to 0.03s.  I edited the wiki as well.
+Here's the hook:
+
+file = File.open( ENV['HOME'] + "/.lbdb/m_inmail.list", "r" )
+contacts = []
+while file.gets
+    email,name = split("\t")
+    contacts << "#{name} <#{email}>"
+end
+file.close
+contacts
+
+John
+
+From johnbent at lanl.gov  Thu Mar 11 16:11:21 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Thu, 11 Mar 2010 14:11:21 -0700
+Subject: [sup-talk] printing emails (but not attachments)
+Message-ID: <1268341771-sup-2631@guava.lanl.gov>
+
+I've been piping emails into muttprint which works well unless there's a
+binary attachment.  When there's a binary attachment, muttprint prints
+it and it usually takes tens and tens of pages.  Whoops.
+
+Anyone else figure out how to print emails but not attachments?
+
+Thanks,
+
+John
+
+From eg at gaute.vetsj.com  Fri Mar 12 04:16:52 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 12 Mar 2010 10:16:52 +0100
+Subject: [sup-talk] Problem with lbdb and extra contacts hook
+In-Reply-To: <1268341630-sup-7494@guava.lanl.gov>
+References: <1253481392-sup-4891@harikalardiyari>
+	<1253488117-sup-4560@harikalardiyari>
+	<1268341630-sup-7494@guava.lanl.gov>
+Message-ID: <1268385173-sup-5542@dolk>
+
+Excerpts from John Bent's message of 2010-03-11 22:09:04 +0100:
+> Excerpts from Ali Polatel's message of Sun Sep 20 17:11:04 -0600 2009:
+> > Ali Polatel yazm??:
+> > > Hello,
+> > > I've just started using sup and I'm really loving it.
+> > > Thanks for the great software.
+> > >
+> > > I have a problem with extra-contact-addresses hook and lbdb.
+> > > Using the hook in the wiki:
+> > > contacts = []
+> > > `lbdbq |awk -F"\t" '{print $2 , "<"$1">"}'`.each { |c| contacts.push(c) }
+> > > return contacts
+> >
+> > Answering myself, removing return from the last line works as expected!
+> > I'll see if I can edit the wiki.
+> >
+> By the way, I recently used this hook as well and found it really slow
+> so I rewrote it to parse the lbdb by hand instead of calling out to
+> lbdb.  For me, it went from 1.5s to 0.03s.  I edited the wiki as well.
+> Here's the hook:
+>
+> file = File.open( ENV['HOME'] + "/.lbdb/m_inmail.list", "r" )
+> contacts = []
+> while file.gets
+>     email,name = split("\t")
+>     contacts << "#{name} <#{email}>"
+> end
+> file.close
+> contacts
+
+This doesn't do the same thou as far as I can see, your hook only uses
+the addresses returned by the module using m_inmail.list; the former one
+uses all configured modules.
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100312/076b32c9/attachment.bin>
+
+From piotr.kempa at wp.eu  Fri Mar 12 10:27:40 2010
+From: piotr.kempa at wp.eu (piotr.kempa at wp.eu)
+Date: Fri, 12 Mar 2010 16:27:40 +0100
+Subject: [sup-talk] Search for message by size
+Message-ID: <1268407529-sup-6710@pk-laptop>
+
+Hi there, 
+
+Is there a way to search for messages in certain size range? I'm talking
+about bytes here, like search for messages bigger than 1MB (e.g. for
+making your maildirs smaller by cutting those 50MB emails from years
+ago). 
+
+I can't find anything on the wiki or this mailing list...
+
+Thanks!
+
+From juantascon at gmail.com  Fri Mar 12 11:43:52 2010
+From: juantascon at gmail.com (Juan Diego)
+Date: Sat, 13 Mar 2010 01:43:52 +0900
+Subject: [sup-talk] Search for message by size
+In-Reply-To: <1268407529-sup-6710@pk-laptop>
+References: <1268407529-sup-6710@pk-laptop>
+Message-ID: <b3095c51003120843v2609eee6y94d6890b342256f4@mail.gmail.com>
+
+if you have maildirs the best for that task is to use "find", ex:
+
+find <maildir> -size +1M
+
+will search for files bigger than 1M in the <maildir> directory
+
+what Im not sure of is how to do it for mbox files
+
+On Sat, Mar 13, 2010 at 12:27 AM,  <piotr.kempa at wp.eu> wrote:
+> Hi there,
+>
+> Is there a way to search for messages in certain size range? I'm talking
+> about bytes here, like search for messages bigger than 1MB (e.g. for
+> making your maildirs smaller by cutting those 50MB emails from years
+> ago).
+>
+> I can't find anything on the wiki or this mailing list...
+>
+> Thanks!
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+
+From eliecartan at mailworks.org  Fri Mar 12 16:37:07 2010
+From: eliecartan at mailworks.org (E. Cartan)
+Date: Fri, 12 Mar 2010 15:37:07 -0600
+Subject: [sup-talk] index options, by addressee instead of by sender
+In-Reply-To: <1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+References: <20100302002310.GB19325@katowice>
+	<1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+Message-ID: <20100312213707.GB3800@katowice>
+
+Excerpts from Ben Walton's message of Mon Mar 01 07:38:45 -0500 2010:
+ | Excerpts from E. Cartan's message of Mon Mar 01 19:23:10 -0500 2010:
+ | 
+ | >   I would like to see the messages which one sends displayed 
+ | >   on the sup index by "addressee", instead of by "sender" 
+ | >   (or sender replaced by "me").  Not all messages, but 
+ | >   just the one sent by me.
+ | 
+ | I think there is a patch to do just this that is likely to be included
+ | in the next release of sup (or available now if you track the git  repo).  
+
+
+   Finally yesterday I did get sup 0.11, only to realize that 
+   I don't know how to configure the index view to display the 
+   addressees on certain messages, nor how to modify the index
+   view in any other way.  
+
+   Above, Were you thinking about using automatic labelling 
+   to filter and display the "addressees" instead of the sender 
+   only for my own "messages"?  Or did you have in mind
+   any other alternative tools or approaches? 
+   Would you please suggest where to start reading or looking?  
+   Please, consider that I am a only a beginner.
+
+
+   I see the release announcement mentions the index at least twice: 
+   "Backwards-compatible index format improvements" and "New hooks:
+   ... index-mode-date-widget".   Probably my basic problem is that 
+   I don't know how to install or enable hooks, nor where 
+   to obtain them.   
+   
+   I currently use only 3 hooks, which I copied from the sup wiki. 
+   However ruby appears to have somewhere the source or the list
+   of several more.  In fact the command:
+
+     ruby -I lib -w /var/lib/gems/1.8/bin/sup -l 
+
+   will return:   "have 30 registered hooks", but I am unable to 
+   find any of these.  For each hook, the output of this command 
+   claims that the corresponding file is  in ~/.sup/hooks/
+   But on that directory I only find the hooks which I copied
+   from the wiki.
+
+   I would like to thank here, in advance, all who reply 
+   with any additional help.
+
+   Regards,
+   Elie.
+   
+
+   
+   
+    
+
+   
+   
+  
+
+From daniel.schoepe at googlemail.com  Fri Mar 12 17:03:03 2010
+From: daniel.schoepe at googlemail.com (Daniel Schoepe)
+Date: Fri, 12 Mar 2010 23:03:03 +0100
+Subject: [sup-talk] [patch] Add crypto_selector variable to before-edit
+In-Reply-To: <1268130450-sup-8181@dolk>
+References: <1263824428-sup-6466@nemesis.home>
+	<1264251144-sup-4056@masanjin.net>
+	<1264521165-sup-9898@nemesis.home> <1268130450-sup-8181@dolk>
+Message-ID: <1268431172-sup-9482@nemesis.home>
+
+Excerpts from Gaute Hope's message of Tue Mar 09 11:29:13 +0100 2010:
+> Could someone be so kind and provide an example for setting it to i.e.
+> 'Sign' by default, given a specific from address?
+> 
+> - gaute
+
+Something like this should work:
+
+crypto_selector.set_to :sign if header["From"] == "foo at ba.r"
+
+(You might need to use e.g. a regex if the header also contains the name,
+as in "Foo Bar <mail>")
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 836 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100312/67bfb75c/attachment-0001.bin>
+
+From eg at gaute.vetsj.com  Fri Mar 12 17:34:16 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 12 Mar 2010 23:34:16 +0100
+Subject: [sup-talk] [patch] Add crypto_selector variable to before-edit
+In-Reply-To: <1268431172-sup-9482@nemesis.home>
+References: <1263824428-sup-6466@nemesis.home>
+	<1264251144-sup-4056@masanjin.net>
+	<1264521165-sup-9898@nemesis.home> <1268130450-sup-8181@dolk>
+	<1268431172-sup-9482@nemesis.home>
+Message-ID: <1268433226-sup-8467@dolk>
+
+Excerpts from Daniel Schoepe's message of 2010-03-12 23:03:03 +0100:
+> Excerpts from Gaute Hope's message of Tue Mar 09 11:29:13 +0100 2010:
+> > Could someone be so kind and provide an example for setting it to i.e.
+> > 'Sign' by default, given a specific from address?
+> > 
+> > - gaute
+> 
+> Something like this should work:
+> 
+> crypto_selector.set_to :sign if header["From"] == "foo at ba.r"
+> 
+> (You might need to use e.g. a regex if the header also contains the name,
+> as in "Foo Bar <mail>")
+
+Thanks, that did it!
+
+- gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100312/09960bdb/attachment.bin>
+
+From michael+sup at stapelberg.de  Sat Mar 13 02:31:53 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sat, 13 Mar 2010 08:31:53 +0100
+Subject: [sup-talk] index options, by addressee instead of by sender
+In-Reply-To: <20100312213707.GB3800@katowice>
+References: <20100302002310.GB19325@katowice>
+	<1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+	<20100312213707.GB3800@katowice>
+Message-ID: <1268465328-sup-5169@midna.zekjur.net>
+
+Hi,
+
+Excerpts from E. Cartan's message of Fr M?r 12 22:37:07 +0100 2010:
+>    I don't know how to install or enable hooks, nor where 
+>    to obtain them.   
+>    
+>    I currently use only 3 hooks, which I copied from the sup wiki. 
+>    However ruby appears to have somewhere the source or the list
+>    of several more.  In fact the command:
+> 
+>      ruby -I lib -w /var/lib/gems/1.8/bin/sup -l 
+> 
+>    will return:   "have 30 registered hooks", but I am unable to 
+>    find any of these.  For each hook, the output of this command 
+>    claims that the corresponding file is  in ~/.sup/hooks/
+>    But on that directory I only find the hooks which I copied
+>    from the wiki.
+To have a registered hook with a certain file means that the HookManager
+*would* execute the contents of that file, if it existed.
+
+So, to use a certain hook, create the appropriate file and place your
+ruby code in there.
+
+You can get example code in the wiki, as you have already mentioned.
+
+Best regards,
+Michael
+
+From tero at tilus.net  Sun Mar 14 04:54:28 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Sun, 14 Mar 2010 10:54:28 +0200
+Subject: [sup-talk] before-add-message hook no creating threads
+In-Reply-To: <79968.51859.qm@web63906.mail.re1.yahoo.com>
+References: <79968.51859.qm@web63906.mail.re1.yahoo.com>
+Message-ID: <1268556523-sup-2164@tilus.net>
+
+Daren Lord, 2010-03-11 17:47:
+> I am trying to take certain emails and lump them into a thread so I
+> can keep track of the history
+
+Why not use labels?  That is exactly what labels are for.  Isn't it?
+
+> Here is the code from my before-add-message.rb hook:
+> 
+> if message.subj =~ /^\[ENV (PROD|TEST|DEV)\] Hourly ADDM report for instance (.*)/
+>     message.add_ref $1 + "ADDM REPORTS - " + $2
+
+Sup expects ref to be a message id.  In principle that should work,
+but the expectation could bite you here.  Have you tried using id from
+an existing message?
+
+>     message.add_label "report"
+>     message.add_label $1
+> end
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From eliecartan at mailworks.org  Mon Mar 15 04:02:39 2010
+From: eliecartan at mailworks.org (E. Cartan)
+Date: Mon, 15 Mar 2010 03:02:39 -0500
+Subject: [sup-talk] index view options, use addressee instead of sender
+In-Reply-To: <20100312213707.GB3800@katowice>
+References: <20100302002310.GB19325@katowice>
+	<1267490267-sup-2324@pinkfloyd.chass.utoronto.ca>
+	<20100312213707.GB3800@katowice>
+Message-ID: <20100315080239.GA3905@katowice>
+
+Excerpts from E. Cartan's message of Fri Mar 12 2010 19:23:10 -0500 2010:
+On Fri, Mar 12, 2010 at 03:37:07PM -0600, E. Cartan wrote:
+ | Excerpts from Ben Walton's message of Mon Mar 01 07:38:45 -0500 2010:
+ |  | Excerpts from E. Cartan's message of Mon Mar 01 19:23:10 -0500 2010:
+ |  | 
+ |  | >   I would like to see the messages which one sends displayed 
+ |  | >   on the sup index by "addressee", instead of by "sender" 
+ |  | >   (or sender replaced by "me").  Not all messages, but 
+ |  | >   just the one sent by me.
+ |  | 
+ |  | I think there is a patch to do just this that is likely to be 
+ |  | included in the next release of sup (or available now if you 
+ |  | track the git  repo).  
+ | 
+ |    Finally yesterday I did get sup 0.11, only to realize that 
+ |    I don't know how to configure the index view to display the 
+ |    addressees on certain messages, nor how to modify the index
+ |    view in any other way.  
+
+   
+    Actually I have just discovered today that sup 0.11 index 
+    seems to do the above BY DEFAULT.  I mean, it displays 
+    the addressee/recipient (between parentheses), instead 
+    of the sender "(me)", in the case of of messages 
+    sent by oneself.
+
+    I am sorry for having being so confused to have asked above
+    how to obtain what appears to be the default behaviour 
+    of the new version of sup.  My false assumption that 
+    a configuration change, or a hook were needed,
+    was based on the fact that the first time I ran sup 0.11, 
+    the index continued to be displayed as in older versions, 
+    However today, when I started it a second time, I noticed 
+    that it complained about not having ncursesw installed. 
+    Having the wide character ncurses library solved my problem.
+
+    Regards,
+    Elie Cartan
+   
+    
+    
+
+From piotr.kempa at wp.eu  Mon Mar 15 05:11:48 2010
+From: piotr.kempa at wp.eu (piotr.kempa)
+Date: Mon, 15 Mar 2010 10:11:48 +0100
+Subject: [sup-talk] Search for message by size
+In-Reply-To: <b3095c51003120843v2609eee6y94d6890b342256f4@mail.gmail.com>
+References: <1268407529-sup-6710@pk-laptop>
+	<b3095c51003120843v2609eee6y94d6890b342256f4@mail.gmail.com>
+Message-ID: <1268644060-sup-2983@pk-laptop>
+
+Thanks Juan, I actually can do this since I'm on maildir but this will
+be quite a bit of work since the filenames don't tell me much about the
+message. So I'd have to manually open each found file, see what it's
+about and then find the thread in sup. I kind of hoped I could search
+from within sup, just like you can search for messages from certain date
+range.
+But thanks for the idea anyway, I'll do it if I'm really pressed for
+space. 
+
+Excerpts from Juan Diego's message of 2010-03-12 17:43:52 +0100:
+> if you have maildirs the best for that task is to use "find", ex:
+> find <maildir> -size +1M
+> will search for files bigger than 1M in the <maildir> directory
+> what Im not sure of is how to do it for mbox files
+> 
+> On Sat, Mar 13, 2010 at 12:27 AM,  <piotr.kempa at wp.eu> wrote:
+>> Hi there,
+>>
+>> Is there a way to search for messages in certain size range? I'm talking
+>> about bytes here, like search for messages bigger than 1MB (e.g. for
+>> making your maildirs smaller by cutting those 50MB emails from years
+>> ago).
+>>
+>> I can't find anything on the wiki or this mailing list...
+>>
+
+From johnbent at lanl.gov  Wed Mar 17 15:25:02 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 17 Mar 2010 13:25:02 -0600
+Subject: [sup-talk] printing emails (but not attachments)
+In-Reply-To: <1268341771-sup-2631@guava.lanl.gov>
+References: <1268341771-sup-2631@guava.lanl.gov>
+Message-ID: <1268853590-sup-9103@guava.lanl.gov>
+
+Excerpts from John Bent's message of Thu Mar 11 14:11:21 -0700 2010:
+> I've been piping emails into muttprint which works well unless there's
+> a binary attachment.  When there's a binary attachment, muttprint
+> prints it and it usually takes tens and tens of pages.  Whoops.
+> 
+> Anyone else figure out how to print emails but not attachments?
+> 
+Well, I'm sure I've once again reinvented the wheel but I wrote my own
+script to print emails without printing binary attachments.  It reads an
+email, pipes the headers to muttprint, then pipes text/plain and
+text/html through w3m into muttprint, for everything else it pipes "#
+Attachment: filename (type)."  It requires w3m and muttprint to be in
+the user's path.
+
+I'm sorry that it's horribly in violation of sup philosophy but I wrote
+it in python. :(  Sorry but my ruby is just barely good enough to do
+'if' statements in my hooks.
+
+It's attached in case anyone else wants it.  I'm scared I really did
+just reinvent the wheel, otherwise I'd add it to the wiki.  To print an
+email from sup using this, hit '|' in thread-view-mode to open a pipe
+and then just type sup-print (assuming you've put this attachment in
+your path).  I believe all the python imports it uses come standard.
+-- 
+Thanks,
+
+John 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-print
+Type: application/octet-stream
+Size: 1963 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100317/d3807519/attachment.obj>
+
+From mmcdermott at mad-computer-scientist.com  Wed Mar 17 15:47:16 2010
+From: mmcdermott at mad-computer-scientist.com (Michael McDermott)
+Date: Wed, 17 Mar 2010 14:47:16 -0500
+Subject: [sup-talk] printing emails (but not attachments)
+In-Reply-To: <1268853590-sup-9103@guava.lanl.gov>
+References: <1268341771-sup-2631@guava.lanl.gov>
+	<1268853590-sup-9103@guava.lanl.gov>
+Message-ID: <1268855141-sup-3697@zion>
+
+Well, I'm not a dev, but this little wrapper + muttprint is exactly the
+kind of thing I've been looking for, from the time I was using pine
+until now.
+
+Thanks for posting it.
+
+Excerpts from John Bent's message of Wed Mar 17 14:25:02 -0500 2010:
+> Excerpts from John Bent's message of Thu Mar 11 14:11:21 -0700 2010:
+> > I've been piping emails into muttprint which works well unless there's
+> > a binary attachment.  When there's a binary attachment, muttprint
+> > prints it and it usually takes tens and tens of pages.  Whoops.
+> > 
+> > Anyone else figure out how to print emails but not attachments?
+> > 
+> Well, I'm sure I've once again reinvented the wheel but I wrote my own
+> script to print emails without printing binary attachments.  It reads an
+> email, pipes the headers to muttprint, then pipes text/plain and
+> text/html through w3m into muttprint, for everything else it pipes "#
+> Attachment: filename (type)."  It requires w3m and muttprint to be in
+> the user's path.
+> 
+> I'm sorry that it's horribly in violation of sup philosophy but I wrote
+> it in python. :(  Sorry but my ruby is just barely good enough to do
+> 'if' statements in my hooks.
+> 
+> It's attached in case anyone else wants it.  I'm scared I really did
+> just reinvent the wheel, otherwise I'd add it to the wiki.  To print an
+> email from sup using this, hit '|' in thread-view-mode to open a pipe
+> and then just type sup-print (assuming you've put this attachment in
+> your path).  I believe all the python imports it uses come standard.
+-- 
+Michael McDermott
+www.mad-computer-scientist.com
+
+From johnbent at lanl.gov  Wed Mar 17 16:31:31 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 17 Mar 2010 14:31:31 -0600
+Subject: [sup-talk] printing emails (but not attachments)
+In-Reply-To: <1268853590-sup-9103@guava.lanl.gov>
+References: <1268341771-sup-2631@guava.lanl.gov>
+	<1268853590-sup-9103@guava.lanl.gov>
+Message-ID: <1268857847-sup-547@guava.lanl.gov>
+
+Excerpts from John Bent's message of Wed Mar 17 13:25:02 -0600 2010:
+> Excerpts from John Bent's message of Thu Mar 11 14:11:21 -0700 2010:
+> > I've been piping emails into muttprint which works well unless there's
+> > a binary attachment.  When there's a binary attachment, muttprint
+> > prints it and it usually takes tens and tens of pages.  Whoops.
+> > 
+> > Anyone else figure out how to print emails but not attachments?
+> > 
+> Well, I'm sure I've once again reinvented the wheel but I wrote my own
+> script to print emails without printing binary attachments.  It reads an
+> email, pipes the headers to muttprint, then pipes text/plain and
+> text/html through w3m into muttprint, for everything else it pipes "#
+> Attachment: filename (type)."  It requires w3m and muttprint to be in
+> the user's path.
+> 
+> I'm sorry that it's horribly in violation of sup philosophy but I wrote
+> it in python. :(  Sorry but my ruby is just barely good enough to do
+> 'if' statements in my hooks.
+> 
+> It's attached in case anyone else wants it.  I'm scared I really did
+> just reinvent the wheel, otherwise I'd add it to the wiki.  To print an
+> email from sup using this, hit '|' in thread-view-mode to open a pipe
+> and then just type sup-print (assuming you've put this attachment in
+> your path).  I believe all the python imports it uses come standard.
+>
+Sorry, it wasn't handling quoted-printable encodings.  Patched version
+attached.
+-- 
+Thanks,
+
+John 
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: sup-print
+Type: application/octet-stream
+Size: 1974 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20100317/92d3df91/attachment-0001.obj>
+
+From johnbent at lanl.gov  Wed Mar 17 20:28:04 2010
+From: johnbent at lanl.gov (John Bent)
+Date: Wed, 17 Mar 2010 18:28:04 -0600
+Subject: [sup-talk] printing emails (but not attachments)
+In-Reply-To: <1268855141-sup-3697@zion>
+References: <1268341771-sup-2631@guava.lanl.gov>
+	<1268853590-sup-9103@guava.lanl.gov> <1268855141-sup-3697@zion>
+Message-ID: <1268871848-sup-8102@guava.lanl.gov>
+
+Excerpts from Michael McDermott's message of Wed Mar 17 13:47:16 -0600 2010:
+> Well, I'm not a dev, but this little wrapper + muttprint is exactly the
+> kind of thing I've been looking for, from the time I was using pine
+> until now.
+> 
+Glad you like it.  Added it to the wiki.  Although it seems to make much
+more sense to have this functionality inside sup itself.  sup already
+knows how to decode and display many of the content-types, it already
+hides attachments it can't display, and it formats the headers as well.
+I tried writing a patch to add a config line for printer command,
+add a keystroke for printing, and then have sup pipe the modified email
+into the defined printer command, but it's beyond my ruby skills and
+beyond the time I spent trying to grok sup.
+
+John
+-- 
+Thanks,
+
+John 
+
+From isra at herraiz.org  Tue Mar 30 10:19:35 2010
+From: isra at herraiz.org (Israel Herraiz)
+Date: Tue, 30 Mar 2010 16:19:35 +0200
+Subject: [sup-talk] Problems with encodings and Ruby 1.9
+Message-ID: <1269957778-sup-2533@duck>
+
+Hi all,
+
+I am trying out Sup with Ruby 1.9 in ArchLinux, and I am facing some
+crashes with some messages written in different encodings. Those
+messages were correctly shown with Ruby 1.8.
+
+The problem is that when there are messages with some different
+encoding. In particular, whenever I get a message with ASCII_8BIT, Sup
+crashes with the following message:
+
+  incompatible character encodings: UTF-8 and ASCII-8BIT
+
+This both happens in Sup next and in Sup 0.11; I have tried to fix it,
+touching the check method in utils.rb, without success. Well, actually
+with partial success, because if at line 719 I change the else
+condition forcing the charset to be utf-8, the message will be shown,
+although with wide characters not properly displayed.
+
+In a message in sup-devel, Rich pointed out that an ASCII_8BIT string
+means that there is a bug in Sup [1]. I am willing to debug this, but
+I have not found yet where the problem is. I can provide a copy of the
+messages causing this if someone else wants to reproduce this
+behavior.
+
+Any hint about how to fix this?
+
+Cheers,
+Israel
+

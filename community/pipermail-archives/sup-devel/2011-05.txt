@@ -1,0 +1,2790 @@
+From hsanson at gmail.com  Sun May  1 11:35:28 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 2 May 2011 00:35:28 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <1304052708-sup-4240@masanjin.net>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+Message-ID: <BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+
+Installed whistelpig 0.6 but now I get a different error that looks
+similar to the turnsole problem. Below the backtrace:
+
+http://localhost:8042/search?q=primo -> /search?q=%7Einbox&start=0&num=20
+127.0.0.1 - - [02/May/2011 00:31:58] "GET /favicon.ico HTTP/1.1" 404 447 0.0008
+localhost - - [02/May/2011:00:31:58 JST] "GET /favicon.ico HTTP/1.1" 404 447
+- -> /favicon.ico
+search(body:"?", 0, 20) took 0.0ms
+Encoding::CompatibilityError - incompatible character encodings: UTF-8
+and ASCII-8BIT:
+ bin/heliotrope-server:154:in `block in <class:HeliotropeServer>'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in
+`block in compile!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in `route_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:708:in
+`block (2 levels) in route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:758:in
+`block in process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in
+`process_route'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:707:in
+`block in route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `each'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `route!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:843:in `dispatch!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in
+`block in call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+`instance_eval'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+`block in invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `catch'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `invoke'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `call!'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:629:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/head.rb:9:in `call'
+ /var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/showexceptions.rb:21:in
+`call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+ /var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+ /usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+ /usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+127.0.0.1 - - [02/May/2011 00:32:09] "GET /search?q=%E4%BC%9A
+HTTP/1.1" 500 89861 0.0228
+localhost - - [02/May/2011:00:32:09 JST] "GET /search?q=%E4%BC%9A
+HTTP/1.1" 500 89861
+http://localhost:8042/search?q=%7Einbox&start=0&num=20 -> /search?q=%E4%BC%9A
+127.0.0.1 - - [02/May/2011 00:32:09] "GET /favicon.ico HTTP/1.1" 404 447 0.0009
+localhost - - [02/May/2011:00:32:09 JST] "GET /favicon.ico HTTP/1.1" 404 447
+- -> /favicon.ico
+
+regards,
+Horacio
+
+On Fri, Apr 29, 2011 at 1:52 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from William Morgan's message of 2011-04-26:
+>> Thanks for the bug report on this one too. It's great to have someone
+>> testing this stuff with non-ASCII code. This is a known bug in
+>> Whistlepig and I should be releasing a fix soon.
+>
+> This is fixed in Whistlepig 0.6. Heliotrope should now be fine with
+> utf-8 input. I'm still working on this issue in turnsole.
+>
+> Let me know if you have any more issues!
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From hsanson at gmail.com  Sun May  1 11:46:52 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 2 May 2011 00:46:52 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+Message-ID: <BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+
+I also tried with ruby 1.8 and heliotrope does not crash but searching
+any Japanese word returns no matches even for search terms I now have
+matches.
+
+And by the way the installation instructions should mention that for
+ruby 1.8 we also need to install the json gem or heliotrope won't
+start.
+
+regards,
+Horacio
+
+On Mon, May 2, 2011 at 12:35 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+> Installed whistelpig 0.6 but now I get a different error that looks
+> similar to the turnsole problem. Below the backtrace:
+>
+> http://localhost:8042/search?q=primo -> /search?q=%7Einbox&start=0&num=20
+> 127.0.0.1 - - [02/May/2011 00:31:58] "GET /favicon.ico HTTP/1.1" 404 447 0.0008
+> localhost - - [02/May/2011:00:31:58 JST] "GET /favicon.ico HTTP/1.1" 404 447
+> - -> /favicon.ico
+> search(body:"?", 0, 20) took 0.0ms
+> Encoding::CompatibilityError - incompatible character encodings: UTF-8
+> and ASCII-8BIT:
+> ?bin/heliotrope-server:154:in `block in <class:HeliotropeServer>'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `call'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in
+> `block in compile!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in
+> `instance_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in `route_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:708:in
+> `block (2 levels) in route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:758:in
+> `block in process_route'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in `catch'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in
+> `process_route'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:707:in
+> `block in route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `each'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `route!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:843:in `dispatch!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in
+> `block in call!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+> `instance_eval'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+> `block in invoke'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `catch'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `invoke'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `call!'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:629:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/head.rb:9:in `call'
+> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/showexceptions.rb:21:in
+> `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+> ?/usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+> 127.0.0.1 - - [02/May/2011 00:32:09] "GET /search?q=%E4%BC%9A
+> HTTP/1.1" 500 89861 0.0228
+> localhost - - [02/May/2011:00:32:09 JST] "GET /search?q=%E4%BC%9A
+> HTTP/1.1" 500 89861
+> http://localhost:8042/search?q=%7Einbox&start=0&num=20 -> /search?q=%E4%BC%9A
+> 127.0.0.1 - - [02/May/2011 00:32:09] "GET /favicon.ico HTTP/1.1" 404 447 0.0009
+> localhost - - [02/May/2011:00:32:09 JST] "GET /favicon.ico HTTP/1.1" 404 447
+> - -> /favicon.ico
+>
+> regards,
+> Horacio
+>
+> On Fri, Apr 29, 2011 at 1:52 PM, William Morgan
+> <wmorgan-sup at masanjin.net> wrote:
+>> Reformatted excerpts from William Morgan's message of 2011-04-26:
+>>> Thanks for the bug report on this one too. It's great to have someone
+>>> testing this stuff with non-ASCII code. This is a known bug in
+>>> Whistlepig and I should be releasing a fix soon.
+>>
+>> This is fixed in Whistlepig 0.6. Heliotrope should now be fine with
+>> utf-8 input. I'm still working on this issue in turnsole.
+>>
+>> Let me know if you have any more issues!
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> Sup-devel mailing list
+>> Sup-devel at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>
+>
+
+From dmishd at gmail.com  Mon May  2 18:02:43 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 02 May 2011 23:02:43 +0100
+Subject: [sup-devel] [PATCH] Fix problem with time parsing
+Message-ID: <1304373710-sup-1383@whisper>
+
+If a message has a date with month first and day second, then if the
+day is greater than 12, heliotrope crashes. This patch catches the
+error, and tries again after swapping the day and month.
+---
+ lib/heliotrope/maildir-walker.rb |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletions(-)
+
+diff --git a/lib/heliotrope/maildir-walker.rb b/lib/heliotrope/maildir-walker.rb
+index db9b9d4..47cb08b 100644
+--- a/lib/heliotrope/maildir-walker.rb
++++ b/lib/heliotrope/maildir-walker.rb
+@@ -43,7 +43,19 @@ private
+       while(l = f.gets)
+         if l =~ /^Date:\s+(.+\S)\s*$/
+           date = $1
+-          pdate = Time.parse($1)
++          begin
++            pdate = Time.parse($1)
++          rescue ArgumentError
++            # flip the day and month around and try again
++            if date =~ %r|(\d\d?)([-./])(\d\d?)([-./])(\d{2,4})|
++              date = $3 + $2 + $1 + $4 + $5
++              pdate = Time.parse(date)
++            else
++              puts "Error while parsing time in file #{fn}"
++              puts "Matched date text was #{date}"
++              pdate = Time.at 0
++            end
++          end
+           return pdate
+         end
+       end
+-- 
+1.7.4.1
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-problem-with-time-parsing.patch
+Type: application/octet-stream
+Size: 1387 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110502/461f580f/attachment.obj>
+
+From dmishd at gmail.com  Mon May  2 18:17:56 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 02 May 2011 23:17:56 +0100
+Subject: [sup-devel] turnsole crash on start up
+Message-ID: <1304373950-sup-1962@whisper>
+
+I've finally got around to playing with turnsole, and it crashes out
+immediately :/
+
+$ ruby1.9.1 -Ilib -I../heliotrope/lib bin/turnsole 
+/home/mish/dev/sup/turnsole/lib/turnsole/models.rb:88:in `at': can't convert String into an exact number (TypeError)
+        from /home/mish/dev/sup/turnsole/lib/turnsole/models.rb:88:in `initialize'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/client.rb:34:in `new'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/client.rb:34:in `block (2 levels) in search'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/client.rb:34:in `map'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/client.rb:34:in `block in search'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/ui.rb:76:in `call'
+        from /home/mish/dev/sup/turnsole/lib/turnsole/ui.rb:76:in `step'
+        from bin/turnsole:134:in `<main>'
+
+I tried in the web browser, and a search appears to work fine (and is
+impressively quick :) for a couple of terms I tried. But when I click on
+the inbox link, I go to URL:
+
+http://localhost:8042/search?q=~inbox
+
+and get a big old error page :( The relevant parts are:
+
+TypeError at /search
+false can't be coerced into Fixnum
+file: heliotrope-server location: - line: 377
+
+[snip]
+
+bin/heliotrope-server in -
+377.    date = escape_html Time.at(thread[:date]).strftime("%Y/%m/%d %H:%M")
+bin/heliotrope-server in strftime
+377.    date = escape_html Time.at(thread[:date]).strftime("%Y/%m/%d %H:%M")
+bin/heliotrope-server in threadinfo_to_html
+377.    date = escape_html Time.at(thread[:date]).strftime("%Y/%m/%d %H:%M")
+bin/heliotrope-server in block (2 levels) in <class:HeliotropeServer>
+157.        results.map { |r| threadinfo_to_html r }.join +
+bin/heliotrope-server in map
+157.        results.map { |r| threadinfo_to_html r }.join +
+bin/heliotrope-server in block in <class:HeliotropeServer>
+157.        results.map { |r| threadinfo_to_html r }.join +
+/usr/lib/ruby/1.9.1/webrick/httpserver.rb in service
+111.      si.service(req, res)
+/usr/lib/ruby/1.9.1/webrick/httpserver.rb in run
+70.          server.service(req, res)
+/usr/lib/ruby/1.9.1/webrick/server.rb in block in start_thread
+183.          block ? block.call(sock) : run(sock)
+
+[snip]
+
+Any ideas? Does heliotrope have a console like sup that I could try
+tracking down which message this would be? (I'm using maildir in case it
+makes a difference).
+
+Hamish Downer
+
+From hsanson at gmail.com  Tue May  3 10:24:06 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 3 May 2011 23:24:06 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+Message-ID: <BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+
+I managed to stop the crash when searching for Japanese text by
+forcing UTF-8 encoding in que query parameter (see patch).
+
+But seems that Whistelpig cannot speak Japanese. I tried the following
+small test and as you
+can see I get no results:
+
+
+> require 'rubygems' => true
+> require 'whistlepig' => true
+> include Whistlepig => Object
+> index = Index.new "index" => #<Whistlepig::Index:0x00000002093f60>
+> entry1 = Entry.new => #<Whistlepig::Entry:0x0000000207d328>
+> entry1.add_string "body", "???" => #<Whistlepig::Entry:0x0000000207d328>
+> docid1 = index.add_entry entry1 => 1
+> q1 = Query.new "body", "??" => body:"??"
+> results1 = index.search q1 => []
+
+I will now dig in Whistelpig source code to see if I can fix this but
+any pointer/directions or tips
+were to start looking would be greatly appreciated.
+
+
+On Mon, May 2, 2011 at 12:46 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+> I also tried with ruby 1.8 and heliotrope does not crash but searching
+> any Japanese word returns no matches even for search terms I now have
+> matches.
+>
+> And by the way the installation instructions should mention that for
+> ruby 1.8 we also need to install the json gem or heliotrope won't
+> start.
+>
+> regards,
+> Horacio
+>
+> On Mon, May 2, 2011 at 12:35 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+>> Installed whistelpig 0.6 but now I get a different error that looks
+>> similar to the turnsole problem. Below the backtrace:
+>>
+>> http://localhost:8042/search?q=primo -> /search?q=%7Einbox&start=0&num=20
+>> 127.0.0.1 - - [02/May/2011 00:31:58] "GET /favicon.ico HTTP/1.1" 404 447 0.0008
+>> localhost - - [02/May/2011:00:31:58 JST] "GET /favicon.ico HTTP/1.1" 404 447
+>> - -> /favicon.ico
+>> search(body:"?", 0, 20) took 0.0ms
+>> Encoding::CompatibilityError - incompatible character encodings: UTF-8
+>> and ASCII-8BIT:
+>> ?bin/heliotrope-server:154:in `block in <class:HeliotropeServer>'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in `call'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:1152:in
+>> `block in compile!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in
+>> `instance_eval'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:724:in `route_eval'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:708:in
+>> `block (2 levels) in route!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:758:in
+>> `block in process_route'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in `catch'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:755:in
+>> `process_route'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:707:in
+>> `block in route!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `each'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:706:in `route!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:843:in `dispatch!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in
+>> `block in call!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+>> `instance_eval'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in
+>> `block in invoke'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `catch'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:808:in `invoke'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:644:in `call!'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/base.rb:629:in `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/head.rb:9:in `call'
+>> ?/var/lib/gems/1.9.1/gems/sinatra-1.2.5/lib/sinatra/showexceptions.rb:21:in
+>> `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:48:in `_call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/lint.rb:36:in `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/showexceptions.rb:24:in `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/commonlogger.rb:18:in `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/content_length.rb:13:in `call'
+>> ?/var/lib/gems/1.9.1/gems/rack-1.2.2/lib/rack/handler/webrick.rb:52:in `service'
+>> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+>> ?/usr/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+>> ?/usr/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+>> 127.0.0.1 - - [02/May/2011 00:32:09] "GET /search?q=%E4%BC%9A
+>> HTTP/1.1" 500 89861 0.0228
+>> localhost - - [02/May/2011:00:32:09 JST] "GET /search?q=%E4%BC%9A
+>> HTTP/1.1" 500 89861
+>> http://localhost:8042/search?q=%7Einbox&start=0&num=20 -> /search?q=%E4%BC%9A
+>> 127.0.0.1 - - [02/May/2011 00:32:09] "GET /favicon.ico HTTP/1.1" 404 447 0.0009
+>> localhost - - [02/May/2011:00:32:09 JST] "GET /favicon.ico HTTP/1.1" 404 447
+>> - -> /favicon.ico
+>>
+>> regards,
+>> Horacio
+>>
+>> On Fri, Apr 29, 2011 at 1:52 PM, William Morgan
+>> <wmorgan-sup at masanjin.net> wrote:
+>>> Reformatted excerpts from William Morgan's message of 2011-04-26:
+>>>> Thanks for the bug report on this one too. It's great to have someone
+>>>> testing this stuff with non-ASCII code. This is a known bug in
+>>>> Whistlepig and I should be releasing a fix soon.
+>>>
+>>> This is fixed in Whistlepig 0.6. Heliotrope should now be fine with
+>>> utf-8 input. I'm still working on this issue in turnsole.
+>>>
+>>> Let me know if you have any more issues!
+>>> --
+>>> William <wmorgan-sup at masanjin.net>
+>>> _______________________________________________
+>>> Sup-devel mailing list
+>>> Sup-devel at rubyforge.org
+>>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>>
+>>
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-crash-for-non-ASCII-chars.patch
+Type: text/x-patch
+Size: 985 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110503/abbbe422/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Tue May  3 18:26:04 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 03 May 2011 22:26:04 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+Message-ID: <1304460745-sup-6241@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-03:
+> index = Index.new "index" => #<Whistlepig::Index:0x00000002093f60>
+> entry1 = Entry.new => #<Whistlepig::Entry:0x0000000207d328>
+> entry1.add_string "body", "???" => #<Whistlepig::Entry:0x0000000207d328>
+> docid1 = index.add_entry entry1 => 1
+> q1 = Query.new "body", "??" => body:"??"
+> results1 = index.search q1 => []
+
+The problem here is tokenization. Whistlepig only provides a very simple
+tokenizer, namely, it looks for space-separated things [1]. So you have to
+space-separate your tokens in both the indexing and querying stages, e.g.:
+
+  entry1.add_string "body", "? ? ?" => #<Whistlepig::Entry:0x90b873c>
+  docid1 = index.add_entry entry1      => 1
+  q1 = Query.new "body", "? ?"       => AND body:"?" body:"?"
+  q1 = Query.new "body", "\"? ?\""   => PHRASE body:"?" body:"?"
+  results1 = index.search q1           => [1]
+
+For Japanese, proper tokenization is tricky. You could simply space-separate
+every character and deal with the spurious matches across word boundaries.
+Or you could do it right by plugging in a proper tokenizer, e.g. something
+like http://www.chasen.org/~taku/software/TinySegmenter/.
+
+[1] It also strips any prefix or suffix characters that match [:punct:]. This
+is all pretty ad-hoc and undocumented. Providing simpler whitespace-only
+tokenizer as an alternative is in the works.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Tue May  3 21:42:25 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 4 May 2011 10:42:25 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <1304460745-sup-6241@masanjin.net>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+Message-ID: <BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+
+Chasen is the worst tokenizer, is pretty old. The best one is MeCab
+that is the faster and from the same author of Chasen.
+You can see all major Japanese tokenizer in action at this URL:
+http://nomadscafe.jp/test/keitaiso/index.cgi. Just put some
+text in the box and press the button.
+
+After some hacking I got a Heliotrope server that works perfectly with
+Japanese text. All I did was follow your comments
+and applied the MeCab tokenizer to the message body and query strings
+before passing them to Whistelpig or more specific
+to Heliotrope::Index.
+
+There is one problem I don't see how to handle... I do receive email
+in Japanese but also Chinese and Korean. I need a different
+tokenizer for each one and I have no idea how to handle this. Do email
+messages contain a language header that would allow me
+to identify the language and pass it to the corresponding tokenizer??
+
+
+regards,
+Horacio
+
+On Wed, May 4, 2011 at 7:26 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-03:
+>> index = Index.new "index" => #<Whistlepig::Index:0x00000002093f60>
+>> entry1 = Entry.new => #<Whistlepig::Entry:0x0000000207d328>
+>> entry1.add_string "body", "???" => #<Whistlepig::Entry:0x0000000207d328>
+>> docid1 = index.add_entry entry1 => 1
+>> q1 = Query.new "body", "??" => body:"??"
+>> results1 = index.search q1 => []
+>
+> The problem here is tokenization. Whistlepig only provides a very simple
+> tokenizer, namely, it looks for space-separated things [1]. So you have to
+> space-separate your tokens in both the indexing and querying stages, e.g.:
+>
+> ?entry1.add_string "body", "? ? ?" => #<Whistlepig::Entry:0x90b873c>
+> ?docid1 = index.add_entry entry1 ? ? ?=> 1
+> ?q1 = Query.new "body", "? ?" ? ? ? => AND body:"?" body:"?"
+> ?q1 = Query.new "body", "\"? ?\"" ? => PHRASE body:"?" body:"?"
+> ?results1 = index.search q1 ? ? ? ? ? => [1]
+>
+> For Japanese, proper tokenization is tricky. You could simply space-separate
+> every character and deal with the spurious matches across word boundaries.
+> Or you could do it right by plugging in a proper tokenizer, e.g. something
+> like http://www.chasen.org/~taku/software/TinySegmenter/.
+>
+> [1] It also strips any prefix or suffix characters that match [:punct:]. This
+> is all pretty ad-hoc and undocumented. Providing simpler whitespace-only
+> tokenizer as an alternative is in the works.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-crash-for-non-ASCII-chars.patch
+Type: text/x-patch
+Size: 988 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110504/ab445c34/attachment-0002.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Add-MeCab-japanese-text-analyzer.patch
+Type: text/x-patch
+Size: 1913 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110504/ab445c34/attachment-0003.bin>
+
+From hsanson at gmail.com  Tue May  3 22:03:14 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 4 May 2011 11:03:14 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+Message-ID: <BANLkTimWHyrh6ZtCEgQ84kNkqFr-ZvLdCw@mail.gmail.com>
+
+Forgot to mention you need the mecab ruby gem. In Ubuntu 10.04 this
+gem is part of the distribution and can be installed with the command:
+
+sudo apt-get install libmecab-ruby1.8 libmecab-ruby1.9.1 mecab-ipadic-utf8
+
+regards
+Horacio
+
+On Wed, May 4, 2011 at 10:42 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+> Chasen is the worst tokenizer, is pretty old. The best one is MeCab
+> that is the faster and from the same author of Chasen.
+> You can see all major Japanese tokenizer in action at this URL:
+> http://nomadscafe.jp/test/keitaiso/index.cgi. Just put some
+> text in the box and press the button.
+>
+> After some hacking I got a Heliotrope server that works perfectly with
+> Japanese text. All I did was follow your comments
+> and applied the MeCab tokenizer to the message body and query strings
+> before passing them to Whistelpig or more specific
+> to Heliotrope::Index.
+>
+> There is one problem I don't see how to handle... I do receive email
+> in Japanese but also Chinese and Korean. I need a different
+> tokenizer for each one and I have no idea how to handle this. Do email
+> messages contain a language header that would allow me
+> to identify the language and pass it to the corresponding tokenizer??
+>
+>
+> regards,
+> Horacio
+>
+> On Wed, May 4, 2011 at 7:26 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+>> Reformatted excerpts from Horacio Sanson's message of 2011-05-03:
+>>> index = Index.new "index" => #<Whistlepig::Index:0x00000002093f60>
+>>> entry1 = Entry.new => #<Whistlepig::Entry:0x0000000207d328>
+>>> entry1.add_string "body", "???" => #<Whistlepig::Entry:0x0000000207d328>
+>>> docid1 = index.add_entry entry1 => 1
+>>> q1 = Query.new "body", "??" => body:"??"
+>>> results1 = index.search q1 => []
+>>
+>> The problem here is tokenization. Whistlepig only provides a very simple
+>> tokenizer, namely, it looks for space-separated things [1]. So you have to
+>> space-separate your tokens in both the indexing and querying stages, e.g.:
+>>
+>> ?entry1.add_string "body", "? ? ?" => #<Whistlepig::Entry:0x90b873c>
+>> ?docid1 = index.add_entry entry1 ? ? ?=> 1
+>> ?q1 = Query.new "body", "? ?" ? ? ? => AND body:"?" body:"?"
+>> ?q1 = Query.new "body", "\"? ?\"" ? => PHRASE body:"?" body:"?"
+>> ?results1 = index.search q1 ? ? ? ? ? => [1]
+>>
+>> For Japanese, proper tokenization is tricky. You could simply space-separate
+>> every character and deal with the spurious matches across word boundaries.
+>> Or you could do it right by plugging in a proper tokenizer, e.g. something
+>> like http://www.chasen.org/~taku/software/TinySegmenter/.
+>>
+>> [1] It also strips any prefix or suffix characters that match [:punct:]. This
+>> is all pretty ad-hoc and undocumented. Providing simpler whitespace-only
+>> tokenizer as an alternative is in the works.
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> Sup-devel mailing list
+>> Sup-devel at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>
+>
+
+From patricktotzke at googlemail.com  Wed May  4 09:08:52 2011
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Wed, 4 May 2011 14:08:52 +0100
+Subject: [sup-devel] multi-account setup and other annoyances
+Message-ID: <20110504130852.GA6874@optimusprime>
+
+Hi all,
+
+It seems I'm having problems posting to this list, so please excuse
+my re/doublepost if it comes as a duplicate for you.
+
+Before I start blabbering: Great work on sup so far, for me it seems
+this is just the right step towards a prefect MUA!
+
+I'm thinking of switching from my notmuch-mutt setup to sup, but there
+are a few things I don't see how to do with sup, particularly setting
+up multiple accounts properly:
+
+First off, I use imap in combination with offlineimap in deamon-mode
+(autorefresh = 1) to sync my maildir because I want do get informed about
+new mails even if sup is not running.
+
+1) okok, I can define multiple accounts together with different sendmail
+options in my config.yaml, but how about the ":sent_source:"?
+I (and any one of you I guess) want to store send mails in a folder that 
+belongs to the account I used for sending. Please tell me I'm wrong and 
+this is not a single global option.
+
+2) Draft folders: How do I use this "DraftManager" object? resp.
+what do I have to set such that if the "From" header is set, the mail gets
+saved in the respective folder (and the draft folder of the default account 
+otherwise)?
+
+3) can I use somethin like mutt's "set edit_headers = no"?
+
+4) The index gets locked when sup is running. Is there any possibility
+to get query results from "outide"? E.g. are there python/c/ruby/whatnot
+bindings or can I invoke a shellcommand that queries the index readonly
+without complaining about the lock?
+I could imagine that at some point I would want to write some little
+awesome/vicious widget that shows some info on my index.
+
+5) Why does repeatedly pressing "U" to search for unread mail keep on
+opening new buffers and pressing "I" does not?
+
+That's it for now. Thanks for your help,
+/p
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: not available
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: Digital signature
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110504/b3529ad7/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Wed May  4 12:18:39 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 04 May 2011 16:18:39 +0000
+Subject: [sup-devel] turnsole crash on start up
+In-Reply-To: <1304373950-sup-1962@whisper>
+References: <1304373950-sup-1962@whisper>
+Message-ID: <1304524566-sup-2732@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-05-02:
+> Any ideas? Does heliotrope have a console like sup that I could try
+> tracking down which message this would be? (I'm using maildir in case
+> it makes a difference).
+
+I suspect these are both the same issue---the date for a particular
+thread is being set to false instead of to an integer.
+
+I've added bin/heliotrope-console, which is a simple wrapper around irb.
+You can see if you can track it down that way. In the meantime I'll
+scour the codebase and see if I can find an obvious culprit, or at least
+add some protection code.
+
+Thanks for the bug report!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May  4 12:56:57 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 04 May 2011 16:56:57 +0000
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+Message-ID: <1304527268-sup-7661@masanjin.net>
+
+Hi Horacio,
+
+Thanks for all your help so far.
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-04:
+> After some hacking I got a Heliotrope server that works perfectly with
+> Japanese text. All I did was follow your comments
+> and applied the MeCab tokenizer to the message body and query strings
+> before passing them to Whistelpig or more specific
+> to Heliotrope::Index.
+
+Great!
+
+> There is one problem I don't see how to handle... I do receive email
+> in Japanese but also Chinese and Korean. I need a different
+> tokenizer for each one and I have no idea how to handle this. Do email
+> messages contain a language header that would allow me
+> to identify the language and pass it to the corresponding tokenizer??
+
+There's not a great way to do this in email. You can look at the
+content-type headers, which is sometimes present, and that will
+sometimes give you a clue. But it's usually useless.
+
+You can write some heuristics by hand, of course. Or you can try naive
+bayes, which performs pretty well on this type of task. It looks like
+someone just started a ruby project here: https://github.com/fela/rlid.
+It seems to only have Eurpoean languages so far, but you can probably
+just dump in some CKJ text and retrain.
+
+As for your patches: I've applied a related patch to fix the encoding
+issue with Query#parsed_query_s. Can you let me know if that works?
+
+Rather than sticking mecab directly in heliotrope, I am going to make a
+hook for users to plug in their own custom tokenization code like you're
+doing.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Thu May  5 23:30:26 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Fri, 6 May 2011 12:30:26 +0900
+Subject: [sup-devel] Cannot query Japanese characters
+In-Reply-To: <1304527268-sup-7661@masanjin.net>
+References: <201104251023.19659.hsanson@gmail.com>
+	<1303793294-sup-688@masanjin.net>
+	<1304052708-sup-4240@masanjin.net>
+	<BANLkTim9PigP91LaDQ6UG2_prxncYv1zEA@mail.gmail.com>
+	<BANLkTi=ObuZiHWGs7Mtvh8J5k4J3KTxgMA@mail.gmail.com>
+	<BANLkTi=tSnbEijoEHG76Z5Fy9-3G4TPxVw@mail.gmail.com>
+	<1304460745-sup-6241@masanjin.net>
+	<BANLkTikbENFqT2GsE5uWjqN_DTMq43FFkw@mail.gmail.com>
+	<1304527268-sup-7661@masanjin.net>
+Message-ID: <BANLkTimr0u=6oB4uSK_6itUU2UMR-yJz+w@mail.gmail.com>
+
+Great, let me know when you have the modifications so I can stress test them.
+
+regards,
+Horacio
+
+On Thu, May 5, 2011 at 1:56 AM, William Morgan <wmorgan-sup at masanjin.net> wrote:
+> Hi Horacio,
+>
+> Thanks for all your help so far.
+>
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-04:
+>> After some hacking I got a Heliotrope server that works perfectly with
+>> Japanese text. All I did was follow your comments
+>> and applied the MeCab tokenizer to the message body and query strings
+>> before passing them to Whistelpig or more specific
+>> to Heliotrope::Index.
+>
+> Great!
+>
+>> There is one problem I don't see how to handle... I do receive email
+>> in Japanese but also Chinese and Korean. I need a different
+>> tokenizer for each one and I have no idea how to handle this. Do email
+>> messages contain a language header that would allow me
+>> to identify the language and pass it to the corresponding tokenizer??
+>
+> There's not a great way to do this in email. You can look at the
+> content-type headers, which is sometimes present, and that will
+> sometimes give you a clue. But it's usually useless.
+>
+> You can write some heuristics by hand, of course. Or you can try naive
+> bayes, which performs pretty well on this type of task. It looks like
+> someone just started a ruby project here: https://github.com/fela/rlid.
+> It seems to only have Eurpoean languages so far, but you can probably
+> just dump in some CKJ text and retrain.
+>
+> As for your patches: I've applied a related patch to fix the encoding
+> issue with Query#parsed_query_s. Can you let me know if that works?
+>
+> Rather than sticking mecab directly in heliotrope, I am going to make a
+> hook for users to plug in their own custom tokenization code like you're
+> doing.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From dmishd at gmail.com  Sun May  8 12:36:22 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 08 May 2011 17:36:22 +0100
+Subject: [sup-devel] mail gem no longer needs activesupport [was: sup-server
+	revisited]
+Message-ID: <1304872142-sup-6096@whisper>
+
+Excerpts from William Morgan's message of Tue Feb 22 21:29:07 +0000 2011:
+> Reformatted excerpts from Tero Tilus's message of 2011-02-22:
+> > Would it be time to go for https://github.com/mikel/mail now?  It would be
+> > supported and actively developed and I really like the API.  As a
+> > downside, depending on activesupport pulls in a whole a lot of fluff and
+> > using treetop may suggest that parsing might hog a little more cpu and
+> > memory than is absolutely necessary.
+> 
+> I looked at it, but the dependency on activesupport is a dealbreaker for me.
+> There's no way I would pull that pile of Rails shit into Sup.
+
+Might be a bit late, but I've just noticed that they're taking the
+activesupport dependency out, as of mail 2.3.0
+
+http://rubygems.org/gems/mail/versions/2.3.0 - no activesupport
+
+On github, the gemspec no longer refers to it:
+
+https://github.com/mikel/mail/blob/master/mail.gemspec
+
+though the Gemfile still does ... I think this is an oversight.
+
+https://github.com/mikel/mail/blob/master/Gemfile
+
+A couple of commits doing the work:
+
+https://github.com/mikel/mail/commit/6eb4c44a15eb1707dde60959e85e5c536ef136e2
+https://github.com/mikel/mail/commit/8bea8ede624e81fb4704e66097a1c8cf35f8de8d
+
+> RMail is not great and I don't like using it, but it really is the best
+> thing I've found so far. I think I have whipped it into shape pretty well in
+> heliotrope.
+> 
+> > Who would give us bindings to GMime and wrap it inside Mail API...
+> 
+> I would use GMime bindings in a heartbeat.
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Tue May 10 08:06:08 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 10 May 2011 12:06:08 +0000
+Subject: [sup-devel] mail gem no longer needs activesupport [was:
+	sup-server revisited]
+In-Reply-To: <1304872142-sup-6096@whisper>
+References: <1304872142-sup-6096@whisper>
+Message-ID: <1305029054-sup-718@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-05-08:
+> Might be a bit late, but I've just noticed that they're taking the
+> activesupport dependency out, as of mail 2.3.0
+
+Good to know. I won't switch Heliotrope over just for the heck of it,
+but if I encounter insurmountable problems with RubyMail we'll at least
+have a backup plan.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From hsanson at gmail.com  Tue May 10 11:17:47 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 11 May 2011 00:17:47 +0900
+Subject: [sup-devel] Query for largest msg_id?
+Message-ID: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+
+Is there a way to query Heliotrope what is the largest msg_id
+currently in the index? I am trying to improve the imap-dumper.rb so
+it does not download all my emails every time but only the new ones.
+>From rfc4549.txt (see section 4.3.1) I learned that the way to do this
+is to FETCH all the messages from [ lastknownmsg_id + 1 : * ]. This
+will give the ids of all messages added to the server after the last
+sync. Reading the source code I could not find a way to query this
+value.
+
+Also while looking at the code I see that messages are stored in the
+index using the msg_id as parsed by RMail. There is no further
+association with the source or mailbox from where the messages were
+downloaded. This I think may cause collisions if we use one Heliotrope
+server with more than one email account. Not sure what is the
+probability of two messages from two different IMAP servers having the
+same msg_id but nothing in the standard rules out that possibility.
+
+
+regards
+Horacio
+
+From wmorgan-sup at masanjin.net  Tue May 10 13:45:23 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 10 May 2011 17:45:23 +0000
+Subject: [sup-devel] [PATCH] Fix problem with time parsing
+In-Reply-To: <1304373710-sup-1383@whisper>
+References: <1304373710-sup-1383@whisper>
+Message-ID: <1305049400-sup-4316@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-05-02:
+> If a message has a date with month first and day second, then if the
+> day is greater than 12, heliotrope crashes. This patch catches the
+> error, and tries again after swapping the day and month.
+
+Is this a legitimate email message? Producing rfc2822-compliant date
+headers is one of the few things that everyone seems capable of doing
+besides spambots. I'm tempted to take the Sup approach of forging a date
+header, or giving up on the email, if it's unparseable.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Tue May 10 13:45:49 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 10 May 2011 17:45:49 +0000
+Subject: [sup-devel] heliotrope: Crash with empty message.recipients
+In-Reply-To: <1303314278-sup-9272@sam.mediasupervision.de>
+References: <1303314278-sup-9272@sam.mediasupervision.de>
+Message-ID: <1305049541-sup-4323@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-04-20:
+> 
+>     To: , debian-vote at lists.debian.org
+> 
+> This code in line 482 of lib/heliotrope/index.rb will fail work if any
+> recipient is empty:
+> 
+>     message.recipients.map { |x| x.indexable_text }.join(" ").downcase
+
+Sorry for the lengthy wait. I believe this has been fixed. Please let me
+know if you still encounter this problem!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Tue May 10 14:47:10 2011
+From: dmishd at gmail.com (Hamish)
+Date: Tue, 10 May 2011 19:47:10 +0100
+Subject: [sup-devel] [PATCH] Fix problem with time parsing
+In-Reply-To: <1305049400-sup-4316@masanjin.net>
+References: <1304373710-sup-1383@whisper> <1305049400-sup-4316@masanjin.net>
+Message-ID: <1305053133-sup-4055@whisper>
+
+Excerpts from William Morgan's message of Tue May 10 18:45:23 +0100 2011:
+> Reformatted excerpts from Hamish's message of 2011-05-02:
+> > If a message has a date with month first and day second, then if the
+> > day is greater than 12, heliotrope crashes. This patch catches the
+> > error, and tries again after swapping the day and month.
+> 
+> Is this a legitimate email message? Producing rfc2822-compliant date
+> headers is one of the few things that everyone seems capable of doing
+> besides spambots. I'm tempted to take the Sup approach of forging a date
+> header, or giving up on the email, if it's unparseable.
+
+Sadly it was not spam, but an email from staples (UK) about some stuff I
+bought from then online. So sup should not barf on it, but forging a
+date header would be fine by me. Though "now" might be better than date
+zero, which I think is what sup normally does otherwise ...
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Tue May 10 20:34:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 11 May 2011 00:34:05 +0000
+Subject: [sup-devel] [PATCH] Fix problem with time parsing
+In-Reply-To: <1305053133-sup-4055@whisper>
+References: <1304373710-sup-1383@whisper> <1305049400-sup-4316@masanjin.net>
+	<1305053133-sup-4055@whisper>
+Message-ID: <1305073985-sup-7419@masanjin.net>
+
+Reformatted excerpts from Hamish's message of 2011-05-10:
+> Sadly it was not spam, but an email from staples (UK) about some stuff
+> I bought from then online. So sup should not barf on it, but forging a
+> date header would be fine by me. Though "now" might be better than
+> date zero, which I think is what sup normally does otherwise ...
+
+I agree. If you have a chance, please add a ticket for this on the
+heliotrope github project.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From steve.goldman at gmail.com  Wed May 11 09:53:27 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Wed, 11 May 2011 09:53:27 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+Message-ID: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+
+Hi,
+
+A couple days ago, a significant portion of my incoming mail is
+arriving as an HTML attachment only, where previously, HTML formatted
+emails showed up as semi-readable text and also as an attachment.  I
+have not messed with sup recently.
+
+How do you recommend dealing with HTML attachments?  I hit <enter> on
+the attachment and it says "Couldn't execute view command, viewing as
+text."  Any way to bring this up in a web browser?
+
+Thanks.
+
+From marka at pobox.com  Wed May 11 10:13:49 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 11 May 2011 10:13:49 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+Message-ID: <1305123144-sup-2758@bloovis.org>
+
+Excerpts from Steve's message of Wed May 11 09:53:27 -0400 2011:
+> How do you recommend dealing with HTML attachments?
+
+I use a text-mode browser called w3m to view HTML.  Sup will invoke it
+as necessary (on Ubuntu, at least) if you put the following in your
+~/.mailcap file:
+
+text/html; /usr/bin/w3m -o confirm_qq=false -T text/html '%s'; needsterminal; description=HTML Text; nametemplate=%s.html
+
+From matiasaguirre at gmail.com  Wed May 11 10:30:22 2011
+From: matiasaguirre at gmail.com (=?utf-8?q?Mat=C3=ADas_Aguirre?=)
+Date: Wed, 11 May 2011 11:30:22 -0300
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+Message-ID: <1305124168-sup-3908@mintaka>
+
+Excerpts from Steve's message of Wed May 11 10:53:27 -0300 2011:
+> Hi,
+> 
+> A couple days ago, a significant portion of my incoming mail is
+> arriving as an HTML attachment only, where previously, HTML formatted
+> emails showed up as semi-readable text and also as an attachment.  I
+> have not messed with sup recently.
+> 
+> How do you recommend dealing with HTML attachments?  I hit <enter> on
+> the attachment and it says "Couldn't execute view command, viewing as
+> text."  Any way to bring this up in a web browser?
+
+Add this to your ~/.mailcap
+
+text/html; /path/to/browser '%s'; description=HTML Text; nametemplate=%s.html
+
+> Thanks.
+-- 
+Mat?as Aguirre <matiasaguirre at gmail.com>
+
+From patricktotzke at googlemail.com  Wed May 11 10:15:17 2011
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Wed, 11 May 2011 15:15:17 +0100
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+Message-ID: <1305123066-sup-804@optimusprime>
+
+Hi,
+I use a mime-hook like this for inline html:
+in ~/.sup/hooks$ cat mime-decode.rb :
+
+ case content_type
+ when "text/html"
+   `/usr/bin/lynx -dump '#{filename}'`
+ end
+
+To view html when hitting enter you could set your browser in ~/.mailcap:
+
+ text/html; firefox %s
+
+best,
+/p
+
+Excerpts from Steve's message of Wed May 11 14:53:27 +0100 2011:
+> Hi,
+> 
+> A couple days ago, a significant portion of my incoming mail is
+> arriving as an HTML attachment only, where previously, HTML formatted
+> emails showed up as semi-readable text and also as an attachment.  I
+> have not messed with sup recently.
+> 
+> How do you recommend dealing with HTML attachments?  I hit <enter> on
+> the attachment and it says "Couldn't execute view command, viewing as
+> text."  Any way to bring this up in a web browser?
+> 
+> Thanks.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110511/edc74231/attachment.bin>
+
+From steve.goldman at gmail.com  Wed May 11 10:59:09 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Wed, 11 May 2011 10:59:09 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <1305123144-sup-2758@bloovis.org>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305123144-sup-2758@bloovis.org>
+Message-ID: <BANLkTimMm-ZGRdxTDaDPaFC58OMmAdJvhA@mail.gmail.com>
+
+On Wed, May 11, 2011 at 10:13 AM, Mark Alexander <marka at pobox.com> wrote:
+> Excerpts from Steve's message of Wed May 11 09:53:27 -0400 2011:
+>> How do you recommend dealing with HTML attachments?
+>
+> I use a text-mode browser called w3m to view HTML. ?Sup will invoke it
+> as necessary (on Ubuntu, at least) if you put the following in your
+> ~/.mailcap file:
+>
+> text/html; /usr/bin/w3m -o confirm_qq=false -T text/html '%s'; needsterminal; description=HTML Text; nametemplate=%s.html
+>
+
+Thanks for the tip!
+
+However, it's still telling me it can't execute the command.
+
+Prior to this, I had no .mailcap.  I created one and restarted sup.
+Do I need to somehow tell sup about this?
+
+Thanks.
+
+From marka at pobox.com  Wed May 11 11:24:28 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 11 May 2011 11:24:28 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <BANLkTimMm-ZGRdxTDaDPaFC58OMmAdJvhA@mail.gmail.com>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305123144-sup-2758@bloovis.org>
+	<BANLkTimMm-ZGRdxTDaDPaFC58OMmAdJvhA@mail.gmail.com>
+Message-ID: <1305127401-sup-2518@bloovis.org>
+
+Excerpts from Steve's message of Wed May 11 10:59:09 -0400 2011:
+> However, it's still telling me it can't execute the command.
+
+You may need to install w3m and possibly run-mailcap (part of the mime-support
+package on Ubuntu).
+
+From steve.goldman at gmail.com  Wed May 11 11:40:37 2011
+From: steve.goldman at gmail.com (Steve)
+Date: Wed, 11 May 2011 11:40:37 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <1305123066-sup-804@optimusprime>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305123066-sup-804@optimusprime>
+Message-ID: <BANLkTik=37O_vOSeFAmWr44ntmAnWY3Rpg@mail.gmail.com>
+
+On Wed, May 11, 2011 at 10:15 AM, Patrick Totzke
+<patricktotzke at googlemail.com> wrote:
+> Hi,
+> I use a mime-hook like this for inline html:
+> in ~/.sup/hooks$ cat mime-decode.rb :
+>
+> ?case content_type
+> ?when "text/html"
+> ? `/usr/bin/lynx -dump '#{filename}'`
+> ?end
+>
+> To view html when hitting enter you could set your browser in ~/.mailcap:
+>
+> ?text/html; firefox %s
+>
+> best,
+> /p
+
+
+The mime-decode.rb hook does the trick.
+
+Still can't get sup to invoke w3m when I hit <enter> on HTML
+attachments.  W3m is installed.  Something isn't hooked up correctly.
+But oh well, we'll save that for the next guy.
+
+Thanks, all.
+
+From tero at tilus.net  Thu May 12 04:30:39 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 12 May 2011 11:30:39 +0300
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+Message-ID: <1305188427-sup-5666@tilus.net>
+
+Steve, 2011-05-11 16:53:
+> How do you recommend dealing with HTML attachments?
+
+Primary options were already introduced by others.
+
+I use publish hook to view attachments (and html-messages) in browser.
+Just hit P and click the link.
+
+I run sup screened in a vps box, so mailcapping html to browser is not
+an option for me.  My publish.rb looks like this
+
+http://pastie.org/private/ki9luv8yfqjknbhheomi1g
+
+Feel free to use.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From marka at pobox.com  Thu May 12 09:21:40 2011
+From: marka at pobox.com (Mark Alexander)
+Date: Thu, 12 May 2011 09:21:40 -0400
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <1305188427-sup-5666@tilus.net>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305188427-sup-5666@tilus.net>
+Message-ID: <1305206411-sup-2216@bloovis.org>
+
+Excerpts from Tero Tilus's message of Thu May 12 04:30:39 -0400 2011:
+> I run sup screened in a vps box, so mailcapping html to browser is not
+> an option for me.
+
+I also run sup in screen, sometimes from a remote system via ssh, so
+that's why I chose w3m as the mailcap'd browser.
+
+From tero at tilus.net  Fri May 13 03:39:34 2011
+From: tero at tilus.net (Tero Tilus)
+Date: Fri, 13 May 2011 10:39:34 +0300
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <1305206411-sup-2216@bloovis.org>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305188427-sup-5666@tilus.net> <1305206411-sup-2216@bloovis.org>
+Message-ID: <1305272083-sup-4650@tilus.net>
+
+Mark Alexander, 2011-05-12 16:21:
+> I also run sup in screen, sometimes from a remote system via ssh, so
+> that's why I chose w3m as the mailcap'd browser.
+
+I do w3m too.  Most (~90%) of the time it does exactly what I want,
+but sometimes (say with images, pdf:s and strangely laid out html
+documents) an url to the document is a must.
+
+-- 
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
+From patricktotzke at googlemail.com  Fri May 13 05:55:17 2011
+From: patricktotzke at googlemail.com (Patrick Totzke)
+Date: Fri, 13 May 2011 10:55:17 +0100
+Subject: [sup-devel] How to deal with HTML attachments?
+In-Reply-To: <1305272083-sup-4650@tilus.net>
+References: <BANLkTimu3JNdDCvtX0qN4rbE0ejUHP5ztQ@mail.gmail.com>
+	<1305188427-sup-5666@tilus.net> <1305206411-sup-2216@bloovis.org>
+	<1305272083-sup-4650@tilus.net>
+Message-ID: <1305280248-sup-3289@brick>
+
+Excerpts from Tero Tilus's message of Fri May 13 08:39:34 +0100 2011:
+> Mark Alexander, 2011-05-12 16:21:
+> > I also run sup in screen, sometimes from a remote system via ssh, so
+> > that's why I chose w3m as the mailcap'd browser.
+> 
+> I do w3m too.  Most (~90%) of the time it does exactly what I want,
+> but sometimes (say with images, pdf:s and strangely laid out html
+> documents) an url to the document is a must.
+
+I can highly recommend lynx'x dump mode for inline html: it 
+produces a "references" suffix which displays all URI's from the
+links in the document. This works great con combination with 
+urxvt's url-select script.
+/p
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110513/77b0b41a/attachment.bin>
+
+From wmorgan-sup at masanjin.net  Sun May 15 11:01:41 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 15 May 2011 15:01:41 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+Message-ID: <1305471101-sup-6655@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-10:
+> Is there a way to query Heliotrope what is the largest msg_id
+> currently in the index?
+
+Sort of---it's a hack, but if you search for e.g. "a OR -a" you'll get
+every message in the index, and the first result will be the message
+with the highest id thanks to Whistlepig's search semantics.
+
+> I am trying to improve the imap-dumper.rb so
+> it does not download all my emails every time but only the new ones.
+
+Sounds great. Unfortunately the Heliotrope message id and the IMAP
+message id / message uid are completely different things, and
+maintaining a cross-session mapping of them is impossible for generic
+IMAP servers, because the uid of every message can change every time you
+connect to an IMAP server---see the section on IMAP's 'uidvalidity'
+variable. So you'll have to rescan the inbox every time and rebuild the
+mapping. Welcome to hell.
+
+> Also while looking at the code I see that messages are stored in the
+> index using the msg_id as parsed by RMail. There is no further
+> association with the source or mailbox from where the messages were
+> downloaded. This I think may cause collisions if we use one Heliotrope
+> server with more than one email account. Not sure what is the
+> probability of two messages from two different IMAP servers having the
+> same msg_id but nothing in the standard rules out that possibility.
+
+This is yet another id: the Message-Id header of the email. This is only
+needed to build up the thread structure and should otherwise be ignored.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan at masanjin.net  Sun May 15 10:50:10 2011
+From: wmorgan at masanjin.net (William Morgan)
+Date: Sun, 15 May 2011 14:50:10 +0000
+Subject: [sup-devel] Turnsole crash
+In-Reply-To: <BANLkTi=3y75y0atFWGBSpk6Mrx7+U0V-rQ@mail.gmail.com>
+References: <BANLkTi=3y75y0atFWGBSpk6Mrx7+U0V-rQ@mail.gmail.com>
+Message-ID: <1305470967-sup-6603@masanjin.net>
+
+[resend]
+
+Reformatted excerpts from Robin Burchell's message of 2011-05-14:
+> I tried Turnsole and heliotrope out for the first time today, and got
+> a crash using master of both. IIRC I was pressing 'N' on a thread in
+> Turnsole.
+
+Thanks. Turnsole is not quite ready for general use and many things like
+this are broken (but trivial to fix). If you like, you can file bug
+reports against specific breakagest on github and I'll try and do them
+first.
+
+> By the way, do you plan to support incremental IMAP fetch somehow? I
+> sort of have the crazy desire to use Turnsole on a day to day basis.
+
+It's possible. The best way to use heliotrope is probably with a
+.procmailrc, but I realize many people have IMAP access to their primary
+account and being able to incrementally import from that would be ideal.
+IMAP doesn't appear to have very good support for this type of thing,
+though, so I'm not 100% sure how to do it yet.
+-- 
+William <wmorgan at masanjin.net>
+
+From hsanson at gmail.com  Mon May 16 11:02:39 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 17 May 2011 00:02:39 +0900
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1305471101-sup-6655@masanjin.net>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+Message-ID: <BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+
+On Mon, May 16, 2011 at 12:01 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-10:
+>> Is there a way to query Heliotrope what is the largest msg_id
+>> currently in the index?
+>
+> Sort of---it's a hack, but if you search for e.g. "a OR -a" you'll get
+> every message in the index, and the first result will be the message
+> with the highest id thanks to Whistlepig's search semantics.
+>
+
+Indeed I have been trying to wrap my head around the IMAP spec and
+still don't get a lot of things. For now I will just keep the max UID
+read from IMAP server somewhere on disk.
+
+>> I am trying to improve the imap-dumper.rb so
+>> it does not download all my emails every time but only the new ones.
+>
+> Sounds great. Unfortunately the Heliotrope message id and the IMAP
+> message id / message uid are completely different things, and
+> maintaining a cross-session mapping of them is impossible for generic
+> IMAP servers, because the uid of every message can change every time you
+> connect to an IMAP server---see the section on IMAP's 'uidvalidity'
+> variable. So you'll have to rescan the inbox every time and rebuild the
+> mapping. Welcome to hell.
+>
+
+When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+
+>> Also while looking at the code I see that messages are stored in the
+>> index using the msg_id as parsed by RMail. There is no further
+>> association with the source or mailbox from where the messages were
+>> downloaded. This I think may cause collisions if we use one Heliotrope
+>> server with more than one email account. Not sure what is the
+>> probability of two messages from two different IMAP servers having the
+>> same msg_id but nothing in the standard rules out that possibility.
+>
+> This is yet another id: the Message-Id header of the email. This is only
+> needed to build up the thread structure and should otherwise be ignored.
+
+I am attaching my first small hack for GMail <-> Heliotrope
+synchronization. For now it only downloads mail from GMail and injects
+them to Heliotrope just as the imap-dumper.rb does. The difference is
+that I keep track of the last message UID and UIDVALIDITY values to
+avoid re-scanning the whole folder every time.
+
+Now I wan't to take advantage of GMail IMAP extensions (e.g.
+X-GM-LABELS, X-GM-THRID) to allow labels/threads synchronization. But
+have some doubts about how to correctly use the Heliotrope REST API.
+For example in the Heliotrope::Index the add_message method allows to
+insert a message and assign it labels, flags and extra parameters at
+the same time. How can I do this with the REST API? The only example I
+see only adds a message body.
+
+    RestClient.post "http://localhost:8042/message", :message => body
+
+Also for what purpose are the ext array used for? Can I use it to add
+an account/mailbox property to each message so I can latter retrieve
+all messages associated to a mailbox/account pair?
+
+regards,
+Horacio
+
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gmail.rb
+Type: application/x-ruby
+Size: 7796 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110517/f2b05805/attachment-0001.bin>
+
+From gregor at hoffleit.de  Mon May 16 11:56:36 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Mon, 16 May 2011 17:56:36 +0200
+Subject: [sup-devel] heliotrope: Crash with empty message.recipients
+In-Reply-To: <1305049541-sup-4323@masanjin.net>
+References: <1303314278-sup-9272@sam.mediasupervision.de>
+	<1305049541-sup-4323@masanjin.net>
+Message-ID: <1305560179-sup-7899@sam.mediasupervision.de>
+
+* William Morgan <wmorgan-sup at masanjin.net> [Di Mai 10 19:45:49 +0200 2011]
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-04-20:
+> > 
+> >     To: , debian-vote at lists.debian.org
+> > 
+> > This code in line 482 of lib/heliotrope/index.rb will fail work if any
+> > recipient is empty:
+> > 
+> >     message.recipients.map { |x| x.indexable_text }.join(" ").downcase
+> 
+> Sorry for the lengthy wait. I believe this has been fixed. Please let me
+> know if you still encounter this problem!
+
+The problem with empty recipient strings is still there, I'm afraid.
+Tested today, with current heliotrope from GIT.
+
+Regards,
+    Gregor
+
+From paul.a.grove at gmail.com  Mon May 16 17:56:56 2011
+From: paul.a.grove at gmail.com (Paul Grove)
+Date: Mon, 16 May 2011 22:56:56 +0100
+Subject: [sup-devel]  Sign and encrypt
+Message-ID: <1305582172-sup-2519@localhost>
+
+Hi I hope you guys can help me, recently I pulled the latest changes to
+sup.
+
+It took me a while - but I've noticed that I have problems when signing
+and encrypting.
+
+When I sign my emails are signed.
+When I encrypt my emails are encrypted.
+
+But when I sign _and_ encrypt my emails come out only encrypted!
+
+I only noticed because I post to a mailing list that requires sign and
+encrypt in order to post.
+
+I know this problem never used to exist as I've posted on the list
+before without issue.  I've taken the emails produced by sup and run
+them through gpg and that shows as not signed also.
+
+I had a look at the code, unfortunately I'm not well versed in ruby. I
+cannot see for certain if there is a problem.
+
+I can see that when signing the code produces a signature and attaches
+it to the email, but when encrypting and signing it doesn't jump through
+this hoop of adding any sort of attachment and instead an extra parameter 
+:sign => true is passed to pgpme when doing the encryption.
+
+Now completely off the top of my head but wasnt it a fairly recent
+change to start using pgpme? I seem to remember some discussion on
+changing to it, and perhaps the version I was using is prior to this?
+
+Thanks,
+
+Paul Grove
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110516/9c70576e/attachment.bin>
+
+From hsanson at gmail.com  Tue May 17 10:59:34 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 17 May 2011 23:59:34 +0900
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+Message-ID: <BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+
+I implemented a new version of the GMail -> Heliotrope sync script and
+attach it here in hopes
+someone will test it and provide some feedback/comments. This is by no
+means ready for general
+use so don't use for anything else than experimentation. But since
+this script only opens mailboxes
+in read only mode (examine) there should not be any problems with you
+emails on the server.
+
+This script is GMail specific and has these features:
+
+  - Downloads emails from all mailboxes (except All, Trash and Spam)
+automatically using
+    the XLIST GMail IMAP extension and feeds them to Heliotrope via
+REST interface.
+  - Remembers the last email downloaded so it does not start from the beginning
+    every time.
+  - Synchronizes GMail labels using the X-GM-LABELS IMAP extension.
+  - Synchronizes GMail flags with Heliotrope state flags.
+  - Adds a new mailbox property to messages. This may allow later to implement
+    Heliotrope -> GMail synchronization.
+
+Things to check and do:
+  - I am seeing some negative thread_id's in the response. Need to check if
+    this is normal or a bug in Heliotrope or my script.
+  - GMail inbox is with a capital "I" (e.g. Inbox) while heliotrope
+uses a small "i".
+    Shall I down case all labels? or make a special treatment for Inbox?
+  - Refactor the script into something more modular and elegant.
+
+To use this script I had to modify heliotrope-server.rb to allow
+setting labels and states when
+posting new messages (see attached patch).
+
+regards,
+Horacio
+
+On Tue, May 17, 2011 at 12:02 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+> On Mon, May 16, 2011 at 12:01 AM, William Morgan
+> <wmorgan-sup at masanjin.net> wrote:
+>> Reformatted excerpts from Horacio Sanson's message of 2011-05-10:
+>>> Is there a way to query Heliotrope what is the largest msg_id
+>>> currently in the index?
+>>
+>> Sort of---it's a hack, but if you search for e.g. "a OR -a" you'll get
+>> every message in the index, and the first result will be the message
+>> with the highest id thanks to Whistlepig's search semantics.
+>>
+>
+> Indeed I have been trying to wrap my head around the IMAP spec and
+> still don't get a lot of things. For now I will just keep the max UID
+> read from IMAP server somewhere on disk.
+>
+>>> I am trying to improve the imap-dumper.rb so
+>>> it does not download all my emails every time but only the new ones.
+>>
+>> Sounds great. Unfortunately the Heliotrope message id and the IMAP
+>> message id / message uid are completely different things, and
+>> maintaining a cross-session mapping of them is impossible for generic
+>> IMAP servers, because the uid of every message can change every time you
+>> connect to an IMAP server---see the section on IMAP's 'uidvalidity'
+>> variable. So you'll have to rescan the inbox every time and rebuild the
+>> mapping. Welcome to hell.
+>>
+>
+> When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+> feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+>
+>>> Also while looking at the code I see that messages are stored in the
+>>> index using the msg_id as parsed by RMail. There is no further
+>>> association with the source or mailbox from where the messages were
+>>> downloaded. This I think may cause collisions if we use one Heliotrope
+>>> server with more than one email account. Not sure what is the
+>>> probability of two messages from two different IMAP servers having the
+>>> same msg_id but nothing in the standard rules out that possibility.
+>>
+>> This is yet another id: the Message-Id header of the email. This is only
+>> needed to build up the thread structure and should otherwise be ignored.
+>
+> I am attaching my first small hack for GMail <-> Heliotrope
+> synchronization. For now it only downloads mail from GMail and injects
+> them to Heliotrope just as the imap-dumper.rb does. The difference is
+> that I keep track of the last message UID and UIDVALIDITY values to
+> avoid re-scanning the whole folder every time.
+>
+> Now I wan't to take advantage of GMail IMAP extensions (e.g.
+> X-GM-LABELS, X-GM-THRID) to allow labels/threads synchronization. But
+> have some doubts about how to correctly use the Heliotrope REST API.
+> For example in the Heliotrope::Index the add_message method allows to
+> insert a message and assign it labels, flags and extra parameters at
+> the same time. How can I do this with the REST API? The only example I
+> see only adds a message body.
+>
+> ? ?RestClient.post "http://localhost:8042/message", :message => body
+>
+> Also for what purpose are the ext array used for? Can I use it to add
+> an account/mailbox property to each message so I can latter retrieve
+> all messages associated to a mailbox/account pair?
+>
+> regards,
+> Horacio
+>
+>> --
+>> William <wmorgan-sup at masanjin.net>
+>> _______________________________________________
+>> Sup-devel mailing list
+>> Sup-devel at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gmail.rb
+Type: application/x-ruby
+Size: 8703 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110517/ae523a7c/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-post-message.json.patch
+Type: text/x-patch
+Size: 2203 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110517/ae523a7c/attachment-0001.bin>
+
+From hsanson at gmail.com  Tue May 17 11:15:48 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Wed, 18 May 2011 00:15:48 +0900
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+Message-ID: <BANLkTimALB2SPD7cn5xa941n6JPx-uvbWg@mail.gmail.com>
+
+Sorry the patch I sent has a small problem. Use this patch instead.
+
+
+On Tue, May 17, 2011 at 11:59 PM, Horacio Sanson <hsanson at gmail.com> wrote:
+> I implemented a new version of the GMail -> Heliotrope sync script and
+> attach it here in hopes
+> someone will test it and provide some feedback/comments. This is by no
+> means ready for general
+> use so don't use for anything else than experimentation. But since
+> this script only opens mailboxes
+> in read only mode (examine) there should not be any problems with you
+> emails on the server.
+>
+> This script is GMail specific and has these features:
+>
+> ?- Downloads emails from all mailboxes (except All, Trash and Spam)
+> automatically using
+> ? ?the XLIST GMail IMAP extension and feeds them to Heliotrope via
+> REST interface.
+> ?- Remembers the last email downloaded so it does not start from the beginning
+> ? ?every time.
+> ?- Synchronizes GMail labels using the X-GM-LABELS IMAP extension.
+> ?- Synchronizes GMail flags with Heliotrope state flags.
+> ?- Adds a new mailbox property to messages. This may allow later to implement
+> ? ?Heliotrope -> GMail synchronization.
+>
+> Things to check and do:
+> ?- I am seeing some negative thread_id's in the response. Need to check if
+> ? ?this is normal or a bug in Heliotrope or my script.
+> ?- GMail inbox is with a capital "I" (e.g. Inbox) while heliotrope
+> uses a small "i".
+> ? ?Shall I down case all labels? or make a special treatment for Inbox?
+> ?- Refactor the script into something more modular and elegant.
+>
+> To use this script I had to modify heliotrope-server.rb to allow
+> setting labels and states when
+> posting new messages (see attached patch).
+>
+> regards,
+> Horacio
+>
+> On Tue, May 17, 2011 at 12:02 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+>> On Mon, May 16, 2011 at 12:01 AM, William Morgan
+>> <wmorgan-sup at masanjin.net> wrote:
+>>> Reformatted excerpts from Horacio Sanson's message of 2011-05-10:
+>>>> Is there a way to query Heliotrope what is the largest msg_id
+>>>> currently in the index?
+>>>
+>>> Sort of---it's a hack, but if you search for e.g. "a OR -a" you'll get
+>>> every message in the index, and the first result will be the message
+>>> with the highest id thanks to Whistlepig's search semantics.
+>>>
+>>
+>> Indeed I have been trying to wrap my head around the IMAP spec and
+>> still don't get a lot of things. For now I will just keep the max UID
+>> read from IMAP server somewhere on disk.
+>>
+>>>> I am trying to improve the imap-dumper.rb so
+>>>> it does not download all my emails every time but only the new ones.
+>>>
+>>> Sounds great. Unfortunately the Heliotrope message id and the IMAP
+>>> message id / message uid are completely different things, and
+>>> maintaining a cross-session mapping of them is impossible for generic
+>>> IMAP servers, because the uid of every message can change every time you
+>>> connect to an IMAP server---see the section on IMAP's 'uidvalidity'
+>>> variable. So you'll have to rescan the inbox every time and rebuild the
+>>> mapping. Welcome to hell.
+>>>
+>>
+>> When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+>> feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+>>
+>>>> Also while looking at the code I see that messages are stored in the
+>>>> index using the msg_id as parsed by RMail. There is no further
+>>>> association with the source or mailbox from where the messages were
+>>>> downloaded. This I think may cause collisions if we use one Heliotrope
+>>>> server with more than one email account. Not sure what is the
+>>>> probability of two messages from two different IMAP servers having the
+>>>> same msg_id but nothing in the standard rules out that possibility.
+>>>
+>>> This is yet another id: the Message-Id header of the email. This is only
+>>> needed to build up the thread structure and should otherwise be ignored.
+>>
+>> I am attaching my first small hack for GMail <-> Heliotrope
+>> synchronization. For now it only downloads mail from GMail and injects
+>> them to Heliotrope just as the imap-dumper.rb does. The difference is
+>> that I keep track of the last message UID and UIDVALIDITY values to
+>> avoid re-scanning the whole folder every time.
+>>
+>> Now I wan't to take advantage of GMail IMAP extensions (e.g.
+>> X-GM-LABELS, X-GM-THRID) to allow labels/threads synchronization. But
+>> have some doubts about how to correctly use the Heliotrope REST API.
+>> For example in the Heliotrope::Index the add_message method allows to
+>> insert a message and assign it labels, flags and extra parameters at
+>> the same time. How can I do this with the REST API? The only example I
+>> see only adds a message body.
+>>
+>> ? ?RestClient.post "http://localhost:8042/message", :message => body
+>>
+>> Also for what purpose are the ext array used for? Can I use it to add
+>> an account/mailbox property to each message so I can latter retrieve
+>> all messages associated to a mailbox/account pair?
+>>
+>> regards,
+>> Horacio
+>>
+>>> --
+>>> William <wmorgan-sup at masanjin.net>
+>>> _______________________________________________
+>>> Sup-devel mailing list
+>>> Sup-devel at rubyforge.org
+>>> http://rubyforge.org/mailman/listinfo/sup-devel
+>>>
+>>
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Implement-post-message.json.patch
+Type: text/x-patch
+Size: 2205 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110518/8447df75/attachment-0001.bin>
+
+From wmorgan-sup at masanjin.net  Wed May 18 00:59:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 May 2011 04:59:05 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+Message-ID: <1305693289-sup-4896@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-16:
+> When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+> feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+
+The REST api will ignore duplicates based on the Message-Id header.
+
+> For example in the Heliotrope::Index the add_message method allows to
+> insert a message and assign it labels, flags and extra parameters at
+> the same time. How can I do this with the REST API? The only example I
+> see only adds a message body.
+> 
+>     RestClient.post "http://localhost:8042/message", :message => body
+
+I've just pushed a commit to fix this. You can now send labels, state
+and extra params to the POST. See heliotrope-add for an example.
+
+> Also for what purpose are the ext array used for? Can I use it to add
+> an account/mailbox property to each message so I can latter retrieve
+> all messages associated to a mailbox/account pair?
+
+Anything you put in there will come back as part of a message info block
+(e.g. when you GET /thread/123.json), but it's not indexed at all, so
+you won't be able to get the list of matching messages.
+
+Probably the easiest way to accomplish that is to make a unique label
+for each mailbox/account pair, but that's not ideal. We can think of
+ways to make this work.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 18 01:05:27 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 May 2011 05:05:27 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+Message-ID: <1305694759-sup-7483@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-17:
+> I implemented a new version of the GMail -> Heliotrope sync script and
+> attach it here in hopes someone will test it and provide some
+> feedback/comments.
+
+Great! This is very exciting.
+
+> - I am seeing some negative thread_id's in the response. Need to check
+> if this is normal or a bug in Heliotrope or my script.
+
+This is normal. It indicates a thread in which the root message can't be
+found (so Heliotrope must construct a pseudo-message to hold the tree
+together). Nothing to worry about, except as an indicator that you're
+missing email refefred to by something else in the thread.
+
+>   - GMail inbox is with a capital "I" (e.g. Inbox) while heliotrope
+> uses a small "i".
+>     Shall I down case all labels? or make a special treatment for Inbox?
+
+I suggest special-casing inbox.
+
+> To use this script I had to modify heliotrope-server.rb to allow
+> setting labels and states when posting new messages (see attached
+> patch).
+
+I apologize for the confusion in this, but this is actually the wrong
+endpoint to use. POST "/message" (no .json) is for adding new emails.
+This endpoint was introduced temporarily for outgoing emails, i.e.  when
+you compose or reply via turnsole. But I'm going to rename it as well as
+implement it.
+
+Anyways, I've added the relevant code to /message, so your script should
+work against that.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed May 18 10:52:59 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 18 May 2011 14:52:59 +0000
+Subject: [sup-devel] heliotrope: Crash with empty message.recipients
+In-Reply-To: <1305560179-sup-7899@sam.mediasupervision.de>
+References: <1303314278-sup-9272@sam.mediasupervision.de>
+	<1305049541-sup-4323@masanjin.net>
+	<1305560179-sup-7899@sam.mediasupervision.de>
+Message-ID: <1305730339-sup-127@masanjin.net>
+
+Reformatted excerpts from Gregor Hoffleit's message of 2011-05-16:
+> The problem with empty recipient strings is still there, I'm afraid.
+> Tested today, with current heliotrope from GIT.
+
+Rats. Can you please add an issue to the heliotrope github issue tracker
+so that I don't forget about this?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From gregor at hoffleit.de  Wed May 18 11:47:03 2011
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Wed, 18 May 2011 17:47:03 +0200
+Subject: [sup-devel] heliotrope: Crash with empty message.recipients
+In-Reply-To: <1305730339-sup-127@masanjin.net>
+References: <1303314278-sup-9272@sam.mediasupervision.de>
+	<1305049541-sup-4323@masanjin.net>
+	<1305560179-sup-7899@sam.mediasupervision.de>
+	<1305730339-sup-127@masanjin.net>
+Message-ID: <1305733600-sup-9418@sam.mediasupervision.de>
+
+* William Morgan <wmorgan-sup at masanjin.net> [Mi Mai 18 16:52:59 +0200 2011]
+> Reformatted excerpts from Gregor Hoffleit's message of 2011-05-16:
+> > The problem with empty recipient strings is still there, I'm afraid.
+> > Tested today, with current heliotrope from GIT.
+> 
+> Rats. Can you please add an issue to the heliotrope github issue tracker
+> so that I don't forget about this?
+
+Done. https://github.com/wmorgan/heliotrope/issues/1
+
+From sascha-ml-reply-to-2011-2 at silbe.org  Wed May 18 16:09:26 2011
+From: sascha-ml-reply-to-2011-2 at silbe.org (Sascha Silbe)
+Date: Wed, 18 May 2011 22:09:26 +0200
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1305693289-sup-4896@masanjin.net>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<1305693289-sup-4896@masanjin.net>
+Message-ID: <1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+
+Excerpts from William Morgan's message of Wed May 18 06:59:05 +0200 2011:
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-16:
+> > When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+> > feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+> 
+
+> The REST api will ignore duplicates based on the Message-Id header.
+
+This is something I don't like about sup: There's no way to access the
+"duplicate" messages, e.g. to check whether an outgoing message was
+received back fine from the ML or to check the headers.
+
+If heliotrope permanently erases the copies (instead of just not
+exposing UI to access them), that would be a major step backwards.
+
+Sascha
+
+-- 
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 494 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110518/f7018919/attachment.bin>
+
+From alvherre at alvh.no-ip.org  Wed May 18 23:14:00 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Wed, 18 May 2011 23:14:00 -0400
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<1305693289-sup-4896@masanjin.net>
+	<1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+Message-ID: <1305774610-sup-7867@alvh.no-ip.org>
+
+Excerpts from Sascha Silbe's message of mi? may 18 16:09:26 -0400 2011:
+> Excerpts from William Morgan's message of Wed May 18 06:59:05 +0200 2011:
+> > Reformatted excerpts from Horacio Sanson's message of 2011-05-16:
+> > > When UIDVALIDITY differs I will simply re-scan the whole mailbox and
+> > > feed it to Heliotrope. I trust Heliotrope won't add duplicates.
+> > 
+> 
+> > The REST api will ignore duplicates based on the Message-Id header.
+> 
+> This is something I don't like about sup: There's no way to access the
+> "duplicate" messages, e.g. to check whether an outgoing message was
+> received back fine from the ML or to check the headers.
+> 
+> If heliotrope permanently erases the copies (instead of just not
+> exposing UI to access them), that would be a major step backwards.
+
+Same here.  I have this in detailed-headers.rb:
+
+headers["Message Id"] = message.id
+message.locations.each_with_index { |location, idx|
+  headers["Location#{idx}"] = "#{location.source} #{location.info}"
+}
+
+So I can immediately see all locations of a message; particularly useful
+for messages that I send.  I don't have easy access to the headers
+within the sup UI, but the one or two times I've wanted to do that, I
+simply pasted the path to the file to "less" (which works fine because I
+use Maildirs; on mboxes it would be a lot more complex).
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From hsanson at gmail.com  Fri May 20 11:38:30 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Sat, 21 May 2011 00:38:30 +0900
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1305694759-sup-7483@masanjin.net>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+	<1305694759-sup-7483@masanjin.net>
+Message-ID: <BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+
+On Wed, May 18, 2011 at 2:05 PM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Reformatted excerpts from Horacio Sanson's message of 2011-05-17:
+>> I implemented a new version of the GMail -> Heliotrope sync script and
+>> attach it here in hopes someone will test it and provide some
+>> feedback/comments.
+>
+> Great! This is very exciting.
+>
+>> - I am seeing some negative thread_id's in the response. Need to check
+>> if this is normal or a bug in Heliotrope or my script.
+>
+> This is normal. It indicates a thread in which the root message can't be
+> found (so Heliotrope must construct a pseudo-message to hold the tree
+> together). Nothing to worry about, except as an indicator that you're
+> missing email refefred to by something else in the thread.
+>
+
+Is there a way to use GMail supplied thread ids?? there is an
+extension X-GM-THRID that
+provides such information.
+
+>> ? - GMail inbox is with a capital "I" (e.g. Inbox) while heliotrope
+>> uses a small "i".
+>> ? ? Shall I down case all labels? or make a special treatment for Inbox?
+>
+> I suggest special-casing inbox.
+>
+
+Perfect, the new script special cases inbox
+
+>> To use this script I had to modify heliotrope-server.rb to allow
+>> setting labels and states when posting new messages (see attached
+>> patch).
+>
+> I apologize for the confusion in this, but this is actually the wrong
+> endpoint to use. POST "/message" (no .json) is for adding new emails.
+> This endpoint was introduced temporarily for outgoing emails, i.e. ?when
+> you compose or reply via turnsole. But I'm going to rename it as well as
+> implement it.
+>
+
+Great I rewrote the GMail -> Heliotrope script to use the improved
+POST "/message"
+and works wonderfully.
+
+I am attaching the new version that is cleaner and seems to work
+without problems.
+
+> Anyways, I've added the relevant code to /message, so your script should
+> work against that.
+> --
+> William <wmorgan-sup at masanjin.net>
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: gmail.rb
+Type: application/x-ruby
+Size: 11630 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110521/3aa0e261/attachment-0001.bin>
+
+From dmishd at gmail.com  Sun May 22 17:34:31 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 22 May 2011 22:34:31 +0100
+Subject: [sup-devel] Sign and encrypt
+In-Reply-To: <1305582172-sup-2519@localhost>
+References: <1305582172-sup-2519@localhost>
+Message-ID: <1306099840-sup-7534@whisper>
+
+Excerpts from Paul Grove's message of Mon May 16 22:56:56 +0100 2011:
+> But when I sign _and_ encrypt my emails come out only encrypted!
+>
+> I only noticed because I post to a mailing list that requires sign and
+> encrypt in order to post.
+>
+> I know this problem never used to exist as I've posted on the list
+> before without issue.  I've taken the emails produced by sup and run
+> them through gpg and that shows as not signed also.
+
+Interesting. I wrote the code to start using gpgme, and it's been
+working fine for me. I also am on an email list that requires emails to
+be signed and encrypted (using scheuder[0]) and my emails are accepted
+there.
+
+With the way I've been using gpgme the signature is embedded within the
+signed text, so looking at the encrypted email you just see a single
+block. However saving the email and running gpg against it reports that
+the email is both encrypted and signed for me.
+
+As to which version you are using, if you were on the master branch then
+you shouldn't have any of the gpgme stuff, and if you have the latest
+from the "next" branch then you should have the same as me.
+
+If you check you have the latest from the "next" branch and still can't
+generate a signed and encrypted email, then feel free to send me a
+signed and encrypted email using sup, and I'll pull it apart at my end.
+
+Hamish Downer
+
+[0] http://schleuder2.nadir.org/
+
+From wmorgan-sup at masanjin.net  Sun May 22 18:00:51 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 May 2011 22:00:51 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+	<1305694759-sup-7483@masanjin.net>
+	<BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+Message-ID: <1306101513-sup-1687@masanjin.net>
+
+Reformatted excerpts from Horacio Sanson's message of 2011-05-20:
+> Is there a way to use GMail supplied thread ids?? there is an
+> extension X-GM-THRID that
+> provides such information.
+
+Not really. Heliotrope has to maintain its own message ids and thread ids.
+When you feed it messages, it threads things different from how Gmail does,
+anyways.
+
+> Great I rewrote the GMail -> Heliotrope script to use the improved
+> POST "/message"
+> and works wonderfully.
+
+Great!
+
+> I am attaching the new version that is cleaner and seems to work
+> without problems.
+
+Very nice. I would like to include something like this when I release
+Heliotrope to the world at large, since I suspect this will be a popular
+migration path. So thank you for laying the foundation.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Sun May 22 18:05:57 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 22 May 2011 22:05:57 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<1305693289-sup-4896@masanjin.net>
+	<1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+Message-ID: <1306101722-sup-3610@masanjin.net>
+
+Reformatted excerpts from Sascha Silbe's message of 2011-05-18:
+> If heliotrope permanently erases the copies (instead of just not
+> exposing UI to access them), that would be a major step backwards.
+
+What do you suggest as a way of exposing duplicates within the UI? I
+worry that just keeping all copies of a message around will make the
+thread structure messy. Is there a better alternative?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Sun May 22 18:03:41 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 22 May 2011 23:03:41 +0100
+Subject: [sup-devel] [PATCH] Fix problem with time parsing
+In-Reply-To: <1305073985-sup-7419@masanjin.net>
+References: <1304373710-sup-1383@whisper> <1305049400-sup-4316@masanjin.net>
+	<1305053133-sup-4055@whisper> <1305073985-sup-7419@masanjin.net>
+Message-ID: <1306101800-sup-8165@whisper>
+
+Excerpts from William Morgan's message of Wed May 11 01:34:05 +0100 2011:
+> Reformatted excerpts from Hamish's message of 2011-05-10:
+> > Sadly it was not spam, but an email from staples (UK) about some stuff
+> > I bought from then online. So sup should not barf on it, but forging a
+> > date header would be fine by me. Though "now" might be better than
+> > date zero, which I think is what sup normally does otherwise ...
+> 
+> I agree. If you have a chance, please add a ticket for this on the
+> heliotrope github project.
+
+Done: https://github.com/wmorgan/heliotrope/issues/2
+
+Hamish Downer
+
+From dmishd at gmail.com  Sun May 22 18:47:03 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 22 May 2011 23:47:03 +0100
+Subject: [sup-devel] [sup-talk] Word wrap for quoted lines
+In-Reply-To: <1305818177-sup-9473@localhost>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+Message-ID: <1306104299-sup-3629@whisper>
+
+Excerpts from john.wyzer's message of Thu May 19 16:16:51 +0100 2011:
+> > Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+> > > 
+> > > When reading messages in Sup and expanding quoted lines, long quoted
+> > > lines are not word wrapped and thus I can't read all the content.
+> > > Non-quoted content wraps as expected.
+> 
+> Ah. Here's a fix:
+> https://github.com/rburchell/sup/commit/a60dd01fe297bf3cd5a12c17a40849219c7f8a91
+
+I've created a wrap_quoted branch and applied this patch to it. If there
+are no objections I'll merge it into the next branch, probably next
+weekend.
+
+Hamish Downer
+
+From gaudenz at soziologie.ch  Mon May 23 03:52:43 2011
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Mon, 23 May 2011 09:52:43 +0200
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1306101722-sup-3610@masanjin.net>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<1305693289-sup-4896@masanjin.net>
+	<1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+	<1306101722-sup-3610@masanjin.net>
+Message-ID: <1306136821-sup-9611@meteor.durcheinandertal.local>
+
+Excerpts from William Morgan's message of 2011-05-23 00:05:57 +0200:
+> Reformatted excerpts from Sascha Silbe's message of 2011-05-18:
+> > If heliotrope permanently erases the copies (instead of just not
+> > exposing UI to access them), that would be a major step backwards.
+> 
+> What do you suggest as a way of exposing duplicates within the UI? I
+> worry that just keeping all copies of a message around will make the
+> thread structure messy. Is there a better alternative?
+
+Merging the messages is fine and actually an improvement over other
+MUAs. But adding a line in the header section indicating the source
+and how often the message appears in the source would be nice. Like
+
+Sources: maildir://bla/blu (2), maildir://foo/bar (1)
+
+Also if you display the message in the raw form (V key in sup), then
+all the copies could be shown in full. This would help diagnosing
+why you receive duplicates of certain messages. 
+
+Gaudenz
+
+-- 
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+
+From hsanson at gmail.com  Mon May 23 10:42:16 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Mon, 23 May 2011 23:42:16 +0900
+Subject: [sup-devel] Heliotrope limitations for backward synchronization, , ,
+Message-ID: <BANLkTikfZiyezXe3tF-VVgsEWjZb33EEVg@mail.gmail.com>
+
+Now that I have GMail to Heliotrope initial synchronization (first
+time) and incremental (new messages) synchronization working in my
+script I started working on Heliotrope to GMail synchronization.
+Unfortunately I found some difficulties to achieve this.
+
+I am following rfc4549.txt and the client-to-server synchronization
+says verbatim:
+
+     c) "Client-to-server synchronization": for each IMAP "action" that
+      was pending on the client, do the following:
+
+      1) If the action implies opening a new mailbox (any operation that
+         operates on messages), open the mailbox.  Check its UID
+         validity value (see Section 4.1 for more details) returned in
+         the UIDVALIDITY response code.  If the UIDVALIDITY value
+         returned by the server differs, the client MUST empty the local
+         cache of the mailbox and remove any pending "actions" that
+         refer to UIDs in that mailbox (and consider them failed).  Note
+         that this doesn't affect actions performed on client-generated
+         fake UIDs (see Section 5).
+
+      2) Perform the action.  If the action is to delete a mailbox
+         (DELETE), make sure that the mailbox is closed first (see also
+         Section 3.4.12 of [RFC2683]).
+
+
+Seems simple to do but Heliotrope currently does not store/provide
+enough information to implement this like:
+
+ 1)  Account and Mailbox information of messages.
+  2) Heliotrope msg_id to GMail UID map.
+  3) Per mailbox action FIFO queues.
+
+
+Each action performed via Heliotrope (add label, remove label, state
+change, delete) should be stored in some kind of FIFO associated to
+the an account/mailbox pair. For example adding a label to a message
+in my personal account's inbox would add an action like:
+
+   label_add <label> <msg_id>
+
+where label_add is the action, <label> the action parameter and
+<msg_id> the message ID as seen by Heliotrope.  Then during
+synchronization for an account I would iterate over all mailboxes
+associated to the account and for each one I would replay the same
+actions stored in the mailbox FIFO in the GMail server. Once an action
+succeeds on the GMail side I  pop it out of the FIFO and continue with
+the next action. Using the msg_id to UID map I can determine to what
+message on the GMail side the action should be performed on.
+
+Now how to implement these features? One way could be using the extra
+parameters hash in the Heliotrope::Index::message_add method to store
+the messages account, mailbox and UID's of each message when they are
+added to Heliotrope index. This would also require a way to query this
+information.
+
+Another way would be to use special labels to mark mailboxes and
+accounts. And add some new query formats to get all mailboxes for a
+certain account and the FIFO actions of the mailbox.
+
+Finally I am more inclined to keeping a separate Index/Store for each
+account and access them via REST URLs like:
+
+   POST  /<account>                                              #
+Create new account Index/Store files
+   POST   /<account>/<mailbox>                       # Create new
+mailbox in account. Implemented using special labels?
+   GET     /<account>/mailboxes                        # List all
+mailboxes for account
+   GET     /<account>/<mailbox>/action          # Get the next pending
+action on mailbox
+   DELETE /<account>/<mailbox>/action       # Delete next pending
+action on mailbox
+   POST  /<account>/<mailbox>/message     # Add new message to an
+account/mailbox
+   GET    /<account>/<mailbox>/message     # Get all messages from
+account/mailbox
+
+This of course is how I think  IMAP offline synchronization could be
+done. If there are other ways to do this I am open to suggestions.
+
+regards,
+Horacio Sanson
+
+From wmorgan-sup at masanjin.net  Mon May 23 12:14:53 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 23 May 2011 16:14:53 +0000
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1306136821-sup-9611@meteor.durcheinandertal.local>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<1305693289-sup-4896@masanjin.net>
+	<1305748878-sup-7940@xo15-sascha.sascha.silbe.org>
+	<1306101722-sup-3610@masanjin.net>
+	<1306136821-sup-9611@meteor.durcheinandertal.local>
+Message-ID: <1306167053-sup-7478@masanjin.net>
+
+Reformatted excerpts from Gaudenz Steinlin's message of 2011-05-23:
+> Merging the messages is fine and actually an improvement over other
+> MUAs.
+
+I agree. I like the behavior.
+
+> But adding a line in the header section indicating the source
+> and how often the message appears in the source would be nice.
+
+This is essentially what Alvaro's detailed-headers hook does. But unlike
+Sup, heliotrope doesn't have the notion of different mailstores. There's
+just one.
+
+With some effort, we could add some kind of differentiating information
+at mail addition time, but it's hard to know what would fit the general
+case. A list of (from, timestamp) tuples?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From dmishd at gmail.com  Mon May 23 17:22:03 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 23 May 2011 22:22:03 +0100
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+	<1305694759-sup-7483@masanjin.net>
+	<BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+Message-ID: <1306185381-sup-6337@whisper>
+
+Excerpts from Horacio Sanson's message of Fri May 20 16:38:30 +0100 2011:
+> On Wed, May 18, 2011 at 2:05 PM, William Morgan wrote:
+> > Reformatted excerpts from Horacio Sanson's message of 2011-05-17:
+> >> I implemented a new version of the GMail -> Heliotrope sync script and
+> >> attach it here in hopes someone will test it and provide some
+> >> feedback/comments.
+
+This sounds awesome. I've already downloaded my gmail email using
+offlineimap (into maildir format), and I'm wondering if it's possible to
+get your script to use the local copies first, and only then get the new
+emails from gmail - so as to save redownloading several hundred
+megabytes of email ...
+
+I'm keen to try it out, but don't want to use it on my main account as I
+imagine it would take a long time. Maybe I'll just set up a second
+account with some test email to play with it.
+
+If it's just too hard to do, I'll just have to do the whole thing
+anyway, but it won't be too bad as just a one off job.
+
+Thanks for your work though
+Hamish
+
+From vivien.didelot at gmail.com  Mon May 23 18:23:58 2011
+From: vivien.didelot at gmail.com (Vivien Didelot)
+Date: Mon, 23 May 2011 18:23:58 -0400
+Subject: [sup-devel] Heliotrope limitations for backward synchronization, , , 
+In-Reply-To: <BANLkTikfZiyezXe3tF-VVgsEWjZb33EEVg@mail.gmail.com>
+References: <BANLkTikfZiyezXe3tF-VVgsEWjZb33EEVg@mail.gmail.com>
+Message-ID: <BANLkTinOR1N6DEi0GvCRBjd4GCg=sDP4=Q@mail.gmail.com>
+
+Hi Horacio,
+
+FWIW, you may use -- or even just take a look at -- the 'gmail' gem.
+It works pretty well for back syncing and is built on RFCs too (if I'm not
+mistaken).
+For maildir backsyncing, the 'maildir' gem also do the job,
+both are using the great 'mail' gem (which I hope, Heliotrope & co will use
+soon).
+
+Vivien.
+
+On Mon, May 23, 2011 at 10:42 AM, Horacio Sanson <hsanson at gmail.com> wrote:
+
+> Now that I have GMail to Heliotrope initial synchronization (first
+> time) and incremental (new messages) synchronization working in my
+> script I started working on Heliotrope to GMail synchronization.
+> Unfortunately I found some difficulties to achieve this.
+>
+> I am following rfc4549.txt and the client-to-server synchronization
+> says verbatim:
+>
+>     c) "Client-to-server synchronization": for each IMAP "action" that
+>      was pending on the client, do the following:
+>
+>      1) If the action implies opening a new mailbox (any operation that
+>         operates on messages), open the mailbox.  Check its UID
+>         validity value (see Section 4.1 for more details) returned in
+>         the UIDVALIDITY response code.  If the UIDVALIDITY value
+>         returned by the server differs, the client MUST empty the local
+>         cache of the mailbox and remove any pending "actions" that
+>         refer to UIDs in that mailbox (and consider them failed).  Note
+>         that this doesn't affect actions performed on client-generated
+>         fake UIDs (see Section 5).
+>
+>      2) Perform the action.  If the action is to delete a mailbox
+>         (DELETE), make sure that the mailbox is closed first (see also
+>         Section 3.4.12 of [RFC2683]).
+>
+>
+> Seems simple to do but Heliotrope currently does not store/provide
+> enough information to implement this like:
+>
+>  1)  Account and Mailbox information of messages.
+>  2) Heliotrope msg_id to GMail UID map.
+>  3) Per mailbox action FIFO queues.
+>
+>
+> Each action performed via Heliotrope (add label, remove label, state
+> change, delete) should be stored in some kind of FIFO associated to
+> the an account/mailbox pair. For example adding a label to a message
+> in my personal account's inbox would add an action like:
+>
+>   label_add <label> <msg_id>
+>
+> where label_add is the action, <label> the action parameter and
+> <msg_id> the message ID as seen by Heliotrope.  Then during
+> synchronization for an account I would iterate over all mailboxes
+> associated to the account and for each one I would replay the same
+> actions stored in the mailbox FIFO in the GMail server. Once an action
+> succeeds on the GMail side I  pop it out of the FIFO and continue with
+> the next action. Using the msg_id to UID map I can determine to what
+> message on the GMail side the action should be performed on.
+>
+> Now how to implement these features? One way could be using the extra
+> parameters hash in the Heliotrope::Index::message_add method to store
+> the messages account, mailbox and UID's of each message when they are
+> added to Heliotrope index. This would also require a way to query this
+> information.
+>
+> Another way would be to use special labels to mark mailboxes and
+> accounts. And add some new query formats to get all mailboxes for a
+> certain account and the FIFO actions of the mailbox.
+>
+> Finally I am more inclined to keeping a separate Index/Store for each
+> account and access them via REST URLs like:
+>
+>   POST  /<account>                                              #
+> Create new account Index/Store files
+>   POST   /<account>/<mailbox>                       # Create new
+> mailbox in account. Implemented using special labels?
+>   GET     /<account>/mailboxes                        # List all
+> mailboxes for account
+>   GET     /<account>/<mailbox>/action          # Get the next pending
+> action on mailbox
+>   DELETE /<account>/<mailbox>/action       # Delete next pending
+> action on mailbox
+>   POST  /<account>/<mailbox>/message     # Add new message to an
+> account/mailbox
+>   GET    /<account>/<mailbox>/message     # Get all messages from
+> account/mailbox
+>
+> This of course is how I think  IMAP offline synchronization could be
+> done. If there are other ways to do this I am open to suggestions.
+>
+> regards,
+> Horacio Sanson
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+
+
+-- 
+Vivien Didelot,
+vivien.didelot.org
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110523/9478f7bf/attachment.html>
+
+From hsanson at gmail.com  Mon May 23 23:16:24 2011
+From: hsanson at gmail.com (Horacio Sanson)
+Date: Tue, 24 May 2011 12:16:24 +0900
+Subject: [sup-devel] Query for largest msg_id?
+In-Reply-To: <1306185381-sup-6337@whisper>
+References: <BANLkTi=bSNyp+8XFCRpYGojuM8Ub5PjB2A@mail.gmail.com>
+	<1305471101-sup-6655@masanjin.net>
+	<BANLkTin5eRZw44Je+==V=K4pyVw2T7S3+A@mail.gmail.com>
+	<BANLkTinBWgd2NYZqT+y8oHt9-_aiRjdcNA@mail.gmail.com>
+	<1305694759-sup-7483@masanjin.net>
+	<BANLkTikdq9JZbpT-DfZUNXQ74sqW2Txwqg@mail.gmail.com>
+	<1306185381-sup-6337@whisper>
+Message-ID: <BANLkTikn6iB-+f5-xLk2nEAOBL8Dzjfx8A@mail.gmail.com>
+
+On Tue, May 24, 2011 at 6:22 AM, Hamish <dmishd at gmail.com> wrote:
+> Excerpts from Horacio Sanson's message of Fri May 20 16:38:30 +0100 2011:
+>> On Wed, May 18, 2011 at 2:05 PM, William Morgan wrote:
+>> > Reformatted excerpts from Horacio Sanson's message of 2011-05-17:
+>> >> I implemented a new version of the GMail -> Heliotrope sync script and
+>> >> attach it here in hopes someone will test it and provide some
+>> >> feedback/comments.
+>
+> This sounds awesome. I've already downloaded my gmail email using
+> offlineimap (into maildir format), and I'm wondering if it's possible to
+> get your script to use the local copies first, and only then get the new
+> emails from gmail - so as to save redownloading several hundred
+> megabytes of email ...
+>
+
+Unfortunately this script is GMail specific and I make use of some
+GMail only extensions (X-GM-LABELS, XLIST, etc)  that render the
+script unusable for any other mail store.  My main motivation for
+creating this script was to get rid of offlineimap as this would store
+each message twice, once in offlineimap folders and once in heliotrope
+store.
+
+> I'm keen to try it out, but don't want to use it on my main account as I
+> imagine it would take a long time. Maybe I'll just set up a second
+> account with some test email to play with it.
+>
+
+Please do not use this script with your main account,...  It won't
+affect your GMail data since I use read-only mode (IMAP examine) but
+it still has some problems I need to handle before I can guarantee
+that Heliotrope is 100% sync with GMail after running the script. For
+instance sometimes GMail fails to send me the message body or timeouts
+generating some IMAP exceptions I need to handle more gracefully.
+
+If you have a test account with some messages any testing is greatly
+appreciated...
+
+> If it's just too hard to do, I'll just have to do the whole thing
+> anyway, but it won't be too bad as just a one off job.
+>
+> Thanks for your work though
+> Hamish
+> _______________________________________________
+> Sup-devel mailing list
+> Sup-devel at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-devel
+>
+
+From alvherre at alvh.no-ip.org  Tue May 24 14:13:43 2011
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Tue, 24 May 2011 14:13:43 -0400
+Subject: [sup-devel] [sup-talk] Word wrap for quoted lines
+In-Reply-To: <1306104299-sup-3629@whisper>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+	<1306104299-sup-3629@whisper>
+Message-ID: <1306260795-sup-3474@alvh.no-ip.org>
+
+Excerpts from Hamish's message of dom may 22 18:47:03 -0400 2011:
+> Excerpts from john.wyzer's message of Thu May 19 16:16:51 +0100 2011:
+> > > Excerpts from Antti Kaihola's message of Tue May 10 09:07:13 +0200 2011:
+> > > > 
+> > > > When reading messages in Sup and expanding quoted lines, long quoted
+> > > > lines are not word wrapped and thus I can't read all the content.
+> > > > Non-quoted content wraps as expected.
+> > 
+> > Ah. Here's a fix:
+> > https://github.com/rburchell/sup/commit/a60dd01fe297bf3cd5a12c17a40849219c7f8a91
+> 
+> I've created a wrap_quoted branch and applied this patch to it. If there
+> are no objections I'll merge it into the next branch, probably next
+> weekend.
+
+Tried it from your branch, works great.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From dmishd at gmail.com  Sun May 29 13:32:07 2011
+From: dmishd at gmail.com (Hamish)
+Date: Sun, 29 May 2011 18:32:07 +0100
+Subject: [sup-devel] [sup-talk] Word wrap for quoted lines
+In-Reply-To: <1306260795-sup-3474@alvh.no-ip.org>
+References: <BANLkTimTBRbHOTPDpE=qFZetZyccdCdt6w@mail.gmail.com>
+	<1305817664-sup-572@localhost> <1305818177-sup-9473@localhost>
+	<1306104299-sup-3629@whisper> <1306260795-sup-3474@alvh.no-ip.org>
+Message-ID: <1306690297-sup-4154@whisper>
+
+Excerpts from Alvaro Herrera's message of Tue May 24 19:13:43 +0100 2011:
+> Excerpts from Hamish's message of dom may 22 18:47:03 -0400 2011:
+> > I've created a wrap_quoted branch and applied this patch to it. If there
+> > are no objections I'll merge it into the next branch, probably next
+> > weekend.
+> 
+> Tried it from your branch, works great.
+
+OK, this is now merged into the next branch.
+
+Hamish
+
+From dmishd at gmail.com  Mon May 30 13:23:10 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 30 May 2011 18:23:10 +0100
+Subject: [sup-devel] [PATCHES] Add an account selector in edit-mode
+In-Reply-To: <1300032642-sup-9716@mailer>
+References: <1300032642-sup-9716@mailer>
+Message-ID: <1306775826-sup-4909@whisper>
+
+Excerpts from Damien Leone's message of Sun Mar 13 16:13:05 +0000 2011:
+> 0002-edit-message-mode-Add-an-optional-account-selector.patch
+
+I've finally got around to reviewing some of these. The patch above
+seems to confuse possible email addresses, and user accounts. These do
+not line up as it is possible for each account to have multiple email
+addresses associated with it (using the alternates value in an account).
+
+I have only one account, and have alternates, so the account selector
+appears, but doesn't work due to the confusion. I've had a look through,
+but not found an easy way to fix that behaviour, so I'll leave it up to
+you as to how you want to do it.
+
+I imagine though that you would want to handle all the possible email
+addresses, so I've written an extra patch to do that, and pushed your
+patch and mine onto the (new) account_selector branch on gitorious.
+Please have a look and see if what I've done still works for you, and is
+what you meant.
+
+I also wondered whether to change the behaviour so that the account
+selector will only appear if there is more than one possible email
+address to choose from, but I thought it would be handy to be able to
+reset the From: header to your usual From: using the selector, rather
+than having to hand edit whatever was in the To: header that you are
+replying to. What do you think?
+
+I'll wait for you to review my changes before I merge this into next.
+(My changes are in commit bf56b543cc664c40c3695e287ee8e7e924f2d0d1)
+
+Hamish Downer
+
+From dmishd at gmail.com  Mon May 30 18:57:11 2011
+From: dmishd at gmail.com (Hamish)
+Date: Mon, 30 May 2011 23:57:11 +0100
+Subject: [sup-devel] github patches
+Message-ID: <1306794197-sup-949@whisper>
+
+I thought I'd have a poke around github for useful patches that haven't
+been applied, I've found a few. Big-ish ones (like the account selector)
+are getting their own branch, but I can't be bothered doing that for
+every single patch, so I've stated a branch called "github_patches" to
+put a few small ones in.
+
+There's one I'm not sure about, any feedback welcome:
+
+https://github.com/mavam/sup/commit/cbc577609dea6cb058aaf39811678f9d34fd1848
+This allows the startup hook to affect the sent source and draft source.
+I wonder if any startup hooks would rely on the sent source and draft
+source being set already?
+
+Hamish Downer
+
+From eg at gaute.vetsj.com  Tue May 31 03:57:39 2011
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Tue, 31 May 2011 09:57:39 +0200
+Subject: [sup-devel] Another UTF-8 exception: edit-message-mode.rb
+Message-ID: <1306828491-sup-5835@qwerzila>
+
+Hi,
+
+ran into another UTF-8 exception in edit-message-mode, I don't know
+exactly what is causing it - but could be UTF-8 chars in some of the
+keywords that are sanitized.
+
+Anyway, exception:
+--- ArgumentError from thread: main
+invalid byte sequence in UTF-8
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/edit-message-mode.rb:498:in `gsub'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/edit-message-mode.rb:498:in `sanitize_body'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/edit-message-mode.rb:373:in `block in send_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/mbox.rb:114:in `block in store_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/mbox.rb:111:in `open'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/mbox.rb:111:in `store_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/sent.rb:28:in `write_sent_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/util.rb:618:in `method_missing'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/modes/edit-message-mode.rb:373:in `send_message'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/mode.rb:59:in `handle_input'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/lib/sup/buffer.rb:277:in `handle_input'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/bin/sup:271:in `<module:Redwood>'
+/home/gaute/.gem/ruby/1.9.1/gems/sup-999/bin/sup:80:in `<top (required)>'
+/home/gaute/.gem/ruby/1.9.1/bin/sup:19:in `load'
+/home/gaute/.gem/ruby/1.9.1/bin/sup:19:in `<main>'
+
+And a patch:
+0001-Fix-UTF-8-exception-in-santizing-body.patch
+
+Best regards,
+Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-UTF-8-exception-in-santizing-body.patch
+Type: application/octet-stream
+Size: 693 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20110531/2b149473/attachment.obj>
+

@@ -1,0 +1,2331 @@
+From jof at thejof.com  Fri Apr 12 18:09:33 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Fri, 12 Apr 2013 11:09:33 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+Message-ID: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+
+I kept hitting this bug that was driving me nuts.
+
+While editing a message, I'd go to add a recipient that I don't usually email.
+
+So, I'd leave my draft in a buffer, find a mail from them, and go to
+update their contact, only to get hit with an undefined method error.
+This seems to get triggered if you ever set a new alias for a contact
+that already exists in the contacts list.
+
+I made a fix on my branch on gitorious.
+https://gitorious.org/~jofathan/sup/jofathan-sup/commit/7754799bc186833371c7839142270fe65b942ee6
+
+
+Is anyone still monitoring the sup/mainline repo on gitorious?
+William Morgan? Are you still active with sup? Does sup need a new maintainer?
+
+I still use sup every day for my work email, and its my favorite client ever.
+Maybe it would be useful to have a sup hackers meetup in San Francisco?
+
+
+The crash was like:
+[Fri Apr 12 10:04:55 -0700 2013] ERROR: oh crap, an exception
+----------------------------------------------------------------
+I'm very sorry. It seems that an error occurred in Sup. Please
+accept my sincere apologies. Please submit the contents of
+/home/jof/.sup/exception-log.txt and a brief report of the
+circumstances to http://masanjin.net/sup-bugs/ so that I might
+address this problem. Thank you!
+
+Sincerely,
+William
+----------------------------------------------------------------
+--- NoMethodError from thread: main
+undefined method `email' for "THE_PERSONS_ALIAS_NAME":String
+/usr/lib/ruby/1.8/sup/contact.rb:33:in `update_alias'
+(eval):1:in `send'
+(eval):1:in `update_alias'
+/usr/lib/ruby/1.8/sup/modes/contact-list-mode.rb:13:in `alias_contact'
+/usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:259:in `alias'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `send'
+/usr/lib/ruby/1.8/sup/mode.rb:59:in `handle_input'
+/usr/lib/ruby/1.8/sup/buffer.rb:278:in `handle_input'
+/usr/bin/sup-mail:273
+
+From sdothum at gmail.com  Fri Apr 12 18:46:59 2013
+From: sdothum at gmail.com (Steven Hum)
+Date: Fri, 12 Apr 2013 14:46:59 -0400
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+Message-ID: <1365791858-sup-2898@luna>
+
+
+There was some activity not long ago by some sup users who are trying to 
+keep sup afloat -- by attempting to rebuild a sup wiki (the original one 
+had degraded horribly w/o a moderator) and look at current state of sup 
+(and its forks?). 
+
+Unfortunately, I don't have those mailing list messages in my archives 
+anymore -- I don't hang onto list mail long. But you should be able to 
+comb the list mail to identify a few people who are trying to spear head 
+this.
+
+I need to investigate this too.. as I currently use ezyang's fork for 
+imap maildir handling and would be interested if all the good things 
+people have added to sup can be rolled back into an official sup master.
+
+Regards,
+Steven
+
+
+Excerpts from Jonathan Lassoff's message of 2013-04-12 14:09:33 -0400:
+> I kept hitting this bug that was driving me nuts.
+> 
+> While editing a message, I'd go to add a recipient that I don't usually email.
+> 
+> So, I'd leave my draft in a buffer, find a mail from them, and go to
+> update their contact, only to get hit with an undefined method error.
+> This seems to get triggered if you ever set a new alias for a contact
+> that already exists in the contacts list.
+> 
+> I made a fix on my branch on gitorious.
+> https://gitorious.org/~jofathan/sup/jofathan-sup/commit/7754799bc186833371c7839142270fe65b942ee6
+> 
+> 
+> Is anyone still monitoring the sup/mainline repo on gitorious?
+> William Morgan? Are you still active with sup? Does sup need a new maintainer?
+> 
+> I still use sup every day for my work email, and its my favorite client ever.
+> Maybe it would be useful to have a sup hackers meetup in San Francisco?
+> 
+> 
+> The crash was like:
+> [Fri Apr 12 10:04:55 -0700 2013] ERROR: oh crap, an exception
+> ----------------------------------------------------------------
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/jof/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+> 
+> Sincerely,
+> William
+> ----------------------------------------------------------------
+> --- NoMethodError from thread: main
+> undefined method `email' for "THE_PERSONS_ALIAS_NAME":String
+> /usr/lib/ruby/1.8/sup/contact.rb:33:in `update_alias'
+> (eval):1:in `send'
+> (eval):1:in `update_alias'
+> /usr/lib/ruby/1.8/sup/modes/contact-list-mode.rb:13:in `alias_contact'
+> /usr/lib/ruby/1.8/sup/modes/thread-view-mode.rb:259:in `alias'
+> /usr/lib/ruby/1.8/sup/mode.rb:59:in `send'
+> /usr/lib/ruby/1.8/sup/mode.rb:59:in `handle_input'
+> /usr/lib/ruby/1.8/sup/buffer.rb:278:in `handle_input'
+> /usr/bin/sup-mail:273
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From dmishd at gmail.com  Fri Apr 12 19:46:54 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Fri, 12 Apr 2013 20:46:54 +0100
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+Message-ID: <CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+
+We've set up https://github.com/sup-heliotrope/sup
+
+Please feel free to put pull requests up there. And contributions to the
+new wiki are also very welcome. We have lots of missing pages ...
+
+https://github.com/sup-heliotrope/sup/wiki
+
+We have emailed William about this but have had no response. So currently
+we have no access to publishing gems under the sup name.
+
+As to a meet up, I'm in England so won't be coming to San Francisco :-P
+
+> I'm very sorry. It seems that an error occurred in Sup. Please
+> accept my sincere apologies. Please submit the contents of
+> /home/jof/.sup/exception-log.txt and a brief report of the
+> circumstances to http://masanjin.net/sup-bugs/ so that I might
+> address this problem. Thank you!
+>
+> Sincerely,
+> William
+
+We should update this text ...
+
+Hamish
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130412/ea9c04d4/attachment.html>
+
+From eg at gaute.vetsj.com  Sat Apr 13 09:16:53 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 11:16:53 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+Message-ID: <51692285.8000709@gaute.vetsj.com>
+
+Hi,
+
+Jonathan: I put your commit into a pull request at:
+- https://github.com/sup-heliotrope/sup/pull/19
+
+Also, re-branding and updating to web-references:
+- https://github.com/sup-heliotrope/sup/pull/20
+
+any comments on this? You can see the changes I made. I have absolutely
+no intentions of stepping on any toes, but this is a suggestion.
+
+It is a pity that the official home page and probably first search
+results direct to the abandoned home and gem of sup.
+
+Regards, Gaute
+
+On 12. april 2013 21:46, Hamish D wrote:
+> We've set up https://github.com/sup-heliotrope/sup
+> 
+> Please feel free to put pull requests up there. And contributions to the
+> new wiki are also very welcome. We have lots of missing pages ...
+> 
+> https://github.com/sup-heliotrope/sup/wiki
+> 
+> We have emailed William about this but have had no response. So currently
+> we have no access to publishing gems under the sup name.
+> 
+> As to a meet up, I'm in England so won't be coming to San Francisco :-P
+> 
+>> I'm very sorry. It seems that an error occurred in Sup. Please
+>> accept my sincere apologies. Please submit the contents of
+>> /home/jof/.sup/exception-log.txt and a brief report of the
+>> circumstances to http://masanjin.net/sup-bugs/ so that I might
+>> address this problem. Thank you!
+>>
+>> Sincerely,
+>> William
+> 
+> We should update this text ...
+> 
+> Hamish
+> 
+> 
+> 
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+> 
+
+From jof at thejof.com  Sat Apr 13 10:09:55 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 03:09:55 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <51692285.8000709@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+Message-ID: <CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+
+On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> Hi,
+>
+> Jonathan: I put your commit into a pull request at:
+> - https://github.com/sup-heliotrope/sup/pull/19
+>
+> Also, re-branding and updating to web-references:
+> - https://github.com/sup-heliotrope/sup/pull/20
+>
+> any comments on this? You can see the changes I made. I have absolutely
+> no intentions of stepping on any toes, but this is a suggestion.
+
+No, thank you very much! That looks great!
+
+> It is a pity that the official home page and probably first search
+> results direct to the abandoned home and gem of sup.
+
+It is too bad. Hopefully William could hand off access or at least
+push updates somehow.
+
+If not, maybe we could stand up another domain pointing to github pages?
+Looks like supmua.org and supm.ua are available. :p
+
+--j
+
+From jof at thejof.com  Sat Apr 13 10:06:21 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 03:06:21 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+Message-ID: <CAHsqw9vwUsq6AmT9FUanxWuDgoAgHTdq-29cMN8hseZwEyN=6g@mail.gmail.com>
+
+On Fri, Apr 12, 2013 at 12:46 PM, Hamish D <dmishd at gmail.com> wrote:
+> We've set up https://github.com/sup-heliotrope/sup
+>
+> Please feel free to put pull requests up there. And contributions to the new
+> wiki are also very welcome. We have lots of missing pages ...
+>
+> https://github.com/sup-heliotrope/sup/wiki
+
+Hey -- that's a most excellent place to put a wiki up. Glad to find
+where the action's at.
+
+> We have emailed William about this but have had no response. So currently we
+> have no access to publishing gems under the sup name.
+>
+> As to a meet up, I'm in England so won't be coming to San Francisco :-P
+
+Oh no worries, I just mention it because I know WIlliam is from
+somewhere around here. I think he's working in SF now.
+
+>> I'm very sorry. It seems that an error occurred in Sup. Please
+>> accept my sincere apologies. Please submit the contents of
+>> /home/jof/.sup/exception-log.txt and a brief report of the
+>> circumstances to http://masanjin.net/sup-bugs/ so that I might
+>> address this problem. Thank you!
+>>
+>> Sincerely,
+>> William
+>
+> We should update this text ...
+>
+> Hamish
+
+From matthieu.rakotojaona at gmail.com  Sat Apr 13 12:49:46 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sat, 13 Apr 2013 14:49:46 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <51692285.8000709@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+Message-ID: <20130413124946.GA22905@kpad.otokar.looc2011.eu>
+
+On 04/13, Gaute Hope wrote:
+> Hi,
+> 
+> Jonathan: I put your commit into a pull request at:
+> - https://github.com/sup-heliotrope/sup/pull/19
+> 
+> Also, re-branding and updating to web-references:
+> - https://github.com/sup-heliotrope/sup/pull/20
+> 
+> any comments on this? You can see the changes I made. I have absolutely
+> no intentions of stepping on any toes, but this is a suggestion.
+> 
+> It is a pity that the official home page and probably first search
+> results direct to the abandoned home and gem of sup.
+> 
+> Regards, Gaute
+
+I guess it's also the occasion to think about the mailing list. I guess
+no one has the rights on this one ? I don't see anything in github for
+this functionality.
+
+-- 
+Matthieu Rakotojaona
+
+From eg at gaute.vetsj.com  Sat Apr 13 13:17:37 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 15:17:37 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+Message-ID: <51695AF1.2070701@gaute.vetsj.com>
+
+On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>> Hi,
+>>
+>> Jonathan: I put your commit into a pull request at:
+>> - https://github.com/sup-heliotrope/sup/pull/19
+>>
+>> Also, re-branding and updating to web-references:
+>> - https://github.com/sup-heliotrope/sup/pull/20
+>>
+>> any comments on this? You can see the changes I made. I have absolutely
+>> no intentions of stepping on any toes, but this is a suggestion.
+>
+> No, thank you very much! That looks great!
+>
+>> It is a pity that the official home page and probably first search
+>> results direct to the abandoned home and gem of sup.
+>
+> It is too bad. Hopefully William could hand off access or at least
+> push updates somehow.
+>
+> If not, maybe we could stand up another domain pointing to github pages?
+> Looks like supmua.org and supm.ua are available. :p
+>
+> --j
+
+Yeah.. I think some web page is pretty essential, perhaps just the 
+standard github-pages domain for a start. Anyone feel up for the task, 
+I'd be happy to add you to the github-organization.
+
+Regards, Gaute
+
+
+From eg at gaute.vetsj.com  Sat Apr 13 13:29:08 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 15:29:08 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <20130413124946.GA22905@kpad.otokar.looc2011.eu>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<20130413124946.GA22905@kpad.otokar.looc2011.eu>
+Message-ID: <51695DA4.4030906@gaute.vetsj.com>
+
+On 13. april 2013 14:49, Matthieu Rakotojaona wrote:
+> I guess it's also the occasion to think about the mailing list. I guess
+> no one has the rights on this one ? I don't see anything in github for
+> this functionality.
+
+
+Yup - maybe its time for 'sup2' - from rubyforge:
+
+http://rubyforge.org/docman/view.php/5/460/faq.html#abandoned
+
+Project xyz seems to be abandoned. Can you pass it to me?
+
+This comes up occasionally - a well-named or positioned project gets
+started, then the project admin falls out of sight and can't be reached.
+Patches pile up, people start wondering what's going on, and it seems a
+shame to lose the project name by forking it. So someone will ask if we
+as RubyForge admins will pass over control of the project to them.
+
+We really, really, hesitate to transfer admin privileges from one person
+to another, even if the original admin has completely disappeared. I
+suspect there are legal complications, and we don't have the budget to
+deal with those. Furthermore, suppose the original admin has been off on
+furlough for a year and comes back to find that his project has been
+moved away from him. Not a pleasant situation.
+
+In situations where the project admin can't be reached for a long time
+and folks want to move forward, I suggest forking the project. You're
+welcome to host a xyz2 version of project xyz on RubyForge, and if the
+original admin ever shows up again and wants to hand over the project to
+you, we can help facilitate that.
+
+From sdothum at gmail.com  Sat Apr 13 15:42:45 2013
+From: sdothum at gmail.com (Steven Hum)
+Date: Sat, 13 Apr 2013 11:42:45 -0400
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <51695DA4.4030906@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<20130413124946.GA22905@kpad.otokar.looc2011.eu>
+	<51695DA4.4030906@gaute.vetsj.com>
+Message-ID: <1365867255-sup-1309@luna>
+
+
+I was thinking the same, that it may be time for a sup2 repository.
+
+This is very premature, but are there any thoughts to integrate some of 
+the work done in the sup forks. I am thinking in particular of the imap 
+work ezyang did -- I adopted his fork as he seemed to be the most active 
+with regards to imap folder handling, notably propagating updates.
+
+It would be nice to consolidate the features many of these forks 
+addressed.. though, I have no idea how this can be easily facilitated.
+
+Regards,
+Steven
+
+Excerpts from Gaute Hope's message of 2013-04-13 09:29:08 -0400:
+> On 13. april 2013 14:49, Matthieu Rakotojaona wrote:
+> > I guess it's also the occasion to think about the mailing list. I guess
+> > no one has the rights on this one ? I don't see anything in github for
+> > this functionality.
+> 
+> 
+> Yup - maybe its time for 'sup2' - from rubyforge:
+> 
+> http://rubyforge.org/docman/view.php/5/460/faq.html#abandoned
+> 
+> Project xyz seems to be abandoned. Can you pass it to me?
+> 
+> This comes up occasionally - a well-named or positioned project gets
+> started, then the project admin falls out of sight and can't be reached.
+> Patches pile up, people start wondering what's going on, and it seems a
+> shame to lose the project name by forking it. So someone will ask if we
+> as RubyForge admins will pass over control of the project to them.
+> 
+> We really, really, hesitate to transfer admin privileges from one person
+> to another, even if the original admin has completely disappeared. I
+> suspect there are legal complications, and we don't have the budget to
+> deal with those. Furthermore, suppose the original admin has been off on
+> furlough for a year and comes back to find that his project has been
+> moved away from him. Not a pleasant situation.
+> 
+> In situations where the project admin can't be reached for a long time
+> and folks want to move forward, I suggest forking the project. You're
+> welcome to host a xyz2 version of project xyz on RubyForge, and if the
+> original admin ever shows up again and wants to hand over the project to
+> you, we can help facilitate that.
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From jof at thejof.com  Sat Apr 13 16:35:53 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 09:35:53 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <51695AF1.2070701@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+Message-ID: <CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+
+On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>> Hi,
+>>>
+>>> Jonathan: I put your commit into a pull request at:
+>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>
+>>> Also, re-branding and updating to web-references:
+>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>
+>>> any comments on this? You can see the changes I made. I have absolutely
+>>> no intentions of stepping on any toes, but this is a suggestion.
+>>
+>> No, thank you very much! That looks great!
+>>
+>>> It is a pity that the official home page and probably first search
+>>> results direct to the abandoned home and gem of sup.
+>>
+>> It is too bad. Hopefully William could hand off access or at least
+>> push updates somehow.
+>>
+>> If not, maybe we could stand up another domain pointing to github pages?
+>> Looks like supmua.org and supm.ua are available. :p
+>>
+>> --j
+>
+> Yeah.. I think some web page is pretty essential, perhaps just the
+> standard github-pages domain for a start. Anyone feel up for the task,
+> I'd be happy to add you to the github-organization.
+
+Agreed. I snagged supmua.org for a year, and have it pointing at
+sup-heliotrope.github.io for pages.
+
+Stick me on the org, and I'll see about getting a simple site started.
+
+Cheers,
+jof
+
+From eg at gaute.vetsj.com  Sat Apr 13 17:14:04 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 19:14:04 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+Message-ID: <5169925C.1060701@gaute.vetsj.com>
+
+
+
+On 13. april 2013 18:35, Jonathan Lassoff wrote:
+> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>> Hi,
+>>>>
+>>>> Jonathan: I put your commit into a pull request at:
+>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>
+>>>> Also, re-branding and updating to web-references:
+>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>
+>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>
+>>> No, thank you very much! That looks great!
+>>>
+>>>> It is a pity that the official home page and probably first search
+>>>> results direct to the abandoned home and gem of sup.
+>>>
+>>> It is too bad. Hopefully William could hand off access or at least
+>>> push updates somehow.
+>>>
+>>> If not, maybe we could stand up another domain pointing to github pages?
+>>> Looks like supmua.org and supm.ua are available. :p
+>>>
+>>> --j
+>>
+>> Yeah.. I think some web page is pretty essential, perhaps just the
+>> standard github-pages domain for a start. Anyone feel up for the task,
+>> I'd be happy to add you to the github-organization.
+> 
+> Agreed. I snagged supmua.org for a year, and have it pointing at
+> sup-heliotrope.github.io for pages.
+> 
+> Stick me on the org, and I'll see about getting a simple site started.
+
+Nice. You're on.
+
+Cheers, Gaute
+
+From eg at gaute.vetsj.com  Sat Apr 13 17:37:01 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sat, 13 Apr 2013 19:37:01 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <5169925C.1060701@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+Message-ID: <516997BD.7010409@gaute.vetsj.com>
+
+If we go sup2 I would suggest the following plan:
+
+- Release the best we can get with the current code for 1.9.3 as a last
+community release of sup-0.12, say.. sup-0.13.
+
+For sup2:
+- Fork a new repo: sup2
+- Go for Mail in stead of RMail (index breakage)
+- Go for only Psych (config breakage), requires psych gem in 1.8
+- Integrate the IMAP / label sync back stuff (personally this is what I
+miss the most)
+- Go for ruby 2.0.0 and maybe 1.8
+- Get rid of all dependencies that are abandoned or deprecated (ncurses
+gem..)
+- Try to do tests on most stuff for different encodings
+- Try to get UTF-8 / encoding right
+- Move all the rest of the infrastructure to something the project is in
+control of
+
+Would be very nice:
+- Index migration
+- Config migration
+
+For the web page (eventually):
+- note about the original project
+- note about the last sup-0.13 release
+- wiki and project page for sup2
+
+This plan more or less holds whether we go sup2 or not, but I think it
+is easier to get rid of the hopeless dependencies.
+
+@sup-devel readers: discussion is currently at sup-talk, please send any
+responses there.
+
+Regards, Gaute
+
+On 13. april 2013 19:14, Gaute Hope wrote:
+> 
+> 
+> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Jonathan: I put your commit into a pull request at:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>
+>>>>> Also, re-branding and updating to web-references:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>
+>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>
+>>>> No, thank you very much! That looks great!
+>>>>
+>>>>> It is a pity that the official home page and probably first search
+>>>>> results direct to the abandoned home and gem of sup.
+>>>>
+>>>> It is too bad. Hopefully William could hand off access or at least
+>>>> push updates somehow.
+>>>>
+>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>
+>>>> --j
+>>>
+>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>> I'd be happy to add you to the github-organization.
+>>
+>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>> sup-heliotrope.github.io for pages.
+>>
+>> Stick me on the org, and I'll see about getting a simple site started.
+> 
+> Nice. You're on.
+> 
+> Cheers, Gaute
+> 
+
+From jof at thejof.com  Sat Apr 13 19:15:10 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 12:15:10 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <5169925C.1060701@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+Message-ID: <CAHsqw9s4GkmVZucuAd6pep_db-jr73QhRqBqEyZ6rudyR+pzGQ@mail.gmail.com>
+
+http://supmua.org/
+
+Just tossed this, up but it's mostly stuff from the old rubyforge page.
+
+On Sat, Apr 13, 2013 at 10:14 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>
+>
+> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Jonathan: I put your commit into a pull request at:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>
+>>>>> Also, re-branding and updating to web-references:
+>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>
+>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>
+>>>> No, thank you very much! That looks great!
+>>>>
+>>>>> It is a pity that the official home page and probably first search
+>>>>> results direct to the abandoned home and gem of sup.
+>>>>
+>>>> It is too bad. Hopefully William could hand off access or at least
+>>>> push updates somehow.
+>>>>
+>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>
+>>>> --j
+>>>
+>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>> I'd be happy to add you to the github-organization.
+>>
+>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>> sup-heliotrope.github.io for pages.
+>>
+>> Stick me on the org, and I'll see about getting a simple site started.
+>
+> Nice. You're on.
+>
+> Cheers, Gaute
+
+From jof at thejof.com  Sat Apr 13 19:19:17 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 12:19:17 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <516997BD.7010409@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+Message-ID: <CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+
+On Sat, Apr 13, 2013 at 10:37 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+> If we go sup2 I would suggest the following plan:
+>
+> - Release the best we can get with the current code for 1.9.3 as a last
+> community release of sup-0.12, say.. sup-0.13.
+>
+> For sup2:
+> - Fork a new repo: sup2
+> - Go for Mail in stead of RMail (index breakage)
+> - Go for only Psych (config breakage), requires psych gem in 1.8
+> - Integrate the IMAP / label sync back stuff (personally this is what I
+> miss the most)
+> - Go for ruby 2.0.0 and maybe 1.8
+> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+> gem..)
+
+And target ncursesw?
+
+> - Try to do tests on most stuff for different encodings
+> - Try to get UTF-8 / encoding right
+> - Move all the rest of the infrastructure to something the project is in
+> control of
+>
+> Would be very nice:
+> - Index migration
+> - Config migration
+>
+> For the web page (eventually):
+> - note about the original project
+> - note about the last sup-0.13 release
+> - wiki and project page for sup2
+>
+> This plan more or less holds whether we go sup2 or not, but I think it
+> is easier to get rid of the hopeless dependencies.
+
+I agree that it's worth it to drop unmaintained dependencies and just
+fix what breaks.
+It would be unfortunate to have to fork the project and make a
+different name. I wonder if Morgan has lost interest or is just busy
+with other things.
+
+Cheers,
+jof
+> @sup-devel readers: discussion is currently at sup-talk, please send any
+> responses there.
+>
+> Regards, Gaute
+>
+> On 13. april 2013 19:14, Gaute Hope wrote:
+>>
+>>
+>> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> Jonathan: I put your commit into a pull request at:
+>>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>>
+>>>>>> Also, re-branding and updating to web-references:
+>>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>>
+>>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>>
+>>>>> No, thank you very much! That looks great!
+>>>>>
+>>>>>> It is a pity that the official home page and probably first search
+>>>>>> results direct to the abandoned home and gem of sup.
+>>>>>
+>>>>> It is too bad. Hopefully William could hand off access or at least
+>>>>> push updates somehow.
+>>>>>
+>>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>>
+>>>>> --j
+>>>>
+>>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>>> I'd be happy to add you to the github-organization.
+>>>
+>>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>>> sup-heliotrope.github.io for pages.
+>>>
+>>> Stick me on the org, and I'll see about getting a simple site started.
+>>
+>> Nice. You're on.
+>>
+>> Cheers, Gaute
+>>
+
+From jof at thejof.com  Sat Apr 13 20:48:55 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sat, 13 Apr 2013 13:48:55 -0700
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+Message-ID: <CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+
+Maybe William can help out?
+https://twitter.com/wm/status/323175493367119873
+
+On Sat, Apr 13, 2013 at 12:19 PM, Jonathan Lassoff <jof at thejof.com> wrote:
+> On Sat, Apr 13, 2013 at 10:37 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>> If we go sup2 I would suggest the following plan:
+>>
+>> - Release the best we can get with the current code for 1.9.3 as a last
+>> community release of sup-0.12, say.. sup-0.13.
+>>
+>> For sup2:
+>> - Fork a new repo: sup2
+>> - Go for Mail in stead of RMail (index breakage)
+>> - Go for only Psych (config breakage), requires psych gem in 1.8
+>> - Integrate the IMAP / label sync back stuff (personally this is what I
+>> miss the most)
+>> - Go for ruby 2.0.0 and maybe 1.8
+>> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>> gem..)
+>
+> And target ncursesw?
+>
+>> - Try to do tests on most stuff for different encodings
+>> - Try to get UTF-8 / encoding right
+>> - Move all the rest of the infrastructure to something the project is in
+>> control of
+>>
+>> Would be very nice:
+>> - Index migration
+>> - Config migration
+>>
+>> For the web page (eventually):
+>> - note about the original project
+>> - note about the last sup-0.13 release
+>> - wiki and project page for sup2
+>>
+>> This plan more or less holds whether we go sup2 or not, but I think it
+>> is easier to get rid of the hopeless dependencies.
+>
+> I agree that it's worth it to drop unmaintained dependencies and just
+> fix what breaks.
+> It would be unfortunate to have to fork the project and make a
+> different name. I wonder if Morgan has lost interest or is just busy
+> with other things.
+>
+> Cheers,
+> jof
+>> @sup-devel readers: discussion is currently at sup-talk, please send any
+>> responses there.
+>>
+>> Regards, Gaute
+>>
+>> On 13. april 2013 19:14, Gaute Hope wrote:
+>>>
+>>>
+>>> On 13. april 2013 18:35, Jonathan Lassoff wrote:
+>>>> On Sat, Apr 13, 2013 at 6:17 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>> On la. 13. april 2013 kl. 12.09 +0200, Jonathan Lassoff wrote:
+>>>>>> On Sat, Apr 13, 2013 at 2:16 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> Jonathan: I put your commit into a pull request at:
+>>>>>>> - https://github.com/sup-heliotrope/sup/pull/19
+>>>>>>>
+>>>>>>> Also, re-branding and updating to web-references:
+>>>>>>> - https://github.com/sup-heliotrope/sup/pull/20
+>>>>>>>
+>>>>>>> any comments on this? You can see the changes I made. I have absolutely
+>>>>>>> no intentions of stepping on any toes, but this is a suggestion.
+>>>>>>
+>>>>>> No, thank you very much! That looks great!
+>>>>>>
+>>>>>>> It is a pity that the official home page and probably first search
+>>>>>>> results direct to the abandoned home and gem of sup.
+>>>>>>
+>>>>>> It is too bad. Hopefully William could hand off access or at least
+>>>>>> push updates somehow.
+>>>>>>
+>>>>>> If not, maybe we could stand up another domain pointing to github pages?
+>>>>>> Looks like supmua.org and supm.ua are available. :p
+>>>>>>
+>>>>>> --j
+>>>>>
+>>>>> Yeah.. I think some web page is pretty essential, perhaps just the
+>>>>> standard github-pages domain for a start. Anyone feel up for the task,
+>>>>> I'd be happy to add you to the github-organization.
+>>>>
+>>>> Agreed. I snagged supmua.org for a year, and have it pointing at
+>>>> sup-heliotrope.github.io for pages.
+>>>>
+>>>> Stick me on the org, and I'll see about getting a simple site started.
+>>>
+>>> Nice. You're on.
+>>>
+>>> Cheers, Gaute
+>>>
+
+From eg at gaute.vetsj.com  Sat Apr 13 22:17:32 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 14 Apr 2013 00:17:32 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAHsqw9tM6-S7DGWAVUU_qHa-db=maaBSUL1mD2Tg5Yu=dLj-oQ@mail.gmail.com>
+	<CAHsqw9u6pYeh-y3RLHNRqF5qsMLsdfoku8ZS6SC+f___ptNL1g@mail.gmail.com>
+Message-ID: <5169D97C.6020909@gaute.vetsj.com>
+
+On la. 13. april 2013 kl. 22.48 +0200, Jonathan Lassoff wrote:
+> Maybe William can help out?
+> https://twitter.com/wm/status/323175493367119873
+
+That would be the best ;)
+
+But I still think we need to get rid of the deprecated and abandoned 
+stuff.
+
+- gaute
+
+From eg at gaute.vetsj.com  Sat Apr 13 22:20:55 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 14 Apr 2013 00:20:55 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAHsqw9s4GkmVZucuAd6pep_db-jr73QhRqBqEyZ6rudyR+pzGQ@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<CAHsqw9s4GkmVZucuAd6pep_db-jr73QhRqBqEyZ6rudyR+pzGQ@mail.gmail.com>
+Message-ID: <5169DA47.7010706@gaute.vetsj.com>
+
+On 13. april 2013 21:15, Jonathan Lassoff wrote:
+> http://supmua.org/
+> 
+> Just tossed this, up but it's mostly stuff from the old rubyforge page.
+
+Thats a good start, nice work!
+
+- gaute
+
+From eric.weikl at gmx.net  Sun Apr 14 11:31:14 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Sun, 14 Apr 2013 13:31:14 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <516997BD.7010409@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+Message-ID: <1365938152-sup-6420@mint>
+
+Hi Gaute,
+
+That sounds like a plan of action :-)
+
+Excerpts from Gaute Hope's message of 2013-04-13 19:37:01 +0200:
+> - Go for Mail in stead of RMail (index breakage)
+
+Is this related to getting rid of Iconv for Ruby 2.0.0, or is it a
+separate issue? Otherwise, I would favor lumping it in the same release
+together with IMAP syncback, since both require a migration step by the
+user.
+
+> - Integrate the IMAP / label sync back stuff (personally this is what I
+>   miss the most)
+
+I've been using the imap syncback code by Damien Leone from ezyang's
+branch for quite a while now (> 1 year) without any issues. It should be
+fairly easy to cherry-pick the relevant commits into the development
+branch.
+
+> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>   gem..)
+
++1 I'd also add deleting all unused code and other stuff (server code,
+website, Redwood protocol stuff, etc.).
+
+> - Try to do tests on most stuff for different encodings
+
+I thought about adding some functional tests (through the UI or
+otherwise), since retrofitting unit tests is probably too much of a pain.
+I need to figure out how the parts fit together some more, though.
+Do you think that makes sense?
+
+> Would be very nice:
+> - Index migration
+
+We could do the index migration like the imap syncback code does - it
+recognizes that it wasn't done yet and asks you to run a command-line
+tool.
+
+> - Config migration
+
+How exactly will the config change? Possibly it easy to detect via
+regular expressions or something?
+
+Cheers,
+Eric
+
+From eg at gaute.vetsj.com  Sun Apr 14 12:05:52 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 14 Apr 2013 14:05:52 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <1365938152-sup-6420@mint>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+Message-ID: <516A9BA0.7040906@gaute.vetsj.com>
+
+On 14. april 2013 13:31, Eric Weikl wrote:
+> Hi Gaute,
+> 
+> That sounds like a plan of action :-)
+> 
+> Excerpts from Gaute Hope's message of 2013-04-13 19:37:01 +0200:
+>> - Go for Mail in stead of RMail (index breakage)
+> 
+> Is this related to getting rid of Iconv for Ruby 2.0.0, or is it a
+> separate issue? Otherwise, I would favor lumping it in the same release
+> together with IMAP syncback, since both require a migration step by the
+> user.
+
+No, RMail and Iconv are separate issues.
+
+Yes, that was my thinking as well - since both config and index need a
+migration step. Iconv deprecation should be seamless (syncback as well).
+
+>> - Integrate the IMAP / label sync back stuff (personally this is what I
+>>   miss the most)
+> 
+> I've been using the imap syncback code by Damien Leone from ezyang's
+> branch for quite a while now (> 1 year) without any issues. It should be
+> fairly easy to cherry-pick the relevant commits into the development
+> branch.
+
+Cool. I would really like to see this in main sup, any other objections?
+In my view the main arguments are:
+
+- Manipulating IMAP could mess up user mail (potentially new bugs could
+mess up)
+- Maintaining this functionality requires some long-term (at least
+minor) effort
+- It modifies the mail store (could be solved with disabled-by-default)
+which I think is a big plus for many
+
+I would suggest creating a official branch for this now, if you are
+interested I could add you as commiter or owner.
+
+>> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>>   gem..)
+> 
+> +1 I'd also add deleting all unused code and other stuff (server code,
+> website, Redwood protocol stuff, etc.).
+
+Yes, you could put Iconv in this category as well.
+
+>> - Try to do tests on most stuff for different encodings
+> 
+> I thought about adding some functional tests (through the UI or
+> otherwise), since retrofitting unit tests is probably too much of a pain.
+> I need to figure out how the parts fit together some more, though.
+> Do you think that makes sense?
+> 
+>> Would be very nice:
+>> - Index migration
+> 
+> We could do the index migration like the imap syncback code does - it
+> recognizes that it wasn't done yet and asks you to run a command-line
+> tool.
+
+Not entirely sure how things are built up, but migration probably
+requires to map ids between Mail and RMail (it's going to be messy).
+Matthieu had some insight here, see:
+https://github.com/sup-heliotrope/sup/issues/22
+
+>> - Config migration
+> 
+> How exactly will the config change? Possibly it easy to detect via
+> regular expressions or something?
+
+The YAML output from Syck (deprecated and removed) and Psych is
+incompatible. So the old config files are not readable by Psych. An
+approach could possibly be: install syck as a gem (if it exists), load
+the file with Syck, re-write it with Psych. There exists a Psych gem for
+1.8 (which could be conditionally loaded).
+
+Also might be worth taking a look at sup inspired stuff; notmuch /
+mutt-kz which I don't think provides the same as sup, but are less buggy
+atm.
+
+Cheers,
+Gaute
+
+From eric.weikl at gmx.net  Sun Apr 14 17:39:53 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Sun, 14 Apr 2013 19:39:53 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <516A9BA0.7040906@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com>
+Message-ID: <1365960274-sup-7139@mint>
+
+Hi Gaute,
+
+Excerpts from Gaute Hope's message of 2013-04-14 14:05:52 +0200:
+> In my view the main arguments are:
+> 
+> - Manipulating IMAP could mess up user mail (potentially new bugs could
+>   mess up)
+
+Yes. Although my experience was positive until now, this definitely needs
+extensive testing (especially when disabled). Volunteers, anyone? :-)
+
+> I would suggest creating a official branch for this now, if you are
+> interested I could add you as commiter or owner.
+
+Sure, I can give it a spin.
+
+Cheers,
+Eric
+
+From dmishd at gmail.com  Sun Apr 14 17:45:57 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 14 Apr 2013 18:45:57 +0100
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <516997BD.7010409@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com> <516997BD.7010409@gaute.vetsj.com>
+Message-ID: <CAOxvSbfTY3oVttPbZSC85oBvW+7xH5xeVCWeJc66UbdKJ=8mbw@mail.gmail.com>
+
+> For sup2:
+> - Fork a new repo: sup2
+> - Go for Mail in stead of RMail (index breakage)
+> - Go for only Psych (config breakage), requires psych gem in 1.8
+> - Integrate the IMAP / label sync back stuff (personally this is what I
+> miss the most)
+> - Go for ruby 2.0.0 and maybe 1.8
+> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+> gem..)
+> - Try to do tests on most stuff for different encodings
+> - Try to get UTF-8 / encoding right
+> - Move all the rest of the infrastructure to something the project is in
+> control of
+
+Another one for the list would be to update the GPG code to use
+version 2 of ruby-gpgme - it currently works with ruby-gpgme 1.0.8
+
+Maybe we should move this list to the wiki.
+
+Hamish
+
+From eg at gaute.vetsj.com  Sun Apr 14 22:32:43 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 15 Apr 2013 00:32:43 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAOxvSbfTY3oVttPbZSC85oBvW+7xH5xeVCWeJc66UbdKJ=8mbw@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAOxvSbfTY3oVttPbZSC85oBvW+7xH5xeVCWeJc66UbdKJ=8mbw@mail.gmail.com>
+Message-ID: <516B2E8B.2080203@gaute.vetsj.com>
+
+
+
+On 14. april 2013 19:45, Hamish D wrote:
+>> For sup2:
+>> - Fork a new repo: sup2
+>> - Go for Mail in stead of RMail (index breakage)
+>> - Go for only Psych (config breakage), requires psych gem in 1.8
+>> - Integrate the IMAP / label sync back stuff (personally this is what I
+>> miss the most)
+>> - Go for ruby 2.0.0 and maybe 1.8
+>> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>> gem..)
+>> - Try to do tests on most stuff for different encodings
+>> - Try to get UTF-8 / encoding right
+>> - Move all the rest of the infrastructure to something the project is in
+>> control of
+> 
+> Another one for the list would be to update the GPG code to use
+> version 2 of ruby-gpgme - it currently works with ruby-gpgme 1.0.8
+> 
+> Maybe we should move this list to the wiki.
+
+Definitely: A roadmap for the next sup.
+
+Cheers,
+Gaute
+
+From eg at gaute.vetsj.com  Mon Apr 15 11:42:28 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 15 Apr 2013 13:42:28 +0200
+Subject: [sup-talk] sup: Fix for an UndefinedMethodError
+In-Reply-To: <CAOxvSbfTY3oVttPbZSC85oBvW+7xH5xeVCWeJc66UbdKJ=8mbw@mail.gmail.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com>
+	<CAOxvSbfTY3oVttPbZSC85oBvW+7xH5xeVCWeJc66UbdKJ=8mbw@mail.gmail.com>
+Message-ID: <516BE7A4.90305@gaute.vetsj.com>
+
+
+
+On 14. april 2013 19:45, Hamish D wrote:
+>> For sup2:
+>> - Fork a new repo: sup2
+>> - Go for Mail in stead of RMail (index breakage)
+>> - Go for only Psych (config breakage), requires psych gem in 1.8
+>> - Integrate the IMAP / label sync back stuff (personally this is what I
+>> miss the most)
+>> - Go for ruby 2.0.0 and maybe 1.8
+>> - Get rid of all dependencies that are abandoned or deprecated (ncurses
+>> gem..)
+>> - Try to do tests on most stuff for different encodings
+>> - Try to get UTF-8 / encoding right
+>> - Move all the rest of the infrastructure to something the project is in
+>> control of
+> 
+> Another one for the list would be to update the GPG code to use
+> version 2 of ruby-gpgme - it currently works with ruby-gpgme 1.0.8
+> 
+> Maybe we should move this list to the wiki.
+
+https://github.com/sup-heliotrope/sup/wiki/Development
+
+Please edit and comment - this was done quickly.
+
+- Gaute
+
+From marka at pobox.com  Mon Apr 15 14:01:11 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Mon, 15 Apr 2013 10:01:11 -0400
+Subject: [sup-talk] [PATCH] Fix problem with account selector
+Message-ID: <1366034093-sup-2478@x200s>
+
+Here is the commit on my fork (I also did a pull request)
+for something that I found useful when using the same
+inbox for both personal and work email:
+
+https://github.com/bloovis/sup/commit/4f843f53feac2cc7e1f7d8f5a32043878b398ace
+
+When sending a message, the account selector was ignoring
+the account set by the before-edit hook.  Fix this
+by running the hook before setting up the account selector.
+---
+ lib/sup/modes/edit-message-mode.rb |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/sup/modes/edit-message-mode.rb b/lib/sup/modes/edit-message-mode.rb
+index 464d935..1ed5969 100644
+--- a/lib/sup/modes/edit-message-mode.rb
++++ b/lib/sup/modes/edit-message-mode.rb
+@@ -116,6 +116,8 @@ EOS
+     @selector_label_width = 0
+     @async_mode = nil
+ 
++    HookManager.run "before-edit", :header => @header, :body => @body
++
+     @account_selector = nil
+     # only show account selector if there is more than one email address
+     if $config[:account_selector] && AccountManager.user_emails.length > 1
+@@ -145,7 +147,6 @@ EOS
+       end
+     add_selector @crypto_selector if @crypto_selector
+ 
+-    HookManager.run "before-edit", :header => @header, :body => @body
+     if @crypto_selector
+       HookManager.run "crypto-mode", :header => @header, :body => @body, :crypto_selector => @crypto_selector
+     end
+-- 
+1.7.9.5
+
+From eric.weikl at gmx.net  Tue Apr 16 20:30:26 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Tue, 16 Apr 2013 22:30:26 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <516A9BA0.7040906@gaute.vetsj.com>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com>
+Message-ID: <1366143381-sup-8459@mint>
+
+Hi everyone,
+
+I created a new branch with all the commits from Damien Leone and Edward
+Yang related to maildir syncback and put it here:
+
+https://github.com/sup-heliotrope/sup/tree/maildir-sync
+
+I skipped some advanced stuff like Edward's inotify support for now. We
+can add that later.
+
+I performed some basic testing, but it would be great if some more people
+could give it a try. There's some documentation in the wiki:
+
+https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+
+Cheers,
+Eric
+
+Excerpts from Gaute Hope's message of 2013-04-14 14:05:52 +0200:
+> Cool. I would really like to see this in main sup, any other
+> objections?  In my view the main arguments are:
+> 
+> - Manipulating IMAP could mess up user mail (potentially new bugs could
+> mess up)
+> - Maintaining this functionality requires some long-term (at least
+> minor) effort
+> - It modifies the mail store (could be solved with disabled-by-default)
+> which I think is a big plus for many
+> 
+> I would suggest creating a official branch for this now, if you are
+> interested I could add you as commiter or owner.
+
+From matthieu.rakotojaona at gmail.com  Tue Apr 16 21:21:45 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Tue, 16 Apr 2013 23:21:45 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <1366143381-sup-8459@mint>
+References: <CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+Message-ID: <20130416212145.GB2339@kpad.otokar.looc2011.eu>
+
+On 04/16, Eric Weikl wrote:
+> Hi everyone,
+> 
+> I created a new branch with all the commits from Damien Leone and Edward
+> Yang related to maildir syncback and put it here:
+> 
+> https://github.com/sup-heliotrope/sup/tree/maildir-sync
+> 
+> I skipped some advanced stuff like Edward's inotify support for now. We
+> can add that later.
+> 
+> I performed some basic testing, but it would be great if some more people
+> could give it a try. There's some documentation in the wiki:
+> 
+> https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+> 
+> Cheers,
+> Eric
+
+Fantastic. Not being able to sync back was what prevented me from using
+it. After much work and discouragement with heliotrope, I will gladly
+try this !
+
+On a longer-term note, syncing back to maildir has the limitation that
+non-standard flags (i.e labels) will not be handled, unless we start
+defining some custom way of storing them or modifying the original
+emails, which I highly dislike (this is how mu[0] works). But that's
+just something to keep in mind for future times, when we have a stable,
+up-to-date sup release. Let's do this ! =]
+
+[0] http://www.djcbsoftware.nl/code/mu/
+
+-- 
+Matthieu Rakotojaona
+
+From sdothum at gmail.com  Wed Apr 17 03:31:33 2013
+From: sdothum at gmail.com (Steven Hum)
+Date: Tue, 16 Apr 2013 23:31:33 -0400
+Subject: [sup-talk] [sup-devel] sup: Fix for an UndefinedMethodError
+In-Reply-To: <1366143381-sup-8459@mint>
+References: <CAHsqw9sqBv-5zkdKhPcOwzi-qpe250U3ksHAvgwTENJ8EtozFA@mail.gmail.com>
+	<CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+Message-ID: <1366169414-sup-1740@luna>
+
+
+Beautiful! I will begin using this in place of my copy of ezyang's fork 
+immediately.
+
+Thanks for all your hard work,
+Steven
+
+
+Excerpts from Eric Weikl's message of 2013-04-16 16:30:26 -0400:
+> Hi everyone,
+> 
+> I created a new branch with all the commits from Damien Leone and Edward
+> Yang related to maildir syncback and put it here:
+> 
+> https://github.com/sup-heliotrope/sup/tree/maildir-sync
+> 
+> I skipped some advanced stuff like Edward's inotify support for now. We
+> can add that later.
+> 
+> I performed some basic testing, but it would be great if some more people
+> could give it a try. There's some documentation in the wiki:
+> 
+> https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+> 
+> Cheers,
+> Eric
+> 
+> Excerpts from Gaute Hope's message of 2013-04-14 14:05:52 +0200:
+> > Cool. I would really like to see this in main sup, any other
+> > objections?  In my view the main arguments are:
+> > 
+> > - Manipulating IMAP could mess up user mail (potentially new bugs could
+> > mess up)
+> > - Maintaining this functionality requires some long-term (at least
+> > minor) effort
+> > - It modifies the mail store (could be solved with disabled-by-default)
+> > which I think is a big plus for many
+> > 
+> > I would suggest creating a official branch for this now, if you are
+> > interested I could add you as commiter or owner.
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From eg at gaute.vetsj.com  Wed Apr 17 08:51:29 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 17 Apr 2013 10:51:29 +0200
+Subject: [sup-talk] [sup-devel]  sup: Fix for an UndefinedMethodError
+In-Reply-To: <20130416212145.GB2339@kpad.otokar.looc2011.eu>
+References: <CAOxvSbfuBUYc7fTS=Ov2gBi6JtCkhmy8YVP3iUXwENnmLdzH3Q@mail.gmail.com>
+	<51692285.8000709@gaute.vetsj.com>
+	<CAHsqw9ue9AqTO4OxVDUzb-3u7GShxZRmjPDNzwJQVtsZi_3icw@mail.gmail.com>
+	<51695AF1.2070701@gaute.vetsj.com>
+	<CAHsqw9v46_d+n=XUeg76zmws+kjtit3SfQ59NZtTxMYrJ8F1Vg@mail.gmail.com>
+	<5169925C.1060701@gaute.vetsj.com>
+	<516997BD.7010409@gaute.vetsj.com> <1365938152-sup-6420@mint>
+	<516A9BA0.7040906@gaute.vetsj.com> <1366143381-sup-8459@mint>
+	<20130416212145.GB2339@kpad.otokar.looc2011.eu>
+Message-ID: <516E6291.2010307@gaute.vetsj.com>
+
+
+
+On 16. april 2013 23:21, Matthieu Rakotojaona wrote:
+> On 04/16, Eric Weikl wrote:
+>> Hi everyone,
+>>
+>> I created a new branch with all the commits from Damien Leone and Edward
+>> Yang related to maildir syncback and put it here:
+>>
+>> https://github.com/sup-heliotrope/sup/tree/maildir-sync
+>>
+>> I skipped some advanced stuff like Edward's inotify support for now. We
+>> can add that later.
+>>
+>> I performed some basic testing, but it would be great if some more people
+>> could give it a try. There's some documentation in the wiki:
+>>
+>> https://github.com/sup-heliotrope/sup/wiki/Maildir-Syncback
+>>
+>> Cheers,
+>> Eric
+> 
+> Fantastic. Not being able to sync back was what prevented me from using
+> it. After much work and discouragement with heliotrope, I will gladly
+> try this !
+> 
+> On a longer-term note, syncing back to maildir has the limitation that
+> non-standard flags (i.e labels) will not be handled, unless we start
+> defining some custom way of storing them or modifying the original
+> emails, which I highly dislike (this is how mu[0] works). But that's
+> just something to keep in mind for future times, when we have a stable,
+> up-to-date sup release. Let's do this ! =]
+> 
+> [0] http://www.djcbsoftware.nl/code/mu/
+> 
+
+Great!
+
+Put up a wikipage for collecting some resources on this:
+https://github.com/sup-heliotrope/sup/wiki/Development:-Maildir-syncback
+
+Also a notmuch user created a script for syncing labels to maildir
+folders:
+https://github.com/altercation/es-bin/blob/master/maildir-notmuch-sync
+
+Cheers, Gaute
+
+From marka at pobox.com  Wed Apr 17 10:22:08 2013
+From: marka at pobox.com (Mark Alexander)
+Date: Wed, 17 Apr 2013 06:22:08 -0400
+Subject: [sup-talk] [PATCH] Fix problem with account selector
+In-Reply-To: <1366034093-sup-2478@x200s>
+References: <1366034093-sup-2478@x200s>
+Message-ID: <1366193674-sup-848@x200s>
+
+I should probably explain the rationale behind this patch.
+
+For a couple of years I used a single instance of sup to handle email
+for two different accounts: one for personal email, and the other for
+work email.  When I sent a message to somebody at work, I wanted the
+From: address to be set automatically to my work email address.
+Otherwise I wanted the From: address to be set to my personal email
+address.  To do this I wrote a before-edit hook that looked like this
+(with my company name changed to "widgets"):
+
+  unless header["In-reply-to"]
+    if header["To"] =~ /widgets/
+      to = header["To"]
+      info "Sending as widgets, to = #{to}"
+      header["From"] = "Mark Alexander <marka at widgets.com>"
+    else
+      to = header["To"]
+      info "Sending as pobox, to = #{to}"
+      header["From"] = "Mark Alexander <marka at pobox.com>"
+    end
+  end
+
+But the hook didn't work; the account selector was changing the From:
+address back to marka at pobox.com even after the hook had set it to
+marka at widgets.com.  The fix was to run the hook before the account
+selector was initialized.
+
+From eg at gaute.vetsj.com  Wed Apr 17 13:53:06 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Wed, 17 Apr 2013 15:53:06 +0200
+Subject: [sup-talk] Encoding: UTF-8
+Message-ID: <CABKe4Mu-8FDU+QrX-o3+57AuqNjcAd4AO2h2cHvdF5m3pLPZ0w@mail.gmail.com>
+
+Hi,
+
+I set up a wiki page about UTF-8, if-when Iconv gets deprecated it's an
+excellent time to get UTF-8 right. Please modify or comment. I intended the
+page as a sort of coding-guide, but there are (as part of Iconv
+deprecation) several parts that need to be re-written.
+
+https://github.com/sup-heliotrope/sup/wiki/Development:-UTF-8
+
+Cheers,
+Gaute
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130417/7b3629df/attachment.html>
+
+From wmorgan-sup at masanjin.net  Sun Apr 21 03:31:35 2013
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sat, 20 Apr 2013 20:31:35 -0700
+Subject: [sup-talk] what can i help with?
+Message-ID: <1366514503-turnsole-37382@cugel>
+
+Hi folks,
+
+My sincere apologies for the complete and utter abandonment of Sup and
+Heliotrope. It's a constant source of emotional distress to me, but I do
+not have time to do anything with these projects any more. (Including
+monitoring this mailing list, which long ago fell victim to an
+overly-aggressive filtering rule.) I apologize.
+
+But I'm thrilled to see that there is enough community momentum to keep
+things going. I'd love to enable this as best I can. What is the list of
+things you need from me to take over maintenance of Sup?
+
+1. Add some new owners to the sup gem. (Who?)
+2. Add some administrators to the Rubyforge page. (Who?)
+3. What else?
+
+-w
+
+From dmishd at gmail.com  Sun Apr 21 09:16:05 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 21 Apr 2013 10:16:05 +0100
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <1366514503-turnsole-37382@cugel>
+References: <1366514503-turnsole-37382@cugel>
+Message-ID: <CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+
+Hello William
+
+Nice to hear from you again.
+
+> My sincere apologies for the complete and utter abandonment of Sup and
+> Heliotrope.... I apologize.
+
+Life happens.
+
+> But I'm thrilled to see that there is enough community momentum to keep
+> things going. I'd love to enable this as best I can. What is the list of
+> things you need from me to take over maintenance of Sup?
+>
+> 1. Add some new owners to the sup gem. (Who?)
+> 2. Add some administrators to the Rubyforge page. (Who?)
+> 3. What else?
+
+Does the rubyforge page manage these email lists? It would be good to
+be able to admin them.
+
+It's a long shot, but any chance you have some back ups of the old
+wiki before it got spammed into oblivion?  We've recovered what we can
+and started re-writing what we can't, but it would be lovely to get a
+dump of the old wiki (in whatever format).
+
+As to who - Gaute Hope appears to have been the most active in the
+recent renaissance, so I would definitely give him access. Then as we
+sort ourselves out Gaute can give others access. (Not that I'd oppose
+others, but it would be good to get at least one person on quickly).
+
+Hamish
+
+From eg at gaute.vetsj.com  Sun Apr 21 10:11:23 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 21 Apr 2013 12:11:23 +0200
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+Message-ID: <B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+
+Hi William and list,
+
+No stress and its nice to hear from you again.
+
+I would be happy to take over that responsibility (and share it with for instance Hamish and Matthieu for starters, which I can fix afterwards of course).  
+
+I will most likely stay interested in the project for a long time, but it will definitely vary how much time I can spend - so lets quickly get someone else on the admin part as well.
+
+Den 21. apr. 2013 kl. 11.16 skrev Hamish D:
+
+> Hello William
+> 
+> Nice to hear from you again.
+> 
+>> My sincere apologies for the complete and utter abandonment of Sup and
+>> Heliotrope.... I apologize.
+> 
+> Life happens.
+> 
+>> But I'm thrilled to see that there is enough community momentum to keep
+>> things going. I'd love to enable this as best I can. What is the list of
+>> things you need from me to take over maintenance of Sup?
+>> 
+>> 1. Add some new owners to the sup gem. (Who?)
+>> 2. Add some administrators to the Rubyforge page. (Who?)
+>> 3. What else?
+> Does the rubyforge page manage these email lists? It would be good to
+> be able to admin them.
+> 
+
+Perhaps put a note up on the Gitorious sup organization (to avoid confusion)?
+
+As you may know we have put up an organization on GitHub we would be happy to add you there (if for nothing else than as an honorary member).  
+
+It is great to be able to continue the original project and not fork it off which definitely would loose some of the original community. Thanks for sharing it!
+
+Cheers, Gaute
+
+
+From eg at gaute.vetsj.com  Sun Apr 21 10:18:01 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 21 Apr 2013 12:18:01 +0200
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+	<B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+Message-ID: <0155E8B0-C6A9-43B2-8D64-B6643E34CDD0@gaute.vetsj.com>
+
+
+Den 21. apr. 2013 kl. 12.11 skrev Gaute Hope:
+>>> 3. What else?
+>> Does the rubyforge page manage these email lists? It would be good to
+>> be able to admin them.
+>> 
+> 
+> Perhaps put a note up on the Gitorious sup organization (to avoid confusion)?
+
+Is #sup @ freenode something that is in sup control? Not very important perhaps, but just to make sure it doesnt get spammed..
+
+Gaute
+
+From wmorgan-sup at masanjin.net  Sun Apr 21 16:41:38 2013
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 21 Apr 2013 09:41:38 -0700
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+	<B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+Message-ID: <1366561995-turnsole-65603@cugel>
+
+Ok, Gaute, I've added you as an admin of the Rubyforge page, and admin
+of the Gitorious project, and as an owner of the gem. Let me know if for
+some reason I've screwed any of that up. Rubyforge adminship should
+allow you to change the contents of sup.rubyforge.org and administer the
+mailing lists.
+
+The freenode channel was set up by someone else... I don't remember who.
+I only used it once.
+
+Let me know what else I can do.
+
+Excerpts from Gaute Hope's message of 2013-04-21 03:11:23 -0700:
+> Hi William and list,
+> 
+> No stress and its nice to hear from you again.
+> 
+> I would be happy to take over that responsibility (and share it with for instance Hamish and Matthieu for starters, which I can fix afterwards of course).  
+> 
+> I will most likely stay interested in the project for a long time, but it will definitely vary how much time I can spend - so lets quickly get someone else on the admin part as well.
+> 
+> Den 21. apr. 2013 kl. 11.16 skrev Hamish D:
+> 
+> > Hello William
+> > 
+> > Nice to hear from you again.
+> > 
+> >> My sincere apologies for the complete and utter abandonment of Sup and
+> >> Heliotrope.... I apologize.
+> > 
+> > Life happens.
+> > 
+> >> But I'm thrilled to see that there is enough community momentum to keep
+> >> things going. I'd love to enable this as best I can. What is the list of
+> >> things you need from me to take over maintenance of Sup?
+> >> 
+> >> 1. Add some new owners to the sup gem. (Who?)
+> >> 2. Add some administrators to the Rubyforge page. (Who?)
+> >> 3. What else?
+> > Does the rubyforge page manage these email lists? It would be good to
+> > be able to admin them.
+> > 
+> 
+> Perhaps put a note up on the Gitorious sup organization (to avoid confusion)?
+> 
+> As you may know we have put up an organization on GitHub we would be happy to add you there (if for nothing else than as an honorary member).  
+> 
+> It is great to be able to continue the original project and not fork it off which definitely would loose some of the original community. Thanks for sharing it!
+> 
+> Cheers, Gaute
+
+From wmorgan-sup at masanjin.net  Sun Apr 21 16:43:34 2013
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 21 Apr 2013 09:43:34 -0700
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+Message-ID: <1366562512-turnsole-94955@cugel>
+
+Excerpts from Hamish D's message of 2013-04-21 02:16:05 -0700:
+> It's a long shot, but any chance you have some back ups of the old
+> wiki before it got spammed into oblivion?  We've recovered what we can
+> and started re-writing what we can't, but it would be lovely to get a
+> dump of the old wiki (in whatever format).
+
+Unfortunately, I do not. I didn't save any myself, and the Rubyforge admin
+pages don't give you anything magical here.
+
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From eg at gaute.vetsj.com  Sun Apr 21 17:53:38 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 21 Apr 2013 19:53:38 +0200
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <1366561995-turnsole-65603@cugel>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+	<B23FC9D5-7ACE-44A0-813E-AB4C1ACF0EFF@gaute.vetsj.com>
+	<1366561995-turnsole-65603@cugel>
+Message-ID: <517427A2.5050003@gaute.vetsj.com>
+
+Hi William,
+
+Thanks, this looks good. I will add Hamish and Matthieu as
+administrators as well.
+
+Regards, Gaute
+
+On 21. april 2013 18:41, William Morgan wrote:
+> Ok, Gaute, I've added you as an admin of the Rubyforge page, and admin
+> of the Gitorious project, and as an owner of the gem. Let me know if for
+> some reason I've screwed any of that up. Rubyforge adminship should
+> allow you to change the contents of sup.rubyforge.org and administer the
+> mailing lists.
+> 
+> The freenode channel was set up by someone else... I don't remember who.
+> I only used it once.
+> 
+> Let me know what else I can do.
+> 
+> Excerpts from Gaute Hope's message of 2013-04-21 03:11:23 -0700:
+>> Hi William and list,
+>>
+>> No stress and its nice to hear from you again.
+>>
+>> I would be happy to take over that responsibility (and share it with for instance Hamish and Matthieu for starters, which I can fix afterwards of course).  
+>>
+>> I will most likely stay interested in the project for a long time, but it will definitely vary how much time I can spend - so lets quickly get someone else on the admin part as well.
+>>
+>> Den 21. apr. 2013 kl. 11.16 skrev Hamish D:
+>>
+>>> Hello William
+>>>
+>>> Nice to hear from you again.
+>>>
+>>>> My sincere apologies for the complete and utter abandonment of Sup and
+>>>> Heliotrope.... I apologize.
+>>>
+>>> Life happens.
+>>>
+>>>> But I'm thrilled to see that there is enough community momentum to keep
+>>>> things going. I'd love to enable this as best I can. What is the list of
+>>>> things you need from me to take over maintenance of Sup?
+>>>>
+>>>> 1. Add some new owners to the sup gem. (Who?)
+>>>> 2. Add some administrators to the Rubyforge page. (Who?)
+>>>> 3. What else?
+>>> Does the rubyforge page manage these email lists? It would be good to
+>>> be able to admin them.
+>>>
+>>
+>> Perhaps put a note up on the Gitorious sup organization (to avoid confusion)?
+>>
+>> As you may know we have put up an organization on GitHub we would be happy to add you there (if for nothing else than as an honorary member).  
+>>
+>> It is great to be able to continue the original project and not fork it off which definitely would loose some of the original community. Thanks for sharing it!
+>>
+>> Cheers, Gaute
+
+From matthieu.rakotojaona at gmail.com  Sun Apr 21 18:16:32 2013
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Sun, 21 Apr 2013 20:16:32 +0200
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <1366514503-turnsole-37382@cugel>
+References: <1366514503-turnsole-37382@cugel>
+Message-ID: <CAMiZLn1Rqn=kVT30dmiCQvtdPo4j8EmvGyndtqG7SdQDaBxOUA@mail.gmail.com>
+
+Hi William,
+
+It's a sad thing you do not have time to spare on a project in which
+you have put so much attention. Don't worry, we will take good care of
+your code for you =]
+
+I don't have much to add to the discussion, just a big thank you for
+sup, heliotrope and the other gems (haha !) you have come up with.
+Sometimes I wish other projects would read your code and take some
+inspiration of the readability you have.
+
+Anyway, see you around !
+
+-- 
+Matthieu RAKOTOJAONA
+
+From dmishd at gmail.com  Sun Apr 21 19:22:12 2013
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 21 Apr 2013 20:22:12 +0100
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <1366562512-turnsole-94955@cugel>
+References: <1366514503-turnsole-37382@cugel>
+	<CAOxvSbcGss0r7c8BLfXQ6nPehBsPc7wz_Wo21KDifhZ+fFs7Bg@mail.gmail.com>
+	<1366562512-turnsole-94955@cugel>
+Message-ID: <CAOxvSbfKZ1GSZd32V3k_Vg+Q30OGHLUCmFx4Tx3g2t+zUtZMOQ@mail.gmail.com>
+
+> Excerpts from Hamish D's message of 2013-04-21 02:16:05 -0700:
+>> It's a long shot, but any chance you have some back ups of the old
+>> wiki before it got spammed into oblivion?  We've recovered what we can
+>> and started re-writing what we can't, but it would be lovely to get a
+>> dump of the old wiki (in whatever format).
+>
+> Unfortunately, I do not. I didn't save any myself, and the Rubyforge admin
+> pages don't give you anything magical here.
+
+Ah, I thought maybe you had more control over the wiki. Now we have
+access to rubyforge I've opened a support request about it -
+https://rubyforge.org/tracker/index.php?func=detail&aid=29744&group_id=5&atid=102
+
+Fingers crossed ...
+
+Hamish
+
+From wmorgan-sup at masanjin.net  Sun Apr 21 22:52:54 2013
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Sun, 21 Apr 2013 15:52:54 -0700
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <CAMiZLn1Rqn=kVT30dmiCQvtdPo4j8EmvGyndtqG7SdQDaBxOUA@mail.gmail.com>
+References: <1366514503-turnsole-37382@cugel>
+	<CAMiZLn1Rqn=kVT30dmiCQvtdPo4j8EmvGyndtqG7SdQDaBxOUA@mail.gmail.com>
+Message-ID: <1366584614-turnsole-75136@cugel>
+
+Thanks very much for the kind words. I appreciate it.
+
+Excerpts from Matthieu Rakotojaona's message of 2013-04-21 11:16:32 -0700:
+> Hi William,
+> 
+> It's a sad thing you do not have time to spare on a project in which
+> you have put so much attention. Don't worry, we will take good care of
+> your code for you =]
+> 
+> I don't have much to add to the discussion, just a big thank you for
+> sup, heliotrope and the other gems (haha !) you have come up with.
+> Sometimes I wish other projects would read your code and take some
+> inspiration of the readability you have.
+> 
+> Anyway, see you around !
+> 
+
+From jm at jmason.org  Mon Apr 22 09:32:43 2013
+From: jm at jmason.org (Justin Mason)
+Date: Mon, 22 Apr 2013 10:32:43 +0100
+Subject: [sup-talk] what can i help with?
+In-Reply-To: <1366514503-turnsole-37382@cugel>
+References: <1366514503-turnsole-37382@cugel>
+Message-ID: <CAM8D7KT2Z765PN9CCX8XD4L089jX7JYaPyJWR=+uM_YiaUtd7w@mail.gmail.com>
+
+hey William -- as a happy sup user, let me add my voice to the 'thanks
+and no worries' list.  Life happens! ;)
+
+--j.
+
+On Sun, Apr 21, 2013 at 4:31 AM, William Morgan
+<wmorgan-sup at masanjin.net> wrote:
+> Hi folks,
+>
+> My sincere apologies for the complete and utter abandonment of Sup and
+> Heliotrope. It's a constant source of emotional distress to me, but I do
+> not have time to do anything with these projects any more. (Including
+> monitoring this mailing list, which long ago fell victim to an
+> overly-aggressive filtering rule.) I apologize.
+>
+> But I'm thrilled to see that there is enough community momentum to keep
+> things going. I'd love to enable this as best I can. What is the list of
+> things you need from me to take over maintenance of Sup?
+>
+> 1. Add some new owners to the sup gem. (Who?)
+> 2. Add some administrators to the Rubyforge page. (Who?)
+> 3. What else?
+>
+> -w
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+
+From eg at gaute.vetsj.com  Sun Apr 28 18:23:29 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 28 Apr 2013 20:23:29 +0200
+Subject: [sup-talk] Getting ready for sup-0.13
+Message-ID: <517D6921.3050006@gaute.vetsj.com>
+
+Greetings list,
+
+William has graciously given us access to the rest of the Sup
+infrastructure and the plan is to move as much as possible to GitHub.
+
+At the moment we are three maintainers: Hamish Downer, Matthieu
+Rakotojaona and myself.
+
+There are three categories for the sup repository team:
+Owner, Commiter, Contributor. Pretty much any kind of contribution would
+mean we would add you to the contributor team if you asked to be.
+
+The plan for sup is:
+Release sup-0.13 relatively soon:
+ - including the last bugfixes otherwise leave out the major changes
+   that have been discussed lately
+
+And the proposed roadmap for sup-0.14:
+ - support ruby 2.0.0
+ - migrate to psych
+ - remove all deprecated and abandoned dependencies (e.g. switch from
+RMail to Mail)
+ - implement IMAP syncback support
+ - get uft-8 encoding right
+
+We have documented this setup and the roadmap in the wiki at:
+ -
+https://github.com/sup-heliotrope/sup/wiki/Development%3A-Administration-and-Team
+ - https://github.com/sup-heliotrope/sup/wiki/Development
+
+Please see https://github.com/sup-heliotrope/sup/wiki/Contributing on
+how to submit changes or contribute.
+
+There are a few tasks and roles that need some love, among them:
+maintaining the web site and maintaining the maildir feature branch.
+
+Regards, Fellow Suppers
+
+From jof at thejof.com  Sun Apr 28 18:47:41 2013
+From: jof at thejof.com (Jonathan Lassoff)
+Date: Sun, 28 Apr 2013 11:47:41 -0700
+Subject: [sup-talk] Getting ready for sup-0.13
+In-Reply-To: <517D6921.3050006@gaute.vetsj.com>
+References: <517D6921.3050006@gaute.vetsj.com>
+Message-ID: <CAHsqw9s-98p_JfOkN6h7X6_mxn8HucnJjx-ruSapyNHtba0g_A@mail.gmail.com>
+
+Gaute -- thank you so much for organizing and calling out what needs to get
+done.
+
+It's great to see sup getting some love again!
+
+On Sun, Apr 28, 2013 at 11:23 AM, Gaute Hope <eg at gaute.vetsj.com> wrote:
+
+> Greetings list,
+>
+> William has graciously given us access to the rest of the Sup
+> infrastructure and the plan is to move as much as possible to GitHub.
+>
+> At the moment we are three maintainers: Hamish Downer, Matthieu
+> Rakotojaona and myself.
+>
+> There are three categories for the sup repository team:
+> Owner, Commiter, Contributor. Pretty much any kind of contribution would
+> mean we would add you to the contributor team if you asked to be.
+>
+> The plan for sup is:
+> Release sup-0.13 relatively soon:
+>  - including the last bugfixes otherwise leave out the major changes
+>    that have been discussed lately
+>
+> And the proposed roadmap for sup-0.14:
+>  - support ruby 2.0.0
+>  - migrate to psych
+>  - remove all deprecated and abandoned dependencies (e.g. switch from
+> RMail to Mail)
+>  - implement IMAP syncback support
+>  - get uft-8 encoding right
+>
+> We have documented this setup and the roadmap in the wiki at:
+>  -
+>
+> https://github.com/sup-heliotrope/sup/wiki/Development%3A-Administration-and-Team
+>  - https://github.com/sup-heliotrope/sup/wiki/Development
+>
+> Please see https://github.com/sup-heliotrope/sup/wiki/Contributing on
+> how to submit changes or contribute.
+>
+> There are a few tasks and roles that need some love, among them:
+> maintaining the web site and maintaining the maildir feature branch.
+>
+
+I'd love to help contribute to testing, but am short on time these days.
+However, I setup the site, and will work to fix up the content on there.
+Please file requests here:
+https://github.com/sup-heliotrope/sup-heliotrope.github.io/issues
+
+Cheers,
+jof
+
+>
+> Regards, Fellow Suppers
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20130428/9e73b557/attachment-0001.html>
+
+From eg at gaute.vetsj.com  Sun Apr 28 19:01:28 2013
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 28 Apr 2013 21:01:28 +0200
+Subject: [sup-talk] Getting ready for sup-0.13
+In-Reply-To: <CAHsqw9s-98p_JfOkN6h7X6_mxn8HucnJjx-ruSapyNHtba0g_A@mail.gmail.com>
+References: <517D6921.3050006@gaute.vetsj.com>
+	<CAHsqw9s-98p_JfOkN6h7X6_mxn8HucnJjx-ruSapyNHtba0g_A@mail.gmail.com>
+Message-ID: <517D7208.2040907@gaute.vetsj.com>
+
+On 28. april 2013 20:47, Jonathan Lassoff wrote:
+>> There are a few tasks and roles that need some love, among them:
+>> maintaining the web site and maintaining the maildir feature branch.
+>>
+> 
+> I'd love to help contribute to testing, but am short on time these days.
+> However, I setup the site, and will work to fix up the content on there.
+> Please file requests here:
+> https://github.com/sup-heliotrope/sup-heliotrope.github.io/issues
+
+thanks, I am not at all alone.
+
+That'd be great. Don't hesitate to add yourself to homepage/webpage
+responsible:
+https://github.com/sup-heliotrope/sup/wiki/Development#roles-and-tasks
+if you wish to.
+
+@ericweikl: you already did some work to keep the maildir branch up to
+date so if you wish you could add yourself to the maildir-sync branch
+responsible at the same wikipage.
+
+neither of you will be alone of course.
+
+when we get around to it sup.rubyforge.org should redirect to the new site.
+
+Regards, Gaute
+
+From sdothum at gmail.com  Sun Apr 28 19:05:31 2013
+From: sdothum at gmail.com (Steven Hum)
+Date: Sun, 28 Apr 2013 15:05:31 -0400
+Subject: [sup-talk] Getting ready for sup-0.13
+In-Reply-To: <517D6921.3050006@gaute.vetsj.com>
+References: <517D6921.3050006@gaute.vetsj.com>
+Message-ID: <1367175691-sup-3315@luna>
+
+
+Kudos and thanks to all the sup maintainers and contributors. It is 
+really exciting to see sup get the attention it deserves.
+
+I will definitely stay on top of the develop branch to assist in any way 
+possible.
+
+Regards,
+Steven
+
+Excerpts from Gaute Hope's message of 2013-04-28 14:23:29 -0400:
+> Greetings list,
+> 
+> William has graciously given us access to the rest of the Sup
+> infrastructure and the plan is to move as much as possible to GitHub.
+> 
+> At the moment we are three maintainers: Hamish Downer, Matthieu
+> Rakotojaona and myself.
+> 
+> There are three categories for the sup repository team:
+> Owner, Commiter, Contributor. Pretty much any kind of contribution would
+> mean we would add you to the contributor team if you asked to be.
+> 
+> The plan for sup is:
+> Release sup-0.13 relatively soon:
+>  - including the last bugfixes otherwise leave out the major changes
+>    that have been discussed lately
+> 
+> And the proposed roadmap for sup-0.14:
+>  - support ruby 2.0.0
+>  - migrate to psych
+>  - remove all deprecated and abandoned dependencies (e.g. switch from
+> RMail to Mail)
+>  - implement IMAP syncback support
+>  - get uft-8 encoding right
+> 
+> We have documented this setup and the roadmap in the wiki at:
+>  -
+> https://github.com/sup-heliotrope/sup/wiki/Development%3A-Administration-and-Team
+>  - https://github.com/sup-heliotrope/sup/wiki/Development
+> 
+> Please see https://github.com/sup-heliotrope/sup/wiki/Contributing on
+> how to submit changes or contribute.
+> 
+> There are a few tasks and roles that need some love, among them:
+> maintaining the web site and maintaining the maildir feature branch.
+> 
+> Regards, Fellow Suppers
+-- 
+"Truth or die."
+
+Steven Hum  
+5 - 28 Gilmour St  
+Ottawa, ON K2P 0N3  
+email sdothum at gmail.com  
+tel 613.237.9058  
+
+From eric.weikl at gmx.net  Sun Apr 28 19:59:56 2013
+From: eric.weikl at gmx.net (Eric Weikl)
+Date: Sun, 28 Apr 2013 21:59:56 +0200
+Subject: [sup-talk] Getting ready for sup-0.13
+In-Reply-To: <517D7208.2040907@gaute.vetsj.com>
+References: <517D6921.3050006@gaute.vetsj.com>
+	<CAHsqw9s-98p_JfOkN6h7X6_mxn8HucnJjx-ruSapyNHtba0g_A@mail.gmail.com>
+	<517D7208.2040907@gaute.vetsj.com>
+Message-ID: <1367178536-sup-1766@mint>
+
+Hi Gaute,
+
+thanks to you guys for giving some focus - I'm very happy that sup
+development is gaining some traction again!
+
+Excerpts from Gaute Hope's message of 2013-04-28 21:01:28 +0200:
+> @ericweikl: you already did some work to keep the maildir branch up to
+> date so if you wish you could add yourself to the maildir-sync branch
+> responsible at the same wikipage.
+
+Sure, I definitely want to finish what I started :-) I just added myself.
+
+Cheers,
+Eric
+
+From sup at zevv.nl  Sun Apr 28 20:33:03 2013
+From: sup at zevv.nl (Ico Doornekamp)
+Date: Sun, 28 Apr 2013 22:33:03 +0200
+Subject: [sup-talk] Getting ready for sup-0.13
+In-Reply-To: <517D6921.3050006@gaute.vetsj.com>
+References: <517D6921.3050006@gaute.vetsj.com>
+Message-ID: <1367181127-sup-5301@pruts.nl>
+
+* On Sun Apr 28 20:23:29 +0200 2013, Gaute Hope wrote:
+ 
+> The plan for sup is:
+> Release sup-0.13 relatively soon:
+>  - including the last bugfixes otherwise leave out the major changes
+>    that have been discussed lately
+
+Yay, this makes my day, Thanks to all involved!
+ 
+
+-- 
+:wq
+^X^Cy^K^X^C^C^C^C
+

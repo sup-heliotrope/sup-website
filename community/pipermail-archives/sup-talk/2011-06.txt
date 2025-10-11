@@ -1,0 +1,951 @@
+From rthrd at web.de  Wed Jun  1 07:52:40 2011
+From: rthrd at web.de (Ruthard Baudach)
+Date: Wed, 01 Jun 2011 13:52:40 +0200
+Subject: [sup-talk] before-poll.rb does not appear to be run. Where is
+	PollManager defined?
+In-Reply-To: <BANLkTikaFJ1B3DrsDyERJvmhU5QH-fwk1Q@mail.gmail.com>
+References: <BANLkTikaFJ1B3DrsDyERJvmhU5QH-fwk1Q@mail.gmail.com>
+Message-ID: <1306928873-sup-3234@PrxServer3>
+
+> === Andrew Farrell schrieb am 2011-06-01 05:54: === <
+> I'm trying to add a before-poll.rb hook, but this appears not to be run.
+> At least, it is not running offlineIMAP and if I insert a divide-by-zero,
+> nothing explodes.
+To create a hook, you have to put the hook-name.rb file in the
+.sup/hooks folder, and it should be executed when the hook is called.
+
+No need to go source diving.
+
+You've got a log-line in your before-poll.rb, so you should see it's
+activity in the log buffer.
+
+Just hit ; in inbox-mode, navigate to the line saying log-mode and hit
+<Enter> to view the log buffer.
+
+If your message shows up, the before-poll hook is executed, and does not
+work. Happy debugging (I used to know no Ruby as well when I started
+using sup, and it's still a foreign language to me)
+
+> - I'm inferring that "require 'sup' " is the equivalent of python's "from
+> sup import *"
+Yes, it is.
+
+Ruthard
+
+From afarrell at MIT.EDU  Wed Jun  1 15:18:24 2011
+From: afarrell at MIT.EDU (Andrew Farrell)
+Date: Wed, 1 Jun 2011 12:18:24 -0700
+Subject: [sup-talk] before-poll.rb does not appear to be run. Where is
+ PollManager defined?
+In-Reply-To: <1306928873-sup-3234@PrxServer3>
+References: <BANLkTikaFJ1B3DrsDyERJvmhU5QH-fwk1Q@mail.gmail.com>
+	<1306928873-sup-3234@PrxServer3>
+Message-ID: <BANLkTimjYPva9mFXrRVcKgU1opk=DXvHhQ@mail.gmail.com>
+
+> Name it before-poll.rb
+yes, I should have mentioned that I'd done that.
+
+> View the log by...
+Thank you! Using this, I found that the problem was that line 12 of the hook
+from
+http://sup.rubyforge.org/wiki/wiki.pl?TriggeringMailCollection
+was using SourceManager.
+12 def inbox_sources(sources = SourceManager.sources)
+13     sources.find_all { |s| !s.archived? }.sort_by {|s| s.id }
+14 end
+
+I replaced SourceManager.sources with Index.usual_sources
+And it works.
+
+I've replaced the relevant code in the wiki.
+
+-- Andrew Farrell
+
+On Wed, Jun 1, 2011 at 4:52 AM, Ruthard Baudach <rthrd at web.de> wrote:
+
+> > === Andrew Farrell schrieb am 2011-06-01 05:54: === <
+> > I'm trying to add a before-poll.rb hook, but this appears not to be run.
+> > At least, it is not running offlineIMAP and if I insert a divide-by-zero,
+> > nothing explodes.
+> To create a hook, you have to put the hook-name.rb file in the
+> .sup/hooks folder, and it should be executed when the hook is called.
+>
+> No need to go source diving.
+>
+> You've got a log-line in your before-poll.rb, so you should see it's
+> activity in the log buffer.
+>
+> Just hit ; in inbox-mode, navigate to the line saying log-mode and hit
+> <Enter> to view the log buffer.
+>
+> If your message shows up, the before-poll hook is executed, and does not
+> work. Happy debugging (I used to know no Ruby as well when I started
+> using sup, and it's still a foreign language to me)
+>
+> > - I'm inferring that "require 'sup' " is the equivalent of python's "from
+> > sup import *"
+> Yes, it is.
+>
+> Ruthard
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110601/b9129f32/attachment.html>
+
+From jt at parspro.com  Fri Jun  3 17:16:07 2011
+From: jt at parspro.com (John Toohey)
+Date: Fri, 3 Jun 2011 17:16:07 -0400
+Subject: [sup-talk] Problems installing Sup on OSX 10.6
+Message-ID: <BANLkTinHtAL4_TqSYeLxxQPfOF6j4W0tBQ@mail.gmail.com>
+
+Just found this project, but having difficulty installing Sup. On OSX
+I get the following :-
+
+ERROR:  Error installing sup:
+       ERROR: Failed to build gem native extension.
+
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby extconf.rb
+checking for unistd.h... yes
+checking for locale.h... yes
+checking for ncurses.h... yes
+checking for wmove() in -lncursesw... no
+checking for wmove() in -lpdcurses... no
+*** extconf.rb failed ***
+Could not create Makefile due to some reason, probably lack of
+necessary libraries and/or headers.  Check the mkmf.log file for more
+details.  You may need configuration options.
+
+Provided configuration options:
+       --with-opt-dir
+       --without-opt-dir
+       --with-opt-include
+       --without-opt-include=${opt-dir}/include
+       --with-opt-lib
+       --without-opt-lib=${opt-dir}/lib
+       --with-make-prog
+       --without-make-prog
+       --srcdir=.
+       --curdir
+       --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+       --with-ncurseswlib
+       --without-ncurseswlib
+       --with-pdcurseslib
+       --without-pdcurseslib
+extconf.rb:46: ncurses library not found (RuntimeError)
+
+
+Gem files will remain installed in
+/Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3 for inspection.
+Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3/gem_make.out
+
+
+Gem version is 1.3.5, and Ruby is ruby 1.8.7 (2009-06-12 patchlevel
+174) [universal-darwin10.0]
+
+My /opt/local/lib has libncurses installed, but being new to Ruby, I
+am not sure how Ruby searches for libraries. Any help would be
+appreciated.
+
+-- 
+~JT
+
+From afarrell at MIT.EDU  Fri Jun  3 21:40:06 2011
+From: afarrell at MIT.EDU (Andrew Farrell)
+Date: Fri, 3 Jun 2011 18:40:06 -0700
+Subject: [sup-talk] Problems installing Sup on OSX 10.6
+In-Reply-To: <BANLkTinHtAL4_TqSYeLxxQPfOF6j4W0tBQ@mail.gmail.com>
+References: <BANLkTinHtAL4_TqSYeLxxQPfOF6j4W0tBQ@mail.gmail.com>
+Message-ID: <BANLkTinrHfan5NL5EvdoL7FY5ZeseA-n_w@mail.gmail.com>
+
+I had this same error when trying to install it as a ruby gem.
+I succeeded installing it from macports.
+`sudo port install sup` should work.
+
+-- Andrew Farrell
+
+On Fri, Jun 3, 2011 at 2:16 PM, John Toohey <jt at parspro.com> wrote:
+
+> Just found this project, but having difficulty installing Sup. On OSX
+> I get the following :-
+>
+> ERROR:  Error installing sup:
+>       ERROR: Failed to build gem native extension.
+>
+> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+> extconf.rb
+> checking for unistd.h... yes
+> checking for locale.h... yes
+> checking for ncurses.h... yes
+> checking for wmove() in -lncursesw... no
+> checking for wmove() in -lpdcurses... no
+> *** extconf.rb failed ***
+> Could not create Makefile due to some reason, probably lack of
+> necessary libraries and/or headers.  Check the mkmf.log file for more
+> details.  You may need configuration options.
+>
+> Provided configuration options:
+>       --with-opt-dir
+>       --without-opt-dir
+>       --with-opt-include
+>       --without-opt-include=${opt-dir}/include
+>       --with-opt-lib
+>       --without-opt-lib=${opt-dir}/lib
+>       --with-make-prog
+>       --without-make-prog
+>       --srcdir=.
+>       --curdir
+>
+> --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+>       --with-ncurseswlib
+>       --without-ncurseswlib
+>       --with-pdcurseslib
+>       --without-pdcurseslib
+> extconf.rb:46: ncurses library not found (RuntimeError)
+>
+>
+> Gem files will remain installed in
+> /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3 for inspection.
+> Results logged to /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3/gem_make.out
+>
+>
+> Gem version is 1.3.5, and Ruby is ruby 1.8.7 (2009-06-12 patchlevel
+> 174) [universal-darwin10.0]
+>
+> My /opt/local/lib has libncurses installed, but being new to Ruby, I
+> am not sure how Ruby searches for libraries. Any help would be
+> appreciated.
+>
+> --
+> ~JT
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110603/2b588098/attachment.html>
+
+From jt at parspro.com  Sat Jun  4 12:12:57 2011
+From: jt at parspro.com (John Toohey)
+Date: Sat, 4 Jun 2011 12:12:57 -0400
+Subject: [sup-talk] Problems installing Sup on OSX 10.6
+In-Reply-To: <BANLkTinrHfan5NL5EvdoL7FY5ZeseA-n_w@mail.gmail.com>
+References: <BANLkTinHtAL4_TqSYeLxxQPfOF6j4W0tBQ@mail.gmail.com>
+	<BANLkTinrHfan5NL5EvdoL7FY5ZeseA-n_w@mail.gmail.com>
+Message-ID: <BANLkTik_kC3km76p9ofmXZWuoZhSQ-guPw@mail.gmail.com>
+
+Got a lot further now. Is rb-fastthread something that I can install manually?
+
+
+--->  Attempting to fetch fastthread-1.0.7.gem from http://ruby.inoack.com/gems/
+--->  Verifying checksum(s) for rb-fastthread
+Error: Checksum (md5) mismatch for fastthread-1.0.7.gem
+Error: Checksum (sha1) mismatch for fastthread-1.0.7.gem
+Error: Checksum (rmd160) mismatch for fastthread-1.0.7.gem
+***
+The non-matching file appears to be HTML. See this page for possible reasons
+for the checksum mismatch:
+<http://trac.macports.org/wiki/MisbehavingServers>
+***
+Error: Target org.macports.checksum returned: Unable to verify file checksums
+Error: Failed to install rb-fastthread
+Log for rb-fastthread is at:
+/opt/local/var/macports/logs/_opt_local_var_macports_sources_rsync.macports.org_release_ports_ruby_rb-fastthread/main.log
+Error: The following dependencies were not installed: rb-fastthread
+rb-ferret rb-gettext rb-locale rb-highline rb-lockfile rb-mime-types
+rb-ncurses-ruby rb-net-ssh rb-rake rb-rmail rb-trollop
+Error: Status 1 encountered during processing.
+
+
+On Fri, Jun 3, 2011 at 21:40, Andrew Farrell <afarrell at mit.edu> wrote:
+> I had this same error when trying to install it as a ruby gem.
+> I succeeded installing it from macports.
+> `sudo port install sup` should work.
+> -- Andrew Farrell
+>
+> On Fri, Jun 3, 2011 at 2:16 PM, John Toohey <jt at parspro.com> wrote:
+>>
+>> Just found this project, but having difficulty installing Sup. On OSX
+>> I get the following :-
+>>
+>> ERROR: ?Error installing sup:
+>> ? ? ? ERROR: Failed to build gem native extension.
+>>
+>> /System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+>> extconf.rb
+>> checking for unistd.h... yes
+>> checking for locale.h... yes
+>> checking for ncurses.h... yes
+>> checking for wmove() in -lncursesw... no
+>> checking for wmove() in -lpdcurses... no
+>> *** extconf.rb failed ***
+>> Could not create Makefile due to some reason, probably lack of
+>> necessary libraries and/or headers. ?Check the mkmf.log file for more
+>> details. ?You may need configuration options.
+>>
+>> Provided configuration options:
+>> ? ? ? --with-opt-dir
+>> ? ? ? --without-opt-dir
+>> ? ? ? --with-opt-include
+>> ? ? ? --without-opt-include=${opt-dir}/include
+>> ? ? ? --with-opt-lib
+>> ? ? ? --without-opt-lib=${opt-dir}/lib
+>> ? ? ? --with-make-prog
+>> ? ? ? --without-make-prog
+>> ? ? ? --srcdir=.
+>> ? ? ? --curdir
+>>
+>> --ruby=/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby
+>> ? ? ? --with-ncurseswlib
+>> ? ? ? --without-ncurseswlib
+>> ? ? ? --with-pdcurseslib
+>> ? ? ? --without-pdcurseslib
+>> extconf.rb:46: ncurses library not found (RuntimeError)
+>>
+>>
+>> Gem files will remain installed in
+>> /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3 for inspection.
+>> Results logged to
+>> /Library/Ruby/Gems/1.8/gems/ncursesw-1.2.4.3/gem_make.out
+>>
+>>
+>> Gem version is 1.3.5, and Ruby is ruby 1.8.7 (2009-06-12 patchlevel
+>> 174) [universal-darwin10.0]
+>>
+>> My /opt/local/lib has libncurses installed, but being new to Ruby, I
+>> am not sure how Ruby searches for libraries. Any help would be
+>> appreciated.
+>>
+>> --
+>> ~JT
+>> _______________________________________________
+>> sup-talk mailing list
+>> sup-talk at rubyforge.org
+>> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+> _______________________________________________
+> sup-talk mailing list
+> sup-talk at rubyforge.org
+> http://rubyforge.org/mailman/listinfo/sup-talk
+>
+>
+
+
+
+-- 
+~JT
+
+From egbutter at gmail.com  Mon Jun  6 08:37:05 2011
+From: egbutter at gmail.com (Eric Butter)
+Date: Mon, 6 Jun 2011 08:37:05 -0400
+Subject: [sup-talk] Maildir uri cannot have a host
+Message-ID: <BANLkTin88dJxyXiJHAbZofz-WaRpKGg25g@mail.gmail.com>
+
+Sup, sup-talk?
+
+Has anyone else had a problem getting their Xapian labels to work correctly
+when using Maildir folders from offlineimap?
+
+When I run sup-config and try to add any of my offlineimap maildir folders,
+I get the error:
+
+sup-0.12.1/lib/sup/maildir.rb:17:in `initialize': maildir URI cannot have a
+host: home (ArgumentError)
+
+I will keep hacking around with it, but any guidance would be greatly
+appreciated.
+
+Thank you,
+
+Eric
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-talk/attachments/20110606/8e1f7c70/attachment-0001.html>
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 01:36:24 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Mon, 27 Jun 2011 05:36:24 +0000
+Subject: [sup-talk] try heliotrope!
+Message-ID: <1309152077-sup-5963@masanjin.net>
+
+Hi guys,
+
+If any of you are interested in trying out the next generation of Sup, I
+have things in a reasonably stable state. It's still too early for a
+gem, but I have updated the README for both client and server sides. So
+if you'd like to run some highly experimental code and see what the
+future of curses-based email might look like, follow the instructions
+in:
+
+http://github.com/wmorgan/heliotrope
+  and then
+http://github.com/wmorgan/turnsole
+
+Lots of stuff is broken, but I have been using it as an end-to-end email
+system for a week or so now, so the basics are there. Tell me how it goes!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From jboyens at fooninja.org  Mon Jun 27 08:56:59 2011
+From: jboyens at fooninja.org (JR Boyens)
+Date: Mon, 27 Jun 2011 08:56:59 -0400
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <1309179117-sup-9518@marvin.local>
+
+Excerpts from William Morgan's message of 2011-06-27 01:36:24 -0400:
+> Hi guys,
+> 
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+> 
+> http://github.com/wmorgan/heliotrope
+>   and then
+> http://github.com/wmorgan/turnsole
+> 
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+
+Seems to work rather good when I can get the messages into heliotrope...
+
+GMail import seems to work great.
+
+I keep having this issue with the Maildirs I use with Sup:
+
+
+; loading mail...
+; scanning 1 directories...
+; found 2623 messages
+; reading in dates...
+; warning: no date in /Users/jboyens/Mail/Work/INBOX/cur/1302957166_2.57311.marvin.local,U=11400,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,S
+; warning: no date in /Users/jboyens/Mail/Work/INBOX/cur/1302957167_0.57311.marvin.local,U=10933,FMD5=7e33429f656f1e6e9d79b29c3f82c57e:2,
+/Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:50:in `block in get_date_in_file': invalid byte sequence in UTF-8 (ArgumentError)
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:48:in `open'
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:48:in `get_date_in_file'
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:40:in `block in get_files'
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:40:in `map'
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:40:in `get_files'
+	from /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:12:in `load!'
+	from ./bin/heliotrope-add:123:in `<main>'
+
+
+I've tried a few maildirs and it seems endemic. The file that it has an
+issue with contains a single, solitary, lower-case h.
+
+
+Any ideas?
+--
+JR Boyens
+jboyens at fooninja.org
+
+From kevin.mark at verizon.net  Mon Jun 27 11:02:08 2011
+From: kevin.mark at verizon.net (Kevin Mark)
+Date: Mon, 27 Jun 2011 11:02:08 -0400
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <20110627150207.GB22309@horacrux>
+
+On Mon, Jun 27, 2011 at 05:36:24AM +0000, William Morgan wrote:
+> Hi guys,
+> 
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+> 
+> http://github.com/wmorgan/heliotrope
+>   and then
+> http://github.com/wmorgan/turnsole
+> 
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+> -- 
+
+Could you provide a few screenshots of both? (with person details removed) 
+just curious about it.
+-K
+-- 
+|  .''`.  == Debian GNU/Linux ==.| http://kevix.myopenid.com......|
+| : :' :     The Universal OS....| mysite.verizon.net/kevin.mark/.|
+| `. `'   http://www.debian.org/.| http://counter.li.org [#238656]|
+|___`-____Unless I ask to be CCd,.assume I am subscribed._________|
+
+NEVER RESPOND TO CRITICAL PRESS.  IT IS A GAME YOU CAN ONLY LOSE, AND IT
+MAKES US LOOK BAD.
+		-- Bruce Perens
+
+From sergeig at gmail.com  Mon Jun 27 17:30:32 2011
+From: sergeig at gmail.com (sergeig at gmail.com)
+Date: Mon, 27 Jun 2011 14:30:32 -0700
+Subject: [sup-talk] try heliotrope!
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <1309209957-sup-3069@vector>
+
+Server starts, but mbox add does not work.
+
+On ubuntu 10.04, the gem found for livedb is "leveldb-ruby". Not sure if this is related.
+
+==
+$ ruby -Ilib src/git/heliotrope/bin/heliotrope-add -m Mail/fb-mon.mbox -d .heliotrope/fb-mon/
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11: [BUG] Segmentation fault
+ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+
+-- control frame ----------
+c:0008 p:---- s:0053 b:0053 l:000052 d:000052 CFUNC  :make
+c:0007 p:0017 s:0047 b:0047 l:000046 d:000046 METHOD /home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11
+c:0006 p:0054 s:0043 b:0043 l:000042 d:000042 METHOD /home/sergei/src/git/heliotrope/lib/heliotrope/index.rb:45
+c:0005 p:---- s:0038 b:0038 l:000037 d:000037 FINISH
+c:0004 p:---- s:0036 b:0036 l:000035 d:000035 CFUNC  :new
+c:0003 p:0798 s:0031 b:0031 l:000ebc d:001680 EVAL   src/git/heliotrope/bin/heliotrope-add:113
+c:0002 p:---- s:0004 b:0004 l:000003 d:000003 FINISH
+c:0001 p:0000 s:0002 b:0002 l:000ebc d:000ebc TOP   
+---------------------------
+-- Ruby level backtrace information ----------------------------------------
+src/git/heliotrope/bin/heliotrope-add:113:in `<main>'
+src/git/heliotrope/bin/heliotrope-add:113:in `new'
+/home/sergei/src/git/heliotrope/lib/heliotrope/index.rb:45:in `initialize'
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11:in `new'
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11:in `make'
+
+-- C level backtrace information -------------------------------------------
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_vm_bugreport+0x72) [0xb7807102]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x56657) [0xb76df657]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_bug+0x3a) [0xb76df74a]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x10a1c4) [0xb77931c4]
+[0xb787c410]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb8SkipListIPKcNS_8MemTable13KeyComparatorEE6InsertERKS2_+0x2c) [0xb712feec]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb8MemTable3AddEyNS_9ValueTypeERKNS_5SliceES4_+0x11a) [0xb712f85a]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(+0x29699) [0xb7138699]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZNK7leveldb10WriteBatch7IterateEPNS0_7HandlerE+0x1cd) [0xb71389bd]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb18WriteBatchInternal10InsertIntoEPKNS_10WriteBatchEPNS_8MemTableE+0x40) [0xb7138a60]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl14RecoverLogFileEyPNS_11VersionEditEPy+0x35c) [0xb7126d6c]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb6DBImpl7RecoverEPNS_11VersionEditE+0x261) [0xb71280b1]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(_ZN7leveldb2DB4OpenERKNS_7OptionsERKSsPPS0_+0xbd) [0xb712ad2d]
+/home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb/leveldb.so(+0x14165) [0xb7123165]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x1681b9) [0xb77f11b9]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x178e1e) [0xb7801e1e]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x16db50) [0xb77f6b50]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x173128) [0xb77fc128]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x174902) [0xb77fd902]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_obj_call_init+0x50) [0xb76e18b0]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_class_new_instance+0x3a) [0xb77302ea]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x168208) [0xb77f1208]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x178e1e) [0xb7801e1e]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x16db50) [0xb77f6b50]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x173128) [0xb77fc128]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(rb_iseq_eval_main+0x1f2) [0xb77fc562]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(+0x58f3a) [0xb76e1f3a]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(ruby_exec_node+0x25) [0xb76e1f75]
+/home/sergei/.rvm/rubies/ruby-1.9.2-p180/lib/libruby.so.1.9(ruby_run_node+0x35) [0xb76e3785]
+ruby(main+0x68) [0x80487f8]
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe6) [0xb74b4bd6]
+ruby() [0x80486f1]
+
+[NOTE]
+You may have encountered a bug in the Ruby interpreter or extension libraries.
+Bug reports are welcome.
+For details: http://www.ruby-lang.org/bugreport.html
+
+--
+list of gems:
+
+==
+$ gem list
+
+*** LOCAL GEMS ***
+
+abstract (1.0.0)
+actionmailer (3.0.9)
+actionpack (3.0.9)
+activemodel (3.0.9)
+activerecord (3.0.9)
+activeresource (3.0.9)
+activesupport (3.0.9)
+arel (2.1.3, 2.0.10)
+builder (3.0.0, 2.1.2)
+bundler (1.0.15)
+erubis (2.7.0, 2.6.6)
+gettext (2.1.0)
+highline (1.6.2)
+i18n (0.6.0, 0.5.0)
+leveldb-ruby (0.4)
+locale (2.0.5)
+lockfile (1.4.3)
+mail (2.3.0, 2.2.19)
+mime-types (1.16)
+ncursesw (1.2.4.3)
+polyglot (0.3.1)
+rack (1.3.0, 1.2.3)
+rack-mount (0.8.1, 0.6.14)
+rack-test (0.6.0, 0.5.7)
+rails (3.0.9)
+railties (3.0.9)
+rake (0.9.2, 0.8.7 ruby)
+rdoc (3.6.1)
+rest-client (1.6.3)
+rmail (1.0.0)
+rubygems-update (1.8.5)
+sinatra (1.2.6)
+sup (0.12.1)
+thor (0.14.6)
+tilt (1.3.2)
+treetop (1.4.9)
+trollop (1.16.2)
+tzinfo (0.3.28)
+whistlepig (0.7)
+xapian-core (1.2.3.1)
+xapian-full (1.2.3)
+
+==
+
+Thx,
+
+-Sergei
+
+
+Excerpts from William Morgan's message of 2011-06-26 22:36:24 -0700:
+> Hi guys,
+> 
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+> 
+> http://github.com/wmorgan/heliotrope
+>   and then
+> http://github.com/wmorgan/turnsole
+> 
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+
+From evil.ham.1024 at gmail.com  Mon Jun 27 19:52:06 2011
+From: evil.ham.1024 at gmail.com (=?UTF-8?Q?Andr=C3=A9s?=)
+Date: Tue, 28 Jun 2011 01:52:06 +0200
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+
+On 27 June 2011 07:36, William Morgan <wmorgan-sup at masanjin.net> wrote:
+>
+> Hi guys,
+>
+> If any of you are interested in trying out the next generation of Sup, I
+> have things in a reasonably stable state. It's still too early for a
+> gem, but I have updated the README for both client and server sides. So
+> if you'd like to run some highly experimental code and see what the
+> future of curses-based email might look like, follow the instructions
+> in:
+>
+> http://github.com/wmorgan/heliotrope
+> ?and then
+> http://github.com/wmorgan/turnsole
+>
+> Lots of stuff is broken, but I have been using it as an end-to-end email
+> system for a week or so now, so the basics are there. Tell me how it goes!
+
+Hi there,
+
+it seems to be behaving quite well already!
+
+As someone already mentioned, the Gmail import is working great, IF
+you have English as your Gmail interface language; otherwise
+heliotrope just keeps looking for the "All Mail" directory; I guess
+that's because that directory is hard-coded in lib/gmail-dumper.rb, it
+looks like this wouldn't only affect users with other language
+configuration on Gmail as sometimes the directories are not
+"[Gmail]/All Mail" but rather "[Google Mail]/All Mail" [1]; I've
+looked around and found this:
+[1] http://groups.google.com/group/Gmail-Help-POP-and-IMAP-en/browse_thread/thread/a154105c54f020fb?pli=1
+http://code.google.com/intl/ca/apis/gmail/imap/
+which, judging from the xlist bit in lib/imap-dumper.rb, you already
+know; maybe support for this kind of not-so-strange set-ups via xlist
+is already planned?
+I tried editing the lib/gmail-dumper.rb file to
+GMAIL_FOLDER = "[Gmail]/Alle Nachrichten"
+and it looks like that works for the initial import but I don't knwo
+if it'd have implications with the "get labels from IMAP" part.
+
+Haven't tried the mbox import that some people are having issues with
+so I can't confirm nor deny those.
+
+I've found a small bug on the debugging interface: when a thread has
+no subject (some people do that), there is no way to open that thread
+(since there is no link); a fix for that (though maybe not a great one
+since I'm no ruby expert) could be: replacing the link_to_threadview
+method definition in heliotrope-server (lines 510-512) to:
+  def link_to_threadview thread_id, text
+    %{<a href="/thread/#{thread_id}">#{if text.empty?; "No subject"
+else escape_html text end}</a>}
+  end
+
+The --host parameter does not seem to be implemented (or I am
+misunderstanding what it is supposed to do), this one is quite
+important as by default (ignoring firewall rules and etc) anyone on
+the LAN could access all of the data from Heliotrope; wouldn't it be
+safer to bind only to localhost by default?
+
+I haven't played around too much with the client, but I could connect
+to the server from another computer and looks like its behaviour is
+just like sup's.
+Even though it's logical, maybe the README should mention that the
+lib/* files from heliotrope are needed.
+
+This looks really promising!
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 23:32:03 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 03:32:03 +0000
+Subject: [sup-talk] [sup-devel] try heliotrope!
+In-Reply-To: <1309152077-sup-5963@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+Message-ID: <1309231838-sup-6073@masanjin.net>
+
+Reformatted excerpts from William Morgan's message of 2011-06-27:
+> If any of you are interested in trying out the next generation of Sup
+
+Thanks for all the feedback so far. I forgot to say: if you find bugs,
+please file issues on github (either
+https://github.com/wmorgan/heliotrope/issues or
+https://github.com/wmorgan/turnsole/issues) so that I don't lose track
+of them.
+
+Thanks!
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Mon Jun 27 23:54:01 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 03:54:01 +0000
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309209957-sup-3069@vector>
+References: <1309152077-sup-5963@masanjin.net> <1309209957-sup-3069@vector>
+Message-ID: <1309233212-sup-7112@masanjin.net>
+
+Reformatted excerpts from sergeig's message of 2011-06-27:
+> /home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11: [BUG] Segmentation fault
+> ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+
+Yipes. I've released leveldb-ruby 0.5. Can you try with that please?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From sg at fb.com  Tue Jun 28 02:32:42 2011
+From: sg at fb.com (Sergei)
+Date: Mon, 27 Jun 2011 23:32:42 -0700
+Subject: [sup-talk] try heliotrope!
+References: <1309152077-sup-5963@masanjin.net> <1309209957-sup-3069@vector>
+	<1309233212-sup-7112@masanjin.net>
+Message-ID: <1309242668-sup-5741@vector>
+
+William,
+
+Am I looking at the right place:
+
+https://github.com/wmorgan/leveldb-ruby
+
+v .4 is shown.
+
+Thx,
+
+-Sergei
+
+Excerpts from William Morgan's message of 2011-06-27 20:54:01 -0700:
+> Reformatted excerpts from sergeig's message of 2011-06-27:
+> > /home/sergei/.rvm/gems/ruby-1.9.2-p180/gems/leveldb-ruby-0.4/lib/leveldb.rb:11: [BUG] Segmentation fault
+> > ruby 1.9.2p180 (2011-02-18 revision 30909) [i686-linux]
+> 
+> Yipes. I've released leveldb-ruby 0.5. Can you try with that please?
+
+From wmorgan-sup at masanjin.net  Tue Jun 28 18:10:19 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Tue, 28 Jun 2011 22:10:19 +0000
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309242668-sup-5741@vector>
+References: <1309152077-sup-5963@masanjin.net> <1309209957-sup-3069@vector>
+	<1309233212-sup-7112@masanjin.net> <1309242668-sup-5741@vector>
+Message-ID: <1309298987-sup-8573@masanjin.net>
+
+Reformatted excerpts from Sergei's message of 2011-06-28:
+> Am I looking at the right place:
+> 
+> https://github.com/wmorgan/leveldb-ruby
+> 
+> v .4 is shown.
+
+Sorry. I am bad at putting files in directories, apparently. Try now please.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jun 29 00:02:05 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Jun 2011 04:02:05 +0000
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+Message-ID: <1309319960-sup-6339@masanjin.net>
+
+Hi Andr?s,
+
+Thanks for the feedback!
+
+Reformatted excerpts from Andr?s's message of 2011-06-27:
+> As someone already mentioned, the Gmail import is working great, IF you have
+> English as your Gmail interface language; otherwise heliotrope just keeps
+> looking for the "All Mail" directory;
+
+I think I've fixed this (using the xlist code you discovered). Could you tell
+me if it works for you?
+
+> I've found a small bug on the debugging interface: when a thread has
+> no subject (some people do that)
+
+Should be fixed.
+
+> The --host parameter does not seem to be implemented (or I am
+> misunderstanding what it is supposed to do)
+
+Should be fixed, and defaults to localhost as you suggest.
+
+Keep it coming.
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From wmorgan-sup at masanjin.net  Wed Jun 29 00:12:46 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Jun 2011 04:12:46 +0000
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309179117-sup-9518@marvin.local>
+References: <1309152077-sup-5963@masanjin.net>
+	<1309179117-sup-9518@marvin.local>
+Message-ID: <1309320724-sup-9783@masanjin.net>
+
+Reformatted excerpts from JR Boyens's message of 2011-06-27:
+> /Users/jboyens/heliotrope/lib/heliotrope/maildir-walker.rb:50:in `block in get_date_in_file': invalid byte sequence in UTF-8 (ArgumentError)
+
+This should be fixed. But I'm not entirely sure; this encoding stuff is tricky.
+Can you try again with the latest master, please?
+-- 
+William <wmorgan-sup at masanjin.net>
+
+From evil.ham.1024 at gmail.com  Wed Jun 29 15:47:41 2011
+From: evil.ham.1024 at gmail.com (=?UTF-8?Q?Andr=C3=A9s?=)
+Date: Wed, 29 Jun 2011 21:47:41 +0200
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <1309319960-sup-6339@masanjin.net>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+	<1309319960-sup-6339@masanjin.net>
+Message-ID: <BANLkTi=pJrN631hPHr-GbM2yGhKqgar8hg@mail.gmail.com>
+
+2011/6/29 William Morgan <wmorgan-sup at masanjin.net>:
+> Hi Andr?s,
+>
+> Thanks for the feedback!
+
+Thank YOU for the way the software is advancing ;).
+
+> Reformatted excerpts from Andr?s's message of 2011-06-27:
+>> As someone already mentioned, the Gmail import is working great, IF you have
+>> English as your Gmail interface language; otherwise heliotrope just keeps
+>> looking for the "All Mail" directory;
+>
+> I think I've fixed this (using the xlist code you discovered). Could you tell
+> me if it works for you?
+Oh yes, that worked perfectly.
+
+>> I've found a small bug on the debugging interface: when a thread has
+>> no subject (some people do that)
+>
+> Should be fixed.
+Fixed indeed; your solution is way prettier :).
+
+>> The --host parameter does not seem to be implemented (or I am
+>> misunderstanding what it is supposed to do)
+>
+> Should be fixed, and defaults to localhost as you suggest.
+
+Also seems to be working.
+
+>
+> Keep it coming.
+
+Sure, I'm glad I can help; I already subscribed to the sup-devel
+mailing list to be more up-to-date.
+
+Cheers,
+--
+Andr?s
+
+From matthieu.rakotojaona at gmail.com  Wed Jun 29 16:29:46 2011
+From: matthieu.rakotojaona at gmail.com (Matthieu Rakotojaona)
+Date: Wed, 29 Jun 2011 22:29:46 +0200
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <BANLkTi=pJrN631hPHr-GbM2yGhKqgar8hg@mail.gmail.com>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+	<1309319960-sup-6339@masanjin.net>
+	<BANLkTi=pJrN631hPHr-GbM2yGhKqgar8hg@mail.gmail.com>
+Message-ID: <BANLkTinne14w1OdNieNU5WoweT0GJRjuqQ@mail.gmail.com>
+
+Heliotrope really is an interesting project ! Thanks a lot!
+
+I have a question : all the mails are stored in the <mailstore>
+directory, right ?
+
+I have begun to import some of my gmail mails. I have then removed the
+<mailstore> dir, but but when I start importing my mails again, it
+doesn't start from the beginning. Is there some info I am supposed to
+delete to start again from the beginning ?
+
+Thanks !
+
+-- 
+Matthieu RAKOTOJAONA
+
+From wmorgan-sup at masanjin.net  Wed Jun 29 17:35:54 2011
+From: wmorgan-sup at masanjin.net (William Morgan)
+Date: Wed, 29 Jun 2011 21:35:54 +0000
+Subject: [sup-talk] try heliotrope!
+In-Reply-To: <BANLkTinne14w1OdNieNU5WoweT0GJRjuqQ@mail.gmail.com>
+References: <1309152077-sup-5963@masanjin.net>
+	<BANLkTinxFoW+BioS7MHOVHzQgwWuOumT2g@mail.gmail.com>
+	<1309319960-sup-6339@masanjin.net>
+	<BANLkTi=pJrN631hPHr-GbM2yGhKqgar8hg@mail.gmail.com>
+	<BANLkTinne14w1OdNieNU5WoweT0GJRjuqQ@mail.gmail.com>
+Message-ID: <1309383279-sup-4887@masanjin.net>
+
+Reformatted excerpts from Matthieu Rakotojaona's message of 2011-06-29:
+> I have a question : all the mails are stored in the <mailstore>
+> directory, right ?
+
+Yes.
+
+> I have begun to import some of my gmail mails. I have then removed the
+> <mailstore> dir, but but when I start importing my mails again, it
+> doesn't start from the beginning.
+
+Ah. This is totally undocumented. Heliotrope-add keeps a file called
+~/.heliotropeaddrc-something-something where it stores server state for
+IMAP and GMail accounts. You will have to delete this to have it start
+over.
+-- 
+William <wmorgan-sup at masanjin.net>
+

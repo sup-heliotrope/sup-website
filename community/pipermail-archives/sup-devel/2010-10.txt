@@ -1,0 +1,1970 @@
+From stipredirect at gmail.com  Fri Oct  1 00:52:18 2010
+From: stipredirect at gmail.com (Michael Stipicevic)
+Date: Fri, 1 Oct 2010 00:52:18 -0400
+Subject: [sup-devel] Exception
+In-Reply-To: <1285874266-sup-5868@ezyang>
+References: <1285874266-sup-5868@ezyang>
+Message-ID: <AANLkTi=DvF9DgNv2OxsB64b=GNjRm6TV12N=HRas89Dp@mail.gmail.com>
+
+>
+> So I guess my index is corrupted in some weird way (probably I managed
+> to create two mails with the same docid). I've worked around it by
+> commenting
+> out the assert, but any idea how to fix my index?
+>
+
+Did this happen right after you sent a message? I had to fix this by doing a
+dump and rebuilding the index.
+
+- Mike
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101001/5032ad61/attachment.html>
+
+From ezyang at MIT.EDU  Fri Oct  1 13:13:15 2010
+From: ezyang at MIT.EDU (Edward Z. Yang)
+Date: Fri, 01 Oct 2010 13:13:15 -0400
+Subject: [sup-devel] Exception
+In-Reply-To: <AANLkTi=DvF9DgNv2OxsB64b=GNjRm6TV12N=HRas89Dp@mail.gmail.com>
+References: <1285874266-sup-5868@ezyang>
+	<AANLkTi=DvF9DgNv2OxsB64b=GNjRm6TV12N=HRas89Dp@mail.gmail.com>
+Message-ID: <1285953175-sup-1593@ezyang>
+
+Excerpts from Michael Stipicevic's message of Fri Oct 01 00:52:18 -0400 2010:
+> Did this happen right after you sent a message? I had to fix this by doing a
+> dump and rebuilding the index.
+
+Yep. Ouch! Although, I suppose there are worse things in life :-)
+
+Cheers,
+Edward
+
+From sup-bugs at masanjin.net  Mon Oct  4 00:51:43 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Mon, 04 Oct 2010 04:51:43 +0000
+Subject: [sup-devel] [issue123] wrong id called on nil when trying to read
+	labelled mail
+In-Reply-To: <1286167903.01.0.143643997366.issue123@masanjin.net>
+Message-ID: <1286167903.01.0.143643997366.issue123@masanjin.net>
+
+
+New submission from anonymous:
+
+When I try to read all the messages of a specific label the program crashes and
+gives this error:
+
+--- RuntimeError from thread: load threads for thread-index-mode
+wrong id called on nil
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:17:in `id'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`block (2 levels) in update'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`each'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`sort_by'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:234:in
+`block in update'
+<internal:prelude>:8:in `synchronize'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:232:in
+`update'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:652:in
+`load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in
+`block in load_n_threads_background'
+/usr/lib/ruby/gems/1.9.1/gems/sup-0.11/lib/sup.rb:76:in `block in reporting_thread'
+
+----------
+messages: 289
+nosy: anonymous
+priority: bug
+ruby_version: ruby 1.9.1p429 (2010-07-02 revision 28523) [x86_64-linux]
+status: unread
+sup_version: v0.11
+title: wrong id called on nil when trying to read labelled mail
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue123>
+_________________________________________
+
+From eg at gaute.vetsj.com  Mon Oct  4 04:40:10 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Mon, 04 Oct 2010 10:40:10 +0200
+Subject: [sup-devel] [PATCH] utf-8 script encoding
+In-Reply-To: <1284720809-sup-6508@dolk>
+References: <1262533823-sup-5348@dolk>
+	<1262534836-29113-1-git-send-email-rlane@club.cc.cmu.edu>
+	<1262535218-sup-9718@dolk> <1264250655-sup-3062@masanjin.net>
+	<1266066673-sup-5419@mithink> <1284033605-sup-442@dolk>
+	<1284720809-sup-6508@dolk>
+Message-ID: <1286181492-sup-206@dolk>
+
+And force encoding on already applied labels:
+http://gitorious.org/sup/gautehs-mainline/commit/adc49a0a31b986701ef4c888de44d7ada65b0f4e
+
+I'd squash those, but there might be more coming up ;)
+
+- gaute
+
+Excerpts from Gaute Hope's message of 2010-09-17 12:54:00 +0200:
+> Excerpts from Gaute Hope's message of 2010-09-09 14:02:17 +0200:
+> > I put target.force_encoding 'UTF-8' on the tab completion of contacts
+> > and labels and that seems to have fixed the issue 36 on Ruby 1.9. See
+> > attached patch; or:
+> > http://gitorious.org/sup/gautehs-mainline/commit/c78e53f13b493afe2ce13c8f312068fe042cd126
+> 
+> Also force encoding on label search completion: 
+> http://gitorious.org/~gauteh/sup/gautehs-mainline/commit/009cda0e379950726c5234a8949e636194bf13e3
+> 
+> There's still an error if you try to complete multiple unicode
+> recipients, probably because one of the strings are not Unicode.
+> 
+> - gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-UTF-8-label-completion-Convert-existing-labels.patch
+Type: application/octet-stream
+Size: 798 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101004/288bf473/attachment.obj>
+
+From sascha-pgp at silbe.org  Tue Oct  5 07:25:33 2010
+From: sascha-pgp at silbe.org (Sascha Silbe)
+Date: Tue,  5 Oct 2010 13:25:33 +0200
+Subject: [sup-devel] [PATCH] fix GPG "hang" on malformed PGP message
+	(detached signature)
+Message-ID: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+
+A PGP message chunk (bounded by "-----BEGIN PGP MESSAGE-----" and
+"-----END PGP MESSAGE-----") can contain a detached signature. By default GPG
+will wait for the payload to be supplied on stdin if it gets passed a lone
+detached signature. To the user it will appear as GPG (or sup, since they
+don't see any output from GPG) hanging.
+
+The best way to solve this would be enabling batch mode, but then passphrase
+querying without gpg-agent wouldn't work anymore. So we resort to passing
+--multifile which has the side effect of not allowing detached signatures.
+
+Encountered and tested with message
+<AANLkTin1Ysn7Fp32Eoyjo3jjhHwVrc=hMuq+okgKNfmr at mail.gmail.com> [1] on the git
+mailing list.
+
+[1] http://marc.info/?l=git&m=128623349711269&q=raw
+
+Signed-off-by: Sascha Silbe <sascha-pgp at silbe.org>
+---
+ lib/sup/crypto.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 289fb0e..68a57c8 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -144,7 +144,7 @@ def decrypt payload, armor=false # a RubyMail::Message object
+     output_fn = Tempfile.new "redwood.output"
+     output_fn.close
+ 
+-    message = run_gpg "--output #{output_fn.path} --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
++    message = run_gpg "--output #{output_fn.path} --multifile --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+ 
+     unless $?.success?
+       info "Error while running gpg: #{message}"
+-- 
+1.7.1
+
+
+From sascha-ml-reply-to-2010-3 at silbe.org  Tue Oct  5 07:42:58 2010
+From: sascha-ml-reply-to-2010-3 at silbe.org (Sascha Silbe)
+Date: Tue, 05 Oct 2010 13:42:58 +0200
+Subject: [sup-devel] [PATCH] Fixed inline gpg crash when the end marker
+	is missing
+In-Reply-To: <1283637106-18801-1-git-send-email-michael@content-space.de>
+References: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+	<1283637106-18801-1-git-send-email-michael@content-space.de>
+Message-ID: <1286278748-sup-3282@twin.sascha.silbe.org>
+
+Excerpts from Michael Hamann's message of Sat Sep 04 23:51:46 +0200 2010:
+
+> lines.between() does not check if the end marker actually exists, but
+> later it is assumed the marker exists. This change introduces a check
+> for the end marker and doesn't decrypt messages in which the end marker
+> is missing. This is a fix for
+> http://rubyforge.org/pipermail/sup-talk/2010-August/004209.html
+
+Just encountered this one with some message in the "Error when verifying
+tags signed using 1.7.3.1" thread [1] on the git mailing list.
+The patch works fine for me, thanks!
+
+FWIW, I think your approach of not trying to decrypt mails that contain
+no end marker is the right thing to do: If the end marker is missing,
+the message most likely has been garbled in other ways as well (or
+simply cut off in the middle), causing decryption to fail anyway.
+
+Sascha
+
+[1] http://marc.info/?t=128623049600001&r=1&w=2
+--
+http://sascha.silbe.org/
+http://www.infra-silbe.de/
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101005/6c5186ee/attachment-0001.bin>
+
+From bwalton at artsci.utoronto.ca  Tue Oct  5 09:09:41 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Tue, 05 Oct 2010 09:09:41 -0400
+Subject: [sup-devel] [PATCH] Fixed inline gpg crash when the end marker
+	is missing
+In-Reply-To: <1286278748-sup-3282@twin.sascha.silbe.org>
+References: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+	<1283637106-18801-1-git-send-email-michael@content-space.de>
+	<1286278748-sup-3282@twin.sascha.silbe.org>
+Message-ID: <1286284088-sup-3859@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Sascha Silbe's message of Tue Oct 05 07:42:58 -0400 2010:
+
+> Just encountered this one with some message in the "Error when
+> verifying tags signed using 1.7.3.1" thread [1] on the git mailing
+> list.  The patch works fine for me, thanks!
+
+Yes, me too.  Patch applied and my sup is back in business.
+
+> FWIW, I think your approach of not trying to decrypt mails that
+> contain no end marker is the right thing to do: If the end marker is
+> missing, the message most likely has been garbled in other ways as
+> well (or simply cut off in the middle), causing decryption to fail
+> anyway.
+
+I agree with this rationale.  Feeding the entire message to gpg if no
+end marker is seen isn't the way to go, I don't think.
+
+Rich, can this hit master?
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From michael+sup at stapelberg.de  Wed Oct  6 18:47:43 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 07 Oct 2010 00:47:43 +0200
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1285263695-sup-3656@alvh.no-ip.org>
+References: <1267109223-sup-351@masanjin.net>
+	<1267111506-sup-1389@peer.zerties.org>
+	<1285241702-sup-3344@dolk> <1285263695-sup-3656@alvh.no-ip.org>
+Message-ID: <1286405107-sup-889@midna.zekjur.net>
+
+Hi Alvaro,
+
+Excerpts from Alvaro Herrera's message of 2010-09-23 19:46:31 +0200:
+> I just want to add that it's a bit discouraging to see that the master
+> branch doesn't move a bit for a long time.  So it would be very good for
+> morale of us poor users to have someone else pushing patches, even if
+> it's just the minor bugfixes that we see pop up on the mailing lists.
++1.
+
+Last commit on sup/mainline:master is from 2010-07-16, which is nearly three
+months. No offense, Rich, but if you don?t have time to merge patches and/or
+respond to mails either, it would be a good idea to get someone else the
+permissions to help you out.
+
+Best regards,
+Michael
+
+From rlane at club.cc.cmu.edu  Wed Oct  6 23:21:15 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 06 Oct 2010 23:21:15 -0400
+Subject: [sup-devel] my list subscription is broken
+Message-ID: <1286421412-sup-6614@zyrg.net>
+
+Mailman claims I'm still subscribed to the sup lists even though I
+haven't received any mails from them for months, and I see the archive
+has many messages. Please CC me for now until I get this figured out.
+If there are any bugfixes I haven't responded to please resubmit them.
+
+From rlane at club.cc.cmu.edu  Wed Oct  6 23:08:11 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 06 Oct 2010 23:08:11 -0400
+Subject: [sup-devel] sup for sale
+In-Reply-To: <1286405107-sup-889@midna.zekjur.net>
+References: <1267109223-sup-351@masanjin.net>
+	<1267111506-sup-1389@peer.zerties.org>
+	<1285241702-sup-3344@dolk> <1285263695-sup-3656@alvh.no-ip.org>
+	<1286405107-sup-889@midna.zekjur.net>
+Message-ID: <1286420330-sup-3565@zyrg.net>
+
+I'm an idiot for not realizing this earlier, but it turns out I haven't
+been subscribed to the sup lists since late July. I guess too many mails
+bounced. I've been working on other projects and Sup just fell off my
+radar. Sorry about that.
+
+I'd be very happy to have someone else step up to help. I haven't gone
+through the list archives yet, is there anyone who's volunteered?
+
+From gaudenz at soziologie.ch  Thu Oct  7 05:05:30 2010
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 07 Oct 2010 11:05:30 +0200
+Subject: [sup-devel] [PATCH] prefer To and Cc adresses of accounts on reply
+Message-ID: <1286442230-sup-1136@meteor.durcheinandertal.local>
+
+Resending this on Rich's request.
+
+If a message was sent (To or Cc header) to an address which corresponds
+to an account prefer this account over the account corresponding to the
+address in recipient_email.
+
+This solves the problem that the wrong reply from address is chosen on
+mails which are sent to an account which is forwarded to another account.
+---
+ lib/sup/modes/reply-mode.rb |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index bbac922..d80f35b 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -65,18 +65,15 @@ EOS
+     ## if we have a value from a hook, use it.
+     from = if hook_reply_from
+       hook_reply_from
+-    ## otherwise, if the original email had an envelope-to header, try and use
+-    ## it, and look up the corresponding name form the list of accounts.
+-    ##
++    ## otherwise, try and find an account somewhere in the list of to's
++    ## and cc's and look up the corresponding name form the list of accounts.
++    ## if this does not succeed use the recipient_email (=envelope-to) instead.
+     ## this is for the case where mail is received from a mailing lists (so the
+     ## To: is the list id itself). if the user subscribes via a particular
+     ## alias, we want to use that alias in the reply.
+-    elsif @m.recipient_email && (a = AccountManager.account_for(@m.recipient_email))
+-      Person.new a.name, @m.recipient_email
+-    ## otherwise, try and find an account somewhere in the list of to's
+-    ## and cc's.
+-    elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+-      b
++    elsif(b = (@m.to.collect {|t| t.email} + @m.cc.collect {|c| c.email} + [@m.recipient_email] ).find { |p| AccountManager.is_account_email? p })
++      a = AccountManager.account_for(b)
++      Person.new a.name, b
+     ## if all else fails, use the default
+     else
+       AccountManager.default_account
+--
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/8ab1fd82/attachment.bin>
+
+From michael+sup at stapelberg.de  Thu Oct  7 05:32:11 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 07 Oct 2010 11:32:11 +0200
+Subject: [sup-devel] Fwd: [PATCH] prefer To and Cc adresses of accounts on
+	reply
+Message-ID: <1286443847-sup-5609@midna.zekjur.net>
+
+Hi,
+
+as you didn?t CC rich, I am forwarding this message again.
+
+--- Begin forwarded message from Gaudenz Steinlin ---
+From: Gaudenz Steinlin <gaudenz at soziologie.ch>
+To: sup-devel <sup-devel at rubyforge.org>
+Date: Thu, 07 Oct 2010 11:05:30 +0200
+Subject: [sup-devel] [PATCH] prefer To and Cc adresses of accounts on reply
+
+Resending this on Rich's request.
+
+If a message was sent (To or Cc header) to an address which corresponds
+to an account prefer this account over the account corresponding to the
+address in recipient_email.
+
+This solves the problem that the wrong reply from address is chosen on
+mails which are sent to an account which is forwarded to another account.
+---
+ lib/sup/modes/reply-mode.rb |   15 ++++++---------
+ 1 files changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/lib/sup/modes/reply-mode.rb b/lib/sup/modes/reply-mode.rb
+index bbac922..d80f35b 100644
+--- a/lib/sup/modes/reply-mode.rb
++++ b/lib/sup/modes/reply-mode.rb
+@@ -65,18 +65,15 @@ EOS
+     ## if we have a value from a hook, use it.
+     from = if hook_reply_from
+       hook_reply_from
+-    ## otherwise, if the original email had an envelope-to header, try and use
+-    ## it, and look up the corresponding name form the list of accounts.
+-    ##
++    ## otherwise, try and find an account somewhere in the list of to's
++    ## and cc's and look up the corresponding name form the list of accounts.
++    ## if this does not succeed use the recipient_email (=envelope-to) instead.
+     ## this is for the case where mail is received from a mailing lists (so the
+     ## To: is the list id itself). if the user subscribes via a particular
+     ## alias, we want to use that alias in the reply.
+-    elsif @m.recipient_email && (a = AccountManager.account_for(@m.recipient_email))
+-      Person.new a.name, @m.recipient_email
+-    ## otherwise, try and find an account somewhere in the list of to's
+-    ## and cc's.
+-    elsif(b = (@m.to + @m.cc).find { |p| AccountManager.is_account? p })
+-      b
++    elsif(b = (@m.to.collect {|t| t.email} + @m.cc.collect {|c| c.email} + [@m.recipient_email] ).find { |p| AccountManager.is_account_email? p })
++      a = AccountManager.account_for(b)
++      Person.new a.name, b
+     ## if all else fails, use the default
+     else
+       AccountManager.default_account
+--- End forwarded message ---
+
+From eg at gaute.vetsj.com  Thu Oct  7 06:30:10 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Thu, 07 Oct 2010 12:30:10 +0200
+Subject: [sup-devel] [PATCHES] resubmitted: Squash of various UTF-8 fixes
+	for ruby 1.9 compatability, and update status on jump.
+Message-ID: <1286447030-sup-6339@dolk>
+
+Hi,
+
+resubmitting a squashed version of the three patches:
+2010-10-04 adc49a0 Gaute Hope UTF-8 label completion: Convert existing labels (gaute/master, gaute)
+2010-09-17 009cda0 Gaute Hope Also force encoding on label search completion
+2010-09-09 c78e53f Gaute Hope Force UTF-8 on label and contact completion
+
+And one for updating status on jump:
+2010-09-23 64b739c Gaute Hope Update status on jump on line in line-cursor-mode
+
+All four are available on (master):
+http://gitorious.org/~gauteh/sup/gautehs-mainline
+
+Best regards, Gaute
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Update-status-on-jump-on-line-in-line-cursor-mode.patch
+Type: application/octet-stream
+Size: 924 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/97b414d0/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Force-UTF-8-on-label-and-contact-completion-squashed.patch
+Type: application/octet-stream
+Size: 1922 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/97b414d0/attachment-0001.obj>
+
+From sascha-ml-reply-to-2010-3 at silbe.org  Thu Oct  7 07:41:44 2010
+From: sascha-ml-reply-to-2010-3 at silbe.org (Sascha Silbe)
+Date: Thu, 07 Oct 2010 13:41:44 +0200
+Subject: [sup-devel] my list subscription is broken
+In-Reply-To: <1286421412-sup-6614@zyrg.net>
+References: <1286421412-sup-6614@zyrg.net>
+Message-ID: <1286449501-sup-5514@twin.sascha.silbe.org>
+
+Excerpts from Rich Lane's message of Thu Oct 07 05:21:15 +0200 2010:
+
+> If there are any bugfixes I haven't responded to please resubmit them.
+
+I have collected all my pending patches (including any discussion) plus
+one important fix from Michael Hamann in an mbox [1]. You can add it to
+sup using sup-add (giving it a distinctive label), check the discussions
+and apply all the patches at once using git am on the mbox.
+There are a few other patches in my repository [2], but there's a bug
+(progress indicator showing incorrect values on my armel box) I need to
+hunt down before posting them.
+
+If you'd prefer some other way to get the patches, please speak up.
+Bouncing the patch to the list won't work (mail loop detection),
+forwarding most likely messes the patch up (as sup doesn't support
+forwarding mails as an attachment) and resending the patch is tedious
+and looses previous discussion. So the mbox seemed like the best choice.
+
+Sascha
+
+[1] http://sascha.silbe.org/tmp/sup-pending-patches.mbox
+[2] git://git.silbe.org/sup (IPv6 only)
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 490 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/33168224/attachment.bin>
+
+From alvherre at alvh.no-ip.org  Thu Oct  7 10:45:34 2010
+From: alvherre at alvh.no-ip.org (Alvaro Herrera)
+Date: Thu, 07 Oct 2010 10:45:34 -0400
+Subject: [sup-devel] my list subscription is broken
+In-Reply-To: <1286421412-sup-6614@zyrg.net>
+References: <1286421412-sup-6614@zyrg.net>
+Message-ID: <1286462188-sup-8766@alvh.no-ip.org>
+
+Excerpts from Rich Lane's message of mi? oct 06 23:21:15 -0400 2010:
+> Mailman claims I'm still subscribed to the sup lists even though I
+> haven't received any mails from them for months, and I see the archive
+> has many messages. Please CC me for now until I get this figured out.
+
+Maybe you are marked "nomail"?  The bounce processor could have done
+that to your subscription.
+
+> If there are any bugfixes I haven't responded to please resubmit them.
+
+There's a bunch of bugs in William's tracker, some with patches.  If
+things start moving again, I can offer a bit of help for triage and
+general cleanup.
+
+http://masanjin.net/sup-bugs/
+
+In particular,
+http://masanjin.net/sup-bugs/issue105
+
+Also,
+http://masanjin.net/sup-bugs/issue99
+contains a patch for another crash.
+
+-- 
+?lvaro Herrera <alvherre at alvh.no-ip.org>
+
+From michael+sup at stapelberg.de  Thu Oct  7 13:21:26 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Thu, 07 Oct 2010 19:21:26 +0200
+Subject: [sup-devel] =?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+Message-ID: <1286471713-sup-9575@midna.zekjur.net>
+
+Hi,
+
+Quote from the commit message:
+  When a participant of a thread uses different email addresses, but the same
+  name, he would be displayed twice in the list:
+  Participants:
+   ? foo <foo at bar.com>
+   ? foo <foo at qux.bar.com>
+   ? bar <bar at bar.com>
+  would lead to: "foo, bar, foo"
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Don-t-display-thread-participants-twice.patch
+Type: application/octet-stream
+Size: 1198 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/052fc466/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Thu Oct  7 13:32:27 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 07 Oct 2010 13:32:27 -0400
+Subject: [sup-devel] Fwd: [PATCH] prefer To and Cc adresses of accounts
+	on reply
+In-Reply-To: <1286443847-sup-5609@midna.zekjur.net>
+References: <1286443847-sup-5609@midna.zekjur.net>
+Message-ID: <1286472669-sup-8812@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of Thu Oct 07 05:32:11 -0400 2010:
+> Hi,
+> 
+> as you didn?t CC rich, I am forwarding this message again.
+
+I actually got this one, it looks like things are working after
+unsubscribing and resubscribing to the list. Thanks though.
+
+From gaudenz at soziologie.ch  Thu Oct  7 13:50:13 2010
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Thu, 07 Oct 2010 19:50:13 +0200
+Subject: [sup-devel] [PATCH] Explicitly specify signature hashing algorithm
+Message-ID: <1286473693-sup-8792@meteor.durcheinandertal.local>
+
+Sup used to add a micalg=pgp-sha1 parameter in Content-Type header of a
+signed message, but used whatever the user had configured as his
+preferred hasing algorithm in gpg.conf. This lead to unverifiable
+signatures in some MUAs.
+
+This adds an explicit --digest-algo option to the gpg call to override
+any user configured setting. It also upgrades the algorithm to sha256 as
+sha1 is being phased out now.
+---
+ lib/sup/crypto.rb |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/sup/crypto.rb b/lib/sup/crypto.rb
+index 289fb0e..2bd5350 100644
+--- a/lib/sup/crypto.rb
++++ b/lib/sup/crypto.rb
+@@ -45,14 +45,14 @@ EOS
+ 
+     sig_fn = Tempfile.new "redwood.signature"; sig_fn.close
+ 
+-    message = run_gpg "--output #{sig_fn.path} --yes --armor --detach-sign --textmode --local-user '#{from}' #{payload_fn.path}", :interactive => true
++    message = run_gpg "--output #{sig_fn.path} --yes --armor --detach-sign --textmode --digest-algo sha256 --local-user '#{from}' #{payload_fn.path}", :interactive => true
+     unless $?.success?
+       info "Error while running gpg: #{message}"
+       raise Error, "GPG command failed. See log for details."
+     end
+ 
+     envelope = RMail::Message.new
+-    envelope.header["Content-Type"] = 'multipart/signed; protocol=application/pgp-signature; micalg=pgp-sha1'
++    envelope.header["Content-Type"] = 'multipart/signed; protocol=application/pgp-signature; micalg=pgp-sha256'
+ 
+     envelope.add_part payload
+     signature = RMail::Message.make_attachment IO.read(sig_fn.path), "application/pgp-signature", nil, "signature.asc"
+-- 
+1.7.1
+
+--
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101007/93e0bacb/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:17:41 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:17:41 -0400
+Subject: [sup-devel]
+	=?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+In-Reply-To: <1286471713-sup-9575@midna.zekjur.net>
+References: <1286471713-sup-9575@midna.zekjur.net>
+Message-ID: <1286511449-sup-7198@zyrg.net>
+
+Excerpts from Michael Stapelberg's message of Thu Oct 07 13:21:26 -0400 2010:
+> Hi,
+> 
+> Quote from the commit message:
+>   When a participant of a thread uses different email addresses, but the same
+>   name, he would be displayed twice in the list:
+>   Participants:
+>    ? foo <foo at bar.com>
+>    ? foo <foo at qux.bar.com>
+>    ? bar <bar at bar.com>
+>   would lead to: "foo, bar, foo"
+> 
+> Best regards,
+> Michael
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:18:14 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:18:14 -0400
+Subject: [sup-devel] [PATCHES] resubmitted: Squash of various UTF-8
+	fixes for ruby 1.9 compatability, and update status on jump.
+In-Reply-To: <1286447030-sup-6339@dolk>
+References: <1286447030-sup-6339@dolk>
+Message-ID: <1286511482-sup-9940@zyrg.net>
+
+Excerpts from Gaute Hope's message of Thu Oct 07 06:30:10 -0400 2010:
+> Hi,
+> 
+> resubmitting a squashed version of the three patches:
+> 2010-10-04 adc49a0 Gaute Hope UTF-8 label completion: Convert existing labels (gaute/master, gaute)
+> 2010-09-17 009cda0 Gaute Hope Also force encoding on label search completion
+> 2010-09-09 c78e53f Gaute Hope Force UTF-8 on label and contact completion
+> 
+> And one for updating status on jump:
+> 2010-09-23 64b739c Gaute Hope Update status on jump on line in line-cursor-mode
+> 
+> All four are available on (master):
+> http://gitorious.org/~gauteh/sup/gautehs-mainline
+> 
+> Best regards, Gaute
+
+Both applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:20:18 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:20:18 -0400
+Subject: [sup-devel] [PATCH] Explicitly specify signature hashing
+	algorithm
+In-Reply-To: <1286473693-sup-8792@meteor.durcheinandertal.local>
+References: <1286473693-sup-8792@meteor.durcheinandertal.local>
+Message-ID: <1286511569-sup-4552@zyrg.net>
+
+Applied to master. I had to write some code to get the patch out of the
+signed message first.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:20:52 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:20:52 -0400
+Subject: [sup-devel] [PATCH] fix GPG "hang" on malformed PGP message
+	(detached signature)
+In-Reply-To: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+References: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1286511636-sup-3391@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:21:41 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:21:41 -0400
+Subject: [sup-devel] [PATCH] fix searching for non-lowercase labels
+In-Reply-To: <1285769775-15914-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769775-15914-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1286511676-sup-1292@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:22:14 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:22:14 -0400
+Subject: [sup-devel] [PATCH] prefer To and Cc adresses of accounts on
+	reply
+In-Reply-To: <1286442230-sup-1136@meteor.durcheinandertal.local>
+References: <1286442230-sup-1136@meteor.durcheinandertal.local>
+Message-ID: <1286511720-sup-8141@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:22:42 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:22:42 -0400
+Subject: [sup-devel] [PATCH] add sendmail hook
+In-Reply-To: <1285769580-15705-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769580-15705-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1286511746-sup-4842@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:23:53 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:23:53 -0400
+Subject: [sup-devel] [PATCH] Fixed inline gpg crash when the end marker
+	is missing
+In-Reply-To: <1283637106-18801-1-git-send-email-michael@content-space.de>
+References: <AANLkTimw-xi2XCdn3R3QHoDFFv-4cD7GxCoHWxbta-0r@mail.gmail.com>
+	<1283637106-18801-1-git-send-email-michael@content-space.de>
+Message-ID: <1286511817-sup-7625@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 00:30:14 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 00:30:14 -0400
+Subject: [sup-devel] [PATCH] fix handling of multiple label: terms in
+	search
+In-Reply-To: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+References: <1285769762-15823-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1286511847-sup-7703@zyrg.net>
+
+I like this patch, but I'm going to hold off on merging it to master
+until my machines are all running Xapian 1.2. I've applied it to the
+new and-labels branch.
+
+From eg at gaute.vetsj.com  Fri Oct  8 06:05:29 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 8 Oct 2010 12:05:29 +0200
+Subject: [sup-devel]
+	=?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+In-Reply-To: <1286511449-sup-7198@zyrg.net>
+References: <1286471713-sup-9575@midna.zekjur.net>
+	<1286511449-sup-7198@zyrg.net>
+Message-ID: <AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+
+On Fri, Oct 8, 2010 at 6:17 AM, Rich Lane <rlane at club.cc.cmu.edu> wrote:
+> Excerpts from Michael Stapelberg's message of Thu Oct 07 13:21:26 -0400 2010:
+>> Hi,
+>>
+>> Quote from the commit message:
+>> ? When a participant of a thread uses different email addresses, but the same
+>> ? name, he would be displayed twice in the list:
+>> ? Participants:
+>> ? ?? foo <foo at bar.com>
+>> ? ?? foo <foo at qux.bar.com>
+>> ? ?? bar <bar at bar.com>
+>> ? would lead to: "foo, bar, foo"
+>>
+>> Best regards,
+>> Michael
+>
+> Applied to master.
+
+What if someone has the same name ? ;) Is it more
+important/likely/intuitive than anyone using two addresses?
+
+- gaute
+
+From michael+sup at stapelberg.de  Fri Oct  8 07:41:55 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Fri, 08 Oct 2010 13:41:55 +0200
+Subject: [sup-devel]
+	=?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+In-Reply-To: <AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+References: <1286471713-sup-9575@midna.zekjur.net>
+	<1286511449-sup-7198@zyrg.net>
+	<AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+Message-ID: <1286538002-sup-2671@midna.zekjur.net>
+
+Hi Gaute,
+
+Excerpts from Gaute Hope's message of 2010-10-08 12:05:29 +0200:
+> What if someone has the same name ? ;) Is it more
+> important/likely/intuitive than anyone using two addresses?
+If two people have exactly the same name, you would not benefit in seeing that
+same name twice, either. Even if one mail of the thread is new and one "Michael
+S." is highlighted, you still would not know which one sent the new mail. So,
+to avoid confusion about the same name showing up twice, I decided it would be
+better to not show duplicates at all.
+
+Best regards,
+Michael
+
+From eg at gaute.vetsj.com  Fri Oct  8 07:46:28 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Fri, 8 Oct 2010 13:46:28 +0200
+Subject: [sup-devel]
+	=?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+In-Reply-To: <1286538002-sup-2671@midna.zekjur.net>
+References: <1286471713-sup-9575@midna.zekjur.net>
+	<1286511449-sup-7198@zyrg.net>
+	<AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+	<1286538002-sup-2671@midna.zekjur.net>
+Message-ID: <AANLkTi=ezGsXB7jHtSV1+9fREThpvPERZEOjm8TpXcVA@mail.gmail.com>
+
+On Fri, Oct 8, 2010 at 1:41 PM, Michael Stapelberg
+<michael+sup at stapelberg.de> wrote:
+> Hi Gaute,
+>
+> Excerpts from Gaute Hope's message of 2010-10-08 12:05:29 +0200:
+>> What if someone has the same name ? ;) Is it more
+>> important/likely/intuitive than anyone using two addresses?
+> If two people have exactly the same name, you would not benefit in seeing that
+> same name twice, either. Even if one mail of the thread is new and one "Michael
+> S." is highlighted, you still would not know which one sent the new mail. So,
+> to avoid confusion about the same name showing up twice, I decided it would be
+> better to not show duplicates at all.
+
+Sure, this isn't really a big issue (for me at least). The duplicates
+would be the expected behaviour (for me :)), the benefit being that
+you know there is one more guy/emailaccount at work here.
+
+Best regards, Gaute
+
+From bwalton at artsci.utoronto.ca  Fri Oct  8 08:07:32 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Fri, 08 Oct 2010 08:07:32 -0400
+Subject: [sup-devel]
+	=?utf-8?q?=5BPATCH=5D_Bugfix=3A_Don=E2=80=99t_display?=
+	=?utf-8?q?_thread_participants_twice?=
+In-Reply-To: <AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+References: <1286471713-sup-9575@midna.zekjur.net>
+	<1286511449-sup-7198@zyrg.net>
+	<AANLkTi=Ppaa6jA=pKOeLPEVhhqjvDg1-cS7QUsmZ+QYK@mail.gmail.com>
+Message-ID: <1286539610-sup-1173@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Gaute Hope's message of Fri Oct 08 06:05:29 -0400 2010:
+
+> What if someone has the same name ? ;) Is it more
+> important/likely/intuitive than anyone using two addresses?
+
+A good point, but I'd still rather see a shorter list.  The space is
+limited, so squashing duplicate names is fine with me.
+
+HTH.
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From michael at content-space.de  Fri Oct  8 08:53:56 2010
+From: michael at content-space.de (Michael Hamann)
+Date: Fri, 08 Oct 2010 14:53:56 +0200
+Subject: [sup-devel] [PATCH] fix GPG "hang" on malformed PGP message
+	(detached signature)
+In-Reply-To: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+References: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+Message-ID: <1286541818-sup-2877@mithink>
+
+Hi,
+
+Excerpts from Sascha Silbe's message of 2010-10-05 13:25:33 +0200:
+> -    message = run_gpg "--output #{output_fn.path} --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+> +    message = run_gpg "--output #{output_fn.path} --multifile --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+
+This change breaks GPG decryption completely for me, not a single
+message I've tried is decrypted anymore. The error message I'm getting
+is Error while running gpg: gpg: --output doesn't work for this command.
+I'm using gpg version 1.4.10. The complete gpg command that is executed
+is:
+
+LC_MESSAGES=C /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --use-agent --output /tmp/redwood.output20101008-5410-lj1dh3 --multifile --skip-verify --yes --decrypt /tmp/redwood.payload20101008-5410-1qtud0x > /tmp/redwood.output20101008-5410-2rsbb5 2> /dev/null
+
+Michael
+
+From michael at content-space.de  Fri Oct  8 10:03:36 2010
+From: michael at content-space.de (Michael Hamann)
+Date: Fri,  8 Oct 2010 16:03:36 +0200
+Subject: [sup-devel] [PATCH] Fix monkey-patching of Tempfile
+Message-ID: <1286546616-7072-1-git-send-email-michael@content-space.de>
+
+In Ruby 1.9.2 the interal function make_tmpname has changed it's
+parameters and the second parameter can be nil now. This breaks the
+monkey-patched Tempfile class in sup. Additionally, monkey-patching is
+not really necessary as the Tempfile class supports an array as basename
+instead of a string containing prefix and a suffix since Ruby version
+1.8.7. The only place I've found where the suffix might matter is
+directly in message-chunks.rb where I've changed the basename to an
+array. Additionally the new make_tmpname function from Ruby 1.9.2 is
+monkey-patched for Ruby versions lower than 1.8.7 now.
+
+NOTE: As I don't have a working Ruby 1.8 setup for sup I haven't tested
+this with older versions, but the code works here when the version check
+is changed to 1.9.3 and I can't see anything that shouldn't work with
+Ruby 1.8.6 and below.
+---
+ lib/sup/message-chunks.rb |   24 ++++++++++++++++++++----
+ 1 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/lib/sup/message-chunks.rb b/lib/sup/message-chunks.rb
+index c275f41..ba1834a 100644
+--- a/lib/sup/message-chunks.rb
++++ b/lib/sup/message-chunks.rb
+@@ -32,9 +32,25 @@ require 'tempfile'
+ ## attachments are quotable; Signatures are not.
+ 
+ ## monkey-patch time: make temp files have the right extension
+-class Tempfile
+-  def make_tmpname basename, n
+-    sprintf '%d-%d-%s', $$, n, basename
++## Backport from Ruby 1.9.2 for versions lower than 1.8.7
++if RUBY_VERSION < '1.8.7'
++  class Tempfile
++    def make_tmpname(prefix_suffix, n)
++      case prefix_suffix
++      when String
++        prefix = prefix_suffix
++        suffix = ""
++      when Array
++        prefix = prefix_suffix[0]
++        suffix = prefix_suffix[1]
++      else
++        raise ArgumentError, "unexpected prefix_suffix: #{prefix_suffix.inspect}"
++      end
++      t = Time.now.strftime("%Y%m%d")
++      path = "#{prefix}#{t}-#{$$}-#{rand(0x100000000).to_s(36)}"
++      path << "-#{n}" if n
++      path << suffix
++    end
+   end
+ end
+ 
+@@ -149,7 +165,7 @@ EOS
+     end
+ 
+     def write_to_disk
+-      file = Tempfile.new(@filename || "sup-attachment")
++      file = Tempfile.new(["sup", @filename || "sup-attachment"])
+       file.print @raw_content
+       file.close
+       file.path
+-- 
+1.7.3.1
+
+
+From mailinglist at flasht.de  Fri Oct  8 10:36:04 2010
+From: mailinglist at flasht.de (Christopher Bertels)
+Date: Fri, 08 Oct 2010 16:36:04 +0200
+Subject: [sup-devel] [PATCH] fix GPG "hang" on malformed PGP message
+	(detached signature)
+In-Reply-To: <1286541818-sup-2877@mithink>
+References: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+	<1286541818-sup-2877@mithink>
+Message-ID: <1286548547-sup-3965@bakkdoor-thinkpad>
+
+Excerpts from Michael Hamann's message of Fr Okt 08 14:53:56 +0200 2010:
+> Hi,
+>
+> Excerpts from Sascha Silbe's message of 2010-10-05 13:25:33 +0200:
+> > -    message = run_gpg "--output #{output_fn.path} --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+> > +    message = run_gpg "--output #{output_fn.path} --multifile --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+>
+> This change breaks GPG decryption completely for me, not a single
+> message I've tried is decrypted anymore. The error message I'm getting
+> is Error while running gpg: gpg: --output doesn't work for this command.
+> I'm using gpg version 1.4.10. The complete gpg command that is executed
+> is:
+
+Yup, same for me :(
+
+>
+> LC_MESSAGES=C /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --use-agent --output /tmp/redwood.output20101008-5410-lj1dh3 --multifile --skip-verify --yes --decrypt /tmp/redwood.payload20101008-5410-1qtud0x > /tmp/redwood.output20101008-5410-2rsbb5 2> /dev/null
+>
+> Michael
+--
+================================
+Christopher Bertels
+http://www.fancy-lang.org
+http://www.adztec-independent.de
+GPG Key ID: 0x2345b203
+
+From rlane at club.cc.cmu.edu  Fri Oct  8 16:09:33 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Fri, 08 Oct 2010 16:09:33 -0400
+Subject: [sup-devel] [PATCH] fix GPG "hang" on malformed PGP message
+	(detached signature)
+In-Reply-To: <1286548547-sup-3965@bakkdoor-thinkpad>
+References: <1286277933-4686-1-git-send-email-sascha-pgp@silbe.org>
+	<1286541818-sup-2877@mithink>
+	<1286548547-sup-3965@bakkdoor-thinkpad>
+Message-ID: <1286568562-sup-8325@zyrg.net>
+
+Excerpts from Christopher Bertels's message of Fri Oct 08 10:36:04 -0400 2010:
+> Excerpts from Michael Hamann's message of Fr Okt 08 14:53:56 +0200 2010:
+> > Hi,
+> >
+> > Excerpts from Sascha Silbe's message of 2010-10-05 13:25:33 +0200:
+> > > -    message = run_gpg "--output #{output_fn.path} --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+> > > +    message = run_gpg "--output #{output_fn.path} --multifile --skip-verify --yes --decrypt #{payload_fn.path}", :interactive => true
+> >
+> > This change breaks GPG decryption completely for me, not a single
+> > message I've tried is decrypted anymore. The error message I'm getting
+> > is Error while running gpg: gpg: --output doesn't work for this command.
+> > I'm using gpg version 1.4.10. The complete gpg command that is executed
+> > is:
+> 
+> Yup, same for me :(
+> 
+> >
+> > LC_MESSAGES=C /usr/bin/gpg --quiet --batch --no-verbose --logger-fd 1 --use-agent --output /tmp/redwood.output20101008-5410-lj1dh3 --multifile --skip-verify --yes --decrypt /tmp/redwood.payload20101008-5410-1qtud0x > /tmp/redwood.output20101008-5410-2rsbb5 2> /dev/null
+> >
+> > Michael
+
+Reverted.
+
+From dmishd at gmail.com  Sat Oct  9 13:41:01 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 9 Oct 2010 18:41:01 +0100
+Subject: [sup-devel] trouble running git version
+Message-ID: <AANLkTik08+b5j3US5-h5+WLkUOsbFxueqyvDfZ8fA=Gt@mail.gmail.com>
+
+Hello
+
+I'm cloned the git repository, and I've even written a patch, but it's
+untested as I don't seem to be able to run a development version. The
+error I get is:
+
+$ ruby -Ilib -Ilib/sup -w bin/sup
+./lib/sup/thread.rb:256: undefined method `bool_reader' for
+Redwood::ThreadSet:Class (NoMethodError)
+       from /usr/lib/ruby/1.8/rubygems.rb:11:in `require'
+       from /usr/lib/ruby/1.8/rubygems.rb:11
+       from bin/sup:3:in `require'
+       from bin/sup:3
+
+bool_reader does exist in lib/sup/util.rb
+
+I am running Ubuntu (10.10/maverick) and have the sup-mail package
+installed. The installed sup works fine.
+
+$ ruby --version
+ruby 1.8.7 (2010-06-23 patchlevel 299) [x86_64-linux]
+
+I'm wondering if my ruby paths are part of the problem. You might have
+noticed that I specified -I lib -I lib/sup above. If I miss out the
+second include I get:
+
+$ ruby -Ilib  bin/sup
+/usr/lib/ruby/1.8/sup/poll.rb:31: undefined method `[]' for
+nil:NilClass (NoMethodError)
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from ./lib/sup.rb:341
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from bin/sup:15
+
+Here ruby has picked up the sup/poll.rb from the installed version
+rather than the checked out version. Adding -w to this version gives a
+few warnings that I don't get when using -Isup/lib:
+
+$ ruby -Ilib  -w bin/sup
+./lib/sup/util.rb:316: warning: `&' interpreted as argument prefix
+./lib/sup/util.rb:19: warning: method redefined; discarding old gen_lock_id
+./lib/sup/util.rb:30: warning: method redefined; discarding old dump_lock_id
+./lib/sup/message-chunks.rb:36: warning: method redefined; discarding
+old make_tmpname
+./lib/sup/message.rb:285: warning: `&' interpreted as argument prefix
+./lib/sup/index.rb:553: warning: `&' interpreted as argument prefix
+/usr/lib/ruby/1.8/chronic/repeaters/repeater_month_name.rb:13:
+warning: useless use of > in void context
+/usr/lib/ruby/1.8/chronic/repeaters/repeater_month_name.rb:19:
+warning: useless use of > in void context
+/usr/lib/ruby/1.8/chronic/repeaters/repeater_month_name.rb:25:
+warning: useless use of < in void context
+/usr/lib/ruby/1.8/sup/poll.rb:31: warning: global variable `$config'
+not initialized
+/usr/lib/ruby/1.8/sup/poll.rb:31: undefined method `[]' for
+nil:NilClass (NoMethodError)
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from ./lib/sup.rb:341
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in
+`gem_original_require'
+       from /usr/lib/ruby/1.8/rubygems/custom_require.rb:31:in `require'
+       from bin/sup:15
+
+I've looked at the code, but the bool_reader is something messing
+about with modules and classes at a deep-ish level and is beyond my
+ruby understanding.
+
+Any ideas appreciated.
+Hamish
+
+From dmishd at gmail.com  Sat Oct  9 14:07:07 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Sat, 9 Oct 2010 19:07:07 +0100
+Subject: [sup-devel] trouble running git version
+In-Reply-To: <AANLkTik08+b5j3US5-h5+WLkUOsbFxueqyvDfZ8fA=Gt@mail.gmail.com>
+References: <AANLkTik08+b5j3US5-h5+WLkUOsbFxueqyvDfZ8fA=Gt@mail.gmail.com>
+Message-ID: <AANLkTinq8akFpNbZBMoRJU9T0QWQaMdq=PLBx3BVcSfx@mail.gmail.com>
+
+> I am running Ubuntu (10.10/maverick) and have the sup-mail package
+> installed. The installed sup works fine.
+
+After some help in irc I've got it working. I had to uninstall the
+sup-mail package and now it works.
+
+Hopefully having it in the list archives can save someone else a little pain ...
+
+Hamish
+
+From adam at alloy-d.net  Sat Oct  9 16:48:11 2010
+From: adam at alloy-d.net (Adam Lloyd)
+Date: Sat, 09 Oct 2010 16:48:11 -0400
+Subject: [sup-devel] [PATCH] [mq]: mbox-path-fix
+Message-ID: <42ef20fde16d0aef1f13.1286657291@nagato.alloy-d.net>
+
+A non-text attachment was scrubbed...
+Name: sup.patch
+Type: text/x-patch
+Size: 460 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101009/fd4e622c/attachment.bin>
+
+From adam at alloy-d.net  Sat Oct  9 16:54:07 2010
+From: adam at alloy-d.net (Adam Lloyd)
+Date: Sat, 9 Oct 2010 16:54:07 -0400
+Subject: [sup-devel] [PATCH] [mq]: mbox-path-fix
+In-Reply-To: <42ef20fde16d0aef1f13.1286657291@nagato.alloy-d.net>
+References: <42ef20fde16d0aef1f13.1286657291@nagato.alloy-d.net>
+Message-ID: <AANLkTimgsOd8S_1BsDhJKYs70PYZ2LFKD+NisniqH1qi@mail.gmail.com>
+
+Argh, /me is quite embarrassed.
+
+Please ignore this; I'll resend my patch properly.  Apologies for the noise!
+
+-Adam
+
+
+From adam at alloy-d.net  Sat Oct  9 18:11:21 2010
+From: adam at alloy-d.net (Adam Lloyd)
+Date: Sat, 09 Oct 2010 18:11:21 -0400
+Subject: [sup-devel] [PATCH] s/@filename/@path/ in MBox#store_message
+Message-ID: <a53ff2538f3de566eecc.1286662281@nagato.alloy-d.net>
+
+ lib/sup/mbox.rb |  4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+
+@filename is undefined in MBox, so trying to store a message to an mbox
+source results in a crash.  @path contains the needed information.
+
+This fixes issues 79 and 89, related to crashes on sending mail.
+
+diff --git a/lib/sup/mbox.rb b/lib/sup/mbox.rb
+--- a/lib/sup/mbox.rb
++++ b/lib/sup/mbox.rb
+@@ -90,8 +90,8 @@
+   end
+ 
+   def store_message date, from_email, &block
+-    need_blank = File.exists?(@filename) && !File.zero?(@filename)
+-    File.open(@filename, "ab") do |f|
++    need_blank = File.exists?(@path) && !File.zero?(@path)
++    File.open(@path, "ab") do |f|
+       f.puts if need_blank
+       f.puts "From #{from_email} #{date.asctime}"
+       yield f
+
+From eg at gaute.vetsj.com  Sun Oct 10 02:56:09 2010
+From: eg at gaute.vetsj.com (Gaute Hope)
+Date: Sun, 10 Oct 2010 08:56:09 +0200
+Subject: [sup-devel] [PATCH] s/@filename/@path/ in MBox#store_message
+In-Reply-To: <a53ff2538f3de566eecc.1286662281@nagato.alloy-d.net>
+References: <a53ff2538f3de566eecc.1286662281@nagato.alloy-d.net>
+Message-ID: <1286693669-sup-9131@dolk>
+
+Excerpts from Adam Lloyd's message of 2010-10-10 00:11:21 +0200:
+> This fixes issues 79 and 89, related to crashes on sending mail.
+
+I think your best bet is to close them yourself (if patches applied),
+the issue tracker don't seem to be horribly well-maintained ;)
+
+- gaute
+
+From rlane at club.cc.cmu.edu  Sun Oct 10 03:43:56 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Sun, 10 Oct 2010 03:43:56 -0400
+Subject: [sup-devel] [PATCH] s/@filename/@path/ in MBox#store_message
+In-Reply-To: <a53ff2538f3de566eecc.1286662281@nagato.alloy-d.net>
+References: <a53ff2538f3de566eecc.1286662281@nagato.alloy-d.net>
+Message-ID: <1286696600-sup-2801@zyrg.net>
+
+Applied to master.
+
+From dmishd at gmail.com  Sun Oct 10 12:25:18 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 10 Oct 2010 17:25:18 +0100
+Subject: [sup-devel] [PATCH] Adding a gpgkey option
+Message-ID: <AANLkTi=dw_GeGVV90HyBXozTsb9BKL4YB4gCUH_pbtVs@mail.gmail.com>
+
+>From the commit message:
+
+    Added a gpgkey option to the account settings
+
+    This allows the user to specify the gpg key used. In addition, if
+    gpgkey is not set, and there is only one email address defined, then
+    sup will not pass any id to gpg, so gpg will use its default key.
+    Only if gpgkey is not set and there are multiple email addresses
+    will sup use the old behaviour of defining the key to use by
+    passing gpg the from email address.
+
+This has been requested before:
+http://rubyforge.org/pipermail/sup-devel/2009-November/000029.html
+
+I've given it some basic testing (using the gpg-args hook to view the
+arguments) and it appears to work as I intend it to in all 3 cases I
+mention in the comment. I'm not a massively experienced ruby hacker,
+so any feedback or improvements appreciated.
+
+Hamish
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Added-a-gpgkey-option-to-the-account-settings.patch
+Type: text/x-patch
+Size: 4422 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101010/69c54a23/attachment.bin>
+
+From michael+sup at stapelberg.de  Sun Oct 10 17:02:28 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Sun, 10 Oct 2010 23:02:28 +0200
+Subject: [sup-devel] [PATCH] Bugfix: fix regexp for detecting filename in
+	Content-Disposition header
+Message-ID: <1286744439-sup-1534@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+
+    In a message written in some Microsoft mail program (the only header is
+    "X-MimeOLE: Produced By Microsoft Exchange V6.5"), the filename part of
+    the Content-Disposition header spans multiple lines (due to the filename
+    being very long and encoded in base64 due to the use of UTF-8):
+    
+    Content-Disposition: attachment;
+            filename="=?utf-8?B?VGFnIGRlciBPZmZlbmVuIFTDvHIgZGVzIFByb2pla3Rl?=
+            =?utf-8?B?cyBMZXJucGF0ZW5zY2hhZnRlbiBpbSBFbW1lcnRzZ3I=?=
+            =?utf-8?B?dW5kLmRvY3g=?="
+    
+    The previous regexp did not properly match the whole string, but only the
+    first line. This is fixed by adding the 'm' option (to match newlines as
+    characters) and using \z instead of $ ("end of string" instead of "end of
+    line").
+    
+    The same fix is also applied to the Content-Type header one line below.
+
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-fix-regexp-for-detecting-filename-in-Content-.patch
+Type: application/octet-stream
+Size: 2162 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101010/3b40a331/attachment.obj>
+
+From rlane at club.cc.cmu.edu  Mon Oct 11 21:37:59 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 11 Oct 2010 21:37:59 -0400
+Subject: [sup-devel] [PATCH] Bugfix: fix regexp for detecting filename
+	in Content-Disposition header
+In-Reply-To: <1286744439-sup-1534@midna.zekjur.net>
+References: <1286744439-sup-1534@midna.zekjur.net>
+Message-ID: <1286847463-sup-2613@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Mon Oct 11 21:38:31 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Mon, 11 Oct 2010 21:38:31 -0400
+Subject: [sup-devel] [PATCH] Adding a gpgkey option
+In-Reply-To: <AANLkTi=dw_GeGVV90HyBXozTsb9BKL4YB4gCUH_pbtVs@mail.gmail.com>
+References: <AANLkTi=dw_GeGVV90HyBXozTsb9BKL4YB4gCUH_pbtVs@mail.gmail.com>
+Message-ID: <1286847487-sup-2401@zyrg.net>
+
+Applied to master.
+
+From gregor at hoffleit.de  Tue Oct 12 10:34:56 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Tue, 12 Oct 2010 16:34:56 +0200
+Subject: [sup-devel] [PATCH] Bugfix: Set background color for starred
+	messages
+Message-ID: <1286893508-sup-7225@sam.mediasupervision.de>
+
+>From the commit message:
+
+    For the sake of consistency, Sup should always use the starred_color
+    for the 'starred' column in the thread-index-mode, whether there's a
+    star or a blank.
+
+    Rationale: With this patch, I'm able to set the background color of
+    the thread-index to bg:7 without having to change my term's
+    background color.  Without the patch, the background color shines
+    through in the starred column.
+
+Regards,
+    Gregor Hoffleit
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Background-for-starred-messages.patch
+Type: application/octet-stream
+Size: 1178 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101012/b2d5e078/attachment.obj>
+
+From gregor at hoffleit.de  Tue Oct 12 12:15:59 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Tue, 12 Oct 2010 18:15:59 +0200
+Subject: [sup-devel] [PATCH] Bugfix: Correctly split list of mail addresses
+Message-ID: <1286900062-sup-8729@sam.mediasupervision.de>
+
+>From the commit message:
+
+    split_on_commas() fails to work correctly for wrapped header lines:
+
+	Cc: John Doe <john.doe at subdivision.example.com>, Foo Bar
+	    <foo.bar at subdivision.example.com>
+
+    Sup parsed this (in lib/sup/person.rb, Person.from_address_list) as:
+
+	Cc: John Doe <john.doe at subdivision.example.com>,
+	    foo.bar <foo.bar at subdivision.example.com>
+
+    I fixed this by normalizing the whitespace before working the
+    regex in split_on_commas.
+
+
+Regards,
+    Gregor Hoffleit
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0005-Bugfix-Correctly-split-list-of-mail-addresses.patch
+Type: application/octet-stream
+Size: 1260 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101012/21433583/attachment-0001.obj>
+
+From gaudenz at soziologie.ch  Tue Oct 12 17:46:19 2010
+From: gaudenz at soziologie.ch (Gaudenz Steinlin)
+Date: Tue, 12 Oct 2010 23:46:19 +0200
+Subject: [sup-devel] [PATCH] Fix signing of multipart messages
+Message-ID: <1286919925-sup-9064@meteor.durcheinandertal.local>
+
+Hi
+
+Sup currently crashes when you try to sign a multipart message. This
+is fixed by the first patch.
+
+Additionally the signatures created for multipart messages are wrong,
+because the incorrect MIME-Version header is stripped before signing
+but not when actually constructing the message.
+
+RMail automagically adds these MIME-Version headers on serialization.
+This also creates problems on signature verification of signed
+multipart messages. 
+
+The second patch addresses these two problems by monkey patching RMail
+to no longer automagically add MIME-Version headers. This is not
+really elegant, but I could not come up with a better way to avoid the
+various side effects on signatures of automatically messing with mail
+parts on serialization.
+
+For the monkey patch to be applied the require statements had to be
+rearranged so that rmail is included before sup/util.
+
+If someone knows a better fix than monkey patching I would be more
+than happy...
+
+Gaudenz
+
+P.S.: Do you rather prefer patches as attachments or inline patches?
+--
+Ever tried. Ever failed. No matter.
+Try again. Fail again. Fail better.
+~ Samuel Beckett ~
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Encode-multipart-messages-for-crypt-operations.patch
+Type: application/octet-stream
+Size: 2178 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101012/d405a120/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0002-Monkey-patch-RMails-MIME-Version-header-handling.patch
+Type: application/octet-stream
+Size: 3269 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101012/d405a120/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 482 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101012/d405a120/attachment.bin>
+
+From rlane at club.cc.cmu.edu  Wed Oct 13 21:09:41 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 13 Oct 2010 21:09:41 -0400
+Subject: [sup-devel] [PATCH] Fix signing of multipart messages
+In-Reply-To: <1286919925-sup-9064@meteor.durcheinandertal.local>
+References: <1286919925-sup-9064@meteor.durcheinandertal.local>
+Message-ID: <1287018379-sup-5613@zyrg.net>
+
+Both patches applied to master.
+
+Excerpts from Gaudenz Steinlin's message of Tue Oct 12 17:46:19 -0400 2010:
+> P.S.: Do you rather prefer patches as attachments or inline patches?
+
+Either is fine. Inline patches are a little easier to discuss.
+
+From rlane at club.cc.cmu.edu  Wed Oct 13 21:10:02 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 13 Oct 2010 21:10:02 -0400
+Subject: [sup-devel] [PATCH] Bugfix: Set background color for starred
+	messages
+In-Reply-To: <1286893508-sup-7225@sam.mediasupervision.de>
+References: <1286893508-sup-7225@sam.mediasupervision.de>
+Message-ID: <1287018586-sup-9994@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Wed Oct 13 21:10:50 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 13 Oct 2010 21:10:50 -0400
+Subject: [sup-devel] [PATCH] Bugfix: Correctly split list of mail
+	addresses
+In-Reply-To: <1286900062-sup-8729@sam.mediasupervision.de>
+References: <1286900062-sup-8729@sam.mediasupervision.de>
+Message-ID: <1287018638-sup-246@zyrg.net>
+
+Applied to master.
+
+From rlane at club.cc.cmu.edu  Wed Oct 13 21:22:28 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Wed, 13 Oct 2010 21:22:28 -0400
+Subject: [sup-devel] [PATCH] Fix monkey-patching of Tempfile
+In-Reply-To: <1286546616-7072-1-git-send-email-michael@content-space.de>
+References: <1286546616-7072-1-git-send-email-michael@content-space.de>
+Message-ID: <1287019332-sup-3675@zyrg.net>
+
+Applied to master.
+
+From bwalton at artsci.utoronto.ca  Wed Oct 13 21:41:52 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Wed, 13 Oct 2010 21:41:52 -0400
+Subject: [sup-devel] [PATCH] Fix signing of multipart messages
+In-Reply-To: <1287018379-sup-5613@zyrg.net>
+References: <1286919925-sup-9064@meteor.durcheinandertal.local>
+	<1287018379-sup-5613@zyrg.net>
+Message-ID: <1287020460-sup-8200@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Rich Lane's message of Wed Oct 13 21:09:41 -0400 2010:
+
+> Either is fine. Inline patches are a little easier to discuss.
+
++1 for inline.  format-patch and send-email are excellent tool.!  The
+git list is a pleasure because the code is right there to comment on,
+etc.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From gregor at hoffleit.de  Thu Oct 14 09:09:43 2010
+From: gregor at hoffleit.de (Gregor Hoffleit)
+Date: Thu, 14 Oct 2010 15:09:43 +0200
+Subject: [sup-devel] [PATCH] RFC 2231: value encoding for Content-Disposition
+Message-ID: <1287061306-sup-2581@sam.mediasupervision.de>
+
+[Please, comment on this one and fill in the blank...]
+
+RFC 2231 defines extensions to RFC 2183 disposition parameter
+value mechanisms to provide value character set information
+(http://greenbytes.de/tech/webdav/rfc2231.html#rfc.section.4),
+e.g.:
+    Content-Disposition: attachment; filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html
+
+The following pattern detects the cases described in 
+http://greenbytes.de/tech/tc2231/#encoding-2231-char
+(RFC2231 Encoding: Character Sets).
+
+TODO: The value of filename ($2) must be decoded according to
+the encoding specified in $1.
+
+---
+ lib/sup/message.rb |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/lib/sup/message.rb b/lib/sup/message.rb
+index cf0e505..0b42f75 100644
+--- a/lib/sup/message.rb
++++ b/lib/sup/message.rb
+@@ -480,6 +480,17 @@ private
+         ## separated by ";". So, we match everything up to " and ; (if present).
+         if m.header["Content-Disposition"] && m.header["Content-Disposition"] =~ /filename="?(.*?[^\\])("|;|\z)/m
+           $1
++        elsif m.header["Content-Disposition"] && m.header["Content-Disposition"] =~ /filename\*=(.*)''(.*)("|;|$)/
++          ## RFC 2231 defines extensions to RFC 2183 disposition parameter
++          ## value mechanisms to provide value character set information
++          ## (http://greenbytes.de/tech/webdav/rfc2231.html#rfc.section.4),
++          ## e.g.:
++          ##     Content-Disposition: attachment; filename*=UTF-8''foo-%c3%a4-%e2%82%ac.html
++          ##
++          ## The following pattern detects the cases described in 
++          ## http://greenbytes.de/tech/tc2231/#encoding-2231-char
++          ## (RFC2231 Encoding: Character Sets).
++          ##
++          ## TODO: The value of filename ($2) must be decoded according to
++          ## the encoding specified in $1.
++          $2
+         elsif m.header["Content-Type"] && m.header["Content-Type"] =~ /name="?(.*?[^\\])("|;|\z)/im
+           $1
+--
+1.5.6.5
+ 
+
+From dmishd at gmail.com  Sun Oct 17 15:03:48 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 17 Oct 2010 20:03:48 +0100
+Subject: [sup-devel] Fix for decrypting messages
+Message-ID: <AANLkTimNtSATed=X=aOk9V2At_ESfwSgyBA1vDnwMJmw@mail.gmail.com>
+
+I was finding some messages weren't getting decrypted properly - I
+would be told the message was decrypted, but no text would appear. But
+I could decrypt it manually. Trying the dev console I found the entire
+message was being parsed into headers. Eventually I worked out that
+the decrypted message had "\r\n" as line breaks, while the RMail
+parser expects "\n\n" as the divider between the header and body, not
+"\r\n\r\n". So the patch is basically one line to take the decrypted
+output and replace \r\n with \n. This is done after the signature is
+verified.
+
+The mail client producing the emails was the Evolution mail client,
+but I guess it may happen with others aswell.
+
+Hamish Downer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Deal-with-r-n-inside-encrypted-messages.patch
+Type: text/x-patch
+Size: 1200 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101017/65a6c4d5/attachment.bin>
+
+From dmishd at gmail.com  Sun Oct 17 18:41:45 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Sun, 17 Oct 2010 23:41:45 +0100
+Subject: [sup-devel] [PATCH] Stop worrying notice when encrypted email not
+	signed
+Message-ID: <AANLkTinEiJYb+-gPcEUkw=1ARwf9mENbF7EOi1eiLfWr@mail.gmail.com>
+
+Stop worrying notice when encrypted email not signed
+
+When no signature is present, there was a message saying
+"Unable to determine validity of cryptographic signature".
+This fix means that if there are no error messages and no
+messages about signature verification then the message is
+assumed to not be signed at all. This fix also saves the
+encrypted messages to a temp file with a suffix of .asc
+to stop gpg complaining about "unknown suffix".
+
+Hamish Downer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Stop-worrying-notice-when-no-signature-present.patch
+Type: text/x-patch
+Size: 1478 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101017/4961654e/attachment-0001.bin>
+
+From bwalton at artsci.utoronto.ca  Sun Oct 17 21:55:27 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Sun, 17 Oct 2010 21:55:27 -0400
+Subject: [sup-devel] [PATCH] Stop worrying notice when encrypted email
+	not signed
+In-Reply-To: <AANLkTinEiJYb+-gPcEUkw=1ARwf9mENbF7EOi1eiLfWr@mail.gmail.com>
+References: <AANLkTinEiJYb+-gPcEUkw=1ARwf9mENbF7EOi1eiLfWr@mail.gmail.com>
+Message-ID: <1287366885-sup-9753@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Hamish D's message of Sun Oct 17 18:41:45 -0400 2010:
+
+> assumed to not be signed at all. This fix also saves the
+> encrypted messages to a temp file with a suffix of .asc
+> to stop gpg complaining about "unknown suffix".
+
+How about submitting these as separate patches?  They are actually to
+different issues.
+
+They look good though.
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From dmishd at gmail.com  Mon Oct 18 14:43:26 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Mon, 18 Oct 2010 19:43:26 +0100
+Subject: [sup-devel] [PATCH] gpg related fixes (resubmitted)
+Message-ID: <AANLkTimE2P7oMB6qkD=davoTghvp1t2vMhhHixG74waV@mail.gmail.com>
+
+I am resubmitting these patches. 0001-Give-gpg-a-known-suffix.patch
+and 0001-Stop-worrying-notice-when-no-signature-present.patch are two
+patches to replace the previous
+0001-Stop-worrying-notice-when-no-signature-present.patch, though note
+the known suffix patch is required for the second one to work.
+
+And I didn't put [PATCH] in the subject line when I posted
+0001-Deal-with-r-n-inside-encrypted-messages.patch so I'm attaching it
+to this email in case the last one was missed due to workflow etc.
+
+Hamish Downer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Deal-with-r-n-inside-encrypted-messages.patch
+Type: text/x-patch
+Size: 1200 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101018/f5501ea2/attachment.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Give-gpg-a-known-suffix.patch
+Type: text/x-patch
+Size: 821 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101018/f5501ea2/attachment-0001.bin>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Stop-worrying-notice-when-no-signature-present.patch
+Type: text/x-patch
+Size: 1478 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101018/f5501ea2/attachment-0002.bin>
+
+From michael+sup at stapelberg.de  Wed Oct 20 05:02:43 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Wed, 20 Oct 2010 11:02:43 +0200
+Subject: [sup-devel]
+	=?utf-8?q?[PATCH]_Bugfix:_Don=E2=80=99t_call_handle=96added=96message_for_old_messages_with_a_new_location?=
+Message-ID: <1287565270-sup-1161@midna.zekjur.net>
+
+Hi,
+
+I finally found out what made messages come up in my inbox again despite being
+killed or marked as spam. Quote from the commit message:
+
+    When sup finds a message, it always called handle_added_message which in turn
+    invokes add_or_unhide. This is bad, because for killed messages (or marked as
+    spam), this would bring the message up in the inbox again. After this commit,
+    handle_added_message is only called when the message is either new or an
+    existing location of it was updated (to update the labels).
+    
+    The normal usecase for receiving a message with the same ID is being subscribed
+    to a mailing list via two different mail addresses.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-Don-t-call-handle_added_message-for-old-messa.patch
+Type: application/octet-stream
+Size: 1845 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101020/0d54bf28/attachment.obj>
+
+From sup-bugs at masanjin.net  Thu Oct 21 07:33:33 2010
+From: sup-bugs at masanjin.net (anonymous)
+Date: Thu, 21 Oct 2010 11:33:33 +0000
+Subject: [sup-devel] [issue124] Crash after sending mail,
+	now crashes on entry!
+In-Reply-To: <1287660813.79.0.856351379154.issue124@masanjin.net>
+Message-ID: <1287660813.79.0.856351379154.issue124@masanjin.net>
+
+
+New submission from anonymous:
+
+I'd just finished sending a mail and the "send mail" buffer was showing
+"flushing index" in the status bar.  I pressed x to leave, and the program
+crashed.  
+
+Now whenever I try to start sup, it briefly flashes up the inbox buffer and then
+crashes.  Exception log attached.
+
+----------
+files: exception-log.txt
+messages: 293
+nosy: anonymous
+priority: bug
+ruby_version: 1.8.7
+status: unread
+sup_version: 0.11
+title: Crash after sending mail, now crashes on entry!
+
+_________________________________________
+Sup issue tracker <sup-bugs at masanjin.net>
+<http://masanjin.net/sup-bugs/issue124>
+_________________________________________
+-------------- next part --------------
+--- RuntimeError from thread: load threads for thread-index-mode
+
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:501:in `find_docid'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:506:in `find_doc'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:516:in `get_entry'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:193:in `build_message'
+/usr/lib/ruby/1.8/monitor.rb:242:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:525:in `synchronize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:193:in `build_message'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:332:in `call'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:332:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:239:in `each_id'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/index.rb:148:in `each_id_by_date'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/thread.rb:328:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:640:in `__unprotected_load_n_threads'
+(eval):12:in `load_n_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:624:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:76:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `initialize'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `new'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup.rb:74:in `reporting_thread'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:623:in `load_n_threads_background'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/lib/sup/modes/thread-index-mode.rb:694:in `__unprotected_load_threads'
+(eval):12:in `load_threads'
+/usr/lib/ruby/gems/1.8/gems/sup-0.11/bin/sup:231
+/usr/bin/sup:19:in `load'
+/usr/bin/sup:19
+
+From rlane at club.cc.cmu.edu  Thu Oct 21 12:19:20 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 21 Oct 2010 12:19:20 -0400
+Subject: [sup-devel] [PATCH] gpg related fixes (resubmitted)
+In-Reply-To: <AANLkTimE2P7oMB6qkD=davoTghvp1t2vMhhHixG74waV@mail.gmail.com>
+References: <AANLkTimE2P7oMB6qkD=davoTghvp1t2vMhhHixG74waV@mail.gmail.com>
+Message-ID: <1287677888-sup-7401@zyrg.net>
+
+All 3 patches applied to master.
+
+From rlane at club.cc.cmu.edu  Thu Oct 21 12:19:42 2010
+From: rlane at club.cc.cmu.edu (Rich Lane)
+Date: Thu, 21 Oct 2010 12:19:42 -0400
+Subject: [sup-devel] [PATCH] Bugfix: Don\xe2\x80\x99t call
+	handle\x96added\x96message for old messages with a new location
+In-Reply-To: <1287565270-sup-1161@midna.zekjur.net>
+References: <1287565270-sup-1161@midna.zekjur.net>
+Message-ID: <1287677967-sup-6351@zyrg.net>
+
+Applied to master.
+
+From dmishd at gmail.com  Fri Oct 22 11:37:58 2010
+From: dmishd at gmail.com (Hamish D)
+Date: Fri, 22 Oct 2010 16:37:58 +0100
+Subject: [sup-devel] [PATCH] Stop double quoting the protocol when sending
+	encrypted emails
+Message-ID: <AANLkTimk4yTtJxDj5+H4HfjthdPLQtvE=9enx6GQykRo@mail.gmail.com>
+
+Some friends of mine were having trouble with encrypted messages of
+mine sent by sup. From the commit message:
+
+
+Stop double quoting the protocol when sending encrypted emails
+
+It was the case that when encrypting emails, the content-type
+header line would look like:
+Content-Type: multipart/encrypted;
+boundary="=-1287680456-54319-281-6673-1-=";
+protocol=""application/pgp-encrypted""
+It appears that rmail adds the extra quotes, so this change
+makes the protocol unquoted to start with, so we end up with
+correct quoting.
+
+
+Hamish Downer
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Stop-double-quoting-the-protocol-when-sending-encryp.patch
+Type: text/x-patch
+Size: 1163 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101022/e99cd7fb/attachment.bin>
+
+From michael+sup at stapelberg.de  Mon Oct 25 16:32:18 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Mon, 25 Oct 2010 22:32:18 +0200
+Subject: [sup-devel] Snippet: Copy unread messages to maildir
+Message-ID: <1288038555-sup-4375@midna.zekjur.net>
+
+Hi,
+
+I thought it would be a good idea to copy the unread messages from my sup inbox
+to a separate maildir to access it from my phone. Turns out that once you are
+spoiled with sup, you cannot go back to "normal" mail clients (k-9 mail in this
+case) ;-).
+
+Nevertheless, I thought maybe somebody could use the code I wrote. I?m
+attaching it to this mail, but beware, it still has a bug: It crashes when
+exporting messages sometimes. It also uses absolute paths.
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: copy-unread.rb
+Type: application/x-ruby
+Size: 850 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101025/c65cc4e9/attachment-0001.bin>
+
+From michael+sup at stapelberg.de  Mon Oct 25 18:13:46 2010
+From: michael+sup at stapelberg.de (Michael Stapelberg)
+Date: Tue, 26 Oct 2010 00:13:46 +0200
+Subject: [sup-devel] [PATCH] Bugfix: mime_encode: Encode _ as =5F instead of
+	=96
+Message-ID: <1288044796-sup-6774@midna.zekjur.net>
+
+Hi,
+
+quote from the commit message:
+
+    This line of code was introduced in 0d45aa38, probably by mistake. The ASCII
+    code in decimal for '_' (underscore) is 95 (the code says 96, but probably
+    another mistake), but as mime encoding is hexadecimal, we need =5F instead.
+    
+    An example of this encoding problem can be seen in one of my earlier patches
+    with message-id <1287565270-sup-1161 at midna.zekjur.net>.
+
+
+Best regards,
+Michael
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Bugfix-mime_encode-Encode-_-as-5F-instead-of-96.patch
+Type: application/octet-stream
+Size: 1347 bytes
+Desc: not available
+URL: <http://rubyforge.org/pipermail/sup-devel/attachments/20101026/a52e7a11/attachment.obj>
+
+From bwalton at artsci.utoronto.ca  Mon Oct 25 20:50:00 2010
+From: bwalton at artsci.utoronto.ca (Ben Walton)
+Date: Mon, 25 Oct 2010 20:50:00 -0400
+Subject: [sup-devel] Snippet: Copy unread messages to maildir
+In-Reply-To: <1288038555-sup-4375@midna.zekjur.net>
+References: <1288038555-sup-4375@midna.zekjur.net>
+Message-ID: <1288054042-sup-9601@pinkfloyd.chass.utoronto.ca>
+
+Excerpts from Michael Stapelberg's message of Mon Oct 25 16:32:18 -0400 2010:
+
+> I thought it would be a good idea to copy the unread messages from
+> my sup inbox to a separate maildir to access it from my phone. Turns
+> out that once you are spoiled with sup, you cannot go back to
+> "normal" mail clients (k-9 mail in this case) ;-).
+
+I just started doing this too.  My approach is different though.  I'm
+using procmail to :0c (copy) any mail that is addressed directly to me
+into the Inbox.  All other mail is diverted to folders like
+.incoming.2010.10/.  (I have a hook that automatically adds new
+sources as they appear...)
+
+Now, if I could get my phone to supply In-Reply-To and friends, my sup
+interaction while mobile would be in much better shape!
+
+Thanks
+-Ben
+--
+Ben Walton
+Systems Programmer - CHASS
+University of Toronto
+C:416.407.5610 | W:416.978.4302
+
+
+From tero at tilus.net  Thu Oct 28 08:05:33 2010
+From: tero at tilus.net (Tero Tilus)
+Date: Thu, 28 Oct 2010 15:05:33 +0300
+Subject: [sup-devel] Message#text_to_chunks performance
+Message-ID: <1288264300-sup-7747@tilus.net>
+
+Hi,
+
+I ran into an issue with bad behavior of Message#text_to_chunks on
+long sequences of blank lines.  Apparently I have and receive quite a
+few mails with batshit crazy amounts of blank lines (the worst case
+sofar being almost 200 kB worth of linefeeds ... don't ask) in them
+and I want to be able to deal with them without needing to leave the
+poll running overnight.
+
+I have a na?ve fix pushed to my sup fork at github (and gitorius too).
+
+http://github.com/terotil/sup/tree/fix-text_to_chunks-performance
+
+Is the patch-to-mailinglist still the preferred flow of contribution
+as stated in Wiki?  http://sup.rubyforge.org/wiki/wiki.pl?Contributing
+
+Do you, Rich and William, take in (properly prepared) commits from
+github/gitorius forks?
+
+--
+Tero Tilus ## 050 3635 235 ## http://tero.tilus.net/
+
