@@ -22,7 +22,6 @@
           <a href="https://github.com/sup-heliotrope/sup" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         <a href="https://github.com/sup-heliotrope/sup/wiki" class="btn">Wiki</a>
         <a href="https://github.com/sup-heliotrope/sup/issues" class="btn">Issues</a>
-        <a href="/history/" class="btn">History</a>
         <a href="/screenshots/" class="btn">Screenshots</a>
         <a href="https://github.com/sup-heliotrope/sup-colors" class="btn">Color schemes</a>
         <a href="/community/" class="btn">Community</a>
