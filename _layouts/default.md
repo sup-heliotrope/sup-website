@@ -18,7 +18,7 @@
         </a>
 
         <section id="links">
-          <a href="https://github.com/sup-heliotrope" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+          <a href="https://github.com/sup-heliotrope/sup" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
         <a href="https://github.com/sup-heliotrope/sup/wiki" class="btn">Wiki</a>
         <a href="https://github.com/sup-heliotrope/sup/issues" class="btn">Issues</a>
         <a href="/history/" class="btn">History</a>
