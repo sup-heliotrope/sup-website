@@ -8,20 +8,21 @@ The color schemes are also all user contributed, new ones can be submitted to th
 
 ## Mailing lists 
 
-You can follow discussions and development on sup as well as ask for help on our mailinglist [supmua@googlegroups.com](mailto:supmua@googlegroups.com). To subscribe send an email to [supmua+subscribe@googlegroups.com](mailto:supmua+subscribe@googlegroups.com). You can also subscribe through [https://groups.google.com/d/forum/supmua](https://groups.google.com/d/forum/supmua).
+You can follow discussions and development on Sup as well as ask for help on
+our mailing list [supmua@googlegroups.com](mailto:supmua@googlegroups.com).
+
+To subscribe, send an email to
+[supmua+subscribe@googlegroups.com](mailto:supmua+subscribe@googlegroups.com).
+You can also subscribe on the web at
+[https://groups.google.com/d/forum/supmua](https://groups.google.com/d/forum/supmua).
 
 ### Archives
 
-[https://groups.google.com/d/forum/supmua](https://groups.google.com/d/forum/supmua)
-
-#### Old mailing lists
-
-  - [sup-talk](sup-talk/threads.html) ([mbox](sup-talk.mbox))
-  - [sup-devel](sup-devel/threads.html) ([mbox](sup-devel.mbox))
-  - [sup-announce](sup-announce/threads.html) ([mbox](sup-announce.mbox))
-
-(regenerated as of from approx. 2009)
+You can browse and search the mailing list archives on
+[our public-inbox instance](../lists/).
 
 ### History
 
-We used to have three mailinglists: sup-talk, sup-devel and sup-announce. With the shut down of [Rubyforge](https://en.wikipedia.org/wiki/Rubyforge#Shutting_Down) these mailinglists were [closed](https://groups.google.com/d/msg/supmua/JCf2zGi5yGQ/_Q3OZtjypTEJ). 
+We used to have three mailing lists: sup-talk, sup-devel, and sup-announce.
+With the [shutdown of Rubyforge](https://en.wikipedia.org/wiki/Rubyforge#Shutting_Down)
+these mailing lists were [closed](../lists/supmua/53B51E1C.8090307@gaute.vetsj.com/).
