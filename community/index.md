@@ -2,7 +2,7 @@
 layout: narrow_page
 ---
 
-The main development is happening on our GitHub page. Users are encouragd to contribute to the development with testing and patches. The wiki is also the product of a community effort, please go ahead and extend it if you have something useful to add to it.
+The main development is happening on our GitHub page. Users are encouraged to contribute to the development with testing and patches. The wiki is also the product of a community effort, please go ahead and extend it if you have something useful to add to it.
 
 The color schemes are also all user contributed, new ones can be submitted to the GitHub repository.
 
