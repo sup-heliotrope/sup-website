@@ -139,18 +139,20 @@ dt {
   font-weight: bold;
 }
 
+ul {
+  padding-left: 32px;
+}
 ul li {
   list-style: none;
 }
-
 ul li:before {
   content: ">>";
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-size: 13px;
   color: #b5e853;
-  margin-left: -37px;
-  margin-right: 21px;
+  margin-left: -32px;
   line-height: 16px;
+  display: inline-block;
+  width: 32px;
 }
 
 blockquote {
