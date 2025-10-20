@@ -1,4 +1,5 @@
 ---
+title: sup screenshots
 layout: wide_page
 screenshots: 
  - /images/old_screenshot_1.png

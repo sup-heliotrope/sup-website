@@ -1,4 +1,5 @@
 ---
+title: sup community
 layout: narrow_page
 ---
 

@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/stylesheets/pygment_trac.css" media="screen" />
     <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=" />
-    <title>sup</title>
+    <title>{{ page.title | default: "sup" }}</title>
     <meta name="viewport" content="width=device-width" />
   </head>
   <body>
