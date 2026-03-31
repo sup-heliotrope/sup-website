@@ -161,7 +161,7 @@ blockquote {
   border-left: 1px dotted #666;
 }
 
-pre {
+pre.code {
   background: rgba(0, 0, 0, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 10px;
@@ -256,6 +256,115 @@ a {
 }
 a:hover {
   color: #ffeb9b;
+}
+
+
+/* Stagit */
+
+.container.wide.git {
+  max-width: 1200px;
+}
+
+.git .url {
+  margin: -10px 0 10px 0;
+  color: #666;
+}
+.git .url:before {
+  font-weight: 300;
+  color: #888;
+  content: "$ ";
+}
+
+main.git {
+  margin-top: 40px;
+}
+
+.git b {
+  font-weight: 300;
+  color: #888;
+}
+
+a:target {
+  background-color: #333;
+}
+a.d,
+a.h,
+a.i,
+a.line {
+  text-decoration: none;
+}
+
+#blob {
+  line-height: 1.25;
+}
+#blob a {
+  color: #888;
+}
+#blob a:hover {
+  color: #ffeb9b;
+}
+
+.git table {
+  width: auto;
+}
+.git table thead td {
+  font-weight: 300;
+  color: #b5e853;
+}
+.git table td {
+  padding: 0 0.6em;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.git table td:first-child {
+  padding-left: 0;
+}
+.git table td:last-child {
+  padding-right: 0;
+}
+
+#branches tr:hover td,
+#tags tr:hover td,
+#index tr:hover td,
+#log tr:hover td,
+#files tr:hover td {
+  background-color: #333;
+}
+
+#index tr td:nth-child(2),
+#tags tr td:nth-child(3),
+#branches tr td:nth-child(3),
+#log tr td:nth-child(2) {
+  white-space: normal;
+}
+
+.git td.num {
+  text-align: right;
+}
+
+/* Hunk header */
+.git pre a.h {
+  color: #b5e853;
+}
+
+/* Added lines */
+.git .A,
+.git span.i,
+.git pre a.i {
+  color: #9e9;
+}
+
+/* Deleted lines */
+.git .D,
+.git span.d,
+.git pre a.d {
+    color: #e99;
+}
+
+.git pre a.h:hover,
+.git pre a.i:hover,
+.git pre a.d:hover {
+  text-decoration: none;
 }
 
 
