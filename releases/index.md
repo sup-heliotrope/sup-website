@@ -153,7 +153,7 @@ releases:
 ## Releases
 
 For release notes, refer to
-[History.txt](https://github.com/sup-heliotrope/sup/blob/master/History.txt)
+[History.txt](../git/sup/file/History.txt.html)
 in the Sup source code.
 
 {% for release in page.releases -%}
