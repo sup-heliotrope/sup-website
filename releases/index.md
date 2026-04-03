@@ -150,7 +150,7 @@ releases:
   date: 2006-11-28
   sha256: 172e10ce587eaff04c6b15699b2073bbd762e66c52651fed4310b0946a0155ef
 ---
-## # Releases
+## Releases
 
 For release notes, refer to
 [History.txt](https://github.com/sup-heliotrope/sup/blob/master/History.txt)

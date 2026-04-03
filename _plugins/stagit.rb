@@ -7,7 +7,7 @@ def wrap_stagit_output path, header
   ## Change git repo name from h1 to h2
   h = doc.at("h1")
   h.name = "h2"
-  h.content = "# #{h.content}.git"
+  h.content = "#{h.content}.git"
 
   ## Put the git repo name, clone URL, and stagit navigation into a container
   nav_section = doc.create_element "section", class: "container wide git" do |e|

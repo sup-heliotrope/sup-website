@@ -5,7 +5,7 @@ screenshots:
  - /images/old_screenshot_3.png
 
 ---
-## # [sup](https://github.com/sup-heliotrope/sup/)
+## [sup](https://github.com/sup-heliotrope/sup/)
 [Sup](https://github.com/sup-heliotrope/sup/) is a console-based email client for people with a lot of email.
 
 It presents an interface of a list of threads, which are each hierarchical collections email messages.
@@ -19,7 +19,7 @@ If you're the type of person who treats email as an extension of your long-term 
 </a>
 {% endfor %}
 
-## # Installation
+## Installation
 Install the sup rubygem and run the sup-config utility to build a configuration:
 
 <pre>
@@ -29,7 +29,7 @@ $ sup-config
 
 More documentation on getting started [is available in the wiki.](https://github.com/sup-heliotrope/sup/wiki#installation)
 
-## # Features
+## Features
  * Handle massive amounts of email.
  * Fast, local full-text index of messages.
  * Mix email from different sources: mbox files and maildirs.
