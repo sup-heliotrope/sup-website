@@ -44,4 +44,4 @@ More documentation on getting started [is available in the wiki.](https://github
  * [Issues](https://github.com/sup-heliotrope/sup/issues)
 
 ### Authors and Contributors
-Sup is brought to you by [a cast of hackers.](https://github.com/sup-heliotrope/sup/wiki/Development:-Administration-and-Team)
+Sup is brought to you by [a cast of hackers](git/sup/file/CONTRIBUTORS.html).
