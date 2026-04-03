@@ -22,7 +22,7 @@ If you're the type of person who treats email as an extension of your long-term 
 ## Installation
 Install the sup rubygem and run the sup-config utility to build a configuration:
 
-<pre>
+<pre class="code">
 $ gem install sup
 $ sup-config
 </pre>
