@@ -32,12 +32,20 @@ def wrap_stagit_output path, header
   stylesheet["media"] = "screen"
   doc.at("head").add_child '<link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">'
 
-  ## Rewrite commit message issue references to be links
+  ## Add some nicer markup in commit messages
   doc.xpath("//pre[b[normalize-space()='commit' and not(preceding-sibling::node())]]//text()").each do |text_node|
-    rewritten = text_node.content.gsub(/(?<=^|\s)#(\d+)\b/) do |match|
+    html = text_node.content
+    ## Turn issue references into links
+    html = html.gsub(/(?<=^|\s)#(\d+)\b/) do |match|
       "<a href=\"https://github.com/sup-heliotrope/sup/issues/#{$1}\">#{$&}</a>"
     end
-    text_node.replace rewritten
+    ## Turn commit references into links
+    html = html.gsub(/(?<=[Cc]ommit )([0-9a-f]+)\b/) do |match|
+      href = Dir.new(File.dirname(path)).each_child.find { |fn| fn.start_with? $& }
+      next $& if href.nil?
+      "<a href=\"#{href}\">#{$&}</a>"
+    end
+    text_node.replace html
   end
 
   File.write(path, doc.to_html)
