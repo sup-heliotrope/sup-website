@@ -38,7 +38,7 @@ def wrap_stagit_output path, header
     ## Turn issue references into links
     html = html.gsub(/(?<=^|\s)#(\d+)\b/) do |match|
       "<a href=\"https://github.com/sup-heliotrope/sup/issues/#{$1}\">#{$&}</a>"
-    end
+    end if path.include? "/sup/"
     ## Turn commit references into links
     html = html.gsub(/(?<=[Cc]ommit )([0-9a-f]+)\b/) do |match|
       href = Dir.new(File.dirname(path)).each_child.find { |fn| fn.start_with? $& }
