@@ -23,8 +23,8 @@ If you're the type of person who treats email as an extension of your long-term 
 Install the sup rubygem and run the sup-config utility to build a configuration:
 
 <pre class="code">
-$ gem install sup
-$ sup-config
+<span class="command">gem install sup</span>
+<span class="command">sup-config</span>
 </pre>
 
 More documentation on getting started [is available in the wiki.](https://github.com/sup-heliotrope/sup/wiki#installation)

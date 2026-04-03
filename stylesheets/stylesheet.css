@@ -184,6 +184,12 @@ pre.code {
   overflow-y: hidden;
 }
 
+pre .command:before {
+  font-weight: 300;
+  color: #888;
+  content: "$ ";
+}
+
 table {
   width: 100%;
   margin: 0 0 20px 0;
