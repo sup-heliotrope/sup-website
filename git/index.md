@@ -11,6 +11,9 @@ The canonical Git repository for Sup is hosted here.
 <span class="command">git clone <a href="https://supmua.dev/git/sup/">https://supmua.dev/git/sup/</a></span>
 </pre>
 
+You can browse the [commit log](sup/log.html) and
+[source files](sup/files.html) on the web.
+
 You can also find [Sup on GitHub](https://github.com/sup-heliotrope/sup).
 
 ### Other repos
