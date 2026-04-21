@@ -2,6 +2,9 @@
 title: sup releases
 layout: wide_page
 releases:
+- version: "1.4"
+  date: 2026-04-21
+  sha256: ed0658490484f6413e841a5ffc66e4adfb954964ae0ab9da0c6ffacfcffb1ba1
 - version: "1.3"
   date: 2025-04-21
   sha256: 4496cd2aec27c9e9c05b3a13689935137aad95c1161c95e6a47525d52465eb96
