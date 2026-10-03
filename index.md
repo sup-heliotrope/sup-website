@@ -1,8 +1,7 @@
 ---
 layout: narrow_page
 screenshots:
- - /images/old_screenshot_1.png
- - /images/old_screenshot_3.png
+ - /screenshots/1.4/inbox.png
 
 ---
 ## [sup](https://github.com/sup-heliotrope/sup/)
