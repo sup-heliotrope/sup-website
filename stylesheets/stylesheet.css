@@ -20,10 +20,23 @@ body {
 .container.wide {
   max-width: 1000px;
 }
-
+.container.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  column-gap: 3%;
+  row-gap: 2.5em;
+  margin-bottom: 2.5em;
+}
 section {
   display: block;
   margin: 0 0 20px 0;
+}
+
+.gallery figure {
+  margin: 0;
+}
+.gallery figcaption {
+  margin: 0 5px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -167,12 +180,14 @@ blockquote {
   border-left: 1px dotted #666;
 }
 
+tt.code, pre.code {
+  color: #b5e853;
+}
 pre.code {
   background: rgba(0, 0, 0, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 10px;
   font-size: 14px;
-  color: #b5e853;
   border-radius: 2px;
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
