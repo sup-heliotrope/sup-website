@@ -1,1 +1,3 @@
-RewriteRule ([^/]+)/$ /git/$1/log.html [R]
+RewriteRule ^([^/]+)/$         /git/$1/log.html [R]
+RewriteRule ^([^/]+)/commit/?$ /git/$1/log.html [R]
+RewriteRule ^([^/]+)/file/?$   /git/$1/files.html [R]
