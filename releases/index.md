@@ -1,7 +1,7 @@
 ---
 title: sup releases
 layout: wide_page
-atom_feed: /releases/index.xml
+atom_feed: /releases/index.atom
 ---
 ## Releases
 
