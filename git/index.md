@@ -19,4 +19,5 @@ You can also find [Sup on GitHub](https://github.com/sup-heliotrope/sup).
 ### Other repos
 
 [sup-colors.git](sup-colors/log.html): Color schemes for Sup.<br>
-[sup-website.git](sup-website/log.html): Source code for this web site.
+[sup-website.git](sup-website/log.html): Source code for this web site.<br>
+[ncursesw-ruby.git](ncursesw-ruby/log.html): Ruby bindings to ncurses (Sup’s fork).

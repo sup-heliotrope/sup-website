@@ -53,7 +53,7 @@ end
 
 Jekyll::Hooks.register :site, :post_write do |site|
   header = File.read "#{site.source}/_includes/header.html"
-  %w[sup sup-colors sup-website].each do |repo|
+  %w[sup sup-colors sup-website ncursesw-ruby].each do |repo|
     dest = "#{site.dest}/git/#{repo}"
     Jekyll.logger.info "Stagit:", "Processing #{repo}"
 
