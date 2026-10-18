@@ -6,9 +6,10 @@ screenshots:
 ---
 **Sup** is a console-based email client for people with a lot of email.
 
-It presents an interface of a list of threads, which are each hierarchical collections email messages.
+It presents an interface of a list of threads, which are each hierarchical collections of email messages.
 Threads can have multiple tags applied to them.
 It supports a very fast full-text search, automatic contact-list management, custom code insertion via a Ruby hook system, and more.
+
 If you're the type of person who treats email as an extension of your long-term memory, Sup is for you.
 
 {% for shot in page.screenshots %}
