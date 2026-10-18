@@ -37,9 +37,9 @@ More documentation on getting started [is available in the wiki.](https://github
  * Take care of your privacy with full support of gpg.
  * Organize email with user-defined labels, automatically track recent contacts, and much more!
 
-### Resources
+## Resources
  * [wiki](https://github.com/sup-heliotrope/sup/wiki)
  * [Issues](https://github.com/sup-heliotrope/sup/issues)
 
-### Authors and Contributors
+## Authors and Contributors
 Sup is brought to you by [a cast of hackers](git/sup/file/CONTRIBUTORS.html).
