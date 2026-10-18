@@ -4,8 +4,7 @@ screenshots:
  - /screenshots/1.4/inbox.png
 
 ---
-## [sup](https://github.com/sup-heliotrope/sup/)
-[Sup](https://github.com/sup-heliotrope/sup/) is a console-based email client for people with a lot of email.
+**Sup** is a console-based email client for people with a lot of email.
 
 It presents an interface of a list of threads, which are each hierarchical collections email messages.
 Threads can have multiple tags applied to them.
