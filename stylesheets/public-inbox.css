@@ -1,9 +1,16 @@
+@import "../fonts/Iosevka.css";
+@import "../fonts/IosevkaAile.css";
 body {
   background: #151515 url("/images/bkg.png") 0 0;
   color: #eaeaea;
   font-size: 16px;
   line-height: 1.5;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: "Iosevka SS09 Web", monospace;
+  font-weight: 300;
+}
+/* public-inbox injects a rule: *{font-family:monospace;} so override it here: */
+* {
+  font-family: "Iosevka SS09 Web", monospace;
 }
 a {
   color: #ffcc00;
@@ -18,9 +25,8 @@ a {
 a:hover {
   color: #ffeb9b;
 }
-b {
-  font-weight: 500;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+b, strong {
+  font-weight: 400;
   color: #b5e853;
 }
 u {
@@ -45,7 +51,7 @@ input[type="submit"] {
   border-bottom: 2px solid rgba(0, 0, 0, 0.7);
   border-top: 2px solid rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 0.8);
-  font-family: sans-serif;
+  font-family: "Iosevka Aile SS09 Web", sans-serif;
   font-weight: bold;
   font-size: 13px;
   text-decoration: none;
@@ -64,7 +70,7 @@ input[type="text"] {
   border-bottom: 2px solid rgba(0, 0, 0, 0.7);
   border-top: 2px solid rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 0.8);
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Iosevka Aile SS09 Web", sans-serif;
   font-size: 13px;
   text-decoration: none;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);

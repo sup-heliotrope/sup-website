@@ -1,3 +1,6 @@
+@import "../fonts/Iosevka.css";
+@import "../fonts/IosevkaAile.css";
+
 body {
   margin: 0;
   padding: 0;
@@ -5,7 +8,11 @@ body {
   color: #eaeaea;
   font-size: 16px;
   line-height: 1.5;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-family: "Iosevka Aile SS09 Web", monospace;
+  font-weight: 300;
+}
+b, strong {
+  font-weight: 700;
 }
 
 /* General & 'Reset' Stuff */
@@ -64,9 +71,8 @@ header {
 header h1 {
   font-size: 30px;
   line-height: 1.5;
-  margin: 0 0 0 -40px;
+  margin: 0 0 0 -1em;
   font-weight: bold;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #b5e853;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
                0 0 5px rgba(181, 232, 83, 0.1),
@@ -110,8 +116,7 @@ section img {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: normal;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
+  font-weight: 400;
   color: #b5e853;
   letter-spacing: -0.03em;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
@@ -181,6 +186,8 @@ blockquote {
 
 tt.code, pre.code {
   color: #b5e853;
+  font-family: "Iosevka SS09 Web", monospace;
+  font-weight: 400;
 }
 pre.code {
   background: rgba(0, 0, 0, 0.9);
@@ -235,7 +242,6 @@ hr {
   border-bottom: 2px solid rgba(0, 0, 0, 0.7);
   border-top: 2px solid rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 0.8);
-  font-family: Helvetica, Arial, sans-serif;
   font-weight: bold;
   font-size: 13px;
   text-decoration: none;
@@ -299,8 +305,13 @@ a:hover {
   max-width: 1200px;
 }
 
+.git, .git pre {
+  font-family: "Iosevka SS09 Web", monospace;
+}
+
 .git .url {
   margin: -10px 0 10px 0;
+  font-weight: 400;
   color: #666;
 }
 .git .url:before {
@@ -328,9 +339,6 @@ a.line {
   text-decoration: none;
 }
 
-#blob {
-  line-height: 1.25;
-}
 #blob a {
   color: #888;
 }
@@ -342,7 +350,6 @@ a.line {
   width: auto;
 }
 .git table thead td {
-  font-weight: 300;
   color: #b5e853;
 }
 .git table td {
