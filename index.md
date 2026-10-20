@@ -1,8 +1,5 @@
 ---
 layout: narrow_page
-screenshots:
- - /screenshots/1.4/inbox.png
-
 ---
 **Sup** is a console-based email client for people with a lot of email.
 
@@ -12,11 +9,7 @@ It supports a very fast full-text search, automatic contact-list management, cus
 
 If you're the type of person who treats email as an extension of your long-term memory, Sup is for you.
 
-{% for shot in page.screenshots %}
-<a href="{{shot}}">
-  <img src="{{shot}}"/>
-</a>
-{% endfor %}
+<a href="screenshots/1.4/inbox.png"><img src="screenshots/1.4/inbox.png" width="1920" height="1148"></a>
 
 ## Installation
 Install the sup rubygem and run the sup-config utility to build a configuration:
