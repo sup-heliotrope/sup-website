@@ -7,7 +7,7 @@ layout: gallery
     {% responsive_img 1.4/inbox.png alt: "Screenshot of Sup’s inbox-mode, showing a list of email threads." lazy: true %}
   </a>
   <figcaption>
-    Sup starts in inbox-mode: a list of threads tagged <tt class="code">inbox</tt>.
+    Sup starts in inbox-mode: a list of threads tagged <kbd>inbox</kbd>.
   </figcaption>
 </figure>
 <figure>
@@ -33,7 +33,7 @@ layout: gallery
   </a>
   <figcaption>
     When replying to a message, reply-mode is pre-populated with quoted text.
-    Press <tt class="code">Enter</tt> to edit the reply in your preferred editor.
+    Press <kbd>Enter</kbd> to edit the reply in your preferred editor.
   </figcaption>
 </figure>
 <figure>
@@ -41,7 +41,7 @@ layout: gallery
     {% responsive_img 1.4/help.png alt: "Screenshot of Sup’s help-mode, showing a list of key bindings." lazy: true %}
   </a>
   <figcaption>
-    Press <tt class="code">?</tt> in any mode to see the key bindings for the current mode.
+    Press <kbd>?</kbd> in any mode to see the key bindings for the current mode.
   </figcaption>
 </figure>
 <figure>
