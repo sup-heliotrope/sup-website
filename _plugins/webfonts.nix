@@ -54,6 +54,11 @@ in
     webfontFormats = ["WOFF2"]
     [buildPlans.Iosevka.variants]
     inherits = "ss09"
+    [buildPlans.Iosevka.variants.design]
+    f = "narrow-serifless-crossbar-at-x-height"
+    i = "serifed-flat-tailed"
+    r = "narrow-hook-serifless"
+    t = "flat-hook-short-neck"
     [buildPlans.Iosevka.weights]
     Light = "default.Light"
     Regular = "default.Regular"
