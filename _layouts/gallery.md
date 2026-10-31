@@ -1,6 +1,6 @@
 ---
 layout: default
 ---
-<section class="container gallery">
+<main class="container gallery">
   {{ content }}
-</section>
+</main>

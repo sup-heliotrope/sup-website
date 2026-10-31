@@ -1,6 +1,6 @@
 ---
 layout: default
 ---
-      <section class="container narrow">
+      <main class="container narrow">
         {{ content }}
-      </section>
+      </main>
