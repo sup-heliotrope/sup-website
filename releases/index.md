@@ -11,5 +11,5 @@ in the Sup source code.
 
 {% for release in site.data.releases -%}
 * [sup-{{ release.version }}.gem](sup-{{ release.version }}.gem) {{ release.date | date: "%d %B %Y" }}  
-  SHA256: {{ release.sha256 }}
-{%- endfor %}
+  SHA256: `{{ release.sha256 }}`
+{% endfor %}

@@ -186,13 +186,16 @@ blockquote {
   border-left: 1px dotted #666;
 }
 
+tt, pre, code {
+  font-family: "Iosevka SS09 Web", monospace;
+}
+
 tt.code, pre.code {
+  font-weight: 400;
   color: #b5e853;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
                0 0 5px rgba(181, 232, 83, 0.1),
                0 0 10px rgba(181, 232, 83, 0.1);
-  font-family: "Iosevka SS09 Web", monospace;
-  font-weight: 400;
 }
 pre.code {
   background: rgba(0, 0, 0, 0.9);
