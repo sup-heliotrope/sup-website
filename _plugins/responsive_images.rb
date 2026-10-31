@@ -1,3 +1,4 @@
+require 'cgi'
 require 'open3'
 
 def run_command *args
@@ -36,8 +37,11 @@ end
 class ResponsiveImageTag < Liquid::Tag
   def initialize tag_name, markup, tokens
     super
-    @src, *options = markup.split
-    @lazy = options.include? "lazy"
+    @src = markup.split.first
+    @attributes = {}
+    markup.scan(Liquid::TagAttributes) do |key, value|
+      @attributes[key] = Liquid::Expression.parse value
+    end
   end
 
   def render context
@@ -51,7 +55,9 @@ class ResponsiveImageTag < Liquid::Tag
     srcset = image[:widths].map { |w| "#{base}-#{w}w#{ext} #{w}w" }
     srcset << "#{@src} #{image[:width]}w"
     attrs = %(src="#{@src}" width="#{image[:width]}" height="#{image[:height]}" srcset="#{srcset.join(", ")}")
-    attrs << (@lazy ? %( loading="lazy" sizes="auto, 100vw") : %( sizes="100vw"))
+    alt = context.evaluate @attributes["alt"]
+    attrs << %( alt="#{CGI.escapeHTML alt.to_s}") unless alt.nil?
+    attrs << (context.evaluate(@attributes["lazy"]) ? %( loading="lazy" sizes="auto, 100vw") : %( sizes="100vw"))
     "<img #{attrs}>"
   end
 

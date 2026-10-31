@@ -9,7 +9,9 @@ It supports a very fast full-text search, automatic contact-list management, cus
 
 If you're the type of person who treats email as an extension of your long-term memory, Sup is for you.
 
-<a href="screenshots/1.4/inbox.png">{% responsive_img screenshots/1.4/inbox.png %}</a>
+<a href="screenshots/1.4/inbox.png">
+  {% responsive_img screenshots/1.4/inbox.png alt: "Screenshot of Sup’s inbox-mode, showing a list of email threads." %}
+</a>
 
 ## Installation
 Install the sup rubygem and run the sup-config utility to build a configuration:
