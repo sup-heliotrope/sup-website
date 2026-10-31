@@ -58,7 +58,7 @@ Jekyll::Hooks.register :site, :post_write do |site|
     Jekyll.logger.info "Stagit:", "Processing #{repo}"
 
     FileUtils.mkdir_p dest
-    system "cd #{dest} && stagit -u https://supmua.dev/git/#{repo}/ /home/dan/src/#{repo}" or raise "stagit failed"
+    system "cd #{dest} && stagit -b master:develop -u https://supmua.dev/git/#{repo}/ /home/dan/src/#{repo}" or raise "stagit failed"
 
     ## Munge stagit generate files to fit the rest of the site
     Dir.glob "#{dest}/**/*.html", File::FNM_DOTMATCH do |path|
