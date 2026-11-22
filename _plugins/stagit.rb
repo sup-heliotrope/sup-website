@@ -57,6 +57,10 @@ Jekyll::Hooks.register :site, :post_write do |site|
     dest = "#{site.dest}/git/#{repo}"
     Jekyll.logger.info "Stagit:", "Processing #{repo}"
 
+    if repo == "sup"
+      raise "develop branch not checked out" if `git -C /home/dan/src/#{repo} rev-parse HEAD` != `git -C /home/dan/src/#{repo} rev-parse develop`
+    end
+
     FileUtils.mkdir_p dest
     system "cd #{dest} && stagit -b master:develop -u https://supmua.dev/git/#{repo}/ /home/dan/src/#{repo}" or raise "stagit failed"
 
